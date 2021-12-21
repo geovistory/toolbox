@@ -9,12 +9,13 @@
 
     <!-- Select the right column -->
     <gv-column-mapping class="px-2 gv-col-center loc-w25" [disabled]="!fpm?.pkProperty" [pkColumn]="fpm.pkColumn"
-        [pkTable]="fm?.pkDigital" [pkTargetClasses$]="pkTargetClasses$" (onChange)="fpmChange('pkColumn', $event)">
+        [pkTable]="fm?.pkDigital" [pkTargetClasses$]="pkTargetClasses$" (onChange)="fpmChange('pkColumn', $event)"
+        (outputClass)="selectedClass($event)">
     </gv-column-mapping>
 
     <!-- Select the right default -->
     <gv-ctrl-entity-or-value-matcher class="loc-w25 gv-col-center" [disabled]="!fpm?.pkColumn" [pkProject]="pkProject"
-        [pkClasses]="pkTargetClasses$|async" [pkEntity]="this.fpm?.default?.pkEntity" [value]="fpm?.default?.value"
+        [klass$]="selectedKlass$" [pkEntity]="this.fpm?.default?.pkEntity" [value]="fpm?.default?.value"
         (newPkEntity)="fpmChange('default', {'pkEntity': $event})">
     </gv-ctrl-entity-or-value-matcher>
 

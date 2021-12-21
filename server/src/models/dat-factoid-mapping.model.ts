@@ -25,13 +25,11 @@ export class DatFactoidMapping extends Entity {
 
   @property({
     type: 'string',
-    required: true,
   })
   title?: string;
 
   @property({
     type: 'string',
-    required: true,
   })
   comment?: string;
 

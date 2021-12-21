@@ -1,5 +1,6 @@
 <ng-container *ngIf="!pkEntity">
-    <mat-form-field appearance="outline" (click)="openEntityOrValueDialog()" style="width:95%">
+    <mat-form-field class="loc-ctrl-ent-or-val" appearance="outline" (click)="openEntityOrValueDialog()"
+        style="width:95%">
         <input matInput readonly placeholder="Default {{ (isEntity$|async) ? 'entity' : 'value'}}"
             [disabled]="disabled">
     </mat-form-field>
@@ -10,7 +11,7 @@
         [openTabOnClick]="true" style="width:95%">
     </gv-entity-preview>
 
-    <gv-value-preview *ngIf="!(isEntity$|async)" class="gv-one-liner gv-fade-out-right left-col" [vot]="getVOT()"
-        [value]="value" style="width:95%">
+    <gv-value-preview *ngIf="!(isEntity$|async)" class="gv-one-liner gv-row-center" [value]="value$|async"
+        style="width:95%">
     </gv-value-preview>
 </ng-container>

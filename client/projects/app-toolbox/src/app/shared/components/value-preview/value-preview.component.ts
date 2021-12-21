@@ -35,15 +35,15 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    if (this.vot.dimension) {
-      this.ap.streamEntityPreview((this.value.dimension).fk_measurement_unit).pipe(
+    if (this.vot?.dimension || this.value?.dimension) {
+      this.ap.streamEntityPreview((this.value?.dimension).fk_measurement_unit).pipe(
         map(ep => ep.entity_label),
         takeUntil(this.destroy$)
       ).subscribe(unitLabel => this.dimension_unit = unitLabel);
     };
 
-    if (this.vot.langString) {
-      this.s.inf$.language$.by_pk_entity$.key((this.value.langString).fk_language)
+    if (this.vot?.langString || this.value?.langString) {
+      this.s.inf$.language$.by_pk_entity$.key((this.value?.langString).fk_language)
         .subscribe(language => this.pkLanguage = language ? language.pk_language : '');
     }
   }

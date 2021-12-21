@@ -1,6 +1,6 @@
-<mat-form-field appearance="outline" *ngIf="!selected" style="width:95%">
+<mat-form-field class="loc-col-map" appearance="outline" *ngIf="!selected" style="width:95%">
     <mat-label>Select a column</mat-label>
-    <mat-select (selectionChange)="select($event.value)" [disabled]="disabled">
+    <mat-select class="loc-colum-mapping" (selectionChange)="select($event.value)" [disabled]="disabled">
         <mat-select-trigger>
             {{selected ? selected.columnName : ''}}
         </mat-select-trigger>

@@ -3,7 +3,9 @@
     margin-top: 1rem;
 }
 
-::ng-deep .mat-select-panel {
-    max-height: 500px !important;
-    overflow: auto;
+::ng-deep .loc-prop-disp {
+    .mat-form-field-wrapper {
+        padding: 0 !important;
+        margin:0 !important;
+    }
 }

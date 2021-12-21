@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {authenticate} from '@loopback/authentication';
-import {authorize} from '@loopback/authorization';
-import {inject} from '@loopback/context';
-import {model, property, repository} from '@loopback/repository';
-import {get, HttpErrors, param, post, requestBody} from '@loopback/rest';
-import {Roles} from '../components/authorization';
-import {QFactoidsFromEntity} from '../components/query/q-factoids-from-entity';
-import {Postgres1DataSource} from '../datasources';
-import {DatFactoidMapping} from '../models/dat-factoid-mapping.model';
-import {DatFactoidPropertyMapping} from '../models/dat-factoid-property-mapping.model';
-import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
-import {SysConfigValue} from '../models/sys-config/sys-config-value.model';
-import {DatDigitalRepository, DatFactoidMappingRepository, DatFactoidPropertyMappingRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../repositories';
-import {InfData} from './project-data/create-project-data.controller';
+import { authenticate } from '@loopback/authentication';
+import { authorize } from '@loopback/authorization';
+import { inject } from '@loopback/context';
+import { model, property, repository } from '@loopback/repository';
+import { get, HttpErrors, param, post, requestBody } from '@loopback/rest';
+import { Roles } from '../components/authorization';
+import { QFactoidsFromEntity } from '../components/query/q-factoids-from-entity';
+import { Postgres1DataSource } from '../datasources';
+import { DatFactoidMapping } from '../models/dat-factoid-mapping.model';
+import { DatFactoidPropertyMapping } from '../models/dat-factoid-property-mapping.model';
+import { GvPositiveSchemaObject } from '../models/gv-positive-schema-object.model';
+import { SysConfigValue } from '../models/sys-config/sys-config-value.model';
+import { DatDigitalRepository, DatFactoidMappingRepository, DatFactoidPropertyMappingRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository } from '../repositories';
+import { InfData } from './project-data/create-project-data.controller';
 
 enum ValueObjectTypeName {
   appellation = 'appellation',
@@ -187,7 +187,7 @@ export class FactoidController {
   ) { }
 
   @authenticate('basic')
-  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
   @get('/get-factoids-from-entity', {
     description: 'Fetch all factoids about an entity',
     responses: {
@@ -204,10 +204,10 @@ export class FactoidController {
     },
   })
   async factoidsFromEntity(
-    @param.query.string('pkProject', {required: true}) pkProject: string,
-    @param.query.string('pkEntity', {required: true}) pkEntity: string,
-    @param.query.string('factoidNumber', {required: true}) factoidNumber: number,
-    @param.query.string('page', {required: true}) page: number
+    @param.query.string('pkProject', { required: true }) pkProject: string,
+    @param.query.string('pkEntity', { required: true }) pkEntity: string,
+    @param.query.string('factoidNumber', { required: true }) factoidNumber: number,
+    @param.query.string('page', { required: true }) page: number
   ): Promise<GetFactoidsFromEntityResponse> {
 
     const offset = page * factoidNumber;
@@ -232,15 +232,15 @@ export class FactoidController {
         if (vot) {
           bs.vot = vot;
           if (!schemaObject.inf || !bs.pkEntity) continue;
-          if (vot === ValueObjectTypeName.appellation) schemaObject.inf.appellation = await this.infAppellationRepository.find({where: {pk_entity: bs.pkEntity}})
-          if (vot === ValueObjectTypeName.langString) schemaObject.inf.lang_string = await this.infLangStringRepository.find({where: {pk_entity: bs.pkEntity}})
-          if (vot === ValueObjectTypeName.language) schemaObject.inf.language = await this.infLanguageRepo.find({where: {pk_entity: bs.pkEntity}})
-          if (vot === ValueObjectTypeName.place) schemaObject.inf.place = await this.infPlaceRepository.find({where: {pk_entity: bs.pkEntity}})
-          if (vot === ValueObjectTypeName.dimension) schemaObject.inf.dimension = await this.infDimensionRepository.find({where: {pk_entity: bs.pkEntity}})
+          if (vot === ValueObjectTypeName.appellation) schemaObject.inf.appellation = await this.infAppellationRepository.find({ where: { pk_entity: bs.pkEntity } })
+          if (vot === ValueObjectTypeName.langString) schemaObject.inf.lang_string = await this.infLangStringRepository.find({ where: { pk_entity: bs.pkEntity } })
+          if (vot === ValueObjectTypeName.language) schemaObject.inf.language = await this.infLanguageRepo.find({ where: { pk_entity: bs.pkEntity } })
+          if (vot === ValueObjectTypeName.place) schemaObject.inf.place = await this.infPlaceRepository.find({ where: { pk_entity: bs.pkEntity } })
+          if (vot === ValueObjectTypeName.dimension) schemaObject.inf.dimension = await this.infDimensionRepository.find({ where: { pk_entity: bs.pkEntity } })
           if (vot === ValueObjectTypeName.timePrimitive) {
-            schemaObject.inf.time_primitive = await this.infTimePrimitiveRepository.find({where: {pk_entity: bs.pkEntity}})
-            bs.pkStatement = (await this.infStatementRepository.find({where: {fk_object_info: bs.pkEntity, fk_property: 1334}}))[0].pk_entity;
-            schemaObject.pro = {info_proj_rel: (await this.proInfProjRelRepository.find({where: {fk_entity: bs.pkStatement, fk_project: parseInt(pkProject)}}))}
+            schemaObject.inf.time_primitive = await this.infTimePrimitiveRepository.find({ where: { pk_entity: bs.pkEntity } })
+            bs.pkStatement = (await this.infStatementRepository.find({ where: { fk_object_info: bs.pkEntity, fk_property: 1334 } }))[0].pk_entity;
+            schemaObject.pro = { info_proj_rel: (await this.proInfProjRelRepository.find({ where: { fk_entity: bs.pkStatement, fk_project: parseInt(pkProject) } })) }
           }
         }
       }
@@ -269,7 +269,7 @@ export class FactoidController {
 
 
   @authenticate('basic')
-  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
   @post('/set-factoid-mapping', {
     description: 'set the factoids mapping, with properties',
     responses: {
@@ -286,20 +286,20 @@ export class FactoidController {
     },
   })
   async setDigitalFactoidMapping(
-    @param.query.string('pkProject', {required: true}) pkProject: string,
-    @param.query.number('pkTable', {required: true}) pkTable: number,
-    @requestBody({required: true}) factoidMappings: DigitalFactoidMapping
+    @param.query.string('pkProject', { required: true }) pkProject: string,
+    @param.query.number('pkTable', { required: true }) pkTable: number,
+    @requestBody({ required: true }) factoidMappings: DigitalFactoidMapping
   ): Promise<DigitalFactoidMapping> {
 
     // does the digital exist?
-    const digital = await this.datDigitalRepository.find({where: {pk_entity: pkTable}})
+    const digital = await this.datDigitalRepository.find({ where: { pk_entity: pkTable } })
     if (digital.length === 0) throw new HttpErrors.UnprocessableEntity('The table does not exists');
 
     // get all current (in db) factoid mappings and property mappings
-    const currentFM = await this.datFactoidMappingRepository.find({where: {fk_digital: pkTable}});
+    const currentFM = await this.datFactoidMappingRepository.find({ where: { fk_digital: pkTable } });
     const currentFPM: Array<DatFactoidPropertyMapping> = [];
     for (const fm of currentFM) {
-      currentFPM.push(...(await this.datFactoidPropertyMappingRepository.find({where: {fk_factoid_mapping: fm.pk_entity}})))
+      currentFPM.push(...(await this.datFactoidPropertyMappingRepository.find({ where: { fk_factoid_mapping: fm.pk_entity } })))
     }
 
 
@@ -310,8 +310,8 @@ export class FactoidController {
         const newFM = await this.datFactoidMappingRepository.create({
           fk_digital: incFM.pkDigital,
           fk_class: incFM.pkClass,
-          title: incFM.title ?? undefined,
-          comment: incFM.comment ?? undefined
+          title: incFM.title ?? "",
+          comment: incFM.comment ?? ""
         })
         // the factoid property mappings
         for (let fpm of incFM.properties) {
@@ -372,7 +372,7 @@ export class FactoidController {
       if (!factoidMappings.mappings.some(fm => fm.pkEntity == cfm.pk_entity)) {
         // first delete all properties
         const props = currentFPM.filter(p => p.fk_factoid_mapping == cfm.pk_entity);
-        for (let p of props) {await this.datFactoidPropertyMappingRepository.deleteById(p.pk_entity)}
+        for (let p of props) { await this.datFactoidPropertyMappingRepository.deleteById(p.pk_entity) }
         // delete the factoid mappings
         await this.datFactoidMappingRepository.deleteById(cfm.pk_entity)
       }
@@ -382,7 +382,7 @@ export class FactoidController {
 
 
   @authenticate('basic')
-  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
   @get('/get-factoid-mapping', {
     description: 'get the factoids mapping, with properties and default values',
     responses: {
@@ -399,15 +399,15 @@ export class FactoidController {
     },
   })
   async getDigitalFactoidMapping(
-    @param.query.string('pkProject', {required: true}) pkProject: string,
-    @param.query.number('pkTable', {required: true}) pkTable: number,
+    @param.query.string('pkProject', { required: true }) pkProject: string,
+    @param.query.number('pkTable', { required: true }) pkTable: number,
   ): Promise<DigitalFactoidMapping> {
 
     // does the digital existst?
-    const digital = await this.datDigitalRepository.find({where: {pk_entity: pkTable}})
+    const digital = await this.datDigitalRepository.find({ where: { pk_entity: pkTable } })
     if (digital.length === 0) throw new HttpErrors.UnprocessableEntity('The table does not exists');
 
-    const datFMs = await this.datFactoidMappingRepository.find({where: {fk_digital: pkTable}});
+    const datFMs = await this.datFactoidMappingRepository.find({ where: { fk_digital: pkTable } });
     return {
       pkTable,
       mappings: await Promise.all(datFMs.map(async datFM => {
@@ -417,7 +417,7 @@ export class FactoidController {
           pkClass: datFM.fk_class,
           title: datFM.title,
           comment: datFM.comment,
-          properties: await Promise.all((await this.datFactoidPropertyMappingRepository.find({where: {fk_factoid_mapping: datFM.pk_entity}})).map(async datFPM => {
+          properties: await Promise.all((await this.datFactoidPropertyMappingRepository.find({ where: { fk_factoid_mapping: datFM.pk_entity } })).map(async datFPM => {
             return {
               pkEntity: datFPM.pk_entity,
               pkFactoidMapping: datFPM.fk_factoid_mapping,
@@ -434,21 +434,21 @@ export class FactoidController {
     }
   }
 
-  async getDefaultValue(pkEntity: number): Promise<{pkEntity: number | undefined, value: InfData} | undefined> {
+  async getDefaultValue(pkEntity: number): Promise<{ pkEntity: number | undefined, value: InfData } | undefined> {
     const toReturn = new InfData();
-    toReturn.appellation = await this.infAppellationRepository.findOne({where: {pk_entity: pkEntity}}) ?? undefined;
-    if (toReturn.appellation) return {pkEntity: toReturn.appellation.pk_entity, value: toReturn};
-    toReturn.resource = await this.infResourceRepository.findOne({where: {pk_entity: pkEntity}}) ?? undefined;
-    if (toReturn.resource) return {pkEntity: toReturn.resource.pk_entity, value: toReturn};
-    toReturn.place = await this.infPlaceRepository.findOne({where: {pk_entity: pkEntity}}) ?? undefined;
-    if (toReturn.place) return {pkEntity: toReturn.place.pk_entity, value: toReturn};;
-    toReturn.dimension = await this.infDimensionRepository.findOne({where: {pk_entity: pkEntity}}) ?? undefined;
-    if (toReturn.dimension) return {pkEntity: toReturn.dimension.pk_entity, value: toReturn};;
-    toReturn.langString = await this.infLangStringRepository.findOne({where: {pk_entity: pkEntity}}) ?? undefined;
-    if (toReturn.langString) return {pkEntity: toReturn.langString.pk_entity, value: toReturn};;
-    toReturn.language = await this.infLanguageRepo.findOne({where: {pk_entity: pkEntity}}) ?? undefined;
-    if (toReturn.language) return {pkEntity: toReturn.language.pk_entity, value: toReturn};
-    toReturn.timePrimitive = await this.infTimePrimitiveRepository.findOne({where: {pk_entity: pkEntity}}) ?? undefined;
-    if (toReturn.timePrimitive) return {pkEntity: toReturn.timePrimitive.pk_entity, value: toReturn};
+    toReturn.appellation = await this.infAppellationRepository.findOne({ where: { pk_entity: pkEntity } }) ?? undefined;
+    if (toReturn.appellation) return { pkEntity: toReturn.appellation.pk_entity, value: toReturn };
+    toReturn.resource = await this.infResourceRepository.findOne({ where: { pk_entity: pkEntity } }) ?? undefined;
+    if (toReturn.resource) return { pkEntity: toReturn.resource.pk_entity, value: toReturn };
+    toReturn.place = await this.infPlaceRepository.findOne({ where: { pk_entity: pkEntity } }) ?? undefined;
+    if (toReturn.place) return { pkEntity: toReturn.place.pk_entity, value: toReturn };;
+    toReturn.dimension = await this.infDimensionRepository.findOne({ where: { pk_entity: pkEntity } }) ?? undefined;
+    if (toReturn.dimension) return { pkEntity: toReturn.dimension.pk_entity, value: toReturn };;
+    toReturn.langString = await this.infLangStringRepository.findOne({ where: { pk_entity: pkEntity } }) ?? undefined;
+    if (toReturn.langString) return { pkEntity: toReturn.langString.pk_entity, value: toReturn };;
+    toReturn.language = await this.infLanguageRepo.findOne({ where: { pk_entity: pkEntity } }) ?? undefined;
+    if (toReturn.language) return { pkEntity: toReturn.language.pk_entity, value: toReturn };
+    toReturn.timePrimitive = await this.infTimePrimitiveRepository.findOne({ where: { pk_entity: pkEntity } }) ?? undefined;
+    if (toReturn.timePrimitive) return { pkEntity: toReturn.timePrimitive.pk_entity, value: toReturn };
   }
 }

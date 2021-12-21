@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SysSelector } from '@kleiolab/lib-queries';
-import { SysConfigValue, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateEntityEvent } from '../../../base/components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 
@@ -20,14 +20,15 @@ export class CtrlEntityOrValueMatcherComponent implements OnInit, OnDestroy {
   @Input() value: InfValueObject; // in case it is a value
 
   @Input() pkProject: number;
-  @Input() pkClasses: Array<number>;
+  @Input() klass$: Observable<number>;
   @Input() disabled: boolean;
   @Output() newPkEntity = new EventEmitter<number>();
 
   isEntity$: Observable<boolean>
-  isEntity: boolean
+  isEntity = true;
   config: SysConfigValue;
-  vot = '';
+  klass: number
+  value$ = new BehaviorSubject<InfValueObject>({});
 
   constructor(
     public p: ActiveProjectService,
@@ -36,16 +37,22 @@ export class CtrlEntityOrValueMatcherComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.isEntity$ = this.sys.config$.main$.pipe(
-      map(config => {
+    this.isEntity$ = combineLatest([
+      this.sys.config$.main$,
+      this.klass$
+    ]).pipe(
+      map(([config, klass]) => {
+        if (klass == -1) return this.isEntity
         this.config = config;
-        //GMU todo
-        const configOfClass = config.classes[this.pkClasses[0]]
+        this.klass = klass;
+        const configOfClass = config.classes[klass]
         this.isEntity = !(configOfClass && configOfClass.valueObjectType)
         return this.isEntity
       }),
       startWith(true)
     )
+
+    this.value$.next(this.value)
   }
 
   ngOnDestroy() {
@@ -63,8 +70,7 @@ export class CtrlEntityOrValueMatcherComponent implements OnInit, OnDestroy {
           maxWidth: '100%',
           panelClass: 'gv-no-padding',
           data: {
-            //gmu todo
-            pkClass: this.pkClasses[0],
+            pkClass: this.klass,
             selectMode: true
           }
         })
@@ -81,21 +87,10 @@ export class CtrlEntityOrValueMatcherComponent implements OnInit, OnDestroy {
                 this.p.inf$.language$.by_pk_entity$.key(result.pkEntity),
                 this.p.inf$.dimension$.by_pk_entity$.key(result.pkEntity)
               ]).pipe(takeUntil(this.destroy$)).subscribe(([langString, appellation, timePrimitive, place, language, dimension]) => {
-                if (langString) this.value.langString = langString
-                else if (appellation) this.value.appellation = appellation
-                else if (timePrimitive) this.value.timePrimitive = timePrimitive
-                else if (place) this.value.place = place
-                else if (language) this.value.language = language
-                else if (dimension) this.value.dimension = dimension
+                this.value$.next({ langString, appellation, timePrimitive, place, language, dimension })
               })
           }
         });
   }
 
-  getVOT(): SysConfigValueObjectType {
-    console.log(this.vot)
-    const toReturn = {};
-    toReturn[Object.keys(this.value)[0]] = true;
-    return toReturn
-  }
 }

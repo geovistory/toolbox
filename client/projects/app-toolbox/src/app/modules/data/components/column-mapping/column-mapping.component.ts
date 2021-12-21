@@ -11,6 +11,7 @@ interface MappedColumn {
   columnName: string;
   icon$: Observable<string>;
   className$: Observable<string>;
+  klass: number;
 }
 
 @Component({
@@ -27,6 +28,7 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
   @Input() disabled: boolean = false
 
   @Output() onChange = new EventEmitter<number>();
+  @Output() outputClass = new EventEmitter<number>();
 
   icon$: Observable<'TeEn' | 'PeIt' | 'VOT'>;
   mappedCols$: Observable<MappedColumn[]>
@@ -70,7 +72,8 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
               columnName: values(tp)[0]?.string,
               pkColumn: m.fk_column,
               className$: this.c.pipeClassLabel(m.fk_class),
-              icon$: this.getIcon$(m.fk_class)
+              icon$: this.getIcon$(m.fk_class),
+              klass: m.fk_class
             }))))
       ))
     )
@@ -78,7 +81,10 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
     if (this.pkColumn) {
       this.mappedCols$.pipe(takeUntil(this.destroy$)).subscribe(cols => {
         cols.forEach(col => {
-          if (col.pkColumn == this.pkColumn) this.selected = col
+          if (col.pkColumn == this.pkColumn) {
+            this.selected = col;
+            this.outputClass.emit(col.klass); // inform what class the column is
+          }
         })
       })
     }
@@ -103,6 +109,7 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
   select(mc: MappedColumn) {
     this.selected = mc;
     this.onChange.emit(mc.pkColumn);
+    this.outputClass.emit(mc.klass);
   }
 
 }

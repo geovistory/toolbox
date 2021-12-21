@@ -1,4 +1,4 @@
-<mat-form-field *ngIf="!selected" appearance="outline" style="width:95%">
+<mat-form-field class="loc-prop-disp" *ngIf="!selected" appearance="outline" style="width:95%">
     <mat-label>Choose a property</mat-label>
     <mat-select (selectionChange)="select($event.value)">
         <div *ngFor="let section of sections">

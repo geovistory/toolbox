@@ -1,4 +1,4 @@
-<mat-form-field *ngIf="!selected" appearance="outline">
+<mat-form-field *ngIf="!selected" appearance="outline" class="loc-class-dropdown">
     <mat-label>Choose a class</mat-label>
     <mat-select (selectionChange)="select($event.value)">
         <mat-option *ngFor="let aClass of (classes$|async)" [value]="aClass">{{aClass.label}}</mat-option>

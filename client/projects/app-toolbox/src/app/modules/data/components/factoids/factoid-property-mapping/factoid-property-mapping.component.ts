@@ -24,6 +24,7 @@ export class FactoidPropertyMappingComponent implements OnInit, OnDestroy {
   // pkTargetClasses$: Observable<Array<number>>;
   pkTargetClasses$ = new BehaviorSubject<Array<number>>([]);
   defaultPkEntity: number;
+  selectedKlass$ = new BehaviorSubject<number>(-1);
 
   constructor(
     private c: ConfigurationPipesService,
@@ -46,6 +47,10 @@ export class FactoidPropertyMappingComponent implements OnInit, OnDestroy {
     if (key == 'pkProperty') this.findTargetClass(value)
   }
 
+  selectedClass(klass: number) {
+    this.selectedKlass$.next(klass);
+  }
+
   deleteRow() {
     this.delete.emit()
   }
@@ -53,9 +58,11 @@ export class FactoidPropertyMappingComponent implements OnInit, OnDestroy {
   findTargetClass(pkProperty: number) {
     this.c.pipeFields(this.fm.pkClass).pipe(
       map(fields => {
-        const rightFields = fields.filter(f => f.property.fkProperty == pkProperty)
-        this.fpm.isOutgoing = rightFields[0]?.isOutgoing
-        this.pkTargetClasses$.next(rightFields[0]?.targetClasses)
+        const rightField = fields.find(f => f.property.fkProperty == pkProperty)
+        this.fpm.isOutgoing = rightField?.isOutgoing
+        this.pkTargetClasses$.next(rightField?.targetClasses)
+        // if there is only one target class, we already know for sure what class it would be in the default input
+        if (rightField?.targetClasses.length == 1) this.selectedKlass$.next(rightField.targetClasses[0])
       })
     ).subscribe()
   }
