@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfTimePrimitive, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { GregorianDateTime, JulianDateTime } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -10,7 +10,7 @@ export interface InfValueObject {
   place?: InfPlace;
   dimension?: InfDimension;
   langString?: InfLangString;
-  timePrimitive?: TimePrimitiveWithCal;
+  timePrimitive?: InfTimePrimitive;
   language?: InfLanguage;
 }
 
@@ -57,10 +57,10 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
     return langString.string + ' [' + (this.pkLanguage ? this.pkLanguage.toUpperCase() : '??') + ']';
   }
 
-  stringifyJulianDate(timePrim: TimePrimitiveWithCal): string {
+  stringifyJulianDate(timePrim: InfTimePrimitive): string {
     let date;
-    if (timePrim.calendar == 'julian') date = new JulianDateTime().fromJulianDay(timePrim.julianDay);
-    else date = new GregorianDateTime().fromJulianDay(timePrim.julianDay)
+    if (timePrim.calendar == 'julian') date = new JulianDateTime().fromJulianDay(timePrim.julian_day);
+    else date = new GregorianDateTime().fromJulianDay(timePrim.julian_day)
     let result = date.day + '';
     result += date.day === 1 ? 'st ' : date.day === 2 ? 'nd ' : date.day === 3 ? 'rd ' : 'th ';
     result += ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']

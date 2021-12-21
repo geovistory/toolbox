@@ -1,8 +1,9 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { FactoidMapping, FactoidPropertyMapping } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-factoid-property-mapping',
@@ -13,15 +14,16 @@ export class FactoidPropertyMappingComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
-  @Input() pkClass: number;
-  @Input() pkTable: number;
-  @Input() pkProperty: number;
-  @Input() pkColumn: number;
-  @Input() defaultPkEntity: number;
-  @Input() comment: string
+  @Input() fm: FactoidMapping = {}
+  @Input() fpm: FactoidPropertyMapping = {} // init value
+
+  @Output() delete = new EventEmitter();
+  @Output() fpmChanged = new EventEmitter<FactoidPropertyMapping>();
 
   pkProject: number;
-  pkTargetClasses: Array<number>;
+  // pkTargetClasses$: Observable<Array<number>>;
+  pkTargetClasses$ = new BehaviorSubject<Array<number>>([]);
+  defaultPkEntity: number;
 
   constructor(
     private c: ConfigurationPipesService,
@@ -29,18 +31,8 @@ export class FactoidPropertyMappingComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => this.pkProject = pkProject);
-
-
-    if (this.pkProperty) {
-      this.c.pipeFields(this.pkClass).pipe(
-        map(fields => {
-          const rightFields = fields.filter(f => f.property.fkProperty == this.pkProperty)
-          this.pkTargetClasses = rightFields[0].targetClasses
-        })
-      )
-    }
+    // look for the target classes of the property so that the column-mapping component knows what column to look for
+    if (this.fpm?.pkProperty) this.findTargetClass(this.fpm.pkProperty)
   }
 
   ngOnDestroy() {
@@ -48,17 +40,24 @@ export class FactoidPropertyMappingComponent implements OnInit, OnDestroy {
     this.destroy$.unsubscribe();
   }
 
-  setProperty(field: Field) {
-    this.pkProperty = field.property.fkProperty;
-    this.pkTargetClasses = field.targetClasses
+  fpmChange(key: string, value: any) {
+    this.fpm[key] = value;
+    this.fpmChanged.emit(this.fpm);
+    if (key == 'pkProperty') this.findTargetClass(value)
   }
 
-  setColumn(pkColumn: number) {
-    this.pkColumn = pkColumn;
+  deleteRow() {
+    this.delete.emit()
   }
 
-  setDefault(pkEntity: number) {
-    this.defaultPkEntity = pkEntity;
+  findTargetClass(pkProperty: number) {
+    this.c.pipeFields(this.fm.pkClass).pipe(
+      map(fields => {
+        const rightFields = fields.filter(f => f.property.fkProperty == pkProperty)
+        this.fpm.isOutgoing = rightFields[0]?.isOutgoing
+        this.pkTargetClasses$.next(rightFields[0]?.targetClasses)
+      })
+    ).subscribe()
   }
 
 }

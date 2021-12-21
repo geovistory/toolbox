@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
-import { combineLatest, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 
 interface MappedColumn {
   pkColumn: number;
@@ -18,9 +18,14 @@ interface MappedColumn {
   templateUrl: './column-mapping.component.html',
   styleUrls: ['./column-mapping.component.scss']
 })
-export class ColumnMappingComponent implements OnInit {
+export class ColumnMappingComponent implements OnInit, OnDestroy {
+  destroy$ = new Subject<boolean>();
+
+  @Input() pkColumn: number; // init val
   @Input() pkTable: number;
-  @Input() pkTargetClasses: Array<number>
+  @Input() pkTargetClasses$: Observable<Array<number>>
+  @Input() disabled: boolean = false
+
   @Output() onChange = new EventEmitter<number>();
 
   icon$: Observable<'TeEn' | 'PeIt' | 'VOT'>;
@@ -33,6 +38,11 @@ export class ColumnMappingComponent implements OnInit {
     private p: ActiveProjectService,
     private sys: SysSelector,
   ) { }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
 
   ngOnInit(): void {
     // everythings is already in the store, because we only can access this component AFTER loading the table)
@@ -47,20 +57,31 @@ export class ColumnMappingComponent implements OnInit {
       ))
     )
 
-    this.mappedCols$ = mappings$.pipe(
-      switchMap(mappings => combineLatest(
+    this.mappedCols$ = combineLatest([
+      mappings$,
+      this.pkTargetClasses$
+    ]).pipe(
+      switchMap(([mappings, classes]) => combineLatest(
         mappings
           .filter(m => !!m)
-          .filter(m => this.pkTargetClasses.some(c => c == m.fk_class))
-          .map(m => this.p.dat$.text_property$.by_fk_entity__fk_system_type$.key(m.pk_entity + '_' + 3295)
+          .filter(m => classes?.some(c => c == m.fk_class))
+          .map(m => this.p.dat$.text_property$.by_fk_entity__fk_system_type$.key(m.fk_column + '_' + 3295)
             .pipe(map(tp => ({
-              columnName: values(tp)[0].string,
+              columnName: values(tp)[0]?.string,
               pkColumn: m.fk_column,
               className$: this.c.pipeClassLabel(m.fk_class),
               icon$: this.getIcon$(m.fk_class)
-            })))))
-      )
+            }))))
+      ))
     )
+
+    if (this.pkColumn) {
+      this.mappedCols$.pipe(takeUntil(this.destroy$)).subscribe(cols => {
+        cols.forEach(col => {
+          if (col.pkColumn == this.pkColumn) this.selected = col
+        })
+      })
+    }
   }
 
   getIcon$(pkClass: number): Observable<'PeIt' | 'VOT' | 'TeEn'> {

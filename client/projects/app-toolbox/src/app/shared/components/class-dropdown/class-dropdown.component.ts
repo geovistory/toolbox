@@ -1,9 +1,9 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map, switchMap, takeUntil } from 'rxjs/operators';
 
 interface LocalClass { pkClass: number, label: string, icon: string }
 
@@ -13,7 +13,10 @@ interface LocalClass { pkClass: number, label: string, icon: string }
   templateUrl: './class-dropdown.component.html',
   styleUrls: ['./class-dropdown.component.scss']
 })
-export class ClassDropdownComponent implements OnInit {
+export class ClassDropdownComponent implements OnInit, OnDestroy {
+  destroy$ = new Subject<boolean>();
+
+  @Input() pkClass: number; //initial value
 
   @Output() onChange = new EventEmitter<number>();
 
@@ -23,6 +26,11 @@ export class ClassDropdownComponent implements OnInit {
   constructor(
     public c: ConfigurationPipesService,
   ) { }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
 
   ngOnInit(): void {
     this.classes$ = this.c.pipeClassesEnabledByProjectProfiles().pipe(
@@ -35,6 +43,10 @@ export class ClassDropdownComponent implements OnInit {
       )))
       )
     )
+
+    if (this.pkClass) {
+      this.classes$.pipe(takeUntil(this.destroy$)).subscribe(c => this.selected = c.find(k => k.pkClass == this.pkClass))
+    }
   }
 
   select(c: LocalClass) {

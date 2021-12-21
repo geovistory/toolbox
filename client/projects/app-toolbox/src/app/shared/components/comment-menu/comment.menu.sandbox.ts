@@ -23,7 +23,7 @@ export default sandboxOf(CommentMenuComponent, {
         template: `
     <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
     <div style="display:flex;flex-direction:row;justify-content:center">
-        <gv-comment-menu></gv-comment-menu>
+        <gv-comment-menu [title]="'this is the title'" [content]="'this is the content'"></gv-comment-menu>
     </div>
     `
     })

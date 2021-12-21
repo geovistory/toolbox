@@ -1,8 +1,9 @@
-<mat-form-field *ngIf="!selected" appearance="outline">
+<mat-form-field *ngIf="!selected" appearance="outline" style="width:95%">
     <mat-label>Choose a property</mat-label>
     <mat-select (selectionChange)="select($event.value)">
         <div *ngFor="let section of sections">
             <div *ngIf="section.display$ | async">
+                <mat-divider></mat-divider>
                 <h3 class="mat-h3 loc-title">{{capitalize(section.name)}}</h3>
                 <mat-option *ngFor="let f of (section.fields$|async)" [value]="f"
                     [disabled]="isPropertyDisabled(f.property.fkProperty)">
@@ -15,6 +16,8 @@
 </mat-form-field>
 
 <ng-container *ngIf="!!selected">
-    <gv-onto-property-info [pkProperty]="selected.property.fkProperty"></gv-onto-property-info>
-    <span class="mat-body-2 ml-3">{{selected.label}}</span>
+    <div style="width:95%">
+        <gv-onto-property-info [pkProperty]="selected.property.fkProperty"></gv-onto-property-info>
+        <span class="mat-body-2 ml-3">{{selected.label}}</span>
+    </div>
 </ng-container>

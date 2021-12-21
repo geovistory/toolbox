@@ -9,16 +9,16 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { DefaultFactoidPropertyMapping } from './defaultFactoidPropertyMapping';
+import { DefaultFPM } from './defaultFPM';
 
 
-export interface FactoidPropertyMapping { 
+export interface FactoidPropertyMapping {
     pkEntity?: number;
     pkFactoidMapping?: number;
     pkProperty?: number;
     isOutgoing?: boolean;
     pkColumn?: number;
     comment?: string;
-    _default?: DefaultFactoidPropertyMapping;
+    default?: DefaultFPM;
 }
 

@@ -9,13 +9,15 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { HitPreview } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
+import { SliderEnum } from '../slider/slider.component';
 
 
 export interface AddEntityOrValueDialogData {
   pkClass: number;
+  selectMode?: boolean;
 }
 
-export type CreateEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added';
+export type CreateEntityAction = 'alreadyInProjectClicked' | 'notInProjectClicked' | 'created' | 'added' | 'selected';
 
 export interface CreateEntityEvent {
   action: CreateEntityAction,
@@ -39,7 +41,7 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   classLabel$: Observable<string>;
 
   // for the slider
-  sliderView = 'left';
+  sliderView: SliderEnum = SliderEnum.left;
 
   // for the search-entity-list
   searchInput: string;
@@ -94,8 +96,8 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
     // if it is a value, we don't need the addList
     this.sys.config$.main$.pipe(takeUntil(this.destroy$)).subscribe(config => {
       const configOfClass = config.classes[this.pkClass]
-      if (configOfClass && configOfClass.valueObjectType) return this.sliderView = 'center'
-      else this.sliderView = 'left'
+      if (configOfClass && configOfClass.valueObjectType) return this.sliderView = SliderEnum.center
+      else this.sliderView = SliderEnum.left
     })
   }
 
@@ -105,7 +107,6 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   searchStringChange(term: string) {
     this.searchString$.next(term)
   }
-
 
   closeAddForm() {
     this.dialogRef.close();
@@ -121,8 +122,8 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
       startWith(false)
     )
 
-    if (this.sliderView != 'right') {
-      this.sliderView = 'right';
+    if (this.sliderView != SliderEnum.right) {
+      this.sliderView = SliderEnum.right;
       setTimeout(() => {
         this.selectedPkEntity$.next(hit.pk_entity);
       }, 350)
@@ -135,7 +136,7 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   }
 
   onBackClick() {
-    this.sliderView = 'left';
+    this.sliderView = SliderEnum.left;
     this.selectedPkEntity$.next(undefined);
   }
 
@@ -151,6 +152,14 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
         pkEntity: this.selectedPkEntity$.value,
         pkClass: this.pkClass
       })
+    })
+  }
+
+  selectEntity() {
+    this.dialogRef.close({
+      action: 'selected',
+      pkEntity: this.selectedPkEntity$.value,
+      pkClass: this.pkClass
     })
   }
 
@@ -171,45 +180,17 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
 
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       const value = f.formFactory.formGroupFactory.valueChanges$.value
-      let upsert$: Observable<GvSchemaModifier>;
 
-      if (value.resource) {
-        upsert$ = this.dataService.upsertInfResourcesWithRelations(pkProject, [value.resource])
-      }
-      //  else if (value.statement) {
-      //   if (this.field.isOutgoing) value.statement.fk_subject_info = this.source.fkInfo;
-      //   else value.statement.fk_object_info = this.source.fkInfo;
-      //   upsert$ = this.dataService.upsertInfStatementsWithRelations(pkProject, [value.statement])
-
-      // }
-      else throw new Error(`Submitting ${value} is not implemented`);
-
-
-      // upsert$.pipe(takeUntil(this.destroy$))
-      //   .subscribe((res: GvSchemaModifier) => {
-      //     if (res) {
-      //       if (value.resource) {
-      //         if (!res.positive.inf.resource.length) throw new Error('bad result')
-      //         this.saved.emit(res.positive.inf.resource[0])
-      //       }
-      //       this.saving = false;
-      //     }
-      //   })
-
-
-      upsert$.pipe(takeUntil(this.destroy$))
+      this.dataService.upsertInfData(pkProject, value).pipe(takeUntil(this.destroy$))
         .subscribe((res: GvSchemaModifier) => {
-          if (res) {
-            if (value.resource) {
-              if (!res.positive.inf.resource.length) throw new Error('bad result')
+          const inf = res.positive.inf;
+          const mainPkEntity = (inf.resource ?? inf.statement ?? inf.appellation ?? inf.place ?? inf.dimension ?? inf.time_primitive ?? inf.lang_string ?? inf.language)[0].pk_entity
 
-              this.dialogRef.close({
-                action: 'created',
-                pkEntity: res.positive.inf.resource[0].pk_entity,
-                pkClass: this.pkClass
-              })
-            }
-          }
+          this.dialogRef.close({
+            action: 'created',
+            pkEntity: mainPkEntity,
+            pkClass: this.pkClass
+          })
         })
     })
   }

@@ -86,13 +86,7 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
             return this.p.inf$.language$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({ language: value })))
           }
           if (this.vot.timePrimitive) {
-            return this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({
-              timePrimitive: {
-                julianDay: value.julian_day,
-                duration: value.duration,
-                calendar: value.calendar
-              }
-            })))
+            return this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({ timePrimitive: value })))
           }
         }
       }),

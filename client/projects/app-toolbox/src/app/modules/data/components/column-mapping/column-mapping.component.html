@@ -1,6 +1,6 @@
-<mat-form-field appearance="outline">
+<mat-form-field appearance="outline" *ngIf="!selected" style="width:95%">
     <mat-label>Select a column</mat-label>
-    <mat-select (selectionChange)="select($event.value)">
+    <mat-select (selectionChange)="select($event.value)" [disabled]="disabled">
         <mat-select-trigger>
             {{selected ? selected.columnName : ''}}
         </mat-select-trigger>
@@ -17,3 +17,18 @@
         </mat-option>
     </mat-select>
 </mat-form-field>
+
+
+<ng-container *ngIf="!!selected" style="width:95%">
+    <div class="gv-row-center mt-1 mb-1">
+        <i class="mat-body-1 mr-3 gv-col-center">{{selected.columnName}}</i>
+        <mat-icon svgIcon="arrow-right" color="primary" class="mr-3 my-auto gv-col-center"></mat-icon>
+        <span *ngIf="(selected.icon$|async) === 'PeIt'"
+            class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview gv-col-center"></span>
+        <span *ngIf="(selected.icon$|async) === 'TeEn'"
+            class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview gv-col-center"></span>
+        <mat-icon *ngIf="(selected.icon$|async) === 'VOT'" class="gv-entity-color gv-col-center" svgIcon="ruler-square"
+            style="margin-right: 0;"></mat-icon>
+        <span class="mat-body-1 ml-1 gv-col-center">{{selected.className$|async}}</span>
+    </div>
+</ng-container>

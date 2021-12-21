@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {InfTimePrimitive} from '@kleiolab/lib-sdk-lb4';
-import {TimePrimitiveWithCal} from '../../../../models/enums/CalendarType';
-import {} from '../../../../models/enums/Granularity';
-import {DfhApiClassMock} from './DfhApiClassMock';
-import {OmitEntity} from './local-model.helpers';
+import { InfTimePrimitive, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { DfhApiClassMock } from './DfhApiClassMock';
+import { OmitEntity } from './local-model.helpers';
 
 /**
  * pk_entity prefix: 600

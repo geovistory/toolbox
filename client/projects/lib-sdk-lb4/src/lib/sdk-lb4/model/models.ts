@@ -41,7 +41,7 @@ export * from './datNegativeObject';
 export * from './datObject';
 export * from './datTextProperty';
 export * from './deactivationReportItem';
-export * from './defaultFactoidPropertyMapping';
+export * from './defaultFPM';
 export * from './deleteRowResponse';
 export * from './dfhApiProfile';
 export * from './dfhClass';

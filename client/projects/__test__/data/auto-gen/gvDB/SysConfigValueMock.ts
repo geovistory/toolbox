@@ -1,5 +1,4 @@
-import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
-import {SysConfigValueObjectType} from '../../../../models/sys-config/TrueEnum';
+import { SysConfigValue } from "@kleiolab/lib-sdk-lb4/public-api";
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
@@ -10,9 +9,9 @@ export class SysConfigValueMock {
       "formControlType": {
         "entity": 'true'
       },
-      communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
-      communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
-      projectVisibilityDefault: {dataApi: false, website: false},
+      communityVisibilityRange: { toolbox: [true], dataApi: [true], website: [true] },
+      communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
+      projectVisibilityDefault: { dataApi: false, website: false },
     },
     "classesByBasicType": {
       "8": {
@@ -22,12 +21,12 @@ export class SysConfigValueMock {
         "formControlType": {
           "entity": 'true'
         },
-        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
-        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+        communityVisibilityRange: { toolbox: [true], dataApi: [true], website: [true] },
+        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true },
       },
       9: {
-        communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
-        communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+        communityVisibilityRange: { toolbox: [true], dataApi: [true, false], website: [true, false] },
+        communityVisibilityDefault: { toolbox: true, dataApi: false, website: false },
       },
       "30": {
         "viewType": {
@@ -36,8 +35,8 @@ export class SysConfigValueMock {
         "formControlType": {
           "entity": 'true'
         },
-        communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
-        communityVisibilityDefault: {toolbox: true, dataApi: true, website: true}
+        communityVisibilityRange: { toolbox: [true], dataApi: [true], website: [true] },
+        communityVisibilityDefault: { toolbox: true, dataApi: true, website: true }
       }
     },
     "classes": {
@@ -155,8 +154,8 @@ export class SysConfigValueMock {
         "excludedFromEntities": true
       },
       635: {
-        communityVisibilityRange: {toolbox: [false], dataApi: [false], website: [false]},
-        communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+        communityVisibilityRange: { toolbox: [false], dataApi: [false], website: [false] },
+        communityVisibilityDefault: { toolbox: false, dataApi: false, website: false },
       },
       "657": {
         "viewType": {

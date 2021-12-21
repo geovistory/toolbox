@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ProInfoProjRel, ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GvSchemaActions } from '../actions/schema.actions';
@@ -70,6 +70,14 @@ export class ReduxMainService {
     const call$ = this.projectDataApi.createProjectDataControllerUpsertResources(
       pkProject,
       infResourceWithRelations
+    )
+    return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
+  upsertInfData(pkProject: number, infData: InfData) {
+    const call$ = this.projectDataApi.createProjectDataControllerUpsertData(
+      pkProject,
+      infData
     )
     return this.schemaActions.loadGvSchemaModifier(call$)
   }

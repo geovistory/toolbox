@@ -9,15 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { InfData } from './infData';
 
 
-export interface DefaultFactoidPropertyMapping { 
-    appellation?: object;
-    place?: object;
-    dimension?: object;
-    langString?: object;
-    language?: object;
-    timePrimitive?: object;
-    resource?: object;
+export interface DefaultFPM { 
+    pkEntity?: number;
+    value?: InfData;
 }
 

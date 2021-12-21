@@ -667,7 +667,7 @@ export class MockPaginationControllerForSandboxes {
         pk_entity: this.proInfoProjRelSerial + i,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         fk_entity: statement.pk_entity,
-        calendar: 'gregorian',
+        // calendar: 'gregorian',
         fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
         is_in_project: true
       }

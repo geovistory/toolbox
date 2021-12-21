@@ -884,7 +884,6 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     // Time Primitive Control
     else if (formCtrlType.timePrimitive) {
       return of(initStmts.map((initVal) => {
-
         const initValWithCal: TimePrimitiveWithCal = {
           julianDay: initVal?.object_time_primitive?.julian_day,
           duration: initVal?.object_time_primitive?.duration,
@@ -959,13 +958,18 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
 
     // Time Primitive
     else if (formCtrlType.timePrimitive) {
+      const initValWithCal: TimePrimitiveWithCal = {
+        julianDay: initVal?.timePrimitive?.julian_day,
+        duration: initVal?.timePrimitive?.duration,
+        calendar: initVal?.timePrimitive?.calendar
+      }
       return this.c.pipeClassLabel(targetClass).pipe(
-        map(label => [this.timePrimitiveCtrl(true, '', targetClass, label, initVal?.timePrimitive, (val: TimePrimitiveWithCal): InfData => {
+        map(label => [this.timePrimitiveCtrl(true, '', targetClass, label, initValWithCal, (val: TimePrimitiveWithCal): InfData => {
           return {
             timePrimitive: {
-              julian_day: val.julianDay,
               calendar: val.calendar,
               duration: val.duration,
+              julian_day: val.julianDay,
               fk_class: targetClass
             }
           }
@@ -1276,7 +1280,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     targetClass: number,
     targetClassLabel: string,
     initVal: TimePrimitiveWithCal,
-    mapValue: (val) => any
+    mapValue: (val: TimePrimitiveWithCal) => any
   ): LocalNodeConfig {
     return {
       control: {

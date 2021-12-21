@@ -25,7 +25,7 @@ import {VisibilityController} from '../backoffice/visibility.controller';
 
 
 @model()
-class InfData {
+export class InfData {
   @property()
   resource?: InfResourceWithRelations;
   @property()

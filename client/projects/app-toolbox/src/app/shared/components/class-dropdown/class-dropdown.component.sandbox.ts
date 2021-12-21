@@ -45,8 +45,14 @@ export default sandboxOf(ClassDropdownComponent, {
         context: {},
         template: `
     <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+    <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">Empty</span>
     <div style="display:flex;flex-direction:row;justify-content:center">
         <gv-class-dropdown></gv-class-dropdown>
+    </div>
+
+    <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">Filled with person</span>
+    <div style="display:flex;flex-direction:row;justify-content:center">
+        <gv-class-dropdown [pkClass]="21"></gv-class-dropdown>
     </div>
     `
     })

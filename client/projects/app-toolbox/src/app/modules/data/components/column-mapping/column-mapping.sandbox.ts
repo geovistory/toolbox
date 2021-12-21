@@ -105,21 +105,29 @@ export default sandboxOf(ColumnMappingComponent, {
     .add('ColumnMappingComponent', {
         context: {
             pkTable: 1000,
-            pkClass1: 21,
-            pkClass2: 61,
-            pkClass3: 51,
+            pkClass1$: new BehaviorSubject([21]),
+            pkClass2$: new BehaviorSubject([61]),
+            pkClass3$: new BehaviorSubject([51]),
             schemaObjects: initialSchemaObects,
         },
         template: `
     <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+
+    <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">Empty</span>
     <div style="display:flex;flex-direction:row;justify-content:center">
-        <gv-column-mapping [pkTable]="pkTable" [pkClass]="pkClass1"></gv-column-mapping>
+        <gv-column-mapping [pkTable]="pkTable" [pkTargetClasses$]="pkClass1$"></gv-column-mapping>
     </div>
     <div style="display:flex;flex-direction:row;justify-content:center">
-        <gv-column-mapping [pkTable]="pkTable" [pkClass]="pkClass2"></gv-column-mapping>
+        <gv-column-mapping [pkTable]="pkTable" [pkTargetClasses$]="pkClass2$"></gv-column-mapping>
     </div>
     <div style="display:flex;flex-direction:row;justify-content:center">
-        <gv-column-mapping [pkTable]="pkTable" [pkClass]="pkClass3"></gv-column-mapping>
+        <gv-column-mapping [pkTable]="pkTable" [pkTargetClasses$]="pkClass3$"></gv-column-mapping>
+    </div>
+
+    <br/>
+    <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">Filled</span>
+    <div style="display:flex;flex-direction:row;justify-content:center">
+        <gv-column-mapping [pkTable]="pkTable" [pkTargetClasses$]="pkClass3$" [pkColumn]="14"></gv-column-mapping>
     </div>
     `
     })

@@ -1,28 +1,35 @@
-<div class="gv-row-space-between">
+<div class="gv-row-space-between loc-pt">
 
     <!-- Select the right property -->
-    <gv-factoid-property-display class="mx-2" [pkClass]="pkClass" (onChange)="setProperty($event)">
-    </gv-factoid-property-display>
+    <div class="gv-col-center loc-w25">
+        <gv-factoid-property-display [pkProperty]="fpm?.pkProperty" [pkClass]="fm.pkClass"
+            (onChange)="fpmChange('pkProperty', $event.property.fkProperty)">
+        </gv-factoid-property-display>
+    </div>
 
     <!-- Select the right column -->
-    <gv-column-mapping class="mx-2" [pkTable]="pkTable" [pkTargetClasses]="pkTargetClasses"
-        (onChange)="setColumn($event)">
+    <gv-column-mapping class="px-2 gv-col-center loc-w25" [disabled]="!fpm?.pkProperty" [pkColumn]="fpm.pkColumn"
+        [pkTable]="fm?.pkDigital" [pkTargetClasses$]="pkTargetClasses$" (onChange)="fpmChange('pkColumn', $event)">
     </gv-column-mapping>
 
     <!-- Select the right default -->
-    <gv-ctrl-entity-or-value-matcher class="mx-2" [pkProject]="pkProject" [pkClass]="pkClass"
-        (onChange)="setDefault($event)">
+    <gv-ctrl-entity-or-value-matcher class="loc-w25 gv-col-center" [disabled]="!fpm?.pkColumn" [pkProject]="pkProject"
+        [pkClasses]="pkTargetClasses$|async" [pkEntity]="this.fpm?.default?.pkEntity" [value]="fpm?.default?.value"
+        (newPkEntity)="fpmChange('default', {'pkEntity': $event})">
     </gv-ctrl-entity-or-value-matcher>
 
     <!-- Comment about the line -->
-    <div class="gv-col-center">
-        <gv-comment-menu class="mx-2 gv-col-center" [title]="'Comment about this factoid mapping'" [content]="comment">
-        </gv-comment-menu>
-    </div>
+    <div class="gv-row-space-around loc-w25">
+        <div class="gv-col-center">
+            <gv-comment-menu class="gv-col-center" [title]="'Comment about this property mapping'"
+                [content]="fpm?.comment" (onChange)="fpmChange('comment', $event)">
+            </gv-comment-menu>
+        </div>
 
-    <!-- Remove property -->
-    <div class="gv-col-center">
-        <mat-icon class="mx-2" class="loc-pointer" style="color: inherit">close</mat-icon>
+        <!-- Remove property -->
+        <div class="gv-col-center">
+            <mat-icon class="mx-2" class="loc-pointer" style="color: inherit" (click)="deleteRow()">close</mat-icon>
+        </div>
     </div>
 
 </div>

@@ -17,7 +17,6 @@ export class CommentMenuComponent implements OnInit {
 
   validate() {
     this.onChange.emit(this.content)
-    console.log(this.content)
   }
 
 }

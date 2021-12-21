@@ -1,6 +1,12 @@
 import { animate, group, query, state, style, transition, trigger } from '@angular/animations';
 import { Component, Input } from '@angular/core';
 
+export enum SliderEnum {
+    left = 'left',
+    right = 'right',
+    center = 'center'
+}
+
 @Component({
     selector: 'gv-slider',
     templateUrl: './slider.component.html',

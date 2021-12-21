@@ -1,4 +1,4 @@
-import { ConfigurationPipesService, DisplayType, SectionName } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
 import { DfhClass } from '@kleiolab/lib-sdk-lb4/public-api';
 import { sandboxOf } from 'angular-playground';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -37,13 +37,13 @@ const initialSchemaObects = [
 class ConfigurationPipesServiceMock {
     pipeSection(pkClass: number, displayType: DisplayType, section: SectionName) {
         if (section == 'basic') return of([
-            { label: 'property label 2 basic', property: { fkProperty: 2 } }])
+            { label: 'SELECT ME', property: { fkProperty: 2 }, targetClasses: [21] }])
         if (section == 'metadata') return of([
-            { label: 'property label metadata 1', property: { fkProperty: 1 } },
-            { label: 'property label metadata 2', property: { fkProperty: 2 } }])
+            { label: 'property label metadata 1', property: { fkProperty: 3 } },
+            { label: 'property label metadata 2', property: { fkProperty: 4 } }])
         if (section == 'specific') return of([
-            { label: 'property label specific 1', property: { fkProperty: 1 } },
-            { label: 'property label specific 2', property: { fkProperty: 2 } }])
+            { label: 'property label specific 1', property: { fkProperty: 5 } },
+            { label: 'property label specific 2', property: { fkProperty: 6 } }])
         if (section == 'simpleForm') return of([])
     }
     pipeClassesEnabledByProjectProfiles(): Observable<Partial<DfhClass>[]> {
@@ -61,8 +61,21 @@ class ConfigurationPipesServiceMock {
         if (pkClass == 51) toReturn = 'Place';
         return of(toReturn)
     }
+    pipeFields(pkClass: number, noNesting = false): Observable<Partial<Field>[]> {
+        return of([{
+            property: {
+                fkProperty: 2
+            },
+            targetClasses: [21]
+        }])
+    }
 }
 class ActiveProjectServiceMock {
+    sys$ = {
+        config$: {
+            main$: new BehaviorSubject(SysConfigValueMock.SYS_CONFIC_VALID)
+        }
+    }
     dfh$ = {
         property$: {
             by_pk_property$: {
@@ -127,14 +140,48 @@ export default sandboxOf(FactoidPropertyMappingComponent, {
 })
     .add('FactoidPropertyMappingComponent', {
         context: {
-            pkTable: 1000,
-            pkClass: 21,
+            fm: {
+                pkClass: 21,
+                pkDigital: 11
+            },
+            fpm1: {
+                pkProperty: 2
+            },
+            fpm2: {
+                pkProperty: 2,
+                pkColumn: 11
+            },
+            fpm3: {
+                pkProperty: 2,
+                pkColumn: 13,
+                default: { pkEntity: 8 }
+            },
             schemaObjects: initialSchemaObects,
         },
         template: `
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+
+        <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">Empty</span>
         <div style="display:flex; flex-direction:row; justify-content:center">
-            <gv-factoid-property-mapping [pkClass]="pkClass" [pkTable]="pkTable"></gv-factoid-property-mapping>
-        <div>
+            <gv-factoid-property-mapping style="width:800px" [fm]="fm"></gv-factoid-property-mapping>
+        </div>
+
+        <br/>
+        <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">with property</span>
+        <div style="display:flex; flex-direction:row; justify-content:center">
+            <gv-factoid-property-mapping style="width:800px" [fm]="fm" [fpm]="fpm1"></gv-factoid-property-mapping>
+        </div>
+
+        <br/>
+        <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">with property + col mapping</span>
+        <div style="display:flex; flex-direction:row; justify-content:center">
+            <gv-factoid-property-mapping style="width:800px" [fm]="fm" [fpm]="fpm2"></gv-factoid-property-mapping>
+        </div>
+
+        <br/>
+        <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">with property + col mapping + default value</span>
+        <div style="display:flex; flex-direction:row; justify-content:center">
+            <gv-factoid-property-mapping style="width:800px" [fm]="fm" [fpm]="fpm3"></gv-factoid-property-mapping>
+        </div>
     `
     })

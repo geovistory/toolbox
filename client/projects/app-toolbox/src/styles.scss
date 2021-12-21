@@ -3079,6 +3079,11 @@ gv-importer {
   justify-content: space-between;
 }
 
+.gv-row-space-around {
+  @extend .gv-row;
+  justify-content: space-around;
+}
+
 .gv-row-start {
   @extend .gv-row;
   justify-content: start;

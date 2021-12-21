@@ -85,14 +85,19 @@
       <!-- footer -->
       <ng-container footer>
         <!-- Not in the project -->
-        <button *ngIf="!(selectedInProject$ | async)" mat-flat-button type="button" color="primary" class="ml-2 mr-2"
-          (click)="addEntityToProject()">
+        <button *ngIf="!data.selectMode && !(selectedInProject$ | async)" mat-flat-button type="button" color="primary"
+          class="ml-2 mr-2" (click)="addEntityToProject()">
           Add Entity
         </button>
         <!-- Is in the project -->
-        <button *ngIf="(selectedInProject$ | async)" mat-flat-button type="button" color="primary" class="ml-2 mr-2"
-          (click)="openEntity()">
+        <button *ngIf="!data.selectMode && (selectedInProject$ | async)" mat-flat-button type="button" color="primary"
+          class="ml-2 mr-2" (click)="openEntity()">
           Open Entity in a new tab
+        </button>
+        <!-- If we want a select mode (factoid mapping) -->
+        <button *ngIf="data.selectMode" mat-flat-button type="button" color="primary" class="ml-2 mr-2"
+          (click)="selectEntity()">
+          Select
         </button>
         <!-- Cancel button -->
         <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
