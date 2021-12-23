@@ -34,6 +34,9 @@ export class FactoidPropertyMappingComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // look for the target classes of the property so that the column-mapping component knows what column to look for
     if (this.fpm?.pkProperty) this.findTargetClass(this.fpm.pkProperty)
+
+    // init comment to empty
+    if (!this.fpm?.comment) this.fpm.comment = ""
   }
 
   ngOnDestroy() {

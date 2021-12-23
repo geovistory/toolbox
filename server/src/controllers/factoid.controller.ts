@@ -99,12 +99,16 @@ export class FactoidStatement {
   @property()
   pkStatement?: number;
 
-  constructor(fkProperty: number, isOutgoing: boolean, value: string, pkEntity: number, pkCell: number) {
+  @property()
+  fkDefault: number;
+
+  constructor(fkProperty: number, isOutgoing: boolean, value: string, pkEntity: number, pkCell: number, fkDefault: number) {
     this.fkProperty = fkProperty;
     this.isOutgoing = isOutgoing;
     this.value = value;
     this.pkEntity = pkEntity;
     this.pkCell = pkCell;
+    this.fkDefault = fkDefault
   }
 
 }

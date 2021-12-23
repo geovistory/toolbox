@@ -1,6 +1,6 @@
-import { FactoidEntity, FactoidStatement } from '../../controllers';
-import { Postgres1DataSource } from '../../datasources';
-import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
+import {FactoidEntity, FactoidStatement} from '../../controllers';
+import {Postgres1DataSource} from '../../datasources';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 class RetrievedLine {
     fkdigital: number;
@@ -14,6 +14,7 @@ class RetrievedLine {
     pkentity: string;
     fkcell: string;
     header: boolean;
+    fkdefault: string;
 }
 
 
@@ -35,12 +36,12 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         this.sql = `
         WITH tw1 AS(
             -- factoid mappings of that person
-    
+
             SELECT DISTINCT ON (fk_factoid_mapping, fk_row)
-                t3.fk_factoid_mapping as fk_factoid_mapping, 
+                t3.fk_factoid_mapping as fk_factoid_mapping,
                 t2.fk_row as fk_row,
                 t2.fk_column as fk_column
-            FROM 
+            FROM
                 information.statement AS t1
             INNER JOIN projects.info_proj_rel AS t0 ON (t0.fk_entity = t1.pk_entity)
             INNER JOIN tables.cell AS t2 ON (pk_cell = fk_subject_tables_cell)
@@ -62,21 +63,22 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                 t3.fk_property AS fkProperty,
                 t3.is_outgoing as isOutgoing,
                 coalesce(t5.numeric_value::text, t5.string_value) AS value,
-                t5.fk_row as fkRow,			
+                t5.fk_row as fkRow,
                 t8.fk_object_info as pkEntity,
-                t5.pk_cell as fkCell
+                t5.pk_cell as fkCell,
+                t3.fk_default as fkDefault
             FROM tw1 as t1
             INNER JOIN data.factoid_mapping AS t2 ON (t2.pk_entity = t1.fk_factoid_mapping)
             INNER JOIN data.factoid_property_mapping AS t3 ON (t2.pk_entity = t3.fk_factoid_mapping)
-            INNER JOIN tables.cell AS t5 ON (t1.fk_row = t5.fk_row AND t5.fk_column = t3.fk_column) 		
+            INNER JOIN tables.cell AS t5 ON (t1.fk_row = t5.fk_row AND t5.fk_column = t3.fk_column)
             LEFT JOIN LATERAL (
                     SELECT *
-                    FROM information.statement as t6 
+                    FROM information.statement as t6
                     INNER JOIN projects.info_proj_rel AS t7 ON (t6.pk_entity = t7.fk_entity) AND t7.is_in_project = TRUE AND t7.fk_project = ${this.addParam(pkProject)}
                     WHERE t6.fk_subject_tables_cell = t5.pk_cell AND t6.fk_property = 1334
             ) t8 ON true
 
-        -- Works for now because a cell can only be in one project. 
+        -- Works for now because a cell can only be in one project.
         -- If in the future a cell can be in multiple projects, think of filtering the statements (t6) on the project
         `;
 
@@ -91,7 +93,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                     factoidsEntities.push(target);
                 }
 
-                const statement = new FactoidStatement(line.fkproperty, line.isoutgoing, line.value, parseInt(line.pkentity), parseInt(line.fkcell));
+                const statement = new FactoidStatement(line.fkproperty, line.isoutgoing, line.value, parseInt(line.pkentity), parseInt(line.fkcell), parseInt(line.fkdefault));
                 if (parseInt(line.pkentity) === parseInt(pkEntity)) target.headerStatements.push(statement);
                 else target.bodyStatements.push(statement);
 
@@ -109,9 +111,9 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
     async getFactoidNumber(pkProject: string, pkEntity: string) {
         this.params = [];
         this.sql = `
-            SELECT 
+            SELECT
                 count(DISTINCT (t3.fk_factoid_mapping, t2.fk_row)) as length
-            FROM 
+            FROM
                 information.statement AS t1
             INNER JOIN projects.info_proj_rel AS t0 ON (t0.fk_entity = t1.pk_entity)
             INNER JOIN tables.cell AS t2 ON (pk_cell = fk_subject_tables_cell)
@@ -127,6 +129,6 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             `;
 
         this.getBuiltQuery()
-        return this.execute<Array<{ length: number }>>();
+        return this.execute<Array<{length: number}>>();
     }
 }

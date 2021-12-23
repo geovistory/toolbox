@@ -18,6 +18,11 @@ export class FactoidMappingHeaderComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.fm) this.fm = {}
+
+    // init comment to empty
+    if (!this.fm?.comment) this.fm.comment = ""
+    // init title to empty
+    if (!this.fm?.title) this.fm.title = ""
   }
 
   fmChange(key: string, value: any) {
