@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
+import {CalendarType} from '../../../models/enums/CalendarType';
 import {Granularity} from '../../../models/enums/Granularity';
 import {createDatChunk} from '../atomic/dat-chunk.helper';
 import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
@@ -266,7 +267,7 @@ export async function forFeatureX() {
     const place = await createInfPlace({pk_entity: getIndex(), lat: 51.5074, long: 0.1278, fk_class: 51});
     const dimension = await createInfDimension({pk_entity: getIndex(), fk_class: 689, fk_measurement_unit: timeUnitPEIT.pk_entity, numeric_value: 4});
     const languageString = await createInfLangString({pk_entity: getIndex(), fk_class: 657, fk_language: 18605, string: 'p. 12'})
-    const timePrimitive = await createInfTimePrimitive({pk_entity: getIndex(), julian_day: 2431383, duration: Granularity['1 day'], fk_class: 335})
+    const timePrimitive = await createInfTimePrimitive({pk_entity: getIndex(), julian_day: 2431383, duration: Granularity['1 day'], calendar: CalendarType.gregorian, fk_class: 335})
     //Matchings
     await mapCell(projectId, cell_1_0, appellation.pk_entity as number);
     await mapCell(projectId, cell_1_1, place.pk_entity as number);

@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {Warehouse} from '../../Warehouse';
-import {REntityId, rEntityKeyDefs} from '../entity/REntityService';
-import {EntityFields} from "./edge.commons";
-import {Injectable, Inject, forwardRef} from 'injection-js';
+import { forwardRef, Inject, Injectable } from 'injection-js';
+import { PrimaryDataService } from '../../base/classes/PrimaryDataService';
+import { Warehouse } from '../../Warehouse';
+import { REntityId, rEntityKeyDefs } from '../entity/REntityService';
+import { EntityFields } from "./edge.commons";
 
 
 @Injectable()
@@ -24,7 +24,7 @@ export class REdgeService extends PrimaryDataService<REntityId, EntityFields>{
   getUpdatesSql(tmsp: Date) {
     return updateSql
   }
-  getDeletesSql(tmsp: Date) {return ''};
+  getDeletesSql(tmsp: Date) { return '' };
 
 
 }
@@ -74,7 +74,7 @@ tw1 AS (
   t14.notes language_str,
   t13.julian_day,
   t13.duration,
-  mode() WITHIN GROUP ( ORDER BY t1.calendar ) AS calendar
+  t13.calendar
   FROM
   tw0 t0
   JOIN information."statement" t2 ON t2.fk_subject_info = t0.pk_entity
@@ -112,7 +112,8 @@ tw1 AS (
     t14.notes,
     t15.string,
     t13.julian_day,
-    t13.duration
+    t13.duration,
+    t13.calendar
 ),
 tw2 AS (
 

@@ -1,0 +1,15 @@
+<mat-form-field *ngIf="!selected" appearance="outline" class="loc-class-dropdown">
+    <mat-label>Choose a class</mat-label>
+    <mat-select (selectionChange)="select($event.value)">
+        <mat-option *ngFor="let aClass of (classes$|async)" [value]="aClass">{{aClass.label}}</mat-option>
+    </mat-select>
+</mat-form-field>
+
+
+<ng-container *ngIf="!!selected">
+    <span *ngIf="selected.icon === 'peit'"
+        class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
+    <span *ngIf="selected.icon === 'teen'"
+        class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
+    <span class="mat-body-1 ml-3">{{selected.label}}</span>
+</ng-container>

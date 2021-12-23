@@ -3,7 +3,7 @@ import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3';
-import {repository} from '@loopback/repository';
+import {model, property, repository} from '@loopback/repository';
 import {getModelSchemaRef, HttpErrors, param, post, requestBody} from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {concat, isEmpty, mergeDeepWith} from 'ramda';
@@ -12,7 +12,7 @@ import {Roles} from '../../components/authorization';
 import {QEntityAddToProject} from '../../components/query/q-entity-add-to-project';
 import {CLASS_PK_MANIFESTATION_SINGLETON} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
-import {InfLangString, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, ProInfoProjRel} from '../../models';
+import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from '../../models';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
 import {InfStatementObjectFks} from '../../models/statement/InfStatementObjectFks';
 import {InfStatementObjectValues} from '../../models/statement/InfStatementObjectValues';
@@ -22,6 +22,28 @@ import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-com
 import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-project-visibility-options';
 import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../../repositories';
 import {VisibilityController} from '../backoffice/visibility.controller';
+
+
+@model()
+export class InfData {
+  @property()
+  resource?: InfResourceWithRelations;
+  @property()
+  statement?: InfStatementWithRelations;
+  @property()
+  appellation?: InfAppellation;
+  @property()
+  place?: InfPlace;
+  @property()
+  dimension?: InfDimension;
+  @property()
+  timePrimitive?: InfTimePrimitive;
+  @property()
+  language?: InfLanguage;
+  @property()
+  langString?: InfLangString;
+}
+
 
 @tags('project data')
 export class CreateProjectDataController {
@@ -129,6 +151,79 @@ export class CreateProjectDataController {
     return this.schemaModifier
   }
 
+
+  @post('project-data/upsert-data', {
+    responses: {
+      '200': {
+        description: 'Upserted data and returned a GvSchemaModifier',
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvSchemaModifier
+            }
+          }
+        }
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async upsertData(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody() data: InfData
+  ): Promise<GvSchemaModifier> {
+    await this.visibilityController.initializeConfiguration()
+
+    // statement
+    if (data.statement) {
+      const stmt = await this.findOrCreateStatementWithRelations(data.statement, pkProject)
+      return {positive: {inf: {statement: [stmt]}}, negative: {}}
+    }
+
+    // entity
+    if (data.resource) {
+      const entity = await this.findOrCreateResourceWithRelations(data.resource, pkProject)
+      return {positive: {inf: {resource: [entity]}}, negative: {}}
+    }
+
+    // value - appellation
+    if (data.appellation) {
+      const appe = await this.infAppellationRepo.create(data.appellation)
+      return {positive: {inf: {appellation: [appe]}}, negative: {}}
+    }
+
+    // value - place
+    if (data.place) {
+      const place = await this.infPlaceRepo.create(data.place)
+      return {positive: {inf: {place: [place]}}, negative: {}}
+    }
+
+    // value - dimension
+    if (data.dimension) {
+      const dimension = await this.infDimensionRepo.create(data.dimension)
+      return {positive: {inf: {dimension: [dimension]}}, negative: {}}
+    }
+
+    // value - timePrimitive
+    if (data.timePrimitive) {
+      const timePrimitive = await this.infTimePrimitiveRepo.create(data.timePrimitive)
+      return {positive: {inf: {time_primitive: [timePrimitive]}}, negative: {}}
+    }
+
+    // value - language
+    if (data.language) {
+      const language = await this.infLanguageRepo.create(data.language)
+      return {positive: {inf: {language: [language]}}, negative: {}}
+    }
+
+    // value - langString
+    if (data.langString) {
+      const langString = await this.infLangStringRepo.create(data.langString)
+      return {positive: {inf: {lang_string: [langString]}}, negative: {}}
+    }
+
+    throw new HttpErrors.NotAcceptable(`Nothing to upsert`)
+  }
 
 
 
@@ -456,10 +551,10 @@ export class CreateProjectDataController {
   cloneInfStatementWithoutRelations(statementWithRels: PartialDeep<InfStatementWithRelations>): PartialDeep<InfStatement> {
 
     const {
-      pk_entity, fk_subject_info, fk_subject_data, fk_subject_tables_cell, fk_subject_tables_row, fk_property, fk_property_of_property, fk_object_info, fk_object_data, fk_object_tables_cell, fk_object_tables_row, is_in_project_count, is_standard_in_project_count, community_favorite_calendar
+      pk_entity, fk_subject_info, fk_subject_data, fk_subject_tables_cell, fk_subject_tables_row, fk_property, fk_property_of_property, fk_object_info, fk_object_data, fk_object_tables_cell, fk_object_tables_row, is_in_project_count, is_standard_in_project_count
     } = statementWithRels;
     return {
-      pk_entity, fk_subject_info, fk_subject_data, fk_subject_tables_cell, fk_subject_tables_row, fk_property, fk_property_of_property, fk_object_info, fk_object_data, fk_object_tables_cell, fk_object_tables_row, is_in_project_count, is_standard_in_project_count, community_favorite_calendar
+      pk_entity, fk_subject_info, fk_subject_data, fk_subject_tables_cell, fk_subject_tables_row, fk_property, fk_property_of_property, fk_object_info, fk_object_data, fk_object_tables_cell, fk_object_tables_row, is_in_project_count, is_standard_in_project_count
     }
   }
 

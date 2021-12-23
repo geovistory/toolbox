@@ -181,8 +181,7 @@
               [openTabOnClick]="true">
             </gv-entity-preview>
             <gv-value-preview *ngIf="bodyStatement.pkEntity && (getVOT$(bodyStatement) | async) != undefined"
-              class="gv-one-liner gv-fade-out-right left-col" [vot]="getVOT$(bodyStatement) | async"
-              [value]="getValueVOT$(bodyStatement) | async">
+              class="gv-one-liner gv-fade-out-right left-col" [value]="getValueVOT$(bodyStatement) | async">
             </gv-value-preview>
           </div>
         </mat-grid-tile>

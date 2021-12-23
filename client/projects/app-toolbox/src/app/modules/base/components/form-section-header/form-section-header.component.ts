@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray } from '@angular/forms';
-import { FieldSection } from '../form-create-entity/form-create-entity.component';
+import { FieldSection } from '../form-create-data/form-create-data.component';
 
 @Component({
   selector: 'gv-form-section-header',

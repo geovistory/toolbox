@@ -30,7 +30,7 @@
 
   <mat-divider></mat-divider>
 
-  <gv-slider class="gv-fh" [slide]="data.valueTarget ? 'center' : sliderView" style="height:'calc(100% - 95px)'">
+  <gv-slider class="gv-fh" [slide]="!data.showAddList ? 'center' : sliderView" style="height:'calc(100% - 95px)'">
     <!--title height + padding bot + padding top  + divdier = 62 + 16 + 16 + 1 = 95  -->
 
     <!-- SLIDE 1 -->
@@ -44,11 +44,10 @@
 
         <!-- body -->
         <ng-container body>
-
-          <gv-form-create-entity [field]="data.field" [pkClass]="data.targetClass" [source]="data.source"
-            [hideTitle]="true" [hideButtons]="true" [hiddenProperty]="data.hiddenProperty" [hideButtons]="true"
+          <gv-form-create-data class="gv-ovf-auto" [field]="data.field" [pkClass]="data.targetClass"
+            [source]="data.source" [hideTitle]="true" [hiddenProperty]="data.hiddenProperty" [hideButtons]="true"
             (searchString)="searchStringChange($event)" #f>
-          </gv-form-create-entity>
+          </gv-form-create-data>
         </ng-container>
 
         <!-- footer -->
@@ -72,9 +71,8 @@
       </gv-hbf-panel>
     </ng-container>
 
-
     <!-- SLIDE 2 -->
-    <ng-container center *ngIf="!data.valueTarget">
+    <ng-container center *ngIf="data.showAddList">
       <gv-hbf-panel [footer]="false">
 
         <!-- header -->
@@ -86,18 +84,15 @@
         <ng-container body>
           <gv-search-existing-entity class="gv-fh gv-ovf-auto" [pkClass]="(pkClass_target$ | async)"
             [searchString$]="searchString$" [mode]="sliderView == 'right' ? 'mode2' : 'mode1'"
-            [confirmBtnTextInProject]="'Select'" [confirmBtnTextNotInProject]="'Select'"
-            [confirmBtnTooltipInProject]="'Select'" [confirmBtnTooltiptNotInProject]="'add to your project and select'"
-            (onConfirm)="onSelectExisting($event)" (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
+            (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
           </gv-search-existing-entity>
         </ng-container>
 
       </gv-hbf-panel>
     </ng-container>
 
-
     <!-- SLIDE 3 -->
-    <ng-container right *ngIf="!data.valueTarget">
+    <ng-container right *ngIf="data.showAddList">
       <gv-hbf-panel [header]="false">
 
         <!-- body -->
@@ -119,8 +114,15 @@
           </mat-tab-group>
         </ng-container>
 
+        <!-- footer -->
+        <ng-container footer>
+          <button mat-flat-button type="button" color="primary" class="ml-2 mr-2" (click)="onSelect()">
+            <span *ngIf="(selectedInProject$ | async)">Select</span>
+            <span *ngIf="!(selectedInProject$ | async)">Add to project and select</span>
+          </button>
+          <button mat-button type="button" class="ml-2 mr-2" (click)="onClose()">Cancel</button>
+        </ng-container>
       </gv-hbf-panel>
     </ng-container>
-
   </gv-slider>
 </div>

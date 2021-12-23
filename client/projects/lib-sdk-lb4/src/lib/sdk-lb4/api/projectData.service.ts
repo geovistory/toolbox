@@ -19,6 +19,7 @@ import { Observable }                                        from 'rxjs';
 
 import { GvPositiveSchemaObject } from '../model/models';
 import { GvSchemaModifier } from '../model/models';
+import { InfData } from '../model/models';
 import { InfResourceWithRelations } from '../model/models';
 import { InfStatementWithRelations } from '../model/models';
 
@@ -85,6 +86,224 @@ export class ProjectDataService {
             throw Error("key may not be null if value is not object or array");
         }
         return httpParams;
+    }
+
+    /**
+     * @param pkProject 
+     * @param pkEntity 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public addOrRemoveEntityControllerAddEntityToProject(pkProject: number, pkEntity: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public addOrRemoveEntityControllerAddEntityToProject(pkProject: number, pkEntity: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public addOrRemoveEntityControllerAddEntityToProject(pkProject: number, pkEntity: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
+    public addOrRemoveEntityControllerAddEntityToProject(pkProject: number, pkEntity: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling addOrRemoveEntityControllerAddEntityToProject.');
+        }
+        if (pkEntity === null || pkEntity === undefined) {
+            throw new Error('Required parameter pkEntity was null or undefined when calling addOrRemoveEntityControllerAddEntityToProject.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (pkEntity !== undefined && pkEntity !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkEntity, 'pkEntity');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<GvPositiveSchemaObject>(`${this.configuration.basePath}/project-data/add-entity`,
+            null,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param pkProject 
+     * @param pkEntity 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public addOrRemoveEntityControllerRemoveEntityFromProject(pkProject: number, pkEntity: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public addOrRemoveEntityControllerRemoveEntityFromProject(pkProject: number, pkEntity: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public addOrRemoveEntityControllerRemoveEntityFromProject(pkProject: number, pkEntity: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
+    public addOrRemoveEntityControllerRemoveEntityFromProject(pkProject: number, pkEntity: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (pkProject === null || pkProject === undefined) {
+            throw new Error('Required parameter pkProject was null or undefined when calling addOrRemoveEntityControllerRemoveEntityFromProject.');
+        }
+        if (pkEntity === null || pkEntity === undefined) {
+            throw new Error('Required parameter pkEntity was null or undefined when calling addOrRemoveEntityControllerRemoveEntityFromProject.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+        if (pkEntity !== undefined && pkEntity !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkEntity, 'pkEntity');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<GvPositiveSchemaObject>(`${this.configuration.basePath}/project-data/remove-entity`,
+            null,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param pkProject 
+     * @param infData 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public createProjectDataControllerUpsertData(pkProject?: number, infData?: InfData, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaModifier>;
+    public createProjectDataControllerUpsertData(pkProject?: number, infData?: InfData, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaModifier>>;
+    public createProjectDataControllerUpsertData(pkProject?: number, infData?: InfData, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaModifier>>;
+    public createProjectDataControllerUpsertData(pkProject?: number, infData?: InfData, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (pkProject !== undefined && pkProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkProject, 'pkProject');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            headers = headers.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<GvSchemaModifier>(`${this.configuration.basePath}/project-data/upsert-data`,
+            infData,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
     }
 
     /**

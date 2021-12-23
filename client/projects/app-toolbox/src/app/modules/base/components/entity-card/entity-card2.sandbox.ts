@@ -9,7 +9,7 @@ import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConf
 import { PROFILE_12_BIOGRAPHICAL_BA_2021_06_30 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2021-06-30';
 import { PROFILE_16_INTERACTIONS_S_2021_07_10 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2021-07-10';
 import { PROFILE_20_PHYSICAL_MAN_MA_2021_07_11 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2021-07-11';
-import { PROFILE_5_GEOVISTORY_BASI_2021_06_30 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2021-06-30';
+import { PROFILE_5_GEOVISTORY_BASI_2021_08_24 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
 import { PROFILE_8_MARITIME_HISTOR_2021_07_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2021-07-09';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject } from 'rxjs';
@@ -21,11 +21,11 @@ import { EntityCardComponent } from './entity-card.component';
 /**
  * This sandbox requires backend running with a gv db containing a
  * - project 591
- * - entity
+ * - entity 779360
  * Login is also required (use login sandbox to login)
  */
 
-const pkProject = 591
+const pkProject = 927027
 const pkEntity = 779360
 const pkClass = 21
 /*****************************************************************************
@@ -37,7 +37,7 @@ const pkClass = 21
 const initialSchemaObects = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
-      PROFILE_5_GEOVISTORY_BASI_2021_06_30, // add basics profile
+      PROFILE_5_GEOVISTORY_BASI_2021_08_24, // add basics profile
       PROFILE_16_INTERACTIONS_S_2021_07_10, // add social interactions profile
       PROFILE_12_BIOGRAPHICAL_BA_2021_06_30, // add biographical profile
       PROFILE_8_MARITIME_HISTOR_2021_07_09, // add maritime profile

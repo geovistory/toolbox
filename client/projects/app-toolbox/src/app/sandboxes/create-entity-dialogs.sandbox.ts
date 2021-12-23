@@ -24,7 +24,7 @@ import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transform
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { BaseModule } from '../modules/base/base.module';
-import { AddEntityDialogComponent, AddEntityDialogData } from '../modules/base/components/add-entity-dialog/add-entity-dialog.component';
+import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from '../modules/base/components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 import { AddStatementDialogComponent, AddStatementDialogData } from '../modules/base/components/add-statement-dialog/add-statement-dialog.component';
 import { CreateOrAddEntityEvent, CtrlEntityDialogComponent, CtrlEntityDialogData } from '../modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../modules/base/components/ctrl-entity/ctrl-entity.component';
@@ -75,7 +75,7 @@ export class SandBoxCreateDialogsComponent {
       ...this.dialogSizing,
       panelClass: 'gv-no-padding',
       data: {
-        valueTarget: false,
+        showAddList: false,
         field: {
           'sourceClass': 61, 'sourceClassLabel': 'Birth', 'sourceMaxQuantity': 1, 'sourceMinQuantity': 1, 'targetMinQuantity': 0, 'targetMaxQuantity': -1, 'label': 'brought into life', 'isHasTypeField': false, 'isTimeSpanShortCutField': false, 'property': { 'fkProperty': 86 }, 'isOutgoing': true, 'identityDefiningForSource': true, 'identityDefiningForTarget': false, 'ontoInfoLabel': 'P98', 'ontoInfoUrl': 'https://ontome.net/property/86', 'allSubfieldsRemovedFromAllProfiles': false, 'targetClasses': [21], 'display': { 'formSections': { 'specific': { 'position': null } }, 'viewSections': { 'specific': { 'position': null } } }, 'isSpecialField': false, 'targets': { '21': { 'viewType': { 'entityPreview': 'true' }, 'formControlType': { 'entity': 'true' }, 'removedFromAllProfiles': false, 'targetClass': 21, 'targetClassLabel': 'Person' } }
         },
@@ -87,8 +87,8 @@ export class SandBoxCreateDialogsComponent {
   }
 
   fromNewEntity() {
-    this.dialog.open<AddEntityDialogComponent, AddEntityDialogData, CreateOrAddEntityEvent>(
-      AddEntityDialogComponent, {
+    this.dialog.open<AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateOrAddEntityEvent>(
+      AddEntityOrValueDialogComponent, {
       ...this.dialogSizing,
       panelClass: 'gv-no-padding',
       data: {

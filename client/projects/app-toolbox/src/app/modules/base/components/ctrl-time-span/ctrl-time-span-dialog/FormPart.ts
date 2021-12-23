@@ -1,10 +1,10 @@
 
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DfhConfig } from '@kleiolab/lib-config';
 import { CtrlTimeSpanDialogResult, Field, FieldTargetClass } from '@kleiolab/lib-queries';
-import { InfAppellation, InfLangString, InfPlace, InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfLangString, InfLanguage, InfPlace, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
-import { values } from 'ramda';
+import { keys, values } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
@@ -25,6 +25,10 @@ export class FormPart {
   this$ = new BehaviorSubject(this)
 
   _classSelect = false;
+
+  public items: FormItem[] = []
+  fieldTarget: FieldTargetClass
+  initValTarget: FieldTargetClass
   get classSelect() {
     return this._classSelect
   }
@@ -32,10 +36,6 @@ export class FormPart {
     this._classSelect = val
     this.this$.next(this);
   }
-
-  public items: FormItem[] = []
-  fieldTarget: FieldTargetClass
-  initValTarget: FieldTargetClass
   /**
    *
    * @param formGroup the root form group
@@ -192,8 +192,7 @@ export class FormPart {
     if (this.fieldTarget.viewType.appellation) {
       if (!val) return null;
 
-      const value: InfStatement = {
-        ...{} as any,
+      const value: InfStatementWithRelations = {
         fk_object_info: undefined,
         fk_property: field.property.fkProperty,
         fk_property_of_property: field.property.fkPropertyOfProperty,
@@ -207,8 +206,7 @@ export class FormPart {
     else if (this.fieldTarget.viewType.language) {
       if (!val) return null;
 
-      const value: InfStatement = {
-        ...{} as any,
+      const value: InfStatementWithRelations = {
         fk_object_info: undefined,
         fk_property: field.property.fkProperty,
         fk_property_of_property: field.property.fkPropertyOfProperty,
@@ -222,8 +220,7 @@ export class FormPart {
     else if (this.fieldTarget.viewType.langString) {
       if (!val) return null;
 
-      const value: InfStatement = {
-        ...{} as any,
+      const value: InfStatementWithRelations = {
         fk_object_info: undefined,
         fk_property: field.property.fkProperty,
         fk_property_of_property: field.property.fkPropertyOfProperty,
@@ -237,8 +234,7 @@ export class FormPart {
     else if (this.fieldTarget.viewType.place) {
       if (!val) return null;
 
-      const value: InfStatement = {
-        ...{} as any,
+      const value: InfStatementWithRelations = {
         fk_object_info: undefined,
         fk_property: field.property.fkProperty,
         fk_property_of_property: field.property.fkPropertyOfProperty,
@@ -256,8 +252,7 @@ export class FormPart {
     ) {
       if (!val) return null;
 
-      let value: InfStatement = {
-        ...{} as any,
+      let value: InfStatementWithRelations = {
         fk_property: field.property.fkProperty,
         fk_property_of_property: field.property.fkPropertyOfProperty
       };
@@ -271,26 +266,22 @@ export class FormPart {
       return value;
     }
 
-
-    // else if (this.fieldTarget.viewType.timeSpan) {
-    //   if (!val) return null;
-
-    //   const v = val as CtrlTimeSpanDialogResult;
-    //   const value: InfStatement[] = Object.keys(v).map(key => {
-    //     const statement: InfStatement = {
-    //       fk_property: parseInt(key, 10),
-    //       object_time_primitive: {
-    //         ...v[key],
-    //         fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
-    //       },
-    //       ...{} as any
-    //     }
-    //     return statement
-    //   });
-    //   return value;
-    // }
     else {
-      throw console.error('No mapping defined for list type', this.fieldTarget.viewType)
+      const v = val as CtrlTimeSpanDialogResult;
+      const value: InfStatementWithRelations[] = keys(v).map(key => {
+        const tp = v[key]
+        const statement: InfStatementWithRelations = {
+          fk_property: parseInt(key.toString(), 10),
+          object_time_primitive: {
+            julian_day: tp.julianDay,
+            duration: tp.duration,
+            calendar: tp.calendar,
+            fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+          }
+        }
+        return statement
+      });
+      return value;
     }
   }
 

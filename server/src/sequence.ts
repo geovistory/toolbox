@@ -1,6 +1,6 @@
-import {AuthenticateFn, AuthenticationBindings, AUTHENTICATION_STRATEGY_NOT_FOUND, USER_PROFILE_NOT_FOUND} from '@loopback/authentication';
-import {inject} from '@loopback/context';
-import {FindRoute, InvokeMethod, InvokeMiddleware, ParseParams, Reject, RequestContext, RestBindings, Send, SequenceHandler} from '@loopback/rest';
+import { AuthenticateFn, AuthenticationBindings, AUTHENTICATION_STRATEGY_NOT_FOUND, USER_PROFILE_NOT_FOUND } from '@loopback/authentication';
+import { inject } from '@loopback/context';
+import { FindRoute, InvokeMethod, InvokeMiddleware, ParseParams, Reject, RequestContext, RestBindings, Send, SequenceHandler } from '@loopback/rest';
 
 const SequenceActions = RestBindings.SequenceActions;
 
@@ -10,7 +10,7 @@ export class GvSequence implements SequenceHandler {
    * Optional invoker for registered middleware in a chain.
    * To be injected via SequenceActions.INVOKE_MIDDLEWARE.
    */
-  @inject(SequenceActions.INVOKE_MIDDLEWARE, {optional: true})
+  @inject(SequenceActions.INVOKE_MIDDLEWARE, { optional: true })
   protected invokeMiddleware: InvokeMiddleware = () => false;
 
   constructor(
@@ -24,7 +24,7 @@ export class GvSequence implements SequenceHandler {
 
   async handle(context: RequestContext) {
     try {
-      const {request, response} = context;
+      const { request, response } = context;
       log(context)
       const finished = await this.invokeMiddleware(context);
       if (finished) return;
@@ -39,10 +39,11 @@ export class GvSequence implements SequenceHandler {
         err.code === AUTHENTICATION_STRATEGY_NOT_FOUND ||
         err.code === USER_PROFILE_NOT_FOUND
       ) {
-        Object.assign(err, {statusCode: 401 /* Unauthorized */});
+        Object.assign(err, { statusCode: 401 /* Unauthorized */ });
       }
 
       this.reject(context, err);
+      console.error(err)
     }
   }
 }
@@ -51,7 +52,7 @@ export class GvSequence implements SequenceHandler {
 
 function log(ctx: RequestContext) {
 
-  const {request} = ctx;
+  const { request } = ctx;
   try {
 
     if (process.env.NO_LOGS === 'true') return;

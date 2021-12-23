@@ -18,10 +18,10 @@ import { EntityLabelConfigModule } from '../../shared/modules/entity-label-confi
 import { AbbreviateModule } from '../../shared/pipes/abbreviate/abbreviate.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
-import { AddEntityDialogComponent } from './components/add-entity-dialog/add-entity-dialog.component';
 import { AddEntityMenuClassItemComponent } from './components/add-entity-menu-class-item/add-entity-menu-class-item.component';
 import { AddEntityMenuTypeItemComponent } from './components/add-entity-menu-type-item/add-entity-menu-type-item.component';
 import { AddEntityMenuComponent } from './components/add-entity-menu/add-entity-menu.component';
+import { AddEntityOrValueDialogComponent } from './components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 import { AddStatementDialogComponent } from './components/add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
 import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
@@ -49,7 +49,7 @@ import { FgPlaceComponent } from './components/fg-place/fg-place.component';
 import { FieldLabelComponent } from './components/field-label/field-label.component';
 import { FormArrayComponent } from './components/form-array/form-array.component';
 import { FormControlComponent } from './components/form-control/form-control.component';
-import { FormCreateEntityComponent } from './components/form-create-entity/form-create-entity.component';
+import { FormCreateDataComponent } from './components/form-create-data/form-create-data.component';
 import { FormFieldHeaderComponent } from './components/form-field-header/form-field-header.component';
 import { FormGroupComponent } from './components/form-group/form-group.component';
 import { FormSectionHeaderComponent } from './components/form-section-header/form-section-header.component';
@@ -97,7 +97,7 @@ const components = [
   CtrlTimeSpanDialogComponent,
   CtrlTimePrimitiveComponent,
   CtrlTypeComponent,
-  FormCreateEntityComponent,
+  FormCreateDataComponent,
   FormGroupComponent,
   FormArrayComponent,
   FormFieldHeaderComponent,
@@ -109,7 +109,7 @@ const components = [
   ChooseClassDialogComponent,
   ExistenceTimeHelpComponent,
   AddStatementDialogComponent,
-  AddEntityDialogComponent,
+  AddEntityOrValueDialogComponent,
   SearchExistingEntityComponent,
   EntityAddExistingHitComponent,
   FgPlaceComponent,

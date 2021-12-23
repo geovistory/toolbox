@@ -32,7 +32,6 @@ import { ProjectConfigurationService } from './api/projectConfiguration.service'
 import { ProjectDataService } from './api/projectData.service';
 import { PubAccountService } from './api/pubAccount.service';
 import { RamListService } from './api/ramList.service';
-import { SchemaObjectService } from './api/schemaObject.service';
 import { SubfieldPageControllerService } from './api/subfieldPageController.service';
 import { SysClassFieldService } from './api/sysClassField.service';
 import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.service';

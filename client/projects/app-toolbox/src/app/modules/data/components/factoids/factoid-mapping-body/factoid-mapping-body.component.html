@@ -1,0 +1,9 @@
+<gv-factoid-property-mapping *ngFor="let fpm of fpms; let i = index" [fpm]="fpm" [fm]="fm" (delete)="fpmDelete(i)"
+    (fpmChanged)="fpmChange(i, $event)"></gv-factoid-property-mapping>
+
+<div class="gv-row-end loc-pt">
+    <button mat-button color=primary (click)="fpmCreate()">
+        Add property mapping
+        <mat-icon>add</mat-icon>
+    </button>
+</div>

@@ -1,4 +1,3 @@
-
 import {WarEntityPreview} from '../../../../models'
 import {CalendarType} from '../../../../models/enums/CalendarType'
 import {Granularity} from '../../../../models/enums/Granularity'

@@ -60,29 +60,21 @@ export namespace InfResourceWithRelationsMock {
         fk_object_info: 2001
       },
       {
-        entity_version_project_rels: [
-          {
-            calendar: 'gregorian'
-          }
-        ],
         fk_property: 152,
         object_time_primitive: {
           julian_day: 2406621,
           duration: '1 year',
-          fk_class: 335
+          fk_class: 335,
+          calendar: 'gregorian'
         }
       },
       {
-        entity_version_project_rels: [
-          {
-            calendar: 'gregorian'
-          }
-        ],
         fk_property: 153,
         object_time_primitive: {
           julian_day: 2407351,
           duration: '1 year',
-          fk_class: 335
+          fk_class: 335,
+          calendar: 'gregorian'
         }
       },
       {

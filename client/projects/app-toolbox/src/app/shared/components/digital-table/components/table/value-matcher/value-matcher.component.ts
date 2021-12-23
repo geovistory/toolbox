@@ -3,10 +3,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
-import { InfStatement, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { InfStatement, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-value/ctrl-value-dialog.component';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { InfValueObject } from '../../../../value-preview/value-preview.component';
 
@@ -86,19 +86,7 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
             return this.p.inf$.language$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({ language: value })))
           }
           if (this.vot.timePrimitive) {
-            return combineLatest([
-              this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info),
-              this.s.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(this.pkProject + '_' + statement.pk_entity)
-            ]).pipe(
-              map(([tp, ipr]) => {
-                const t: TimePrimitiveWithCal = {
-                  julianDay: tp.julian_day,
-                  duration: tp.duration as TimePrimitiveWithCal.DurationEnum,
-                  calendar: ipr?.calendar as TimePrimitiveWithCal.CalendarEnum,
-                }
-                return t
-              }),
-              switchMap(value => of({ timePrimitive: value })))
+            return this.p.inf$.time_primitive$.by_pk_entity$.key(statement.fk_object_info).pipe(switchMap(value => of({ timePrimitive: value })))
           }
         }
       }),

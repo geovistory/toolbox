@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { CtrlEntityComponent } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanComponent } from '../ctrl-time-span/ctrl-time-span.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
-import { FormControlData, FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
+import { FormControlData, FormCreateDataComponent } from '../form-create-data/form-create-data.component';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 
 export interface ChildComponents {
@@ -35,7 +35,7 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
   entityCtrlDisableStatement: DisableIfHasStatement;
 
-  constructor(private createForm: FormCreateEntityComponent) { }
+  constructor(private createForm: FormCreateDataComponent) { }
 
   ngOnInit() {
     this.config = this.formControlFactory.config

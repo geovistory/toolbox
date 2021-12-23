@@ -8,12 +8,23 @@ import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/mater
 import { AnnotationModule } from 'projects/app-toolbox/src/app/modules/annotation/annotation.module';
 import { DigitalTableModule } from 'projects/app-toolbox/src/app/shared/components/digital-table/digital-table.module';
 import { CoverModule } from 'projects/app-toolbox/src/app/shared/directives/cover/cover.module';
+import { ClassDropdownModule } from '../../shared/components/class-dropdown/class-dropdown.module';
+import { CommentMenuModule } from '../../shared/components/comment-menu/comment-menu.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
 import { InfoDialogModule } from '../../shared/components/info-dialog/info-dialog.module';
+import { ValuePreviewModule } from '../../shared/components/value-preview/value-preview.module';
 import { CopyClipboardModule } from '../../shared/directives/copy-clipboard/copy-clipboard.module';
 import { BaseModule } from '../base/base.module';
 import { QuillModule } from '../quill';
+import { ColumnMappingComponent } from './components/column-mapping/column-mapping.component';
+import { CtrlEntityOrValueMatcherComponent } from './components/ctrl-entity-or-value-matcher.component/ctrl-entity-or-value-matcher.component';
+import { FactoidMappingBodyComponent } from './components/factoids/factoid-mapping-body/factoid-mapping-body.component';
+import { FactoidMappingHeaderComponent } from './components/factoids/factoid-mapping-header/factoid-mapping-header.component';
+import { FactoidMappingComponent } from './components/factoids/factoid-mapping/factoid-mapping.component';
+import { FactoidMappingsDialogComponent } from './components/factoids/factoid-mappings-dialog/factoid-mappings-dialog.component';
+import { FactoidPropertyDisplayComponent } from './components/factoids/factoid-property-display/factoid-property-display.component';
+import { FactoidPropertyMappingComponent } from './components/factoids/factoid-property-mapping/factoid-property-mapping.component';
 import { ImporterComponent } from './components/importer/importer.component';
 import { TableConfigDialogComponent } from './components/table-config-dialog/table-config-dialog.component';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
@@ -37,10 +48,13 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     BaseModule,
     DragDropModule,
     CopyClipboardModule,
-    InfoDialogModule
+    InfoDialogModule,
+    CommentMenuModule,
+    ClassDropdownModule,
+    ValuePreviewModule,
   ],
   providers: [],
-  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent],
-  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent],
+  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, FactoidPropertyMappingComponent, FactoidMappingHeaderComponent, FactoidMappingBodyComponent, FactoidMappingComponent, FactoidMappingsDialogComponent,],
+  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, FactoidPropertyMappingComponent, FactoidMappingHeaderComponent, FactoidMappingBodyComponent, FactoidMappingComponent, FactoidMappingsDialogComponent,],
 })
 export class DataModule { }

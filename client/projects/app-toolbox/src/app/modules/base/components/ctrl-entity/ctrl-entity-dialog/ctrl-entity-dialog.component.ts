@@ -7,7 +7,7 @@ import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
+import { FormCreateDataComponent } from '../../form-create-data/form-create-data.component';
 import { DisableIfHasStatement, SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityModel } from '../ctrl-entity.component';
 
@@ -64,7 +64,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   selectButtonDisabled: boolean;
   selectButtonTooltip: string;
 
-  @ViewChild(FormCreateEntityComponent, { static: true }) createEntity: FormCreateEntityComponent;
+  @ViewChild(FormCreateDataComponent, { static: true }) createEntity: FormCreateDataComponent;
 
   constructor(
     private p: ActiveProjectService,

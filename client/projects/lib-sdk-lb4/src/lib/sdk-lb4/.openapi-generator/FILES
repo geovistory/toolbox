@@ -33,7 +33,6 @@ api/projectConfiguration.service.ts
 api/projectData.service.ts
 api/pubAccount.service.ts
 api/ramList.service.ts
-api/schemaObject.service.ts
 api/subfieldPageController.service.ts
 api/sysClassField.service.ts
 api/sysClassHasTypeProperty.service.ts
@@ -89,6 +88,7 @@ model/datNegativeObject.ts
 model/datObject.ts
 model/datTextProperty.ts
 model/deactivationReportItem.ts
+model/defaultFPM.ts
 model/deleteRowResponse.ts
 model/dfhApiProfile.ts
 model/dfhClass.ts
@@ -96,10 +96,13 @@ model/dfhLabel.ts
 model/dfhObject.ts
 model/dfhProfile.ts
 model/dfhProperty.ts
+model/digitalFactoidMapping.ts
 model/dimensionValueObjectType.ts
 model/entityLabelConfig.ts
 model/entitySearchHit.ts
 model/factoidEntity.ts
+model/factoidMapping.ts
+model/factoidPropertyMapping.ts
 model/factoidStatement.ts
 model/fkProjectFkEntity.ts
 model/geoEntityMapAndTimeCont.ts
@@ -129,6 +132,7 @@ model/importTable.ts
 model/importTableResponse.ts
 model/infAppellation.ts
 model/infAppellationWithRelations.ts
+model/infData.ts
 model/infDimension.ts
 model/infDimensionWithRelations.ts
 model/infLangString.ts
@@ -186,7 +190,6 @@ model/resetPasswordRequest.ts
 model/responseWithMsg.ts
 model/role.ts
 model/satementTarget.ts
-model/schemaObject.ts
 model/searchExistingRelatedStatement.ts
 model/searchExistingRelatedStatementFilter.ts
 model/section.ts

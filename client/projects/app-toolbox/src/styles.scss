@@ -3190,6 +3190,11 @@ gv-importer {
   justify-content: space-between;
 }
 
+.gv-row-space-around {
+  @extend .gv-row;
+  justify-content: space-around;
+}
+
 .gv-row-start {
   @extend .gv-row;
   justify-content: start;
@@ -3207,6 +3212,10 @@ gv-importer {
 
 .gv-width-auto {
   width: auto;
+}
+
+.gv-center {
+  align-items: center;
 }
 
 // About heights

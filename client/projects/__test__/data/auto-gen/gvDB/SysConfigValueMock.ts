@@ -364,6 +364,12 @@ export class SysConfigValueMock {
     },
     "addProperty": [
       {
+        "comment": "add <begin of the begin> to all teEn",
+        "isOutgoing": true,
+        "toSourceClass": {"whereBasicTypeIn": [9]},
+        "wherePkProperty": 152
+      },
+      {
         "comment": "add <has appellation> to all teEn, peIt and types except for appe for lang itself",
         "isOutgoing": false,
         "toSourceClass": {

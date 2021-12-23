@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { createStatementWithTarget } from '../data/auto-gen/api-responses/GvPaginationObjectMock';
 import { CalendarType } from '../data/auto-gen/enums/CalendarType';
-import { TrueEnum } from '../data/auto-gen/enums/TrueEnum';
 import { DfhApiClassMock } from '../data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from '../data/auto-gen/gvDB/DfhApiPropertyMock';
 import { InfLanguageMock } from '../data/auto-gen/gvDB/InfLanguageMock';
@@ -88,9 +87,6 @@ export class MockPaginationControllerForSandboxes {
     else if (values(gvLoadSubfieldPageReq.targets)[0].entityPreview) {
       return this.generateDataForEntity(gvLoadSubfieldPageReq);
     }
-    // else if (values(gvLoadSubfieldPageReq.targets)[0].timeSpan) {
-    //   return this.generateDataForTimeSpan(gvLoadSubfieldPageReq);
-    // }
     else if (values(gvLoadSubfieldPageReq.targets)[0].typeItem) {
       return this.generateDataForEntity(gvLoadSubfieldPageReq);
     }
@@ -469,78 +465,6 @@ export class MockPaginationControllerForSandboxes {
     }
 
     return paginationObject
-  }
-
-
-  // generateDataForEntityPreview(req: GvFieldPageReq): GvPaginationObject {
-  //   const page = req.page
-  //   const limit = page.limit
-  //   const offset = page.offset
-  //   const count = 3;
-  //   const paginatedStatements: StatementWithTarget[] = []
-
-  //   for (let i = offset; i < (offset + limit); i++) {
-  //     const resource: OmitEntity<InfResource> = {
-  //       pk_entity: this.warEntityPreviewSerial + i,
-  //       fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
-  //     }
-
-  //     const entityPreview: OmitEntity<WarEntityPreview> = {
-  //       pk_entity: this.warEntityPreviewSerial + i,
-  //       fk_class: DfhApiClassMock.EN_21_PERSON.dfh_pk_class,
-  //       entity_label: 'Jack the foo ' + (this.warEntityPreviewSerial + i),
-  //       class_label: 'Person',
-  //       entity_type: 'peIt',
-  //       project: page.scope.inProject,
-  //       fk_project: page.scope.inProject
-  //     }
-
-  //     const statement: OmitEntity<InfStatement> = {
-  //       pk_entity: this.infStatementSerial + i,
-  //       fk_subject_info: page.source.fkInfo,
-  //       fk_property: page.property.fkProperty,
-  //       fk_object_info: entityPreview.pk_entity,
-  //     }
-  //     paginatedStatements.push(statement.pk_entity)
-  //     const projRel: OmitEntity<ProInfoProjRel> = {
-  //       pk_entity: this.proInfoProjRelSerial + i,
-  //       fk_project: ProProjectMock.PROJECT_1.pk_entity,
-  //       fk_entity: statement.pk_entity,
-  //       fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
-  //       is_in_project: true
-  //     }
-  //   }
-
-  //   const paginationObject: GvPaginationObject = {
-  //     subfieldPages: [
-  //       {
-  //         page,
-  //         count: count,
-  //         paginatedStatements
-  //       }
-  //     ],
-
-  //   }
-  //   return paginationObject
-  // }
-
-
-  generateDataForTimeSpan(req: GvFieldPageReq): GvPaginationObject {
-    const reqs = this.createTimeSpanFieldRequests(req)
-    return this.handleRequests(reqs)
-  }
-  private createTimeSpanFieldRequests(req: GvFieldPageReq): GvFieldPageReq[] {
-    return [71, 72, 150, 151, 152, 153].map(timeSpanProperty => {
-      const request: GvFieldPageReq = {
-        ...req,
-        page: {
-          ...req.page,
-          property: { fkProperty: timeSpanProperty },
-        },
-        targets: { 335: { timePrimitive: TrueEnum.true } }
-      };
-      return request;
-    });
   }
 
 }

@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { InfAppellation, InfLanguage, InfPlace, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellationWithRelations, InfLanguage, InfPlace, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
@@ -168,7 +168,7 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
               data: {
                 type: 'text'
               },
-              mapValue: (x: InfAppellation) => {
+              mapValue: (x: InfAppellationWithRelations) => {
                 const s: InfStatementWithRelations = {
                   fk_property: DfhConfig.PROPERTY_PK_P13_REFERS_TO_NAME,
                   object_appellation: {

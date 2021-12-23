@@ -494,7 +494,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     const statementTargetFk = getTargetFk(isOutgoing, sourceModel)
     const propertyFk = property.fkProperty ? 'fk_property' : 'fk_property_of_property'
     const propertyId = property.fkProperty ?? property.fkPropertyOfProperty;
-    const target = this.joinTargetOfStatement(isOutgoing, scope, contraint.resTargetKey, contraint.targetClasses, 't2', 't3')
+    const target = this.joinTargetOfStatement(isOutgoing, scope, contraint.resTargetKey, contraint.targetClasses, 't2')
 
     const joinProjRels = () => `
     -- join project rels
@@ -586,7 +586,6 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     resTargetKey: ResTargetKey,
     targetClasses: number[],
     tStatements: string,
-    tProjRel: string,
   ): JoinTargetSqls {
 
     const sqls: JoinTargetSqls[] = []
@@ -601,7 +600,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       sqls.push(this.joinTargetLangString(isOutgoing, tStatements, modelConfig, resTargetKey));
     }
     else if (resTargetKey === 'timePrimitive') {
-      sqls.push(this.joinTargetTimePrimitive(isOutgoing, tStatements, modelConfig, resTargetKey, tProjRel, scope));
+      sqls.push(this.joinTargetTimePrimitive(isOutgoing, tStatements, modelConfig, resTargetKey));
     }
     else if (resTargetKey === 'entity') {
       sqls.push(this.joinTargetEntity(isOutgoing, tStatements, scope, resTargetKey));
@@ -735,9 +734,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     isOutgoing: boolean,
     tStatements: string,
     spec: ModelConfig,
-    resTargetKey: ResTargetKey,
-    tProjRel: string,
-    scope: GvFieldPageScope
+    resTargetKey: ResTargetKey
   ): JoinTargetSqls {
 
     const {tableName, modelDefinition, modelPk, statementObjectFk, statementSubjectFk, classFk, createLabelSql} = spec
@@ -753,9 +750,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
                 'timePrimitive', json_build_object(
                   'duration', x.duration,
                   'julianDay', x.julian_day,
-                  'calendar', ${scope.inProject ?
-        `             coalesce(${tProjRel}.calendar, ${tStatements}.community_favorite_calendar)` :
-        `             ${tStatements}.community_favorite_calendar`}
+                  'calendar', x.calendar
                 )
               )) obj,
               ${createLabelSql} as target_label

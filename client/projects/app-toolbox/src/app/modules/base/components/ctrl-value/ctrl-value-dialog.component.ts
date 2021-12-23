@@ -121,13 +121,10 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
         this.newValue.object_time_primitive = {
           julian_day: nv.julianDay,
           duration: nv.duration,
+          calendar: nv.calendar,
           fk_class: this.data.pkClass
         };
-        this.newValue.entity_version_project_rels = [{
-          fk_project: this.data.pkProject,
-          calendar: nv.calendar,
-          is_in_project: true
-        }]
+
       });
     }
 

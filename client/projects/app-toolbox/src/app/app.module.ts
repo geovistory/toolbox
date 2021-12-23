@@ -40,6 +40,8 @@ import { BackofficeModule } from './modules/backoffice/backoffice.module';
 import { ProjectsModule } from './modules/projects/projects.module';
 import { UserFeedbackModule } from './modules/user-feedback/user-feedback.module';
 import { ControlMessagesModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from './shared';
+import { ClassDropdownModule } from './shared/components/class-dropdown/class-dropdown.module';
+import { CommentMenuModule } from './shared/components/comment-menu/comment-menu.module';
 import { LoadingBarModule } from './shared/components/loading-bar/loading-bar.module';
 import { KeysModule } from './shared/pipes/keys.module';
 
@@ -183,7 +185,9 @@ registerLocaleData(localeDeCh);
     AccountModule,
     ValidationDirectivesModule,
     UserFeedbackModule,
-    LoadingBarModule
+    LoadingBarModule,
+    ClassDropdownModule,
+    CommentMenuModule
   ],
   providers: [
     ActiveAccountService,

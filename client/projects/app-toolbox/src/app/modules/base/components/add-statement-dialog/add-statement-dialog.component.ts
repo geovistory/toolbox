@@ -8,13 +8,13 @@ import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
-import { FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
+import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
 import { SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../search-existing-entity/search-existing-entity.component';
 
 export interface AddStatementDialogData {
   field: Field;
   targetClass: number;
-  valueTarget: boolean;
+  showAddList: boolean;
 
   // primary key of the source entity
   source: GvFieldSourceEntity;
@@ -147,11 +147,6 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
         shareReplay(),
         startWith()
       )
-
-    this.alreadyHas$.subscribe(r => console.log('1', r))
-    this.next$.subscribe(r => console.log('2', r))
-
-
   }
 
   /**
@@ -175,7 +170,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
    * @param f
    * @returns
    */
-  onSubmit(f: FormCreateEntityComponent) {
+  onSubmit(f: FormCreateDataComponent) {
     if (!f.checkValidation()) return;
 
     this.loading$.next(true)

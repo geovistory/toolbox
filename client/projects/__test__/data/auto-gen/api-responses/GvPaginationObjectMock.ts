@@ -12,7 +12,7 @@ import {InfLanguageMock} from '../gvDB/InfLanguageMock'
 import {InfPlaceMock} from '../gvDB/InfPlaceMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
 import {InfStatementMock} from '../gvDB/InfStatementMock'
-import {DEFAULT_CAL, DEFAULT_DURATION, InfTimePrimitiveMock} from '../gvDB/InfTimePrimitiveMock'
+import {DEFAULT_DURATION, InfTimePrimitiveMock} from '../gvDB/InfTimePrimitiveMock'
 import {DfhApiProperty, OmitEntity} from '../gvDB/local-model.helpers'
 import {ProInfoProjRelMock} from '../gvDB/ProInfoProjRelMock'
 import {ProProjectMock} from '../gvDB/ProProjectMock'
@@ -211,7 +211,7 @@ export namespace GvPaginationObjectMock {
                 timePrimitive: {
                   duration: InfTimePrimitiveMock.TP_2.duration ?? DEFAULT_DURATION,
                   julianDay: InfTimePrimitiveMock.TP_2.julian_day,
-                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar ?? DEFAULT_CAL,
+                  calendar: InfTimePrimitiveMock.TP_2.calendar,
                 }
               }
             },
@@ -257,7 +257,7 @@ export namespace GvPaginationObjectMock {
                 timePrimitive: {
                   duration: InfTimePrimitiveMock.TP_5.duration ?? DEFAULT_DURATION,
                   julianDay: InfTimePrimitiveMock.TP_5.julian_day,
-                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar ?? DEFAULT_CAL,
+                  calendar: InfTimePrimitiveMock.TP_5.calendar
                 }
               }
             },
@@ -290,7 +290,7 @@ export namespace GvPaginationObjectMock {
                 timePrimitive: {
                   duration: InfTimePrimitiveMock.TP_4.duration ?? DEFAULT_DURATION,
                   julianDay: InfTimePrimitiveMock.TP_4.julian_day,
-                  calendar: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar ?? DEFAULT_CAL,
+                  calendar: InfTimePrimitiveMock.TP_4.calendar
                 }
               }
             },

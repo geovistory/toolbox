@@ -5,7 +5,7 @@ import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
 import { DatColumn } from '@kleiolab/lib-sdk-lb3';
-import { GetTablePageOptions, InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
+import { FactoidMapping, GetTablePageOptions, InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -16,6 +16,7 @@ import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
+import { FactoidMappingsDialogComponent, FactoidMappingsDialogData } from '../factoids/factoid-mappings-dialog/factoid-mappings-dialog.component';
 import { TableConfigDialogComponent, TableConfigDialogData, TableConfigDialogResult } from '../table-config-dialog/table-config-dialog.component';
 
 
@@ -299,6 +300,23 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
           this.pkProject, this.pkEntity, this.a.account.id, this.defaultLanguage.pk_entity, result.cols)
           , this.pkProject);
       });
+  }
+
+  factoidMapping() {
+    this.setTableMode('view');
+    this.dialog.open<FactoidMappingsDialogComponent, FactoidMappingsDialogData, Array<FactoidMapping>>(
+      FactoidMappingsDialogComponent, {
+      height: 'calc(100% - 30px)',
+      width: '1000px',
+      maxWidth: '100%',
+      data: { pkTable: this.pkEntity }
+    }).afterClosed()
+    // .pipe(takeUntil(this.destroy$)).subscribe((result) => {
+    //   if (!result) return;
+    //   this.s.modifyGvSchema(this.tableAPI.tableControllerUpdateColumn(
+    //     this.pkProject, this.pkEntity, this.a.account.id, this.defaultLanguage.pk_entity, result.cols)
+    //     , this.pkProject);
+    // });
   }
 
   preNewRow(newPosition: number) {

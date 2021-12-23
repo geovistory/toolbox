@@ -1,7 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 import {ProEntity} from '.';
 import {overrideType} from '../components/spec-enhancer/model.spec.enhancer';
-import {CalendarType} from './enums/CalendarType';
 import {ProjectVisibilityOptions} from './sys-config/sys-config-project-visibility-options';
 
 @model({
@@ -55,14 +54,6 @@ export class ProInfoProjRel extends Entity implements ProEntity {
   is_standard_in_project?: boolean;
 
   @property({
-    type: 'string',
-    jsonSchema: {
-      enum: Object.values(CalendarType),
-    },
-  })
-  calendar?: CalendarType;
-
-  @property({
     type: 'number',
   })
   ord_num_of_domain?: number;
@@ -71,11 +62,6 @@ export class ProInfoProjRel extends Entity implements ProEntity {
     type: 'number',
   })
   ord_num_of_range?: number;
-
-  @property({
-    type: 'number',
-  })
-  ord_num_of_text_property?: number;
 
   @property({
     type: 'number',

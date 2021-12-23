@@ -1,0 +1,11 @@
+.loc-title {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+::ng-deep .loc-prop-disp {
+    .mat-form-field-wrapper {
+        padding: 0 !important;
+        margin:0 !important;
+    }
+}

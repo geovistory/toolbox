@@ -1,5 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 import {InfEntity} from '.';
+import {CalendarType} from './enums/CalendarType';
 import {Granularity} from './enums/Granularity';
 
 @model({
@@ -36,11 +37,15 @@ export class InfTimePrimitive extends Entity implements InfEntity {
   })
   duration: Granularity;
 
+  @property({
+    required: true,
+    type: 'string',
+    jsonSchema: {
+      enum: Object.values(CalendarType),
+    },
+  }) calendar: CalendarType;
   // Define well-known properties here
 
-  // Indexer property to allow additional data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // [prop: string]: any;
 
   constructor(data?: Partial<InfTimePrimitive>) {
     super(data);
