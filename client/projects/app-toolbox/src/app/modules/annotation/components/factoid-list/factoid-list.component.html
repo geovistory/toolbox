@@ -36,7 +36,7 @@
         <div class="content bold">Cell content</div>
       </mat-grid-tile>
       <mat-grid-tile [colspan]="3" [rowspan]="1">
-        <div class="content bold">Cell matching</div>
+        <div class="content bold">Matching</div>
       </mat-grid-tile>
       <mat-grid-tile [colspan]="2" [rowspan]="1">
         <div class="content bold">Location</div>
@@ -79,7 +79,7 @@
       <!-- principal entity entity -->
       <mat-grid-tile [colspan]="3" [rowspan]="1">
         <div class="content mat-text-secondary">
-          <gv-entity-preview *ngIf="factoidEntity.headerStatements[0].pkEntity" class="gv-one-liner gv-fade-out-right"
+          <gv-entity-preview *ngIf="factoidEntity.headerStatements[0].pkEntity"
             [pkEntity]="factoidEntity.headerStatements[0].pkEntity" class="left-col"></gv-entity-preview>
         </div>
       </mat-grid-tile>
@@ -128,8 +128,7 @@
           <mat-grid-tile [colspan]="3" [rowspan]="1">
 
             <div class="content fade">
-              <gv-entity-preview *ngIf="headStatement.pkEntity" class="gv-one-liner gv-fade-out-right"
-                [pkEntity]="headStatement.pkEntity" class="left-col">
+              <gv-entity-preview *ngIf="headStatement.pkEntity" [pkEntity]="headStatement.pkEntity" class="left-col">
               </gv-entity-preview>
             </div>
           </mat-grid-tile>
@@ -176,13 +175,26 @@
         <!-- body entity preview -->
         <mat-grid-tile [colspan]="3" [rowspan]="1">
           <div class="content">
-            <gv-entity-preview *ngIf="bodyStatement.pkEntity && bodyStatement.vot == undefined"
-              class="gv-one-liner gv-fade-out-right left-col" [pkEntity]="bodyStatement.pkEntity"
-              [openTabOnClick]="true">
-            </gv-entity-preview>
-            <gv-value-preview *ngIf="bodyStatement.pkEntity && (getVOT$(bodyStatement) | async) != undefined"
-              class="gv-one-liner gv-fade-out-right left-col" [value]="getValueVOT$(bodyStatement) | async">
-            </gv-value-preview>
+            <ng-container *ngIf="bodyStatement.pkEntity">
+              <gv-entity-preview *ngIf="bodyStatement.vot == undefined" class="left-col"
+                [pkEntity]="bodyStatement.pkEntity" [openTabOnClick]="true">
+              </gv-entity-preview>
+              <gv-value-preview *ngIf="(getVOT$(bodyStatement) | async) != undefined" class="left-col"
+                [value]="getValueVOT$(bodyStatement) | async">
+              </gv-value-preview>
+            </ng-container>
+
+            <ng-container *ngIf="!bodyStatement.pkEntity && bodyStatement.fkDefault">
+              <i
+                [matTooltip]="'This is the default matching coming from the factoid mapping configuration of the table'">
+                <gv-entity-preview *ngIf="bodyStatement.vot == undefined" class="left-col"
+                  [pkEntity]="bodyStatement.fkDefault" [openTabOnClick]="true">
+                </gv-entity-preview>
+                <gv-value-preview *ngIf="(getVOT$(bodyStatement) | async) != undefined" class="left-col"
+                  [value]="getValueVOT$(bodyStatement, true) | async">
+                </gv-value-preview>
+              </i>
+            </ng-container>
           </div>
         </mat-grid-tile>
 

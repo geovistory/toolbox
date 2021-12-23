@@ -19,5 +19,6 @@ export interface FactoidStatement {
     pkCell?: number;
     vot?: string;
     pkStatement?: number;
+    fkDefault?: number;
 }
 
