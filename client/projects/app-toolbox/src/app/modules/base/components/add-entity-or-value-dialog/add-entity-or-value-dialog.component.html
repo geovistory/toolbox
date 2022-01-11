@@ -45,10 +45,12 @@
       <ng-container body>
         <gv-search-existing-entity class="gv-fh gv-ovf-auto" [pkClass]="(pkClass$ | async)"
           [searchString$]="searchString$" [mode]="sliderView == 'right' ? 'mode2' : 'mode1'"
-          [confirmBtnTextInProject]="'Open'" [confirmBtnTextNotInProject]="'Add and Open'"
-          [confirmBtnTooltipInProject]="'Open in new tab'"
-          [confirmBtnTooltiptNotInProject]="'add to your project and open in new tab'" (onMore)="onMoreClick($event)"
-          (onBack)="onBackClick()" (onConfirm)="onConfirmClick($event)">
+          [confirmBtnTextInProject]="data.selectMode ? 'Select' : 'Open'"
+          [confirmBtnTextNotInProject]="'Add and ' + data.selectMode ? 'Select' : 'Open'"
+          [confirmBtnTooltipInProject]="data.selectMode ? 'Select entity' : 'Open in new tab'"
+          [confirmBtnTooltiptNotInProject]="'add to your project and ' data.selectMode ? 'select entity' : ' open in new tab'"
+          (onMore)="onMoreClick($event)" (onBack)="onBackClick()"
+          (onConfirm)="data.selectMode ? selectEntity() : onConfirmClick($event)">
         </gv-search-existing-entity>
       </ng-container>
 
