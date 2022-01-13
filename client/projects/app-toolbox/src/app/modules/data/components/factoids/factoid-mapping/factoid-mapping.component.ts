@@ -14,6 +14,8 @@ export class FactoidMappingComponent implements OnInit {
   @Output() deleteFM = new EventEmitter();
   @Output() fmChanged = new EventEmitter<FactoidPropertyMapping>();
 
+  bodyCollapsed: Boolean
+
   constructor() { }
 
   ngOnInit(): void { }
@@ -30,6 +32,10 @@ export class FactoidMappingComponent implements OnInit {
 
   delete() {
     this.deleteFM.emit();
+  }
+
+  collapseBody(collapsed: Boolean) {
+    this.bodyCollapsed = collapsed;
   }
 
 }

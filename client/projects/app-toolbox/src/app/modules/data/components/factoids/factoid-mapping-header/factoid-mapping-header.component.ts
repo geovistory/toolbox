@@ -13,6 +13,9 @@ export class FactoidMappingHeaderComponent implements OnInit {
 
   @Output() delete = new EventEmitter();
   @Output() fmChanged = new EventEmitter<FactoidMapping>();
+  @Output() collapseBody = new EventEmitter<Boolean>();
+
+  collapsed = false;
 
   constructor() { }
 
@@ -23,6 +26,9 @@ export class FactoidMappingHeaderComponent implements OnInit {
     if (!this.fm?.comment) this.fm.comment = ""
     // init title to empty
     if (!this.fm?.title) this.fm.title = ""
+
+    // send default collapse mode
+    this.collapseBody.emit(this.collapsed)
   }
 
   fmChange(key: string, value: any) {
@@ -33,4 +39,11 @@ export class FactoidMappingHeaderComponent implements OnInit {
   deleteFactoid() {
     this.delete.emit();
   }
+
+  toggleCollapseBody() {
+    this.collapsed = !this.collapsed;
+    this.collapseBody.emit(this.collapsed)
+  }
+
+
 }

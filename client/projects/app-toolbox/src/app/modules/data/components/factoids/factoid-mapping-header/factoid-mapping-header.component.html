@@ -24,6 +24,13 @@
             <mat-icon class="mx-2" class="loc-pointer" style="color: inherit" (click)="deleteFactoid()">delete
             </mat-icon>
         </div>
+
+        <!-- collapse factoid mapping -->
+        <div class="gv-col-center" style="cursor:pointer">
+            <mat-icon (click)="toggleCollapseBody()">
+                {{collapsed ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
+            </mat-icon>
+        </div>
     </div>
 
 </div>
