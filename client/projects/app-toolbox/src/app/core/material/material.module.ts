@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -66,7 +67,8 @@ const modules = [
   MatRippleModule,
   MatGridListModule,
   MatSnackBarModule,
-  ScrollingModule
+  ScrollingModule,
+  MatBadgeModule
 ]
 
 @NgModule({

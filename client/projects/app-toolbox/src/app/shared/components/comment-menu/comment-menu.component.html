@@ -1,4 +1,6 @@
-<mat-icon class="loc-pointer" style="color: inherit" [matMenuTriggerFor]="menu">notes</mat-icon>
+<mat-icon class="loc-pointer hide-text" style="color: inherit" [matMenuTriggerFor]="menu"
+    matBadge="{{content.length>0 ? '0': ''}}" matBadgeSize="small">notes
+</mat-icon>
 
 <mat-menu #menu="matMenu" class="loc-content">
     <div class="gv-row-center">

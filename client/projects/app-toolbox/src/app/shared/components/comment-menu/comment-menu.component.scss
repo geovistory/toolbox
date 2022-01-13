@@ -21,3 +21,7 @@
         margin:0 !important;
     }
 }
+
+::ng-deep .mat-badge.hide-text .mat-badge-content {
+    color: transparent;
+  }
