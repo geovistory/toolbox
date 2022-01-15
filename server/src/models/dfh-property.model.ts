@@ -20,11 +20,6 @@ export class DfhProperty extends Entity {
   pk_property: number;
 
   @property({
-    type: 'boolean',
-  })
-  is_inherited?: boolean;
-
-  @property({
     type: 'number',
     required: true,
   })
@@ -56,15 +51,21 @@ export class DfhProperty extends Entity {
   })
   range_instances_max_quantifier?: number;
 
-  @property({
-    type: 'boolean',
-  })
-  identity_defining?: boolean;
+  @property.array(Number, {required: true})
+  parent_properties: number[];
 
-  @property({
-    type: 'boolean',
-  })
-  is_has_type_subproperty?: boolean;
+  @property.array(Number, {required: true})
+  ancestor_properties: number[];
+
+  // @property({
+  //   type: 'boolean',
+  // })
+  // identity_defining?: boolean;
+
+  // @property({
+  //   type: 'boolean',
+  // })
+  // is_has_type_subproperty?: boolean;
 
   @property({
     type: 'string',
@@ -78,7 +79,7 @@ export class DfhProperty extends Entity {
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  // [prop: string]: any;
 
   constructor(data?: Partial<DfhProperty>) {
     super(data);

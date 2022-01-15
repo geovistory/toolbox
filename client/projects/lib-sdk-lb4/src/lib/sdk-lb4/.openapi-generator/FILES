@@ -208,6 +208,8 @@ model/sysConfigClassCategoryBelonging.ts
 model/sysConfigFieldDisplay.ts
 model/sysConfigFieldsOfSourceClass.ts
 model/sysConfigFormCtrlType.ts
+model/sysConfigOntomeProfiles.ts
+model/sysConfigOptionalProfiles.ts
 model/sysConfigSpecialFields.ts
 model/sysConfigValue.ts
 model/sysConfigValueObjectType.ts

@@ -9,15 +9,11 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { RelatedProfile } from './relatedProfile';
+import { SysConfigOptionalProfiles } from './sysConfigOptionalProfiles';
 
 
-export interface DfhClass { 
-    pk_class?: number;
-    identifier_in_namespace?: string;
-    basic_type?: number;
-    profiles?: Array<RelatedProfile>;
-    parent_classes: Array<number>;
-    ancestor_classes: Array<number>;
+export interface SysConfigOntomeProfiles { 
+    requiredOntomeProfiles: Array<number>;
+    optionalOntomeProfiles?: Array<SysConfigOptionalProfiles>;
 }
 

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {values} from 'lodash';
 import {keys} from 'ramda';
-import { DfhApiClass, NewDfhApiClass } from '../data/gvDB/local-model.helpers';
-import { testdb } from "../testdb";
+import {DfhApiClass, NewDfhApiClass} from '../data/gvDB/local-model.helpers';
+import {testdb} from "../testdb";
 
 /**
  * These helpers are independent of any loopback 4 repository
@@ -65,6 +65,8 @@ const templateNew: NewDfhApiClass = {
   dfh_fk_profile: 5,
   dfh_profile_label_language: 'en',
   dfh_profile_label: 'Default Profile label',
+  dfh_parent_classes: [],
+  dfh_ancestor_classes: [],
 }
 
 

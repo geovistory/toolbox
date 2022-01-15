@@ -1,4 +1,4 @@
-import { DfhApiClass } from "./local-model.helpers"
+import {DfhApiClass} from "./local-model.helpers"
 
 export class DfhApiClassMock {
   static readonly EN_365_NAMING: DfhApiClass = {
@@ -19,7 +19,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C10"
+    "dfh_class_identifier_in_namespace": "C10",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_523_SHIP_VOYAGE: DfhApiClass = {
@@ -40,7 +42,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C1"
+    "dfh_class_identifier_in_namespace": "C1",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
 
@@ -62,7 +66,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E21"
+    "dfh_class_identifier_in_namespace": "E21",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_40_APPELLATION: DfhApiClass = {
@@ -83,7 +89,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E41"
+    "dfh_class_identifier_in_namespace": "E41",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_364_GEO_PLACE_TYPE: DfhApiClass = {
@@ -104,7 +112,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "histC9"
+    "dfh_class_identifier_in_namespace": "histC9",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_363_GEO_PLACE: DfhApiClass = {
@@ -125,7 +135,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "histC8"
+    "dfh_class_identifier_in_namespace": "histC8",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_335_TIME_PRIMITIVE: DfhApiClass = {
     "pk_entity": 3735,
@@ -145,7 +157,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "",
-    "dfh_class_identifier_in_namespace": "E61"
+    "dfh_class_identifier_in_namespace": "E61",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_61_BIRTH: DfhApiClass = {
@@ -166,7 +180,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E67"
+    "dfh_class_identifier_in_namespace": "E67",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_633_UNION: DfhApiClass = {
@@ -187,7 +203,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C9"
+    "dfh_class_identifier_in_namespace": "C9",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_219_MANIFESTATION_PRODUCT_TYPE: DfhApiClass = {
@@ -208,7 +226,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "F3"
+    "dfh_class_identifier_in_namespace": "F3",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_220_MANIFESTATION_SINGLETON: DfhApiClass = {
@@ -229,7 +249,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "F4"
+    "dfh_class_identifier_in_namespace": "F4",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_450_MANIFESTATION_SINGLETON_TYPE: DfhApiClass = {
@@ -250,7 +272,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C10"
+    "dfh_class_identifier_in_namespace": "C10",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE: DfhApiClass = {
     "pk_entity": 3741,
@@ -270,7 +294,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C19"
+    "dfh_class_identifier_in_namespace": "C19",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_218_EXPRESSION: DfhApiClass = {
     "pk_entity": 3731,
@@ -290,7 +316,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "F2"
+    "dfh_class_identifier_in_namespace": "F2",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_657_REFERENCE: DfhApiClass = {
     "pk_entity": 4875,
@@ -310,7 +338,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C11"
+    "dfh_class_identifier_in_namespace": "C11",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_54_LANGUAGE: DfhApiClass = {
     "pk_entity": 3729,
@@ -330,7 +360,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E56"
+    "dfh_class_identifier_in_namespace": "E56",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_52_DIMENSION: DfhApiClass = {
     "pk_entity": 5585,
@@ -350,7 +382,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E54"
+    "dfh_class_identifier_in_namespace": "E54",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_51_PLACE: DfhApiClass = {
     "pk_entity": 3728,
@@ -370,7 +404,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E53"
+    "dfh_class_identifier_in_namespace": "E53",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_690_TIME_UNIT: DfhApiClass = {
     "pk_entity": 5618,
@@ -390,7 +426,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C2"
+    "dfh_class_identifier_in_namespace": "C2",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_244_EXPRESSION_CREATION: DfhApiClass = {
@@ -411,7 +449,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "F28"
+    "dfh_class_identifier_in_namespace": "F28",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_784_SHORT_TITLE: DfhApiClass = {
@@ -432,7 +472,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C15"
+    "dfh_class_identifier_in_namespace": "C15",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_785_TEXT: DfhApiClass = {
@@ -453,7 +495,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C16"
+    "dfh_class_identifier_in_namespace": "C16",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
 
@@ -475,7 +519,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E93"
+    "dfh_class_identifier_in_namespace": "E93",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_50_TIME_SPAN: DfhApiClass = {
@@ -496,7 +542,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E52"
+    "dfh_class_identifier_in_namespace": "E52",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_689_DURATION: DfhApiClass = {
@@ -517,7 +565,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C1"
+    "dfh_class_identifier_in_namespace": "C1",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
 
@@ -540,7 +590,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C4"
+    "dfh_class_identifier_in_namespace": "C4",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_2_TEMPORAL_ENTITY: DfhApiClass = {
@@ -561,7 +613,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E2"
+    "dfh_class_identifier_in_namespace": "E2",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_503_EXPRESSION_PORTION: DfhApiClass = {
@@ -582,7 +636,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C2"
+    "dfh_class_identifier_in_namespace": "C2",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_630_APPELLATION_IN_A_LANGUAGE_TYPE: DfhApiClass = {
     "pk_entity": 6943,
@@ -602,7 +658,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C12"
+    "dfh_class_identifier_in_namespace": "C12",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_716_VOLUME: DfhApiClass = {
@@ -623,7 +681,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C20"
+    "dfh_class_identifier_in_namespace": "C20",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_723_COMPONENT: DfhApiClass = {
     "pk_entity": 6865,
@@ -643,7 +703,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "selected",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C6"
+    "dfh_class_identifier_in_namespace": "C6",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
 
   static readonly EN_715_VOLUME_MEASUREMENT_UNIT: DfhApiClass = {
@@ -664,7 +726,9 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "C19"
+    "dfh_class_identifier_in_namespace": "C19",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
   }
   static readonly EN_1_CRM_ENTITY: DfhApiClass = {
     "pk_entity": 4795,
@@ -684,8 +748,10 @@ export class DfhApiClassMock {
     "dfh_namespace_label_language": "en",
     "dfh_profile_association_type": "inferred",
     "dfh_class_scope_note_language": "en",
-    "dfh_class_identifier_in_namespace": "E1"
-}
+    "dfh_class_identifier_in_namespace": "E1",
+    "dfh_parent_classes": [],
+    "dfh_ancestor_classes": []
+  }
 }
 
 

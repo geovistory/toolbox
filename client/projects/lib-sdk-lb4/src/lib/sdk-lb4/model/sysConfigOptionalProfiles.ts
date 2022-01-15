@@ -9,15 +9,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { RelatedProfile } from './relatedProfile';
 
 
-export interface DfhClass { 
-    pk_class?: number;
-    identifier_in_namespace?: string;
-    basic_type?: number;
-    profiles?: Array<RelatedProfile>;
-    parent_classes: Array<number>;
-    ancestor_classes: Array<number>;
+export interface SysConfigOptionalProfiles { 
+    profilesAvailableByOmProjects: Array<number>;
+    restrictedToGvProjects?: Array<number>;
 }
 

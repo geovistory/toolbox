@@ -33,9 +33,9 @@ import {PubRoleMock} from '../data/gvDB/PubRoleMock';
 import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
 import {SysSystemRelevantClassMock} from '../data/gvDB/SysSystemRelevantClass';
 import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
-import {PROFILE_12_BIOGRAPHICAL_BA_2021_06_30} from '../data/ontome-profiles/profile-12-biographical-ba-2021-06-30';
-import {PROFILE_21_INTELLECTUAL_AN_2021_06_30} from '../data/ontome-profiles/profile-21-intellectual-an-2021-06-30';
-import {PROFILE_5_GEOVISTORY_BASI_2021_12_07} from '../data/ontome-profiles/profile-5-geovistory-basi-2021-12-07';
+import {PROFILE_12_BIOGRAPHICAL_BA_2022_01_14} from '../data/ontome-profiles/profile-12-biographical-ba-2022-01-14';
+import {PROFILE_21_INTELLECTUAL_AN_2022_01_14} from '../data/ontome-profiles/profile-21-intellectual-an-2022-01-14';
+import {PROFILE_5_GEOVISTORY_BASI_2022_01_14} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-14';
 import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
 import {testdb} from '../testdb';
 import {createTextAndAnnotation} from './feature-X.helper';
@@ -83,9 +83,9 @@ export async function minimumForDev() {
    * OntoME data
    ***************************************************************************/
 
-  const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2021_12_07)
-  const profileIntellectu = await createOntomeProfileMock(PROFILE_21_INTELLECTUAL_AN_2021_06_30)
-  const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2021_06_30)
+  const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2022_01_14)
+  const profileIntellectu = await createOntomeProfileMock(PROFILE_21_INTELLECTUAL_AN_2022_01_14)
+  const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_01_14)
 
 
   /****************************************************************************

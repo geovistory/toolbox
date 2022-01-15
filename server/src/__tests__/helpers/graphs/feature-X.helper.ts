@@ -41,8 +41,8 @@ import {PubAccountMock} from '../data/gvDB/PubAccountMock';
 import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
 import {TabCellXMock} from '../data/gvDB/TabCellXMock';
 import {TabRowMock} from '../data/gvDB/TabRowMock';
-import {PROFILE_12_BIOGRAPHICAL_BA_2021_06_30} from '../data/ontome-profiles/profile-12-biographical-ba-2021-06-30';
-import {PROFILE_5_GEOVISTORY_BASI_2021_08_24} from '../data/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
+import {PROFILE_12_BIOGRAPHICAL_BA_2022_01_14} from '../data/ontome-profiles/profile-12-biographical-ba-2022-01-14';
+import {PROFILE_5_GEOVISTORY_BASI_2022_01_14} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-14';
 import {createDigital} from '../generic/digital.helper';
 import {createFactoid, createFactoidMapping} from '../generic/factoid.helper';
 import {createCity} from '../generic/geo-place.helper';
@@ -72,8 +72,8 @@ export async function forFeatureX() {
      * OntoME data
      ***************************************************************************/
 
-    const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2021_08_24)
-    const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2021_06_30)
+    const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2022_01_14)
+    const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_01_14)
     // add profiles to project
     await addProfilesToProject(ProProjectMock.SANDBOX_PROJECT.pk_entity, [profileGeovBasics.profile.dfh_pk_profile, profileBibliograp.profile.dfh_pk_profile,])
 
@@ -279,7 +279,7 @@ export async function forFeatureX() {
 
     //factoids: person is identified by (1) appellation
     const factMap_birth = await createFactoidMapping(digital, DfhApiClassMock.EN_61_BIRTH.pk_entity);
-    await createFactoid(factMap_birth, colPerson, DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.pk_entity);
+    await createFactoid(factMap_birth, colPerson, DfhApiPropertyMock.EN_86_BROUGHT_INTO_LIFE.dfh_pk_property);
     await createFactoid(factMap_birth, colTimePrimitive, DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN.dfh_pk_property);
     await createFactoid(factMap_birth, colLanguageString, DfhApiPropertyMock.EN_1761_HAS_SHORT_TITLE.dfh_pk_property);
     //factoids: geoplace was at (148) place

@@ -2,6 +2,7 @@ import {model, property} from '@loopback/repository';
 import {SysConfigAddProperty} from './sys-config-add-property';
 import {ClassConfig} from './sys-config-class-config';
 import {ClassesIndex} from "./sys-config-classes-index";
+import {SysConfigOntomeProfiles} from './sys-config-optional-profiles';
 import {SysConfigSpecialFields} from './sys-config-special-fields.model';
 @model({
   jsonSchema: {
@@ -26,6 +27,11 @@ export class SysConfigValue {
 
   @property.array(SysConfigAddProperty)
   addProperty?: SysConfigAddProperty[]
+
+  @property({type: SysConfigOntomeProfiles})
+  ontome?: SysConfigOntomeProfiles;
 }
+
+
 
 

@@ -26,6 +26,7 @@
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "heroku-postbuild": "bash heroku-postbuild.sh",
     "ontomock": "node ./scripts/generate-ontome-profile-mock.js",
+    "ontoids": "node ./scripts/generate-ontome-ids.js",
     "build:sdk": "bash build-ngx-sdk.sh",
     "build:mock": "node ./scripts/build-mock.js",
     "build:sdk-windows": "build-ngx-sdk.sh",

@@ -1,6 +1,6 @@
 import {OntomeProfileMock} from '../gvDB/local-model.helpers';
 
-  export const PROFILE_20_PHYSICAL_MAN_MA_2021_07_11: OntomeProfileMock ={
+  export const PROFILE_20_PHYSICAL_MAN_MA_2022_01_14: OntomeProfileMock ={
   "profile": {
     "removed_from_api": false,
     "requested_language": "en",
@@ -13,7 +13,9 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
     "dfh_project_label_language": "en",
     "dfh_profile_label_language": "en",
     "dfh_profile_definition_language": "en",
-    "dfh_is_ongoing_forced_publication": true
+    "dfh_is_ongoing_forced_publication": true,
+    "dfh_is_root_profile": false,
+    "dfh_fk_root_profile": 43
   },
   "classes": [
     {
@@ -33,7 +35,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E12",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        11,
+        57,
+        382
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        7,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -52,7 +69,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E21",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        20,
+        38
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        19,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539,
+        881
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -71,7 +104,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E22",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        19,
+        23
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        65,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -90,7 +138,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E25",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        23,
+        25,
+        385
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        65,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -109,7 +173,17 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E55",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        27
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -128,7 +202,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E57",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -147,7 +232,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E79",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        11
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        7,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -166,7 +264,21 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E80",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        11,
+        366
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        7,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -185,7 +297,24 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E83",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        59
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        7,
+        57,
+        83,
+        211,
+        214,
+        539,
+        756,
+        887
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -204,7 +333,17 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E89",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        27
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -223,7 +362,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C13",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        25
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -242,7 +394,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C4",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -261,7 +424,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C11",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -280,7 +451,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C12",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        56
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -299,7 +482,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C13",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -318,7 +509,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C14",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        56
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -337,7 +540,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C15",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -356,7 +567,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C16",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        56
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -375,7 +598,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C17",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -394,7 +625,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C18",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        56
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -413,7 +656,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C19",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        56
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -432,26 +687,42 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C20",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
       "dfh_pk_class": 726,
       "dfh_basic_type": 9,
       "dfh_fk_profile": 20,
-      "dfh_class_label": "Composition",
+      "dfh_class_label": "Physical Component",
       "dfh_fk_namespace": 3,
       "dfh_namespace_uri": null,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
       "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
       "dfh_basic_type_label": "Temporal Entity",
-      "dfh_class_scope_note": "This class models the composition of instances of E18 Physical Thing out of their component elements and is therefore equivalent to the crm:P46 is composed of property but adds a time-indexed dimension to the composition relation, expressing the presence of parts only during a portion of the lifespan of a physical thing. The crm:P46 property is therefore a shortcut of this class and assumes implicitly that a part is present during the whole life of a physical thing.\r\nThis class can be specifically useful for dealing with the belonging of objects to a crm:E78 Collection (the composed, main physical thing) during a particular time-span.\r\nThis class is modeled as a subclass of C1 Entity quality (Temporal entity) and therefore instances of the crm:E5 Event class can initiate —P8 effects quality (result from)— or end —P9 ends (is ended by)— a different composition of a physical thing. In the case of instances of crm:E24 Physical Man-Made Thing, instances of E79 Part Addition and E80 Part Removal can be produced.\r\nComponent elements, since they are themselves instances of E18 Physical Thing, may be further analysed into sub-components, thereby creating a hierarchy of part decomposition, related to time.",
+      "dfh_class_scope_note": "This class comprises compositions of instances of crm:E18 Physical Thing out of their component elements and is therefore equivalent to the crm:P46 is composed of property but adds a time-indexed dimension to the composition relation, expressing the presence of parts only during a portion of the lifespan of a physical thing. The crm:P46 property is therefore a shortcut of this class and assumes implicitly that a part is present during the whole life of a physical thing.\r\nParthood : https://en.wiktionary.org/wiki/parthood ; https://plato.stanford.edu/entries/mereology/ \r\nThis class can be specifically useful for dealing with the belonging of objects to a crm:E78 Collection (the composed, main physical thing) during a particular time-span.\r\nThis class is modeled as a subclass of sdh;C1 Entity Quality and therefore instances of the crm:E5 Event class can initiate —crm:P8 effects quality (result from)— or end —crm:P9 ends (is ended by)— a different composition of a physical thing. In the case of instances of crm:E24 Physical Man-Made Thing, instances of crm:E79 Part Addition and crm:E80 Part Removal can be produced.\r\nComponent elements, since they are themselves instances of crm:E18 Physical Thing, may be further analysed into sub-components, thereby creating a hierarchy of part decomposition, related to time.",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C22",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        211
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -470,7 +741,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C23",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        686
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -489,14 +772,24 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C24",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     }
   ],
   "properties": [
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 13,
       "dfh_property_label_language": "en",
@@ -521,12 +814,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        10
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 42,
       "dfh_property_label_language": "en",
@@ -551,12 +847,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 43,
       "dfh_property_label_language": "en",
@@ -581,12 +878,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 89,
       "dfh_property_label_language": "en",
@@ -611,12 +909,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 96,
       "dfh_property_label_language": "en",
@@ -641,12 +940,17 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        29,
+        80,
+        1083
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 96,
       "dfh_property_label_language": "en",
@@ -671,12 +975,17 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        29,
+        80,
+        1083
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 98,
       "dfh_property_label_language": "en",
@@ -701,12 +1010,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        29
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 99,
       "dfh_property_label_language": "en",
@@ -731,12 +1043,16 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        11,
+        15
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 115,
       "dfh_property_label_language": "en",
@@ -761,12 +1077,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 115,
       "dfh_property_label_language": "en",
@@ -791,12 +1108,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1598,
       "dfh_property_label_language": "en",
@@ -821,12 +1139,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1599,
       "dfh_property_label_language": "en",
@@ -851,12 +1172,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        7
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1635,
       "dfh_property_label_language": "en",
@@ -881,12 +1205,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        79
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1636,
       "dfh_property_label_language": "en",
@@ -911,12 +1238,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        79
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1637,
       "dfh_property_label_language": "en",
@@ -941,12 +1271,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        79
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1638,
       "dfh_property_label_language": "en",
@@ -971,12 +1304,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        79
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1639,
       "dfh_property_label_language": "en",
@@ -1001,12 +1337,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        79
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1653,
       "dfh_property_label_language": "en",
@@ -1031,12 +1370,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1654,
       "dfh_property_label_language": "en",
@@ -1061,19 +1401,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1655,
       "dfh_property_label_language": "en",
-      "dfh_property_label": "concerns",
-      "dfh_property_inverse_label": "is concerned by",
+      "dfh_property_label": "belongs to",
+      "dfh_property_inverse_label": "has component",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property associates the main physical entity concerned by the composition, i. e. that has one or more parts.",
+      "dfh_property_scope_note": "This property associates the main physical entity concerned by the composition, i. e. the one that has one or more parts.",
       "dfh_is_inherited": true,
       "dfh_property_domain": 726,
       "dfh_domain_instances_min_quantifier": 0,
@@ -1091,19 +1432,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1656,
       "dfh_property_label_language": "en",
       "dfh_property_label": "has part",
       "dfh_property_inverse_label": "is part of",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property associates the part of a physical thing that composes it during a limited time-span",
+      "dfh_property_scope_note": "This property associates the part of a physical thing that composes it during a given time-span",
       "dfh_is_inherited": true,
       "dfh_property_domain": 726,
       "dfh_domain_instances_min_quantifier": 0,
@@ -1121,12 +1463,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1657,
       "dfh_property_label_language": "en",
@@ -1140,7 +1483,7 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_domain_instances_max_quantifier": -1,
       "dfh_property_range": 677,
       "dfh_range_instances_min_quantifier": 0,
-      "dfh_range_instances_max_quantifier": -1,
+      "dfh_range_instances_max_quantifier": 1,
       "dfh_identity_defining": false,
       "dfh_is_has_type_subproperty": false,
       "dfh_property_identifier_in_namespace": "P17",
@@ -1151,12 +1494,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1658,
       "dfh_property_label_language": "en",
@@ -1181,12 +1525,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1659,
       "dfh_property_label_language": "en",
@@ -1211,12 +1558,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1660,
       "dfh_property_label_language": "en",
@@ -1241,12 +1591,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1661,
       "dfh_property_label_language": "en",
@@ -1271,7 +1622,11 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 20,
       "dfh_profile_label": "Physical man-made objects and basic information about them",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     }
   ]
 }

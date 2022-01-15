@@ -31,6 +31,8 @@ export class ApiClassProfile {
   @property({required: true}) profileID: number
   @property({required: true}) profileLabel: string
   @property({required: true}) profileLabelLanguage: string
+  @property.array(Number, {required: true}) parentClasses: number[]
+  @property.array(Number, {required: true}) ancestorClasses: number[]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
 }

@@ -2,32 +2,37 @@ require('./__dotenv');
 const {writeFileSync} = require('fs');
 const prompts = require('prompts');
 const fetch = require('node-fetch');
+const {uniqBy, uniq} = require('lodash');
 
 const date = new Date();
 const regexSpecialChars = /[^A-Za-z0-9]/g;
 
 async function start() {
-  const response = await prompts([
-    {
-      type: 'number',
-      name: 'profileId',
-      message:
-        'From which profile should the mockdata be created? (type in the profile id)',
-    },
-  ]);
+  // const response = await prompts([
+  //   {
+  //     type: 'number',
+  //     name: 'profileId',
+  //     message:
+  //       'From which profile should the config be created? (type in the profile id)',
+  //   },
+  // ]);
 
-  // fetch data
-  const profile = await fetchProfile(response.profileId);
-  const classes = await fetchClasses(response.profileId);
-  const properties = await fetchProperties(response.profileId);
-  // transform data
-  const p = profileToDfhApiProfile(profile);
+  // fetch profiles
+  const profiles = await fetchProfiles();
+  const profs = profiles.map(p => profileToDfhApiProfile(p));
+  const profileIds = uniq(profs.map(p => p.dfh_pk_profile));
+
+  // fectch classes
+  const classes = await fetchClasses(profileIds);
   const ks = classes.map(k => classToDfhApiClass(k));
+
+  // fetch properties
+  const properties = await fetchProperties(profileIds);
   const ps = properties.map(p => propertyToDfhApiProperty(p));
+
   // prepare file
-  const filename = createFilename(response.profileId, profile.profileLabel);
-  const filepath = './src/__tests__/helpers/data/ontome-profiles/' + filename;
-  const filecontent = createFileContent(p, ks, ps);
+  const filepath = './src/ontome-ids.ts';
+  const filecontent = createFileContent(profs, ks, ps);
   // write file
   writeFileSync(filepath, filecontent);
 
@@ -35,50 +40,26 @@ async function start() {
 }
 
 start().catch(e => console.error(e));
-function createFilename(profileId, profileName) {
-  const YYYY = date.getFullYear();
-  const m = date.getMonth() + 1;
-  const mm = m < 10 ? '0' + m : m;
-  const d = date.getDate();
-  const dd = d < 10 ? '0' + d : d;
-  const pname = profileName
-    .toLowerCase()
-    .replace(regexSpecialChars, '-')
-    .substring(0, 15);
-  return `profile-${profileId}-${pname}-${YYYY}-${mm}-${dd}.ts`.replace(
-    /-+/g,
-    '-',
-  );
-}
 
-function createConstName(profileId, profileName) {
-  const YYYY = date.getFullYear();
-  const m = date.getMonth() + 1;
-  const mm = m < 10 ? '0' + m : m;
-  const d = date.getDate();
-  const dd = d < 10 ? '0' + d : d;
-  const pname = profileName
-    .toUpperCase()
-    .replace(regexSpecialChars, '_')
-    .substring(0, 15);
-  return `PROFILE_${profileId}_${pname}_${YYYY}_${mm}_${dd}`.replace(
-    /\_+/g,
-    '_',
+async function fetchProfiles() {
+  console.log(
+    `>  fetching profiles selected by Project Geovistory from OntoME`,
   );
-}
-
-async function fetchProfile(profileId) {
-  console.log(`>  fetching profile ${profileId} from OntoME`);
-  const response = await fetch('https://ontome.net/api/profiles.json');
+  const response = await fetch(
+    'https://ontome.net/api/profiles.json?selected-by-project=6',
+  );
   const profiles = await response.json();
-
-  const profile = profiles.find(p => p.profileID == profileId);
-
-  if (!profile) throw new Error(`profile with id ${profileId} not found`);
-  return profile;
+  return profiles;
 }
-
-async function fetchClasses(profileID) {
+async function fetchClasses(profileIds) {
+  const classes = [];
+  for (const profileId of profileIds) {
+    const classesFromProfile = await fetchClassesFromProfile(profileId);
+    classes.push(...classesFromProfile);
+  }
+  return classes;
+}
+async function fetchClassesFromProfile(profileID) {
   console.log('>  fetching classes from OntoME profile ' + profileID);
 
   const response = await fetch(
@@ -88,8 +69,15 @@ async function fetchClasses(profileID) {
   const classes = await response.json();
   return classes;
 }
-
-async function fetchProperties(profileID) {
+async function fetchProperties(profileIds) {
+  const properties = [];
+  for (const profileId of profileIds) {
+    const propertiesFromProfile = await fetchPropertiesFromProfile(profileId);
+    properties.push(...propertiesFromProfile);
+  }
+  return properties;
+}
+async function fetchPropertiesFromProfile(profileID) {
   console.log('>  fetching properties from OntoME profile ' + profileID);
 
   const response = await fetch(
@@ -100,24 +88,80 @@ async function fetchProperties(profileID) {
   return properties;
 }
 
-function createFileContent(dfhApiProfile, dfhApiClasses, dfhApiProperties) {
-  const constName = createConstName(
-    dfhApiProfile.dfh_pk_profile,
-    dfhApiProfile.dfh_profile_label,
-  );
-  const mock = {
-    profile: dfhApiProfile,
-    classes: dfhApiClasses,
-    properties: dfhApiProperties,
-  };
-  const content = `import {OntomeProfileMock} from '../gvDB/local-model.helpers';
+function createFileContent(dfhApiProfiles, dfhApiClasses, dfhApiProperties) {
+  const content = `
+/******************************************************************
+ * PROFILE ID's
+ ******************************************************************/
 
-  export const ${constName}: OntomeProfileMock =${JSON.stringify(
-    mock,
-    null,
-    2,
-  )}`;
+${processProfiles(dfhApiProfiles)}
+
+/******************************************************************
+ * CLASS ID's
+ ******************************************************************/
+
+${processClasses(dfhApiClasses)}
+
+/******************************************************************
+ * PROPERTY ID's
+ ******************************************************************/
+
+${processProperties(dfhApiProperties)}
+  `;
   return content;
+}
+
+function toConstName(label) {
+  return label
+    .toUpperCase()
+    .replace(regexSpecialChars, '_')
+    .replace(/_+/g, '_');
+}
+function propConstName(l) {
+  const x = `P_NS${l.dfh_fk_namespace}_${l.dfh_property_identifier_in_namespace}_${l.dfh_property_label}_ID`;
+  return toConstName(x);
+}
+
+function processProperties(dfhApiProperties) {
+  const uniq = uniqBy(dfhApiProperties, i => i.dfh_pk_property);
+
+  /**
+   * PRINT PROPERTI
+   */
+  for (const p of uniq) {
+    if (p.dfh_identity_defining) {
+      if (!p.dfh_parent_properties.includes(1376))
+        console.log('https://ontome.net/property/' + p.dfh_pk_property);
+    }
+  }
+
+  return uniq
+    .map(i => `export const ${propConstName(i)} = ${i.dfh_pk_property}`)
+    .join('\n');
+}
+function profileConstName(i) {
+  const x = `PROFILE_${i.dfh_profile_label}_ID`;
+  return toConstName(x);
+}
+function processProfiles(dfhApiProfiles) {
+  const uniq = uniqBy(dfhApiProfiles, i => i.dfh_pk_profile);
+
+  return uniq
+    .map(i => `export const ${profileConstName(i)} = ${i.dfh_pk_profile}`)
+    .join('\n');
+}
+
+function classConstName(l) {
+  const x = `C_NS${l.dfh_fk_namespace}_${l.dfh_class_identifier_in_namespace}_${l.dfh_class_label}_ID`;
+  return toConstName(x);
+}
+
+function processClasses(dfhApiClasses) {
+  const uniq = uniqBy(dfhApiClasses, i => i.dfh_pk_class);
+
+  return uniq
+    .map(i => `export const ${classConstName(i)} = ${i.dfh_pk_class}`)
+    .join('\n');
 }
 
 function profileToDfhApiProfile(profile) {
@@ -172,6 +216,7 @@ function propertyToDfhApiProperty(p) {
   return {
     removed_from_api: false,
     requested_language: 'en',
+    tmsp_last_dfh_update: '2020-03-05T14:05:26.714+00:00',
     is_enabled_in_profile: null,
     dfh_pk_property: p.propertyID,
     dfh_property_label_language: p.propertyLabelLanguage,

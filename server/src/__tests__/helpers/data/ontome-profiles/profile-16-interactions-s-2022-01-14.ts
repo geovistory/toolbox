@@ -1,6 +1,6 @@
 import {OntomeProfileMock} from '../gvDB/local-model.helpers';
 
-  export const PROFILE_16_INTERACTIONS_S_2021_07_10: OntomeProfileMock ={
+  export const PROFILE_16_INTERACTIONS_S_2022_01_14: OntomeProfileMock ={
   "profile": {
     "removed_from_api": false,
     "requested_language": "en",
@@ -13,7 +13,9 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
     "dfh_project_label_language": "en",
     "dfh_profile_label_language": "en",
     "dfh_profile_definition_language": "en",
-    "dfh_is_ongoing_forced_publication": true
+    "dfh_is_ongoing_forced_publication": true,
+    "dfh_is_root_profile": false,
+    "dfh_fk_root_profile": 70
   },
   "classes": [
     {
@@ -33,26 +35,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E21",
-      "dfh_profile_association_type": "selected"
-    },
-    {
-      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
-      "dfh_pk_class": 39,
-      "dfh_basic_type": 8,
-      "dfh_fk_profile": 16,
-      "dfh_class_label": "Legal Body",
-      "dfh_fk_namespace": 1,
-      "dfh_namespace_uri": null,
-      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_namespace_label": "CIDOC CRM version 6.2",
-      "dfh_basic_type_label": "Persistent Item",
-      "dfh_class_scope_note": "This class comprises institutions or groups of people that have obtained a legal recognition as a group and can act collectively as agents.\r\nThis means that they can perform actions, own property, create or destroy things and can be held collectively responsible for their actions like individual people. The term 'personne morale' is often used for this in French.",
-      "dfh_class_label_language": "en",
-      "dfh_profile_label_language": "en",
-      "dfh_namespace_label_language": "en",
-      "dfh_class_scope_note_language": "en",
-      "dfh_class_identifier_in_namespace": "E40",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        20,
+        38
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        19,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539,
+        881
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -71,7 +70,17 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E74",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        38,
+        853
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        70,
+        214,
+        881
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -90,7 +99,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E85",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        7,
+        685
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        211,
+        214,
+        539,
+        756,
+        887
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -109,7 +134,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E86",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        7,
+        685
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        211,
+        214,
+        539,
+        756,
+        887
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -122,13 +163,24 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
       "dfh_namespace_label": "Social, legal and economic life (SDHSS) ongoing",
       "dfh_basic_type_label": "Temporal Entity",
-      "dfh_class_scope_note": "This class models the phenomenon of a more or less active social relation between people, groups or countries as it is perceived in the context of specific social representations. In other words, this class does not model a physical interaction of actors in space and time (for persons this interaction is modelled with the C18 Persons' Interaction class) but the perception of a phenomenon like frienship, marriage, apprenticeship, etc. that happens in minds and the social space.\r\nEach relationship generally involves only two instances of one or more classes. If more then two instances are involved (e.g. multilateral political relationships) the unity of time and social space (i.e. the social context) must be given.\r\nIf the relationship is symmetrical, the histP32 involves partner property has to be used in order to associate the partners of the relationship. If the relationship is oriented from a source to a target (the partners having a different position in the relationship), the properties histP49 has relationship source and histP50 has relationship target will be used. This generic treatment allows to express a direction of the relationship. The meaning of the direction will be explicitly defined in the controlled vocabulary of relationship types.\r\nGiven their different meanings, it is absolutely necessary to avoid mixing the two types of relationships: either use the hist:P32 property or the hist:P49 / hist:P50 – they are disjoint.",
+      "dfh_class_scope_note": "This class models the phenomenon of a social relation between people, groups or countries as it is perceived in the context of shared intention. In other words, this class does not model a physical interaction of actors in space and time (for persons this interaction is modelled with the C18 Persons' Interaction class) but the perception of a phenomenon like frienship, marriage, apprenticeship, etc. that happens in the minds and the social space.\r\nEach relationship generally involves only two instances of one or more classes. If more then two instances are involved (e.g. multilateral political relationships) the unity of time and social space must be given. If different persons or groups are socially interreladed at different times, or perceived as such in different social contexts, several instances of this class must be produced and provided with appropriate types.\r\nIf the relationship is symmetrical, the histP32 involves partner property has to be used in order to associate the partners of the relationship. If the relationship is oriented from a source to a target (the partners having a different position in the relationship), the properties histP49 has relationship source and histP50 has relationship target will be used. This generic treatment allows to express a direction of the relationship. The meaning of the direction will be explicitly defined in the controlled vocabulary of relationship types.\r\nGiven their different meanings, it is absolutely necessary to avoid mixing the two types of relationships: either use the hist:P32 property or the hist:P49 / hist:P50 – they are disjoint.",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C3",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        769
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        211,
+        214,
+        699,
+        756
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -147,7 +199,49 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C13",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        25
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
+    },
+    {
+      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+      "dfh_pk_class": 365,
+      "dfh_basic_type": 9,
+      "dfh_fk_profile": 16,
+      "dfh_class_label": "Appellation in a Language",
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_uri": null,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_basic_type_label": "Temporal Entity",
+      "dfh_class_scope_note": "This class refers to the fact that an entity (actor, group, concept, etc.) is identified in the context of a social collective, during a given time span, using a specific appellation. This identifying appellation is generally related to the main language used be the social collective, or at least considered as understandable or valid in that context(e.g. a Latin or English appellation in a French speaking context).\r\nAs a subclass of social connotation, this class does not refer to an activity of collectively naming a thing (cf. the FRBRoo:F52_Name_Use_Activity class) but  to the possibility of identifying with that appellation within the given social context or collective.\r\nThe crm: P1 is identified property is a shortcut of the present class directly (i.e. independengly from time and context) linking a crm:E1 Entity to its crmE41 Appellation.",
+      "dfh_class_label_language": "en",
+      "dfh_profile_label_language": "en",
+      "dfh_namespace_label_language": "en",
+      "dfh_class_scope_note_language": "en",
+      "dfh_class_identifier_in_namespace": "C11",
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        699
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        211,
+        214,
+        756
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -166,14 +260,86 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C5",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        769
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        211,
+        214,
+        699,
+        756
+      ]
+    },
+    {
+      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+      "dfh_pk_class": 451,
+      "dfh_basic_type": 30,
+      "dfh_fk_profile": 16,
+      "dfh_class_label": "Group type",
+      "dfh_fk_namespace": 110,
+      "dfh_namespace_uri": null,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_namespace_label": "SDHSS CIDOC CRM supplement – ongoing",
+      "dfh_basic_type_label": "Type (controlled vocabulary)",
+      "dfh_class_scope_note": "This class comprises concepts denoted by terms from thesauri and controlled vocabularies used to characterize and classify instances of the 'crm:E74 Group'.",
+      "dfh_class_label_language": "en",
+      "dfh_profile_label_language": "en",
+      "dfh_namespace_label_language": "en",
+      "dfh_class_scope_note_language": "en",
+      "dfh_class_identifier_in_namespace": "C9",
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
+    },
+    {
+      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+      "dfh_pk_class": 535,
+      "dfh_basic_type": 9,
+      "dfh_fk_profile": 16,
+      "dfh_class_label": "Participation",
+      "dfh_fk_namespace": 112,
+      "dfh_namespace_uri": null,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_namespace_label": "Social, legal and economic life (SDHSS) ongoing",
+      "dfh_basic_type_label": "Temporal Entity",
+      "dfh_class_scope_note": "This class comprises periods of a more or less active participation of an actor (generally a person but sometimes a group) in an event, be this a battle, voyage, conference, etc. If the participation involves the exercise of a function or holding of an office or rank this can be associated using the sdh-so:P12 is participation in the quality of proprety. One or more functions can be associated to the same Participation if their time span is identical. It is otherwise preferable to split consecutive holdins of an office in the same event producing several instances of this class. The time-span of this class is equal to or included in the time-span of the related event.",
+      "dfh_class_label_language": "en",
+      "dfh_profile_label_language": "en",
+      "dfh_namespace_label_language": "en",
+      "dfh_class_scope_note_language": "en",
+      "dfh_class_identifier_in_namespace": "C15",
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        686
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
       "dfh_pk_class": 608,
       "dfh_basic_type": 30,
       "dfh_fk_profile": 16,
-      "dfh_class_label": "Membership type",
+      "dfh_class_label": "Membership Type",
       "dfh_fk_namespace": 112,
       "dfh_namespace_uri": null,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
@@ -185,7 +351,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C6",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -204,7 +381,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C4",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -223,14 +411,27 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C9",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        702
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        214,
+        539,
+        686
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
       "dfh_pk_class": 634,
       "dfh_basic_type": 30,
       "dfh_fk_profile": 16,
-      "dfh_class_label": "Type of union",
+      "dfh_class_label": "Type of Union",
       "dfh_fk_namespace": 112,
       "dfh_namespace_uri": null,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
@@ -242,7 +443,50 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C10",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
+    },
+    {
+      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+      "dfh_pk_class": 698,
+      "dfh_basic_type": 30,
+      "dfh_fk_profile": 16,
+      "dfh_class_label": "Social Role",
+      "dfh_fk_namespace": 112,
+      "dfh_namespace_uri": null,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_namespace_label": "Social, legal and economic life (SDHSS) ongoing",
+      "dfh_basic_type_label": "Type (controlled vocabulary)",
+      "dfh_class_scope_note": "A social role is a qualification of an actor that provides it with social power, i.e. some rights and duties related to the role, like a king, the president of an Academy, etc.",
+      "dfh_class_label_language": "en",
+      "dfh_profile_label_language": "en",
+      "dfh_namespace_label_language": "en",
+      "dfh_class_scope_note_language": "en",
+      "dfh_class_identifier_in_namespace": "C12",
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        444
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214,
+        706
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -261,14 +505,25 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C18",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        686
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        214,
+        539
+      ]
     }
   ],
   "properties": [
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 131,
       "dfh_property_label_language": "en",
@@ -293,42 +548,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        10
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
-      "is_enabled_in_profile": null,
-      "dfh_pk_property": 132,
-      "dfh_property_label_language": "en",
-      "dfh_property_label": "joined with",
-      "dfh_property_inverse_label": "gained member by",
-      "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property identifies the instance of E74 Group of which an instance of E39 Actor becomes a member through an instance of E85 Joining.\r\nAlthough a Joining activity normally concerns only one instance of E74 Group, it is possible to imagine circumstances under which becoming member of one Group implies becoming member of another Group as well.\r\nJoining events allow for describing people becoming members of a group with a more detailed path from E74 Group through P144 joined with (gained member by), E85 Joining, P143 joined (was joined by) to E39 Actor, compared to the shortcut offered by P107 has current or former member (is current or former member of).The property P144.1 kind of member can be used to specify the type of membership or the role the member has in the group.",
-      "dfh_is_inherited": true,
-      "dfh_property_domain": 78,
-      "dfh_domain_instances_min_quantifier": 0,
-      "dfh_domain_instances_max_quantifier": -1,
-      "dfh_property_range": 39,
-      "dfh_range_instances_min_quantifier": 1,
-      "dfh_range_instances_max_quantifier": -1,
-      "dfh_identity_defining": false,
-      "dfh_is_has_type_subproperty": false,
-      "dfh_property_identifier_in_namespace": "P144",
-      "dfh_namespace_uri": null,
-      "dfh_fk_namespace": 1,
-      "dfh_namespace_label_language": "en",
-      "dfh_namespace_label": "CIDOC CRM version 6.2",
-      "dfh_profile_association_type": null,
-      "dfh_fk_profile": 16,
-      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
-    },
-    {
-      "removed_from_api": false,
-      "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 132,
       "dfh_property_label_language": "en",
@@ -353,12 +581,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        10
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 133,
       "dfh_property_label_language": "en",
@@ -383,42 +614,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        10
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
-      "is_enabled_in_profile": null,
-      "dfh_pk_property": 134,
-      "dfh_property_label_language": "en",
-      "dfh_property_label": "separated from",
-      "dfh_property_inverse_label": "lost member by",
-      "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property identifies the instance of E74 Group an instance of E39 Actor leaves through an instance of E86 Leaving.\r\nAlthough a Leaving activity normally concerns only one instance of E74 Group, it is possible to imagine circumstances under which leaving one E74 Group implies leaving another E74 Group as well.",
-      "dfh_is_inherited": true,
-      "dfh_property_domain": 79,
-      "dfh_domain_instances_min_quantifier": 0,
-      "dfh_domain_instances_max_quantifier": -1,
-      "dfh_property_range": 39,
-      "dfh_range_instances_min_quantifier": 1,
-      "dfh_range_instances_max_quantifier": -1,
-      "dfh_identity_defining": false,
-      "dfh_is_has_type_subproperty": false,
-      "dfh_property_identifier_in_namespace": "P146",
-      "dfh_namespace_uri": null,
-      "dfh_fk_namespace": 1,
-      "dfh_namespace_label_language": "en",
-      "dfh_namespace_label": "CIDOC CRM version 6.2",
-      "dfh_profile_association_type": null,
-      "dfh_fk_profile": 16,
-      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
-    },
-    {
-      "removed_from_api": false,
-      "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 134,
       "dfh_property_label_language": "en",
@@ -443,19 +647,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        10
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1040,
       "dfh_property_label_language": "en",
       "dfh_property_label": "effects",
       "dfh_property_inverse_label": "is the result of",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property associates to a C2 Social Even the C27 Collective State of Mind which has been effected or initiated by it. Different social events can contribute to the origin of the same instance of a collective state of mind and one social event can produce several collective states of mind.",
+      "dfh_property_scope_note": "This property associates a sdh:C42 Intentional Event, happening in the mind of one or more persons, with the sdh:C27 Intentional Situation that has been effected or initiated by it. Different intentional events can contribute to the origin of the same instance of an intentional situation and one intentional event can produce several intentional situations.",
       "dfh_is_inherited": true,
       "dfh_property_domain": 78,
       "dfh_domain_instances_min_quantifier": 0,
@@ -473,19 +680,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1041,
       "dfh_property_label_language": "en",
       "dfh_property_label": "ends",
       "dfh_property_inverse_label": "is ended by",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "\r\nThis property associates a Social Situation to the Collective State of Mind that it directly oder indirectly ends. Different social situations can contribute to the end of the same instance of Collective State of Mind and one event can end several Collective states of Minds.\r\n",
+      "dfh_property_scope_note": "\r\nThis property associates a sdh:C42 Intentional Event, happening in the mind of one or more persons, with the sdh:C27 Intentional Situation that it directly oder indirectly ends. Different intentional events can contribute to the end of the same instance of an intentional situation and one intentional event can end several intentional situations.\r\n",
       "dfh_is_inherited": true,
       "dfh_property_domain": 79,
       "dfh_domain_instances_min_quantifier": 0,
@@ -503,12 +711,292 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 21,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 68,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 78,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 79,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 334,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 442,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 535,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 633,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 702,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1188,
       "dfh_property_label_language": "en",
@@ -533,42 +1021,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
-      "is_enabled_in_profile": null,
-      "dfh_pk_property": 1189,
-      "dfh_property_label_language": "en",
-      "dfh_property_label": "was membership in",
-      "dfh_property_inverse_label": "was the membership group of",
-      "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property associates the group concerned by the membership",
-      "dfh_is_inherited": true,
-      "dfh_property_domain": 442,
-      "dfh_domain_instances_min_quantifier": 0,
-      "dfh_domain_instances_max_quantifier": -1,
-      "dfh_property_range": 39,
-      "dfh_range_instances_min_quantifier": 1,
-      "dfh_range_instances_max_quantifier": 1,
-      "dfh_identity_defining": false,
-      "dfh_is_has_type_subproperty": false,
-      "dfh_property_identifier_in_namespace": "P2",
-      "dfh_namespace_uri": null,
-      "dfh_fk_namespace": 112,
-      "dfh_namespace_label_language": "en",
-      "dfh_namespace_label": "Social, legal and economic life (SDHSS) ongoing",
-      "dfh_profile_association_type": null,
-      "dfh_fk_profile": 16,
-      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
-    },
-    {
-      "removed_from_api": false,
-      "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1189,
       "dfh_property_label_language": "en",
@@ -593,12 +1054,112 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1204,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "has group type",
+      "dfh_property_inverse_label": "is group type of",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates a group with the type which defines its identity",
+      "dfh_is_inherited": false,
+      "dfh_property_domain": 68,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 451,
+      "dfh_range_instances_min_quantifier": 0,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": true,
+      "dfh_property_identifier_in_namespace": "P7",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 110,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "SDHSS CIDOC CRM supplement – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1344,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is participation of",
+      "dfh_property_inverse_label": "(inverse of) is participation of",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the actor (person or group) participating in the event. Only one actor can be added per class instance.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 535,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 21,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P10",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 112,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "Social, legal and economic life (SDHSS) ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        13
+      ],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1346,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is participation in the quality of",
+      "dfh_property_inverse_label": "is quality of",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "The function exercised or office/rank hold by the actor participating in the event. E.g. someone participating in an international conference not as a private person but as an ambassador of a state. More then one instance of this property per event and the same actor are possible but in this case the time span must be the same for all of them. Otherwise different instances of the class Participation should be created.",
+      "dfh_is_inherited": false,
+      "dfh_property_domain": 535,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 698,
+      "dfh_range_instances_min_quantifier": 0,
+      "dfh_range_instances_max_quantifier": -1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P12",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 112,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "Social, legal and economic life (SDHSS) ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 16,
+      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1409,
       "dfh_property_label_language": "en",
@@ -623,12 +1184,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1413,
       "dfh_property_label_language": "en",
@@ -653,12 +1215,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1434,
       "dfh_property_label_language": "en",
@@ -683,19 +1248,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1436,
       "dfh_property_label_language": "en",
-      "dfh_property_label": "has partner",
-      "dfh_property_inverse_label": "is partner in",
+      "dfh_property_label": "had partner",
+      "dfh_property_inverse_label": "was partner in",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property associates the two (always two) persons participating to the union",
+      "dfh_property_scope_note": "This property associates the two (always two) instances of E21 Person participating to the C9 Union.",
       "dfh_is_inherited": false,
       "dfh_property_domain": 633,
       "dfh_domain_instances_min_quantifier": 0,
@@ -713,19 +1281,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1437,
       "dfh_property_label_language": "en",
       "dfh_property_label": "has type of union",
       "dfh_property_inverse_label": "is type of union of",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "Associates a union with the type which defines its identity",
+      "dfh_property_scope_note": "This property associates a C9 Union with the C10 Type of Union which defines its identity.",
       "dfh_is_inherited": false,
       "dfh_property_domain": 633,
       "dfh_domain_instances_min_quantifier": 0,
@@ -743,12 +1312,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1445,
       "dfh_property_label_language": "en",
@@ -773,12 +1345,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1446,
       "dfh_property_label_language": "en",
@@ -803,12 +1376,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1599,
       "dfh_property_label_language": "en",
@@ -833,42 +1407,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        7
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
-      "is_enabled_in_profile": null,
-      "dfh_pk_property": 1759,
-      "dfh_property_label_language": "en",
-      "dfh_property_label": "has setting",
-      "dfh_property_inverse_label": "is setting for",
-      "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property associates to a social event the spatio-temporal phenomena in the context of which it takes place or occurs. A social event is carved out in a set of spatio-temporal events according to a given description, i.e. a corresponding social representation. These events provide the setting for the social event. E.g. the wedding celebration (the event) is the setting of the marriage (the social event) conceived as the transition from being (considered by a community as) single to being (considered as) married.",
-      "dfh_is_inherited": true,
-      "dfh_property_domain": 334,
-      "dfh_domain_instances_min_quantifier": 0,
-      "dfh_domain_instances_max_quantifier": -1,
-      "dfh_property_range": 702,
-      "dfh_range_instances_min_quantifier": 1,
-      "dfh_range_instances_max_quantifier": -1,
-      "dfh_identity_defining": false,
-      "dfh_is_has_type_subproperty": false,
-      "dfh_property_identifier_in_namespace": "P43",
-      "dfh_namespace_uri": null,
-      "dfh_fk_namespace": 3,
-      "dfh_namespace_label_language": "en",
-      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
-      "dfh_profile_association_type": null,
-      "dfh_fk_profile": 16,
-      "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
-    },
-    {
-      "removed_from_api": false,
-      "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1784,
       "dfh_property_label_language": "en",
@@ -893,7 +1440,9 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 16,
       "dfh_profile_label": "Interactions, Social Relationships and Memberships of Persons",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     }
   ]
 }
