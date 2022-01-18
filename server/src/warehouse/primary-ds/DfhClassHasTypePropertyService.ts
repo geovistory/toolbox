@@ -1,7 +1,7 @@
+import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PrimaryDataService} from '../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../base/interfaces/KeyDefinition';
 import {Warehouse} from '../Warehouse';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface RClassId {
     pkClass: number
 }
@@ -46,7 +46,7 @@ interface DbItem {
 }
 
 const updateSql = `
-    SELECT DISTINCT
+    SELECT DISTINCT ON (dfh_property_domain)
         dfh_property_domain "pkClass",
         jsonb_build_object('fkProperty',dfh_pk_property) val
     FROM
