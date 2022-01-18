@@ -238,7 +238,7 @@ export class GvAnalysisService<I, O> {
               // pkEntity$.next(data.pro.analysis[0].pk_entity)
               this.p.addTab<AnalysisTabData>({
                 active: true,
-                component: 'analysis-detail',
+                component: 'analysis',
                 icon: 'analysis',
                 pathSegment: 'analysisDetails',
                 data: {

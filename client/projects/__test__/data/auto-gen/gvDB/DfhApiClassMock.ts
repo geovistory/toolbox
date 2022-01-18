@@ -708,13 +708,13 @@ export class DfhApiClassMock {
     "dfh_profile_association_type": "inferred"
   }
   // this is not from OntoME, it is added manually for digitals
-  static readonly EN_9902_ANNOTATION: DfhApiClass = {
+  static readonly EN_9902_TEXT_ANNOTATION: DfhApiClass = {
     pk_entity: 9902,
     "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
     "dfh_pk_class": 9902,
     "dfh_basic_type": 8,
     "dfh_fk_profile": 99,
-    "dfh_class_label": "Annotation",
+    "dfh_class_label": "Text Annotation",
     "dfh_fk_namespace": 1,
     "dfh_namespace_uri": null,
     "dfh_profile_label": "Digitals",
@@ -773,6 +773,112 @@ export class DfhApiClassMock {
     "dfh_profile_association_type": "inferred"
   }
 
+  // this is not from OntoME, it is added manually for digitals
+  static readonly EN_9903_TRANSCRIPTION: DfhApiClass = {
+    pk_entity: 9903,
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_pk_class": 9903,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 99,
+    "dfh_class_label": "Transcription",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Digitals",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "This class is a subclass of Text. It contains Transcriptions of Expressions.",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E21",
+    "dfh_profile_association_type": "inferred"
+  }
+
+  // this is not from OntoME, it is added manually for digitals
+  static readonly EN_9904_TABLE: DfhApiClass = {
+    pk_entity: 9904,
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_pk_class": 9904,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 99,
+    "dfh_class_label": "Table",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Digitals",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "This class comprises Tables, as a subclass of Digital.",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E21",
+    "dfh_profile_association_type": "inferred"
+  }
+  // this is not from OntoME, it is added manually for digitals
+  static readonly EN_9905_TABLE_ANNOTATION: DfhApiClass = {
+    pk_entity: 9905,
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_pk_class": 9905,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 99,
+    "dfh_class_label": "Table Annotation",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Digitals",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "Table Annotation.",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E21",
+    "dfh_profile_association_type": "inferred"
+  }
+  // this is not from OntoME, it is added manually for digitals
+  static readonly EN_9906_TABLE_VALUE: DfhApiClass = {
+    pk_entity: 9906,
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_pk_class": 9904,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 99,
+    "dfh_class_label": "Table",
+    "dfh_fk_namespace": 1,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Digitals",
+    "dfh_namespace_label": "CIDOC CRM version 6.2",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "This class comprises Table Value.",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "E21",
+    "dfh_profile_association_type": "inferred"
+  }
+  // this is not from OntoME, it is added manually for digitals
+  static readonly EN_521_CELL: DfhApiClass = {
+    pk_entity: 521,
+    "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+    "dfh_pk_class": 521,
+    "dfh_basic_type": 8,
+    "dfh_fk_profile": 99,
+    "dfh_class_label": "Cell",
+    "dfh_fk_namespace": 30,
+    "dfh_namespace_uri": null,
+    "dfh_profile_label": "Geovistory Basics",
+    "dfh_namespace_label": "Geovistory (ongoing)",
+    "dfh_basic_type_label": "Persistent Item",
+    "dfh_class_scope_note": "A cell in a table in a database",
+    "dfh_class_label_language": "en",
+    "dfh_profile_label_language": "en",
+    "dfh_namespace_label_language": "en",
+    "dfh_class_scope_note_language": "en",
+    "dfh_class_identifier_in_namespace": "C7",
+    "dfh_profile_association_type": "selected"
+  }
 }
 
 /**

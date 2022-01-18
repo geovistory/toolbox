@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
 import { ReduxMainService, subfieldIdToString } from '@kleiolab/lib-redux';
-import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, WarFieldChange, WarFieldChangeAddToStream, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, WarFieldChange, WarFieldChangeAddToStream, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { FieldChangeSocket } from '@kleiolab/lib-sockets';
 import { indexBy } from 'ramda';
 import { interval, Observable, Subject } from 'rxjs';
 import { bufferWhen, filter, first } from 'rxjs/operators';
-import { fieldToFieldPage, fieldToGvFieldTargets } from '../base.helpers';
+import { fieldPageToWarFieldChangeId, fieldToFieldPage, fieldToGvFieldTargets } from '../base.helpers';
 
 
 interface Loader {
@@ -155,7 +155,7 @@ export class PaginationService {
     if (!this.pageLoaders.has(pageIdString)) {
 
 
-      const warFieldChangeId: WarFieldChangeId = this.fieldPageToWarFieldChangeId(fieldPage)
+      const warFieldChangeId: WarFieldChangeId = fieldPageToWarFieldChangeId(fieldPage)
 
       // extend stream of fieldChange
       this.extendFieldChangeStream(pkProject, warFieldChangeId);
@@ -266,15 +266,6 @@ export class PaginationService {
     this.fieldChangeSocket.emit(`${FieldChangeSocket.NAMESPACE}::extendStream`, addMsg);
   }
 
-  private fieldPageToWarFieldChangeId(fieldPage: GvFieldPage): WarFieldChangeId {
-    return {
-      fk_source_info: fieldPage.source.fkInfo,
-      fk_project: fieldPage.scope.inProject,
-      fk_property: fieldPage.property.fkProperty,
-      fk_property_of_property: fieldPage.property.fkPropertyOfProperty,
-      is_outgoing: fieldPage.isOutgoing
-    };
-  }
 
   /**
    * Flattens the fieldPageReq and returns individual parameters that are easier to consume
@@ -304,10 +295,12 @@ export class PaginationService {
             const { pageIdString } = this.parseFieldPageRequest(fieldpage.req)
             const item = options[pageIdString]
             // set the isUpToDateUntil of the loader
-            this.pageLoaders.set(pageIdString, {
-              ...item.loader,
-              isUpToDateUntil: new Date(res.subfieldPages[0].validFor)
-            })
+            if (item) {
+              this.pageLoaders.set(pageIdString, {
+                ...item.loader,
+                isUpToDateUntil: new Date(res.subfieldPages[0].validFor)
+              })
+            }
           })
 
         }
@@ -394,6 +387,6 @@ export class PaginationService {
 
 
   private fieldChangeToStringId(i: WarFieldChangeId): string {
-    return `${i.fk_project || 0}_${i.fk_source_info || 0}_${i.fk_property || 0}_${i.fk_property_of_property || 0}_${i.is_outgoing}`
+    return `${i.fk_project || 0}_${i.fk_source_info || 0}_${i.fk_source_tables_cell || 0}_${i.fk_property || 0}_${i.fk_property_of_property || 0}_${i.is_outgoing}`
   }
 }

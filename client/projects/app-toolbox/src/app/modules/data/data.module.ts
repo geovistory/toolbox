@@ -17,9 +17,9 @@ import { QuillModule } from '../quill';
 import { ImporterComponent } from './components/importer/importer.component';
 import { TableConfigDialogComponent } from './components/table-config-dialog/table-config-dialog.component';
 import { TableDetailComponent } from './components/table-detail/table-detail.component';
-import { TextDetailComponent } from './components/text-detail/text-detail.component';
+import { TableEditorComponent } from './components/table-editor/table-editor.component';
 import { TextDetail2Component } from './components/text-detail2/text-detail2.component';
-import { VersionPickerComponent } from './components/version-picker/version-picker.component';
+import { ViewFieldHasTableValueComponent } from './components/view-field-has-table-value/view-field-has-table-value.component';
 
 @NgModule({
   imports: [
@@ -41,7 +41,7 @@ import { VersionPickerComponent } from './components/version-picker/version-pick
     InfoDialogModule
   ],
   providers: [],
-  declarations: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, TextDetail2Component],
-  exports: [TextDetailComponent, VersionPickerComponent, TableDetailComponent, TableConfigDialogComponent, TextDetail2Component],
+  declarations: [TableDetailComponent, ImporterComponent, TableConfigDialogComponent, TextDetail2Component, TableEditorComponent, ViewFieldHasTableValueComponent],
+  exports: [TableDetailComponent, TableConfigDialogComponent, TextDetail2Component, TableEditorComponent],
 })
 export class DataModule { }

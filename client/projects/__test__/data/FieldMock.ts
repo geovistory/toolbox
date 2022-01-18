@@ -1,12 +1,12 @@
 import { SysConfig } from '@kleiolab/lib-config';
 import { Field, FieldBase, FieldTargetClass, SpecialFieldType } from '@kleiolab/lib-queries';
-import { GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargetViewType, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldTargetViewType, GvSubentitFieldPageReq, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
 import { DfhApiClass, DfhApiProperty } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
 
 function fieldToSubentityFieldReq(field: Field, isCircular: boolean): GvSubentitFieldPageReq {
-  const targets: { [key: number]: GvSubentityFieldTargetViewType } = {}
+  const targets: { [key: number]: GvFieldTargetViewType } = {}
   for (const key in field.targets) {
     if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
       const element = field.targets[key];

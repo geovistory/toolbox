@@ -21,6 +21,12 @@ export class WarFieldChangeId {
     type: 'number',
     required: true
   })
+  fk_source_tables_cell: number;
+
+  @property({
+    type: 'number',
+    required: true
+  })
   fk_property: number;
 
   @property({

@@ -27,6 +27,7 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
   @Input() section: SectionName;
   @Input() scope: GvFieldPageScope;
   @Input() showBodyOnInit: boolean;
+  @Input() showEmptyFieldsOnInit: boolean;
 
 
   fields$: Observable<Field[]>
@@ -48,6 +49,7 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
     if (errors.length) throw new Error(errors.join('\n'));
 
     if (this.showBodyOnInit) this.showBody$.next(this.showBodyOnInit)
+    if (this.showEmptyFieldsOnInit) this.showEmptyFields$.next(this.showEmptyFieldsOnInit)
     this.fields$ = this.pkClass$.pipe(first(x => {
       return !!x
     }), switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.section)))

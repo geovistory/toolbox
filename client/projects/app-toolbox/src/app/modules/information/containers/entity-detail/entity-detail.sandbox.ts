@@ -46,8 +46,8 @@ const tabData: PeItTabData = {
 }
 const tab: PanelTab<PeItTabData> = {
   active: true,
-  component: 'entity-detail',
-  icon: 'persistent-entity',
+  component: 'entity',
+  icon: 'persistent-item',
   path: ['X'],
   data: tabData
 }

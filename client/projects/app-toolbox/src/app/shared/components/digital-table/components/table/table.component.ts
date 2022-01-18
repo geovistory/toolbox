@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { GetTablePageOptions, SysConfigValue, SysConfigValueObjectType, TabCell, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { NumberDialogComponent, NumberDialogData, NumberDialogReturn } from '../../../number-dialog/number-dialog.component';
 import { ColMappingComponent } from './col-mapping/col-mapping.component';
@@ -15,11 +15,7 @@ export interface TableSort {
   colNb: number; // if === -1, sorting is not by col but by index of the roe
   direction: GetTablePageOptions.SortDirectionEnum
 }
-export enum TableMode {
-  edit = 'edit',
-  view = 'view',
-  ids = 'ids'
-}
+
 
 export interface ColumnMapping {
   fkClass: number,
@@ -78,6 +74,8 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() loading = false;
   @Input() headers$: Observable<Header[]>;
   @Input() table$: Observable<Array<Array<Cell>>>;
+  @Input() readonly$: BehaviorSubject<boolean>;
+  @Input() showIds$: BehaviorSubject<boolean>;
 
   // optionnal inputs
   @Input() filteringEnabled = false;
@@ -85,7 +83,6 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() lineBreak = false;
   @Input() sortBy$: Observable<TableSort>;
   @Input() origin = 'classic';
-  @Input() mode: TableMode = TableMode.view;
   @Input() newRow: Row;
 
   // outputs

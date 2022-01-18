@@ -41,8 +41,8 @@ const tabData: PeItTabData = {
 const tabId = 't1'
 const tab: PanelTab<PeItTabData> = {
   active: true,
-  component: 'entity-detail',
-  icon: 'persistent-entity',
+  component: 'entity',
+  icon: 'persistent-item',
   path: ['X'],
   data: tabData
 }
@@ -100,7 +100,7 @@ class MockPaginatedStatementsControllerService {
         map(value => {
           if (this.first) {
             this.first = false;
-            throw new Error("random error");
+            throw new Error('random error');
           }
           return value
         })

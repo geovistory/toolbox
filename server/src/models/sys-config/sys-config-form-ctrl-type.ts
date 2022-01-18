@@ -34,6 +34,10 @@ export class SysConfigFormCtrlType {
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   place?: TrueEnum;
 
+  // form element to create place (lat/long)
+  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
+  cell?: TrueEnum;
+
   // form element to create time primitive
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   timePrimitive?: TrueEnum;

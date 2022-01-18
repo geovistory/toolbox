@@ -1,13 +1,15 @@
-import { Postgres1DataSource } from '../../datasources';
-import { DatChunk, DatDigital, InfLangString, InfStatement, ProInfoProjRel, WarEntityPreviewWithFulltext } from '../../models';
-import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
-import { TabCell } from '../../models/tab-cell.model';
-import { Streams } from '../../realtime/streams/streams';
-import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
+import {ModelDefinition} from '@loopback/repository';
+import {Postgres1DataSource} from '../../datasources';
+import {InfAppellation, InfLangString, InfStatement, ProInfoProjRel, WarEntityPreviewWithFulltext} from '../../models';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
+import {TabCell} from '../../models/tab-cell.model';
+import {Streams} from '../../realtime/streams/streams';
+import {SqlBuilderLb4Models, With} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
 export class QRamList extends SqlBuilderLb4Models {
 
+  infStatementWiths: string[] = ['tw3', 'tw4']
   constructor(
     dataSource: Postgres1DataSource,
     private streams: Streams
@@ -21,13 +23,14 @@ export class QRamList extends SqlBuilderLb4Models {
    * @param refersTo
    */
   joinSpotAndDigital(refersTo?: 'Chunk' | 'Cell') {
-    if (refersTo === 'Chunk') {
-      return `,
-      data.chunk t3,
-      data.digital t4
-      `
-    }
-    else if (refersTo === 'Cell') {
+    // if (refersTo === 'Chunk') {
+    //   return `,
+    //   data.chunk t3,
+    //   data.digital t4
+    //   `
+    // }
+    // else
+    if (refersTo === 'Cell') {
       return `,
       tables.cell t3,
       data.digital t4
@@ -37,13 +40,14 @@ export class QRamList extends SqlBuilderLb4Models {
   }
 
   selectDigital(refersTo?: 'Chunk' | 'Cell') {
-    if (refersTo === 'Chunk') {
-      return `
-      t3.pk_entity pk_spot,
-      t4.pk_entity pk_digital
-      `
-    }
-    else if (refersTo === 'Cell') {
+    // if (refersTo === 'Chunk') {
+    //   return `
+    //   t3.pk_entity pk_spot,
+    //   t4.pk_entity pk_digital
+    //   `
+    // }
+    // else
+    if (refersTo === 'Cell') {
       return `
       t3.pk_cell pk_spot,
       t4.pk_entity pk_digital
@@ -56,13 +60,14 @@ export class QRamList extends SqlBuilderLb4Models {
   }
 
   whereRefersTo(refersTo?: 'Chunk' | 'Cell') {
-    if (refersTo === 'Chunk') {
-      return `
-      WHERE t3.pk_entity = t1.fk_subject_data
-      AND t3.fk_text = t4.pk_text
-      `
-    }
-    else if (refersTo === 'Cell') {
+    // if (refersTo === 'Chunk') {
+    //   return `
+    //   WHERE t3.pk_entity = t1.fk_subject_data
+    //   AND t3.fk_text = t4.pk_text
+    //   `
+    // }
+    // else
+    if (refersTo === 'Cell') {
       return `
       WHERE  t3.pk_cell = t1.fk_subject_tables_cell
       AND t3.fk_digital = t4.pk_entity
@@ -73,16 +78,18 @@ export class QRamList extends SqlBuilderLb4Models {
 
   twSpotModel(refersTo?: 'Chunk' | 'Cell') {
     if (refersTo === 'Chunk') {
+      this.infStatementWiths.push('twd4')
+
       return `
-      -- chunks
+      -- chunks from information.appellation
       twd3 AS (
         SELECT
-          ${this.createSelect('t1', DatChunk.definition)}
+          ${this.createBuildAndAddObject(this.objectWiths.inf.appellation, {twName: 'twd3', colName: 'o'}, 't1', InfAppellation.definition)} o
         FROM
           tw0
         CROSS JOIN
-          data.v_chunk t1
-        WHERE t1.pk_entity = tw0.pk_spot
+          information.appellation t1
+        WHERE t1.pk_entity = tw0.fk_object_info
       ),
       `
     }
@@ -103,78 +110,81 @@ export class QRamList extends SqlBuilderLb4Models {
     return ''
   }
 
-  groupSpotModel(refersTo?: 'Chunk' | 'Cell') {
-    if (refersTo === 'Chunk') {
-      return `
-      chunk AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', DatChunk.definition)} as objects
-          FROM (
-            SELECT * FROM twd3
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
-      `
-    }
-    else if (refersTo === 'Cell') {
-      return `
-      cell AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_cell)
-          ${this.createBuildObject('t1', TabCell.definition)} as objects
-          FROM (
-            SELECT * FROM twd3
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
-      `
-    }
-    return ''
+  // groupSpotModel(refersTo?: 'Chunk' | 'Cell') {
+  //   if (refersTo === 'Chunk') {
+  //     return `
+  //     chunk AS (
+  //       SELECT json_agg(t1.objects) as json
+  //       FROM (
+  //         select distinct on (t1.pk_entity)
+  //         ${this.createBuildObject('t1', DatChunk.definition)} as objects
+  //         FROM (
+  //           SELECT * FROM twd3
+  //         ) AS t1
+  //       ) as t1
+  //       GROUP BY true
+  //     ),
+  //     `
+  //   }
+  //   else if (refersTo === 'Cell') {
+  //     return `
+  //     cell AS (
+  //       SELECT json_agg(t1.objects) as json
+  //       FROM (
+  //         select distinct on (t1.pk_cell)
+  //         ${this.createBuildObject('t1', TabCell.definition)} as objects
+  //         FROM (
+  //           SELECT * FROM twd3
+  //         ) AS t1
+  //       ) as t1
+  //       GROUP BY true
+  //     ),
+  //     `
+  //   }
+  //   return ''
+  // }
+
+  // buildObjectForSpotModel(refersTo?: 'Chunk' | 'Cell') {
+  //   if (refersTo === 'Chunk') {
+  //     return `,
+  //     'dat', json_strip_nulls(json_build_object(
+  //       'chunk', chunk.json,
+  //       'digital', digital.json
+  //     ))
+  //     `
+  //   }
+  //   else if (refersTo === 'Cell') {
+  //     return `,
+  //     'dat', json_strip_nulls(json_build_object(
+  //       'digital', digital.json
+  //     )),
+  //     'tab', json_strip_nulls(json_build_object(
+  //       'cell', cell.json
+  //     ))
+  //     `
+  //   }
+  //   return ''
+  // }
+
+
+  // leftJoinGroupedSpotModel(refersTo?: 'Chunk' | 'Cell') {
+  //   if (refersTo === 'Chunk') {
+  //     return `
+  //     LEFT JOIN chunk ON true
+  //     `
+  //   }
+  //   else if (refersTo === 'Cell') {
+  //     return `
+  //     LEFT JOIN cell ON true
+  //     `
+  //   }
+  //   return ''
+  // }
+
+  createBuildAndAddObject(wa: With[], w: With, alias: string, model: ModelDefinition) {
+    wa.push(w)
+    return this.createBuildObject(alias, model)
   }
-
-  buildObjectForSpotModel(refersTo?: 'Chunk' | 'Cell') {
-    if (refersTo === 'Chunk') {
-      return `,
-      'dat', json_strip_nulls(json_build_object(
-        'chunk', chunk.json,
-        'digital', digital.json
-      ))
-      `
-    }
-    else if (refersTo === 'Cell') {
-      return `,
-      'dat', json_strip_nulls(json_build_object(
-        'digital', digital.json
-      )),
-      'tab', json_strip_nulls(json_build_object(
-        'cell', cell.json
-      ))
-      `
-    }
-    return ''
-  }
-
-
-  leftJoinGroupedSpotModel(refersTo?: 'Chunk' | 'Cell') {
-    if (refersTo === 'Chunk') {
-      return `
-      LEFT JOIN chunk ON true
-      `
-    }
-    else if (refersTo === 'Cell') {
-      return `
-      LEFT JOIN cell ON true
-      `
-    }
-    return ''
-  }
-
-
 
   /**
    *
@@ -214,70 +224,68 @@ export class QRamList extends SqlBuilderLb4Models {
       ${this.whereRefersTo(refersTo)}
 
       UNION ALL
-
-      SELECT    p.fk_subject_info,
-                p.fk_subject_data,
-                p.fk_property,
-                p.fk_object_info,
-                p.fk_object_data,
-                t0.level + 1,
-                p.pk_entity,
-                ARRAY_APPEND(t0.path, p.pk_entity),
-                NULL::integer as pk_spot,
-                NULL::integer as pk_digital
-      FROM      information.statement p,
-                tw0 t0,
-                projects.info_proj_rel t2
-      WHERE
-                (
-                      -- statements where subject_info equals subject_info of parent statement (-> going out of parent subject)
-                      (
-                        p.fk_subject_info = t0.fk_subject_info
-                        AND   p.fk_property IN (
-                                  1317, -- is part of,
-                                  1316, -- geovP5 – carrier provided by
-                                  979, -- R4 – carriers provided by
-                                  1305 -- geovP4 – is server response to request
-                              )
-                      )
-              OR
-                      -- statements where subject_info equals object_info of parent statement (-> going out of parent object)
-                      (
-                        p.fk_subject_info = t0.fk_object_info
-                        AND   p.fk_property IN (
-                                  1317, -- is part of,
-                                  1316, -- geovP5 – carrier provided by
-                                  979, -- R4 – carriers provided by
-                                  1305 -- geovP4 – is server response to request
-                              )
-                      )
-                      OR
-                      -- statements where object_info equals object_info of parent statement (-> going in to parent object)
-                      (
-                        p.fk_object_info = t0.fk_object_info
-                        AND   p.fk_property IN (
-                                  1016 -- R42 – is representative manifestation singleton for
-                              )
-                      )
-                      OR
-                       -- statements where subject_data equals digital of parent (-> going out of parent digital)
-                      (
-                        p.fk_subject_data = t0.pk_digital
-                        AND   p.fk_property IN (
-                                  1216 -- geovP1 – is reproduction of
-                              )
-                      )
-            )
-      AND	  p.pk_entity != t0.pk_entity
-      AND   p.pk_entity = t2.fk_entity
-      AND   t2.fk_project = ${this.addParam(fkProject)}
-      AND   t2.is_in_project = true
+      (
+        WITH innerTw AS ( SELECT * FROM tw0)
+        SELECT    p.fk_subject_info,
+                  p.fk_subject_data,
+                  p.fk_property,
+                  p.fk_object_info,
+                  p.fk_object_data,
+                  t0.level + 1,
+                  p.pk_entity,
+                  ARRAY_APPEND(t0.path, p.pk_entity),
+                  NULL::integer as pk_spot,
+                  NULL::integer as pk_digital
+        FROM      information.statement p,
+                  innerTw t0,
+                  projects.info_proj_rel t2
+        WHERE
+                  (
+                        -- statements where subject_info equals subject_info of parent statement (-> going out of parent subject)
+                        (
+                          p.fk_subject_info = t0.fk_subject_info
+                          AND   p.fk_property IN (
+                                    99004, -- is annnotation in [Text subclass like Definition, Transcription, etc.]
+                                    99005, -- has annotated text [Chunk (stored as information.appellation)]
+                                    1317, -- is part of,
+                                    1316, -- geovP5 – carrier provided by
+                                    979, -- R4 – carriers provided by
+                                    1305 -- geovP4 – is server response to request
+                                )
+                        )
+                OR
+                        -- statements where subject_info equals object_info of parent statement (-> going out of parent object)
+                        (
+                          p.fk_subject_info = t0.fk_object_info
+                          AND   p.fk_property IN (
+                                    99003, -- is definition of (new)
+                                    1317, -- is part of,
+                                    1316, -- geovP5 – carrier provided by
+                                    979, -- R4 – carriers provided by
+                                    1305, -- geovP4 – is server response to request
+                                    1216 -- geovP1 – is reproduction of
+                                )
+                        )
+                OR
+                        -- statements where object_info equals object_info of parent statement (-> going in to parent object)
+                        (
+                          p.fk_object_info = t0.fk_object_info
+                          AND   p.fk_property IN (
+                                    1016 -- R42 – is representative manifestation singleton for
+                                )
+                        )
+              )
+        AND	  p.pk_entity NOT IN(SELECT pk_entity FROM innerTw)
+        AND   p.pk_entity = t2.fk_entity
+        AND   t2.fk_project = ${this.addParam(fkProject)}
+        AND   t2.is_in_project = true
+      )
     ),
-      -- entity_previews (Expression Portions or Expressions)
+      -- entity_previews (Expression Portions, Expressions, Defintions, Annotations, ect.)
       tw1 AS (
         SELECT DISTINCT ON (t1.pk_entity)
-          ${this.createSelect('t1', WarEntityPreviewWithFulltext.definition)},
-          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
+          ${this.createBuildAndAddObject(this.objectWiths.war.entity_preview, {colName: 'o', twName: 'tw1'}, 't1', WarEntityPreviewWithFulltext.definition)} o,
+          ${this.createBuildAndAddObject(this.objectWiths.pro.info_proj_rel, {colName: 'pr', twName: 'tw1'}, 't2', ProInfoProjRel.definition)} pr
         FROM
           war.entity_preview t1
         JOIN tw0 t3
@@ -297,8 +305,8 @@ export class QRamList extends SqlBuilderLb4Models {
       -- entity_previews (Expression Portions or Expressions)
       tw2 AS (
         SELECT DISTINCT ON (t1.pk_entity)
-          ${this.createSelect('t1', WarEntityPreviewWithFulltext.definition)},
-          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
+          ${this.createBuildAndAddObject(this.objectWiths.war.entity_preview, {colName: 'o', twName: 'tw2'}, 't1', WarEntityPreviewWithFulltext.definition)} o,
+          ${this.createBuildAndAddObject(this.objectWiths.pro.info_proj_rel, {colName: 'pr', twName: 'tw2'}, 't2', ProInfoProjRel.definition)} pr
         FROM
           war.entity_preview t1
         JOIN tw0 t3
@@ -319,8 +327,8 @@ export class QRamList extends SqlBuilderLb4Models {
       -- 1317 = is part of, 1316 = carrier provided by, 979 = carriers provided by, 1305 = is server res. to req., 1016 = is rep. manif. sing. for
       tw3 AS (
         SELECT
-          ${this.createSelect('t1', InfStatement.definition)},
-          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
+          ${this.createBuildAndAddObject(this.objectWiths.inf.statement, {colName: 'o', twName: 'tw3'}, 't1', InfStatement.definition)} o,
+          ${this.createBuildAndAddObject(this.objectWiths.pro.info_proj_rel, {colName: 'pr', twName: 'tw3'}, 't2', ProInfoProjRel.definition)} pr
         FROM
           tw0
         CROSS JOIN
@@ -335,8 +343,9 @@ export class QRamList extends SqlBuilderLb4Models {
       -- 1 = has reference
       tw4 AS (
         SELECT
-          ${this.createSelect('t1', InfStatement.definition)},
-          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
+        t1.fk_object_info,
+          ${this.createBuildAndAddObject(this.objectWiths.inf.statement, {colName: 'o', twName: 'tw4'}, 't1', InfStatement.definition)} o,
+          ${this.createBuildAndAddObject(this.objectWiths.pro.info_proj_rel, {colName: 'pr', twName: 'tw4'}, 't2', ProInfoProjRel.definition)} pr
         FROM
           tw0
         CROSS JOIN
@@ -351,7 +360,7 @@ export class QRamList extends SqlBuilderLb4Models {
       -- lang_string (Reference)
       tw5 AS (
         SELECT
-          ${this.createSelect('t1', InfLangString.definition)}
+          ${this.createBuildAndAddObject(this.objectWiths.inf.lang_string, {colName: 'o', twName: 'tw5'}, 't1', InfLangString.definition)} o
         FROM
           tw4
         CROSS JOIN
@@ -359,110 +368,18 @@ export class QRamList extends SqlBuilderLb4Models {
         WHERE t1.pk_entity = tw4.fk_object_info
       ),
       ${this.twSpotModel(refersTo)}
-      -- digitals
-      twd4 AS (
-        SELECT
-          ${this.createSelect('t1', DatDigital.definition)}
-        FROM
-          tw0
-        CROSS JOIN
-          data.digital t1
-        WHERE t1.pk_entity = tw0.pk_digital
-      ),
       ------------------------------------
       --- group parts by model
       ------------------------------------
+        ${this.groupPartsByModel()}
 
-      info_proj_rel AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.proj_rel->>'pk_entity') t1.proj_rel as objects
-          FROM (
-            SELECT proj_rel FROM tw1
-            UNION ALL
-            SELECT proj_rel FROM tw2
-            UNION ALL
-            SELECT proj_rel FROM tw3
-            UNION ALL
-            SELECT proj_rel FROM tw4
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
-      entity_preview AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', WarEntityPreviewWithFulltext.definition)} as objects
-          FROM (
-            SELECT * FROM tw1
-            UNION ALL
-            SELECT * FROM tw2
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
-      statement AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', InfStatement.definition)} as objects
-          FROM (
-            SELECT * FROM tw3
-            UNION ALL
-            SELECT * FROM tw4
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
-      lang_string AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', InfLangString.definition)} as objects
-          FROM (
-            SELECT * FROM tw5
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),
-      ${this.groupSpotModel(refersTo)}
-      digital AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', DatDigital.definition)} as objects
-          FROM (
-            SELECT * FROM twd4
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      )
-      SELECT
-      json_build_object (
-        'inf', json_strip_nulls(json_build_object(
-          'statement', statement.json,
-          'lang_string', lang_string.json
-        )),
-        'pro', json_strip_nulls(json_build_object(
-          'info_proj_rel', info_proj_rel.json
-        )),
-        'war', json_strip_nulls(json_build_object(
-          'entity_preview', entity_preview.json
-        ))
-        ${this.buildObjectForSpotModel(refersTo)}
-      ) as data
-      FROM
-      (select 0 ) as one_row
-      LEFT JOIN entity_preview ON true
-      LEFT JOIN statement ON true
-      LEFT JOIN lang_string ON true
-      LEFT JOIN info_proj_rel ON true
-      ${this.leftJoinGroupedSpotModel(refersTo)}
-      LEFT JOIN digital ON true
+      ------------------------------------
+      --- final select
+      ------------------------------------
+      ${this.buildFinalObject()}
     `;
 
-    this.getBuiltQuery()
+    this.getBuiltQuery('ram-')
 
     return this.executeAndReturnFirstData<GvPositiveSchemaObject>();
   }

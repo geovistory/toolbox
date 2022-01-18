@@ -67,7 +67,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
             map(ep => ({ ep }))
           )
         }
-        return new BehaviorSubject({ chunk: source.chunk })
+        return new BehaviorSubject({ chunk: source.annotation.textChunk })
       })
     )
 
@@ -84,7 +84,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
     ).pipe(
       map(([s, p, t, r]) => {
         // Validate source
-        if (!s || (!s.chunk && !s.pkEntity)) return;
+        if (!s || (!s.annotation && !s.pkEntity)) return;
         // Validate property
         if (!p) return;
         // validate target

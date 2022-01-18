@@ -8,6 +8,7 @@
     </button>
   </div>
   <div class="loc-label gv-pointer" [matTooltip]="'Add a '+item.label" (click)="menuComponent.onSelect(item.data)">
+    <gv-class-info [pkClass]="item.data.pkClass"></gv-class-info>
     {{item.label}}
   </div>
   <div class="loc-help-btn" *ngIf="item.helpUrl">

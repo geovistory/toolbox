@@ -273,5 +273,25 @@ export class InfResourceMock {
     fk_class: DfhApiClassMock.EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
     community_visibility: {toolbox: true, dataApi: true, website: true}
   })
+  static readonly TRANSCRIPTION_RODOLF_FOO: OmitEntity<InfResource> = ({
+    pk_entity: 4028,
+    fk_class: DfhApiClassMock.EN_9903_TRANSCRIPTION.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
+  static readonly ANNOTATION_RUDOLF: OmitEntity<InfResource> = ({
+    pk_entity: 4029,
+    fk_class: DfhApiClassMock.EN_9902_TEXT_ANNOTATION.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
 
+  static readonly TABLE_1: OmitEntity<InfResource> = ({
+    pk_entity: 4030,
+    fk_class: DfhApiClassMock.EN_9904_TABLE.dfh_pk_class,
+    community_visibility: {toolbox: false, dataApi: false, website: false}
+  })
+  static readonly ANNOTATION_ANGELA: OmitEntity<InfResource> = ({
+    pk_entity: 4031,
+    fk_class: DfhApiClassMock.EN_9905_TABLE_ANNOTATION.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
 }

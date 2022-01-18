@@ -1,6 +1,6 @@
 import { QueryList } from '@angular/core';
 import { Field, FieldBase, GvFieldTargets } from '@kleiolab/lib-queries';
-import { GvFieldId, GvFieldPage, GvFieldPageScope, GvFieldTargetViewType, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, GvFieldPage, GvFieldPageScope, GvFieldProperty, GvFieldTargetViewType, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { values } from 'd3';
 import { first } from 'rxjs/internal/operators/first';
@@ -62,15 +62,33 @@ export function fieldToGvFieldTargets(field: Field): GvFieldTargets {
   })
   return res
 }
-export function fieldToWarFieldChangeId(pkProject: number, fkInfo: number, field: Field): WarFieldChangeId {
+export function fieldToWarFieldChangeId(
+  pkProject: number,
+  source: GvFieldSourceEntity,
+  property: GvFieldProperty,
+  isOutgoing: boolean
+): WarFieldChangeId {
   return {
+    fk_source_info: source.fkInfo,
+    fk_source_tables_cell: source.fkTablesCell,
     fk_project: pkProject,
-    fk_source_info: fkInfo,
-    fk_property: field.property.fkProperty,
-    fk_property_of_property: field.property.fkPropertyOfProperty,
-    is_outgoing: field.isOutgoing
+    fk_property: property.fkProperty,
+    fk_property_of_property: property.fkPropertyOfProperty,
+    is_outgoing: isOutgoing
   };
 }
+
+export function fieldPageToWarFieldChangeId(fieldPage: GvFieldPage): WarFieldChangeId {
+  return {
+    fk_source_info: fieldPage.source.fkInfo,
+    fk_source_tables_cell: fieldPage.source.fkTablesCell,
+    fk_project: fieldPage.scope.inProject,
+    fk_property: fieldPage.property.fkProperty,
+    fk_property_of_property: fieldPage.property.fkPropertyOfProperty,
+    is_outgoing: fieldPage.isOutgoing
+  };
+}
+
 
 export function fieldToFieldBase(f: Field): FieldBase {
   const {

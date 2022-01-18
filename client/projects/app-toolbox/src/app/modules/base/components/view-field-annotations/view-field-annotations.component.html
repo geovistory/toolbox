@@ -17,5 +17,6 @@
 </span>
 
 <span [hidden]="(textDetailComponent.annotationsPinnedInList$|async).length">
-  <gv-view-field-annotation-item *ngFor="let i of items$|async" [itemData]="i"></gv-view-field-annotation-item>
+  <gv-view-field-annotation-item *ngFor="let i of items$|async; trackBy:trackByFn" [itemData]="i">
+  </gv-view-field-annotation-item>
 </span>

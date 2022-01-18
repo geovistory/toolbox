@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-value/ctrl-value-dialog.component';
@@ -34,7 +34,6 @@ export class ValueMatcherComponent implements OnInit, OnDestroy {
   constructor(
     private p: ActiveProjectService,
     private dialog: MatDialog,
-    private inf: InfActions,
     public c: ConfigurationPipesService,
     private s: SchemaSelectorsService,
     private ap: ActiveProjectPipesService,

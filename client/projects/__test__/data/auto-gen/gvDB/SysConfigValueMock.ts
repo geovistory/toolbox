@@ -1,4 +1,6 @@
 import {AppellationFormCtrlType} from '../enums/AppellationFormCtrlType';
+import {IconType} from '../enums/IconType';
+import {TabComponent} from '../enums/TabComponent';
 import {TrueEnum} from '../enums/TrueEnum';
 import {SysConfigValue} from '@kleiolab/lib-sdk-lb4';
 
@@ -18,6 +20,7 @@ export class SysConfigValueMock {
     },
     "classesByBasicType": {
       "8": {
+        icon: IconType['persistent-item'],
         "viewType": {
           "entityPreview": TrueEnum.true
         },
@@ -28,10 +31,12 @@ export class SysConfigValueMock {
         communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
       },
       9: {
+        icon: IconType['temporal-entity'],
         communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
         communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
       },
       "30": {
+        icon: IconType['persistent-item'],
         "viewType": {
           "entityPreview": TrueEnum.true
         },
@@ -123,11 +128,13 @@ export class SysConfigValueMock {
         }
       },
       "218": {
+        icon: IconType.source,
         belongsToCategory: {
           sources: {showInAddMenu: false}
         }
       },
       "220": {
+        icon: IconType.source,
         docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
         belongsToCategory: {
           sources: {
@@ -137,6 +144,7 @@ export class SysConfigValueMock {
         }
       },
       "503": {
+        icon: IconType.source,
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
@@ -145,6 +153,7 @@ export class SysConfigValueMock {
         }
       },
       "219": {
+        icon: IconType.source,
         docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-serially-produced-source',
         belongsToCategory: {
           sources: {
@@ -154,6 +163,7 @@ export class SysConfigValueMock {
         }
       },
       "221": {
+        icon: IconType.source,
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
@@ -1009,7 +1019,20 @@ export class SysConfigValueMock {
       },
     },
     "classes": {
-
+      "40": {
+        "viewType": {
+          "appellation": TrueEnum.true
+        },
+        "formControlType": {
+          "appellation": AppellationFormCtrlType.true
+        },
+        "valueObjectType": {
+          "appellation": TrueEnum.true
+        },
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
       "54": {
         "viewType": {
           "language": TrueEnum.true
@@ -1025,11 +1048,13 @@ export class SysConfigValueMock {
         }
       },
       "218": {
+        icon: IconType.source,
         belongsToCategory: {
           sources: {showInAddMenu: false}
         }
       },
       "220": {
+        icon: IconType.source,
         docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
         belongsToCategory: {
           sources: {
@@ -1067,6 +1092,25 @@ export class SysConfigValueMock {
         }
       },
       "9901": {
+        icon: IconType.text,
+        detailPage: TabComponent.text,
+        belongsToCategory: {
+          digitals: {showInAddMenu: true}
+        }
+      },
+      "9902": {
+        viewType: {nestedResource: []}
+      },
+      "9903": {
+        icon: IconType.text,
+        detailPage: TabComponent.text,
+        belongsToCategory: {
+          digitals: {showInAddMenu: true}
+        }
+      },
+      "9904": {
+        icon: IconType.table,
+        detailPage: TabComponent.table,
         belongsToCategory: {
           digitals: {showInAddMenu: true}
         }

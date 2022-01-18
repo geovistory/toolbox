@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
 import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
@@ -17,6 +17,7 @@ export class ViewFieldAnnotationItemComponent implements OnInit {
   @Input() itemData: ViewFieldAnnotationItemData
 
   highlight$: Observable<boolean>
+  deleting$ = new BehaviorSubject(false)
 
   constructor(
     public textEditComponent: TextDetail2Component,
@@ -59,6 +60,9 @@ export class ViewFieldAnnotationItemComponent implements OnInit {
 
   removeAnnotation() {
     const e = this.itemData.hasAnnotation?.target?.entity?.resource
-    if (e) this.p.removeEntityFromProject(e.pk_entity)
+    if (e) {
+      this.deleting$.next(true)
+      this.p.removeEntityFromProject(e.pk_entity)
+    }
   }
 }

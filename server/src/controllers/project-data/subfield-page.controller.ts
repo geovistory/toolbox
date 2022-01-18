@@ -89,13 +89,29 @@ export class SubfieldPageController {
 
 
   async queryPages(reqs: GvFieldPageReq[]): Promise<GvPaginationObject> {
-
+    let t0 = performance.now()
     const result: GvPaginationObject = await this.queryFields(reqs);
+    let t1 = performance.now()
+    console.log('A Call to queryFields took ms ', t1 - t0)
 
     if (this.joinNestedInSql) return result
+
+    t0 = performance.now()
+
     const nestedReqs = nestedRequestsFromPaginationObject(result)
+    t1 = performance.now()
+    console.log('A Call to nestedRequestsFromPaginationObject took ms ', t1 - t0)
+
+    t0 = performance.now()
     const nestedResult = await this.queryNestedFields(nestedReqs)
-    return mergePaginationObjects([result, nestedResult]);
+    t1 = performance.now()
+    console.log('A Call to queryNestedFields took ms ', t1 - t0)
+
+    t0 = performance.now()
+    const merged = mergePaginationObjects([result, nestedResult]);
+    t1 = performance.now()
+    console.log('A Call to mergePaginationObjects took ms ', t1 - t0)
+    return merged
   }
 
 
@@ -103,11 +119,9 @@ export class SubfieldPageController {
     this.replaceHasTimeSpanWithSixProps(reqs)
 
     const rs = groupReqsBySource(reqs);
-    // logToFile(JSON.stringify(rs, null, 2), 'by-source')
 
     if (this.mergeReqsByTargetInSql) {
       const grouped = groupReqsByField(rs)
-      // logToFile(JSON.stringify(grouped, null, 2), 'by-targets')
 
       const results = await Promise.all(
         grouped.map(r => new QFieldPage3(this.datasource, this.joinNestedInSql).queryFields(r.reqs, r.sources))
@@ -124,16 +138,32 @@ export class SubfieldPageController {
   }
   private async queryNestedFields(reqs: GvFieldPageReq[]) {
 
+    let t0 = performance.now()
     const rs = groupReqsBySource(reqs);
     // logToFile(JSON.stringify(rs, null, 2), 'by-source')
+    let t1 = performance.now()
+    console.log('   Call to groupReqsBySource took ms ', t1 - t0)
 
+
+    t0 = performance.now()
     const grouped = groupReqsByField(rs)
-    // logToFile(JSON.stringify(grouped, null, 2), 'by-targets')
+    t1 = performance.now()
+    console.log('   Call to groupReqsByField took ms ', t1 - t0)
+
+    t0 = performance.now()
 
     const results = await Promise.all(
       grouped.map(r => new QFieldPage3(this.datasource, this.joinNestedInSql).queryFields(r.reqs, r.sources))
     );
+    t1 = performance.now()
+    console.log('   Call to queryFields took ms ', t1 - t0)
+
+    t0 = performance.now()
+
     const result: GvPaginationObject = mergePaginationObjects(results);
+    t1 = performance.now()
+    console.log('   Call to mergePaginationObjects took ms ', t1 - t0)
+
     return result;
   }
 

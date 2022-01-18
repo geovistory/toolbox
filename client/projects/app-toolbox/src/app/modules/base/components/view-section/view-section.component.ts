@@ -19,6 +19,9 @@ export class ViewSectionComponent implements OnInit {
   @Input() section: SectionName;
   @Input() scope: GvFieldPageScope;
 
+  @Input() showEmptyFieldsOnInit: boolean;
+
+
   constructor() { }
 
   ngOnInit(): void {

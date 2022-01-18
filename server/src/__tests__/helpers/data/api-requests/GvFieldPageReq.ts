@@ -183,7 +183,7 @@ export namespace GvFieldPageReqMock {
     },
     page: {
       source: {fkInfo: InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2.fk_subject_info},
-      property: {fkProperty: DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION.dfh_pk_property},
+      property: {fkProperty: DfhApiPropertyMock.EN_99001_DEFINITION_HAS_VALUE_VERSION.dfh_pk_property},
       isOutgoing: true,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 1,
@@ -207,6 +207,145 @@ export namespace GvFieldPageReqMock {
       limit: 7,
       offset: 0
     }
+  }
+
+
+  /**
+   * EXAMPLE FOR A RECURSIVE QUERY DEFINITION
+   * joined target of subReqsRecursiveTargets will be joined with the field page
+   * of the class matched by the parent's target.
+   * E.G. if the transcription has a statement in the page of '1216 is repro of'.
+   *      and the tatget of that statement is a 503 Expression Portion,
+   *      the recursive query finds the class in the parent's targets and
+   *      joins the page '1317 is part of' etc.
+   * In the GUI this can be used to build a 'Path-like-UI' that even listens for
+   * the pages and updates in real-time.
+   */
+  export const pathTextToSource: GvFieldPageReq = {
+    /**************************************
+     * From Entity to Annotation
+     *************************************/
+    pkProject: ProProjectMock.PROJECT_1.pk_entity,
+    page: {
+      source: {fkInfo: 1},
+      property: {fkProperty: DfhApiPropertyMock.EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN.dfh_pk_property},
+      isOutgoing: false,
+
+      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+      limit: 10000,
+      offset: 0
+    },
+    targets: {
+
+      [DfhApiClassMock.EN_9902_TEXT_ANNOTATION.dfh_pk_class]: {
+        nestedResource: [
+          /**************************************
+           * From Annotation to chunk
+           *************************************/
+          {
+            page: {
+              isCircular: false,
+              property: {fkProperty: DfhApiPropertyMock.EN_99005_TEXT_ANNOTATION_HAS_SPOT.dfh_pk_property},
+              isOutgoing: true,
+              limit: 1,
+              offset: 0
+            },
+            targets: {
+              [DfhApiClassMock.EN_456_CHUNK.dfh_pk_class]: {appellation: TrueEnum.true}
+            }
+          },
+          /**************************************
+           * From Annotation to digital
+           *************************************/
+          {
+            page: {
+              isCircular: false,
+              property: {fkProperty: DfhApiPropertyMock.EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN.dfh_pk_property},
+              isOutgoing: true,
+              limit: 1,
+              offset: 0
+            },
+            targets: {
+              /**************************************
+               * Path from transcription to source
+               *************************************/
+              [DfhApiClassMock.EN_9903_TRANSCRIPTION.dfh_pk_class]: {
+                subReqsRecursiveTargets: [
+                  {
+                    isCircular: false,
+                    property: {fkProperty: DfhApiPropertyMock.EN_1216_IS_REPRODUCTION_OF.dfh_pk_property},
+                    isOutgoing: true,
+                    limit: 1,
+                    offset: 0
+                  }
+                ]
+              },
+              [DfhApiClassMock.EN_503_EXPRESSION_PORTION.dfh_pk_class]: {
+                subReqsRecursiveTargets: [
+                  {
+                    isCircular: false,
+                    property: {fkProperty: DfhApiPropertyMock.EN_1317_IS_PART_OF.dfh_pk_property},
+                    isOutgoing: true,
+                    limit: 1,
+                    offset: 0
+                  }
+                ]
+              },
+              [DfhApiClassMock.EN_218_EXPRESSION.dfh_pk_class]: {
+                subReqsRecursiveTargets: [
+                  {
+                    isCircular: false,
+                    property: {fkProperty: DfhApiPropertyMock.EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR.dfh_pk_property},
+                    isOutgoing: false,
+                    limit: 1,
+                    offset: 0
+                  },
+                  {
+                    isCircular: false,
+                    property: {fkProperty: DfhApiPropertyMock.EN_979_CARRIERS_PROVIDED_BY.dfh_pk_property},
+                    isOutgoing: true,
+                    limit: 1,
+                    offset: 0
+                  }
+                  // TODO: Add props to item, webrequest, ...?
+                ]
+              },
+              [DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class]: {
+                entityPreview: TrueEnum.true
+              },
+              [DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class]: {
+                entityPreview: TrueEnum.true
+              },
+              // TODO: Add item, webrequest, ...?
+
+              /**************************************
+               * Path from definition to entity
+               *************************************/
+              [DfhApiClassMock.EN_9901_DEFINITION.dfh_pk_class]: {
+                nestedResource: [
+                  {
+                    page: {
+                      isCircular: false,
+                      property: {fkProperty: DfhApiPropertyMock.EN_99003_HAS_DEFINITION_NEW.dfh_pk_property},
+                      isOutgoing: false,
+                      limit: 1,
+                      offset: 0
+                    },
+                    targets: {
+                      '-1': {entityPreview: TrueEnum.true}
+                    }
+                  }
+                ]
+              },
+
+            }
+          },
+
+        ]
+      },
+
+    }
+
   }
 }
 // export const shipVoyageHasTimeSpan: GvFieldPageReq = {

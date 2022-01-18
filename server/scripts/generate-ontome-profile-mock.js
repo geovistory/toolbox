@@ -4,7 +4,7 @@ const prompts = require('prompts');
 const fetch = require('node-fetch');
 
 const date = new Date();
-const regexSpecialChars = /[^A-Za-z0-9]/g
+const regexSpecialChars = /[^A-Za-z0-9]/g;
 
 async function start() {
   const response = await prompts([
@@ -48,7 +48,7 @@ function createFilename(profileId, profileName) {
   return `profile-${profileId}-${pname}-${YYYY}-${mm}-${dd}.ts`.replace(
     /-+/g,
     '-',
-  );;
+  );
 }
 
 function createConstName(profileId, profileName) {
@@ -112,7 +112,7 @@ function createFileContent(dfhApiProfile, dfhApiClasses, dfhApiProperties) {
   };
   const content = `import {OntomeProfileMock} from '../gvDB/local-model.helpers';
 
-  export const ${constName}: OntomeProfileMock =${JSON.stringify(
+  export const ${constName}: OntomeProfileMock = ${JSON.stringify(
     mock,
     null,
     2,

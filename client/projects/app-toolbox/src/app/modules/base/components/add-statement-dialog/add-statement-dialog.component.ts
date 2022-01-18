@@ -162,7 +162,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
   }
 
   private triggerPageReloads(pkProject: number, fkInfo: number, field: Field) {
-    const fieldId: WarFieldChangeId = fieldToWarFieldChangeId(pkProject, fkInfo, field);
+    const fieldId: WarFieldChangeId = fieldToWarFieldChangeId(pkProject, { fkInfo }, field.property, field.isOutgoing);
     this.paginationService.reloadPagesOfField(fieldId);
   }
 

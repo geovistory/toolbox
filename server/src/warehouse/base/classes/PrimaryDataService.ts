@@ -157,7 +157,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
             hasError = true
             await c1.query('ROLLBACK')
             await c2.query('ROLLBACK')
-            Logger.err(this.constructor.name, `ERROR in aggregation: ${e}`)
+            Logger.err(this.constructor.name, `ERROR in primary data service: ${e}`)
         } finally {
             c1.release()
             c2.release()
@@ -202,7 +202,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      *
      * @param date
      */
-     async manageUpdatesSince(pool1: PoolClient, pool2: PoolClient, date: Date = new Date(0)) {
+    async manageUpdatesSince(pool1: PoolClient, pool2: PoolClient, date: Date = new Date(0)) {
 
         const t2 = Logger.start(this.constructor.name, `Execute update query  ...`, 2);
 

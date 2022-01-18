@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
-import { IconType } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
@@ -24,7 +23,6 @@ export class EntityCardHeaderComponent implements OnInit {
 
   @Output() removed = new EventEmitter<void>();
 
-  iconType$: Observable<IconType>;
   preview$: Observable<WarEntityPreview>;
   classLabel$: Observable<string>;
 

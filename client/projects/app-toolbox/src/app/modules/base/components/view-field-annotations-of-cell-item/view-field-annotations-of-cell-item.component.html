@@ -1,0 +1,32 @@
+<div class="loc-left" *ngFor="let statementWT of item.refersTo">
+  <ng-container *ngIf="statementWT.target.entity; else default">
+    <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="!(tableComponent.readonly$|async)"
+      [preview]="statementWT.target.entity.entityPreview"
+      [matTooltip]="statementWT.target.entity.entityPreview.entity_label">
+    </gv-entity-preview>
+  </ng-container>
+  <ng-template #default>
+    <span [matTooltip]="statementWT?.targetLabel">
+      {{statementWT?.targetLabel}}
+    </span>
+  </ng-template>
+</div>
+
+
+<button mat-icon-button [matMenuTriggerFor]="options" class="loc-right" *ngIf="!(tableComponent.readonly$|async)">
+  <mat-icon>more_vert</mat-icon>
+</button>
+
+<mat-menu #options="matMenu" xPosition="before">
+
+  <button mat-menu-item (click)="edit()">
+    <mat-icon>edit</mat-icon>
+    Edit
+  </button>
+  <mat-divider></mat-divider>
+  <div class="dropdown-header">Danger Zone</div>
+  <button mat-menu-item (click)="remove()">
+    <mat-icon color="warn">delete</mat-icon>
+    <span>Remove</span>
+  </button>
+</mat-menu>

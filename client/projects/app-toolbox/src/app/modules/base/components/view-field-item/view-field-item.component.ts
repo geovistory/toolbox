@@ -9,7 +9,7 @@ import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 export const VIEW_FIELD_ITEM_TYPE = new InjectionToken<ViewFieldItemType>('ViewFieldItemType');
 
-export type ViewFieldItemType = 'preview' | 'nested' | 'timePrimitive' | 'value' | 'valueVersion';
+export type ViewFieldItemType = 'preview' | 'nested' | 'timePrimitive' | 'value' | 'valueVersion' | 'cell';
 
 @Component({
   selector: 'gv-view-field-item',
@@ -50,6 +50,7 @@ export class ViewFieldItemComponent implements OnInit {
     }
     if (item.target.entity) return 'nested'
     if (item.target.timePrimitive) return 'timePrimitive'
+    if (item.target.cell) return 'cell'
     return 'value'
   }
   remove() {

@@ -1,7 +1,7 @@
 import {ModelDefinition} from '@loopback/repository';
 import {keys, values} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
-import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldTargetViewType, GvPaginationObject, GvSubentitFieldPageReq, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview} from '../../models';
+import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldTargetViewType, GvPaginationObject, GvSubentitFieldPageReq, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, TabCell, WarEntityPreview} from '../../models';
 import {GvSubfieldPageInfo} from '../../models/field-response/GvSubfieldPageInfo';
 import {SatementTarget} from '../../models/field-response/SatementTarget';
 import {GvFieldProperty} from '../../models/field/gv-field-property';
@@ -43,6 +43,7 @@ type Models = {
   timePrimitive: ModelConfig
   resource: ModelConfig
   entityPreview: ModelConfig
+  cell: ModelConfig
 }
 type ModelKey = keyof Models
 type ResTargetModelMap = {
@@ -128,7 +129,9 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       langString: 'langString',
       place: 'place',
       timePrimitive: 'timePrimitive',
+      cell: 'cell',
       nestedResource: 'entity',
+      subReqsRecursiveTargets: 'entity',
       entityPreview: 'entity',
       typeItem: 'entity',
     }
@@ -140,6 +143,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       place: 'place',
       timePrimitive: 'timePrimitive',
       entity: 'resource',
+      cell: 'cell'
     }
     this.modelConfig = {
       appellation: {
@@ -214,6 +218,15 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
         classFk: 'fk_class',
         createLabelSql: `'todo'`,
         projectFk: 'fk_project'
+      },
+      cell: {
+        modelDefinition: TabCell.definition,
+        modelPk: 'pk_cell',
+        statementObjectFk: 'fk_object_tables_cell',
+        statementSubjectFk: 'fk_subject_tables_cell',
+        tableName: 'tables.cell',
+        classFk: 'fk_class',
+        createLabelSql: `coalesce(string_value, numeric_value::text)`,
       }
     }
 
@@ -326,7 +339,12 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       if (entities) {
         const selects = entities.map(entity => {
           const pk = entity?.fkInfo ?? entity.fkData ?? entity.fkTablesCell ?? entity.fkTablesRow;
-          return `SELECT ${this.addParam(pk)}::int as pk_entity`
+          const reqSourceKey = keys(entity)?.[0]
+          return `
+          SELECT
+            ${this.addParam(pk)}::int as pk_entity,
+            ${this.addParam(reqSourceKey)}::text as req_source_key
+          `
         }).join('\n UNION ALL \n')
 
         const sql = `
@@ -396,15 +414,26 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     const offset = directedProperty.offset
     const isOutgoing = directedProperty.isOutgoing
     const constraints = directedProperty.constraints
-
-    const statementsWithTarget = constraints
-      .map(constraint => this.joinStatementsOfPropertertySourceAndTarget(
+    let statementsWithTarget: string;
+    if (constraints.length) {
+      statementsWithTarget = constraints
+        .map(constraint => this.joinStatementsOfPropertertySourceAndTarget(
+          scope,
+          property,
+          isOutgoing,
+          constraint
+        ))
+        .join('\n UNION \n')
+    }
+    else {
+      statementsWithTarget = this.joinStatementsOfPropertertySourceAndTarget(
         scope,
         property,
-        isOutgoing,
-        constraint
-      ))
-      .join('\n UNION \n')
+        isOutgoing
+      )
+    }
+
+
 
     const sql = `
     (
@@ -491,15 +520,26 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     scope: GvFieldPageScope,
     property: GvFieldProperty,
     isOutgoing: boolean,
-    contraint: PropertyConstraint
+    contraint?: PropertyConstraint
   ): string {
     const sourceModel = this.modelConfig.resource
-    const statementSourceFk = getSourceFk(isOutgoing, sourceModel)
+    const statementSourceCellFk = getSourceFk(isOutgoing, this.modelConfig.cell)
+    const statementSourceInfoFk = getSourceFk(isOutgoing, this.modelConfig.resource)
     const statementTargetFk = getTargetFk(isOutgoing, sourceModel)
     const propertyFk = property.fkProperty ? 'fk_property' : 'fk_property_of_property'
     const propertyId = property.fkProperty ?? property.fkPropertyOfProperty;
-    const target = this.joinTargetOfStatement(isOutgoing, scope, contraint.resTargetKey, contraint.targetClasses, 't2', 't3')
 
+    let target: JoinTargetSqls;
+    if (contraint) {
+      target = this.joinTargetOfStatement(isOutgoing, scope, contraint.resTargetKey, contraint.targetClasses, 't2', 't3')
+    } else {
+      target = {
+        join: 'select 0',
+        selectTarget: `''`,
+        selectTargetClass: `''`,
+        selectTargetLabel: `''`
+      }
+    }
     const joinProjRels = () => `
     -- join project rels
     INNER JOIN projects.info_proj_rel t3
@@ -540,8 +580,12 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
 
     WHERE
       -- join source entity with statement
-      t1.pk_entity = t2.${statementSourceFk}
-    ${contraint.sourceClass ? `
+      (
+          t1.req_source_key = 'fkInfo' and t1.pk_entity = t2.${statementSourceInfoFk}
+          or
+          t1.req_source_key = 'fkTablesCell' and t1.pk_entity = t2.${statementSourceCellFk}
+      )
+    ${contraint?.sourceClass ? `
     AND
       -- where source class is ok
       t1.fk_class = ${this.addParam(contraint.sourceClass)} ` : ''
@@ -564,7 +608,11 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
         FROM information.statement t4,
              projects.info_proj_rel t5
         WHERE
-          t1.pk_entity = t4.${statementSourceFk}
+        (
+          t1.req_source_key = 'fkInfo' and t1.pk_entity = t2.${statementSourceInfoFk}
+          or
+          t1.req_source_key = 'fkTablesCell' and t1.pk_entity = t2.${statementSourceCellFk}
+        )
         AND
           t4.${propertyFk} = ${this.addParam(propertyId)}
         AND
@@ -876,13 +924,14 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
     req: GvFieldPageReq
   ): string {
 
+
     const sql = `
     SELECT
       jsonb_build_object (
         'validFor', now(),
         'req', jsonb_set(
                 '${JSON.stringify(req)}'::jsonb,
-                '{page,source,fkInfo}',
+                ARRAY_APPEND('{page,source}',${sourceSubqueryTw}.req_source_key),
                 to_jsonb(${sourceSubqueryTw}.pk_entity)
               ),
         'count', COALESCE(${groupBySubqueryTw}.count,0),
@@ -946,12 +995,14 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       }
     }
     const constraints: PropertyConstraint[] = values(map)
+    const page = req.page
+
     const result: DirectedProperty = {
-      scope: req.page.scope,
-      limit: req.page.limit,
-      offset: req.page.offset,
-      property: req.page.property,
-      isOutgoing: req.page.isOutgoing,
+      scope: page.scope,
+      limit: page.limit,
+      offset: page.offset,
+      property: page.property,
+      isOutgoing: page.isOutgoing,
       constraints,
       _req: req,
       nestedReqs

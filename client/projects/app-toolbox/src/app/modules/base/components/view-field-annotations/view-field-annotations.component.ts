@@ -5,7 +5,7 @@ import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, Sta
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
 import { PaginationService } from '../../services/pagination.service';
@@ -41,7 +41,9 @@ export class ViewFieldAnnotationsComponent implements OnInit {
   ) {
 
   }
-
+  trackByFn(_, i: ViewFieldAnnotationItemData) {
+    return i.hasAnnotation.statement.pk_entity
+  }
   ngOnInit() {
     const errors: string[] = []
     if (!this.source) errors.push('@Input() pkEntity is required.');
@@ -130,6 +132,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
 
   private createGvFieldPageReq(): Observable<GvFieldPageReq> {
     const refersToTargets$: Observable<GvFieldTargets> = this.c.pipeClassesEnabledByProjectProfiles().pipe(
+      filter(allClasses => allClasses.length > 0),
       map(allClasses => {
         const refersToTarget: GvFieldTargets = {}
         allClasses.forEach(pkClass => {
@@ -200,5 +203,8 @@ export class ViewFieldAnnotationsComponent implements OnInit {
     })
     this.textDetailComponent.annotatedCharsMap$.next(annotatedCharsMap);
   }
-
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
 }

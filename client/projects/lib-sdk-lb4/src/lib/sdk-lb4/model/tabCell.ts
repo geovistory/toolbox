@@ -13,6 +13,7 @@
 
 export interface TabCell { 
     pk_cell?: number;
+    fk_class?: number;
     fk_column?: number;
     fk_row?: number;
     fk_digital?: number;

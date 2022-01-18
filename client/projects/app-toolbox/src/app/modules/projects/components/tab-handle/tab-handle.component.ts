@@ -2,6 +2,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IAppState, PanelTab, TabBase } from '@kleiolab/lib-redux';
+import { ClassConfig } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
@@ -22,6 +23,8 @@ export class TabHandleComponent implements OnInit, OnDestroy {
   title$: Observable<string>
   tooltip$: Observable<string>
   loading$: Observable<boolean>// = new BehaviorSubject(true)
+  svgIcon: string
+  colorClass: string
 
   constructor(
     private ngRedux: NgRedux<IAppState>,
@@ -37,18 +40,41 @@ export class TabHandleComponent implements OnInit, OnDestroy {
     this.tooltip$ = x$.pipe(map(x => x?.tabTooltip ?? ''))
     this.loading$ = x$.pipe(
       map(x => x?.loading === true ? true : false))
-    // this.title$ = this.p.getTabTitle(this.tab.path)
-    // this.tooltip$ = combineLatest(this.p.getTabTooltip(this.tab.path), this.title$).pipe(
-    //   map(([tooltip, title]) => tooltip ? tooltip : title)
-    // )
-    // this.p.getTabLoading(this.tab.path).pipe(
-    //   filter(x => x !== undefined),
-    //   takeUntil(this.destroy$)
-    // ).subscribe(l => {
-    //   this.loading$.next(l)
-    // })
-    // this.title$.pipe(takeUntil(this.destroy$)).subscribe(t => this.ref.detectChanges())
-    // this.loading$.pipe(takeUntil(this.destroy$)).subscribe(t => this.ref.detectChanges())
+
+    this.svgIcon = `gv:outlined-gv-${this.tab.icon}`;
+    this.colorClass = this.getColorClass()
+
+  }
+  getColorClass() {
+    switch (this.tab.icon) {
+      case ClassConfig.IconEnum.Text:
+      case ClassConfig.IconEnum.Table:
+        return 'gv-digitals-primary-color'
+
+      case ClassConfig.IconEnum.Source:
+      case ClassConfig.IconEnum.Section:
+        return 'gv-sources-primary-color'
+
+
+      case ClassConfig.IconEnum.PersistentItem:
+      case ClassConfig.IconEnum.TemporalEntity:
+        return 'gv-entities-primary-color'
+
+      case ClassConfig.IconEnum.Analysis:
+        return 'gv-analysis-primary-color'
+
+      case ClassConfig.IconEnum.Value:
+      case ClassConfig.IconEnum.Settings:
+        return 'gv-values-primary-color'
+
+      case ClassConfig.IconEnum.Story:
+        return 'gv-stories-primary-color'
+
+
+
+      default:
+        break;
+    }
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);

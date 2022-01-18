@@ -2,7 +2,7 @@ import {DataObject} from '@loopback/repository/dist/common-types';
 import {Client, expect} from '@loopback/testlab';
 import {CLASS_PK_EXPRESSION, CLASS_PK_ITEM, CLASS_PK_MANIFESTATION_PRODUCT_TYPE, CLASS_PK_MANIFESTATION_SINGLETON, CLASS_PK_WEB_REQUEST, PROPERTY_PK_P4_IS_SERVER_RESPONSE_TO_REQUEST, PROPERTY_PK_P5_HAS_CARRIER_PROVIDED_BY, PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR, PROPERTY_PK_R4_CARRIERS_PROVIDED_BY} from '../../../../config';
 import {LoginResponse} from '../../../../controllers/account.controller';
-import {DatChunk, InfAppellation, InfDimension, InfLangString, InfPlace, InfResource, InfResourceWithRelations, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from '../../../../models';
+import {InfAppellation, InfDimension, InfLangString, InfPlace, InfResource, InfResourceWithRelations, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from '../../../../models';
 import {CalendarType} from '../../../../models/enums/CalendarType';
 import {Granularity} from '../../../../models/enums/Granularity';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
@@ -13,7 +13,6 @@ import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
 import {createSysSystemConfig} from '../../../helpers/atomic/sys-system-config.helper';
-import {DatChunkMock} from '../../../helpers/data/gvDB/DatChunkMock';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {InfLanguageMock} from '../../../helpers/data/gvDB/InfLanguageMock';
 import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
@@ -239,38 +238,38 @@ describe('CreateProjectDataController', () => {
     })
 
 
-    it('should respond with GvSchemaModifier containing a chunk (from object)', async () => {
-      const resource: DataObject<InfResourceWithRelations> = {
-        fk_class: 1,
-        outgoing_statements: [
-          {
-            fk_property: 1,
-            object_chunk: new DatChunk({
-              fk_text: 1,
-              fk_entity_version: 1,
-              fk_namespace: 2,
-              quill_doc: DatChunkMock.RUDOLF.quill_doc
-            }),
-            entity_version_project_rels: [
-              new ProInfoProjRel({calendar: CalendarType.julian})
-            ]
-          }
-        ]
-      }
-      const params = {
-        pkProject: ProProjectMock.PROJECT_1.pk_entity,
-      }
-      const res: {body: GvSchemaModifier} = await client
-        .post('/project-data/upsert-resources')
-        .set('Authorization', lb4Token)
-        .query(params)
-        .send([resource])
+    // it('should respond with GvSchemaModifier containing a chunk (from object)', async () => {
+    //   const resource: DataObject<InfResourceWithRelations> = {
+    //     fk_class: 1,
+    //     outgoing_statements: [
+    //       {
+    //         fk_property: 1,
+    //         object_chunk: new DatChunk({
+    //           fk_text: 1,
+    //           fk_entity_version: 1,
+    //           fk_namespace: 2,
+    //           quill_doc: DatChunkMock.RUDOLF.quill_doc
+    //         }),
+    //         entity_version_project_rels: [
+    //           new ProInfoProjRel({calendar: CalendarType.julian})
+    //         ]
+    //       }
+    //     ]
+    //   }
+    //   const params = {
+    //     pkProject: ProProjectMock.PROJECT_1.pk_entity,
+    //   }
+    //   const res: {body: GvSchemaModifier} = await client
+    //     .post('/project-data/upsert-resources')
+    //     .set('Authorization', lb4Token)
+    //     .query(params)
+    //     .send([resource])
 
-      expect(res.body.positive.inf?.resource?.length).to.equal(1)
-      expect(res.body.positive.inf?.statement?.length).to.equal(1)
-      expect(res.body.positive.pro?.info_proj_rel?.length).to.equal(2)
-      expect(res.body.positive.dat?.chunk?.length).to.equal(1)
-    })
+    //   expect(res.body.positive.inf?.resource?.length).to.equal(1)
+    //   expect(res.body.positive.inf?.statement?.length).to.equal(1)
+    //   expect(res.body.positive.pro?.info_proj_rel?.length).to.equal(2)
+    //   expect(res.body.positive.dat?.chunk?.length).to.equal(1)
+    // })
 
 
     it('should automatically create F2 Expression for F4 Manifestation Singleton', async () => {

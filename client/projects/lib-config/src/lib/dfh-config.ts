@@ -144,12 +144,15 @@ export class DfhConfig {
   static CLASS_PK_WEB_REQUEST = 502;
   static CLASS_PK_DEFINITION = 9901; // TODO replace by pk from ontome when available
   static CLASS_PK_ANNOTATION = 9902; // TODO replace by pk from ontome when available
+  static CLASS_PK_TRANSCTIPTION = 9903; // TODO replace by pk from ontome when available
   static CLASS_PK_SPOT = 457;
   static CLASS_PK_CHUNK = 456;
   static CLASS_PK_EXPRESSION_PORTION = 503;
 
 
   static CLASS_PKS_SOURCE_PE_IT = [219, 220, 221, 502];
+  static CLASS_PKS_TEXT = [9901, 9903];
+
   static CLASS_PKS_GEO_PE_IT = [363, 441];
 
 

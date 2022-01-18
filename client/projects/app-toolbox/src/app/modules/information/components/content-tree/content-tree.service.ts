@@ -85,11 +85,11 @@ export class NgContentTreeService {
 
 
   openText(node: ContentTreeNode) {
-    this.aps.addTextTab(node.statement.fk_subject_data)
+    this.aps.addEntityTabWithoutClass(node.statement.fk_subject_data)
   }
 
   openTable(node: ContentTreeNode) {
-    this.aps.addTableTab(node.statement.fk_subject_data)
+    this.aps.addEntityTabWithoutClass(node.statement.fk_subject_data)
   }
 
   openExpressionPortion(node: ContentTreeNode) {

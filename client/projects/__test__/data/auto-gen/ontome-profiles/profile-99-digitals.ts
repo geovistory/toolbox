@@ -22,9 +22,14 @@ export const PROFILE_99_DIGITALS: OntomeProfileMock = {
   },
   "classes": [
     DfhApiClassMock.EN_9901_DEFINITION,
-    DfhApiClassMock.EN_9902_ANNOTATION,
+    DfhApiClassMock.EN_9902_TEXT_ANNOTATION,
+    DfhApiClassMock.EN_9903_TRANSCRIPTION,
+    DfhApiClassMock.EN_9904_TABLE,
+    DfhApiClassMock.EN_9905_TABLE_ANNOTATION,
+    DfhApiClassMock.EN_9906_TABLE_VALUE,
     DfhApiClassMock.EN_339_STRING,
     DfhApiClassMock.EN_456_CHUNK,
+    DfhApiClassMock.EN_521_CELL,
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
       "dfh_pk_class": 54,
@@ -65,12 +70,19 @@ export const PROFILE_99_DIGITALS: OntomeProfileMock = {
     }
   ],
   "properties": [
-    DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION,
+    DfhApiPropertyMock.EN_99001_DEFINITION_HAS_VALUE_VERSION,
+    DfhApiPropertyMock.EN_99001_TRANSCRIPTION_HAS_VALUE_VERSION,
     DfhApiPropertyMock.EN_99002_HAS_LANGUAGE,
     DfhApiPropertyMock.EN_99003_HAS_DEFINITION_NEW,
-    DfhApiPropertyMock.EN_99004_IS_PART_OF,
-    DfhApiPropertyMock.EN_99005_HAS_SPOT,
-    DfhApiPropertyMock.EN_1334_REFERS_TO,
+    DfhApiPropertyMock.EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN,
+    DfhApiPropertyMock.EN_99005_TEXT_ANNOTATION_HAS_SPOT,
+    DfhApiPropertyMock.EN_1334_TEXT_ANNOTATION_REFERS_TO,
+    DfhApiPropertyMock.EN_99004_TABLE_ANNOTATION_IS_ANNOTATION_IN,
+    DfhApiPropertyMock.EN_99005_TABLE_ANNOTATION_HAS_SPOT,
+    DfhApiPropertyMock.EN_99006_TABLE_HAS_VALUE,
+    DfhApiPropertyMock.EN_1334_TABLE_ANNOTATION_REFERS_TO,
+
+    DfhApiPropertyMock.EN_1216_TRANSCRIPTION_IS_REPRODUCTION_OF,
 
   ]
 }

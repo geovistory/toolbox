@@ -5,16 +5,14 @@
     <div class="label">
       {{preview?.entity_label | truncate:['25']}}
     </div>
-    <div *ngIf="!hideClass" class="type font-xs text-muted">
-      <span *ngIf="(preview?.fk_class === 219 || preview?.fk_class === 220 )"
-        class="icon gv-icon gv-icon-source align-self-center gv-icon-preview"></span>
+    <div *ngIf="!hideClass" class="type mat-text-secondary mat-caption">
 
-      <span *ngIf="!(preview?.fk_class === 219 || preview?.fk_class === 220 ) && preview?.entity_type === 'peIt'"
-        class="icon gv-icon gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
 
-      <span *ngIf="!(preview?.fk_class === 219 || preview?.fk_class === 220 ) && preview?.entity_type === 'teEn'"
-        class="icon fa fa-star-o align-self-center gv-icon-preview"></span> {{(preview?.type_label) ?
-      preview?.type_label : preview?.class_label}}
+      <gv-class-info class="loc-icon" *ngIf="preview?.fk_class" [pkClass]="preview?.fk_class" [size]="12"
+        [classLabel]="preview?.class_label" [iconGray]="iconGray"></gv-class-info>
+
+
+      {{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
       <span *ngIf="preview?.time_span">&nbsp;•&nbsp;{{preview?.time_span | timeSpan}}</span>
 
       <span *ngIf="showId">&nbsp;•&nbsp; ID: {{preview?.pk_entity}}</span>

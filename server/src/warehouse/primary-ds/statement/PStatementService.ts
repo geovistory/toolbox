@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
-import {Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
+import {Warehouse} from '../../Warehouse';
 export interface PStatementId {
   pkEntity: number;
   fkProject: number;
@@ -168,7 +168,19 @@ SELECT
       'fkMeasurementUnit', t8.fk_measurement_unit,
       'numericValue', t8.numeric_value
     )
-    ELSE NULL::jsonb END dimension
+    ELSE NULL::jsonb END dimension,
+
+    -- cell
+    CASE WHEN t9.pk_cell IS NOT NULL THEN jsonb_build_object(
+      'pkCell', t9.pk_cell,
+      'fkClass', t9.fk_class,
+      'fkColumn', t9.fk_column,
+      'fkRow', t9.fk_row,
+      'stringValue', t9.string_value,
+      'numericValue', t9.numeric_value
+    )
+    ELSE NULL::jsonb END cell
+
 
   FROM tw0 t0
   JOIN information.statement t1 ON t1.pk_entity = t0.pk_entity
@@ -186,6 +198,7 @@ SELECT
   LEFT JOIN information.time_primitive t6 ON t6.pk_entity = t1.fk_object_info
   LEFT JOIN information.lang_string t7 ON t7.pk_entity = t1.fk_object_info
   LEFT JOIN information.dimension t8 ON t8.pk_entity = t1.fk_object_info
+  LEFT JOIN tables.cell t9 ON t9.pk_cell = t1.fk_object_tables_cell
 
 )
 SELECT
@@ -205,6 +218,7 @@ jsonb_build_object(
 					AND t1.time_primitive IS NULL
 					AND t1.lang_string IS NULL
 					AND t1.dimension IS NULL
+					AND t1.cell IS NULL
 				THEN NULL::jsonb
 				ELSE
 					jsonb_strip_nulls(jsonb_build_object(
@@ -213,7 +227,8 @@ jsonb_build_object(
 						'language', t1.language,
 						'timePrimitive', t1.time_primitive,
 						'langString', t1.lang_string,
-						'dimension', t1.dimension
+						'dimension', t1.dimension,
+						'cell', t1.cell
 					))
 				END
 ) val

@@ -1,6 +1,6 @@
 
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { AfterViewInit, Component, HostBinding, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { ListType, PanelTab } from '@kleiolab/lib-redux';
@@ -26,7 +26,8 @@ export const getTabBodyKey = (b: TabBody) => b.path.join('');
 @Component({
   selector: 'gv-project-edit',
   templateUrl: './project-edit.component.html',
-  styleUrls: ['./project-edit.component.scss']
+  styleUrls: ['./project-edit.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProjectEditComponent implements OnDestroy, AfterViewInit {
 
@@ -117,7 +118,8 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
 
 
     // DEV: For development of a component in a specific Tab uncomment and modify the following
-    this.p.addEntityTab(4025, 9901)
+    // this.p.addEntityTab(4025, 9901)
+    // this.p.addEntityTab(90962, 9904)
   }
 
   trackByFn(index, item) {

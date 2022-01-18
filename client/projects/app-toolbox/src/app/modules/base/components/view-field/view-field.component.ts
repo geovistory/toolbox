@@ -29,11 +29,12 @@ export class ViewFieldComponent implements OnInit {
   @Input() showOntoInfo$: Observable<boolean>
   @Input() scope: GvFieldPageScope;
   @Input() showBodyOnInit = false;
+  itemsCount$: Observable<number>;
+  targetClassLabels: string[]
+  @Input() onAddClickHook: () => void
 
 
   showAddButton$
-  itemsCount$: Observable<number>;
-  targetClassLabels: string[]
   constructor(
     public i: InformationPipesService,
     public p: ActiveProjectService,
@@ -110,6 +111,8 @@ export class ViewFieldComponent implements OnInit {
     if (this.field.isSpecialField === 'time-span') {
       return;
     }
+    if (this.onAddClickHook) return this.onAddClickHook()
+
     const targetClasses = getFormTargetClasses(this.field)
     // More than one target class?
     if (targetClasses.length > 1) {

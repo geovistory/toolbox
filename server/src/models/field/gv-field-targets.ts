@@ -6,7 +6,6 @@ const ref = registerType(GvFieldTargetViewType);
 @model({jsonSchema: {additionalProperties: {$ref: ref}, }})
 export class GvFieldTargets {
   [key: number]: GvFieldTargetViewType | undefined;
-  // @property({type: GvTargetType}) 1?: GvTargetType; // to comment out
 }
 
 

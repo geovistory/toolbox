@@ -99,6 +99,18 @@ export class InfAppellationMock {
     string: 'This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data.',
     quill_doc: createQuillDoc('This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data.')
   })
+
+  static readonly TEXT_VALUE_RODOLF_FOO_V1: OmitEntity<InfAppellation> = {
+    pk_entity: 5016,
+    fk_class: DfhApiClassMock.EN_339_STRING.dfh_pk_class,
+    quill_doc: {"ops": [{"insert": "R", "attributes": {"charid": "1"}}, {"insert": "u", "attributes": {"charid": "2"}}, {"insert": "d", "attributes": {"charid": "3"}}, {"insert": "o", "attributes": {"charid": "4"}}, {"insert": "l", "attributes": {"charid": "5"}}, {"insert": "f", "attributes": {"charid": "6"}}, {"insert": " ", "attributes": {"charid": "7"}}, {"insert": "F", "attributes": {"charid": "8"}}, {"insert": "o", "attributes": {"charid": "9"}}, {"insert": "o", "attributes": {"charid": "10"}}, {"insert": "\n", "attributes": {"blockid": "11"}}], "latestId": 11}
+  }
+
+  static readonly CHUNK_RUDOLF: OmitEntity<InfAppellation> = {
+    pk_entity: 5017,
+    fk_class: DfhApiClassMock.EN_456_CHUNK.dfh_pk_class,
+    quill_doc: {"ops": [{"insert": "R", "attributes": {"charid": "1"}}, {"insert": "u", "attributes": {"charid": "2"}}, {"insert": "d", "attributes": {"charid": "3"}}, {"insert": "o", "attributes": {"charid": "4"}}, {"insert": "l", "attributes": {"charid": "5"}}, {"insert": "f", "attributes": {"charid": "6"}},], "latestId": 12},
+  }
 }
 
 export function createQuillDoc(string: string): QuillDoc {

@@ -59,11 +59,14 @@ import { SearchExistingEntityComponent } from './components/search-existing-enti
 import { SliderComponent } from './components/slider/slider.component';
 import { TypeItemComponent } from './components/type-item/type-item.component';
 import { ViewFieldAnnotationItemComponent } from './components/view-field-annotation-item/view-field-annotation-item.component';
+import { ViewFieldAnnotationsOfCellItemComponent } from './components/view-field-annotations-of-cell-item/view-field-annotations-of-cell-item.component';
+import { ViewFieldAnnotationsOfCellComponent } from './components/view-field-annotations-of-cell/view-field-annotations-of-cell.component';
 import { ViewFieldAnnotationsComponent } from './components/view-field-annotations/view-field-annotations.component';
 import { ViewFieldBodyComponent } from './components/view-field-body/view-field-body.component';
 import { ViewFieldDialogComponent } from './components/view-field-dialog/view-field-dialog.component';
 import { ViewFieldHasValueVersionComponent } from './components/view-field-has-value-version/view-field-has-value-version.component';
 import { ViewFieldHeaderComponent } from './components/view-field-header/view-field-header.component';
+import { ViewFieldItemCellComponent } from './components/view-field-item-cell/view-field-item-cell.component';
 import { ViewFieldItemClassInfoComponent } from './components/view-field-item-class-info/view-field-item-class-info.component';
 import { ViewFieldItemEntityMenuComponent } from './components/view-field-item-entity-menu/view-field-item-entity-menu.component';
 import { ViewFieldItemLayoutComponent } from './components/view-field-item-layout/view-field-item-layout.component';
@@ -73,6 +76,7 @@ import { ViewFieldItemTimePrimitiveComponent } from './components/view-field-ite
 import { ViewFieldItemValueVersionComponent } from './components/view-field-item-value-version/view-field-item-value-version.component';
 import { ViewFieldItemValueComponent } from './components/view-field-item-value/view-field-item-value.component';
 import { ViewFieldItemComponent } from './components/view-field-item/view-field-item.component';
+import { ViewFieldReferredToByComponent } from './components/view-field-referred-to-by/view-field-referred-to-by.component';
 import { ViewFieldComponent } from './components/view-field/view-field.component';
 import { ViewSectionBodyComponent } from './components/view-section-body/view-section-body.component';
 import { ViewSectionHeaderComponent } from './components/view-section-header/view-section-header.component';
@@ -146,6 +150,7 @@ const components = [
   ViewFieldItemEntityMenuComponent,
   ViewFieldItemTimePrimitiveComponent,
   ViewFieldItemValueComponent,
+  ViewFieldItemCellComponent,
   ViewFieldItemValueVersionComponent,
   ViewFieldItemLayoutComponent,
   ViewTimeSpanItemPreviewComponent,
@@ -157,7 +162,10 @@ const components = [
   ViewTimeSpanHelpDialogComponent,
   ViewFieldHasValueVersionComponent,
   ViewFieldAnnotationsComponent,
-  ViewFieldAnnotationItemComponent
+  ViewFieldAnnotationItemComponent,
+  ViewFieldAnnotationsOfCellComponent,
+  ViewFieldAnnotationsOfCellItemComponent,
+  ViewFieldReferredToByComponent
 ]
 
 const baseModules = [

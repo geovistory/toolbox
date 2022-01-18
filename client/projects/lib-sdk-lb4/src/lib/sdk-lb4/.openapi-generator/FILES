@@ -119,8 +119,6 @@ model/gvPositiveSchemaObject.ts
 model/gvSchemaModifier.ts
 model/gvSubentitFieldPageReq.ts
 model/gvSubentityFieldPage.ts
-model/gvSubentityFieldTargetViewType.ts
-model/gvSubentityFieldTargets.ts
 model/gvSubfieldPageInfo.ts
 model/header.ts
 model/httpErrorModel.ts
@@ -212,6 +210,7 @@ model/sysConfigFormCtrlType.ts
 model/sysConfigSpecialFields.ts
 model/sysConfigValue.ts
 model/sysConfigValueObjectType.ts
+model/sysConfigViewType.ts
 model/sysObject.ts
 model/sysSystemRelevantClass.ts
 model/sysSystemType.ts
@@ -243,6 +242,7 @@ model/warFieldChange.ts
 model/warFieldChangeAddToStream.ts
 model/warFieldChangeId.ts
 model/warObject.ts
+model/warStatementCellVT.ts
 model/warStatementDimensionVT.ts
 model/warStatementGeoJson.ts
 model/warStatementGeometryVT.ts

@@ -9,23 +9,26 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { GvSubentitFieldPageReq } from './gvSubentitFieldPageReq';
 import { DimensionValueObjectType } from './dimensionValueObjectType';
 
 
 /**
- * If present, defines a specific view type for the class.
+ * If present, defines a specific form control type for the class.
  */
-export interface GvSubentityFieldTargetViewType { 
-    appellation?: GvSubentityFieldTargetViewType.AppellationEnum;
-    language?: GvSubentityFieldTargetViewType.LanguageEnum;
-    place?: GvSubentityFieldTargetViewType.PlaceEnum;
-    timePrimitive?: GvSubentityFieldTargetViewType.TimePrimitiveEnum;
-    langString?: GvSubentityFieldTargetViewType.LangStringEnum;
+export interface SysConfigViewType { 
+    appellation?: SysConfigViewType.AppellationEnum;
+    language?: SysConfigViewType.LanguageEnum;
+    place?: SysConfigViewType.PlaceEnum;
+    cell?: SysConfigViewType.CellEnum;
+    timePrimitive?: SysConfigViewType.TimePrimitiveEnum;
+    langString?: SysConfigViewType.LangStringEnum;
     dimension?: DimensionValueObjectType;
-    entityPreview?: GvSubentityFieldTargetViewType.EntityPreviewEnum;
-    typeItem?: GvSubentityFieldTargetViewType.TypeItemEnum;
+    entityPreview?: SysConfigViewType.EntityPreviewEnum;
+    typeItem?: SysConfigViewType.TypeItemEnum;
+    nestedResource?: Array<GvSubentitFieldPageReq>;
 }
-export namespace GvSubentityFieldTargetViewType {
+export namespace SysConfigViewType {
     export type AppellationEnum = 'true';
     export const AppellationEnum = {
         True: 'true' as AppellationEnum
@@ -37,6 +40,10 @@ export namespace GvSubentityFieldTargetViewType {
     export type PlaceEnum = 'true';
     export const PlaceEnum = {
         True: 'true' as PlaceEnum
+    };
+    export type CellEnum = 'true';
+    export const CellEnum = {
+        True: 'true' as CellEnum
     };
     export type TimePrimitiveEnum = 'true';
     export const TimePrimitiveEnum = {

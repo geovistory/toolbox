@@ -1,5 +1,9 @@
 <div class="loc-row mat-bg-accent-50-on-hover" [ngClass]="{'mat-bg-primary-50':highlight$|async}"
   (mouseenter)="onMousenter()" (mouseleave)="onMouseleave()">
+  <div class="loc-deleting" *ngIf="deleting$|async">
+    <mat-spinner [diameter]="20"></mat-spinner>
+    <div class="mat-text-secondary mat-body">Removing</div>
+  </div>
   <div class="loc-row-left">
 
     <div class="loc-col">

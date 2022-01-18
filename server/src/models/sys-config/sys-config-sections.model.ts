@@ -17,4 +17,6 @@ export class Sections {
   @property() specific?: Section;
   @property() timeSpan?: Section;
   @property() simpleForm?: Section;
+  @property() linkedEntities?: Section;
+  @property() linkedSources?: Section;
 }

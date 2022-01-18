@@ -7,6 +7,7 @@ export interface PFieldChangeId {
    fkProject: number;
 
    fkSourceInfo: number;
+   fkSourceTablesCell: number;
 
    fkProperty: number;
    fkPropertyOfProperty: number;
@@ -21,6 +22,7 @@ export interface PFieldChangeVal {
 export const rStatementKeyDefs: KeyDefinition[] = [
 
    {name: 'fkSourceInfo', type: 'integer'},
+   {name: 'fkSourceTablesCell', type: 'integer'},
 
    {name: 'fkProperty', type: 'integer'},
    {name: 'fkPropertyOfProperty', type: 'integer'},
@@ -48,6 +50,7 @@ export class RFieldChangeService extends PrimaryDataService<PFieldChangeId, PFie
       INSERT INTO war.field_change (
          fk_project,
          fk_source_info,
+         fk_source_tables_cell,
          fk_property,
          fk_property_of_property,
          is_outgoing,
@@ -56,6 +59,7 @@ export class RFieldChangeService extends PrimaryDataService<PFieldChangeId, PFie
       SELECT
          0,
          t1."fkSourceInfo",
+         t1."fkSourceTablesCell",
          t1."fkProperty",
          t1."fkPropertyOfProperty",
          t1."isOutgoing",
@@ -64,6 +68,7 @@ export class RFieldChangeService extends PrimaryDataService<PFieldChangeId, PFie
       ON CONFLICT (
          fk_project,
          fk_source_info,
+         fk_source_tables_cell,
          fk_property,
          fk_property_of_property,
          is_outgoing
@@ -71,6 +76,7 @@ export class RFieldChangeService extends PrimaryDataService<PFieldChangeId, PFie
       SET
          fk_project = EXCLUDED.fk_project,
          fk_source_info = EXCLUDED.fk_source_info,
+         fk_source_tables_cell = EXCLUDED.fk_source_tables_cell,
          fk_property = EXCLUDED.fk_property,
          fk_property_of_property = EXCLUDED.fk_property_of_property,
          is_outgoing = EXCLUDED.is_outgoing,
@@ -93,6 +99,7 @@ const updateSql = `
  SELECT
     json_build_object('tmspLastModification',max(t1.tmsp_last_modification)) val,
     t2.fk_object_info "fkSourceInfo",
+    t2.fk_object_tables_cell "fkSourceTablesCell",
     t2.fk_property "fkProperty",
     t2.fk_property_of_property "fkPropertyOfProperty",
     false "isOutgoing"
@@ -102,12 +109,13 @@ const updateSql = `
  WHERE
     t1.fk_entity = t2.pk_entity
  AND
-    t2.fk_object_info != 0
+   (t2.fk_object_info != 0 OR t2.fk_object_tables_cell != 0)
  AND
     t1.tmsp_last_modification > $1
  GROUP BY
     t1.fk_project,
     t2.fk_object_info,
+    t2.fk_object_tables_cell,
     t2.fk_property,
     t2.fk_property_of_property
 
@@ -117,6 +125,7 @@ const updateSql = `
  SELECT
     json_build_object('tmspLastModification',max(t1.tmsp_last_modification)) val,
     t2.fk_subject_info "fkSourceInfo",
+    t2.fk_subject_tables_cell "fkSourceTablesCell",
     t2.fk_property "fkProperty",
     t2.fk_property_of_property "fkPropertyOfProperty",
     true "isOutgoing"
@@ -126,12 +135,13 @@ const updateSql = `
  WHERE
     t1.fk_entity = t2.pk_entity
  AND
-    t2.fk_subject_info != 0
+   (t2.fk_subject_info != 0 OR t2.fk_subject_tables_cell != 0)
  AND
     t1.tmsp_last_modification > $1
  GROUP BY
     t1.fk_project,
     t2.fk_subject_info,
+    t2.fk_subject_tables_cell,
     t2.fk_property,
     t2.fk_property_of_property;
 `

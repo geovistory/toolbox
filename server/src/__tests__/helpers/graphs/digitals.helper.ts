@@ -3,10 +3,16 @@ import {InfAppellation, InfResource, InfStatement} from '../../../models';
 import {QuillDoc} from '../../../models/quill-doc/quill-doc.model';
 import {QuillOperation} from '../../../models/quill-doc/quill-operation.model';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
+import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
+import {createDatColumn} from '../atomic/dat-column.helper';
+import {createDatDigital} from '../atomic/dat-digital.helper';
+import {createDatNamespace} from '../atomic/dat-namespace.helper';
+import {createDatTextProperty} from '../atomic/dat-text-property.helper';
 import {createInfAppellation} from '../atomic/inf-appellation.helper';
 import {createInfLanguage} from '../atomic/inf-language.helper';
 import {createInfResource} from '../atomic/inf-resource.helper';
 import {createInfStatement} from '../atomic/inf-statement.helper';
+import {addProDfhClassToProject} from '../atomic/pro-dfh-class-proj-rel.helper';
 import {addProfileToProject} from '../atomic/pro-dfh-profile-proj-rel.helper';
 import {addInfosToProject} from '../atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../atomic/pro-project.helper';
@@ -18,8 +24,15 @@ import {createPubRoleMapping} from '../atomic/pub-rolemapping.helper';
 import {createSysSystemRelevantClass} from '../atomic/sys-relevant-class.helper';
 import {createSysSystemConfig} from '../atomic/sys-system-config.helper';
 import {createSysSystemType} from '../atomic/sys-system-type.helper';
+import {createCellTable_old, createTabCell} from '../atomic/tab-cell-X.helper';
+import {createRowTable, createTabRow} from '../atomic/tab-row.helper';
 import {createWarEntityPreview} from '../atomic/war-entity-preview.helper';
 import {setSequencesToMax} from '../atomic/_sequences.helper';
+import {DatClassColumnMappingMock} from '../data/gvDB/DatClassColumnMappingMock';
+import {DatColumnMock} from '../data/gvDB/DatColumnMock';
+import {DatDigitalMock} from '../data/gvDB/DatDigitalMock';
+import {DatNamespaceMock} from '../data/gvDB/DatNamespaceMock';
+import {DatTextPropertyMock} from '../data/gvDB/DatTextPropertyMock';
 import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
@@ -36,11 +49,15 @@ import {PubRoleMock} from '../data/gvDB/PubRoleMock';
 import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
 import {SysSystemRelevantClassMock} from '../data/gvDB/SysSystemRelevantClass';
 import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
+import {TabCellXMock} from '../data/gvDB/TabCellXMock';
+import {TabRowMock} from '../data/gvDB/TabRowMock';
 import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
+import {PROFILE_12_BIOGRAPHICAL_BA_2021_06_30} from '../data/ontome-profiles/profile-12-biographical-ba-2021-06-30';
 import {PROFILE_5_GEOVISTORY_BASI_2021_08_24} from '../data/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
 import {PROFILE_99_DIGITALS} from '../data/ontome-profiles/profile-99-digitals';
 import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
 import {testdb} from '../testdb';
+import {createBunchOfPersons} from './person.helper';
 
 /**
  * This function creates mockdata useful for developing geovistory
@@ -82,6 +99,7 @@ export async function digitalsSeeds() {
    ***************************************************************************/
 
   const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2021_08_24)
+  const profileBiography = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2021_06_30)
   const profileDigitals = await createOntomeProfileMock(PROFILE_99_DIGITALS)
 
 
@@ -105,18 +123,25 @@ export async function digitalsSeeds() {
 
 
   /****************************************************************************
-  * Project Sandbox
+  * Project
   ***************************************************************************/
 
-  // Project Sandbox
+  // Project
   const project1 = await createProProject(ProProjectMock.PROJECT_1);
 
-  // Project Sandbox > Name
+  // Project > Name
   await createProTextProperty(ProTextPropertyMock.PROJECT_1_NAME);
 
-  // Project Sandbox > Profiles
+  // Project > Profiles
   await addProfileToProject(profileGeovBasics.profile.dfh_pk_profile, project1.pk_entity)
   await addProfileToProject(profileDigitals.profile.dfh_pk_profile, project1.pk_entity)
+  await addProfileToProject(profileBiography.profile.dfh_pk_profile, project1.pk_entity)
+
+  // Project > Classes
+  await addProDfhClassToProject(DfhApiClassMock.EN_21_PERSON.dfh_pk_class, project1.pk_entity)
+
+  // Project > Namespace
+  await createDatNamespace(DatNamespaceMock.NAMESPACE_1);
 
 
   /****************************************************************************
@@ -153,6 +178,8 @@ export async function digitalsSeeds() {
   await createInfStatement(InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2)
 
   const {entities, statements, appellations} = createTextVersionWithAnnotations(definition1.pk_entity ?? -1)
+
+
   for (const e of entities) {
     await createInfResource(e)
   }
@@ -163,7 +190,11 @@ export async function digitalsSeeds() {
     await createInfAppellation(a)
   }
 
+  const {peits, stmts, teens} = await createBunchOfPersons()
 
+  const t = await createTextAndAnnotation()
+
+  const ta = await createTableAndAnnotation()
 
   // add info to sandbox
   await addInfosToProject(
@@ -172,6 +203,13 @@ export async function digitalsSeeds() {
       definition1,
       ...entities,
       ...statements,
+      ...peits,
+      ...stmts,
+      ...teens,
+      ...t.resources,
+      ...t.stmts,
+      ...ta.resources,
+      ...ta.stmts
     ].map(x => x.pk_entity)
   );
 
@@ -205,7 +243,7 @@ function createTextVersionWithAnnotations(pkText: number) {
   const hasValueVersion: OmitEntity<InfStatement> = ({
     pk_entity: pkEntity++,
     fk_subject_info: pkText,
-    fk_property: DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION.dfh_pk_property,
+    fk_property: DfhApiPropertyMock.EN_99001_DEFINITION_HAS_VALUE_VERSION.dfh_pk_property,
     fk_object_info: textVersion.pk_entity ?? -1,
   })
   statements.push(hasValueVersion)
@@ -246,7 +284,7 @@ function createTextVersionWithAnnotations(pkText: number) {
       // create the Annotation
       const annotation: OmitEntity<InfResource> = {
         pk_entity: pkEntity++,
-        fk_class: DfhApiClassMock.EN_9902_ANNOTATION.dfh_pk_class,
+        fk_class: DfhApiClassMock.EN_9902_TEXT_ANNOTATION.dfh_pk_class,
         community_visibility: {dataApi: true, website: true, toolbox: true},
       }
       entities.push(annotation)
@@ -254,7 +292,7 @@ function createTextVersionWithAnnotations(pkText: number) {
       const isAnnotationOf: OmitEntity<InfStatement> = {
         pk_entity: pkEntity++,
         fk_subject_info: annotation.pk_entity ?? -1,
-        fk_property: DfhApiPropertyMock.EN_99004_IS_PART_OF.dfh_pk_property,
+        fk_property: DfhApiPropertyMock.EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN.dfh_pk_property,
         fk_object_info: pkText ?? -1
       }
       statements.push(isAnnotationOf)
@@ -262,7 +300,7 @@ function createTextVersionWithAnnotations(pkText: number) {
       const stmtHasSpot: OmitEntity<InfStatement> = {
         pk_entity: pkEntity++,
         fk_subject_info: annotation.pk_entity ?? -1,
-        fk_property: DfhApiPropertyMock.EN_99005_HAS_SPOT.dfh_pk_property,
+        fk_property: DfhApiPropertyMock.EN_99005_TEXT_ANNOTATION_HAS_SPOT.dfh_pk_property,
         fk_object_info: chunk.pk_entity ?? -1
       }
       statements.push(stmtHasSpot)
@@ -284,4 +322,98 @@ function createTextVersionWithAnnotations(pkText: number) {
 
   return {entities, statements, appellations}
 
+}
+
+
+
+async function createTextAndAnnotation() {
+
+  const s = []
+  const r = []
+  r.push(await createInfResource(InfResourceMock.TRANSCRIPTION_RODOLF_FOO))
+  await createInfAppellation(InfAppellationMock.TEXT_VALUE_RODOLF_FOO_V1)
+
+  s.push(await createInfStatement(InfStatementMock.TRANSCRIPTION_RODOLF_HAS_VALUE_VERSION))
+  s.push(await createInfStatement(InfStatementMock.TRANSCRIPTION_IS_REPRO_OF_HABS_EMP))
+
+  // r.push(await createInfResource(InfResourceMock.HABS_EMP_EXPR))
+  // r.push(await createInfResource(InfResourceMock.HABS_EMP_MANIF_PROD_TYPE))
+  s.push(await createInfStatement(InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY))
+
+  r.push(await createInfResource(InfResourceMock.ANNOTATION_RUDOLF))
+  s.push(await createInfStatement(InfStatementMock.ANNOTATION_RUDOLF_HAS_SPOT))
+  s.push(await createInfStatement(InfStatementMock.ANNOTATION_RUDOLF_IS_ANNOTATED_IN))
+  s.push(await createInfStatement(InfStatementMock.ANNOTATION_RUDOLF_REFERS_TO_RUDOLF))
+  await createInfAppellation(InfAppellationMock.CHUNK_RUDOLF)
+  // r.push(await createInfResource(InfResourceMock.RUDOLF))
+
+
+  s.push(await createInfStatement(InfStatementMock.HABS_EMP_EXPR_MENTIONS_RUDOLF))
+
+  return {
+    stmts: s,
+    resources: r
+  }
+}
+
+
+
+async function createTableAndAnnotation() {
+
+  const s = []
+  const r = []
+  r.push(await createInfResource(InfResourceMock.TABLE_1))
+  await createDatDigital(DatDigitalMock.DIGITAL_UNIONS);
+  // statement from table entity to table value
+  s.push(await createInfStatement(InfStatementMock.TABLE_1_HAS_VALUE_TABLE_UNOIN))
+
+  //create the digital and related (multiple lines)
+  await createDatColumn(DatColumnMock.COL_PEOPLE);
+  await createDatColumn(DatColumnMock.COL_UNION);
+  await createDatColumn(DatColumnMock.COL_BIRTHDATES2);
+  await createDatTextProperty(DatTextPropertyMock.PEOPLE);
+  await createDatTextProperty(DatTextPropertyMock.UNION);
+  await createDatTextProperty(DatTextPropertyMock.BIRTH2);
+  await createRowTable(DatDigitalMock.DIGITAL_UNIONS.pk_entity as number);
+  const rowUNIONSALBERT = await createTabRow(TabRowMock.ROW_UNIONS_ALBERT);
+  const rowUNIONSRUDOLPH = await createTabRow(TabRowMock.ROW_UNIONS_RUDOLPH);
+  const rowUNIONSJEAN = await createTabRow(TabRowMock.ROW_UNIONS_JEAN);
+  const rowUNIONSHANS = await createTabRow(TabRowMock.ROW_UNIONS_HANS);
+  const rowUNIONSPIERRE = await createTabRow(TabRowMock.ROW_UNIONS_PIERRE);
+  const rowUNIONSANGELA = await createTabRow(TabRowMock.ROW_UNIONS_ANGELA);
+  await createCellTable_old(DatDigitalMock.DIGITAL_UNIONS);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_ALBERT, rowUNIONSALBERT);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_ALBERT_UNION, rowUNIONSALBERT);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_ALBERT_BIRTH, rowUNIONSALBERT);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_RUDOLPH, rowUNIONSRUDOLPH);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_RUDOLPH_UNION, rowUNIONSRUDOLPH);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_RUDOLPH_BIRTH, rowUNIONSALBERT);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_JEAN, rowUNIONSJEAN);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_JEAN_UNION, rowUNIONSJEAN);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_JEAN_BIRTH, rowUNIONSALBERT);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_HANS, rowUNIONSHANS);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_HANS_UNION, rowUNIONSHANS);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_HANS_BIRTH, rowUNIONSHANS);
+  // await createTabCell(TabCellXMock.FEATURE_X_UNIONS_PIERRE, rowUNIONSPIERRE);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_PIERRE_UNION, rowUNIONSPIERRE);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_PIERRE_BIRTH, rowUNIONSPIERRE);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_ANGELA, rowUNIONSANGELA);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_ANGELA_UNION, rowUNIONSANGELA);
+  await createTabCell(TabCellXMock.FEATURE_X_UNIONS_ANGELA_BIRTH, rowUNIONSANGELA);
+  // //create the related mapping
+  await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_PEOPLE_TO_CLASS_PERSON);
+  await createDatClassColumnMapping(DatClassColumnMappingMock.MAPPING_COL_UNION_TO_CLASS_PERSON);
+
+  // Annotation of a cell
+  r.push(await createInfResource(InfResourceMock.ANNOTATION_ANGELA))
+  s.push(await createInfStatement(InfStatementMock.ANNOTATION_ANGELA_HAS_SPOT))
+  s.push(await createInfStatement(InfStatementMock.ANNOTATION_ANGELA_IS_ANNOTATED_IN))
+  s.push(await createInfStatement(InfStatementMock.ANNOTATION_ANGELA_REFERS_TO_ANGELA))
+
+
+
+  return {
+    stmts: s,
+    resources: r
+  }
 }

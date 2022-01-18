@@ -328,7 +328,7 @@ export class ProInfoProjRelMock {
   static readonly PROJ_1_STMT_DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP: OmitEntity<ProInfoProjRel> = ({
     pk_entity: 2035,
     fk_project: ProProjectMock.PROJECT_1.pk_entity,
-    fk_entity: InfStatementMock.DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP.pk_entity,
+    fk_entity: InfStatementMock.TRANSCRIPTION_IS_REPRO_OF_HABS_EMP.pk_entity,
     fk_last_modifier: PubAccountMock.GAETAN_VERIFIED.id,
     project_visibility: {website: true, dataApi: true},
     is_in_project: true

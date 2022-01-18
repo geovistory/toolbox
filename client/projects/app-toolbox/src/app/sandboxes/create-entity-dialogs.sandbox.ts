@@ -2,8 +2,8 @@ import { Component, Injectable } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ActiveProjectPipesService, InformationBasicPipesService } from '@kleiolab/lib-queries';
-import { IconType, ReduxMainService } from '@kleiolab/lib-redux';
+import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvPositiveSchemaObject, GvSchemaModifier, InfLanguage, InfResourceWithRelations, InfStatementWithRelations, LanguagesService, SubfieldPageControllerService, WareEntityPreviewPage, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
@@ -192,17 +192,7 @@ export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
   // }
 }
 
-/**
- * This service mocks the streamEntityPreview method
- */
-@Injectable()
-export class InformationBasicPipesServiceMock extends InformationBasicPipesService {
 
-  pipeIconType(pkEntity: number): Observable<IconType> {
-    return of('persistent-entity')
-  }
-
-}
 
 class WarEntityPreviewControllerServiceMock {
   warEntityPreviewControllerSearchExisting(
@@ -267,7 +257,6 @@ export default sandboxOf(SandBoxCreateDialogsComponent, {
     { provide: WarEntityPreviewControllerService, useClass: WarEntityPreviewControllerServiceMock },
     { provide: LanguagesService, useClass: LanguagesServiceMock },
     { provide: ReduxMainService, useClass: ReduxMainServiceMock },
-    { provide: InformationBasicPipesService, useClass: InformationBasicPipesServiceMock },
     { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForSandboxes },
   ]
 })

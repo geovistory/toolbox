@@ -4,7 +4,7 @@
   <span *ngIf="!statement" class="left-col mat-text-secondary">No entity matched</span>
 
   <button mat-icon-button [matMenuTriggerFor]="options" class="right-col" [disabled]="pkCell == undefined"
-    *ngIf="!!tableComponent && tableComponent.mode == 'edit'">
+    *ngIf="!(tableComponent.readonly$|async)">
     <mat-icon>more_vert</mat-icon>
   </button>
 

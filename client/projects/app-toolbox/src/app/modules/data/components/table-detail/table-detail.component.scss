@@ -1,67 +1,37 @@
-tr.table-row-filter {
-  height: fit-content;
-  > th {
-    padding-top: 0;
-    padding-bottom: 0.5rem;
-  }
-}
-.gv-td-col-header {
+.loc-tab {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  justify-content: space-between;
+}
+::ng-deep .loc-tabs-right .mat-tab-label {
+  height: 79px;
+  min-width: unset;
+}
+::ng-deep .loc-tabs-right mat-tab-header {
+  background-color: white;
+  position: sticky;
+  top: 0;
+  flex-shrink: 0;
+  z-index: 2;
 }
 
-.gv-td-menu-container {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  font-size: 12px;
+.close-right-area-btn {
+  height: 80px;
+  min-width: 24px;
+  width: 24px;
+  border-top: 0;
+  border-bottom: 0;
+  padding: 0;
+  position: fixed;
+  z-index: 10;
+  border-left: 0;
+  border-radius: 0;
 }
 
-.gv-td-menu-item {
-  flex: 0 1 auto;
-  overflow: auto;
-  display: flex;
-  align-items: baseline;
-
-  // border-top: 1px solid $mat-color-divider;
-  // border-left: 1px solid $mat-color-divider;
-  margin-top: -1px;
-  margin-left: -1px;
-
-  .gv-td-menu-label {
-    margin: 0 4px;
-  }
-
-  &.gv-td-col-toggler {
-    flex: 100 0 auto;
-    justify-content: flex-end;
-    // padding: 0 1rem;
-    // ::ng-deep mat-form-field {
-    //   margin: 6px 4px 0 4px;
-    // }
-  }
-
-  &.gv-td-col-checkbox {
-    flex: 0 1 auto;
-
-    padding: 27px 1rem 0 1rem;
-    .mat-checkbox {
-      margin: 0 4px 0 4px;
-    }
-  }
-
-  &.gv-td-paginator {
-    flex: 1 1 auto;
-    justify-content: flex-end;
-  }
-}
-.gv-td-filter-box {
-  padding: 0 0.5rem;
-}
-
-.center-vert {
-  margin-top: auto;
-  margin-bottom: auto;
+::ng-deep .gv-detail-top-bar > div > .mat-button-base {
+  height: 2.5rem;
+  border-top: 0;
+  border-bottom: 0;
+  border-radius: 0;
 }

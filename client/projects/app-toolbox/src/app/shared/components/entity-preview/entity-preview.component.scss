@@ -1,11 +1,14 @@
-
 .wrap {
-    line-height: 1.2;
-    white-space: nowrap;
-    .label {
-
-    }
-    .type {
-        line-height: 1.2;
-    }
+  line-height: 1.2;
+  white-space: nowrap;
+  .label {
+  }
+  .type {
+    display: flex;
+    line-height: 1;
+    margin-top: 2px;
+  }
+}
+.loc-icon {
+  margin-right: 2px;
 }

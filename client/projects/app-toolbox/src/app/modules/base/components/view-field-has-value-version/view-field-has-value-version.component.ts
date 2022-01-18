@@ -212,14 +212,18 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     combineLatest([this.p.ramTargetIsFix$])
       .pipe(delay(0), first())
       .subscribe(([targetIsFix]) => {
-        this.p.ramOnSaveCallback = () => this.onSave()
-        this.p.ramSource$.next({
-          chunk: this.selectedChunk
-        });
+        this.p.ramSource$.next(
+          {
+            annotation: {
+              textChunk: this.selectedChunk,
+              pkEntityOfText: this.source.fkInfo
+            }
+          });
 
-        this.p.ramBoxLeft$.next('select-text');
-        this.p.ramProperty$.next(DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO);
         if (!targetIsFix) {
+          this.p.ramOnSaveCallback = () => this.onSave()
+          this.p.ramBoxLeft$.next('select-text');
+          this.p.ramProperty$.next(DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO);
           this.p.ramTarget$.next();
           this.p.ramTitle$.next(`Create an annotation`);
           this.p.ramTitlePart2$.next();

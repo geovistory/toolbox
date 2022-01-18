@@ -8,7 +8,7 @@
     <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
       <gv-detail-top-bar height="5rem" [openRightAreaBtn]="t.layoutMode=='left-only'"
-        (openRight)="t.setLayoutMode('both')" *ngIf="(showHeader$ | async)">
+        (openRight)="t.setLayoutMode('both')">
 
 
         <gv-entity-card-header (removed)="close.emit()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
@@ -19,7 +19,7 @@
 
 
 
-        <span class="gv-tile" *ngIf="(showProperties$ | async)">
+        <span class="gv-tile">
 
           <div class="gv-tile-body">
 
@@ -42,12 +42,87 @@
         'd-flex flex-column': t.layoutMode!=='left-only',
         'd-none': t.layoutMode=='left-only'
       }">
-      <button matRipple class="gv-split-area-toggle-button align-left mat-border-right mat-border-bottom"
-        (click)="rightArrowClick()">
+      <button *ngIf="t.layoutMode=='both'" mat-stroked-button class="close-right-area-btn mat-text-secondary"
+        (click)="t.setLayoutMode('left-only')">
         <mat-icon aria-label="Close right area">chevron_right</mat-icon>
-        <div class="gv-focus-overlay"></div>
       </button>
+      <button *ngIf="t.layoutMode=='right-only'" mat-stroked-button class="close-right-area-btn mat-text-secondary"
+        (click)="t.setLayoutMode('both')">
+        <mat-icon aria-label="Close right area">chevron_right</mat-icon>
+      </button>
+      <mat-tab-group mat-stretch-tabs class="loc-tabs-right">
 
+        <mat-tab *ngIf="tab.data.showContentTree">
+          <ng-template mat-tab-label>
+            <div class="loc-tab">
+              <mat-icon class="example-tab-icon">view_list</mat-icon>
+              has content
+            </div>
+          </ng-template>
+          <ng-template matTabContent>
+            <gv-content-tree class="gv-tile gv-flex-fh" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$">
+            </gv-content-tree>
+          </ng-template>
+        </mat-tab>
+
+        <mat-tab *ngIf="tab.data.showAnnotations">
+          <ng-template mat-tab-label>
+            <div class="loc-tab">
+              <mat-icon [svgIcon]="'comment-quote-outline'" class="gv-digitals-primary-color"></mat-icon>
+              annotated in
+            </div>
+          </ng-template>
+          <ng-template matTabContent>
+            <gv-view-field-referred-to-by *ngIf="(scope$|async) && (fkClass$|async)" [scope]="scope$|async"
+              [source]="source" [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+            </gv-view-field-referred-to-by>
+          </ng-template>
+        </mat-tab>
+
+        <mat-tab *ngIf="tab.data.showFactoids">
+          <ng-template mat-tab-label>
+            <div class="loc-tab">
+              <mat-icon svgIcon="alpha-f-box-outline" class="gv-entities-primary-color"></mat-icon>
+              has factoids
+            </div>
+          </ng-template>
+          <gv-factoid-list [pkEntity]="pkEntity$|async"></gv-factoid-list>
+        </mat-tab>
+
+        <mat-tab *ngIf="tab.data.showLinkedSources">
+          <ng-template mat-tab-label>
+            <div class="loc-tab">
+              <mat-icon [svgIcon]="'gv:outlined-gv-source'" class="gv-sources-primary-color"></mat-icon>
+              linked sources
+            </div>
+          </ng-template>
+          <gv-view-section *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
+            [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [section]=linkedSources
+            [showEmptyFieldsOnInit]="true">
+            <span title>Linked sources</span>
+          </gv-view-section>
+
+        </mat-tab>
+
+        <mat-tab *ngIf="tab.data.showLinkedEntities">
+          <ng-template mat-tab-label>
+            <div class="loc-tab">
+              <mat-icon [svgIcon]="'gv:outlined-gv-entities'" class="gv-entities-primary-color"></mat-icon>
+              linked entities
+            </div>
+          </ng-template>
+          <gv-view-section *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
+            [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [section]=linkedEntities
+            [showEmptyFieldsOnInit]="true">
+            <span title>Linked entities</span>
+          </gv-view-section>
+
+        </mat-tab>
+
+      </mat-tab-group>
+
+
+      <!--
       <mat-tab-group class="gv-panel-top-bar-tabs gv-flex-fh" [selectedIndex]="rightPanelActiveTab$|async">
         <ng-container *ngFor="let tab of rightPanelTabs$|async">
           <mat-tab *ngIf="tab == 'content-tree'" label="Sections & Digital Reproductions">
@@ -85,6 +160,9 @@
             </ng-template>
             <mat-tab-group class="gv-slim-tabs gv-mat-tabs-shrink gv-flex-fh">
               <mat-tab label="Texts">
+                <gv-view-field-referred-to-by *ngIf="(scope$|async) && (fkClass$|async)" [scope]="scope$|async"
+                  [source]="source" [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+                </gv-view-field-referred-to-by>
                 <gv-ram-list *ngIf="scope$|async" [scope]="scope$|async" [pkEntity]="pkEntity$|async"
                   [fkProperty]="1334" [annotatedIn]="'digital-text'">
                 </gv-ram-list>
@@ -114,7 +192,7 @@
           </mat-tab>
         </ng-container>
 
-      </mat-tab-group>
+      </mat-tab-group> -->
 
 
     </as-split-area>

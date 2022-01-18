@@ -21,6 +21,7 @@ export interface SysConfigFormCtrlType {
     appellation?: SysConfigFormCtrlType.AppellationEnum;
     language?: SysConfigFormCtrlType.LanguageEnum;
     place?: SysConfigFormCtrlType.PlaceEnum;
+    cell?: SysConfigFormCtrlType.CellEnum;
     timePrimitive?: SysConfigFormCtrlType.TimePrimitiveEnum;
     langString?: SysConfigFormCtrlType.LangStringEnum;
     dimension?: DimensionValueObjectType;
@@ -48,6 +49,10 @@ export namespace SysConfigFormCtrlType {
     export type PlaceEnum = 'true';
     export const PlaceEnum = {
         True: 'true' as PlaceEnum
+    };
+    export type CellEnum = 'true';
+    export const CellEnum = {
+        True: 'true' as CellEnum
     };
     export type TimePrimitiveEnum = 'true';
     export const TimePrimitiveEnum = {

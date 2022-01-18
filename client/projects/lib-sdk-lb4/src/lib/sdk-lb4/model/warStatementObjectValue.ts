@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { WarStatementCellVT } from './warStatementCellVT';
 import { WarStatementGeometryVT } from './warStatementGeometryVT';
 import { WarStatementLangStringVT } from './warStatementLangStringVT';
 import { WarStatementLanguageVT } from './warStatementLanguageVT';
@@ -24,5 +25,6 @@ export interface WarStatementObjectValue {
     timePrimitive?: WarStatementTimePrimitiveVT;
     langString?: WarStatementLangStringVT;
     dimension?: WarStatementDimensionVT;
+    cell?: WarStatementCellVT;
 }
 

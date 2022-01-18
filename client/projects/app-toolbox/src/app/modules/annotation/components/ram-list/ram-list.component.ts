@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
+import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { DatDigital, GvFieldPageScope, RamListService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, RamListService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
@@ -148,7 +148,7 @@ export class RamListComponent implements OnInit, OnDestroy {
     // if property is 'refers to' we need to get the chunk and the digital
     if (this.fkProperty == DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO) {
 
-      if (this.annotatedIn === 'digital-text') return this.pipeRefersToChunk(basicStatements$)
+      if (this.annotatedIn === 'digital-text') return this.pipeRefersToAnnotation(basicStatements$)
       else if (this.annotatedIn === 'digital-tables') return this.pipeRefersToCell(basicStatements$)
 
     }
@@ -180,31 +180,48 @@ export class RamListComponent implements OnInit, OnDestroy {
     }));
   }
 
-  private pipeRefersToChunk(basicStatements$: Observable<InfStatement[]>): Observable<RamListItem[]> {
+  private pipeRefersToAnnotation(basicStatements$: Observable<InfStatement[]>): Observable<RamListItem[]> {
     return basicStatements$.pipe(
-      map(stmst => stmst.filter(s => s.fk_subject_data !== 0)),
+      // map(stmst => stmst.filter(s => s.fk_subject_data !== 0)),
       switchMap(statements => {
-        return combineLatestOrEmpty(statements.map(statement => this.ss.dat$.chunk$.by_pk_entity$.key(statement.fk_subject_data)
-          .pipe(switchMap(chunk => {
-            const item: RamListItem = {
-              path: {
-                segments: []
-              },
-              location: undefined,
-              statement: statement,
-              actions: {
-                edit: this.propertyHasReference()
-              }
-            };
-            if (!chunk) return new BehaviorSubject(item);
-            return this.pipeDigitalFromChunk(chunk.fk_text, item)
-              .pipe(map((i) => {
-                i.annotatedText = {
-                  label: this.quillPipe.transform((chunk.quill_doc as any).ops)
-                };
-                return i
-              }))
-          }))));
+        return combineLatestOrEmpty(statements.map(statement => combineLatest([
+
+          this.ss.inf$.statement$.by_subject_and_property$({
+            fk_subject_info: statement.fk_subject_info,
+            fk_property: 99005, // annotation has value (chunk)
+          }),
+          this.ss.inf$.statement$.by_subject_and_property$({
+            fk_subject_info: statement.fk_subject_info,
+            fk_property: 99004, // annotation is part of / annotation in a text
+          }),
+        ])
+          .pipe(
+            switchMap(([statementsToChunk, statementsToText]) =>
+              this.ss.inf$.appellation$.by_pk_entity$.key(statementsToChunk?.[0].fk_object_info).pipe(
+                switchMap(chunk => {
+                  const item: RamListItem = {
+                    path: {
+                      segments: []
+                    },
+                    location: undefined,
+                    statement: statement,
+                    annotatedText: { label: this.quillPipe.transform((chunk.quill_doc as any).ops) },
+                    actions: {
+                      edit: this.propertyHasReference()
+                    }
+                  };
+                  if (!chunk) return new BehaviorSubject(item);
+                  return this.pipePathOfDigital(statementsToText[0].fk_object_info, 'text', item)
+                    .pipe(map((i) => {
+                      i.annotatedText = {
+                        label: this.quillPipe.transform((chunk.quill_doc as any).ops)
+                      };
+                      return i
+                    }))
+                })
+              ),
+            )
+          )));
       }));
   }
 
@@ -258,42 +275,42 @@ export class RamListComponent implements OnInit, OnDestroy {
     return this.ss.dat$.digital$.by_pk_entity$.key(fkDigital).pipe(map(digitalIdx => values(digitalIdx)), switchMap(digitals => {
       if (digitals.length < 1) return new BehaviorSubject(item);
       const digital = digitals[0];
-      return this.pipePathOfDigital(digital, item);
+      return this.pipePathOfDigital(digital.pk_entity, 'table', item);
     }));
   }
 
-  private pipeDigitalFromChunk(pkText: number, item: RamListItem): Observable<RamListItem> {
-    return this.ss.dat$.digital$.by_pk_text$.key(pkText).pipe(map(digitalIdx => values(digitalIdx)), switchMap(digitals => {
-      if (digitals.length < 1) return new BehaviorSubject(item);
-      const digital = digitals[0];
-      return this.pipePathOfDigital(digital, item);
-    }));
-  }
+  // private pipeTextFromAnnotation(pkText: number, item: RamListItem): Observable<RamListItem> {
+  //   return this.ss.dat$.digital$.by_pk_text$.key(pkText).pipe(map(digitalIdx => values(digitalIdx)), switchMap(digitals => {
+  //     if (digitals.length < 1) return new BehaviorSubject(item);
+  //     const digital = digitals[0];
+  //     return this.pipePathOfDigital(digital, item);
+  //   }));
+  // }
 
-  private pipePathOfDigital(digital: DatDigital, item: RamListItem): Observable<RamListItem> {
+  private pipePathOfDigital(pkDigital: number, type: 'text' | 'table', item: RamListItem): Observable<RamListItem> {
     return this.ss.inf$.statement$.by_subject_and_property$({
-      fk_subject_data: digital.pk_entity,
+      fk_subject_info: pkDigital,
       fk_property: DfhConfig.PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF,
     }).pipe(switchMap(statementsToExpression => {
       if (statementsToExpression.length < 1) return new BehaviorSubject(item);
 
       let entity: GraphPathEntity;
-      if (digital.fk_system_type === SysConfig.PK_SYSTEM_TYPE__DIGITAL_TEXT) {
+      if (type === 'text') {
         entity = {
           icon: 'text',
-          label: 'Text ' + digital.pk_entity,
-          tooltip: 'Text ' + digital.pk_entity,
-          pkEntity: digital.pk_entity,
+          label: 'Text ' + pkDigital,
+          tooltip: 'Text ' + pkDigital,
+          pkEntity: pkDigital,
           isDigitalText: true
         }
       }
       else {
-        if (digital.fk_system_type === SysConfig.PK_SYSTEM_TYPE__DIGITAL_TABLE) {
+        if (type === 'table') {
           entity = {
             icon: 'table',
-            label: 'Table ' + digital.pk_entity,
-            tooltip: 'Table ' + digital.pk_entity,
-            pkEntity: digital.pk_entity,
+            label: 'Table ' + pkDigital,
+            tooltip: 'Table ' + pkDigital,
+            pkEntity: pkDigital,
             isDigitalTable: true
           }
         }

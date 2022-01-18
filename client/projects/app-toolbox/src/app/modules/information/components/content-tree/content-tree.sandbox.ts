@@ -6,7 +6,6 @@ import { sandboxOf } from 'angular-playground';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { createStatementWithTarget } from 'projects/__test__/data/auto-gen/api-responses/GvPaginationObjectMock';
-import { DatDigitalMock } from 'projects/__test__/data/auto-gen/gvDB/DatDigitalMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
@@ -30,7 +29,7 @@ const warEntityPreviews: WarEntityPreview[] = [
   WarEntityPreviewMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_2
 ]
 const infStatements: InfStatement[] = [
-  InfStatementMock.DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP,
+  // InfStatementMock.DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP,
   InfStatementMock.EXPR_PORTION_CHAPTER_1_IS_PART_OF_HABS_EMP_EXPR,
   InfStatementMock.EXPR_PORTION_CHAPTER_2_IS_PART_OF_EXPR_PORTION_CHAPTER_1,
 ]
@@ -87,7 +86,7 @@ for (let i = 0; i < 50; i++) {
 const contentTreeMock: GvPositiveSchemaObject = {
   dat: {
     digital: [
-      { ...DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO, string: 'Rudolf Foo' }
+      // { ...DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO, string: 'Rudolf Foo' }
     ]
   },
   inf: {
@@ -208,7 +207,7 @@ export class DatActionsMock {
   digital = {
     loadVersion: (pkEntity: number) => {
       this.schemaActions.loadGvSchemaObject(of({
-        dat: { digital: [DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO] }
+        // dat: { digital: [DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO] }
       }))
     },
     upsert() {

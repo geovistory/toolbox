@@ -1,4 +1,6 @@
 import {AppellationFormCtrlType} from '../../../../models/enums/AppellationFormCtrlType';
+import {IconType} from '../../../../models/enums/IconType';
+import {TabComponent} from '../../../../models/enums/TabComponent';
 import {TrueEnum} from '../../../../models/enums/TrueEnum';
 import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
 
@@ -18,6 +20,7 @@ export class SysConfigValueMock {
     },
     "classesByBasicType": {
       "8": {
+        icon: IconType['persistent-item'],
         "viewType": {
           "entityPreview": TrueEnum.true
         },
@@ -28,10 +31,12 @@ export class SysConfigValueMock {
         communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
       },
       9: {
+        icon: IconType['temporal-entity'],
         communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
         communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
       },
       "30": {
+        icon: IconType['persistent-item'],
         "viewType": {
           "entityPreview": TrueEnum.true
         },
@@ -123,11 +128,13 @@ export class SysConfigValueMock {
         }
       },
       "218": {
+        icon: IconType.source,
         belongsToCategory: {
           sources: {showInAddMenu: false}
         }
       },
       "220": {
+        icon: IconType.source,
         docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
         belongsToCategory: {
           sources: {
@@ -137,6 +144,7 @@ export class SysConfigValueMock {
         }
       },
       "503": {
+        icon: IconType.source,
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
@@ -145,6 +153,7 @@ export class SysConfigValueMock {
         }
       },
       "219": {
+        icon: IconType.source,
         docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-serially-produced-source',
         belongsToCategory: {
           sources: {
@@ -154,6 +163,7 @@ export class SysConfigValueMock {
         }
       },
       "221": {
+        icon: IconType.source,
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
@@ -1009,7 +1019,20 @@ export class SysConfigValueMock {
       },
     },
     "classes": {
-
+      "40": {
+        "viewType": {
+          "appellation": TrueEnum.true
+        },
+        "formControlType": {
+          "appellation": AppellationFormCtrlType.true
+        },
+        "valueObjectType": {
+          "appellation": TrueEnum.true
+        },
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
       "54": {
         "viewType": {
           "language": TrueEnum.true
@@ -1025,11 +1048,13 @@ export class SysConfigValueMock {
         }
       },
       "218": {
+        icon: IconType.source,
         belongsToCategory: {
           sources: {showInAddMenu: false}
         }
       },
       "220": {
+        icon: IconType.source,
         docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
         belongsToCategory: {
           sources: {
@@ -1052,6 +1077,21 @@ export class SysConfigValueMock {
           entities: {showInAddMenu: false}
         }
       },
+      "521": {
+        icon: IconType.value,
+        "viewType": {
+          "cell": TrueEnum.true
+        },
+        "formControlType": {
+          "cell": TrueEnum.true
+        },
+        "valueObjectType": {
+          "cell": TrueEnum.true
+        },
+        belongsToCategory: {
+          digitals: {showInAddMenu: false}
+        }
+      },
       "456": {
         "viewType": {
           "appellation": TrueEnum.true
@@ -1066,9 +1106,81 @@ export class SysConfigValueMock {
           entities: {showInAddMenu: false}
         }
       },
-      "9901": {
+      "784": {
+        "viewType": {
+          "langString": TrueEnum.true
+        },
+        "formControlType": {
+          "langString": TrueEnum.true
+        },
+        "valueObjectType": {
+          "langString": TrueEnum.true
+        },
         belongsToCategory: {
-          digitals: {showInAddMenu: true}
+          entities: {showInAddMenu: false}
+        }
+      },
+      "9901": {
+        icon: IconType.text,
+        detailPage: TabComponent.text,
+        belongsToCategory: {
+          digitals: {
+            showInAddMenu: true,
+            positionInAddMenu: 2
+          }
+
+        }
+      },
+      "9902": {
+        viewType: {nestedResource: []},
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
+      "9903": {
+        icon: IconType.text,
+        detailPage: TabComponent.text,
+        belongsToCategory: {
+          digitals: {
+            showInAddMenu: true,
+            positionInAddMenu: 1
+          }
+        }
+      },
+      "9904": {
+        icon: IconType.table,
+        detailPage: TabComponent.table,
+        belongsToCategory: {
+          digitals: {
+            showInAddMenu: true,
+            positionInAddMenu: 3
+          }
+        }
+      },
+      "9905": {
+        viewType: {nestedResource: []},
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
+      "9907": {
+        viewType: {nestedResource: []},
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
+        }
+      },
+      "657": {
+        "viewType": {
+          "langString": TrueEnum.true
+        },
+        "formControlType": {
+          "langString": TrueEnum.true
+        },
+        "valueObjectType": {
+          "langString": TrueEnum.true
+        },
+        belongsToCategory: {
+          entities: {showInAddMenu: false}
         }
       },
     },
@@ -1092,6 +1204,19 @@ export class SysConfigValueMock {
                   "position": 2,
                   hideRemoveBtn: true,
                   required: 1,
+                  controlsOnInit: 1,
+                }
+              }
+            }
+          }
+        },
+        "9904": {
+          outgoingProperties: {
+            1761: {
+              "comment": "has short title",
+              formSections: {
+                "simpleForm": {
+                  "position": 1,
                   controlsOnInit: 1,
                 }
               }
@@ -1137,6 +1262,22 @@ export class SysConfigValueMock {
           "viewSections": {
             "specific": {
               "hidden": true // hide it from the fields
+            }
+          }
+        },
+        "99009": {
+          "comment": "Entity is mentioned by mentioning",
+          "viewSections": {
+            "linkedSources": {
+              "position": 1
+            }
+          }
+        },
+        "99007": {
+          "comment": "Source mentions mentioning",
+          "viewSections": {
+            "linkedEntities": {
+              "position": 1
             }
           }
         }

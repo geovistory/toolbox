@@ -1,5 +1,4 @@
 import { DatDigital } from '@kleiolab/lib-sdk-lb3';
-import { IVersion } from 'projects/app-toolbox/src/app/modules/data/components/version-picker/version-picker.component';
 import Delta from 'quill-delta';
 
 
@@ -100,7 +99,6 @@ export class ISourceDetailState {
   edit?: DatDigital;
   annotate?: DatDigital;
   annotationPanel?: IAnnotationPanelState;
-  versionList?: IVersion[];
 
   constructor(data?: ISourceDetailState) {
     Object.assign(this, data);
@@ -131,7 +129,6 @@ export interface SectionDetailState {
   edit?: DatDigital;
   annotate?: DatDigital;
   annotationPanel?: IAnnotationPanelState;
-  versionList?: IVersion[];
 }
 
 

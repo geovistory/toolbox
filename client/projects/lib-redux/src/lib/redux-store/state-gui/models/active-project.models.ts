@@ -1,5 +1,5 @@
 import { ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from '@kleiolab/lib-sdk-lb3';
-import { InfAppellation, InfLanguage } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig as LbClassConfig, InfAppellation, InfLanguage } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { EntityDetail } from './active-project/entity-detail';
 import { ProjectSettingsData } from './active-project/project-settings-data.models';
@@ -39,7 +39,6 @@ export interface EntityVersionsByPk<T> {
 
 // export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
 
-export type IconType = 'text' | 'table' | 'persistent-entity' | 'temporal-entity' | 'source' | 'expression-portion' | 'value' | 'analysis' | 'query' | 'visual' | 'story' | 'settings';
 
 export interface Panel {
   id: number;
@@ -51,9 +50,9 @@ export interface PanelTab<D> {
   // wheter tab is active or not
   active: boolean;
   // the root component included in this tab, in dash separate minuscles: PeItDetailComponent -> 'entity-detail'
-  component: 'text-detail' | 'text-detail-2' | 'table-detail' | 'entity-detail' | 'te-en-detail' | 'analysis-detail' | 'query-detail' | 'visual-detail' | 'ontome-profiles-settings' | 'classes-settings' | 'contr-vocab-settings';
+  component: LbClassConfig.DetailPageEnum;
   // icon to be displayed in tab, e.g.: gv-icon-source
-  icon: IconType
+  icon: LbClassConfig.IconEnum,
   // name of the pathSegment under 'activeProject', used to generate the path: ['activeProject', pathSegment, uiId]
   pathSegment?: 'textDetails' | 'tableDetails' | 'peItDetails' | 'teEnDetails' | 'analysisDetails' | 'queryDetails' | 'visualDetails' | 'ontomeProfilesSettings' | 'classesSettings' | 'contrVocabSettings';
   // data to pass to component via input variabales
@@ -64,13 +63,13 @@ export interface PanelTab<D> {
   tabTitle$?: Observable<string>;
   loading$?: Observable<boolean>;
 }
-export interface PeItTabData {
-  // Used by peIt detail state creato
-  peItDetailConfig?: {
-    peItDetail?: EntityDetail
-    // stateSettings?: StateSettings
-  }
-}
+// export interface PeItTabData {
+//   // Used by peIt detail state creato
+//   peItDetailConfig?: {
+//     peItDetail?: EntityDetail
+//     // stateSettings?: StateSettings
+//   }
+// }
 // export interface TeEntTabData {
 //   // Used by teEnt detail state creato
 //   teEntDetailConfig?: {
@@ -103,7 +102,10 @@ export interface TabData {
 
 export interface RamSource {
   pkEntity?: number,
-  chunk?: InfAppellation;
+  annotation?: {
+    textChunk: InfAppellation,
+    pkEntityOfText: number
+  };
 }
 
 export interface ProjectDetail extends ProjectPreview {

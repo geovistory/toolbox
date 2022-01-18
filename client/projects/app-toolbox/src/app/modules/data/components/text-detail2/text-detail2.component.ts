@@ -1,10 +1,11 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
 
@@ -57,7 +58,11 @@ export class TextDetail2Component implements OnInit, OnDestroy {
     private ap: ActiveProjectPipesService,
     private b: InformationBasicPipesService,
     private dataService: ReduxMainService,
-    private c: ConfigurationPipesService
+    private c: ConfigurationPipesService,
+    private i: InformationPipesService,
+    private truncatePipe: TruncatePipe,
+
+
   ) { }
 
   ngOnInit(): void {
@@ -86,6 +91,18 @@ export class TextDetail2Component implements OnInit, OnDestroy {
       debounceTime(1000),
       map(q => this.createCharacterPositionMap(q))
     )
+    const preview$ = this.ap.streamEntityPreview(this.pkEntity, true)
+    const classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
+    const tabTitle$ = combineLatest(preview$, classLabel$).pipe(
+      map(([preview, classLabel]) => {
+        const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['7']);
+        return [trucatedClassLabel, preview.entity_label].filter(i => !!i).join(' - ')
+      })
+    )
+    tabTitle$.pipe(takeUntil(this.destroy$))
+      .subscribe((tabTitle) => {
+        this.t.setTabTitle(tabTitle)
+      })
   }
 
   public quillDocUpdated(q: QuillDoc) {

@@ -9,13 +9,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { GvSubentityFieldTargetViewType } from './gvSubentityFieldTargetViewType';
 
 
-export interface GvSubentityFieldTargets { 
-  [key: string]: GvSubentityFieldTargetViewType | any;
-
-
-    _1?: GvSubentityFieldTargetViewType;
+export interface WarStatementCellVT { 
+    pkCell: number;
+    fkClass: number;
+    fkColumn: number;
+    fkRow: number;
+    stringValue: string;
+    numericValue: number;
 }
 

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {InfStatement} from '../../../../models';
-import {DatChunkMock} from './DatChunkMock';
 import {DatDigitalMock} from './DatDigitalMock';
 import {DfhApiPropertyMock} from './DfhApiPropertyMock';
 import {InfAppellationMock} from './InfAppellationMock';
@@ -210,18 +209,11 @@ export class InfStatementMock {
     fk_object_info: InfResourceMock.HABS_EMP_EXPR.pk_entity,
   })
 
-  static readonly DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP: OmitEntity<InfStatement> = ({
+  static readonly TRANSCRIPTION_IS_REPRO_OF_HABS_EMP: OmitEntity<InfStatement> = ({
     pk_entity: 3028,
-    fk_subject_data: DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO.pk_entity,
+    fk_subject_info: InfResourceMock.TRANSCRIPTION_RODOLF_FOO.pk_entity,
     fk_property: DfhApiPropertyMock.EN_1216_IS_REPRODUCTION_OF.dfh_pk_property,
     fk_object_info: InfResourceMock.HABS_EMP_EXPR.pk_entity,
-  })
-
-  static readonly CHUNK_RUDOLF_REFERS_TO_RUDOLF: OmitEntity<InfStatement> = ({
-    pk_entity: 3029,
-    fk_subject_data: DatChunkMock.RUDOLF.pk_entity,
-    fk_property: 1334,
-    fk_object_info: InfResourceMock.RUDOLF.pk_entity,
   })
 
   static readonly HABS_EMP_EXPR_MENTIONS_RUDOLF: OmitEntity<InfStatement> = ({
@@ -461,15 +453,71 @@ export class InfStatementMock {
   static readonly DEFINITION_1_HAS_VALUE_VERSION_1: OmitEntity<InfStatement> = ({
     pk_entity: 3061,
     fk_subject_info: InfResourceMock.DEFINITION_1.pk_entity,
-    fk_property: DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION.dfh_pk_property,
+    fk_property: DfhApiPropertyMock.EN_99001_DEFINITION_HAS_VALUE_VERSION.dfh_pk_property,
     fk_object_info: InfAppellationMock.VALUE_VERSION_1.pk_entity,
   })
   static readonly DEFINITION_1_HAS_VALUE_VERSION_2: OmitEntity<InfStatement> = ({
     pk_entity: 3062,
     fk_subject_info: InfResourceMock.DEFINITION_1.pk_entity,
-    fk_property: DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION.dfh_pk_property,
+    fk_property: DfhApiPropertyMock.EN_99001_DEFINITION_HAS_VALUE_VERSION.dfh_pk_property,
     fk_object_info: InfAppellationMock.VALUE_VERSION_2.pk_entity,
   })
+
+  static readonly TRANSCRIPTION_RODOLF_HAS_VALUE_VERSION: OmitEntity<InfStatement> = ({
+    pk_entity: 3063,
+    fk_subject_info: InfResourceMock.TRANSCRIPTION_RODOLF_FOO.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_99001_DEFINITION_HAS_VALUE_VERSION.dfh_pk_property,
+    fk_object_info: InfAppellationMock.TEXT_VALUE_RODOLF_FOO_V1.pk_entity,
+  })
+
+  static readonly ANNOTATION_RUDOLF_HAS_SPOT: OmitEntity<InfStatement> = ({
+    pk_entity: 3064,
+    fk_subject_info: InfResourceMock.ANNOTATION_RUDOLF.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_99005_TEXT_ANNOTATION_HAS_SPOT.dfh_pk_property,
+    fk_object_info: InfAppellationMock.CHUNK_RUDOLF.pk_entity,
+  })
+
+  static readonly ANNOTATION_RUDOLF_REFERS_TO_RUDOLF: OmitEntity<InfStatement> = ({
+    pk_entity: 3065,
+    fk_subject_info: InfResourceMock.ANNOTATION_RUDOLF.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1334_TEXT_ANNOTATION_REFERS_TO.dfh_pk_property,
+    fk_object_info: InfResourceMock.RUDOLF.pk_entity,
+  })
+  static readonly ANNOTATION_RUDOLF_IS_ANNOTATED_IN: OmitEntity<InfStatement> = ({
+    pk_entity: 3066,
+    fk_subject_info: InfResourceMock.ANNOTATION_RUDOLF.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN.dfh_pk_property,
+    fk_object_info: InfResourceMock.TRANSCRIPTION_RODOLF_FOO.pk_entity,
+  })
+
+  static readonly TABLE_1_HAS_VALUE_TABLE_UNOIN: OmitEntity<InfStatement> = ({
+    pk_entity: 3067,
+    fk_subject_info: InfResourceMock.TABLE_1.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_99006_TABLE_HAS_VALUE.dfh_pk_property,
+    fk_object_data: DatDigitalMock.DIGITAL_UNIONS.pk_entity,
+  })
+
+
+  static readonly ANNOTATION_ANGELA_HAS_SPOT: OmitEntity<InfStatement> = ({
+    pk_entity: 3068,
+    fk_subject_info: InfResourceMock.ANNOTATION_ANGELA.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_99005_TABLE_ANNOTATION_HAS_SPOT.dfh_pk_property,
+    fk_object_tables_cell: TabCellXMock.FEATURE_X_UNIONS_ANGELA.pk_cell,
+  })
+
+  static readonly ANNOTATION_ANGELA_REFERS_TO_ANGELA: OmitEntity<InfStatement> = ({
+    pk_entity: 3069,
+    fk_subject_info: InfResourceMock.ANNOTATION_ANGELA.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_1334_TABLE_ANNOTATION_REFERS_TO.dfh_pk_property,
+    fk_object_info: InfResourceMock.ANGELA.pk_entity,
+  })
+  static readonly ANNOTATION_ANGELA_IS_ANNOTATED_IN: OmitEntity<InfStatement> = ({
+    pk_entity: 3070,
+    fk_subject_info: InfResourceMock.ANNOTATION_ANGELA.pk_entity,
+    fk_property: DfhApiPropertyMock.EN_99004_TABLE_ANNOTATION_IS_ANNOTATION_IN.dfh_pk_property,
+    fk_object_info: InfResourceMock.TABLE_1.pk_entity,
+  })
+
 }
 
 

@@ -81,7 +81,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
   newTimelineContinuous() {
     this.p.addTab<AnalysisTabData>({
       active: true,
-      component: 'analysis-detail',
+      component: 'analysis',
       icon: 'analysis',
       pathSegment: 'analysisDetails',
       data: {
@@ -94,7 +94,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
   newTable() {
     this.p.addTab<AnalysisTabData>({
       active: true,
-      component: 'analysis-detail',
+      component: 'analysis',
       icon: 'analysis',
       pathSegment: 'analysisDetails',
       data: {
@@ -105,7 +105,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
   newMapAndTimeCont() {
     this.p.addTab<AnalysisTabData>({
       active: true,
-      component: 'analysis-detail',
+      component: 'analysis',
       icon: 'analysis',
       pathSegment: 'analysisDetails',
       data: {
@@ -117,7 +117,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
   open(item: ProAnalysis) {
     this.p.addTab<AnalysisTabData>({
       active: true,
-      component: 'analysis-detail',
+      component: 'analysis',
       icon: 'analysis',
       pathSegment: 'analysisDetails',
       data: {

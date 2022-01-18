@@ -21,10 +21,16 @@ export const PROFILE_99_DIGITALS: OntomeProfileMock = {
     "dfh_is_ongoing_forced_publication": true
   },
   "classes": [
+    DfhApiClassMock.EN_9905_TABLE_ANNOTATION,
+    DfhApiClassMock.EN_9902_TEXT_ANNOTATION,
     DfhApiClassMock.EN_9901_DEFINITION,
-    DfhApiClassMock.EN_9902_ANNOTATION,
+    DfhApiClassMock.EN_9903_TRANSCRIPTION,
+    DfhApiClassMock.EN_9904_TABLE,
+    DfhApiClassMock.EN_9906_TABLE_VALUE,
     DfhApiClassMock.EN_339_STRING,
     DfhApiClassMock.EN_456_CHUNK,
+    DfhApiClassMock.EN_521_CELL,
+    DfhApiClassMock.EN_784_SHORT_TITLE_IN_99,
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
       "dfh_pk_class": 54,
@@ -44,33 +50,29 @@ export const PROFILE_99_DIGITALS: OntomeProfileMock = {
       "dfh_class_identifier_in_namespace": "E56",
       "dfh_profile_association_type": "inferred"
     },
-    {
-      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
-      "dfh_pk_class": 21,
-      "dfh_basic_type": 8,
-      "dfh_fk_profile": 99,
-      "dfh_class_label": "Person",
-      "dfh_fk_namespace": 1,
-      "dfh_namespace_uri": null,
-      "dfh_profile_label": "Geovistory Basics",
-      "dfh_namespace_label": "CIDOC CRM version 6.2",
-      "dfh_basic_type_label": "Persistent Item",
-      "dfh_class_scope_note": "This class comprises real persons who live or are assumed to have lived.\r\nLegendary figures that may have existed, such as Ulysses and King Arthur, fall into this class if the documentation refers to them as historical figures. In cases where doubt exists as to whether several persons are in fact identical, multiple instances can be created and linked to indicate their relationship. The CRM does not propose a specific form to support reasoning about possible identity.",
-      "dfh_class_label_language": "en",
-      "dfh_profile_label_language": "en",
-      "dfh_namespace_label_language": "en",
-      "dfh_class_scope_note_language": "en",
-      "dfh_class_identifier_in_namespace": "E21",
-      "dfh_profile_association_type": "inferred"
-    }
+    DfhApiClassMock.EN_21_PERSON_IN_99,
+    DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON_IN_99,
+    DfhApiClassMock.EN_9907_MENTIONING,
+    DfhApiClassMock.EN_657_REFERENCE_IN_99,
   ],
   "properties": [
-    DfhApiPropertyMock.EN_99001_HAS_VALUE_VERSION,
+    DfhApiPropertyMock.EN_99001_DEFINITION_HAS_VALUE_VERSION,
+    DfhApiPropertyMock.EN_99001_TRANSCRIPTION_HAS_VALUE_VERSION,
     DfhApiPropertyMock.EN_99002_HAS_LANGUAGE,
     DfhApiPropertyMock.EN_99003_HAS_DEFINITION_NEW,
-    DfhApiPropertyMock.EN_99004_IS_PART_OF,
-    DfhApiPropertyMock.EN_99005_HAS_SPOT,
-    DfhApiPropertyMock.EN_1334_REFERS_TO,
+    DfhApiPropertyMock.EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN,
+    DfhApiPropertyMock.EN_99005_TEXT_ANNOTATION_HAS_SPOT,
+    DfhApiPropertyMock.EN_1334_TEXT_ANNOTATION_REFERS_TO,
+    DfhApiPropertyMock.EN_99004_TABLE_ANNOTATION_IS_ANNOTATION_IN,
+    DfhApiPropertyMock.EN_99005_TABLE_ANNOTATION_HAS_SPOT,
+    DfhApiPropertyMock.EN_99006_TABLE_HAS_VALUE,
+    DfhApiPropertyMock.EN_1334_TABLE_ANNOTATION_REFERS_TO,
 
+    DfhApiPropertyMock.EN_1216_TRANSCRIPTION_IS_REPRODUCTION_OF,
+    DfhApiPropertyMock.EN_1761_TABLE_HAS_SHORT_TITLE,
+
+    DfhApiPropertyMock.EN_99007_MENTIONING_IS_MENTIONED_IN,
+    DfhApiPropertyMock.EN_99008_MENTIONING_HAS_REFERENCE,
+    DfhApiPropertyMock.EN_99009_MENIONING_MENTIONS
   ]
 }
