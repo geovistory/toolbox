@@ -1,10 +1,10 @@
-import {Postgres1DataSource} from '../../datasources';
-import {DatDigital} from '../../models/dat-digital.model';
-import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
-import {InfStatement} from '../../models/inf-statement.model';
-import {ProInfoProjRel} from '../../models/pro-info-proj-rel.model';
-import {WarEntityPreview} from '../../models/war-entity-preview.model';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
+import { Postgres1DataSource } from '../../datasources';
+import { DatDigital } from '../../models/dat-digital.model';
+import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
+import { InfStatement } from '../../models/inf-statement.model';
+import { ProInfoProjRel } from '../../models/pro-info-proj-rel.model';
+import { WarEntityPreview } from '../../models/war-entity-preview.model';
+import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 
 export class QContentTree extends SqlBuilderLb4Models {
 
@@ -99,7 +99,7 @@ export class QContentTree extends SqlBuilderLb4Models {
           projects.info_proj_rel t3
         WHERE t1.fk_subject_info = tw1.pk_entity
         AND t1.fk_property = t2.pk_property
-        AND t2.is_has_type_subproperty = true
+        AND 2 = ANY (t2.parent_properties)
         AND t1.pk_entity = t3.fk_entity
         AND t3.is_in_project = true
         AND t3.fk_project = ${this.addParam(fkProject)}

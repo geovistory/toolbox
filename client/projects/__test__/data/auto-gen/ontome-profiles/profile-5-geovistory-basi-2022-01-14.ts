@@ -1,6 +1,6 @@
 import {OntomeProfileMock} from '../gvDB/local-model.helpers';
 
-  export const PROFILE_5_GEOVISTORY_BASI_2021_12_07: OntomeProfileMock ={
+  export const PROFILE_5_GEOVISTORY_BASI_2022_01_14: OntomeProfileMock ={
   "profile": {
     "removed_from_api": false,
     "requested_language": "en",
@@ -13,7 +13,9 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
     "dfh_project_label_language": "en",
     "dfh_profile_label_language": "en",
     "dfh_profile_definition_language": "en",
-    "dfh_is_ongoing_forced_publication": true
+    "dfh_is_ongoing_forced_publication": true,
+    "dfh_is_root_profile": false,
+    "dfh_fk_root_profile": 52
   },
   "classes": [
     {
@@ -33,7 +35,11 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E1",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        214
+      ],
+      "dfh_ancestor_classes": []
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -52,7 +58,14 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E2",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        1,
+        380
+      ],
+      "dfh_ancestor_classes": [
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -71,7 +84,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E21",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        20,
+        38
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        19,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539,
+        881
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -90,7 +119,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E41",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        82
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -109,7 +150,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E42",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        40
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        70,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -128,7 +182,14 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E52",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        1,
+        539
+      ],
+      "dfh_ancestor_classes": [
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -147,7 +208,14 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E53",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        1,
+        539
+      ],
+      "dfh_ancestor_classes": [
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -166,7 +234,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E56",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -185,7 +264,21 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E78",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        23
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        65,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -204,7 +297,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E93",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        83
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -223,7 +324,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F2",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        30,
+        67
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        70,
+        81,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -242,7 +358,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F3",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53,
+        66
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -261,7 +389,21 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F4",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        23
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        65,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -280,7 +422,25 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F5",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        264
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        19,
+        22,
+        23,
+        64,
+        65,
+        66,
+        70,
+        77,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -299,7 +459,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F18",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        231,
+        235
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        81,
+        214,
+        217,
+        232
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -318,7 +493,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E61",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        337
+      ],
+      "dfh_ancestor_classes": [
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -337,7 +518,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E60",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        337
+      ],
+      "dfh_ancestor_classes": [
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -356,7 +543,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E62",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        337
+      ],
+      "dfh_ancestor_classes": [
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -375,7 +568,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C13",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        25
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -394,7 +600,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C14",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -413,7 +630,17 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C11",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        699
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        211,
+        214,
+        756
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -432,7 +659,52 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C17",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        23
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        65,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
+    },
+    {
+      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+      "dfh_pk_class": 444,
+      "dfh_basic_type": 30,
+      "dfh_fk_profile": 5,
+      "dfh_class_label": "Social Quality of an Actor",
+      "dfh_fk_namespace": 112,
+      "dfh_namespace_uri": null,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_namespace_label": "Social, legal and economic life (SDHSS) ongoing",
+      "dfh_basic_type_label": "Type (controlled vocabulary)",
+      "dfh_class_scope_note": "Professional, political, religious or whatever social quality of an actor, be it a person or a group, as it is perceived from the point of view of the representations of a human community. The Social Quality is a socially constructed concept (in the sense of crm:E55 Type) and it is used to socially classify individuals in the perspective of the community. \r\nThis class is not to be confused with the sdh-so:C12 Social Actor class which models clearly (and often legally) defined social roles and functions of actors and should be exclusively used for these use cases. Social roles are formalisations of social qualities in relation to social actors.",
+      "dfh_class_label_language": "en",
+      "dfh_profile_label_language": "en",
+      "dfh_namespace_label_language": "en",
+      "dfh_class_scope_note_language": "en",
+      "dfh_class_identifier_in_namespace": "C2",
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        706
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -451,7 +723,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C12",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        13
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        7,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -470,7 +755,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C10",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -489,7 +785,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C8",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -508,7 +815,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C6",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -527,7 +845,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C1",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        67,
+        517
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        70,
+        81,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -546,7 +879,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C2",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        455
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        67,
+        70,
+        81,
+        82,
+        214,
+        517
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -565,7 +914,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C3",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        455
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        67,
+        70,
+        81,
+        82,
+        214,
+        517
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -584,7 +949,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C13",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -603,7 +979,21 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C4",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        67
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        70,
+        81,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -622,7 +1012,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C2",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        218
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        30,
+        64,
+        65,
+        66,
+        67,
+        70,
+        81,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -641,7 +1047,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C3",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -660,7 +1077,24 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C6",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        503
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        30,
+        64,
+        65,
+        66,
+        67,
+        70,
+        81,
+        82,
+        214,
+        218
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -679,7 +1113,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C5",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -698,7 +1143,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C20",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -717,7 +1173,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C7",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        455
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        67,
+        70,
+        81,
+        82,
+        214,
+        517
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -736,7 +1208,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C8",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -755,7 +1238,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C12",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -774,7 +1268,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C9",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -793,7 +1298,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C11",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        218
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        30,
+        64,
+        65,
+        66,
+        67,
+        70,
+        81,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -812,7 +1333,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C1",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -831,7 +1360,51 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C2",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53,
+        56
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
+    },
+    {
+      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+      "dfh_pk_class": 698,
+      "dfh_basic_type": 30,
+      "dfh_fk_profile": 5,
+      "dfh_class_label": "Social Role",
+      "dfh_fk_namespace": 112,
+      "dfh_namespace_uri": null,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_namespace_label": "Social, legal and economic life (SDHSS) ongoing",
+      "dfh_basic_type_label": "Type (controlled vocabulary)",
+      "dfh_class_scope_note": "A social role is a qualification of an actor that provides it with social power, i.e. some rights and duties related to the role, like a king, the president of an Academy, etc.",
+      "dfh_class_label_language": "en",
+      "dfh_profile_label_language": "en",
+      "dfh_namespace_label_language": "en",
+      "dfh_class_scope_note_language": "en",
+      "dfh_class_identifier_in_namespace": "C12",
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        444
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214,
+        706
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -850,7 +1423,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C11",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -869,7 +1450,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C12",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        56
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -888,7 +1481,21 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C14",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        41
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        40,
+        64,
+        65,
+        66,
+        70,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -907,7 +1514,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C15",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        40
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        70,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -926,7 +1546,24 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C16",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        32,
+        455
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        67,
+        70,
+        81,
+        82,
+        214,
+        517
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -945,7 +1582,48 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C24",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
+    },
+    {
+      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+      "dfh_pk_class": 867,
+      "dfh_basic_type": 8,
+      "dfh_fk_profile": 5,
+      "dfh_class_label": "Asserted Actor's Role",
+      "dfh_fk_namespace": 74,
+      "dfh_namespace_uri": null,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+      "dfh_basic_type_label": "Persistent Item",
+      "dfh_class_scope_note": "The social quality or social role of an actor in relation to an expression and according to it. E.g. the author of a text as appearing in the text (even if historical research shows this person was not the real author of the text).\r\nThis class can be used in order to associate authors, scientific editors, contributors, etc. to texts (expressions, expressions portions, etc.) in the sense of structured bibliographic references.",
+      "dfh_class_label_language": "en",
+      "dfh_profile_label_language": "en",
+      "dfh_namespace_label_language": "en",
+      "dfh_class_scope_note_language": "en",
+      "dfh_class_identifier_in_namespace": "C9",
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        81
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -964,7 +1642,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C38",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        365
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        211,
+        214,
+        699,
+        756
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -983,7 +1672,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C39",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        630
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -1002,7 +1703,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C10",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        32,
+        40
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        67,
+        70,
+        81,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -1021,7 +1738,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C11",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -1040,7 +1768,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C25",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        769
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        211,
+        214,
+        699,
+        756
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -1059,7 +1798,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C26",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -1078,14 +1828,25 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C17",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53,
+        630
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     }
   ],
   "properties": [
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1,
       "dfh_property_label_language": "en",
@@ -1110,12 +1871,48 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is identified by",
+      "dfh_property_inverse_label": "identifies",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property describes the naming or identification of any real world item by a name or any other identifier.\r\nThis property is intended for identifiers in general use, which form part of the world the model intends to describe, and not merely for internal database identifiers which are specific to a technical system, unless these latter also have a more general use outside the technical context. This property includes in particular identification by mathematical expressions such as coordinate systems used for the identification of instances of E53 Place. The property does not reveal anything about when, where and by whom this identifier was used. A more detailed representation can be made using the fully developed (i.e. indirect) path through E15 Identifier Assignment.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 503,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 870,
+      "dfh_range_instances_min_quantifier": 0,
+      "dfh_range_instances_max_quantifier": -1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P1",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 1,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM version 6.2",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 4,
       "dfh_property_label_language": "en",
@@ -1140,12 +1937,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 63,
       "dfh_property_label_language": "en",
@@ -1170,12 +1968,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 71,
       "dfh_property_label_language": "en",
@@ -1200,12 +1999,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 72,
       "dfh_property_label_language": "en",
@@ -1230,12 +2030,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 78,
       "dfh_property_label_language": "en",
@@ -1260,12 +2061,44 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 115,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "has broader term",
+      "dfh_property_inverse_label": "has narrower term",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property identifies a super-Type to which an E55 Type is related.\r\nIt allows Types to be organised into hierarchies. This is the sense of \"broader term generic (BTG)\" as defined in ISO 2788",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 516,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 516,
+      "dfh_range_instances_min_quantifier": 0,
+      "dfh_range_instances_max_quantifier": -1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P127",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 1,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM version 6.2",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 115,
       "dfh_property_label_language": "en",
@@ -1290,12 +2123,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 115,
       "dfh_property_label_language": "en",
@@ -1320,12 +2154,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 145,
       "dfh_property_label_language": "en",
@@ -1350,12 +2185,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 147,
       "dfh_property_label_language": "en",
@@ -1380,12 +2216,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 147,
       "dfh_property_label_language": "en",
@@ -1410,12 +2249,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 148,
       "dfh_property_label_language": "en",
@@ -1440,12 +2282,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 150,
       "dfh_property_label_language": "en",
@@ -1470,12 +2313,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        71
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 151,
       "dfh_property_label_language": "en",
@@ -1500,12 +2346,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        71
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 152,
       "dfh_property_label_language": "en",
@@ -1530,12 +2379,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        72
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 153,
       "dfh_property_label_language": "en",
@@ -1560,12 +2412,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        72
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 979,
       "dfh_property_label_language": "en",
@@ -1590,12 +2445,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        116
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 982,
       "dfh_property_label_language": "en",
@@ -1620,12 +2478,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1016,
       "dfh_property_label_language": "en",
@@ -1650,12 +2511,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        116
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1110,
       "dfh_property_label_language": "en",
@@ -1680,12 +2544,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1111,
       "dfh_property_label_language": "en",
@@ -1710,12 +2577,1098 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 41,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 71,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 218,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 219,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 220,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 221,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 234,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 363,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 364,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 445,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 450,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 452,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 454,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 455,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 456,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 457,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 502,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 503,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 516,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 518,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 519,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 520,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 521,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 607,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 630,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 635,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 657,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 783,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 784,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 785,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 867,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 868,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 869,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 870,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 872,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1111,
       "dfh_property_label_language": "en",
@@ -1740,12 +3693,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1112,
       "dfh_property_label_language": "en",
@@ -1770,12 +3724,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1112,
       "dfh_property_label_language": "en",
@@ -1800,12 +3755,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1113,
       "dfh_property_label_language": "en",
@@ -1830,12 +3786,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1113,
       "dfh_property_label_language": "en",
@@ -1860,12 +3817,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1205,
       "dfh_property_label_language": "en",
@@ -1890,12 +3848,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1206,
       "dfh_property_label_language": "en",
@@ -1920,12 +3881,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1214,
       "dfh_property_label_language": "en",
@@ -1950,12 +3914,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1216,
       "dfh_property_label_language": "en",
@@ -1980,12 +3947,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        146
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1246,
       "dfh_property_label_language": "en",
@@ -2010,12 +3980,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        30
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1305,
       "dfh_property_label_language": "en",
@@ -2025,11 +3998,11 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_property_scope_note": "This property associates the Expression (Text, picture, graph, etc.) sent back by a server responding to a web request.",
       "dfh_is_inherited": false,
       "dfh_property_domain": 218,
-      "dfh_domain_instances_min_quantifier": null,
-      "dfh_domain_instances_max_quantifier": null,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
       "dfh_property_range": 502,
-      "dfh_range_instances_min_quantifier": null,
-      "dfh_range_instances_max_quantifier": null,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
       "dfh_identity_defining": false,
       "dfh_is_has_type_subproperty": false,
       "dfh_property_identifier_in_namespace": "P4",
@@ -2040,12 +4013,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1316,
       "dfh_property_label_language": "en",
@@ -2070,12 +4044,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1317,
       "dfh_property_label_language": "en",
@@ -2100,12 +4075,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        94
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1317,
       "dfh_property_label_language": "en",
@@ -2130,12 +4108,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        94
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1317,
       "dfh_property_label_language": "en",
@@ -2160,12 +4141,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        94
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1320,
       "dfh_property_label_language": "en",
@@ -2190,12 +4174,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1321,
       "dfh_property_label_language": "en",
@@ -2220,12 +4207,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1323,
       "dfh_property_label_language": "en",
@@ -2250,12 +4240,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1355,
       "dfh_property_label_language": "en",
@@ -2280,12 +4273,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1430,
       "dfh_property_label_language": "en",
@@ -2310,12 +4304,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1430,
       "dfh_property_label_language": "en",
@@ -2340,12 +4337,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1430,
       "dfh_property_label_language": "en",
@@ -2370,12 +4370,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1440,
       "dfh_property_label_language": "en",
@@ -2400,12 +4403,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1499,
       "dfh_property_label_language": "en",
@@ -2430,12 +4434,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1612,
       "dfh_property_label_language": "en",
@@ -2460,12 +4465,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        79
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1635,
       "dfh_property_label_language": "en",
@@ -2490,12 +4498,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        79
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1760,
       "dfh_property_label_language": "en",
@@ -2520,12 +4531,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1761,
       "dfh_property_label_language": "en",
@@ -2550,12 +4562,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1761,
       "dfh_property_label_language": "en",
@@ -2580,12 +4595,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1761,
       "dfh_property_label_language": "en",
@@ -2610,12 +4628,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1761,
       "dfh_property_label_language": "en",
@@ -2640,12 +4661,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1762,
       "dfh_property_label_language": "en",
@@ -2670,12 +4694,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1763,
       "dfh_property_label_language": "en",
@@ -2700,12 +4725,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1783,
       "dfh_property_label_language": "en",
@@ -2730,12 +4756,139 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1837,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is role of",
+      "dfh_property_inverse_label": "has role",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the actor concerned by the role in relation to the expression",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 867,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 21,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P15",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 74,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1838,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is asserted by",
+      "dfh_property_inverse_label": "asserts",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the expression asserting the role of an actor in relation to itself, e.g. the authorship of the expression.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 867,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 503,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P16",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 74,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1839,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is defined by",
+      "dfh_property_inverse_label": "defines",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the generic social quality defining the actor's role in relation to the expression and as expressed by it, e.g. being the author, editor, etc.",
+      "dfh_is_inherited": false,
+      "dfh_property_domain": 867,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": 1,
+      "dfh_property_range": 444,
+      "dfh_range_instances_min_quantifier": 0,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P17",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 74,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1840,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is qualified by",
+      "dfh_property_inverse_label": "qualifies",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the specific social role or function, modelled as a social actor, that defines the precise role of the actor in relation to the expression and as defined by it, e.g. being the author of a letter in the role of the ambassador of a king.",
+      "dfh_is_inherited": false,
+      "dfh_property_domain": 867,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 698,
+      "dfh_range_instances_min_quantifier": 0,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P18",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 74,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 5,
+      "dfh_profile_label": "Geovistory Basics",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1841,
       "dfh_property_label_language": "en",
@@ -2760,12 +4913,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1842,
       "dfh_property_label_language": "en",
@@ -2790,12 +4946,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1843,
       "dfh_property_label_language": "en",
@@ -2820,12 +4977,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1843,
       "dfh_property_label_language": "en",
@@ -2850,12 +5010,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1843,
       "dfh_property_label_language": "en",
@@ -2880,12 +5043,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1844,
       "dfh_property_label_language": "en",
@@ -2910,12 +5076,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1844,
       "dfh_property_label_language": "en",
@@ -2940,12 +5109,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1844,
       "dfh_property_label_language": "en",
@@ -2970,12 +5142,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1845,
       "dfh_property_label_language": "fr",
@@ -3000,12 +5175,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1376
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1846,
       "dfh_property_label_language": "en",
@@ -3030,7 +5208,11 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 5,
       "dfh_profile_label": "Geovistory Basics",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     }
   ]
 }
