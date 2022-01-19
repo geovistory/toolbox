@@ -10,4 +10,10 @@ export class SysConfigAddPropertyForClass {
 
   @property.array(Number) wherePkClassIn?: number[];
   @property.array(Number) wherePkClassNotIn?: number[];
+
+  @property() whereValueObjectType?: boolean;
+  @property() whereNotValueObjectType?: boolean;
+
+  @property.array(Number) whereSubclassOf?: number[];
+  @property.array(Number) whereNotSubclassOf?: number[];
 }

@@ -1,22 +1,21 @@
 
-import { Injectable } from '@angular/core';
-import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
-import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, InfLanguage, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
-import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { flatten, indexBy, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
-import { Field } from '../models/Field';
-import { GvFieldTargets } from '../models/FieldTargets';
-import { Profiles } from '../models/Profiles';
-import { SpecialFieldType } from '../models/SpecialFieldType';
-import { Subfield } from '../models/Subfield';
-import { ActiveProjectPipesService } from './active-project-pipes.service';
-import { PipeCache } from './PipeCache';
-import { SchemaSelectorsService } from './schema-selectors.service';
+import {Injectable} from '@angular/core';
+import {DfhConfig, ProConfig, SysConfig} from '@kleiolab/lib-config';
+import {dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey} from '@kleiolab/lib-redux';
+import {ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, InfLanguage, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue} from '@kleiolab/lib-sdk-lb4';
+import {combineLatestOrEmpty} from '@kleiolab/lib-utils';
+import {flatten, indexBy, values} from 'ramda';
+import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
+import {filter, map, shareReplay, switchMap} from 'rxjs/operators';
+import {Field} from '../models/Field';
+import {GvFieldTargets} from '../models/FieldTargets';
+import {SpecialFieldType} from '../models/SpecialFieldType';
+import {Subfield} from '../models/Subfield';
+import {ActiveProjectPipesService} from './active-project-pipes.service';
+import {PipeCache} from './PipeCache';
+import {SchemaSelectorsService} from './schema-selectors.service';
 
-export enum DisplayType { form = 'form', view = 'view' }
+export enum DisplayType {form = 'form', view = 'view'}
 // export type SectionNameType = keyof Sections
 export enum SectionName {
   basic = 'basic',
@@ -82,7 +81,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   constructor(
     private a: ActiveProjectPipesService,
     private s: SchemaSelectorsService,
-  ) { super() }
+  ) {super()}
 
 
   /**
@@ -169,8 +168,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
               !!x.fk_domain_class
             ].join('_'), fieldConfigs)
 
-            const uniqFields: { [uid: string]: Field } = {}
-            const uniqSubfieldCache: { [uid: string]: true } = {}
+            const uniqFields: {[uid: string]: Field} = {}
+            const uniqSubfieldCache: {[uid: string]: true} = {}
 
 
             // group by source, pkProperty and isOutgoing
@@ -419,6 +418,14 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       p.domain_instances_min_quantifier :
       p.range_instances_min_quantifier;
 
+    const hasTypeProperty = 2
+    const isHasTypeField = o && p.parent_properties.includes(hasTypeProperty)
+    const identifyingDomainProperty = 1376
+    const identifyingRangeProperty = 1766
+    const identityDefiningForDomain = p.parent_properties.includes(identifyingDomainProperty)
+    const identityDefiningForRange = p.parent_properties.includes(identifyingRangeProperty)
+    const identityDefiningForSource = o ? identityDefiningForDomain : identityDefiningForRange
+    const identityDefiningForTarget = o ? identityDefiningForRange : identityDefiningForDomain
     // console.log('pppp wanted: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
     // const first = of('field not piped after 10s').pipe(
@@ -469,12 +476,12 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           targetMinQuantity,
           targetMaxQuantity,
           label,
-          isHasTypeField: o && p.is_has_type_subproperty,
+          isHasTypeField,
           isTimeSpanShortCutField: false,
-          property: { fkProperty: p.pk_property },
+          property: {fkProperty: p.pk_property},
           isOutgoing: o,
-          identityDefiningForSource: o ? p.identity_defining : false,
-          identityDefiningForTarget: o ? false : p.identity_defining,
+          identityDefiningForSource,
+          identityDefiningForTarget,
           ontoInfoLabel: p.identifier_in_namespace,
           ontoInfoUrl: SysConfig.ONTOME_URL + '/property/' + p.pk_property,
           removedFromAllProfiles: isRemovedFromAllProfiles(enabledProfiles, (p.profiles || [])),
@@ -508,7 +515,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     pkProperty?: number,
     isOutgoing?: boolean,
     noNesting = false
-  ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
+  ): Observable<{viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType}> {
     const obs$ = combineLatest([
       this.s.sys$.config$.main$.pipe(filter(x => !!x)),
       // freezing bug log
@@ -535,13 +542,13 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     pkProperty?: number,
     isOutgoing?: boolean,
     noNesting = false
-  ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
+  ): Observable<{viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType}> {
 
     // console.log('pppp found: ', [undefined, pkProperty, klass.pk_class, isOutgoing])
     const res = (
       v: GvFieldTargetViewType,
       f: SysConfigFormCtrlType
-    ) => new BehaviorSubject({ viewType: v, formControlType: f })
+    ) => new BehaviorSubject({viewType: v, formControlType: f})
     const classId = klass.pk_class
     const basicType = klass.basic_type
     const sysConfOfProp = isOutgoing ? s.specialFields.outgoingProperties : s.specialFields.incomingProperties;
@@ -558,7 +565,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
      * Particular Case 2: the field is has type field
      */
     if (basicType === 30 && targetMaxQuantity == 1 && classId !== DfhConfig.CLASS_PK_LANGUAGE) {
-      return res({ typeItem: 'true' }, { typeItem: 'true' })
+      return res({typeItem: 'true'}, {typeItem: 'true'})
     }
 
     /*
@@ -568,7 +575,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       s?.classes?.[classId]?.formControlType ??
       s?.classesByBasicType?.[basicType]?.formControlType ??
       s?.classesDefault?.formControlType ??
-      { entity: 'true' }; // <- fallback
+      {entity: 'true'}; // <- fallback
 
     /**
      * get view type (for display on entity card)
@@ -577,7 +584,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       s?.classes?.[classId]?.viewType ??
       s?.classesByBasicType?.[basicType]?.viewType ??
       s?.classesDefault?.viewType ??
-      { entityPreview: 'true' }; // <- fallback
+      {entityPreview: 'true'}; // <- fallback
 
     /**
     * If the view wants a nestedResource, but the nested fields are not yet defined, do it.
@@ -586,7 +593,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     if (viewType?.nestedResource?.length === 0 && noNesting !== true) {
 
       return this.pipeNestedResource(classId, pkProperty).pipe(map(nestedResource => ({
-        viewType: { nestedResource },
+        viewType: {nestedResource},
         formControlType
       })));
     }
@@ -613,7 +620,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
               const listType = field.targets[key].viewType;
               const subTargetType: GvFieldTargetViewType = listType.nestedResource ?
-                { entityPreview: 'true' } :
+                {entityPreview: 'true'} :
                 listType;
               nestedTargets[key] = subTargetType;
             }
@@ -699,7 +706,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       // freezing bug log
       // .pipe(tap(x => console.log('aaa   pkProject$'))),
     ]).pipe(
-      switchMap(([fkProject, language]) => this.pipeLabels({ pkClass, fkProject, language, type: 'label' })
+      switchMap(([fkProject, language]) => this.pipeLabels({pkClass, fkProject, language, type: 'label'})
         .pipe(
           map(items => {
 
@@ -776,7 +783,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         if (!item) return undefined;
         const origin: LabelOrigin = 'of project in project lang';
         // console.log('aaa pipeProTextProperty 1') // freezing bug log
-        return { origin, text: item.string }
+        return {origin, text: item.string}
       })),
 
       // label of default project
@@ -793,7 +800,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of default project in project lang';
         // console.log('aaa pipeProTextProperty 2') // freezing bug log
 
-        return { origin, text: item.string }
+        return {origin, text: item.string}
       })),
 
       // label of default project
@@ -810,7 +817,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of default project in english';
         // console.log('aaa pipeProTextProperty 3') // freezing bug log
 
-        return { origin, text: item.string }
+        return {origin, text: item.string}
       })),
 
       // label from ontome in default language of project
@@ -824,7 +831,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of ontome in project lang';
         // console.log('aaa pipeDfhLabel 1') // freezing bug log
 
-        return { origin, text: item.label }
+        return {origin, text: item.label}
       })),
 
       // label from ontome in english
@@ -838,7 +845,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of ontome in english';
         // console.log('aaa pipeDfhLabel 2') // freezing bug log
 
-        return { origin, text: item.label }
+        return {origin, text: item.label}
       })),
     ])
     return this.cache('pipeLabels', obs$, ...arguments)
@@ -1339,34 +1346,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
 
 
-function createHasDefinitionProperty(domainClass: number) {
-  const profiles: Profiles = [
-    {
-      removed_from_api: false,
-      fk_profile: DfhConfig.PK_PROFILE_GEOVISTORY_BASIC
-    }
-  ]
-
-  const hasDefinition: DfhProperty = {
-    has_domain: domainClass,
-    pk_property: DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION,
-    has_range: 785,
-    domain_instances_max_quantifier: -1,
-    domain_instances_min_quantifier: 1,
-    range_instances_max_quantifier: 1,
-    range_instances_min_quantifier: 1,
-    identifier_in_namespace: 'P18',
-    identity_defining: false,
-    is_inherited: true,
-    is_has_type_subproperty: false,
-    profiles
-  }
-  return hasDefinition
-}
-
-
-
-
 function isRemovedFromAllProfiles(enabledProfiles: number[], profiles: RelatedProfile[]): boolean {
   return !profiles.some(p => p.removed_from_api === false && enabledProfiles.includes(p.fk_profile))
 
@@ -1386,8 +1365,8 @@ function getFieldDisplay(
 
   // returns form/view sections of config if exists, else add to specific fields
   return {
-    formSections: settings?.formSections ?? { specific: { position: thePos } },
-    viewSections: settings?.viewSections ?? { specific: { position: thePos } }
+    formSections: settings?.formSections ?? {specific: {position: thePos}},
+    viewSections: settings?.viewSections ?? {specific: {position: thePos}}
   }
 
 }
@@ -1434,7 +1413,7 @@ function getClassCategoryBelonging(sysConfig: SysConfigValue, pkClass: number, b
   return sysConfig?.classes?.[pkClass]?.belongsToCategory ??
     sysConfig?.classesByBasicType?.[basicTypeId]?.belongsToCategory ??
     sysConfig?.classesDefault?.belongsToCategory ??
-    { entities: { showInAddMenu: true } };
+    {entities: {showInAddMenu: true}};
 }
 
 function getClassConfig(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): ClassConfig {

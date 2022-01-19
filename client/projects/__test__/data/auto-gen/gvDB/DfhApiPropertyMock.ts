@@ -1,8 +1,7 @@
-import {DfhApiProperty} from "./local-model.helpers"
+import {NewDfhApiProperty} from "./local-model.helpers"
 
 export class DfhApiPropertyMock {
-  static readonly EN_1111_IS_APPE_OF: DfhApiProperty = {
-    "pk_entity": 4185,
+  static readonly EN_1111_IS_APPE_OF: NewDfhApiProperty = {
     "dfh_fk_profile": 4,
     "dfh_pk_property": 1111,
     "dfh_fk_namespace": 3,
@@ -16,7 +15,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM Generic Extension for Historical Data Management and Interoperability, ongoing",
     "dfh_property_domain": 365,
-    "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
     "dfh_identity_defining": true,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
@@ -30,10 +28,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "histP9"
+    "dfh_property_identifier_in_namespace": "histP9",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1111_IS_APPE_OF_PERSON: DfhApiProperty = {
-    "pk_entity": 4185,
+  static readonly EN_1111_IS_APPE_OF_PERSON: NewDfhApiProperty = {
     "dfh_fk_profile": 4,
     "dfh_pk_property": 1111,
     "dfh_fk_namespace": 3,
@@ -47,7 +46,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM Generic Extension for Historical Data Management and Interoperability, ongoing",
     "dfh_property_domain": 365,
-    "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
     "dfh_identity_defining": true,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
@@ -61,10 +59,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "histP9"
+    "dfh_property_identifier_in_namespace": "histP9",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1113_REFERS_TO_NAME: DfhApiProperty = {
-    "pk_entity": 3789,
+  static readonly EN_1113_REFERS_TO_NAME: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1113,
     "dfh_fk_namespace": 3,
@@ -78,7 +77,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "HistDMI generic classes and properties – ongoing",
     "dfh_property_domain": 365,
-    "tmsp_last_dfh_update": "2020-07-15T14:27:07.611+00:00",
     "dfh_identity_defining": true,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates the Appelation for language to the E41 Appelation that refers to it.",
@@ -92,11 +90,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": 1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P11"
+    "dfh_property_identifier_in_namespace": "P11",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_1112_USED_IN_LANGUAGE: DfhApiProperty = {
-    "pk_entity": 3788,
+  static readonly EN_1112_USED_IN_LANGUAGE: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1112,
     "dfh_fk_namespace": 3,
@@ -110,7 +109,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "HistDMI generic classes and properties – ongoing",
     "dfh_property_domain": 365,
-    "tmsp_last_dfh_update": "2020-07-15T14:27:07.611+00:00",
     "dfh_identity_defining": true,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates the language for which the appellation is a valid identifier of an entity for a given time span",
@@ -124,11 +122,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P10"
+    "dfh_property_identifier_in_namespace": "P10",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_1110_HAS_GEO_PLACE_TYPE: DfhApiProperty = {
-    "pk_entity": 3695,
+  static readonly EN_1110_HAS_GEO_PLACE_TYPE: NewDfhApiProperty = {
     "dfh_fk_profile": 4,
     "dfh_pk_property": 1110,
     "dfh_fk_namespace": 3,
@@ -142,7 +141,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM Generic Extension for Historical Data Management and Interoperability, ongoing",
     "dfh_property_domain": 363,
-    "tmsp_last_dfh_update": "2020-03-07T11:47:39.607+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates a geographical place with the type which defines its identity",
@@ -156,14 +154,15 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "histP8"
+    "dfh_property_identifier_in_namespace": "histP8",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
 
 
 
-  static readonly EN_150_END_OF_THE_BEGIN: DfhApiProperty = {
-    "pk_entity": 3762,
+  static readonly EN_150_END_OF_THE_BEGIN: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 150,
     "dfh_fk_namespace": 1,
@@ -177,7 +176,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 50,
-    "tmsp_last_dfh_update": "2020-01-27T08:03:06.045+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This is defined as the first boundary of the property P81",
@@ -191,10 +189,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": null,
     "dfh_domain_instances_max_quantifier": null,
     "dfh_domain_instances_min_quantifier": null,
-    "dfh_property_identifier_in_namespace": "P81a"
+    "dfh_property_identifier_in_namespace": "P81a",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_71_ONGOING_THROUGHOUT: DfhApiProperty = {
-    "pk_entity": 3756,
+  static readonly EN_71_ONGOING_THROUGHOUT: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 71,
     "dfh_fk_namespace": 1,
@@ -208,7 +207,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 50,
-    "tmsp_last_dfh_update": "2021-03-25T20:06:35.389+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property describes the minimum period of time covered by an E52 Time-Span. Since Time-Spans may not have precisely known\n            temporal extents, the CRM supports statements about the minimum and maximum temporal extents of Time-Spans. This property allows a\n            Time-Span’s minimum temporal extent (i.e. its inner boundary) to be assigned an E61 Time Primitive value. Time Primitives are treated by\n            the CRM as application or system specific date intervals, and are not further analysed. ",
@@ -222,10 +220,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P81"
+    "dfh_property_identifier_in_namespace": "P81",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_72_AT_SOME_TIME_WITHIN: DfhApiProperty = {
-    "pk_entity": 3757,
+  static readonly EN_72_AT_SOME_TIME_WITHIN: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 72,
     "dfh_fk_namespace": 1,
@@ -239,7 +238,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 50,
-    "tmsp_last_dfh_update": "2021-03-25T20:06:35.389+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property describes the maximum period of time within which an E52 Time-Span falls. Since Time-Spans may not have precisely\n            known temporal extents, the CRM supports statements about the minimum and maximum temporal extents of Time-Spans. This property allows a\n            Time-Span’s maximum temporal extent (i.e. its outer boundary) to be assigned an E61 Time Primitive value. Time Primitives are treated by\n            the CRM as application or system specific date intervals, and are not further analysed. ",
@@ -253,10 +251,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P82"
+    "dfh_property_identifier_in_namespace": "P82",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_151_BEGIN_OF_THE_END: DfhApiProperty = {
-    "pk_entity": 3763,
+  static readonly EN_151_BEGIN_OF_THE_END: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 151,
     "dfh_fk_namespace": 1,
@@ -270,7 +269,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 50,
-    "tmsp_last_dfh_update": "2020-01-27T08:03:06.045+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This is defined as the second boundary of the property P81",
@@ -284,10 +282,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": null,
     "dfh_domain_instances_max_quantifier": null,
     "dfh_domain_instances_min_quantifier": null,
-    "dfh_property_identifier_in_namespace": "P81b"
+    "dfh_property_identifier_in_namespace": "P81b",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_152_BEGIN_OF_THE_BEGIN: DfhApiProperty = {
-    "pk_entity": 3764,
+  static readonly EN_152_BEGIN_OF_THE_BEGIN: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 152,
     "dfh_fk_namespace": 1,
@@ -301,7 +300,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 50,
-    "tmsp_last_dfh_update": "2020-01-27T08:03:06.045+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This is defined as the first boundary of the property P82",
@@ -315,10 +313,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": null,
     "dfh_domain_instances_max_quantifier": null,
     "dfh_domain_instances_min_quantifier": null,
-    "dfh_property_identifier_in_namespace": "P82a"
+    "dfh_property_identifier_in_namespace": "P82a",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_153_END_OF_THE_END: DfhApiProperty = {
-    "pk_entity": 3765,
+  static readonly EN_153_END_OF_THE_END: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 153,
     "dfh_fk_namespace": 1,
@@ -332,7 +331,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 50,
-    "tmsp_last_dfh_update": "2020-01-27T08:03:06.045+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This is defined as the second boundary of the property P82",
@@ -346,11 +344,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": null,
     "dfh_domain_instances_max_quantifier": null,
     "dfh_domain_instances_min_quantifier": null,
-    "dfh_property_identifier_in_namespace": "P82b"
+    "dfh_property_identifier_in_namespace": "P82b",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_86_BROUGHT_INTO_LIFE: DfhApiProperty = {
-    "pk_entity": 3679,
+  static readonly EN_86_BROUGHT_INTO_LIFE: NewDfhApiProperty = {
     "dfh_fk_profile": 4,
     "dfh_pk_property": 86,
     "dfh_fk_namespace": 1,
@@ -364,7 +363,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 61,
-    "tmsp_last_dfh_update": "2020-03-07T11:47:39.607+00:00",
     "dfh_identity_defining": true,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property links an E67Birth event to an E21 Person in the role of offspring. Twins, triplets etc. are brought into life by\n            the same Birth event. This is not intended for use with general Natural History material, only people. There is no explicit method for\n            modelling conception and gestation except by using extensions. ",
@@ -378,11 +376,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": 1,
     "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P98"
+    "dfh_property_identifier_in_namespace": "P98",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_1435_STEMS_FROM: DfhApiProperty = {
-    "pk_entity": 3918,
+  static readonly EN_1435_STEMS_FROM: NewDfhApiProperty = {
     "dfh_fk_profile": 12,
     "dfh_pk_property": 1435,
     "dfh_fk_namespace": 112,
@@ -396,7 +395,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Social and economic life (HistDMI) ongoing",
     "dfh_property_domain": 61,
-    "tmsp_last_dfh_update": "2020-08-29T07:16:38.24+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property models the biological origin of a birth from the physical union of the parents. This is the common scenario. For more specific situations, like adoption or artificial procreation, a more suitable model should be applied.",
@@ -410,11 +408,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P22"
+    "dfh_property_identifier_in_namespace": "P22",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_1436_HAS_PARTNER: DfhApiProperty = {
-    "pk_entity": 4013,
+  static readonly EN_1436_HAS_PARTNER: NewDfhApiProperty = {
     "dfh_fk_profile": 12,
     "dfh_pk_property": 1436,
     "dfh_fk_namespace": 112,
@@ -428,7 +427,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Social and economic life (HistDMI) ongoing",
     "dfh_property_domain": 633,
-    "tmsp_last_dfh_update": "2020-08-29T07:16:38.24+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates the two (always two) persons participating to the union",
@@ -442,10 +440,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 2,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P20"
+    "dfh_property_identifier_in_namespace": "P20",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1206_HAS_TYPE_OF_MANIFESTATION_PRODUCT_TYPE: DfhApiProperty = {
-    "pk_entity": 3791,
+  static readonly EN_1206_HAS_TYPE_OF_MANIFESTATION_PRODUCT_TYPE: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1206,
     "dfh_fk_namespace": 3,
@@ -459,7 +458,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "HistDMI generic classes and properties – ongoing",
     "dfh_property_domain": 219,
-    "tmsp_last_dfh_update": "2020-07-21T15:41:13.307+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates a manifestation product type with the type which defines its identity",
@@ -473,10 +471,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": null,
     "dfh_domain_instances_max_quantifier": null,
     "dfh_domain_instances_min_quantifier": null,
-    "dfh_property_identifier_in_namespace": "P21"
+    "dfh_property_identifier_in_namespace": "P21",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_979_CARRIERS_PROVIDED_BY: DfhApiProperty = {
-    "pk_entity": 3766,
+  static readonly EN_979_CARRIERS_PROVIDED_BY: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 979,
     "dfh_fk_namespace": 6,
@@ -490,7 +489,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "FRBRoo version 2.4",
     "dfh_property_domain": 218,
-    "tmsp_last_dfh_update": "2020-07-21T15:41:13.307+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates a publication, i.e. an instance of F3 Manifestation Product Type, with an instance of F2 Expression, which\n\t\t\tall exemplars of that publication should carry, as long as they are recognised as complete exemplars of that publication. Typically, this\n\t\t\tproperty is observed on one exemplar of a publication, and extrapolated to all other exemplars of the same publication. This property is a\n\t\t\tshortcut of: F2 Expression P165i is incorporated in F24 Publication Expression CLR6i should be carried by F3 Manifestation Product Type.",
@@ -504,10 +502,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": null,
     "dfh_domain_instances_max_quantifier": null,
     "dfh_domain_instances_min_quantifier": null,
-    "dfh_property_identifier_in_namespace": "R4"
+    "dfh_property_identifier_in_namespace": "R4",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1216_IS_REPRODUCTION_OF: DfhApiProperty = {
-    "pk_entity": 3793,
+  static readonly EN_1216_IS_REPRODUCTION_OF: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1216,
     "dfh_fk_namespace": 30,
@@ -521,7 +520,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Geovistory ongoing",
     "dfh_property_domain": 455,
-    "tmsp_last_dfh_update": "2020-07-21T15:41:13.307+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates a digital objet with the source expression (i.e. the symbolic and propositional content it is a source of) it is a reproduction of. The  many to many cardinality is the consequence of the possibility to reproduce different sources at the same time, e.g. different version of a handwritten document in a critical edition.",
@@ -535,11 +533,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "geovP1"
+    "dfh_property_identifier_in_namespace": "geovP1",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_7_BIRTH_TOOK_PLACE_IN_GEO_PLACE: DfhApiProperty = {
-    "pk_entity": 3910,
+  static readonly EN_7_BIRTH_TOOK_PLACE_IN_GEO_PLACE: NewDfhApiProperty = {
     "dfh_fk_profile": 12,
     "dfh_pk_property": 7,
     "dfh_fk_namespace": 1,
@@ -553,7 +552,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 61,
-    "tmsp_last_dfh_update": "2020-12-24T05:23:51.081+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property describes the location of an instance of E4 Period with respect to an E19 Physical Object. P8 took place on or\n            within (witnessed) is a shortcut of the more fully developed path from E4 Period through P7 took place at, E53 Place, P156 occupies (is\n            occupied by) to E18 Physical Thing. It describes a period that can be located with respect to the space defined by an E19 Physical Object\n            such as a ship or a building. The precise geographical location of the object during the period in question may be unknown or unimportant.\n            For example, the French and German armistice of 22 June 1940 was signed in the same railway carriage as the armistice of 11 November 1918. ",
@@ -567,11 +565,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P8"
+    "dfh_property_identifier_in_namespace": "P8",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE: DfhApiProperty = {
-    "pk_entity": 8482,
+  static readonly EN_1761_MANIFESTATION_SINGLETON_HAS_SHORT_TITLE: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1761,
     "dfh_fk_namespace": 30,
@@ -585,7 +584,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Geovistory (ongoing)",
     "dfh_property_domain": 220,
-    "tmsp_last_dfh_update": "2020-12-21T20:45:12.645+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates to an entity an abbreviated or usual name of it. This is not a historical name but the usage should be restricted to the metadata of an entity in the information system.",
@@ -599,11 +597,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": 1,
     "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P17"
+    "dfh_property_identifier_in_namespace": "P17",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE: DfhApiProperty = {
-    "pk_entity": 3790,
+  static readonly EN_1205_MANIFESTATION_SINGLETON_HAS_TYPE: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1205,
     "dfh_fk_namespace": 110,
@@ -617,7 +616,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM supplement (HistDMI) ongoing",
     "dfh_property_domain": 220,
-    "tmsp_last_dfh_update": "2020-12-21T20:45:12.645+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates a manifestation singleton with the type which defines its identity",
@@ -631,10 +629,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": null,
     "dfh_domain_instances_max_quantifier": null,
     "dfh_domain_instances_min_quantifier": null,
-    "dfh_property_identifier_in_namespace": "P6"
+    "dfh_property_identifier_in_namespace": "P6",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR: DfhApiProperty = {
-    "pk_entity": 3768,
+  static readonly EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1016,
     "dfh_fk_namespace": 6,
@@ -648,7 +647,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "FRBRoo version 2.4",
     "dfh_property_domain": 220,
-    "tmsp_last_dfh_update": "2020-12-21T20:45:12.645+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property identifies an instance of Manifestation Singleton that has been declared as the unique representative for an instance\n\t\t\tof F2 Expression by some bibliographic agency. This property identifies an instance of F4 Manifestation Singleton that has been chosen as\n\t\t\tthe most characteristic Manifestation Singleton of the instance of F2 Expression of which it is a manifestation. Identifying an instance\n\t\t\tof F4 Manifestation Singleton that is representative for an instance of F2 Expression makes it possible in turn to identify an instance of\n\t\t\tF2 Expression that is representative for an instance of F1 Work, and to decide what should be regarded as the title of the work. The title\n\t\t\tof an Expression may not be one taken from a representative Manifestation Product Type or Manifestation Singleton. A given expression can\n\t\t\thave more than one representative Manifestation Singleton. It is a shortcut for the more developed path: F2 Expression R48i was assigned\n\t\t\tby F41 Representative Manifestation Assignment R53 assigned F4 Manifestation Singleton.",
@@ -662,10 +660,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "R42"
+    "dfh_property_identifier_in_namespace": "R42",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_992_EXPRESSION_CREATION_CREATED_MANIFESTATION_SINGLETON: DfhApiProperty = {
-    "pk_entity": 6783,
+  static readonly EN_992_EXPRESSION_CREATION_CREATED_MANIFESTATION_SINGLETON: NewDfhApiProperty = {
     "dfh_fk_profile": 21,
     "dfh_pk_property": 992,
     "dfh_fk_namespace": 6,
@@ -679,7 +678,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "FRBRoo version 2.4",
     "dfh_property_domain": 244,
-    "tmsp_last_dfh_update": "2020-11-04T09:18:45.485+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates an instance of F28 Expression Creation with the first physical objects in which the resulting instance of F2\n\t\t\tExpression was embodied.",
@@ -693,12 +691,13 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": 1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "R18"
+    "dfh_property_identifier_in_namespace": "R18",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
 
-  static readonly EN_1762_HAS_DEFINITION: DfhApiProperty = {
-    "pk_entity": 8592,
+  static readonly EN_1762_HAS_DEFINITION: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1762,
     "dfh_fk_namespace": 30,
@@ -712,7 +711,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Geovistory (ongoing)",
     "dfh_property_domain": 1,
-    "tmsp_last_dfh_update": "2020-12-21T20:45:12.645+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates to an entity a definition which describes the essential elements allowing its identification",
@@ -726,10 +724,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": 1,
     "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P18"
+    "dfh_property_identifier_in_namespace": "P18",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_148_WAS_AT: DfhApiProperty = {
-    "pk_entity": 3761,
+  static readonly EN_148_WAS_AT: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 148,
     "dfh_fk_namespace": 1,
@@ -743,7 +742,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 84,
-    "tmsp_last_dfh_update": "2020-12-21T20:45:12.645+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property points to a wider area in which my thing /event was… ",
@@ -757,11 +755,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": 1,
     "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P167"
+    "dfh_property_identifier_in_namespace": "P167",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_4_HAS_TIME_SPAN: DfhApiProperty = {
-    "pk_entity": 7459,
+  static readonly EN_4_HAS_TIME_SPAN: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 4,
     "dfh_fk_namespace": 1,
@@ -775,7 +774,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 2,
-    "tmsp_last_dfh_update": "2021-02-19T09:36:16.162+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property describes the temporal confinement of an instance of an E2 Temporal Entity. The related E52 Time-Span is\n            understood as the real Time-Span during which the phenomena were active, which make up the temporal entity instance. It does not convey\n            any other meaning than a positioning on the “time-line” of chronology. The Time-Span in turn is approximated by a set of dates (E61 Time\n            Primitive). A temporal entity can have in reality only one Time-Span, but there may exist alternative opinions about it, which we would\n            express by assigning multiple Time-Spans. Related temporal entities may share a Time-Span. Time-Spans may have completely unknown dates\n            but other descriptions by which we can infer knowledge. ",
@@ -789,11 +787,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P4"
+    "dfh_property_identifier_in_namespace": "P4",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_147_WAS_A_PRESENCE_OF_GEO_PLACE: DfhApiProperty = {
-    "pk_entity": 3759,
+  static readonly EN_147_WAS_A_PRESENCE_OF_GEO_PLACE: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 147,
     "dfh_fk_namespace": 1,
@@ -807,7 +806,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 84,
-    "tmsp_last_dfh_update": "2020-12-21T20:45:12.645+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property relates an E93 Presence with the STV it is part of… ",
@@ -821,10 +819,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P166"
+    "dfh_property_identifier_in_namespace": "P166",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_147_WAS_A_PRESENCE_OF_BUILT_WORK: DfhApiProperty = {
-    "pk_entity": 3760,
+  static readonly EN_147_WAS_A_PRESENCE_OF_BUILT_WORK: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 147,
     "dfh_fk_namespace": 1,
@@ -838,7 +837,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 84,
-    "tmsp_last_dfh_update": "2020-12-21T20:45:12.645+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property relates an E93 Presence with the STV it is part of… ",
@@ -852,10 +850,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P166"
+    "dfh_property_identifier_in_namespace": "P166",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1613_HAS_DURATION: DfhApiProperty = {
-    "pk_entity": 5580,
+  static readonly EN_1613_HAS_DURATION: NewDfhApiProperty = {
     "dfh_fk_profile": 5, // changed to 5 from 15
     "dfh_pk_property": 1613,
     "dfh_fk_namespace": 88,
@@ -869,7 +868,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Processetti ongoing",
     "dfh_property_domain": 691,
-    "tmsp_last_dfh_update": "2020-08-13T09:39:53.39+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates to the propositional object the mentioned duration of the stay or journey(is)",
@@ -883,11 +881,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P6"
+    "dfh_property_identifier_in_namespace": "P6",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_1612_HAS_TIME_UNIT: DfhApiProperty = {
-    "pk_entity": 5673,
+  static readonly EN_1612_HAS_TIME_UNIT: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1612,
     "dfh_fk_namespace": 110,
@@ -901,7 +900,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM supplement (HistDMI) ongoing",
     "dfh_property_domain": 689,
-    "tmsp_last_dfh_update": "2020-12-21T20:45:12.645+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates a duration with its time unit",
@@ -915,11 +913,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P10"
+    "dfh_property_identifier_in_namespace": "P10",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_1617_CONCERNS: DfhApiProperty = {
-    "pk_entity": 5702,
+  static readonly EN_1617_CONCERNS: NewDfhApiProperty = {
     "dfh_fk_profile": 15,
     "dfh_pk_property": 1617,
     "dfh_fk_namespace": 88,
@@ -933,7 +932,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Processetti ongoing",
     "dfh_property_domain": 691,
-    "tmsp_last_dfh_update": "2021-03-30T04:35:08.591+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property associates to the account the concerned person. If more persons are concerned by the voyage they can all be associated to the same voyage.",
@@ -947,10 +945,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P8"
+    "dfh_property_identifier_in_namespace": "P8",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1761_HAS_SHORT_TITLE: DfhApiProperty = {
-    "pk_entity": 7257,
+  static readonly EN_1761_HAS_SHORT_TITLE: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1761,
     "dfh_fk_namespace": 30,
@@ -964,7 +963,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Geovistory (ongoing)",
     "dfh_property_domain": 219,
-    "tmsp_last_dfh_update": "2021-04-06T06:58:54.922+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates to an entity an abbreviated or usual name of it. This is not a historical name but the usage should be restricted to the metadata of an entity in the information system.",
@@ -978,11 +976,12 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": 1,
     "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P17"
+    "dfh_property_identifier_in_namespace": "P17",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_145_DURING: DfhApiProperty = {
-    "pk_entity": 3758,
+  static readonly EN_145_DURING: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 145,
     "dfh_fk_namespace": 1,
@@ -996,7 +995,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "CIDOC CRM version 6.2",
     "dfh_property_domain": 84,
-    "tmsp_last_dfh_update": "2021-03-25T20:06:35.389+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property relates an E93 Presence with an arbitrary E52 Time-Span that defines the section of the spacetime volume that this\n            instance of E93 Presence is related to by P166 was a presence of (had presence) that is concerned by this instance of E93 Presence. ",
@@ -1010,10 +1008,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": null,
     "dfh_domain_instances_max_quantifier": null,
     "dfh_domain_instances_min_quantifier": null,
-    "dfh_property_identifier_in_namespace": "P164"
+    "dfh_property_identifier_in_namespace": "P164",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1499_HAS_TO_BE_MERGED_WITH: DfhApiProperty = {
-    "pk_entity": 5143,
+  static readonly EN_1499_HAS_TO_BE_MERGED_WITH: NewDfhApiProperty = {
     "dfh_fk_profile": 15,
     "dfh_pk_property": 1499,
     "dfh_fk_namespace": 30,
@@ -1027,7 +1026,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Geovistory (ongoing)",
     "dfh_property_domain": 21,
-    "tmsp_last_dfh_update": "2021-03-31T19:26:50.272+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "This property states that the entity in the domain position is the same as the one in the range of the property, inside the same information system. This means these entities are duplicates. The direction of the property allows to assert that the domain entity has to be deprecated and the domain entity to be preferred.",
@@ -1041,10 +1039,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P13"
+    "dfh_property_identifier_in_namespace": "P13",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1317_IS_PART_OF: DfhApiProperty = {
-    "pk_entity": 7006,
+  static readonly EN_1317_IS_PART_OF: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1317,
     "dfh_fk_namespace": 74,
@@ -1057,7 +1056,6 @@ export class DfhApiPropertyMock {
     "requested_language": "591",
     "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
     "dfh_property_domain": 503,
-    "tmsp_last_dfh_update": "2021-06-16T15:05:54.229+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates an expression portion with the expression section (in some cases more then one) it is composed of",
@@ -1072,10 +1070,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P4"
+    "dfh_property_identifier_in_namespace": "P4",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1430_HAS_APPELLATION_FOR_LANGUAGE_TYPE: DfhApiProperty = {
-    "pk_entity": 7011,
+  static readonly EN_1430_HAS_APPELLATION_FOR_LANGUAGE_TYPE: NewDfhApiProperty = {
     "dfh_fk_profile": 5,
     "dfh_pk_property": 1430,
     "dfh_fk_namespace": 3,
@@ -1088,7 +1087,6 @@ export class DfhApiPropertyMock {
     "requested_language": "591",
     "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
     "dfh_property_domain": 365,
-    "tmsp_last_dfh_update": "2021-06-16T15:05:54.229+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates Appellation for language – histC10 with the type which defines its identity",
@@ -1103,10 +1101,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P14"
+    "dfh_property_identifier_in_namespace": "P14",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1646_HAS_VOLUME: DfhApiProperty = {
-    "pk_entity": 6917,
+  static readonly EN_1646_HAS_VOLUME: NewDfhApiProperty = {
     "dfh_fk_profile": 21,
     "dfh_pk_property": 1646,
     "dfh_fk_namespace": 74,
@@ -1119,7 +1118,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
     "dfh_property_domain": 723,
-    "tmsp_last_dfh_update": "2021-07-07T17:13:05.504+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates the volume of the component",
@@ -1134,10 +1132,11 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 0,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P8"
+    "dfh_property_identifier_in_namespace": "P8",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
-  static readonly EN_1639_HAS_MEASUREMENT_UNIT: DfhApiProperty = {
-    "pk_entity": 6293,
+  static readonly EN_1639_HAS_MEASUREMENT_UNIT: NewDfhApiProperty = {
     "dfh_fk_profile": 20,
     "dfh_pk_property": 1639,
     "dfh_fk_namespace": 110,
@@ -1150,7 +1149,6 @@ export class DfhApiPropertyMock {
     "requested_language": "en",
     "dfh_namespace_label": "SDHSS CIDOC CRM supplement – ongoing",
     "dfh_property_domain": 716,
-    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
     "dfh_identity_defining": false,
     "is_enabled_in_profile": null,
     "dfh_property_scope_note": "Associates a volume with its measurement unit",
@@ -1165,485 +1163,620 @@ export class DfhApiPropertyMock {
     "dfh_range_instances_min_quantifier": 1,
     "dfh_domain_instances_max_quantifier": -1,
     "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P15"
+    "dfh_property_identifier_in_namespace": "P15",
+    "dfh_parent_properties": [],
+    "dfh_ancestor_properties": []
   }
 
-  static readonly EN_99001_DEFINITION_HAS_VALUE_VERSION: DfhApiProperty = {
-    "pk_entity": 99001,
-    "removed_from_api": false,
-    "requested_language": "en",
-    "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
-    "is_enabled_in_profile": null,
-    "dfh_pk_property": 99001,
-    "dfh_property_label_language": "en",
-    "dfh_property_label": "has value version",
-    "dfh_property_inverse_label": "is value version of",
-    "dfh_property_scope_note_language": "en",
-    "dfh_property_scope_note": "This property relates a Digital with a value version.",
-    "dfh_is_inherited": false,
-    "dfh_property_domain": 9901,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": 1,
-    "dfh_property_range": 339,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_range_instances_max_quantifier": -1,
-    "dfh_identity_defining": false,
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_identifier_in_namespace": "P14",
-    "dfh_namespace_uri": null,
-    "dfh_fk_namespace": 30,
-    "dfh_namespace_label_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_profile_association_type": null,
-    "dfh_fk_profile": 99,
-    "dfh_profile_label": "Digitals",
-    "dfh_profile_label_language": "en"
-  }
-  static readonly EN_99001_TRANSCRIPTION_HAS_VALUE_VERSION: DfhApiProperty = {
-    "pk_entity": 990010,
-    "removed_from_api": false,
-    "requested_language": "en",
-    "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
-    "is_enabled_in_profile": null,
-    "dfh_pk_property": 99001,
-    "dfh_property_label_language": "en",
-    "dfh_property_label": "has value version",
-    "dfh_property_inverse_label": "is value version of",
-    "dfh_property_scope_note_language": "en",
-    "dfh_property_scope_note": "This property relates a Digital with a value version.",
-    "dfh_is_inherited": false,
-    "dfh_property_domain": 9903,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": 1,
-    "dfh_property_range": 339,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_range_instances_max_quantifier": -1,
-    "dfh_identity_defining": false,
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_identifier_in_namespace": "P14",
-    "dfh_namespace_uri": null,
-    "dfh_fk_namespace": 30,
-    "dfh_namespace_label_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_profile_association_type": null,
-    "dfh_fk_profile": 99,
-    "dfh_profile_label": "Digitals",
-    "dfh_profile_label_language": "en"
-  }
-  // this is not from OntoME, it is added manually for acceptance tests
-  static readonly EN_1218_MENTIONS: DfhApiProperty = {
-    "pk_entity": 1218,
-    "dfh_fk_profile": 5,
-    "dfh_pk_property": 1218,
-    "dfh_fk_namespace": 110,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Geovistory Basics",
-    "dfh_property_label": "mentions",
-    "dfh_property_range": 21,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_property_domain": 218,
-    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
-    "dfh_identity_defining": false,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "A propositional and symbolic object (an information object), e.g. a book, website or chunk, mentions somewhere (i.e. without further reference) an entity (a persistent item or temporal entity)",
-    "dfh_profile_label_language": "en",
-    "dfh_property_inverse_label": "is mentioned by",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": -1,
-    "dfh_range_instances_min_quantifier": 0,
-    "dfh_domain_instances_max_quantifier": -1,
-    "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "P2"
-  }
-  static readonly EN_99002_HAS_LANGUAGE = {
-    "removed_from_api": false,
-    "requested_language": "en",
-    "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
-    "is_enabled_in_profile": null,
-    "dfh_pk_property": 99002,
-    "dfh_property_label_language": "en",
-    "dfh_property_label": "has language",
-    "dfh_property_inverse_label": "is language of",
-    "dfh_property_scope_note_language": "en",
-    "dfh_property_scope_note": "This property describes the E56 Language of an E33 Linguistic Object.\r\nLinguistic Objects are composed in one or more human Languages. This property allows these languages to be documented.",
-    "dfh_is_inherited": true,
-    "dfh_property_domain": 9901,
-    "dfh_domain_instances_min_quantifier": 0,
-    "dfh_domain_instances_max_quantifier": -1,
-    "dfh_property_range": 54,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_range_instances_max_quantifier": 1,
-    "dfh_identity_defining": false,
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_identifier_in_namespace": "P72",
-    "dfh_namespace_uri": null,
-    "dfh_fk_namespace": 1,
-    "dfh_namespace_label_language": "en",
-    "dfh_namespace_label": "CIDOC CRM version 6.2",
-    "dfh_profile_association_type": null,
-    "dfh_fk_profile": 99,
-    "dfh_profile_label": "Geovistory Basics",
-    "dfh_profile_label_language": "en"
-  }
-  static readonly EN_99003_HAS_DEFINITION_NEW = {
-    "removed_from_api": false,
-    "requested_language": "en",
-    "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
-    "is_enabled_in_profile": null,
-    "dfh_pk_property": 99003,
-    "dfh_property_label_language": "en",
-    "dfh_property_label": "has definition (new)",
-    "dfh_property_inverse_label": "is definition of (new)",
-    "dfh_property_scope_note_language": "en",
-    "dfh_property_scope_note": "This property associates to an entity a definition which describes the essential elements allowing its identification",
-    "dfh_is_inherited": false,
-    "dfh_property_domain": 21,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": 1,
-    "dfh_property_range": 9901,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_range_instances_max_quantifier": 1,
-    "dfh_identity_defining": false,
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_identifier_in_namespace": "P18",
-    "dfh_namespace_uri": null,
-    "dfh_fk_namespace": 30,
-    "dfh_namespace_label_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_profile_association_type": null,
-    "dfh_fk_profile": 99,
-    "dfh_profile_label": "Geovistory Basics",
-    "dfh_profile_label_language": "en"
-  }
-  // this is not from OntoME, it is added manually for digitals
-  static readonly EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN: DfhApiProperty = {
-    "pk_entity": 99004,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 99004,
-    "dfh_fk_namespace": 1,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Digitals",
-    "dfh_property_label": "is annotation in",
-    "dfh_property_range": 9901,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_property_domain": 9902,
-    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
-    "dfh_identity_defining": true,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "Relates an annotation with the digital, it is annotating",
-    "dfh_profile_label_language": "en",
-    "dfh_property_inverse_label": "has annotation",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": 1,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": -1,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P2"
-  }
-  // this is not from OntoME, it is added manually for digitals
-  static readonly EN_99005_TEXT_ANNOTATION_HAS_SPOT: DfhApiProperty = {
-    "pk_entity": 99005,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 99005,
-    "dfh_fk_namespace": 1,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Digitals",
-    "dfh_property_label": "at spot",
-    "dfh_property_range": 456,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_property_domain": 9902,
-    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
-    "dfh_identity_defining": true,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "Relates an annotation with the annotated spot (chunk)",
-    "dfh_profile_label_language": "en",
-    "dfh_property_inverse_label": "is spot of",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": 1,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": 1,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P2"
-  }
-  // this is not from OntoME, it is added manually for digitals
-  static readonly EN_1334_TEXT_ANNOTATION_REFERS_TO: DfhApiProperty = {
-    "pk_entity": 1334,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 1334,
-    "dfh_fk_namespace": 1,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Digitals",
-    "dfh_property_label": "annotated entity",
-    "dfh_property_range": 21,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_property_domain": 9902,
-    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
-    "dfh_identity_defining": true,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "Relates an annotation with the entity, it refers to",
-    "dfh_profile_label_language": "en",
-    "dfh_property_inverse_label": "is referred to by",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": 1,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": -1,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P2"
-  }
-  static readonly EN_1216_TRANSCRIPTION_IS_REPRODUCTION_OF_EXPRESSION: DfhApiProperty = {
-    "pk_entity": 3793,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 1216,
-    "dfh_fk_namespace": 30,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Geovistory Basics",
-    "dfh_property_label": "is reproduction of",
-    "dfh_property_inverse_label": "",
-    "dfh_property_range": 218,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory ongoing",
-    "dfh_property_domain": 9903,
-    "tmsp_last_dfh_update": "2020-07-21T15:41:13.307+00:00",
-    "dfh_identity_defining": false,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "This property associates a digital objet with the source expression (i.e. the symbolic and propositional content it is a source of) it is a reproduction of. The  many to many cardinality is the consequence of the possibility to reproduce different sources at the same time, e.g. different version of a handwritten document in a critical edition.",
-    "dfh_profile_label_language": "en",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": -1,
-    "dfh_range_instances_min_quantifier": 0,
-    "dfh_domain_instances_max_quantifier": -1,
-    "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "geovP1"
-  }
-  static readonly EN_1216_TRANSCRIPTION_IS_REPRODUCTION_OF_EXPRESSION_PORTION: DfhApiProperty = {
-    "pk_entity": 3793,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 1216,
-    "dfh_fk_namespace": 30,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Geovistory Basics",
-    "dfh_property_label": "is reproduction of",
-    "dfh_property_inverse_label": "",
-    "dfh_property_range": 503,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory ongoing",
-    "dfh_property_domain": 9903,
-    "tmsp_last_dfh_update": "2020-07-21T15:41:13.307+00:00",
-    "dfh_identity_defining": false,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "This property associates a digital objet with the source expression (i.e. the symbolic and propositional content it is a source of) it is a reproduction of. The  many to many cardinality is the consequence of the possibility to reproduce different sources at the same time, e.g. different version of a handwritten document in a critical edition.",
-    "dfh_profile_label_language": "en",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": -1,
-    "dfh_range_instances_min_quantifier": 0,
-    "dfh_domain_instances_max_quantifier": -1,
-    "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "geovP1"
-  }
+  // static readonly EN_99001_DEFINITION_HAS_VALUE_VERSION: NewDfhApiProperty = {
+  //   "removed_from_api": false,
+  //   "requested_language": "en",
+  //   "is_enabled_in_profile": null,
+  //   "dfh_pk_property": 99001,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_property_label": "has value version",
+  //   "dfh_property_inverse_label": "is value version of",
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_property_scope_note": "This property relates a Digital with a value version.",
+  //   "dfh_is_inherited": false,
+  //   "dfh_property_domain": 9901,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": 1,
+  //   "dfh_property_range": 339,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_range_instances_max_quantifier": -1,
+  //   "dfh_identity_defining": false,
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_identifier_in_namespace": "P14",
+  //   "dfh_namespace_uri": null,
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // static readonly EN_99001_TRANSCRIPTION_HAS_VALUE_VERSION: NewDfhApiProperty = {
+  //   "removed_from_api": false,
+  //   "requested_language": "en",
+  //   "is_enabled_in_profile": null,
+  //   "dfh_pk_property": 99001,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_property_label": "has value version",
+  //   "dfh_property_inverse_label": "is value version of",
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_property_scope_note": "This property relates a Digital with a value version.",
+  //   "dfh_is_inherited": false,
+  //   "dfh_property_domain": 9903,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": 1,
+  //   "dfh_property_range": 339,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_range_instances_max_quantifier": -1,
+  //   "dfh_identity_defining": false,
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_identifier_in_namespace": "P14",
+  //   "dfh_namespace_uri": null,
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // // this is not from OntoME, it is added manually for acceptance tests
+  // static readonly EN_1218_MENTIONS: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 5,
+  //   "dfh_pk_property": 1218,
+  //   "dfh_fk_namespace": 110,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_property_label": "mentions",
+  //   "dfh_property_range": 21,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 218,
+  //   "dfh_identity_defining": false,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "A propositional and symbolic object (an information object), e.g. a book, website or chunk, mentions somewhere (i.e. without further reference) an entity (a persistent item or temporal entity)",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "is mentioned by",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": -1,
+  //   "dfh_range_instances_min_quantifier": 0,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 0,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // static readonly EN_99002_HAS_LANGUAGE: NewDfhApiProperty = {
+  //   "removed_from_api": false,
+  //   "requested_language": "en",
+  //   "is_enabled_in_profile": null,
+  //   "dfh_pk_property": 99002,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_property_label": "has language",
+  //   "dfh_property_inverse_label": "is language of",
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_property_scope_note": "This property describes the E56 Language of an E33 Linguistic Object.\r\nLinguistic Objects are composed in one or more human Languages. This property allows these languages to be documented.",
+  //   "dfh_is_inherited": true,
+  //   "dfh_property_domain": 9901,
+  //   "dfh_domain_instances_min_quantifier": 0,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_property_range": 54,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_identity_defining": false,
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_identifier_in_namespace": "P72",
+  //   "dfh_namespace_uri": null,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // static readonly EN_99003_HAS_DEFINITION_NEW: NewDfhApiProperty = {
+  //   "removed_from_api": false,
+  //   "requested_language": "en",
+  //   "is_enabled_in_profile": null,
+  //   "dfh_pk_property": 99003,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_property_label": "has definition (new)",
+  //   "dfh_property_inverse_label": "is definition of (new)",
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_property_scope_note": "This property associates to an entity a definition which describes the essential elements allowing its identification",
+  //   "dfh_is_inherited": false,
+  //   "dfh_property_domain": 21,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": 1,
+  //   "dfh_property_range": 9901,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_identity_defining": false,
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_identifier_in_namespace": "P18",
+  //   "dfh_namespace_uri": null,
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 99004,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "is annotation in",
+  //   "dfh_property_range": 9901,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9902,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates an annotation with the digital, it is annotating",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "has annotation",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_99005_TEXT_ANNOTATION_HAS_SPOT: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 99005,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "at position",
+  //   "dfh_property_range": 456,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9902,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates an annotation with the annotated spot (chunk)",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "is spot of",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": 1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_1334_TEXT_ANNOTATION_REFERS_TO: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 1334,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "annotated entity",
+  //   "dfh_property_range": 21,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9902,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates an annotation with the entity, it refers to",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "is annotated by",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // static readonly EN_1216_TRANSCRIPTION_IS_REPRODUCTION_OF_EXPRESSION: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 1216,
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_property_label": "is reproduction of",
+  //   "dfh_property_inverse_label": "",
+  //   "dfh_property_range": 218,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory ongoing",
+  //   "dfh_property_domain": 9903,
+  //   "dfh_identity_defining": false,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "This property associates a digital objet with the source expression (i.e. the symbolic and propositional content it is a source of) it is a reproduction of. The  many to many cardinality is the consequence of the possibility to reproduce different sources at the same time, e.g. different version of a handwritten document in a critical edition.",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": -1,
+  //   "dfh_range_instances_min_quantifier": 0,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 0,
+  //   "dfh_property_identifier_in_namespace": "geovP1",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // static readonly EN_1216_TRANSCRIPTION_IS_REPRODUCTION_OF_EXPRESSION_PORTION: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 1216,
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_property_label": "is reproduction of",
+  //   "dfh_property_inverse_label": "",
+  //   "dfh_property_range": 503,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory ongoing",
+  //   "dfh_property_domain": 9903,
+  //   "dfh_identity_defining": false,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "This property associates a digital objet with the source expression (i.e. the symbolic and propositional content it is a source of) it is a reproduction of. The  many to many cardinality is the consequence of the possibility to reproduce different sources at the same time, e.g. different version of a handwritten document in a critical edition.",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": -1,
+  //   "dfh_range_instances_min_quantifier": 0,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 0,
+  //   "dfh_property_identifier_in_namespace": "geovP1",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
 
 
-  static readonly EN_1216_TRANSCRIPTION_IS_REPRODUCTION_OF: DfhApiProperty = {
-    "pk_entity": 3793,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 1216,
-    "dfh_fk_namespace": 30,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Geovistory Basics",
-    "dfh_property_label": "is reproduction of",
-    "dfh_property_inverse_label": "",
-    "dfh_property_range": 218,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory ongoing",
-    "dfh_property_domain": 9903,
-    "tmsp_last_dfh_update": "2020-07-21T15:41:13.307+00:00",
-    "dfh_identity_defining": false,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "This property associates a digital objet with the source expression (i.e. the symbolic and propositional content it is a source of) it is a reproduction of. The  many to many cardinality is the consequence of the possibility to reproduce different sources at the same time, e.g. different version of a handwritten document in a critical edition.",
-    "dfh_profile_label_language": "en",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": -1,
-    "dfh_range_instances_min_quantifier": 0,
-    "dfh_domain_instances_max_quantifier": -1,
-    "dfh_domain_instances_min_quantifier": 0,
-    "dfh_property_identifier_in_namespace": "geovP1"
-  }
+  // static readonly EN_1216_TRANSCRIPTION_IS_REPRODUCTION_OF: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 1216,
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_property_label": "is reproduction of",
+  //   "dfh_property_inverse_label": "",
+  //   "dfh_property_range": 218,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory ongoing",
+  //   "dfh_property_domain": 9903,
+  //   "dfh_identity_defining": false,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "This property associates a digital objet with the source expression (i.e. the symbolic and propositional content it is a source of) it is a reproduction of. The  many to many cardinality is the consequence of the possibility to reproduce different sources at the same time, e.g. different version of a handwritten document in a critical edition.",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": -1,
+  //   "dfh_range_instances_min_quantifier": 0,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 0,
+  //   "dfh_property_identifier_in_namespace": "geovP1",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
 
 
-  // this is not from OntoME, it is added manually for digitals
-  static readonly EN_99004_TABLE_ANNOTATION_IS_ANNOTATION_IN: DfhApiProperty = {
-    "pk_entity": 990042,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 99004,
-    "dfh_fk_namespace": 1,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Digitals",
-    "dfh_property_label": "is annotation in",
-    "dfh_property_range": 9904,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_property_domain": 9905,
-    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
-    "dfh_identity_defining": true,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "Relates an annotation with the digital, it is annotating",
-    "dfh_profile_label_language": "en",
-    "dfh_property_inverse_label": "has annotation",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": 1,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": -1,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P2"
-  }
-  // this is not from OntoME, it is added manually for digitals
-  static readonly EN_99005_TABLE_ANNOTATION_HAS_SPOT: DfhApiProperty = {
-    "pk_entity": 990052,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 99005,
-    "dfh_fk_namespace": 1,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Digitals",
-    "dfh_property_label": "at cell",
-    "dfh_property_range": 521,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_property_domain": 9905,
-    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
-    "dfh_identity_defining": true,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "Relates an annotation with the annotated spot (chunk)",
-    "dfh_profile_label_language": "en",
-    "dfh_property_inverse_label": "is spot of",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": 1,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": 1,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P2"
-  }
-  // this is not from OntoME, it is added manually for digitals
-  static readonly EN_1334_TABLE_ANNOTATION_REFERS_TO: DfhApiProperty = {
-    "pk_entity": 13342,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 1334,
-    "dfh_fk_namespace": 1,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Digitals",
-    "dfh_property_label": "annotated entity",
-    "dfh_property_range": 21,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_property_domain": 9905,
-    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
-    "dfh_identity_defining": true,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "Relates an annotation with the entity, it refers to",
-    "dfh_profile_label_language": "en",
-    "dfh_property_inverse_label": "is referred to by",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": 1,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": -1,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P2"
-  }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_99004_TABLE_ANNOTATION_IS_ANNOTATION_IN: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 99004,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "is annotation in",
+  //   "dfh_property_range": 9904,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9905,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates an annotation with the digital, it is annotating",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "has annotation",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_99005_TABLE_ANNOTATION_HAS_SPOT: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 99005,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "at position",
+  //   "dfh_property_range": 521,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9905,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates an annotation with the annotated spot (chunk)",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "is spot of",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": 1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_1334_TABLE_ANNOTATION_REFERS_TO: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 1334,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "annotated entity",
+  //   "dfh_property_range": 21,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9905,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates an annotation with the entity, it refers to",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "is referred to by",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
 
-  // this is not from OntoME, it is added manually for digitals
-  static readonly EN_99006_TABLE_HAS_VALUE: DfhApiProperty = {
-    "pk_entity": 99006,
-    "dfh_fk_profile": 99,
-    "dfh_pk_property": 99006,
-    "dfh_fk_namespace": 1,
-    "dfh_is_inherited": false,
-    "removed_from_api": false,
-    "dfh_namespace_uri": null,
-    "dfh_profile_label": "Digitals",
-    "dfh_property_label": "has value",
-    "dfh_property_range": 9906,
-    "requested_language": "en",
-    "dfh_namespace_label": "Geovistory (ongoing)",
-    "dfh_property_domain": 9904,
-    "tmsp_last_dfh_update": "2021-05-07T09:03:41.467+00:00",
-    "dfh_identity_defining": true,
-    "is_enabled_in_profile": null,
-    "dfh_property_scope_note": "Relates a table with its value",
-    "dfh_profile_label_language": "en",
-    "dfh_property_inverse_label": "is table value of",
-    "dfh_is_has_type_subproperty": false,
-    "dfh_property_label_language": "en",
-    "dfh_namespace_label_language": "en",
-    "dfh_profile_association_type": null,
-    "dfh_property_scope_note_language": "en",
-    "dfh_range_instances_max_quantifier": 1,
-    "dfh_range_instances_min_quantifier": 1,
-    "dfh_domain_instances_max_quantifier": 1,
-    "dfh_domain_instances_min_quantifier": 1,
-    "dfh_property_identifier_in_namespace": "P2"
-  }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_99006_TABLE_HAS_VALUE: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 99006,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "has value",
+  //   "dfh_property_range": 9906,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9904,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates a table with its value",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "is table value of",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": 1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+
+  // static readonly EN_1761_TABLE_HAS_SHORT_TITLE: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 1761,
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_is_inherited": true,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_property_label": "has short title",
+  //   "dfh_property_inverse_label": "is short title of",
+  //   "dfh_property_range": 784,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9904,
+  //   "dfh_identity_defining": false,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Associates to an entity an abbreviated or usual name of it. This is not a historical name but the usage should be restricted to the metadata of an entity in the information system.",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": -1,
+  //   "dfh_range_instances_min_quantifier": 0,
+  //   "dfh_domain_instances_max_quantifier": 1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P17",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+
+
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_99007_MENTIONING_IS_MENTIONED_IN: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 99007,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "is mentioned in",
+  //   "dfh_property_range": 220,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9907,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates an mentioning with the expression, that mentions the entity",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "mentiones",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_99008_MENTIONING_HAS_REFERENCE: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 99008,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "at position",
+  //   "dfh_property_range": 657,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9907,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates an menioning with the position of the mentioning",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "is spot of",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": 1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_99009_MENIONING_MENTIONS: NewDfhApiProperty = {
+  //   "dfh_fk_profile": 99,
+  //   "dfh_pk_property": 99009,
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_is_inherited": false,
+  //   "removed_from_api": false,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_property_label": "mentioned entity",
+  //   "dfh_property_range": 21,
+  //   "requested_language": "en",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_property_domain": 9907,
+  //   "dfh_identity_defining": true,
+  //   "is_enabled_in_profile": null,
+  //   "dfh_property_scope_note": "Relates an mentionning with the mentioned entity",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_property_inverse_label": "is mentioned in",
+  //   "dfh_is_has_type_subproperty": false,
+  //   "dfh_property_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": null,
+  //   "dfh_property_scope_note_language": "en",
+  //   "dfh_range_instances_max_quantifier": 1,
+  //   "dfh_range_instances_min_quantifier": 1,
+  //   "dfh_domain_instances_max_quantifier": -1,
+  //   "dfh_domain_instances_min_quantifier": 1,
+  //   "dfh_property_identifier_in_namespace": "P2",
+  //   "dfh_parent_properties": [],
+  //   "dfh_ancestor_properties": []
+  // }
+
 }
 /**
  * SQL to create mock items
@@ -1655,10 +1788,8 @@ export class DfhApiPropertyMock {
 // 	dfh_pk_property,
 // 	'_',
 //  UPPER(REPLACE (dfh_property_label, ' ', '_')),
-// 	': DfhApiProperty = ',
+// 	':NewDfhApiProperty= ',
 // 	jsonb_pretty(jsonb_build_object(
-// 	  'pk_entity',pk_entity,
-// 	  'tmsp_last_dfh_update',tmsp_last_dfh_update,
 // 	  'is_enabled_in_profile',is_enabled_in_profile,
 // 	  'removed_from_api',removed_from_api,
 // 	  'requested_language',requested_language,
@@ -1685,7 +1816,9 @@ export class DfhApiPropertyMock {
 // 	  'dfh_profile_association_type',dfh_profile_association_type,
 // 	  'dfh_fk_profile',dfh_fk_profile,
 // 	  'dfh_profile_label_language',dfh_profile_label_language,
-// 	  'dfh_profile_label',dfh_profile_label
+// 	  'dfh_profile_label',dfh_profile_label,
+// 	  'dfh_parent_properties',dfh_parent_properties,
+// 	  'dfh_ancestor_classes',dfh_ancestor_classes
 // )))
 // FROM data_for_history.api_property t1
 // WHERE dfh_pk_property = 51

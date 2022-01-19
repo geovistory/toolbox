@@ -1,13 +1,11 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { TableComponent } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
-import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
-import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { TableDetailComponent } from '../../../data/components/table-detail/table-detail.component';
@@ -93,7 +91,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
             //  subentity field refers to
             this.i.pipeFieldPage({
               isOutgoing: true,
-              property: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
+              property: { fkProperty: P_1875_ANNOTATED_ENTITY_ID },
               limit: 1,
               offset: 0,
               scope: this.scope,
@@ -132,13 +130,13 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
         return {
           pkProject,
           targets: {
-            [DfhApiClassMock.EN_9905_TABLE_ANNOTATION.dfh_pk_class]: {
+            [C_934_ANNOTATION_IN_TABLE_ID]: {
 
               nestedResource: [
                 {
                   page: {
                     isOutgoing: true,
-                    property: { fkProperty: DfhApiPropertyMock.EN_1334_TABLE_ANNOTATION_REFERS_TO.dfh_pk_property },
+                    property: { fkProperty: P_1875_ANNOTATED_ENTITY_ID },
                     limit: 1,
                     offset: 0,
                     isCircular: false
@@ -161,7 +159,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
   private createGvFieldPageHasAnnotation(): GvFieldPage {
     return {
       isOutgoing: false,
-      property: { fkProperty: DfhApiPropertyMock.EN_99005_TEXT_ANNOTATION_HAS_SPOT.dfh_pk_property },
+      property: { fkProperty: P_1874_AT_POSITION_ID },
       limit: 1,
       offset: 0,
       scope: this.scope,
@@ -186,7 +184,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
         data: {
           initVal$: new BehaviorSubject(undefined),
           showAddList: true,
-          hiddenProperty: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
+          hiddenProperty: { fkProperty: P_1875_ANNOTATED_ENTITY_ID },
           disableIfHasStatement: undefined,
           pkClass: this.pkMappedClass,
           defaultSearch: this.cellContent
@@ -196,18 +194,18 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
 
   public async upsertAnnotation(result: CtrlEntityModel) {
     const annotation: InfResourceWithRelations = {
-      fk_class: DfhApiClassMock.EN_9905_TABLE_ANNOTATION.dfh_pk_class,
+      fk_class: C_934_ANNOTATION_IN_TABLE_ID,
       outgoing_statements: [
         {
-          fk_property: DfhApiPropertyMock.EN_99004_TABLE_ANNOTATION_IS_ANNOTATION_IN.dfh_pk_property,
+          fk_property: P_1872_IS_ANNOTATED_IN_ID,
           fk_object_info: this.tableDetailComponent.pkEntity // Table
         },
         {
-          fk_property: DfhApiPropertyMock.EN_99005_TABLE_ANNOTATION_HAS_SPOT.dfh_pk_property,
+          fk_property: P_1874_AT_POSITION_ID,
           fk_object_tables_cell: this.pkCell
         },
         {
-          fk_property: DfhApiPropertyMock.EN_1334_TABLE_ANNOTATION_REFERS_TO.dfh_pk_property,
+          fk_property: P_1875_ANNOTATED_ENTITY_ID,
           fk_object_info: result.pkEntity,
           object_resource: result.resource
         }

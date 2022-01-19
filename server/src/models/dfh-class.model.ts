@@ -47,11 +47,19 @@ export class DfhClass extends Entity {
   @hasMany(() => ProClassFieldConfig, {keyTo: 'fk_class_for_class_field'})
   class_field_configs: ProClassFieldConfig[];
 
+
+  @property.array(Number, {required: true})
+  parent_classes: number[];
+
+  @property.array(Number, {required: true})
+  ancestor_classes: number[];
+
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  // [prop: string]: any;
 
   constructor(data?: Partial<DfhClass>) {
     super(data);

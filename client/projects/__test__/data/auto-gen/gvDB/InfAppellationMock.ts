@@ -1,5 +1,6 @@
 import {InfAppellation} from '@kleiolab/lib-sdk-lb4';
 import {QuillDoc} from '@kleiolab/lib-sdk-lb4';
+import {C_339_STRING_ID, C_456_CHUNK_ID} from '../../../../ontome-ids';
 import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
 
@@ -89,26 +90,26 @@ export class InfAppellationMock {
 
   static readonly VALUE_VERSION_1: OmitEntity<InfAppellation> = ({
     pk_entity: 5014,
-    fk_class: DfhApiClassMock.EN_339_STRING.dfh_pk_class,
+    fk_class: C_339_STRING_ID,
     string: 'This person is the famous jack the foo, invented by KleioLab',
     quill_doc: createQuillDoc('This person is the famous jack the foo, invented by KleioLab')
   })
   static readonly VALUE_VERSION_2: OmitEntity<InfAppellation> = ({
     pk_entity: 5015,
-    fk_class: DfhApiClassMock.EN_339_STRING.dfh_pk_class,
+    fk_class: C_339_STRING_ID,
     string: 'This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data.',
     quill_doc: createQuillDoc('This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data.')
   })
 
   static readonly TEXT_VALUE_RODOLF_FOO_V1: OmitEntity<InfAppellation> = {
     pk_entity: 5016,
-    fk_class: DfhApiClassMock.EN_339_STRING.dfh_pk_class,
+    fk_class: C_339_STRING_ID,
     quill_doc: {"ops": [{"insert": "R", "attributes": {"charid": "1"}}, {"insert": "u", "attributes": {"charid": "2"}}, {"insert": "d", "attributes": {"charid": "3"}}, {"insert": "o", "attributes": {"charid": "4"}}, {"insert": "l", "attributes": {"charid": "5"}}, {"insert": "f", "attributes": {"charid": "6"}}, {"insert": " ", "attributes": {"charid": "7"}}, {"insert": "F", "attributes": {"charid": "8"}}, {"insert": "o", "attributes": {"charid": "9"}}, {"insert": "o", "attributes": {"charid": "10"}}, {"insert": "\n", "attributes": {"blockid": "11"}}], "latestId": 11}
   }
 
   static readonly CHUNK_RUDOLF: OmitEntity<InfAppellation> = {
     pk_entity: 5017,
-    fk_class: DfhApiClassMock.EN_456_CHUNK.dfh_pk_class,
+    fk_class: C_456_CHUNK_ID,
     quill_doc: {"ops": [{"insert": "R", "attributes": {"charid": "1"}}, {"insert": "u", "attributes": {"charid": "2"}}, {"insert": "d", "attributes": {"charid": "3"}}, {"insert": "o", "attributes": {"charid": "4"}}, {"insert": "l", "attributes": {"charid": "5"}}, {"insert": "f", "attributes": {"charid": "6"}},], "latestId": 12},
   }
 }

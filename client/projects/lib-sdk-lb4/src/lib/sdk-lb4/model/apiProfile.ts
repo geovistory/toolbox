@@ -26,6 +26,8 @@ export interface ApiProfile {
     ownedByProjectLabel: string;
     selectedByProjects: ApiProfileSelectedByProjects;
     isOngoingForcedPublication: boolean;
+    isRootProfile: boolean;
+    fkRootProfile?: number;
     dateProfilePublished?: string;
     dateProfileDeprecated?: string;
 }

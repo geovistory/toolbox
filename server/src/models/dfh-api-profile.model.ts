@@ -59,11 +59,17 @@ export class DfhApiProfile extends Entity {
   @property({type: 'string'})
   dfh_date_profile_deprecated?: string;
 
+  @property()
+  dfh_is_root_profile: boolean;
+
+  @property()
+  dfh_fk_root_profile: number;
+
   // Define well-known properties here
 
   // Indexer property to allow additional data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [prop: string]: any;
+  // [prop: string]: any;
 
   constructor(data?: Partial<DfhApiProfile>) {
     super(data);

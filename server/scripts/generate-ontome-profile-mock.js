@@ -67,6 +67,13 @@ function createConstName(profileId, profileName) {
   );
 }
 
+function toConstName(label) {
+  return label
+    .toUpperCase()
+    .replace(regexSpecialChars, '_')
+    .replace(/_+/g, '_');
+}
+
 async function fetchProfile(profileId) {
   console.log(`>  fetching profile ${profileId} from OntoME`);
   const response = await fetch('https://ontome.net/api/profiles.json');
@@ -100,6 +107,14 @@ async function fetchProperties(profileID) {
   return properties;
 }
 
+function classConstName(c) {
+  return `${toConstName(`EN_${c.dfh_pk_class}_${c.dfh_class_label}`)}`;
+}
+function propConstName(p) {
+  return `${toConstName(
+    `EN_${p.dfh_property_domain}_${p.dfh_pk_property}_${p.dfh_property_range}_${p.dfh_property_label}`,
+  )}`;
+}
 function createFileContent(dfhApiProfile, dfhApiClasses, dfhApiProperties) {
   const constName = createConstName(
     dfhApiProfile.dfh_pk_profile,
@@ -110,13 +125,52 @@ function createFileContent(dfhApiProfile, dfhApiClasses, dfhApiProperties) {
     classes: dfhApiClasses,
     properties: dfhApiProperties,
   };
-  const content = `import {OntomeProfileMock} from '../gvDB/local-model.helpers';
+  const classNs = `PROFILE_${dfhApiProfile.dfh_pk_profile}_CLASSES`;
+  const propNs = `PROFILE_${dfhApiProfile.dfh_pk_profile}_PROPERTIES`;
+  const content = `
+  import {NewDfhApiClass, NewDfhApiProfile, NewDfhApiProperty, OntomeProfileMock} from '../gvDB/local-model.helpers';
 
-  export const ${constName}: OntomeProfileMock = ${JSON.stringify(
-    mock,
-    null,
-    2,
-  )}`;
+  const PROFILE:NewDfhApiProfile = ${JSON.stringify(dfhApiProfile, null, 2)}
+
+
+  export namespace ${classNs} {
+    ${dfhApiClasses
+      .map(
+        c => `
+  export const ${classConstName(c)}:NewDfhApiClass = ${JSON.stringify(
+          c,
+          null,
+          2,
+        )}
+    `,
+      )
+      .join('\n')}
+  }
+  export namespace ${propNs} {
+    ${dfhApiProperties
+      .map(
+        p => `
+  export const ${propConstName(p)}:NewDfhApiProperty = ${JSON.stringify(
+          p,
+          null,
+          2,
+        )}
+    `,
+      )
+      .join('\n')}
+  }
+
+
+  export const ${constName}: OntomeProfileMock = {
+    profile: PROFILE,
+    classes: [
+      ${dfhApiClasses.map(c => `${classNs}.${classConstName(c)}`).join(',\n')}
+    ],
+    properties: [
+      ${dfhApiProperties.map(p => `${propNs}.${propConstName(p)}`).join(',\n')}
+    ]
+  }
+  `;
   return content;
 }
 
@@ -125,7 +179,6 @@ function profileToDfhApiProfile(profile) {
     // "pk_entity": 3725,
     removed_from_api: false,
     requested_language: 'en',
-    tmsp_last_dfh_update: '2020-01-27T08:03:06.045+00:00',
     is_enabled_in_profile: undefined,
     dfh_pk_profile: profile.profileID,
     dfh_profile_label: profile.profileLabel,
@@ -138,12 +191,13 @@ function profileToDfhApiProfile(profile) {
     dfh_profile_label_language: profile.profileLabelLanguage,
     dfh_profile_definition_language: profile.profileDefinitionLanguage,
     dfh_is_ongoing_forced_publication: profile.isOngoingForcedPublication,
+    dfh_is_root_profile: profile.isRootProfile,
+    dfh_fk_root_profile: profile.fkRootProfile,
   };
 }
 
 function classToDfhApiClass(c) {
   return {
-    tmsp_last_modification: '2021-03-25T20:06:37.47053+00:00',
     // "pk_entity": 4929,
     dfh_pk_class: c.classID,
     dfh_basic_type: c.entityBasicType,
@@ -161,6 +215,8 @@ function classToDfhApiClass(c) {
     dfh_class_scope_note_language: c.classScopeNoteLanguage,
     dfh_class_identifier_in_namespace: c.classIdentifierInNamespace,
     dfh_profile_association_type: c.profileAssociationType,
+    dfh_parent_classes: c.parentClasses,
+    dfh_ancestor_classes: c.ancestorClasses,
   };
 }
 
@@ -168,7 +224,6 @@ function propertyToDfhApiProperty(p) {
   return {
     removed_from_api: false,
     requested_language: 'en',
-    tmsp_last_dfh_update: '2020-03-05T14:05:26.714+00:00',
     is_enabled_in_profile: null,
     dfh_pk_property: p.propertyID,
     dfh_property_label_language: p.propertyLabelLanguage,
@@ -194,5 +249,7 @@ function propertyToDfhApiProperty(p) {
     dfh_fk_profile: p.profileID,
     dfh_profile_label: p.profileLabel,
     dfh_profile_label_language: p.profileLabelLanguage,
+    dfh_parent_properties: p.parentProperties,
+    dfh_ancestor_properties: p.ancestorProperties || [],
   };
 }

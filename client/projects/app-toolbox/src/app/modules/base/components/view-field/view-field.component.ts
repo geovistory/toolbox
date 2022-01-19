@@ -71,7 +71,9 @@ export class ViewFieldComponent implements OnInit {
           shareReplay({ refCount: true, bufferSize: 1 })
         )
     }
-    this.targetClassLabels = values(this.field.targets).map(c => c.targetClassLabel)
+    this.targetClassLabels = values(this.field.targets)
+      .filter(c => !c.removedFromAllProfiles)
+      .map(c => c.targetClassLabel)
 
     // const limit = temporalEntityListDefaultLimit
     // const offset = temporalEntityListDefaultPageIndex

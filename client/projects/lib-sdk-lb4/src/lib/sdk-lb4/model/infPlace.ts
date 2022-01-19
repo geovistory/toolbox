@@ -12,9 +12,9 @@
 
 
 export interface InfPlace {
-    long: number;
-    lat: number;
-    fk_class: number;
-    pk_entity?: number;
+  long: number;
+  lat: number;
+  fk_class: number;
+  pk_entity?: number;
 }
 

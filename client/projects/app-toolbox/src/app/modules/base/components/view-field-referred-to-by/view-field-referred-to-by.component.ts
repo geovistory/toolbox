@@ -1,10 +1,9 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
+import { C_933_ANNOTATION_IN_TEXT_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, takeUntil } from 'rxjs/operators';
 
@@ -42,7 +41,7 @@ export class ViewFieldReferredToByComponent implements OnInit, OnDestroy {
       .pipe(
         map(fields => fields.find(field => (
           field.isOutgoing === false &&
-          field.property.fkProperty === DfhApiPropertyMock.EN_1334_TEXT_ANNOTATION_REFERS_TO.dfh_pk_property
+          field.property.fkProperty === P_1875_ANNOTATED_ENTITY_ID
         ))),
         filter(field => !!field),
       )
@@ -67,18 +66,18 @@ export class ViewFieldReferredToByComponent implements OnInit, OnDestroy {
       .pipe(
         map(([pkProject, source]) => {
           const annotation: InfResourceWithRelations = {
-            fk_class: DfhConfig.CLASS_PK_ANNOTATION,
+            fk_class: C_933_ANNOTATION_IN_TEXT_ID,
             outgoing_statements: [
               {
-                fk_property: DfhConfig.PROPERTY_PK_ANNOTATION_IS_PART_OF,
+                fk_property: P_1872_IS_ANNOTATED_IN_ID,
                 fk_object_info: source.annotation.pkEntityOfText // Text
               },
               {
-                fk_property: DfhConfig.PROPERTY_PK_ANNOTATION_HAS_SPOT,
+                fk_property: P_1874_AT_POSITION_ID,
                 object_appellation: source.annotation.textChunk
               },
               {
-                fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
+                fk_property: P_1875_ANNOTATED_ENTITY_ID,
                 fk_object_info: this.source.fkInfo
               }
             ]

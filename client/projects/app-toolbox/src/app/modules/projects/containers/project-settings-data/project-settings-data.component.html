@@ -23,25 +23,37 @@
 
   <table mat-table [dataSource]="filteredItems$" matSort [matSortDisableClear]="true" (matSortChange)="sortData($event)"
     class="mat-elevation-z1 w-100">
-
+    <!-- Category Column -->
+    <ng-container matColumnDef="categoryLabel">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="categoryLabel"> Category </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        {{element.categoryLabel}}
+        <!-- <mat-icon [svgIcon]="'gv:outlined-gv-'+element.categoryKey"
+          [attr.class]="'gv-'+element.categoryKey+'-primary-color'"></mat-icon> -->
+      </td>
+    </ng-container>
     <!-- Checkbox Column -->
-    <ng-container matColumnDef="enabled_in_entities">
+    <ng-container matColumnDef="enabled">
 
-      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="enabled_in_entities"> In Entities
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="enabled_in_entities"> In add menu
       </th>
 
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
-        <mat-checkbox (click)="$event.stopPropagation()"
+
+        <mat-checkbox *ngIf="element?.belongsToCategory?.entities  && element.showInAddMenu"
+          (click)="$event.stopPropagation()"
           (change)="element.enabled_in_entities ? disableClass(element) : enableClass(element)"
-          [checked]="element.enabled_in_entities" [hidden]="p.changingClassProjRel[element.pkClass]"
-          *ngIf="!element.excluded_from_entities">
+          [checked]="element.enabled_in_entities" [hidden]="p.changingClassProjRel[element.pkClass]">
+        </mat-checkbox>
+        <mat-checkbox *ngIf="!(element?.belongsToCategory?.entities) && element.showInAddMenu" [disabled]="true"
+          [checked]="true">
         </mat-checkbox>
         <mat-spinner *ngIf="p.changingClassProjRel[element.pkClass]" [diameter]="20" color="accent"></mat-spinner>
       </td>
     </ng-container>
 
     <!-- Checkbox Column -->
-    <ng-container matColumnDef="required_by_sources">
+    <!-- <ng-container matColumnDef="required_by_sources">
 
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_sources"> In Sources </th>
 
@@ -49,10 +61,10 @@
         <mat-checkbox *ngIf="element.required_by_sources" [checked]="element.required_by_sources" [disabled]="true">
         </mat-checkbox>
       </td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Checkbox Column -->
-    <ng-container matColumnDef="required_by_basics">
+    <!-- <ng-container matColumnDef="required_by_basics">
 
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_basics"> Basic </th>
 
@@ -60,13 +72,18 @@
         <mat-checkbox *ngIf="element.required_by_basics" [checked]="element.required_by_basics" [disabled]="true">
         </mat-checkbox>
       </td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Label Column -->
     <ng-container matColumnDef="label">
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="label"> Class </th>
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
-        <strong [innerHtml]="element.label"></strong> {{element.pkClass}}
+        <div style="display: flex;">
+          <gv-class-info class="mr-2" [pkClass]="element.pkClass" [classLabel]="element.label" [size]="18">
+          </gv-class-info>
+          <strong class="mr-2" [innerHtml]="element.label"></strong>
+          {{element.pkClass}}
+        </div>
       </td>
     </ng-container>
 
@@ -152,7 +169,7 @@
     </ng-container>
 
     <!-- Checkbox Column only visible in Default Config Project-->
-    <ng-container matColumnDef="edit_required_by_basics">
+    <!-- <ng-container matColumnDef="edit_required_by_basics">
       <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="required_by_basics"
         matTooltip="This column is only visible in Default Config Project (375669)"> Required By
         Basics </th>
@@ -163,10 +180,10 @@
         <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" [diameter]="20" color="accent">
         </mat-spinner>
       </td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Checkbox Column only visible in Default Config Project-->
-    <ng-container matColumnDef="edit_required_by_sources">
+    <!-- <ng-container matColumnDef="edit_required_by_sources">
       <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef
         mat-sort-header="required_by_sources"
         matTooltip="This column is only visible in Default Config Project (375669)">
@@ -179,9 +196,9 @@
         <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" [diameter]="20" color="accent">
         </mat-spinner>
       </td>
-    </ng-container>
+    </ng-container> -->
     <!-- Checkbox Column only visible in Default Config Project-->
-    <ng-container matColumnDef="edit_required_by_entities">
+    <!-- <ng-container matColumnDef="edit_required_by_entities">
       <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef
         mat-sort-header="required_by_entities"
         matTooltip="This column is only visible in Default Config Project (375669)">
@@ -194,10 +211,10 @@
         <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" [diameter]="20" color="accent">
         </mat-spinner>
       </td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Checkbox Column only visible in Default Config Project-->
-    <ng-container matColumnDef="edit_excluded_from_entities">
+    <!-- <ng-container matColumnDef="edit_excluded_from_entities">
       <th mat-header-cell class="bg-success" style="flex: 0 1 0%" *matHeaderCellDef
         mat-sort-header="excluded_from_entities"
         matTooltip="This column is only visible in Default Config Project (375669)">
@@ -210,15 +227,15 @@
         <mat-spinner *ngIf="p.changingSystemRelevantClass[element.pkClass]" [diameter]="20" color="accent">
         </mat-spinner>
       </td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Checkbox Column -->
-    <ng-container matColumnDef="edit">
+    <!-- <ng-container matColumnDef="edit">
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> Class Fields </th>
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
         <a class="nav-link" routerLink="/backoffice/classes/{{element.dfh_pk_class}}" routerLinkActive="active">Edit</a>
       </td>
-    </ng-container>
+    </ng-container> -->
 
     <!-- Collapse / Expand Column -->
     <!-- <ng-container matColumnDef="expansion">

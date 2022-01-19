@@ -13,7 +13,7 @@ import {InfPlaceMock} from '../gvDB/InfPlaceMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
 import {InfStatementMock} from '../gvDB/InfStatementMock'
 import {DEFAULT_CAL, DEFAULT_DURATION, InfTimePrimitiveMock} from '../gvDB/InfTimePrimitiveMock'
-import {DfhApiProperty, OmitEntity} from '../gvDB/local-model.helpers'
+import {NewDfhApiProperty, OmitEntity} from '../gvDB/local-model.helpers'
 import {ProInfoProjRelMock} from '../gvDB/ProInfoProjRelMock'
 import {ProProjectMock} from '../gvDB/ProProjectMock'
 import {PubAccountMock} from '../gvDB/PubAccountMock'
@@ -427,27 +427,27 @@ export namespace GvPaginationObjectMock {
       },
     ],
   }
-  export const statementOfStatementHasExactReference: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.statementOfStatementHasExactReference,
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.MENTIONS_STMT_HAS_EXACT_REFERENCE,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              langString: {
-                langString: InfLangStringMock.EN_PAGE_1 as InfLangString,
-                language: InfLanguageMock.ENGLISH as InfLanguage
-              }
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_MENTIONS_STMT_HAS_EXACT_REFERENCE,
-          )],
-      }
-    ]
-  }
+  // export const statementOfStatementHasExactReference: GvPaginationObject = {
+  //   subfieldPages: [
+  //     {
+  //       req: GvFieldPageReqMock.statementOfStatementHasExactReference,
+  //       count: 1,
+  //       paginatedStatements: [
+  //         createStatementWithTarget(
+  //           InfStatementMock.MENTIONS_STMT_HAS_EXACT_REFERENCE,
+  //           PubAccountMock.GAETAN_VERIFIED.id,
+  //           {
+  //             langString: {
+  //               langString: InfLangStringMock.EN_PAGE_1 as InfLangString,
+  //               language: InfLanguageMock.ENGLISH as InfLanguage
+  //             }
+  //           },
+  //           true,
+  //           ProInfoProjRelMock.PROJ_1_STMT_MENTIONS_STMT_HAS_EXACT_REFERENCE,
+  //         )],
+  //     }
+  //   ]
+  // }
 
 
   export const definitionHasValueVersion: GvPaginationObject = {
@@ -474,7 +474,7 @@ export namespace GvPaginationObjectMock {
 
 
 
-export function createTimeSpanSubPage(sourceEntity: number, property: DfhApiProperty): GvFieldPageReq {
+export function createTimeSpanSubPage(sourceEntity: number, property: NewDfhApiProperty): GvFieldPageReq {
   return {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {

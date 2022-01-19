@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, ImportTableResponse, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
+import { P_1879_HAS_VALUE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { catchError, first, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ImporterComponent, ImporterDialogData } from '../importer/importer.component';
@@ -28,7 +28,7 @@ export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
   // @Input() showOntoInfo$: Observable<boolean>
   loadTrigger$ = new BehaviorSubject<void>(undefined)
   pkTableValueLoader$: Observable<PkTableValueLoader>
-  pkHasValuePk = DfhApiPropertyMock.EN_99006_TABLE_HAS_VALUE.dfh_pk_property
+  pkHasValuePk = P_1879_HAS_VALUE_ID
   constructor(
     public fieldApi: SubfieldPageControllerService,
     public dataApi: ReduxMainService,

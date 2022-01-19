@@ -1,11 +1,11 @@
-import {DefaultCrudRepository} from '@loopback/repository';
-import {DfhApiProfile, DfhApiProfileRelations} from '../models';
-import {Postgres1DataSource} from '../datasources';
 import {inject} from '@loopback/core';
+import {DefaultCrudRepository} from '@loopback/repository';
+import {Postgres1DataSource} from '../datasources';
+import {DfhApiProfile, DfhApiProfileRelations} from '../models';
 
 export class DfhApiProfileRepository extends DefaultCrudRepository<
   DfhApiProfile,
-  typeof DfhApiProfile.prototype.pk_profile,
+  typeof DfhApiProfile.prototype.dfh_pk_profile,
   DfhApiProfileRelations
 > {
   constructor(

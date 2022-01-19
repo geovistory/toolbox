@@ -200,16 +200,16 @@ describe('SubfieldPageController', () => {
       expect(new Date(d) > new Date('1999-01-01')).to.be.true();
     });
 
-    it('should return field page for propertyOfProperty (targetType: languageString)', async () => {
-      await SubfieldHelper.statementOfStatementHasExactReference()
-      const res = await client.post('/subfield-page/load-subfield-page')
-        .set('Authorization', lb4Token)
-        .send([GvFieldPageReqMock.statementOfStatementHasExactReference])
-        .expect(200);
-      checkPaginationObject(res.body, GvPaginationObjectMock.statementOfStatementHasExactReference);
+    // it('should return field page for propertyOfProperty (targetType: languageString)', async () => {
+    //   await SubfieldHelper.statementOfStatementHasExactReference()
+    //   const res = await client.post('/subfield-page/load-subfield-page')
+    //     .set('Authorization', lb4Token)
+    //     .send([GvFieldPageReqMock.statementOfStatementHasExactReference])
+    //     .expect(200);
+    //   checkPaginationObject(res.body, GvPaginationObjectMock.statementOfStatementHasExactReference);
 
-      // expect(res.body).to.containDeep(GvPaginationObjectMock.statementOfStatementHasExactReference);
-    });
+    //   // expect(res.body).to.containDeep(GvPaginationObjectMock.statementOfStatementHasExactReference);
+    // });
 
   });
 

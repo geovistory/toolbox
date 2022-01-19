@@ -47,18 +47,13 @@ export class DfhConfig {
   // dfh_pk_property used to connect a a persitent item or temporal entity as domain with source, section or chunk as range
   static PROPERTY_PK_GEOVP2_MENTIONS = 1218;
   static PROPERTY_PK_P129_IS_ABOUT = 117;
-  static PROPERTY_PK_GEOVP11_REFERS_TO = 1334;
+  // static PROPERTY_PK_GEOVP11_REFERS_TO = 1334;
 
   static PROPERTY_PK_GEOVP1_IS_REPRODUCTION_OF = 1216;
 
   static PROPERTY_PK_HAS_TIME_SPAN = 4;
 
   static PROPERTY_PK_P18_HAS_DEFINITION = 1762;
-
-  static PROPERTY_PK_HAS_VALUE_VERSION = 99001; // TODO replace by pk from ontome when available
-  static PROPERTY_PK_ANNOTATION_IS_PART_OF = 99004; // TODO replace by pk from ontome when available
-  static PROPERTY_PK_ANNOTATION_HAS_SPOT = 99005; // TODO replace by pk from ontome when available
-
 
   // static PROPERTY_PK_AT_SOME_TIME_WITHIN = 72;
   // static PROPERTY_PK_ONGOING_THROUGHOUT = 71;
@@ -142,16 +137,13 @@ export class DfhConfig {
   static CLASS_PK_MANIFESTATION_SINGLETON = 220;
   static CLASS_PK_ITEM = 221;
   static CLASS_PK_WEB_REQUEST = 502;
-  static CLASS_PK_DEFINITION = 9901; // TODO replace by pk from ontome when available
-  static CLASS_PK_ANNOTATION = 9902; // TODO replace by pk from ontome when available
-  static CLASS_PK_TRANSCTIPTION = 9903; // TODO replace by pk from ontome when available
+
   static CLASS_PK_SPOT = 457;
   static CLASS_PK_CHUNK = 456;
   static CLASS_PK_EXPRESSION_PORTION = 503;
 
 
   static CLASS_PKS_SOURCE_PE_IT = [219, 220, 221, 502];
-  static CLASS_PKS_TEXT = [9901, 9903];
 
   static CLASS_PKS_GEO_PE_IT = [363, 441];
 

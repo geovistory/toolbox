@@ -9,10 +9,8 @@ import { ValuePreviewModule } from '../../shared/components/value-preview/value-
 import { BaseModule } from '../base/base.module';
 import { FactoidListComponent } from './components/factoid-list/factoid-list.component';
 import { GraphPathComponent } from './components/graph-path/graph-path.component';
-import { MentioningCreateCtrlComponent } from './components/mentioning-create-ctrl/mentioning-create-ctrl.component';
 import { RamListEditDialogComponent } from './components/ram-list-edit-dialog/ram-list-edit-dialog.component';
 import { RamListRemoveDialogComponent } from './components/ram-list-remove-dialog/ram-list-remove-dialog.component';
-import { RamListComponent } from './components/ram-list/ram-list.component';
 
 @NgModule({
   imports: [
@@ -26,8 +24,8 @@ import { RamListComponent } from './components/ram-list/ram-list.component';
     ValuePreviewModule,
   ],
   providers: [],
-  declarations: [MentioningCreateCtrlComponent, RamListComponent, GraphPathComponent,
+  declarations: [GraphPathComponent,
     RamListEditDialogComponent, RamListRemoveDialogComponent, FactoidListComponent],
-  exports: [MentioningCreateCtrlComponent, RamListComponent, FactoidListComponent],
+  exports: [FactoidListComponent],
 })
 export class AnnotationModule { }

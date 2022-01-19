@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { ClassConfig } from './classConfig';
+import { SysConfigOntomeProfiles } from './sysConfigOntomeProfiles';
 import { SysConfigAddProperty } from './sysConfigAddProperty';
 import { SysConfigSpecialFields } from './sysConfigSpecialFields';
 
@@ -23,5 +24,6 @@ export interface SysConfigValue {
     classes: { [key: string]: ClassConfig; };
     specialFields: SysConfigSpecialFields;
     addProperty?: Array<SysConfigAddProperty>;
+    ontome?: SysConfigOntomeProfiles;
 }
 

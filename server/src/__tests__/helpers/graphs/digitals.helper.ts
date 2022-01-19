@@ -2,6 +2,7 @@ import {genSalt, hash} from 'bcrypt';
 import {InfAppellation, InfResource, InfStatement} from '../../../models';
 import {QuillDoc} from '../../../models/quill-doc/quill-doc.model';
 import {QuillOperation} from '../../../models/quill-doc/quill-operation.model';
+import {C_339_STRING_ID, C_456_CHUNK_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID} from '../../../ontome-ids';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
 import {createDatColumn} from '../atomic/dat-column.helper';
@@ -34,7 +35,6 @@ import {DatDigitalMock} from '../data/gvDB/DatDigitalMock';
 import {DatNamespaceMock} from '../data/gvDB/DatNamespaceMock';
 import {DatTextPropertyMock} from '../data/gvDB/DatTextPropertyMock';
 import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
-import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
 import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
 import {InfResourceMock} from '../data/gvDB/InfResourceMock';
@@ -52,12 +52,13 @@ import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
 import {TabCellXMock} from '../data/gvDB/TabCellXMock';
 import {TabRowMock} from '../data/gvDB/TabRowMock';
 import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
-import {PROFILE_12_BIOGRAPHICAL_BA_2021_06_30} from '../data/ontome-profiles/profile-12-biographical-ba-2021-06-30';
-import {PROFILE_5_GEOVISTORY_BASI_2021_08_24} from '../data/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
-import {PROFILE_99_DIGITALS} from '../data/ontome-profiles/profile-99-digitals';
+import {PROFILE_12_BIOGRAPHICAL_BA_2022_01_18} from '../data/ontome-profiles/profile-12-biographical-ba-2022-01-18';
+import {PROFILE_5_GEOVISTORY_BASI_2022_01_18} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
+import {PROFILE_97_GEOVISTORY_DIGI_2022_01_18} from '../data/ontome-profiles/profile-97-geovistory-digi-2022-01-18';
 import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
 import {testdb} from '../testdb';
 import {createBunchOfPersons} from './person.helper';
+
 
 /**
  * This function creates mockdata useful for developing geovistory
@@ -72,7 +73,7 @@ export async function digitalsSeeds() {
    ***************************************************************************/
 
   // SysConfig (special classes / special fields, ect.)
-  await createSysSystemConfig(SysConfigValueMock.SYS_CONFIC_DIGITALS)
+  await createSysSystemConfig(SysConfigValueMock.SYS_CONFIC_VALID)
 
   // SystemReleventClass (required by sources, etc.) [should be replaced by SysConfig]
   await createSysSystemRelevantClass(SysSystemRelevantClassMock.MANIFESTATION_SINGLETON)
@@ -98,9 +99,9 @@ export async function digitalsSeeds() {
    * OntoME data
    ***************************************************************************/
 
-  const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2021_08_24)
-  const profileBiography = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2021_06_30)
-  const profileDigitals = await createOntomeProfileMock(PROFILE_99_DIGITALS)
+  const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2022_01_18)
+  const profileBiography = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_01_18)
+  const profileDigitals = await createOntomeProfileMock(PROFILE_97_GEOVISTORY_DIGI_2022_01_18)
 
 
   /****************************************************************************
@@ -234,7 +235,7 @@ function createTextVersionWithAnnotations(pkText: number) {
   // the text version
   const textVersion: OmitEntity<InfAppellation> = {
     pk_entity: pkEntity++,
-    fk_class: DfhApiClassMock.EN_339_STRING.dfh_pk_class,
+    fk_class: C_339_STRING_ID,
     quill_doc: quillDoc,
   }
   appellations.push(textVersion)
@@ -243,7 +244,7 @@ function createTextVersionWithAnnotations(pkText: number) {
   const hasValueVersion: OmitEntity<InfStatement> = ({
     pk_entity: pkEntity++,
     fk_subject_info: pkText,
-    fk_property: DfhApiPropertyMock.EN_99001_DEFINITION_HAS_VALUE_VERSION.dfh_pk_property,
+    fk_property: P_1864_HAS_VALUE_VERSION_ID,
     fk_object_info: textVersion.pk_entity ?? -1,
   })
   statements.push(hasValueVersion)
@@ -273,7 +274,7 @@ function createTextVersionWithAnnotations(pkText: number) {
       // create InfAppellation Chunk
       const chunk: OmitEntity<InfAppellation> = {
         pk_entity: pkEntity++,
-        fk_class: DfhApiClassMock.EN_456_CHUNK.dfh_pk_class,
+        fk_class: C_456_CHUNK_ID,
         quill_doc: {
           latestId: quillDoc.latestId,
           ops: chunkOps
@@ -284,7 +285,7 @@ function createTextVersionWithAnnotations(pkText: number) {
       // create the Annotation
       const annotation: OmitEntity<InfResource> = {
         pk_entity: pkEntity++,
-        fk_class: DfhApiClassMock.EN_9902_TEXT_ANNOTATION.dfh_pk_class,
+        fk_class: C_933_ANNOTATION_IN_TEXT_ID,
         community_visibility: {dataApi: true, website: true, toolbox: true},
       }
       entities.push(annotation)
@@ -292,7 +293,7 @@ function createTextVersionWithAnnotations(pkText: number) {
       const isAnnotationOf: OmitEntity<InfStatement> = {
         pk_entity: pkEntity++,
         fk_subject_info: annotation.pk_entity ?? -1,
-        fk_property: DfhApiPropertyMock.EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN.dfh_pk_property,
+        fk_property: P_1872_IS_ANNOTATED_IN_ID,
         fk_object_info: pkText ?? -1
       }
       statements.push(isAnnotationOf)
@@ -300,7 +301,7 @@ function createTextVersionWithAnnotations(pkText: number) {
       const stmtHasSpot: OmitEntity<InfStatement> = {
         pk_entity: pkEntity++,
         fk_subject_info: annotation.pk_entity ?? -1,
-        fk_property: DfhApiPropertyMock.EN_99005_TEXT_ANNOTATION_HAS_SPOT.dfh_pk_property,
+        fk_property: P_1874_AT_POSITION_ID,
         fk_object_info: chunk.pk_entity ?? -1
       }
       statements.push(stmtHasSpot)

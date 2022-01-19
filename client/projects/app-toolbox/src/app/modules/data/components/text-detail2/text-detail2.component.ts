@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, QuillDoc } from '@kleiolab/lib-sdk-lb4';
+import { P_1864_HAS_VALUE_VERSION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -84,7 +84,7 @@ export class TextDetail2Component implements OnInit, OnDestroy {
     })
     this.hasValueVersionField$ = this.fkClass$.pipe(
       switchMap(pkClass => this.c.pipeFields(pkClass).pipe(
-        map(fields => fields.find(field => field.isOutgoing && field.property?.fkProperty === DfhConfig.PROPERTY_PK_HAS_VALUE_VERSION))
+        map(fields => fields.find(field => field.isOutgoing && field.property?.fkProperty === P_1864_HAS_VALUE_VERSION_ID))
       ))
     )
     this.characterPositionMap$ = this.quillDoc$.pipe(

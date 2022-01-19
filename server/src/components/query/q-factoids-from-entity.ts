@@ -1,7 +1,7 @@
 import {FactoidEntity, FactoidStatement} from '../../controllers';
 import {Postgres1DataSource} from '../../datasources';
+import {P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID} from '../../ontome-ids';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {DfhApiPropertyMock} from '../../__tests__/helpers/data/gvDB/DfhApiPropertyMock';
 
 class RetrievedLine {
     fkdigital: number;
@@ -21,8 +21,8 @@ class RetrievedLine {
 export class QFactoidsFromEntity extends SqlBuilderLb4Models {
 
 
-    propAnnotationToCell = DfhApiPropertyMock.EN_99005_TABLE_ANNOTATION_HAS_SPOT.dfh_pk_property
-    propAnnotationToEntity = DfhApiPropertyMock.EN_1334_TABLE_ANNOTATION_REFERS_TO.dfh_pk_property
+    propAnnotationToCell = P_1874_AT_POSITION_ID
+    propAnnotationToEntity = P_1875_ANNOTATED_ENTITY_ID
 
     constructor(
         dataSource: Postgres1DataSource,

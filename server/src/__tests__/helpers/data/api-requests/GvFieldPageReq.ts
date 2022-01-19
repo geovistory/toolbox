@@ -1,5 +1,6 @@
 import {GvFieldPageReq, GvFieldPageScope} from '../../../../models'
 import {TrueEnum} from '../../../../models/enums/TrueEnum'
+import {C_219_MANIFESTATION_PRODUCT_TYPE_ID, C_220_MANIFESTATION_SINGLETON_ID, C_339_STRING_ID, C_456_CHUNK_ID, C_503_EXPRESSION_PORTION_ID, C_899_DEFINITION_ID, C_901_TRANSCRIPTION_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1016_IS_REPRESENTATIVE_MANIFESTATION_SINGLETON_FOR_ID, P_1216_IS_REPRODUCTION_OF_ID, P_1317_IS_PART_OF_ID, P_1762_HAS_DEFINITION_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_979_CARRIERS_PROVIDED_BY_ID} from '../../../../ontome-ids'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
@@ -177,13 +178,13 @@ export namespace GvFieldPageReqMock {
   export const definitionHasValueVersion: GvFieldPageReq = {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     targets: {
-      [DfhApiClassMock.EN_339_STRING.dfh_pk_class]: {
+      [C_339_STRING_ID]: {
         appellation: TrueEnum.true
       }
     },
     page: {
       source: {fkInfo: InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2.fk_subject_info},
-      property: {fkProperty: DfhApiPropertyMock.EN_99001_DEFINITION_HAS_VALUE_VERSION.dfh_pk_property},
+      property: {fkProperty: P_1864_HAS_VALUE_VERSION_ID},
       isOutgoing: true,
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
       limit: 1,
@@ -192,22 +193,22 @@ export namespace GvFieldPageReqMock {
   }
 
 
-  export const statementOfStatementHasExactReference: GvFieldPageReq = {
-    pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    targets: {
-      [DfhApiClassMock.EN_785_TEXT.dfh_pk_class]: {
-        langString: TrueEnum.true
-      }
-    },
-    page: {
-      source: {fkInfo: InfStatementMock.EXPRESSION_MENTIONS_RUDOLF.pk_entity},
-      property: {fkPropertyOfProperty: 1},
-      isOutgoing: true,
-      scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
-      limit: 7,
-      offset: 0
-    }
-  }
+  // export const statementOfStatementHasExactReference: GvFieldPageReq = {
+  //   pkProject: ProProjectMock.PROJECT_1.pk_entity,
+  //   targets: {
+  //     [DfhApiClassMock.EN_785_TEXT.dfh_pk_class]: {
+  //       langString: TrueEnum.true
+  //     }
+  //   },
+  //   page: {
+  //     source: {fkInfo: InfStatementMock.EXPRESSION_MENTIONS_RUDOLF.pk_entity},
+  //     property: {fkPropertyOfProperty: 1},
+  //     isOutgoing: true,
+  //     scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
+  //     limit: 7,
+  //     offset: 0
+  //   }
+  // }
 
 
   /**
@@ -228,7 +229,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     page: {
       source: {fkInfo: 1},
-      property: {fkProperty: DfhApiPropertyMock.EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN.dfh_pk_property},
+      property: {fkProperty: P_1875_ANNOTATED_ENTITY_ID},
       isOutgoing: false,
 
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
@@ -237,7 +238,7 @@ export namespace GvFieldPageReqMock {
     },
     targets: {
 
-      [DfhApiClassMock.EN_9902_TEXT_ANNOTATION.dfh_pk_class]: {
+      [C_933_ANNOTATION_IN_TEXT_ID]: {
         nestedResource: [
           /**************************************
            * From Annotation to chunk
@@ -245,13 +246,13 @@ export namespace GvFieldPageReqMock {
           {
             page: {
               isCircular: false,
-              property: {fkProperty: DfhApiPropertyMock.EN_99005_TEXT_ANNOTATION_HAS_SPOT.dfh_pk_property},
+              property: {fkProperty: P_1874_AT_POSITION_ID},
               isOutgoing: true,
               limit: 1,
               offset: 0
             },
             targets: {
-              [DfhApiClassMock.EN_456_CHUNK.dfh_pk_class]: {appellation: TrueEnum.true}
+              [C_456_CHUNK_ID]: {appellation: TrueEnum.true}
             }
           },
           /**************************************
@@ -260,7 +261,7 @@ export namespace GvFieldPageReqMock {
           {
             page: {
               isCircular: false,
-              property: {fkProperty: DfhApiPropertyMock.EN_99004_TEXT_ANNOTATION_IS_ANNOTATION_IN.dfh_pk_property},
+              property: {fkProperty: P_1872_IS_ANNOTATED_IN_ID},
               isOutgoing: true,
               limit: 1,
               offset: 0
@@ -269,22 +270,22 @@ export namespace GvFieldPageReqMock {
               /**************************************
                * Path from transcription to source
                *************************************/
-              [DfhApiClassMock.EN_9903_TRANSCRIPTION.dfh_pk_class]: {
+              [C_901_TRANSCRIPTION_ID]: {
                 subReqsRecursiveTargets: [
                   {
                     isCircular: false,
-                    property: {fkProperty: DfhApiPropertyMock.EN_1216_IS_REPRODUCTION_OF.dfh_pk_property},
+                    property: {fkProperty: P_1216_IS_REPRODUCTION_OF_ID},
                     isOutgoing: true,
                     limit: 1,
                     offset: 0
                   }
                 ]
               },
-              [DfhApiClassMock.EN_503_EXPRESSION_PORTION.dfh_pk_class]: {
+              [C_503_EXPRESSION_PORTION_ID]: {
                 subReqsRecursiveTargets: [
                   {
                     isCircular: false,
-                    property: {fkProperty: DfhApiPropertyMock.EN_1317_IS_PART_OF.dfh_pk_property},
+                    property: {fkProperty: P_1317_IS_PART_OF_ID},
                     isOutgoing: true,
                     limit: 1,
                     offset: 0
@@ -295,14 +296,14 @@ export namespace GvFieldPageReqMock {
                 subReqsRecursiveTargets: [
                   {
                     isCircular: false,
-                    property: {fkProperty: DfhApiPropertyMock.EN_1016_MANIFESTATION_SINGLETON_IS_REPRESENTATIVE_FOR.dfh_pk_property},
+                    property: {fkProperty: P_1016_IS_REPRESENTATIVE_MANIFESTATION_SINGLETON_FOR_ID},
                     isOutgoing: false,
                     limit: 1,
                     offset: 0
                   },
                   {
                     isCircular: false,
-                    property: {fkProperty: DfhApiPropertyMock.EN_979_CARRIERS_PROVIDED_BY.dfh_pk_property},
+                    property: {fkProperty: P_979_CARRIERS_PROVIDED_BY_ID},
                     isOutgoing: true,
                     limit: 1,
                     offset: 0
@@ -310,10 +311,10 @@ export namespace GvFieldPageReqMock {
                   // TODO: Add props to item, webrequest, ...?
                 ]
               },
-              [DfhApiClassMock.EN_220_MANIFESTATION_SINGLETON.dfh_pk_class]: {
+              [C_220_MANIFESTATION_SINGLETON_ID]: {
                 entityPreview: TrueEnum.true
               },
-              [DfhApiClassMock.EN_219_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class]: {
+              [C_219_MANIFESTATION_PRODUCT_TYPE_ID]: {
                 entityPreview: TrueEnum.true
               },
               // TODO: Add item, webrequest, ...?
@@ -321,12 +322,12 @@ export namespace GvFieldPageReqMock {
               /**************************************
                * Path from definition to entity
                *************************************/
-              [DfhApiClassMock.EN_9901_DEFINITION.dfh_pk_class]: {
+              [C_899_DEFINITION_ID]: {
                 nestedResource: [
                   {
                     page: {
                       isCircular: false,
-                      property: {fkProperty: DfhApiPropertyMock.EN_99003_HAS_DEFINITION_NEW.dfh_pk_property},
+                      property: {fkProperty: P_1762_HAS_DEFINITION_ID},
                       isOutgoing: false,
                       limit: 1,
                       offset: 0

@@ -6,6 +6,7 @@ import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellation, InfResourceWithRelations, InfStatementWithRelations, ProjectDataService, QuillDoc, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ReplaceStatementInFieldRequest } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/replaceStatementInFieldRequest';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { equals } from 'ramda';
@@ -37,8 +38,8 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
   @Input() showOntoInfo$: Observable<boolean>
   editing$ = new BehaviorSubject(false)
 
-  pkStringClass = 339;
-  pkHasValueVersionPk = DfhConfig.PROPERTY_PK_HAS_VALUE_VERSION;
+  pkStringClass = C_339_STRING_ID;
+  pkHasValueVersionPk = P_1864_HAS_VALUE_VERSION_ID;
   quillDocLoader$: Observable<QuillDocLoader>
   loadTrigger$ = new BehaviorSubject<void>(undefined)
   newQuillDoc: QuillDoc
@@ -144,7 +145,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     }
     const statement: InfStatementWithRelations = {
       fk_subject_info: this.source.fkInfo,
-      fk_property: DfhConfig.PROPERTY_PK_HAS_VALUE_VERSION,
+      fk_property: P_1864_HAS_VALUE_VERSION_ID,
       object_appellation: appellation
     }
     const req: ReplaceStatementInFieldRequest = {
@@ -223,7 +224,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
         if (!targetIsFix) {
           this.p.ramOnSaveCallback = () => this.onSave()
           this.p.ramBoxLeft$.next('select-text');
-          this.p.ramProperty$.next(DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO);
+          this.p.ramProperty$.next(); // todo: check if this can be empty
           this.p.ramTarget$.next();
           this.p.ramTitle$.next(`Create an annotation`);
           this.p.ramTitlePart2$.next();
@@ -253,18 +254,18 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
       .pipe(
         map(([pkProject, target]) => {
           const annotation: InfResourceWithRelations = {
-            fk_class: DfhConfig.CLASS_PK_ANNOTATION,
+            fk_class: C_933_ANNOTATION_IN_TEXT_ID,
             outgoing_statements: [
               {
-                fk_property: DfhConfig.PROPERTY_PK_ANNOTATION_IS_PART_OF,
+                fk_property: P_1872_IS_ANNOTATED_IN_ID,
                 fk_object_info: this.source.fkInfo // Text
               },
               {
-                fk_property: DfhConfig.PROPERTY_PK_ANNOTATION_HAS_SPOT,
+                fk_property: P_1874_AT_POSITION_ID,
                 object_appellation: this.selectedChunk
               },
               {
-                fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
+                fk_property: P_1875_ANNOTATED_ENTITY_ID,
                 fk_object_info: target
               }
             ]

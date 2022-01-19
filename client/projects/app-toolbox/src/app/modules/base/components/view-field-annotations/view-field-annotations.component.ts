@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { C_456_CHUNK_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
@@ -72,7 +72,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
             //  subentity field has spot
             this.i.pipeFieldPage({
               isOutgoing: true,
-              property: { fkProperty: DfhConfig.PROPERTY_PK_ANNOTATION_HAS_SPOT },
+              property: { fkProperty: P_1874_AT_POSITION_ID },
               limit: 1,
               offset: 0,
               scope: this.scope,
@@ -81,7 +81,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
             //  subentity field refers to
             this.i.pipeFieldPage({
               isOutgoing: true,
-              property: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
+              property: { fkProperty: P_1875_ANNOTATED_ENTITY_ID },
               limit: 1,
               offset: 0,
               scope: this.scope,
@@ -122,7 +122,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
   private createGvFieldPageHasAnnotation(): GvFieldPage {
     return {
       isOutgoing: false,
-      property: { fkProperty: DfhConfig.PROPERTY_PK_ANNOTATION_IS_PART_OF },
+      property: { fkProperty: P_1872_IS_ANNOTATED_IN_ID },
       limit: 100000,
       offset: 0,
       scope: this.scope,
@@ -149,19 +149,19 @@ export class ViewFieldAnnotationsComponent implements OnInit {
           return {
             pkProject,
             targets: {
-              [DfhConfig.CLASS_PK_ANNOTATION]: {
+              [C_933_ANNOTATION_IN_TEXT_ID]: {
 
                 nestedResource: [
                   {
                     page: {
                       isOutgoing: true,
-                      property: { fkProperty: DfhConfig.PROPERTY_PK_ANNOTATION_HAS_SPOT },
+                      property: { fkProperty: P_1874_AT_POSITION_ID },
                       limit: 1,
                       offset: 0,
                       isCircular: false
                     },
                     targets: {
-                      [DfhConfig.CLASS_PK_CHUNK]: {
+                      [C_456_CHUNK_ID]: {
                         appellation: 'true'
                       }
                     }
@@ -169,7 +169,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
                   {
                     page: {
                       isOutgoing: true,
-                      property: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
+                      property: { fkProperty: P_1875_ANNOTATED_ENTITY_ID },
                       limit: 1,
                       offset: 0,
                       isCircular: false
