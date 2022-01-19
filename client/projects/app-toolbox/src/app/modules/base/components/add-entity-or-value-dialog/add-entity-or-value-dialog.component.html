@@ -50,7 +50,7 @@
           [confirmBtnTooltipInProject]="data.selectMode ? 'Select entity' : 'Open in new tab'"
           [confirmBtnTooltiptNotInProject]="'add to your project and ' + (data.selectMode ? 'select entity' : ' open in new tab')"
           (onMore)="onMoreClick($event)" (onBack)="onBackClick()"
-          (onConfirm)="data.selectMode ? selectEntity() : onConfirmClick($event)">
+          (onConfirm)="data.selectMode ? selectEntity($event) : onConfirmClick($event)">
         </gv-search-existing-entity>
       </ng-container>
 
@@ -101,7 +101,7 @@
         </button>
         <!-- If we want a select mode (factoid mapping) -->
         <button *ngIf="data.selectMode" mat-flat-button type="button" color="primary" class="ml-2 mr-2"
-          (click)="selectEntity()">
+          (click)="selectEntity(undefined)">
           Select
         </button>
         <!-- Cancel button -->

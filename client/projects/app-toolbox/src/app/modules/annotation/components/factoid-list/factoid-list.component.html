@@ -12,9 +12,10 @@
 
     <!-- refresh button -->
     <mat-grid-tile [colspan]="1" [rowspan]="1">
-      <button mat-icon-button aria-label="Refresh factoids" (click)="askForFactoids()" color="primary">
+      <button *ngIf="!loading" mat-icon-button aria-label="Refresh factoids" (click)="askForFactoids()" color="primary">
         <mat-icon style="color: inherit">refresh</mat-icon>
       </button>
+      <mat-spinner *ngIf="loading" [diameter]="20"></mat-spinner>
     </mat-grid-tile>
 
   </mat-grid-list>

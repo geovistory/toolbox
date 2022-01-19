@@ -15,8 +15,7 @@ export class FactoidMappingBodyComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   fpmCreate() {
     this.fpms.push({})

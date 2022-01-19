@@ -54,7 +54,8 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
   }
 
   getLangString(langString: InfLangString): string {
-    return langString.string + ' [' + (this.pkLanguage ? this.pkLanguage.toUpperCase() : '??') + ']';
+    const str = langString.string ?? langString.quill_doc.ops.map(e => e.insert).join('')
+    return str + ' [' + (this.pkLanguage ? this.pkLanguage.toUpperCase() : '??') + ']';
   }
 
   stringifyJulianDate(timePrim: InfTimePrimitive): string {

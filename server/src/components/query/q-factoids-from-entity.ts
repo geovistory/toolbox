@@ -181,7 +181,41 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             `;
 
         this.getBuiltQuery()
-        return this.execute<Array<{length: number}>>();
+        return this.execute<Array<{length: string}>>();
+    }
+
+    async getDefaultFactoidNumber(pkEntity: string) {
+        this.params = [];
+        this.sql = `
+        select
+            count(DISTINCT (fpm.fk_factoid_mapping, c.fk_row)) as length
+        from data.factoid_property_mapping fpm
+        left join data.factoid_mapping fm on fm.pk_entity = fpm.fk_factoid_mapping
+        left join data.factoid_property_mapping fpm2 on fpm2.fk_factoid_mapping = fm.pk_entity
+        left join tables.cell c on c.fk_column = fpm2.fk_column
+        left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
+        left join projects.info_proj_rel ipr on s.pk_entity = ipr.fk_entity and ipr.is_in_project = true
+        inner join (
+            select * from (
+                select
+                    max(c.fk_row) as fk_row,
+                    c.pk_cell,
+                    bool_or(ipr.is_in_project) as stmt_exists
+                from data.factoid_property_mapping fpm
+                left join tables.cell c on c.fk_column = fpm.fk_column
+                left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
+                left join projects.info_proj_rel ipr on ipr.fk_entity = s.pk_entity
+                where
+                    fpm.fk_default = ${this.addParam(pkEntity)}
+                group by c.pk_cell) as t0
+            where t0.stmt_exists = false
+        ) ij on ij.fk_row = c.fk_row
+        where
+            fpm.fk_default = ${this.addParam(pkEntity)}
+        `;
+
+        this.getBuiltQuery()
+        return this.execute<Array<{length: string}>>();
     }
 
 

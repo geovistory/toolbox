@@ -8,7 +8,7 @@
                 <mat-option *ngFor="let f of (section.fields$|async)" [value]="f"
                     [disabled]="isPropertyDisabled(f.property.fkProperty)">
                     <gv-onto-property-info [pkProperty]="f.property.fkProperty"></gv-onto-property-info>
-                    <span class="mat-body-2 ml-3">{{f.label}}</span>
+                    <span class="mat-body-1 ml-3">{{f.label}}</span>
                 </mat-option>
             </div>
         </div>
@@ -18,6 +18,6 @@
 <ng-container *ngIf="!!selected">
     <div style="width:95%">
         <gv-onto-property-info [pkProperty]="selected.property.fkProperty"></gv-onto-property-info>
-        <span class="mat-body-2 ml-3">{{selected.label}}</span>
+        <span class="mat-body-1 ml-3">{{selected.label}}</span>
     </div>
 </ng-container>

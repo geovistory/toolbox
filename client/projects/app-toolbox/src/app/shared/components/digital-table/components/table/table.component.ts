@@ -108,6 +108,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   table: Array<Array<Cell>>;
   curSort: TableSort;
   filters: { [key: number]: TableColFilter };
+  rowCreationLoading = false;
 
   // mapping options
   valuesObjectTypes: Array<{ pkClass: number, label: string }> = [];
@@ -279,6 +280,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   createRow(cell: Cell, place: 'above' | 'below') {
+    this.rowCreationLoading = false
     const position = place == 'above' ? parseInt(cell.text, 10) : parseInt(cell.text, 10) + 1;
     this.createRowDemanded.emit({ position })
   }
@@ -310,6 +312,10 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     return this.table.length + this.headers.filter(h => !!h.mapping).length
   }
 
+  validateCreateNewRow(newRow) {
+    this.rowCreationLoading = true
+    this.validateNewRowDemanded.emit(newRow)
+  }
 
 }
 

@@ -10,3 +10,11 @@
         margin:0 !important;
     }
 }
+
+::ng-deep .mat-select-panel mat-option.mat-option {
+    height: unset !important;
+}
+
+::ng-deep .mat-option-text.mat-option-text {
+    white-space: normal !important;
+}

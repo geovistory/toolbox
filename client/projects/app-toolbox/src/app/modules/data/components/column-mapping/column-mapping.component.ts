@@ -3,7 +3,7 @@ import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 
 interface MappedColumn {
@@ -32,6 +32,8 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
 
   icon$: Observable<'TeEn' | 'PeIt' | 'VOT'>;
   mappedCols$: Observable<MappedColumn[]>
+  noMappings$ = new BehaviorSubject(true);
+  targetClassLabels$: Observable<Array<string>>;
 
   selected: MappedColumn;
 
@@ -78,6 +80,8 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
       ))
     )
 
+    this.mappedCols$.pipe(takeUntil(this.destroy$)).subscribe(x => this.noMappings$.next(false))
+
     if (this.pkColumn) {
       this.mappedCols$.pipe(takeUntil(this.destroy$)).subscribe(cols => {
         cols.forEach(col => {
@@ -88,6 +92,10 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
         })
       })
     }
+
+    this.targetClassLabels$ = this.pkTargetClasses$.pipe(
+      switchMap(cs => combineLatest(cs.map(c => this.c.pipeClassLabel(c))))
+    )
   }
 
   getIcon$(pkClass: number): Observable<'PeIt' | 'VOT' | 'TeEn'> {

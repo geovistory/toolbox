@@ -164,12 +164,14 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
     })
   }
 
-  selectEntity() {
-    this.dialogRef.close({
+  selectEntity(d: { pkEntity: number, isInProject: boolean }) {
+    this.selectedPkEntity$.next(d.pkEntity)
+    if (d.isInProject || !d) this.dialogRef.close({
       action: 'selected',
       pkEntity: this.selectedPkEntity$.value,
       pkClass: this.pkClass
     })
+    else this.addEntityToProject()
   }
 
   closeDialog() {

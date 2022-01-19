@@ -1,8 +1,24 @@
-<mat-form-field *ngIf="!selected" appearance="outline" class="loc-class-dropdown">
-    <mat-label>Choose a class</mat-label>
-    <mat-select (selectionChange)="select($event.value)">
-        <mat-option *ngFor="let aClass of (classes$|async)" [value]="aClass">{{aClass.label}}</mat-option>
-    </mat-select>
+<mat-menu #classTypeMenu="matMenu">
+    <div class="loc-filter">
+        <div class="loc-tools" (click)="$event.stopPropagation();">
+            <div class="loc-padding-left"></div>
+            <input #filterinput type="text" class="loc-filter-input mat-text-secondary" [placeholder]="'Filter'"
+                autofocus="true" autocomplete="off" (keyup)="onFilter($event)" [value]="filter$|async">
+        </div>
+        <mat-divider class="w-100"></mat-divider>
+    </div>
+
+    <div *ngFor="let aClass of (classes$|async)" (click)="this.select(aClass)">
+        <div class="loc-container gv-row gv-pointer">
+            <div class="loc-padding-left"></div>
+            <div class="loc-label">{{aClass.label}}</div>
+        </div>
+    </div>
+</mat-menu>
+
+<mat-form-field class="loc-class-dropdown" appearance="outline" [matMenuTriggerFor]="classTypeMenu" style="width:95%"
+    *ngIf="!selected" (menuOpened)="this.focusFilterInput()">
+    <input matInput readonly placeholder="Choose a class">
 </mat-form-field>
 
 

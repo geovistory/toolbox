@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatOptionModule, MatRippleModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -70,7 +71,8 @@ const modules = [
   MatSnackBarModule,
   ScrollingModule,
   MatButtonToggleModule,
-  MatBadgeModule
+  MatBadgeModule,
+  MatChipsModule,
 ]
 
 @NgModule({

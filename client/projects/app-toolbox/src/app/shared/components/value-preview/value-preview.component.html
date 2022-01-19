@@ -11,7 +11,7 @@
 </div>
 
 <!-- LANG STRING -->
-<div *ngIf="vot?.langString" class="display-holder gv-center">
+<div *ngIf="vot?.langString || value?.langString" class="display-holder gv-center">
     {{getLangString(value.langString)}}
 </div>
 

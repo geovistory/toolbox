@@ -110,7 +110,8 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
    * gets called on change of the search string.
    */
   searchStringChange(newStr: string) {
-    this.searchString$.next(newStr)
+    if (newStr != "") this.searchString$.next(newStr)
+    else this.searchString$.next(this.data.defaultSearch)
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions

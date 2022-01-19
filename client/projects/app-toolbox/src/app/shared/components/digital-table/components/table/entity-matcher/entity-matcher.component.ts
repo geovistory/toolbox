@@ -77,7 +77,7 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
             hiddenProperty: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
             disableIfHasStatement: undefined,
             pkClass: this.pkClass,
-            defaultSearch: this.cellContent
+            defaultSearch: this.cleanCellTextForSearch(this.cellContent)
           }
         })
         .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
@@ -119,6 +119,10 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
       fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
       fk_object_info: pkEntity
     }])
+  }
+
+  private cleanCellTextForSearch(str: string) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(' ').map(s => s.slice(0, 4)).join(' ')
   }
 
 }

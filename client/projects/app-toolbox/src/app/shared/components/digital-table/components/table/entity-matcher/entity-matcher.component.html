@@ -20,11 +20,11 @@
     </button>
     <button mat-menu-item *ngIf="!statement" (click)="changeMatching('create')">
       <mat-icon>add</mat-icon>
-      Map an entity
+      Match an entity
     </button>
     <button mat-menu-item *ngIf="statement" (click)="changeMatching('edit')">
       <mat-icon>edit</mat-icon>
-      Edit entity
+      Edit match
     </button>
     <mat-divider></mat-divider>
     <div class="dropdown-header" *ngIf="statement">Danger Zone</div>

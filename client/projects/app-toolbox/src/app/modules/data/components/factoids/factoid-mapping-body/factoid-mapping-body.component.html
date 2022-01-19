@@ -2,7 +2,7 @@
     (fpmChanged)="fpmChange(i, $event)"></gv-factoid-property-mapping>
 
 <div class="gv-row-end loc-pt">
-    <button mat-button color=primary (click)="fpmCreate()">
+    <button mat-button color=primary (click)="fpmCreate()" [disabled]="fm.pkClass == undefined">
         Add property mapping
         <mat-icon>add</mat-icon>
     </button>

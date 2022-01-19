@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 
 interface LocalClass { pkClass: number, label: string, icon: string }
@@ -22,6 +22,10 @@ export class ClassDropdownComponent implements OnInit, OnDestroy {
 
   classes$: Observable<LocalClass[]>
   selected: LocalClass;
+  filter$ = new BehaviorSubject('')
+
+  @ViewChild('filterinput', { static: false })
+  filterInput: ElementRef;
 
   constructor(
     public c: ConfigurationPipesService,
@@ -33,7 +37,7 @@ export class ClassDropdownComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.classes$ = this.c.pipeClassesEnabledByProjectProfiles().pipe(
+    const allClasses$ = this.c.pipeClassesEnabledByProjectProfiles().pipe(
       switchMap(klasses => combineLatestOrEmpty(klasses.map(klass => this.c.pipeClassLabel(klass.pk_class).pipe(
         map(label => ({
           label,
@@ -42,6 +46,10 @@ export class ClassDropdownComponent implements OnInit, OnDestroy {
         }))
       )))
       )
+    )
+
+    this.classes$ = combineLatest([allClasses$, this.filter$]).pipe(
+      map(([classes, theFilter]) => classes.filter(cl => cl.label.toLowerCase().indexOf(theFilter.toLowerCase()) != -1).sort())
     )
 
     if (this.pkClass) {
@@ -54,4 +62,13 @@ export class ClassDropdownComponent implements OnInit, OnDestroy {
     this.onChange.emit(c.pkClass);
   }
 
+  onFilter(e: KeyboardEvent) {
+    this.filter$.next((<HTMLInputElement>e.target).value)
+  }
+
+  focusFilterInput() {
+    setTimeout(() => {
+      this.filterInput.nativeElement.focus();
+    }, 0);
+  }
 }

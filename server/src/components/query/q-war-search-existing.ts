@@ -82,10 +82,30 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       ${whereEntityType}
       ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
   `
+    const outOfProj = () => `
+    -- Out of project versions (if we only want out of project version)
+      select *
+      from
+        tw0 t0,
+        war.entity_preview t1
+      where t1.pk_entity in (
+
+      select pk_entity
+      from war.entity_preview t1
+      where t1.fk_project is null
+      except
+      select pk_entity
+      from war.entity_preview t2
+      where t2.fk_project = ${this.addParam(pkProject)}
+      )
+      and fk_project is null
+      ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
+    `
 
     const froms = []
     if (scope === 'everywhere') froms.push(repo(), proj())
     else if (scope === 'in project') froms.push(proj())
+    else if (scope === 'out of project') froms.push(outOfProj())
 
     this.sql = `
       WITH
@@ -152,7 +172,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
           FROM
             tw0 t0,
             tw1 t1
-          ORDER BY ts_rank(ts_vector, t0.q) DESC, entity_label asc
+          ORDER BY fk_project, ts_rank(ts_vector, t0.q) DESC, entity_label asc
           LIMIT ${this.addParam(limit)}
           OFFSET ${this.addParam(offset)}
         ),

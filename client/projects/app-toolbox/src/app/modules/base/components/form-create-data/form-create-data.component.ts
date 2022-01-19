@@ -994,6 +994,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     // Language String
     else if (formCtrlType.langString) {
       return of([this.langStringCtrl(true, initVal?.langString, (val: InfLangString): InfData => {
+        if ((val as any).language) delete (val as any).language
         return { langString: { ...val, fk_class: targetClass } }
       })])
     }
