@@ -202,7 +202,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
      *
      * @param date
      */
-     async manageUpdatesSince(pool1: PoolClient, pool2: PoolClient, date: Date = new Date(0)) {
+    async manageUpdatesSince(pool1: PoolClient, pool2: PoolClient, date: Date = new Date(0)) {
 
         const t2 = Logger.start(this.constructor.name, `Execute update query  ...`, 2);
 

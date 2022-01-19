@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {existsSync, mkdirSync, writeFileSync} from 'fs';
 import {PoolClient} from 'pg';
 import {ReplaySubject} from 'rxjs';
+import sqlFormatter from 'sql-formatter';
 import {brkOnErr, pgLogOnErr} from '../../../utils/helpers';
-import {Warehouse, LeftDSDates, CHANGES_CONSIDERED_UNTIL_SUFFIX, LAST_UPDATE_DONE_SUFFIX} from '../../Warehouse';
+import {CHANGES_CONSIDERED_UNTIL_SUFFIX, LAST_UPDATE_DONE_SUFFIX, LeftDSDates, Warehouse} from '../../Warehouse';
 import {KeyDefinition} from '../interfaces/KeyDefinition';
 import {Providers} from '../interfaces/Providers';
 import {AbstractAggregator} from './AbstractAggregator';
@@ -11,8 +13,6 @@ import {DataService} from './DataService';
 import {Dependencies} from './Dependencies';
 import {DependencyIndex} from './DependencyIndex';
 import {Logger} from './Logger';
-import sqlFormatter from 'sql-formatter';
-import {writeFileSync, mkdirSync, existsSync} from 'fs';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Constructor<T> = new (...args: any[]) => T;
@@ -94,6 +94,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
 
     tempTable: string;
     batchSize = 100000;
+    cleanupDependencyBatchSize = 10000;
 
     ready$ = new ReplaySubject<boolean>()
 
@@ -181,7 +182,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
             hasError = true
             await client.query('ROLLBACK')
             await client2.query('ROLLBACK')
-            Logger.msg(this.constructor.name, `ERROR in aggregation`)
+            Logger.msg(this.constructor.name, `ERROR in aggregation: ${JSON.stringify(e)}`,)
         } finally {
 
             client.release()
@@ -318,8 +319,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                     UPDATE ${this.index.schemaTable} t1
                     SET tmsp_deleted = clock_timestamp()
                     FROM tw1 t2
-                    WHERE ${
-            this.index.keyDefs
+                    WHERE ${this.index.keyDefs
                 .map(k => `t1."${k.name}"=t2."${k.name}"`)
                 .join(' AND ')
             }
@@ -365,6 +365,28 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
      */
     private async cleanupOldDependencies(client: PoolClient, currentTimestamp: string) {
         const t0 = Logger.start(this.constructor.name, `cleanupOldDependencies`, 0)
+        const res = await brkOnErr(client.query<{count: number}>(`SELECT count(*):: integer From ${this.tempTable} `))
+        const size = res.rows[0].count;
+        const limit = this.cleanupDependencyBatchSize;
+        // useful for debugging
+        // if (this.constructor.name === 'PEntityTypeService') {
+        //     console.log(`-- > ${this.cycle} handle update of ${size} items`)
+        // }
+        for (let offset = 0; offset < size; offset += limit) {
+            const logString = `cleanupOldDependencies batch ${offset + limit > size ? size % limit : limit} (${(offset / limit) + 1} /${Math.floor(size / limit) + 1}) in cycle ${this.cycle} `
+            const t2 = Logger.start(this.constructor.name, `${logString} `, 0)
+            await this.cleanUpDependenciesBatch(client, limit, offset, currentTimestamp);
+            Logger.itTook(this.constructor.name, t2, `to ${logString} `, 0)
+
+        }
+
+        // if (new Date().getTime() - t0 > 1000) {
+        //     await this.printQuery(client, 'cleanup_old_deps', sql, [])
+        // }
+        Logger.itTook(this.constructor.name, t0, `to cleanupOldDependencies `, 0)
+    }
+
+    async cleanUpDependenciesBatch(client: PoolClient, limit: number, offset: number, currentTimestamp: string) {
 
         // const promises: Promise<any>[] = []
         const parts = this.isReceiverOf.map((depDS, i) => `
@@ -374,6 +396,7 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
                 WHERE   (${depDS.receiverDS.index.keyDefs.map(k => `"r_${k.name}"`).join(',')}) IN (
                             SELECT  ${depDS.receiverDS.index.keyDefs.map(k => `"${k.name}"`).join(',')}
                             FROM    ${this.tempTable}
+                            LIMIT $1 OFFSET $2
                         )
                 AND     t1.tmsp_last_aggregation < '${currentTimestamp}'
                 RETURNING *
@@ -393,14 +416,8 @@ export abstract class AggregatedDataService<KeyModel, ValueModel> extends DataSe
         `
 
 
-        await client.query(sql)
-
-        // if (new Date().getTime() - t0 > 1000) {
-        //     await this.printQuery(client, 'cleanup_old_deps', sql, [])
-        // }
-        Logger.itTook(this.constructor.name, t0, `to cleanupOldDependencies `, 0)
+        await client.query(sql, [limit, offset])
     }
-
 
 
     async aggregateAll(client: PoolClient, client2: PoolClient, currentTimestamp: string) {
@@ -515,8 +532,7 @@ SELECT count(*):: int changes FROM tw0;
             const creatorSqlParts = this.getCreatorCustomSql(createDS.customSql)
             const {after, until} = this.getAfterAndUntil(createDS.dataService.constructor.name, updatesConsidered, updatesDone);
 
-            return `${
-                creatorSqlParts.map(part => `
+            return `${creatorSqlParts.map(part => `
                     SELECT ${part.select ? part.select : this.index.keyCols}
                     FROM ${creatorIdx.schemaTable}
                     WHERE tmsp_last_modification > '${after}'
