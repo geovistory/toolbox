@@ -1,12 +1,12 @@
-import { model, ModelDefinition, property } from '@loopback/repository';
-import { without } from 'ramda';
-import { Postgres1DataSource } from '../../datasources';
-import { DatColumn, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel } from '../../models';
-import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
+import {model, ModelDefinition, property} from '@loopback/repository';
+import {without} from 'ramda';
+import {Postgres1DataSource} from '../../datasources';
+import {DatColumn, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel} from '../../models';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {SysConfigValue} from '../../models/sys-config/sys-config-value.model';
-import { logSql } from '../../utils/helpers';
-import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
-import { registerType } from '../spec-enhancer/model.spec.enhancer';
+import {logSql} from '../../utils/helpers';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
+import {registerType} from '../spec-enhancer/model.spec.enhancer';
 
 // Table column filter interface
 export enum SortDirection {
@@ -32,7 +32,7 @@ export class TColFilterNum {
       enum: Object.values(TColFilterOpNumeric),
     }
   }) operator: TColFilterOpNumeric;
-  @property({ required: true }) value: number;
+  @property({required: true}) value: number;
 }
 @model()
 export class TColFilterTxt {
@@ -43,7 +43,7 @@ export class TColFilterTxt {
       enum: Object.values(TColFilterOpText),
     }
   }) operator: TColFilterOpText;
-  @property({ required: true }) value: string;
+  @property({required: true}) value: string;
 }
 @model()
 export class TColFilter {
@@ -64,10 +64,10 @@ export class TColFilters {
 }
 @model()
 export class GetTablePageOptions {
-  @property({ required: true }) limit: number;
-  @property({ required: true }) offset: number;
+  @property({required: true}) limit: number;
+  @property({required: true}) offset: number;
   @property.array(String) columns: string[];
-  @property({ required: true }) sortBy: string;
+  @property({required: true}) sortBy: string;
   @property({
     type: String,
     required: true,
@@ -76,6 +76,7 @@ export class GetTablePageOptions {
     }
   }) sortDirection: SortDirection;
   @property() filters: TColFilters;
+  @property() filterOnRow?: number;
 }
 
 
@@ -108,8 +109,8 @@ export class TablePageResponse {
   @property() schemaObject: GvPositiveSchemaObject
 }
 
-interface ColBatchWith { name: string, columns: string[] }
-interface TwNameColName { twName: string, colName: string, pkColumn?: number, vot?: 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive' | 'language' }
+interface ColBatchWith {name: string, columns: string[]}
+interface TwNameColName {twName: string, colName: string, pkColumn?: number, vot?: 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive' | 'language'}
 const PK_CELL_SUFFIX = '_pk_cell'
 const TW_JOIN_STMT = 'tw_stmt_'
 const TW_JOIN_VOT = 'tw_vot_'
@@ -139,7 +140,8 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     pkEntity: number,
     options: GetTablePageOptions,
     masterColumns: string[],
-    colMeta: DatColumn[]
+    colMeta: DatColumn[],
+    filterOnRow?: number
   ): Promise<TablePageResponse> {
 
     options.columns.forEach((pkCol, i) => {
@@ -168,6 +170,10 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       t1.fk_digital = ${this.addParam(pkEntity)}
       AND
       t3.fk_project = ${this.addParam(fkProject)}
+      ${filterOnRow ?
+        'AND t1.pk_row = ' + filterOnRow :
+        ''
+      }
 
       ${this.addFilters(options.filters)}
 
@@ -200,6 +206,11 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       AND
         t3.fk_project = ${this.addParam(fkProject)}
         ${this.addFilters(options.filters)}
+
+      ${filterOnRow ?
+        'AND t1.pk_row = ' + filterOnRow :
+        ''
+      }
     ),
     tw4 AS (
       SELECT json_agg(t1) as rows FROM tw2 t1
@@ -253,6 +264,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     `
 
     logSql(this.sql, this.params)
+    console.log(this.sql)
 
     const res = await this.executeAndReturnFirstData<{
       rows: TableRow[],
@@ -290,13 +302,13 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       const twName = colBatch.name;
       for (const colName of colBatch.columns) {
         if (this.colsWithMapping.includes(colName)) {
-          refersToColumns.push({ twName, colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName) });
+          refersToColumns.push({twName, colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName)});
         }
       }
     }
     for (const colName of this.masterColumns) {
       if (this.colsWithMapping.includes(colName)) {
-        refersToColumns.push({ twName: 'tw1', colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName) });
+        refersToColumns.push({twName: 'tw1', colName: colName + PK_CELL_SUFFIX, pkColumn: parseInt(colName)});
       }
     }
 
@@ -604,7 +616,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   }
 
   private addColBatchWith(colBatchWith: string, columns: string[], pkEntity: number): string {
-    this.colBatchWiths.push({ name: colBatchWith, columns })
+    this.colBatchWiths.push({name: colBatchWith, columns})
     const sql = `
     ${colBatchWith} As (
         Select

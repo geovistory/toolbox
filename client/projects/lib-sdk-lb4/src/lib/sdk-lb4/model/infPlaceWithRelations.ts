@@ -14,7 +14,7 @@
 /**
  * (tsType: InfPlaceWithRelations, schemaOptions: { includeRelations: true })
  */
-export interface InfPlaceWithRelations { 
+export interface InfPlaceWithRelations {
     pk_entity?: number;
     long: number;
     lat: number;

@@ -75,3 +75,17 @@
   (moveRowDemanded)="moveRow($event.pkRow, $event.position)" (validateNewRowDemanded)="newRow($event)"
   (cancelNewRowDemanded)="cancelNewRow()">
 </gv-table>
+
+<div class="gv-row-center mt-4" *ngIf="filterOnRow">
+  <mat-card class="mb-4">
+    <mat-card-header>
+      <div mat-card-avatar>
+        <mat-icon color="primary">info</mat-icon>
+      </div>
+      <mat-card-subtitle>Filtered on row {{(table$|async)?.[0]?.[0]?.text}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions align="end">
+      <button mat-button color=primary (click)="removeFilterOnRow()">Show all rows</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

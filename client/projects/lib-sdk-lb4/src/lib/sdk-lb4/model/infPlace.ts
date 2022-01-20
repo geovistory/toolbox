@@ -11,7 +11,7 @@
  */
 
 
-export interface InfPlace { 
+export interface InfPlace {
     long: number;
     lat: number;
     fk_class: number;

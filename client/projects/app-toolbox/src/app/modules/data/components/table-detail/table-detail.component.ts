@@ -143,7 +143,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
         columns: config.columns.map(tc => tc.fkColumn + ''),
         sortBy,
         sortDirection,
-        filters: this.filters$.value
+        filters: this.filters$.value,
+        filterOnRow: this.filterOnRow
       }).pipe(
         tap((res) => { this.s.storeSchemaObjectGv(res.schemaObject, pkProject) })
       )),
@@ -393,4 +394,8 @@ export class TableDetailComponent implements OnInit, OnDestroy, TabLayoutCompone
     if (mode == 'edit') this.tableMode = TableMode.edit;
   }
 
+  removeFilterOnRow() {
+    this.filterOnRow = undefined;
+    this.reload$.next(this.reload$.value + 1) // trick to reload the content
+  }
 }
