@@ -99,6 +99,13 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       where t2.fk_project = ${this.addParam(pkProject)}
       )
       and fk_project is null
+      ${tsSearchString ? `
+      AND (
+        t1.ts_vector @@ t0.q
+        OR
+        t1.pk_entity::text = ${this.addParam(searchString)}
+      )
+      ` : ''}
       ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
     `
 
@@ -231,6 +238,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
             t1.class_label_headline,
             t1.entity_label_headline,
             t1.type_label_headline
+          ORDER BY project desc
         ),
 
         ------------------------------------

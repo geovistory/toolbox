@@ -24,7 +24,7 @@
             <ng-container *ngIf="(targetClassLabels$|async)?.length > 1">
                 one of the following classes, and it will appear here: {{(targetClassLabels$|async).join(', ')}}
             </ng-container>
-            <ng-container *ngIf="(targetClassLabels$|async)?.length <= 2">
+            <ng-container *ngIf="(targetClassLabels$|async)?.length <= 1">
                 the class {{(targetClassLabels$|async)?.[0]}}, and it will appear here.
             </ng-container>
         </mat-option>

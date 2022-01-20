@@ -91,41 +91,50 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         // fetch all the factoids that has the entity as the default value in the factoid property mapping but has no matching in the table
         this.params = [];
         this.sql = `
-        select
-            fm.fk_digital as fkDigital,
-            fm.pk_entity as fkFactoidMapping,
-            fm.fk_class as fkClass,
-            fpm2.fk_property as fkProperty,
-            fpm2.is_outgoing as isOutgoing,
-            coalesce(c.numeric_value::text, c.string_value) as value,
-            c.fk_row as fkRow,
-            case when ipr.is_in_project = true then s.fk_object_info else fpm.fk_default end as pkEntity,
-            c.pk_cell as fkCell,
-            fpm.fk_default as fkDefault,
-            ipr.is_in_project
-        from data.factoid_property_mapping fpm
-        left join data.factoid_mapping fm on fm.pk_entity = fpm.fk_factoid_mapping
-        left join data.factoid_property_mapping fpm2 on fpm2.fk_factoid_mapping = fm.pk_entity
-        left join tables.cell c on c.fk_column = fpm2.fk_column
-        left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
-        left join projects.info_proj_rel ipr on s.pk_entity = ipr.fk_entity and ipr.is_in_project = true
-        inner join (
-            select * from (
-                select
-                    max(c.fk_row) as fk_row,
-                    c.pk_cell,
-                    bool_or(ipr.is_in_project) as stmt_exists
-                from data.factoid_property_mapping fpm
-                left join tables.cell c on c.fk_column = fpm.fk_column
-                left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
-                left join projects.info_proj_rel ipr on ipr.fk_entity = s.pk_entity
-                where
-                    fpm.fk_default = ${this.addParam(pkEntity)}
-                group by c.pk_cell) as t0
-            where t0.stmt_exists = false
-        ) ij on ij.fk_row = c.fk_row
-        where
-            fpm.fk_default = ${this.addParam(pkEntity)}
+            select
+                c1.value as value1,
+                fm.fk_digital as fkDigital
+            ,fm.pk_entity as fkFactoidMapping
+            ,fm.fk_class as fkClass
+            ,fpm2.fk_property as fkProperty
+            ,fpm2.is_outgoing as isOutgoing
+            ,case when c2.pk_cell is not null then coalesce(c2.numeric_value::text, c2.string_value) else '' end as value
+            ,c1.fk_row as fkRow
+            ,fpm2.fk_column as fkColumn
+            ,case when c2.fk_column = c1.fk_column then ${this.addParam(pkEntity)} else ss.fk_object_info end as pkEntity
+            ,c2.pk_cell as fkCell
+            ,fpm2.fk_default as fkDefault
+            from (
+            select
+                c.pk_cell,
+                c.fk_row,
+                c.fk_column
+            ,coalesce(c.numeric_value::text, c.string_value) as value
+            from data.factoid_property_mapping fpm
+            left join tables.cell c on c.fk_column = fpm.fk_column
+            where fpm.fk_default = ${this.addParam(pkEntity)}
+            except
+            select
+                c.pk_cell,
+                c.fk_row,
+                c.fk_column
+            ,coalesce(c.numeric_value::text, c.string_value) as value
+            from data.factoid_property_mapping fpm
+            left join tables.cell c on c.fk_column = fpm.fk_column
+            left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
+            inner join projects.info_proj_rel ipr on s.pk_entity = ipr.fk_entity and ipr.is_in_project = true
+            where fpm.fk_default = ${this.addParam(pkEntity)}
+            ) as c1
+            left join data.factoid_property_mapping fpm on fpm.fk_column = c1.fk_column
+            left join data.factoid_mapping fm on fm.pk_entity = fpm.fk_factoid_mapping
+            left join data.factoid_property_mapping fpm2 on fpm2.fk_factoid_mapping = fm.pk_entity
+            left join tables.cell c2 on c2.fk_column = fpm2.fk_column and c2.fk_row = c1.fk_row
+            left join (
+                select s.fk_object_info, fk_subject_tables_cell
+                from information.statement s
+                inner join projects.info_proj_rel ipr2 on (ipr2.fk_entity = s.pk_entity and ipr2.is_in_project = true)
+                where s.fk_property = 1334
+            ) ss on ss.fk_subject_tables_cell = c2.pk_cell
         `;
 
 

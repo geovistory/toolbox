@@ -93,22 +93,22 @@ export class FactoidListComponent implements OnInit, OnDestroy {
 
   getValueVOT$(bodyStatement: FactoidStatement, isDefault?: boolean): Observable<InfValueObject> {
     if (bodyStatement.vot == ValueObjectTypeName.appellation) {
-      return this.p.inf$.appellation$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.fkProperty).pipe(switchMap(value => of({ appellation: value })))
+      return this.p.inf$.appellation$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ appellation: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.place) {
-      return this.p.inf$.place$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.fkProperty).pipe(switchMap(value => of({ place: value })))
+      return this.p.inf$.place$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ place: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.dimension) {
-      return this.p.inf$.dimension$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.fkProperty).pipe(switchMap(value => of({ dimension: value })))
+      return this.p.inf$.dimension$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ dimension: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.langString) {
-      return this.p.inf$.lang_string$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.fkProperty).pipe(switchMap(value => of({ langString: value })))
+      return this.p.inf$.lang_string$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ langString: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.language) {
-      return this.p.inf$.language$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.fkProperty).pipe(switchMap(value => of({ language: value })))
+      return this.p.inf$.language$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ language: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.timePrimitive) {
-      return this.p.inf$.time_primitive$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.fkProperty).pipe(switchMap(value => of({ timePrimitive: value })))
+      return this.p.inf$.time_primitive$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ timePrimitive: value })))
     }
   }
 }

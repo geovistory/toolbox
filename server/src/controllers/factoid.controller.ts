@@ -238,15 +238,16 @@ export class FactoidController {
         const vot = await this.getVOT(await this.getClassFromProperty(bs.fkProperty, bs.isOutgoing));
         if (vot) {
           bs.vot = vot;
-          if (!schemaObject.inf || !bs.pkEntity) continue;
-          if (vot === ValueObjectTypeName.appellation) schemaObject.inf.appellation = await this.infAppellationRepository.find({where: {pk_entity: bs.pkEntity}})
-          if (vot === ValueObjectTypeName.langString) schemaObject.inf.lang_string = await this.infLangStringRepository.find({where: {pk_entity: bs.pkEntity}})
-          if (vot === ValueObjectTypeName.language) schemaObject.inf.language = await this.infLanguageRepo.find({where: {pk_entity: bs.pkEntity}})
-          if (vot === ValueObjectTypeName.place) schemaObject.inf.place = await this.infPlaceRepository.find({where: {pk_entity: bs.pkEntity}})
-          if (vot === ValueObjectTypeName.dimension) schemaObject.inf.dimension = await this.infDimensionRepository.find({where: {pk_entity: bs.pkEntity}})
+          const pk = isNaN(bs.pkEntity) ? bs.fkDefault : bs.pkEntity;
+          if (!schemaObject.inf || !pk) continue;
+          if (vot === ValueObjectTypeName.appellation) schemaObject.inf.appellation?.push(...await this.infAppellationRepository.find({where: {pk_entity: pk}}))
+          if (vot === ValueObjectTypeName.langString) schemaObject.inf.lang_string?.push(...await this.infLangStringRepository.find({where: {pk_entity: pk}}))
+          if (vot === ValueObjectTypeName.language) schemaObject.inf.language?.push(...await this.infLanguageRepo.find({where: {pk_entity: pk}}))
+          if (vot === ValueObjectTypeName.place) schemaObject.inf.place?.push(...await this.infPlaceRepository.find({where: {pk_entity: pk}}))
+          if (vot === ValueObjectTypeName.dimension) schemaObject.inf.dimension?.push(...await this.infDimensionRepository.find({where: {pk_entity: pk}}))
           if (vot === ValueObjectTypeName.timePrimitive) {
-            schemaObject.inf.time_primitive = await this.infTimePrimitiveRepository.find({where: {pk_entity: bs.pkEntity}})
-            bs.pkStatement = (await this.infStatementRepository.find({where: {fk_object_info: bs.pkEntity, fk_property: 1334}}))[0].pk_entity;
+            schemaObject.inf.time_primitive?.push(...await this.infTimePrimitiveRepository.find({where: {pk_entity: pk}}))
+            bs.pkStatement = (await this.infStatementRepository.find({where: {fk_object_info: pk, fk_property: 1334}}))[0].pk_entity;
             schemaObject.pro = {info_proj_rel: (await this.proInfProjRelRepository.find({where: {fk_entity: bs.pkStatement, fk_project: parseInt(pkProject)}}))}
           }
         }
