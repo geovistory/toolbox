@@ -91,50 +91,58 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         // fetch all the factoids that has the entity as the default value in the factoid property mapping but has no matching in the table
         this.params = [];
         this.sql = `
-            select
-                c1.value as value1,
-                fm.fk_digital as fkDigital
-            ,fm.pk_entity as fkFactoidMapping
-            ,fm.fk_class as fkClass
-            ,fpm2.fk_property as fkProperty
-            ,fpm2.is_outgoing as isOutgoing
-            ,case when c2.pk_cell is not null then coalesce(c2.numeric_value::text, c2.string_value) else '' end as value
-            ,c1.fk_row as fkRow
-            ,fpm2.fk_column as fkColumn
-            ,case when c2.fk_column = c1.fk_column then ${this.addParam(pkEntity)} else ss.fk_object_info end as pkEntity
-            ,c2.pk_cell as fkCell
-            ,fpm2.fk_default as fkDefault
-            from (
-            select
-                c.pk_cell,
-                c.fk_row,
-                c.fk_column
-            ,coalesce(c.numeric_value::text, c.string_value) as value
-            from data.factoid_property_mapping fpm
-            left join tables.cell c on c.fk_column = fpm.fk_column
-            where fpm.fk_default = ${this.addParam(pkEntity)}
-            except
-            select
-                c.pk_cell,
-                c.fk_row,
-                c.fk_column
-            ,coalesce(c.numeric_value::text, c.string_value) as value
-            from data.factoid_property_mapping fpm
-            left join tables.cell c on c.fk_column = fpm.fk_column
-            left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
-            inner join projects.info_proj_rel ipr on s.pk_entity = ipr.fk_entity and ipr.is_in_project = true
-            where fpm.fk_default = ${this.addParam(pkEntity)}
-            ) as c1
-            left join data.factoid_property_mapping fpm on fpm.fk_column = c1.fk_column
-            left join data.factoid_mapping fm on fm.pk_entity = fpm.fk_factoid_mapping
-            left join data.factoid_property_mapping fpm2 on fpm2.fk_factoid_mapping = fm.pk_entity
-            left join tables.cell c2 on c2.fk_column = fpm2.fk_column and c2.fk_row = c1.fk_row
-            left join (
-                select s.fk_object_info, fk_subject_tables_cell
-                from information.statement s
-                inner join projects.info_proj_rel ipr2 on (ipr2.fk_entity = s.pk_entity and ipr2.is_in_project = true)
-                where s.fk_property = 1334
-            ) ss on ss.fk_subject_tables_cell = c2.pk_cell
+            select distinct
+                c1.value as value1
+                ,fm.fk_digital as fkDigital
+                ,fm.pk_entity as fkFactoidMapping
+                ,fm.fk_class as fkClass
+                ,fpm2.fk_property as fkProperty
+                ,fpm2.is_outgoing as isOutgoing
+                ,case when c2.pk_cell is not null then coalesce(c2.numeric_value::text, c2.string_value) else '' end as value
+                ,c1.fk_row as fkRow
+                ,fpm2.fk_column as fkColumn
+                ,ss.fk_object_info as pkEntity
+                ,c2.pk_cell as fkCell
+                ,case when ss.fk_object_info is not null then null else fpm2.fk_default end as fkDefault
+            from
+                data.factoid_property_mapping fpm
+                left join (
+                    -- all the cells that are in the columns of fpm that have the entity as default:
+                    select
+                        c.pk_cell,
+                        c.fk_row,
+                        c.fk_column,
+                        coalesce(c.numeric_value::text, c.string_value) as value
+                    from data.factoid_property_mapping fpm
+                    left join tables.cell c on c.fk_column = fpm.fk_column
+                    where fpm.fk_default = ${this.addParam(pkEntity)}
+                    -- except the ones that have a matching in the project:
+                    except
+                    select
+                        c.pk_cell,
+                        c.fk_row,
+                        c.fk_column,
+                        coalesce(c.numeric_value::text, c.string_value) as value
+                    from data.factoid_property_mapping fpm
+                    left join tables.cell c on c.fk_column = fpm.fk_column
+                    left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
+                    inner join projects.info_proj_rel ipr on s.pk_entity = ipr.fk_entity and ipr.is_in_project = true
+                    where fpm.fk_default = ${this.addParam(pkEntity)}
+                    ) as c1 on c1.fk_column = fpm.fk_column
+                -- we want the fm of these fpm:
+                left join data.factoid_mapping fm on fm.pk_entity = fpm.fk_factoid_mapping
+                -- we look for the others fpm of these fm:
+                left join data.factoid_property_mapping fpm2 on fpm2.fk_factoid_mapping = fm.pk_entity
+                -- and the cells they point (via column and row):
+                left join tables.cell c2 on c2.fk_column = fpm2.fk_column and c2.fk_row = c1.fk_row
+                -- if the cells has a mathcing, we need it:
+                left join (
+                    select s.fk_object_info, fk_subject_tables_cell
+                    from information.statement s
+                    inner join projects.info_proj_rel ipr2 on (ipr2.fk_entity = s.pk_entity and ipr2.is_in_project = true)
+                    where s.fk_property = 1334
+                ) ss on ss.fk_subject_tables_cell = c2.pk_cell
+            where fpm.fk_default = ${this.addParam(pkEntity)} and c1.pk_cell is not null
         `;
 
 
@@ -155,7 +163,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                     }
 
                     const statement = new FactoidStatement(line.fkproperty, line.isoutgoing, line.value, parseInt(line.pkentity), parseInt(line.fkcell), parseInt(line.fkdefault));
-                    if (parseInt(line.pkentity) === parseInt(pkEntity)) target.headerStatements.push(statement);
+                    if (parseInt(line.pkentity) === parseInt(pkEntity) || (line.pkentity == null && parseInt(line.fkdefault) === parseInt(pkEntity))) target.headerStatements.push(statement);
                     else target.bodyStatements.push(statement);
 
 

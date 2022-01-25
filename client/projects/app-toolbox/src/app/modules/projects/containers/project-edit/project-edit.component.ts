@@ -118,6 +118,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
 
     // DEV: For development of a component in a specific Tab uncomment and modify the following
     // this.p.addTableTab(100514)
+    // this.p.addEntityTab(100070, 21)
   }
 
   trackByFn(index, item) {

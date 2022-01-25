@@ -36,7 +36,7 @@
       <div class="content bold">Cell content</div>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="3" [rowspan]="1">
-      <div class="content bold">Matching</div>
+      <div class="content bold">Matching or default value</div>
     </mat-grid-tile>
     <mat-grid-tile [colspan]="2" [rowspan]="1">
       <div class="content bold">Location</div>
@@ -79,8 +79,13 @@
     <!-- principal entity entity -->
     <mat-grid-tile [colspan]="3" [rowspan]="1">
       <div class="content mat-text-secondary">
-        <gv-entity-preview *ngIf="factoidEntity.headerStatements[0].pkEntity"
-          [pkEntity]="factoidEntity.headerStatements[0].pkEntity" class="left-col"></gv-entity-preview>
+        <i *ngIf="factoidEntity.headerStatements[0]?.pkEntity == null"
+          [matTooltip]="'This is the default matching coming from the factoid mapping configuration of the table'">
+          <gv-entity-preview [pkEntity]="factoidEntity.headerStatements[0]?.fkDefault" class="left-col">
+          </gv-entity-preview>
+        </i>
+        <gv-entity-preview *ngIf="factoidEntity.headerStatements[0]?.pkEntity != null"
+          [pkEntity]="factoidEntity.headerStatements[0]?.pkEntity" class="left-col"></gv-entity-preview>
       </div>
     </mat-grid-tile>
 
