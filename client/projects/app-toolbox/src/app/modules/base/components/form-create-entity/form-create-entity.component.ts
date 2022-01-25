@@ -1292,7 +1292,7 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
         required: this.ctrlRequired(field),
         data: {
           appellationTeEn: {
-            pkClass: getFormTargetClasses(field)?.[0].targetClass,
+            pkClass: targetClass,
             appearance: this.appearance,
             initVal$: of(field.isOutgoing ? initVal.object_resource : initVal.subject_resource)
           }
