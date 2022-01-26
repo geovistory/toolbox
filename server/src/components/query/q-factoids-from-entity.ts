@@ -91,58 +91,99 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         // fetch all the factoids that has the entity as the default value in the factoid property mapping but has no matching in the table
         this.params = [];
         this.sql = `
-            select distinct
-                c1.value as value1
-                ,fm.fk_digital as fkDigital
-                ,fm.pk_entity as fkFactoidMapping
-                ,fm.fk_class as fkClass
-                ,fpm2.fk_property as fkProperty
-                ,fpm2.is_outgoing as isOutgoing
-                ,case when c2.pk_cell is not null then coalesce(c2.numeric_value::text, c2.string_value) else '' end as value
-                ,c1.fk_row as fkRow
-                ,fpm2.fk_column as fkColumn
-                ,ss.fk_object_info as pkEntity
-                ,c2.pk_cell as fkCell
-                ,case when ss.fk_object_info is not null then null else fpm2.fk_default end as fkDefault
-            from
+            with digcol as (
+                select distinct
+                    fm.fk_digital as pkdigital,
+                    fpm.fk_column as pkcolumn
+                from
+                    data.factoid_property_mapping fpm
+                    inner join data.factoid_mapping fm on fpm.fk_factoid_mapping = fm.pk_entity
+                where
+                    fpm.fk_default = ${this.addParam(pkEntity)}
+            )
+            ,cells as (
+                select
+                    digcol.pkdigital,
+                    r.pk_row as pkrow,
+                    c.pk_cell as pkcell,
+                    digcol.pkcolumn,
+                    coalesce(c.numeric_value::text, c.string_value) AS value
+                from
+                    digcol
+                    left join tables.row r on digcol.pkdigital = r.fk_digital
+                    left join tables.cell c on c.fk_row = r.pk_row  and c.fk_column = digcol.pkcolumn
+            )
+            ,tw1 AS (
+                -- all the cells that are in the columns of fpm that have the entity as default:
+                select
+                    c.pkcell,
+                    c.pkrow,
+                    c.pkcolumn,
+                    c.value,
+                    fpm.pk_entity
+                FROM
+                    data.factoid_property_mapping fpm
+                    LEFT JOIN cells c ON c.pkcolumn = fpm.fk_column
+                WHERE
+                    fpm.fk_default = ${this.addParam(pkEntity)}
+            )
+            ,tw2 AS (
+                    SELECT tw1.*
+                    FROM tw1
+                    -- left join the matchings in the project:
+                    LEFT JOIN LATERAL (
+                        SELECT s.pk_entity
+                        FROM information.statement s
+                        INNER JOIN	projects.info_proj_rel ipr
+                            ON s.pk_entity = ipr.fk_entity
+                            AND ipr.is_in_project = TRUE
+                            AND ipr.fk_project = ${this.addParam(pkProject)}
+                        WHERE s.fk_subject_tables_cell = tw1.pkcell
+                        AND s.fk_property = 1334
+                    ) as statements ON true
+
+                    -- exclude the ones that have a matching in the project:
+                    WHERE statements.pk_entity IS NULL
+            )
+
+            SELECT
+                tw2.value as value1
+                    ,fm.fk_digital as fkDigital
+                    ,fm.pk_entity as fkFactoidMapping
+                    ,fm.fk_class as fkClass
+                    ,fpm2.fk_property as fkProperty
+                    ,fpm2.is_outgoing as isOutgoing
+                    ,case when c2.pk_cell is not null then coalesce(c2.numeric_value::text, c2.string_value) else '' end as value
+                    ,tw2.pkrow as fkRow
+                    ,fpm2.fk_column as fkColumn
+                    ,ss.fk_object_info as pkEntity
+                    ,c2.pk_cell as fkCell
+                    ,case when ss.fk_object_info is not null then null else fpm2.fk_default end as fkDefault
+            FROM
                 data.factoid_property_mapping fpm
-                left join (
-                    -- all the cells that are in the columns of fpm that have the entity as default:
-                    select
-                        c.pk_cell,
-                        c.fk_row,
-                        c.fk_column,
-                        coalesce(c.numeric_value::text, c.string_value) as value
-                    from data.factoid_property_mapping fpm
-                    left join tables.cell c on c.fk_column = fpm.fk_column
-                    where fpm.fk_default = ${this.addParam(pkEntity)}
-                    -- except the ones that have a matching in the project:
-                    except
-                    select
-                        c.pk_cell,
-                        c.fk_row,
-                        c.fk_column,
-                        coalesce(c.numeric_value::text, c.string_value) as value
-                    from data.factoid_property_mapping fpm
-                    left join tables.cell c on c.fk_column = fpm.fk_column
-                    left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
-                    inner join projects.info_proj_rel ipr on s.pk_entity = ipr.fk_entity and ipr.is_in_project = true
-                    where fpm.fk_default = ${this.addParam(pkEntity)}
-                    ) as c1 on c1.fk_column = fpm.fk_column
+                LEFT JOIN tw2 ON tw2.pkcolumn = fpm.fk_column
                 -- we want the fm of these fpm:
-                left join data.factoid_mapping fm on fm.pk_entity = fpm.fk_factoid_mapping
+                LEFT JOIN data.factoid_mapping fm ON fm.pk_entity = fpm.fk_factoid_mapping
                 -- we look for the others fpm of these fm:
-                left join data.factoid_property_mapping fpm2 on fpm2.fk_factoid_mapping = fm.pk_entity
+                LEFT JOIN data.factoid_property_mapping fpm2 ON fpm2.fk_factoid_mapping = fm.pk_entity
                 -- and the cells they point (via column and row):
-                left join tables.cell c2 on c2.fk_column = fpm2.fk_column and c2.fk_row = c1.fk_row
-                -- if the cells has a mathcing, we need it:
-                left join (
-                    select s.fk_object_info, fk_subject_tables_cell
-                    from information.statement s
-                    inner join projects.info_proj_rel ipr2 on (ipr2.fk_entity = s.pk_entity and ipr2.is_in_project = true)
-                    where s.fk_property = 1334
-                ) ss on ss.fk_subject_tables_cell = c2.pk_cell
-            where fpm.fk_default = ${this.addParam(pkEntity)} and c1.pk_cell is not null
+                LEFT JOIN tables.cell c2 ON c2.fk_column = fpm2.fk_column
+                    AND c2.fk_row = tw2.pkrow
+                    -- if the cells has a mathcing, we need it:
+                LEFT JOIN (
+                    SELECT
+                        s.fk_object_info,
+                        fk_subject_tables_cell
+                        ,ipr2.is_in_project
+                    FROM
+                        information.statement s
+                        INNER JOIN projects.info_proj_rel ipr2 ON (ipr2.fk_entity = s.pk_entity
+                                AND ipr2.is_in_project = TRUE)
+                    WHERE
+                        s.fk_property = 1334) ss ON ss.fk_subject_tables_cell = c2.pk_cell
+            WHERE
+                fpm.fk_default = ${this.addParam(pkEntity)}
+
         `;
 
 
@@ -201,34 +242,69 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         return this.execute<Array<{length: string}>>();
     }
 
-    async getDefaultFactoidNumber(pkEntity: string) {
+    async getDefaultFactoidNumber(pkProject: string, pkEntity: string) {
         this.params = [];
         this.sql = `
-        select
-            count(DISTINCT (fpm.fk_factoid_mapping, c.fk_row)) as length
-        from data.factoid_property_mapping fpm
-        left join data.factoid_mapping fm on fm.pk_entity = fpm.fk_factoid_mapping
-        left join data.factoid_property_mapping fpm2 on fpm2.fk_factoid_mapping = fm.pk_entity
-        left join tables.cell c on c.fk_column = fpm2.fk_column
-        left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
-        left join projects.info_proj_rel ipr on s.pk_entity = ipr.fk_entity and ipr.is_in_project = true
-        inner join (
-            select * from (
-                select
-                    max(c.fk_row) as fk_row,
+
+            WITH tw1 AS (
+                -- all the cells that are in the columns of fpm that have the entity as default:
+                SELECT
                     c.pk_cell,
-                    bool_or(ipr.is_in_project) as stmt_exists
-                from data.factoid_property_mapping fpm
-                left join tables.cell c on c.fk_column = fpm.fk_column
-                left join information.statement s on s.fk_subject_tables_cell = c.pk_cell and s.fk_property = 1334
-                left join projects.info_proj_rel ipr on ipr.fk_entity = s.pk_entity
-                where
+                    c.fk_row,
+                    c.fk_column,
+                    coalesce(c.numeric_value::text, c.string_value) AS value,
+                    fpm.pk_entity
+                FROM
+                    data.factoid_property_mapping fpm
+                    LEFT JOIN tables.cell c ON c.fk_column = fpm.fk_column
+                WHERE
                     fpm.fk_default = ${this.addParam(pkEntity)}
-                group by c.pk_cell) as t0
-            where t0.stmt_exists = false
-        ) ij on ij.fk_row = c.fk_row
-        where
-            fpm.fk_default = ${this.addParam(pkEntity)}
+            ),
+            tw2 AS (
+                    SELECT tw1.*
+                    FROM tw1
+                    -- left join the matchings in the project:
+                    LEFT JOIN LATERAL (
+                        SELECT s.pk_entity
+                        FROM information.statement s
+                        INNER JOIN	projects.info_proj_rel ipr
+                            ON s.pk_entity = ipr.fk_entity
+                            AND ipr.is_in_project = TRUE
+                            AND ipr.fk_project = ${this.addParam(pkProject)}
+                        WHERE s.fk_subject_tables_cell = tw1.pk_cell
+                        AND s.fk_property = 1334
+                    ) as statements ON true
+
+                    -- exclude the ones that have a matching in the project:
+                    WHERE statements.pk_entity IS NULL
+            )
+            SELECT
+                count(DISTINCT (fpm.fk_factoid_mapping, tw2.fk_row)) as length
+            FROM
+                data.factoid_property_mapping fpm
+                LEFT JOIN tw2 ON tw2.fk_column = fpm.fk_column
+                -- we want the fm of these fpm:
+                LEFT JOIN data.factoid_mapping fm ON fm.pk_entity = fpm.fk_factoid_mapping
+                -- we look for the others fpm of these fm:
+                LEFT JOIN data.factoid_property_mapping fpm2 ON fpm2.fk_factoid_mapping = fm.pk_entity
+                -- and the cells they point (via column and row):
+                LEFT JOIN tables.cell c2 ON c2.fk_column = fpm2.fk_column
+                    AND c2.fk_row = tw2.fk_row
+                    -- if the cells has a mathcing, we need it:
+                LEFT JOIN (
+                    SELECT
+                        s.fk_object_info,
+                        fk_subject_tables_cell
+                    FROM
+                        information.statement s
+                        INNER JOIN projects.info_proj_rel ipr2 ON (ipr2.fk_entity = s.pk_entity
+                                AND ipr2.is_in_project = TRUE)
+                    WHERE
+                        s.fk_property = 1334) ss ON ss.fk_subject_tables_cell = c2.pk_cell
+            WHERE
+                fpm.fk_default = ${this.addParam(pkEntity)}
+
+
         `;
 
         this.getBuiltQuery()

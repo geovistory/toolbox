@@ -13,7 +13,7 @@
     </div>
 
     <div class="loc-body">
-        <gv-factoid-mapping *ngFor="let fm of fms; let i = index" [listNumber]="i" [fm]="fm"
+        <gv-factoid-mapping *ngFor="let fm of fms; let i = index" [listNumber]="i + 1" [fm]="fm"
             (fmChanged)="fmChanged(i, $event)" (deleteFM)="delete(i)">
         </gv-factoid-mapping>
     </div>
