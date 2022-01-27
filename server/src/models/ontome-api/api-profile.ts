@@ -16,9 +16,9 @@ import {registerType} from '../../components/spec-enhancer/model.spec.enhancer'
 
 @model()
 export class ApiProfileProject {
-  @property({required:true}) projectID: number
-  @property({required:true}) projectLabelLanguage: string
-  @property({required:true}) projectLabel: string
+  @property({required: true}) projectID: number
+  @property({required: true}) projectLabelLanguage: string
+  @property({required: true}) projectLabel: string
 }
 
 @model()
@@ -38,6 +38,8 @@ export class ApiProfile {
   @property({required: true}) ownedByProjectLabel: string
   @property({required: true, type: ApiProfileSelectedByProjects}) selectedByProjects: ApiProfileSelectedByProjects
   @property({required: true}) isOngoingForcedPublication: boolean
+  @property({required: true}) isRootProfile: boolean
+  @property({required: false}) fkRootProfile: number
   @property() dateProfilePublished: string
   @property() dateProfileDeprecated: string
 
@@ -51,7 +53,7 @@ export class ApiProfile {
     "items": {$ref: registerType(ApiProfile)}
   }
 })
-export class ApiProfileList  { }
+export class ApiProfileList { }
 
 registerType(ApiProfileList)
 

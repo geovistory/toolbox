@@ -1,6 +1,6 @@
 import {OntomeProfileMock} from '../gvDB/local-model.helpers';
 
-  export const PROFILE_21_INTELLECTUAL_AN_2021_06_30: OntomeProfileMock ={
+  export const PROFILE_21_INTELLECTUAL_AN_2022_01_14: OntomeProfileMock ={
   "profile": {
     "removed_from_api": false,
     "requested_language": "en",
@@ -13,7 +13,9 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
     "dfh_project_label_language": "en",
     "dfh_profile_label_language": "en",
     "dfh_profile_definition_language": "en",
-    "dfh_is_ongoing_forced_publication": true
+    "dfh_is_ongoing_forced_publication": true,
+    "dfh_is_root_profile": false,
+    "dfh_fk_root_profile": 38
   },
   "classes": [
     {
@@ -27,13 +29,29 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_label": "Intellectual and literary life",
       "dfh_namespace_label": "CIDOC CRM version 6.2",
       "dfh_basic_type_label": "Persistent Item",
-      "dfh_class_scope_note": "This class comprises real persons who live or are assumed to have lived. Legendary figures that may have existed, such as Ulysses and\n            King Arthur, fall into this class if the documentation refers to them as historical figures. In cases where doubt exists as to whether\n            several persons are in fact identical, multiple instances can be created and linked to indicate their relationship. The CRM does not\n            propose a specific form to support reasoning about possible identity. ",
+      "dfh_class_scope_note": "This class comprises real persons who live or are assumed to have lived.\r\nLegendary figures that may have existed, such as Ulysses and King Arthur, fall into this class if the documentation refers to them as historical figures. In cases where doubt exists as to whether several persons are in fact identical, multiple instances can be created and linked to indicate their relationship. The CRM does not propose a specific form to support reasoning about possible identity.",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E21",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        20,
+        38
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        19,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539,
+        881
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -46,13 +64,28 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_label": "Intellectual and literary life",
       "dfh_namespace_label": "CIDOC CRM version 6.2",
       "dfh_basic_type_label": "Persistent Item",
-      "dfh_class_scope_note": "This class comprises physical objects purposely created by human activity. No assumptions are made as to the extent of modification\n            required to justify regarding an object as man-made. For example, an inscribed piece of rock or a preserved butterfly are both regarded as\n            instances of E22 Man-Made Object. ",
+      "dfh_class_scope_note": "This class comprises physical objects purposely created by human activity.\r\nNo assumptions are made as to the extent of modification required to justify regarding an object as man-made. For example, an inscribed piece of rock or a preserved butterfly are both regarded as instances of E22 Man-Made Object.",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E22",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        19,
+        23
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        65,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -65,13 +98,24 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_label": "Intellectual and literary life",
       "dfh_namespace_label": "CIDOC CRM version 6.2",
       "dfh_basic_type_label": "Type (controlled vocabulary)",
-      "dfh_class_scope_note": "This class is a specialization of E55 Type and comprises the concepts of materials. Instances of E57 Material may denote properties\n            of matter before its use, during its use, and as incorporated in an object, such as ultramarine powder, tempera paste, reinforced\n            concrete. Discrete pieces of raw-materials kept in museums, such as bricks, sheets of fabric, pieces of metal, should be modelled\n            individually in the same way as other objects. Discrete used or processed pieces, such as the stones from Nefer Titi's temple, should be\n            modelled as parts (cf. P46 is composed of). This type is used categorically in the model without reference to instances of it, i.e. the\n            Model does not foresee the description of instances of instances of E57 Material, e.g.: “instances of gold”. It is recommended that\n            internationally or nationally agreed codes and terminology are used.",
+      "dfh_class_scope_note": "This class is a specialization of E55 Type and comprises the concepts of materials.\r\nInstances of E57 Material may denote properties of matter before its use, during its use, and as incorporated in an object, such as ultramarine powder, tempera paste, reinforced concrete. Discrete pieces of raw-materials kept in museums, such as bricks, sheets of fabric, pieces of metal, should be modelled individually in the same way as other objects. Discrete used or processed pieces, such as the stones from Nefer Titi's temple, should be modelled as parts (cf. P46 is composed of).\r\nThis type is used categorically in the model without reference to instances of it, i.e. the Model does not foresee the description of instances of instances of E57 Material, e.g.: “instances of gold”.\r\nIt is recommended that internationally or nationally agreed codes and terminology are used.",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E57",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -84,13 +128,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_label": "Intellectual and literary life",
       "dfh_namespace_label": "CIDOC CRM version 6.2",
       "dfh_basic_type_label": "Persistent Item",
-      "dfh_class_scope_note": "This class comprises any gatherings or organizations of E39 Actors that act collectively or in a similar way due to any form of\n            unifying relationship. In the wider sense this class also comprises official positions which used to be regarded in certain contexts as\n            one actor, independent of the current holder of the office, such as the president of a country. In such cases, it may happen that the\n            Group never had more than one member. A joint pseudonym (i.e., a name that seems indicative of an individual but that is actually used as\n            a persona by two or more people) is a particular case of E74 Group. A gathering of people becomes an E74 Group when it exhibits\n            organizational characteristics usually typified by a set of ideas or beliefs held in common, or actions performed together. These might be\n            communication, creating some common artifact, a common purpose such as study, worship, business, sports, etc. Nationality can be modeled\n            as membership in an E74 Group (cf. HumanML markup). Married couples and other concepts of family are regarded as particular examples of\n            E74 Group. ",
+      "dfh_class_scope_note": "This class comprises any gatherings or organizations of E39 Actors that act collectively or in a similar way due to any form of unifying relationship. In the wider sense this class also comprises official positions which used to be regarded in certain contexts as one actor, independent of the current holder of the office, such as the president of a country. In such cases, it may happen that the Group never had more than one member. A joint pseudonym (i.e., a name that seems indicative of an individual but that is actually used as a persona by two or more people) is a particular case of E74 Group.\r\nA gathering of people becomes an E74 Group when it exhibits organizational characteristics usually typified by a set of ideas or beliefs held in common, or actions performed together. These might be communication, creating some common artifact, a common purpose such as study, worship, business, sports, etc. Nationality can be modeled as membership in an E74 Group (cf. HumanML markup). Married couples and other concepts of family are regarded as particular examples of E74 Group.",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E74",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        38,
+        853
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        70,
+        214,
+        881
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -103,13 +157,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_label": "Intellectual and literary life",
       "dfh_namespace_label": "CIDOC CRM version 6.2",
       "dfh_basic_type_label": "Persistent Item",
-      "dfh_class_scope_note": "This class comprises immaterial items, including but not limited to stories, plots, procedural prescriptions, algorithms, laws of\n            physics or images that are, or represent in some sense, sets of propositions about real or imaginary things and that are documented as\n            single units or serve as topics of discourse. This class also comprises items that are “about” something in the sense of a subject. In the\n            wider sense, this class includes expressions of psychological value such as non-figural art and musical themes. However, conceptual items\n            such as types and classes are not instances of E89 Propositional Object. This should not be confused with the definition of a type, which\n            is indeed an instance of E89 Propositional Object. ",
+      "dfh_class_scope_note": "This class comprises immaterial items, including but not limited to stories, plots, procedural prescriptions, algorithms, laws of physics or images that are, or represent in some sense, sets of propositions about real or imaginary things and that are documented as single units or serve as topics of discourse.\r\nThis class also comprises items that are “about” something in the sense of a subject. In the wider sense, this class includes expressions of psychological value such as non-figural art and musical themes. However, conceptual items such as types and classes are not instances of E89 Propositional Object. This should not be confused with the definition of a type, which is indeed an instance of E89 Propositional Object.",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E89",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        27
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -128,7 +192,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F1",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        81
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -147,7 +222,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F2",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        30,
+        67
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        70,
+        81,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -166,7 +256,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F3",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53,
+        66
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -185,7 +287,21 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F4",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        23
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        65,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -198,13 +314,32 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_label": "Intellectual and literary life",
       "dfh_namespace_label": "FRBRoo version 2.4",
       "dfh_basic_type_label": "Temporal Entity",
-      "dfh_class_scope_note": "This class comprises activities that result in instances of F2 Expression coming into existence. This class characterises the\n\t\t\texternalisation of an Individual Work. Although F2 Expression is an abstract entity, a conceptual object, the creation of an expression\n\t\t\tinevitably also affects the physical world: when you scribble the first draft of a poem on a sheet of paper, you produce an instance of F4\n\t\t\tManifestation Singleton; F28 Expression Creation is a subclass of E12 Production because the recording of the expression causes a physical\n\t\t\tmodification of the carrying E18 Physical Thing. The work becomes manifest by being expressed on a physical carrier different from the\n\t\t\tcreator’s brain. The spatio-temporal circumstances under which the expression is created are necessarily the same spatio-temporal\n\t\t\tcircumstances under which the first instance of F4 Manifestation Singleton is produced. The mechanisms through which oral tradition (of\n\t\t\tmyths, tales, music, etc.) operates are not further investigated in this model. As far as bibliographic practice is concerned, only those\n\t\t\tinstances of F2 Expression that are externalised on physical carriers other than both the creator’s brain and the auditor’s brain are\n\t\t\ttaken into account (for a discussion of the modelling of oral traditions, see: Nicolas, Yann. ‘Folklore Requirements for Bibliographic\n\t\t\tRecords: oral traditions and FRBR.’ In: Cataloging Classification Quarterly (2005). Vol. 39, No. 3-4. P. 179-195). It is possible to use\n\t\t\tthe P2 has type (is type of) property in order to specify that the creation of a given expression of a given work played a particular role\n\t\t\twith regard to the overall bibliographic history of that work (e.g., that it was the creation of the progenitor expression on which all\n\t\t\tother expressions of the same work are based; or that it was the creation of the critical edition that served as the basis for canonical\n\t\t\treferences to the work). ",
+      "dfh_class_scope_note": "This class comprises activities that result in instances of F2 Expression coming into existence. This class characterises the externalisation of an Individual Work.\r\nAlthough F2 Expression is an abstract entity, a conceptual object, the creation of an expression inevitably also affects the physical world: when you scribble the first draft of a poem on a sheet of paper, you produce an instance of F4 Manifestation Singleton; F28 Expression Creation is a subclass of E12 Production because the recording of the expression causes a physical modification of the carrying E18 Physical Thing. The work becomes manifest by being expressed on a physical carrier different from the creator’s brain. The spatio-temporal circumstances under which the expression is created are necessarily the same spatio-temporal circumstances under which the first instance of F4 Manifestation Singleton is produced. The mechanisms through which oral tradition (of myths, tales, music, etc.) operates are not further investigated in this model. As far as bibliographic practice is concerned, only those instances of F2 Expression that are externalised on physical carriers other than both the creator’s brain and the auditor’s brain are taken into account (for a discussion of the modelling of oral traditions, see: Nicolas, Yann. ‘Folklore Requirements for Bibliographic Records: oral traditions and FRBR.’ In: Cataloging Classification Quarterly (2005). Vol. 39, No. 3-4. P. 179-195).\r\nIt is possible to use the P2 has type (is type of) property in order to specify that the creation of a given expression of a given work played a particular role with regard to the overall bibliographic history of that work (e.g., that it was the creation of the progenitor expression on which all other expressions of the same work are based; or that it was the creation of the critical edition that served as the basis for canonical references to the work).",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "F28",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        12,
+        59
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        7,
+        11,
+        57,
+        83,
+        211,
+        214,
+        539,
+        756,
+        887
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -223,7 +358,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C13",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        25
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -242,7 +390,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C6",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -261,26 +420,53 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C2",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        218
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        66,
+        67,
+        70,
+        81,
+        82,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
       "dfh_pk_class": 676,
       "dfh_basic_type": 9,
       "dfh_fk_profile": 21,
-      "dfh_class_label": "Print Publication Event",
+      "dfh_class_label": "Expression Publication Event",
       "dfh_fk_namespace": 74,
       "dfh_namespace_uri": null,
       "dfh_profile_label": "Intellectual and literary life",
       "dfh_namespace_label": "Intellectual and Literary Life – ongoing (SDHSS)",
       "dfh_basic_type_label": "Temporal Entity",
-      "dfh_class_scope_note": "This class models the event of the publication of any kind of work (an illustrated text, musical scores, etc.) that has been printed onto paper. The print can be of different types expressed with the types of the corresponding Manifestation Product Type – F3 instance. The publication date is considered as the one when the print exemplars where maid available to the public. The priting place is the geographical place where the print first became public, generally but not always the publisher's or printer's domicile. The publisher  or printer (person or group) are associated using the inherited crm:P14 carried out by property. Both date and place can be different from the ones expressed in the book itself insofar as this class models the event of publication as such and not the bibliographical metadata that are addressed by the Manifestation Product Type – F3  class.",
+      "dfh_class_scope_note": "This class models the event of the publication of any kind of frbroo:E2 Expression (an illustrated text, musical scores, music on a DVD, etc.) on a medium produced in multiple exemplars, generally by replication with mechanical means. The publication date is considered as the one when the medium exemplars where made available to the public so that the symbolic content (text, music, drawings, etc.) can be viewed, or listened, by the public. The publication place is the geographical place where the copies of the medium first became public, or from where the exemplars of the publication where sent out, generally but not always the publisher's or printer's domicile.\r\nThe publisher or printer (person or group) are associated using the inherited crm:P14 carried out by property. If one wishes to express more precise roles for the editors, one can use the sdh-so:C15 Participation class providing specific social qualities or roles to the actors.\r\nBoth date and place can be different from the ones expressed in the book itself insofar as this class models the event of publication as such and not the bibliographical properties (metadata) that should be associated to the Manifestation Product Type – F3  class.",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C1",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        7
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -299,7 +485,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C4",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -318,7 +515,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C1",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -337,7 +542,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C15",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -356,7 +569,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C16",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        56
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        53,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -375,7 +600,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C20",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        52
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -394,7 +627,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C4",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        81
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -413,7 +657,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C5",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        721
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        81,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -432,7 +688,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C6",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        81
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -451,7 +718,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C7",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -470,21 +748,31 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C8",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     }
   ],
   "properties": [
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 13,
       "dfh_property_label_language": "en",
       "dfh_property_label": "carried out by",
       "dfh_property_inverse_label": "performed",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property describes the active participation of an E39 Actor in an E7 Activity. It implies causal or legal responsibility.\n            The P14.1 in the role of property of the property allows the nature of an Actor’s participation to be specified. ",
+      "dfh_property_scope_note": "This property describes the active participation of an E39 Actor in an E7 Activity.\r\nIt implies causal or legal responsibility. The P14.1 in the role of property of the property allows the nature of an Actor’s participation to be specified.",
       "dfh_is_inherited": true,
       "dfh_property_domain": 244,
       "dfh_domain_instances_min_quantifier": 0,
@@ -502,19 +790,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        10
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 13,
       "dfh_property_label_language": "en",
       "dfh_property_label": "carried out by",
       "dfh_property_inverse_label": "performed",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property describes the active participation of an E39 Actor in an E7 Activity. It implies causal or legal responsibility.\n            The P14.1 in the role of property of the property allows the nature of an Actor’s participation to be specified. ",
+      "dfh_property_scope_note": "This property describes the active participation of an E39 Actor in an E7 Activity.\r\nIt implies causal or legal responsibility. The P14.1 in the role of property of the property allows the nature of an Actor’s participation to be specified.",
       "dfh_is_inherited": true,
       "dfh_property_domain": 676,
       "dfh_domain_instances_min_quantifier": 0,
@@ -532,19 +823,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        10
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 13,
       "dfh_property_label_language": "en",
       "dfh_property_label": "carried out by",
       "dfh_property_inverse_label": "performed",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property describes the active participation of an E39 Actor in an E7 Activity. It implies causal or legal responsibility.\n            The P14.1 in the role of property of the property allows the nature of an Actor’s participation to be specified. ",
+      "dfh_property_scope_note": "This property describes the active participation of an E39 Actor in an E7 Activity.\r\nIt implies causal or legal responsibility. The P14.1 in the role of property of the property allows the nature of an Actor’s participation to be specified.",
       "dfh_is_inherited": true,
       "dfh_property_domain": 676,
       "dfh_domain_instances_min_quantifier": 0,
@@ -562,19 +856,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        10
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 117,
       "dfh_property_label_language": "en",
       "dfh_property_label": "is about",
       "dfh_property_inverse_label": "is subject of",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property documents that an E89 Propositional Object has as subject an instance of E1 CRM Entity. ",
+      "dfh_property_scope_note": "This property documents that an E89 Propositional Object has as subject an instance of E1 CRM Entity.\r\nThis differs from P67 refers to (is referred to by), which refers to an E1 CRM Entity, in that it describes the primary subject or subjects of an E89 Propositional Object.",
       "dfh_is_inherited": true,
       "dfh_property_domain": 721,
       "dfh_domain_instances_min_quantifier": 0,
@@ -592,19 +889,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        58
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 117,
       "dfh_property_label_language": "en",
       "dfh_property_label": "is about",
       "dfh_property_inverse_label": "is subject of",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property documents that an E89 Propositional Object has as subject an instance of E1 CRM Entity. ",
+      "dfh_property_scope_note": "This property documents that an E89 Propositional Object has as subject an instance of E1 CRM Entity.\r\nThis differs from P67 refers to (is referred to by), which refers to an E1 CRM Entity, in that it describes the primary subject or subjects of an E89 Propositional Object.",
       "dfh_is_inherited": true,
       "dfh_property_domain": 721,
       "dfh_domain_instances_min_quantifier": 0,
@@ -622,12 +922,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        58
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 136,
       "dfh_property_label_language": "en",
@@ -652,12 +955,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 136,
       "dfh_property_label_language": "en",
@@ -682,12 +986,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 991,
       "dfh_property_label_language": "en",
@@ -712,12 +1017,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        82
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 991,
       "dfh_property_label_language": "en",
@@ -742,12 +1050,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        82
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 991,
       "dfh_property_label_language": "en",
@@ -772,12 +1083,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        82
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 992,
       "dfh_property_label_language": "en",
@@ -802,12 +1116,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        96
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 993,
       "dfh_property_label_language": "en",
@@ -832,12 +1149,48 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        15
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1015,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "has representative manifestation product type",
+      "dfh_property_inverse_label": "is representative manifestation product type for",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property identifies an instance of F3 Manifestation Product Type that has been chosen as the most characteristic Manifestation Product Type of the instance of F2 Expression of which it is a manifestation.\r\nIdentifying an instance of F3 Manifestation Product Type that is representative for an instance of F2 Expression makes it possible in turn to identify an instance of F2 Expression that is representative for an instance of F1 Work, and to decide what should be regarded as the title of the work.\r\nThe title of an Expression may not be one taken from a representative Manifestation Product Type or Manifestation Singleton.\r\nA given expression can have more than one Representative Manifestation Product Type.\r\nR41 has representative manifestation product type is a shortcut of the more developed path F2 Expression R48i was assigned by F41 Representative Manifestation Assignment R49 assigned F3 Manifestation Product Type.",
+      "dfh_is_inherited": false,
+      "dfh_property_domain": 218,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 219,
+      "dfh_range_instances_min_quantifier": 0,
+      "dfh_range_instances_max_quantifier": -1,
+      "dfh_identity_defining": false,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "R41",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 6,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "FRBRoo version 2.4",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 21,
+      "dfh_profile_label": "Intellectual and literary life",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        979
+      ],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1595,
       "dfh_property_label_language": "en",
@@ -862,19 +1215,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        15
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1596,
       "dfh_property_label_language": "en",
       "dfh_property_label": "created manifestation",
       "dfh_property_inverse_label": "was created by",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property allows a F3 Manifestation Product Type to be linked to the C1 Print publication event created by it. The publication of a print brings virtually into existence the bibliographic reference related to the publication, the F3 Manifestation Product Type, i.e. the concept or type that brings all the exemplars of it together. It does not represent the act of creating the first physical item of the F3 Manifestation Type.",
+      "dfh_property_scope_note": "This property allows a F3 Manifestation Product Type to be linked to the C1 Print publication event that created it. The publication of a print brings virtually into existence the bibliographic reference intented as the identifying appellation of the collection of all exemplars created according to this model, in one edition of a work, i.e. a F3 Manifestation Product Type.",
       "dfh_is_inherited": false,
       "dfh_property_domain": 676,
       "dfh_domain_instances_min_quantifier": 0,
@@ -892,19 +1248,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        82
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1597,
       "dfh_property_label_language": "en",
       "dfh_property_label": "published the work of",
       "dfh_property_inverse_label": "had his work published by",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property associates the print publication with the author or authors of the printed expression, in the sense of the person(s) responsible for the intellectual content of the rint. Specific sub-properties would allow to distinguish their respective roles (author, editor, etc.).\r\nShortcut of: C1 Print publication event R19 created a realization of F1 Work R16 was initiated by F27 Work conception P14 carried out by E39 Actor P14.1 has role Author",
+      "dfh_property_scope_note": "This property associates the publication with the author or authors of the printed expression, in the sense of the person(s) responsible for the intellectual content of the expression having been published. If one wishes to express more precise roles, one can use the sdh-so:C15 Participation class providing specific social qualities or roles to the actors.\r\nShortcut of: C1 Print publication event R19 created a realization of F1 Work R16 was initiated by F27 Work conception P14 carried out by E39 Actor P14.1 has role Author",
       "dfh_is_inherited": true,
       "dfh_property_domain": 676,
       "dfh_domain_instances_min_quantifier": 0,
@@ -922,19 +1281,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1597,
       "dfh_property_label_language": "en",
       "dfh_property_label": "published the work of",
       "dfh_property_inverse_label": "had his work published by",
       "dfh_property_scope_note_language": "en",
-      "dfh_property_scope_note": "This property associates the print publication with the author or authors of the printed expression, in the sense of the person(s) responsible for the intellectual content of the rint. Specific sub-properties would allow to distinguish their respective roles (author, editor, etc.).\r\nShortcut of: C1 Print publication event R19 created a realization of F1 Work R16 was initiated by F27 Work conception P14 carried out by E39 Actor P14.1 has role Author",
+      "dfh_property_scope_note": "This property associates the publication with the author or authors of the printed expression, in the sense of the person(s) responsible for the intellectual content of the expression having been published. If one wishes to express more precise roles, one can use the sdh-so:C15 Participation class providing specific social qualities or roles to the actors.\r\nShortcut of: C1 Print publication event R19 created a realization of F1 Work R16 was initiated by F27 Work conception P14 carried out by E39 Actor P14.1 has role Author",
       "dfh_is_inherited": true,
       "dfh_property_domain": 676,
       "dfh_domain_instances_min_quantifier": 0,
@@ -952,12 +1312,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1599,
       "dfh_property_label_language": "en",
@@ -982,12 +1343,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        7
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1599,
       "dfh_property_label_language": "en",
@@ -1012,12 +1376,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        7
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1637,
       "dfh_property_label_language": "en",
@@ -1042,12 +1409,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        79
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1644,
       "dfh_property_label_language": "en",
@@ -1072,12 +1442,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1645,
       "dfh_property_label_language": "en",
@@ -1102,12 +1473,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1646,
       "dfh_property_label_language": "en",
@@ -1132,12 +1504,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1647,
       "dfh_property_label_language": "en",
@@ -1162,12 +1535,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1647,
       "dfh_property_label_language": "en",
@@ -1192,12 +1566,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1648,
       "dfh_property_label_language": "en",
@@ -1222,12 +1597,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1649,
       "dfh_property_label_language": "en",
@@ -1252,12 +1628,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1650,
       "dfh_property_label_language": "en",
@@ -1282,12 +1659,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1651,
       "dfh_property_label_language": "en",
@@ -1312,12 +1692,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        2
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1652,
       "dfh_property_label_language": "en",
@@ -1342,12 +1725,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1652,
       "dfh_property_label_language": "en",
@@ -1372,7 +1756,9 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 21,
       "dfh_profile_label": "Intellectual and literary life",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     }
   ]
 }

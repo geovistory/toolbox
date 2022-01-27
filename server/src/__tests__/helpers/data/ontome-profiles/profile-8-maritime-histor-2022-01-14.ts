@@ -1,6 +1,6 @@
 import {OntomeProfileMock} from '../gvDB/local-model.helpers';
 
-  export const PROFILE_8_MARITIME_HISTOR_2021_07_09: OntomeProfileMock ={
+  export const PROFILE_8_MARITIME_HISTOR_2022_01_14: OntomeProfileMock ={
   "profile": {
     "removed_from_api": false,
     "requested_language": "en",
@@ -13,7 +13,9 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
     "dfh_project_label_language": "en",
     "dfh_profile_label_language": "en",
     "dfh_profile_definition_language": "en",
-    "dfh_is_ongoing_forced_publication": true
+    "dfh_is_ongoing_forced_publication": true,
+    "dfh_is_root_profile": false,
+    "dfh_fk_root_profile": 61
   },
   "classes": [
     {
@@ -33,7 +35,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "E21",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        20,
+        38
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        19,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539,
+        881
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -52,7 +70,49 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C13",
-      "dfh_profile_association_type": "inferred"
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        25
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
+    },
+    {
+      "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+      "dfh_pk_class": 365,
+      "dfh_basic_type": 9,
+      "dfh_fk_profile": 8,
+      "dfh_class_label": "Appellation in a Language",
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_uri": null,
+      "dfh_profile_label": "Maritime history",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_basic_type_label": "Temporal Entity",
+      "dfh_class_scope_note": "This class refers to the fact that an entity (actor, group, concept, etc.) is identified in the context of a social collective, during a given time span, using a specific appellation. This identifying appellation is generally related to the main language used be the social collective, or at least considered as understandable or valid in that context(e.g. a Latin or English appellation in a French speaking context).\r\nAs a subclass of social connotation, this class does not refer to an activity of collectively naming a thing (cf. the FRBRoo:F52_Name_Use_Activity class) but  to the possibility of identifying with that appellation within the given social context or collective.\r\nThe crm: P1 is identified property is a shortcut of the present class directly (i.e. independengly from time and context) linking a crm:E1 Entity to its crmE41 Appellation.",
+      "dfh_class_label_language": "en",
+      "dfh_profile_label_language": "en",
+      "dfh_namespace_label_language": "en",
+      "dfh_class_scope_note_language": "en",
+      "dfh_class_identifier_in_namespace": "C11",
+      "dfh_profile_association_type": "inferred",
+      "dfh_parent_classes": [
+        699
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        211,
+        214,
+        756
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -71,7 +131,23 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C2",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        22
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        19,
+        23,
+        64,
+        65,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -90,7 +166,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C1",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        686
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -109,7 +197,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C3",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        53
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        27,
+        64,
+        65,
+        70,
+        214
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -128,7 +227,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C4",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        39
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        38,
+        68,
+        70,
+        214,
+        881
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -147,7 +257,20 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C5",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        19
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        18,
+        64,
+        66,
+        70,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -166,7 +289,19 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C6",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        7
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -185,7 +320,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C7",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        5
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -204,7 +350,18 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C8",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        39
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        38,
+        68,
+        70,
+        214,
+        881
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -223,7 +380,22 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C12",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        12
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        7,
+        11,
+        57,
+        83,
+        214,
+        539
+      ]
     },
     {
       "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
@@ -236,20 +408,341 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_label": "Maritime history",
       "dfh_namespace_label": "Social, legal and economic life (SDHSS) ongoing",
       "dfh_basic_type_label": "Temporal Entity",
-      "dfh_class_scope_note": "This class comprises periods of continuous activity of a person participating in an event, be this a battle, voyage, conference, etc. If the participation involves the exercise of a function or holding of an office or rank this can be associated using the is participation with social character – histP28 Proprety. One or more functions can be associated to the same Participation if their time span is identical. It is otherwise preferable to split consecutive holdins of an office in the same event producing several instances of this class. The time-span of this class is equal to or included in the time-span of the related event.",
+      "dfh_class_scope_note": "This class comprises periods of a more or less active participation of an actor (generally a person but sometimes a group) in an event, be this a battle, voyage, conference, etc. If the participation involves the exercise of a function or holding of an office or rank this can be associated using the sdh-so:P12 is participation in the quality of proprety. One or more functions can be associated to the same Participation if their time span is identical. It is otherwise preferable to split consecutive holdins of an office in the same event producing several instances of this class. The time-span of this class is equal to or included in the time-span of the related event.",
       "dfh_class_label_language": "en",
       "dfh_profile_label_language": "en",
       "dfh_namespace_label_language": "en",
       "dfh_class_scope_note_language": "en",
       "dfh_class_identifier_in_namespace": "C15",
-      "dfh_profile_association_type": "selected"
+      "dfh_profile_association_type": "selected",
+      "dfh_parent_classes": [
+        686
+      ],
+      "dfh_ancestor_classes": [
+        1,
+        2,
+        4,
+        5,
+        83,
+        214,
+        539
+      ]
     }
   ],
   "properties": [
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 522,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 523,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 524,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 525,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 526,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 527,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 528,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 529,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 533,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
+      "is_enabled_in_profile": null,
+      "dfh_pk_property": 1111,
+      "dfh_property_label_language": "en",
+      "dfh_property_label": "is appellation for language of",
+      "dfh_property_inverse_label": "has appellation for language",
+      "dfh_property_scope_note_language": "en",
+      "dfh_property_scope_note": "This property associates the Appelation for language to the E1 CRM Entity that it identifies.",
+      "dfh_is_inherited": true,
+      "dfh_property_domain": 365,
+      "dfh_domain_instances_min_quantifier": 0,
+      "dfh_domain_instances_max_quantifier": -1,
+      "dfh_property_range": 535,
+      "dfh_range_instances_min_quantifier": 1,
+      "dfh_range_instances_max_quantifier": 1,
+      "dfh_identity_defining": true,
+      "dfh_is_has_type_subproperty": false,
+      "dfh_property_identifier_in_namespace": "P11",
+      "dfh_namespace_uri": null,
+      "dfh_fk_namespace": 3,
+      "dfh_namespace_label_language": "en",
+      "dfh_namespace_label": "CIDOC CRM Top-Level Extension for Humanities and Social sciences (SDHSS)  – ongoing",
+      "dfh_profile_association_type": null,
+      "dfh_fk_profile": 8,
+      "dfh_profile_label": "Maritime history",
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
+    },
+    {
+      "removed_from_api": false,
+      "requested_language": "en",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1335,
       "dfh_property_label_language": "en",
@@ -274,12 +767,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1336,
       "dfh_property_label_language": "en",
@@ -304,12 +798,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1337,
       "dfh_property_label_language": "en",
@@ -334,12 +829,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1338,
       "dfh_property_label_language": "en",
@@ -364,12 +860,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1339,
       "dfh_property_label_language": "en",
@@ -394,12 +891,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1340,
       "dfh_property_label_language": "en",
@@ -424,12 +922,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1357
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1341,
       "dfh_property_label_language": "en",
@@ -454,12 +955,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        96
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1342,
       "dfh_property_label_language": "en",
@@ -484,12 +988,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        13
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1343,
       "dfh_property_label_language": "en",
@@ -514,12 +1021,15 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [
+        1357
+      ],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1345,
       "dfh_property_label_language": "en",
@@ -544,12 +1054,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1354,
       "dfh_property_label_language": "en",
@@ -574,12 +1085,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1358,
       "dfh_property_label_language": "en",
@@ -604,12 +1116,13 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     },
     {
       "removed_from_api": false,
       "requested_language": "en",
-      "tmsp_last_dfh_update": "2020-03-05T14:05:26.714+00:00",
       "is_enabled_in_profile": null,
       "dfh_pk_property": 1359,
       "dfh_property_label_language": "en",
@@ -634,7 +1147,9 @@ import {OntomeProfileMock} from '../gvDB/local-model.helpers';
       "dfh_profile_association_type": null,
       "dfh_fk_profile": 8,
       "dfh_profile_label": "Maritime history",
-      "dfh_profile_label_language": "en"
+      "dfh_profile_label_language": "en",
+      "dfh_parent_properties": [],
+      "dfh_ancestor_properties": []
     }
   ]
 }

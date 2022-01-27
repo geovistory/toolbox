@@ -3,6 +3,27 @@ import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.mod
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
+    "ontome": {
+      "optionalOntomeProfiles": [
+        {
+          "profilesAvailableByOmProjects": [
+            6
+          ]
+        },
+        {
+          "profilesAvailableByOmProjects": [
+            48
+          ],
+          "restrictedToGvProjects": [
+            591,
+            375669
+          ]
+        }
+      ],
+      "requiredOntomeProfiles": [
+        5
+      ]
+    },
     "classesDefault": {
       "viewType": {
         "nestedResource": []

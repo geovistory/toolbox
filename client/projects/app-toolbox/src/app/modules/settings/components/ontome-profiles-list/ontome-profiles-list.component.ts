@@ -5,12 +5,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
+import { SysSelector } from '@kleiolab/lib-queries';
 import { ApiProfile } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'd3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { indexBy } from 'ramda';
-import { Observable, Subject } from 'rxjs';
-import { map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { flatten, indexBy, uniqBy } from 'ramda';
+import { combineLatest, Observable, Subject } from 'rxjs';
+import { first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { OntomeProfileActivationReportDialogComponent, OntomeProfileActivationReportDialogData } from '../ontome-profile-activation-report-dialog/ontome-profile-activation-report-dialog.component';
 import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-settings.component';
 
@@ -45,7 +46,8 @@ export class OntomeProfilesListComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private p: ActiveProjectService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private sys$: SysSelector
   ) { }
 
   ngOnInit() {
@@ -68,14 +70,25 @@ export class OntomeProfilesListComponent implements OnInit {
         ))
     )
 
+    this.loadProfiles()
 
+  }
+  async loadProfiles() {
+    const ontomeProjectIds = await this.getOntoMeProjects()
     this.loading = true;
-    this.http.get(this.ontomeUrl + `/api/profiles.json?lang=en&selected-by-project=6`)
-      .pipe(takeUntil(this.destroy$))
+    combineLatest(
+      ontomeProjectIds.map(id => this.http.get<ApiProfile[]>(`${this.ontomeUrl}/api/profiles.json?lang=en&selected-by-project=${id}`))
+    )
+      // this.http.get(this.ontomeUrl + `/api/profiles.json?lang=en&selected-by-project=6`)
+      .pipe(
+        map(nested => flatten<ApiProfile>(nested)),
+        takeUntil(this.destroy$)
+      )
       .subscribe((response: ApiProfile[]) => {
 
         this.loading = false;
-        this.dataSource.data = response.map(apiItem => {
+        const uniq = uniqBy((p) => p.profileID, response)
+        this.dataSource.data = uniq.map(apiItem => {
           const item: ProfileItem = {
             label: apiItem.profileLabel,
             ownerId: apiItem.ownedByProjectID,
@@ -86,7 +99,21 @@ export class OntomeProfilesListComponent implements OnInit {
           return item
         })
       })
+  }
 
+  async getOntoMeProjects(): Promise<number[]> {
+    return combineLatest([this.p.pkProject$, this.sys$.config$.main$])
+      .pipe(
+        map(([pkProject, sysConfig]) => {
+          const ontomeProjectIds = []
+          sysConfig.ontome.optionalOntomeProfiles?.forEach(i => {
+            if (!i.restrictedToGvProjects) return ontomeProjectIds.push(i.profilesAvailableByOmProjects);
+            if (i.restrictedToGvProjects.includes(pkProject)) ontomeProjectIds.push(i.profilesAvailableByOmProjects);
+          })
+          return ontomeProjectIds;
+        }),
+        first()
+      ).toPromise()
   }
 
   activate(item: ProfileItem) {

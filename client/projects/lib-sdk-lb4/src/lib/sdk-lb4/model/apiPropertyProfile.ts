@@ -39,5 +39,7 @@ export interface ApiPropertyProfile {
     profileID: number;
     profileLabelLanguage: string;
     profileLabel: string;
+    parentProperties: Array<number>;
+    ancestorProperties?: Array<number>;
 }
 

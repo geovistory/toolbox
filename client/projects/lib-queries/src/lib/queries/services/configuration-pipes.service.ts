@@ -8,7 +8,6 @@ import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { Field } from '../models/Field';
-import { Profiles } from '../models/Profiles';
 import { SpecialFieldType } from '../models/SpecialFieldType';
 import { Subfield } from '../models/Subfield';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
@@ -406,6 +405,14 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       p.domain_instances_min_quantifier :
       p.range_instances_min_quantifier;
 
+    const hasTypeProperty = 2
+    const isHasTypeField = o && p.parent_properties.includes(hasTypeProperty)
+    const identifyingDomainProperty = 1376
+    const identifyingRangeProperty = 1766
+    const identityDefiningForDomain = p.parent_properties.includes(identifyingDomainProperty)
+    const identityDefiningForRange = p.parent_properties.includes(identifyingRangeProperty)
+    const identityDefiningForSource = o ? identityDefiningForDomain : identityDefiningForRange
+    const identityDefiningForTarget = o ? identityDefiningForRange : identityDefiningForDomain
     // console.log('pppp wanted: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
 
     // const first = of('field not piped after 10s').pipe(
@@ -456,12 +463,12 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           targetMinQuantity,
           targetMaxQuantity,
           label,
-          isHasTypeField: o && p.is_has_type_subproperty,
+          isHasTypeField,
           isTimeSpanShortCutField: false,
           property: { fkProperty: p.pk_property },
           isOutgoing: o,
-          identityDefiningForSource: o ? p.identity_defining : false,
-          identityDefiningForTarget: o ? false : p.identity_defining,
+          identityDefiningForSource,
+          identityDefiningForTarget,
           ontoInfoLabel: p.identifier_in_namespace,
           ontoInfoUrl: SysConfig.ONTOME_URL + '/property/' + p.pk_property,
           removedFromAllProfiles: isRemovedFromAllProfiles(enabledProfiles, (p.profiles || [])),
@@ -1315,34 +1322,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     return obs$
   }
 }
-
-
-
-function createHasDefinitionProperty(domainClass: number) {
-  const profiles: Profiles = [
-    {
-      removed_from_api: false,
-      fk_profile: DfhConfig.PK_PROFILE_GEOVISTORY_BASIC
-    }
-  ]
-
-  const hasDefinition: DfhProperty = {
-    has_domain: domainClass,
-    pk_property: DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION,
-    has_range: 785,
-    domain_instances_max_quantifier: -1,
-    domain_instances_min_quantifier: 1,
-    range_instances_max_quantifier: 1,
-    range_instances_min_quantifier: 1,
-    identifier_in_namespace: 'P18',
-    identity_defining: false,
-    is_inherited: true,
-    is_has_type_subproperty: false,
-    profiles
-  }
-  return hasDefinition
-}
-
 
 
 

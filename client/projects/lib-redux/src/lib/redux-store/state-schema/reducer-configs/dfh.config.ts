@@ -54,7 +54,7 @@ export const dfhDefinitions: ReducerConfigCollection = {
       // },
       {
         keyInStore: 'is_has_type_subproperty',
-        groupByFn: (d: DfhProperty): string => d.is_has_type_subproperty ? d.is_has_type_subproperty.toString() : undefined
+        groupByFn: (d: DfhProperty): string => d.parent_properties.includes(2) ? 'true' : undefined
       }
     ]
   },

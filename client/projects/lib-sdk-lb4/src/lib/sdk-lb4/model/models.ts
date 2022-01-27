@@ -163,6 +163,8 @@ export * from './sysConfigClassCategoryBelonging';
 export * from './sysConfigFieldDisplay';
 export * from './sysConfigFieldsOfSourceClass';
 export * from './sysConfigFormCtrlType';
+export * from './sysConfigOntomeProfiles';
+export * from './sysConfigOptionalProfiles';
 export * from './sysConfigSpecialFields';
 export * from './sysConfigValue';
 export * from './sysConfigValueObjectType';

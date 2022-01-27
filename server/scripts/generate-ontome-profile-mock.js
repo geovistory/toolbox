@@ -4,7 +4,7 @@ const prompts = require('prompts');
 const fetch = require('node-fetch');
 
 const date = new Date();
-const regexSpecialChars = /[^A-Za-z0-9]/g
+const regexSpecialChars = /[^A-Za-z0-9]/g;
 
 async function start() {
   const response = await prompts([
@@ -48,7 +48,7 @@ function createFilename(profileId, profileName) {
   return `profile-${profileId}-${pname}-${YYYY}-${mm}-${dd}.ts`.replace(
     /-+/g,
     '-',
-  );;
+  );
 }
 
 function createConstName(profileId, profileName) {
@@ -138,6 +138,8 @@ function profileToDfhApiProfile(profile) {
     dfh_profile_label_language: profile.profileLabelLanguage,
     dfh_profile_definition_language: profile.profileDefinitionLanguage,
     dfh_is_ongoing_forced_publication: profile.isOngoingForcedPublication,
+    dfh_is_root_profile: profile.isRootProfile,
+    dfh_fk_root_profile: profile.fkRootProfile,
   };
 }
 
@@ -161,6 +163,8 @@ function classToDfhApiClass(c) {
     dfh_class_scope_note_language: c.classScopeNoteLanguage,
     dfh_class_identifier_in_namespace: c.classIdentifierInNamespace,
     dfh_profile_association_type: c.profileAssociationType,
+    dfh_parent_classes: c.parentClasses,
+    dfh_ancestor_classes: c.ancestorClasses,
   };
 }
 
@@ -168,7 +172,6 @@ function propertyToDfhApiProperty(p) {
   return {
     removed_from_api: false,
     requested_language: 'en',
-    tmsp_last_dfh_update: '2020-03-05T14:05:26.714+00:00',
     is_enabled_in_profile: null,
     dfh_pk_property: p.propertyID,
     dfh_property_label_language: p.propertyLabelLanguage,
@@ -194,5 +197,7 @@ function propertyToDfhApiProperty(p) {
     dfh_fk_profile: p.profileID,
     dfh_profile_label: p.profileLabel,
     dfh_profile_label_language: p.profileLabelLanguage,
+    dfh_parent_properties: p.parentProperties,
+    dfh_ancestor_properties: p.ancestorProperties || [],
   };
 }

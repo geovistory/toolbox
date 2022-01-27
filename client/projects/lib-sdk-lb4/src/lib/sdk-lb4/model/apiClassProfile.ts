@@ -31,5 +31,7 @@ export interface ApiClassProfile {
     profileID: number;
     profileLabel: string;
     profileLabelLanguage: string;
+    parentClasses: Array<number>;
+    ancestorClasses: Array<number>;
 }
 

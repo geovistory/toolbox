@@ -44,15 +44,15 @@ export interface NewDfhApiClass {
     dfh_fk_profile: number,
     dfh_profile_label_language: string,
     dfh_profile_label: string,
+    dfh_parent_classes: number[],
+    dfh_ancestor_classes: number[],
 }
 export interface DfhApiClass extends NewDfhApiClass {
     pk_entity: number,
     tmsp_last_modification: string
 }
 
-export interface DfhApiProperty {
-    pk_entity: number,
-    tmsp_last_dfh_update: string,
+export interface NewDfhApiProperty {
     is_enabled_in_profile: boolean | null,
     removed_from_api: boolean,
     requested_language: string,
@@ -80,6 +80,12 @@ export interface DfhApiProperty {
     dfh_fk_profile: number,
     dfh_profile_label_language: string,
     dfh_profile_label: string,
+    dfh_parent_properties: number[],
+    dfh_ancestor_properties: number[],
+}
+export interface DfhApiProperty extends NewDfhApiProperty {
+    pk_entity: number,
+    tmsp_last_dfh_update: string
 }
 
 
@@ -87,6 +93,6 @@ export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 
 export interface OntomeProfileMock {
     profile: OmitEntity<DfhApiProfile>,
-    properties: Omit<DfhApiProperty, 'pk_entity'>[],
+    properties: Omit<NewDfhApiProperty, 'pk_entity'>[],
     classes: Omit<DfhApiClass, 'pk_entity'>[],
 }
