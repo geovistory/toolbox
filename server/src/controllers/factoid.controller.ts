@@ -247,7 +247,7 @@ export class FactoidController {
           if (vot === ValueObjectTypeName.dimension) schemaObject.inf.dimension?.push(...await this.infDimensionRepository.find({where: {pk_entity: pk}}))
           if (vot === ValueObjectTypeName.timePrimitive) {
             schemaObject.inf.time_primitive?.push(...await this.infTimePrimitiveRepository.find({where: {pk_entity: pk}}))
-            bs.pkStatement = (await this.infStatementRepository.find({where: {fk_object_info: pk, fk_property: 1334}}))[0].pk_entity;
+            bs.pkStatement = (await this.infStatementRepository.find({where: {fk_object_info: pk, fk_property: 1334}}))?.[0]?.pk_entity;
             schemaObject.pro = {info_proj_rel: (await this.proInfProjRelRepository.find({where: {fk_entity: bs.pkStatement, fk_project: parseInt(pkProject)}}))}
           }
         }
