@@ -83,7 +83,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     this.pkClass = data.pkClass;
     this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.resource : null));
 
-    if (this.data.defaultSearch) this.searchString$.next(this.data.defaultSearch);
+    if (this.data.defaultSearch) this.searchString$.next(this.get4CharsForEachWords(this.data.defaultSearch));
   }
 
 
@@ -110,8 +110,12 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
    * gets called on change of the search string.
    */
   searchStringChange(newStr: string) {
-    if (newStr != "") this.searchString$.next(newStr)
-    else this.searchString$.next(this.data.defaultSearch)
+    if (newStr != "") this.searchString$.next(this.get4CharsForEachWords(newStr))
+    else this.searchString$.next(this.get4CharsForEachWords(this.data.defaultSearch))
+  }
+
+  private get4CharsForEachWords(str: string) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(' ').map(s => s.slice(0, 4)).join(' ')
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions

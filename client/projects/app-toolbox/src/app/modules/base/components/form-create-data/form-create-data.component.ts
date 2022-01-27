@@ -678,18 +678,27 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     const listNodes$ = combineLatestOrEmpty(o$).pipe(
       map((items) => {
 
+
         if (items.length == 0 && gvFormField.maxLength > 0 && targetClasses.length == 1) {
           return [this.getFieldItem(field, targetClasses[0], undefined, gvFormField.addItemsOnInit)]
         }
 
-        const byClass = groupBy((i) => i.fk_class.toString(), items)
         const node: LocalNodeConfig[] = []
-        for (const pkClass in byClass) {
-          if (byClass.hasOwnProperty(pkClass)) {
-            const initStmts = byClass[pkClass].map(e => e.statement);
-            node.push(this.getFieldItem(field, parseInt(pkClass, 10), initStmts))
+        try {
+          const byClass = groupBy((i) => i.fk_class.toString(), items)
+          for (const pkClass in byClass) {
+            if (byClass.hasOwnProperty(pkClass)) {
+              const initStmts = byClass[pkClass].map(e => e.statement);
+              node.push(this.getFieldItem(field, parseInt(pkClass, 10), initStmts))
+            }
           }
+        } catch (e) {
+          // override the class of the items (initval)
+          const initStmts = items.map(e => e.statement);
+          node.push(...targetClasses.map(cls => this.getFieldItem(field, cls, initStmts)))
+
         }
+
         return node;
       })
     )

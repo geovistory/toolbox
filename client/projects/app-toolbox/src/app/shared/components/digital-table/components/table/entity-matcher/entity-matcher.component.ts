@@ -4,6 +4,7 @@ import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { createQuillDoc } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from 'projects/app-toolbox/src/app/modules/base/components/ctrl-entity/ctrl-entity.component';
@@ -72,12 +73,29 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
           maxWidth: '100%',
           panelClass: 'gv-no-padding',
           data: {
-            initVal$: new BehaviorSubject(undefined),
+            initVal$: new BehaviorSubject({
+              resource: {
+                fk_class: undefined,
+                incoming_statements: [{
+                  fk_property: 1111,
+                  subject_resource: {
+                    fk_class: undefined,
+                    outgoing_statements: [{
+                      fk_property: 1113,
+                      object_appellation: {
+                        fk_class: 40,
+                        quill_doc: createQuillDoc(this.cellContent)
+                      }
+                    }]
+                  }
+                }]
+              }
+            }),
             showAddList: true,
             hiddenProperty: { fkProperty: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO },
             disableIfHasStatement: undefined,
             pkClass: this.pkClass,
-            defaultSearch: this.cleanCellTextForSearch(this.cellContent)
+            defaultSearch: this.cellContent
           }
         })
         .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
@@ -119,10 +137,6 @@ export class EntityMatcherComponent implements OnInit, OnDestroy {
       fk_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
       fk_object_info: pkEntity
     }])
-  }
-
-  private cleanCellTextForSearch(str: string) {
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(' ').map(s => s.slice(0, 4)).join(' ')
   }
 
 }

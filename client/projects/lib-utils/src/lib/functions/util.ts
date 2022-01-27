@@ -1,5 +1,6 @@
 import { FormArray, FormGroup } from '@angular/forms';
 import { ProTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 
 
 export interface LabelGeneratorSettings {
@@ -136,4 +137,14 @@ export class U {
 
     return string;
   }
+}
+
+export function createQuillDoc(string: string): QuillDoc {
+  return {
+    latestId: string.length + 1,
+    ops: [
+      ...string.split('').map((char, i) => ({ insert: char, attributes: { charid: '' + (i + 1) } })),
+      { insert: '\n', attributes: { blockid: '' + (string.length + 1) } }
+    ]
+  };
 }

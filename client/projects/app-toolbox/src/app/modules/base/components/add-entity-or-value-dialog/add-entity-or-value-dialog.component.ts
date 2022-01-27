@@ -108,7 +108,11 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
    * gets called on change of the search string.
    */
   searchStringChange(term: string) {
-    this.searchString$.next(term)
+    this.searchString$.next(this.get4CharsForEachWords(term))
+  }
+
+  private get4CharsForEachWords(str: string) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(' ').map(s => s.slice(0, 4)).join(' ')
   }
 
   closeAddForm() {
