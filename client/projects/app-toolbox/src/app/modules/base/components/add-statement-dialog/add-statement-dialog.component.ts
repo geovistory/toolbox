@@ -153,7 +153,11 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
    * gets called on change of the search string.
    */
   searchStringChange(term: string) {
-    this.searchString$.next(term)
+    this.searchString$.next(this.get4CharsForEachWords(term))
+  }
+
+  private get4CharsForEachWords(str: string) {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(' ').map(s => s.slice(0, 4)).join(' ')
   }
 
   private triggerPageReloads(pkProject: number, fkInfo: number, field: Field) {
@@ -177,18 +181,25 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     const value = f.formFactory.formGroupFactory.valueChanges$.value;
     let statement: Partial<InfStatementWithRelations> = {}
 
-    if (value.resource) {
+    if (!value.statement) {
       // create the statement to add
       if (this.fieldWithOneTarget.isOutgoing) {
         statement.fk_subject_info = this.data.source.fkInfo;
         statement.object_resource = value.resource;
+        statement.object_appellation = value.appellation;
+        statement.object_dimension = value.dimension;
+        statement.object_lang_string = value.langString;
+        statement.object_language = value.language;
+        statement.object_place = value.place;
+        statement.object_time_primitive = value.timePrimitive
       } else {
         statement.fk_object_info = this.data.source.fkInfo
         statement.subject_resource = value.resource;
       }
       statement.fk_property = this.fieldWithOneTarget.property.fkProperty;
       statement.fk_property_of_property = this.fieldWithOneTarget.property.fkPropertyOfProperty;
-    } else {
+
+    } else if (value.statement) {
       statement = value.statement
       if (this.fieldWithOneTarget.isOutgoing) statement.fk_subject_info = this.data.source.fkInfo;
       else statement.fk_object_info = this.data.source.fkInfo
@@ -218,7 +229,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
    * upserts a statement, where the selected existing entity is the target
    * @param pkEntity
    */
-  private upsertSelected(pkEntity: number) {
+  upsertSelected(pkEntity: number) {
     this.loading$.next(true)
     const ff = this.fieldWithOneTarget;
     // create the statement to add

@@ -83,7 +83,10 @@
         <!-- body -->
         <ng-container body>
           <gv-search-existing-entity class="gv-fh gv-ovf-auto" [pkClass]="(pkClass_target$ | async)"
-            [searchString$]="searchString$" [mode]="sliderView == 'right' ? 'mode2' : 'mode1'"
+            [confirmBtnTextInProject]="'Select'" [confirmBtnTextNotInProject]="'Add and Select'"
+            [confirmBtnTooltipInProject]="'Select entity'"
+            [confirmBtnTooltiptNotInProject]="'add to your project and select entity'" [searchString$]="searchString$"
+            [mode]="sliderView == 'right' ? 'mode2' : 'mode1'" (onConfirm)="upsertSelected($event.pkEntity)"
             (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
           </gv-search-existing-entity>
         </ng-container>
