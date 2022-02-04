@@ -217,10 +217,16 @@ export class FactoidController {
     const offset = page * factoidNumber;
     const request = new QFactoidsFromEntity(this.dataSource);
 
-    const l1 = (await request.getFactoidNumber(pkProject, pkEntity))[0]
-    const l2 = (await request.getDefaultFactoidNumber(pkProject, pkEntity))[0]
-    const length = parseInt(l1.length) + parseInt(l2.length)
-    const factoidEntities = await request.query(pkProject, pkEntity, offset, factoidNumber);
+    // const l1 = (await request.getFactoidNumber(pkProject, pkEntity))[0]
+    // const l2 = (await request.getDefaultFactoidNumber(pkProject, pkEntity))[0]
+    // const length = parseInt(l1.length) + parseInt(l2.length)
+    // const factoidEntities = await request.query(pkProject, pkEntity, offset, factoidNumber);
+
+    const allFactoidEntities = await request.query(pkProject, pkEntity, offset, factoidNumber);
+    const length = allFactoidEntities.length
+    const factoidEntities = allFactoidEntities
+      .sort((a, b) => a.pkClass - b.pkClass)
+      .slice(offset, offset + parseInt(factoidNumber + ''));
 
 
     const schemaObject: GvPositiveSchemaObject = {

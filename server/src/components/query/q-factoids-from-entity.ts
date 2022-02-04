@@ -84,34 +84,77 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         -- If in the future a cell can be in multiple projects, think of filtering the statements (t6) on the project
         `;
 
+        const factoidsEntities: Array<FactoidEntity> = [];
+
         this.getBuiltQuery();
-        const firstQuery = this.execute<Array<RetrievedLine>>()
+        const result = await this.execute<Array<RetrievedLine>>();
+        const localFactoidEntities: Array<FactoidEntity> = [];
+
+        result.forEach(line => {
+            // maybe it is already created ? if yes, take it, if not, create it
+            const existingIndex = localFactoidEntities.findIndex(lfe => lfe.pkDigital == line.fkdigital && lfe.pkClass == line.fkclass && lfe.pkRow === parseInt(line.fkrow) && lfe.pkFactoidMapping == line.fkfactoidmapping)
+            const localFactoidEntity = existingIndex == -1 ? new FactoidEntity(line.fkdigital, line.fkclass, parseInt(line.fkrow), line.fkfactoidmapping) : localFactoidEntities[existingIndex];
+
+            /* The following code could be refactored, but for the maintenance sake, we let it as it is */
+
+            // we take care of the statement
+            // We create it
+            const statement = new FactoidStatement(line.fkproperty, line.isoutgoing, line.value, parseInt(line.pkentity), parseInt(line.fkcell), parseInt(line.fkdefault));
+            // Could it be a header statement:
+            const couldBeHeader = parseInt(line.pkentity) === parseInt(pkEntity) || (line.pkentity == null && parseInt(line.fkdefault) === parseInt(pkEntity))
+            // If it could be a header and the Factoid entity has none: Put in the header:
+            if (couldBeHeader && localFactoidEntity.headerStatements.length == 0) localFactoidEntity.headerStatements.push(statement)
+            // If it could be a header and the Factoid already has one: Put in the body:
+            else if (couldBeHeader && localFactoidEntity.headerStatements.length != 0) localFactoidEntity.bodyStatements.push(statement)
+            // If none of this is the case, we put it in the body:
+            else localFactoidEntity.bodyStatements.push(statement)
+
+            // we add it to the local list only if it is new
+            if (existingIndex == -1) localFactoidEntities.push(localFactoidEntity)
+        })
+
+        // we add them to the global list. The distinction between local and global is made so that it does not wrap Factoid entities in case of the classes are the same for the same columns
+        factoidsEntities.push(...localFactoidEntities)
 
 
         // fetch all the factoids that has the entity as the default value in the factoid property mapping but has no matching in the table
-        this.params = [];
+
+        // First we query all the couples (digital, column) that has the wanted default matchings (only in the project!)
+        this.params = []
         this.sql = `
-            with digcol as (
-                select distinct
-                    fm.fk_digital as pkdigital,
-                    fpm.fk_column as pkcolumn
-                from
-                    data.factoid_property_mapping fpm
-                    inner join data.factoid_mapping fm on fpm.fk_factoid_mapping = fm.pk_entity
-                where
-                    fpm.fk_default = ${this.addParam(pkEntity)}
-            )
-            ,cells as (
+            select distinct
+                fm.fk_digital as pkdigital,
+                fm.pk_entity as pkfm,
+                fpm.fk_column as pkcolumn,
+                fpm.pk_entity as pkfpm
+            from
+                data.factoid_property_mapping fpm
+                inner join data.factoid_mapping fm on fpm.fk_factoid_mapping = fm.pk_entity
+                inner join data.digital d on d.pk_entity = fm.fk_digital
+                inner join data."namespace" n on n.pk_entity  = d.fk_namespace
+            where
+                fpm.fk_default = ${this.addParam(pkEntity)}
+            and n.fk_project = ${this.addParam(pkProject)}
+        `
+        this.getBuiltQuery();
+        const digColsFpms = await this.execute<Array<{pkdigital: number, pkcolumn: number, pkfpm: number, pkfm: number}>>();
+
+        const defaults = [];
+        for (const digcol of digColsFpms) {
+            this.params = [];
+            this.sql = `
+            with cells as (
                 select
-                    digcol.pkdigital,
+                    ${digcol.pkdigital} as pkdigital,
                     r.pk_row as pkrow,
                     c.pk_cell as pkcell,
-                    digcol.pkcolumn,
+                    ${digcol.pkcolumn} as pkcolumn,
                     coalesce(c.numeric_value::text, c.string_value) AS value
                 from
-                    digcol
-                    left join tables.row r on digcol.pkdigital = r.fk_digital
-                    left join tables.cell c on c.fk_row = r.pk_row  and c.fk_column = digcol.pkcolumn
+                    tables.row r
+                    left join tables.cell_${digcol.pkdigital} c on c.fk_row = r.pk_row and c.fk_column = ${digcol.pkcolumn}
+                where
+                    r.fk_digital = ${digcol.pkdigital}
             )
             ,tw1 AS (
                 -- all the cells that are in the columns of fpm that have the entity as default:
@@ -123,9 +166,10 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                     fpm.pk_entity
                 FROM
                     data.factoid_property_mapping fpm
-                    LEFT JOIN cells c ON c.pkcolumn = fpm.fk_column
+                    LEFT JOIN cells c ON c.pkcolumn = ${digcol.pkcolumn}
                 WHERE
                     fpm.fk_default = ${this.addParam(pkEntity)}
+                AND fpm.fk_column = ${digcol.pkcolumn}
             )
             ,tw2 AS (
                     SELECT tw1.*
@@ -146,19 +190,19 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                     WHERE statements.pk_entity IS NULL
             )
 
-            SELECT
+            SELECT distinct
                 tw2.value as value1
-                    ,fm.fk_digital as fkDigital
-                    ,fm.pk_entity as fkFactoidMapping
-                    ,fm.fk_class as fkClass
-                    ,fpm2.fk_property as fkProperty
-                    ,fpm2.is_outgoing as isOutgoing
-                    ,case when c2.pk_cell is not null then coalesce(c2.numeric_value::text, c2.string_value) else '' end as value
-                    ,tw2.pkrow as fkRow
-                    ,fpm2.fk_column as fkColumn
-                    ,ss.fk_object_info as pkEntity
-                    ,c2.pk_cell as fkCell
-                    ,case when ss.fk_object_info is not null then null else fpm2.fk_default end as fkDefault
+                ,fm.fk_digital as fkDigital
+                ,fm.pk_entity as fkFactoidMapping
+                ,fm.fk_class as fkClass
+                ,fpm2.fk_property as fkProperty
+                ,fpm2.is_outgoing as isOutgoing
+                ,case when c2.pk_cell is not null then coalesce(c2.numeric_value::text, c2.string_value) else '' end as value
+                ,tw2.pkrow as fkRow
+                ,fpm2.fk_column as fkColumn
+                ,ss.fk_object_info as pkEntity
+                ,c2.pk_cell as fkCell
+                ,case when ss.fk_object_info is not null then null else fpm2.fk_default end as fkDefault
             FROM
                 data.factoid_property_mapping fpm
                 LEFT JOIN tw2 ON tw2.pkcolumn = fpm.fk_column
@@ -183,39 +227,41 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                         s.fk_property = 1334) ss ON ss.fk_subject_tables_cell = c2.pk_cell
             WHERE
                 fpm.fk_default = ${this.addParam(pkEntity)}
+                and fpm.pk_entity = ${digcol.pkfpm}
+            `
 
-        `;
+            this.getBuiltQuery();
+            const result = await this.execute<Array<RetrievedLine>>();
+            const localFactoidEntities: Array<FactoidEntity> = [];
 
+            result.forEach(line => {
+                // maybe it is already created ? if yes, take it, if not, create it
+                const existingIndex = localFactoidEntities.findIndex(lfe => lfe.pkRow === parseInt(line.fkrow))
+                const localFactoidEntity = existingIndex == -1 ? new FactoidEntity(line.fkdigital, line.fkclass, parseInt(line.fkrow), line.fkfactoidmapping) : localFactoidEntities[existingIndex];
 
-        this.getBuiltQuery();
-        const secondQuery = this.execute<Array<RetrievedLine>>()
+                /* The following code could be refactored, but for the maintenance sake, we let it as it is */
 
+                // we take care of the statement
+                // We create it
+                const statement = new FactoidStatement(line.fkproperty, line.isoutgoing, line.value, parseInt(line.pkentity), parseInt(line.fkcell), parseInt(line.fkdefault));
+                // Could it be a header statement:
+                const isHeader = (parseInt(line.pkentity) === parseInt(pkEntity) || (line.pkentity == null && parseInt(line.fkdefault) === parseInt(pkEntity))) && digcol.pkcolumn == parseInt(line.fkcolumn)
+                // If it could be a header and the Factoid entity has none: Put in the header:
+                if (isHeader && localFactoidEntity.headerStatements.length == 0) localFactoidEntity.headerStatements.push(statement)
+                // If it could be a header and the Factoid already has one: Put in the body:
+                else if (isHeader && localFactoidEntity.headerStatements.length != 0) localFactoidEntity.bodyStatements.push(statement)
+                // If none of this is the case, we put it in the body:
+                else localFactoidEntity.bodyStatements.push(statement)
 
-        return Promise.all([firstQuery, secondQuery])
-            .then(([result1, result2]) => result1.concat(result2))
-            .then(result => {
-                const factoidsEntities: Array<FactoidEntity> = [];
-                result.forEach(line => {
-                    let target = factoidsEntities
-                        .filter(fe => fe.pkClass === line.fkclass && fe.pkRow === parseInt(line.fkrow) && fe.pkFactoidMapping === line.fkfactoidmapping)[0];
-                    if (!target) {
-                        target = new FactoidEntity(line.fkdigital, line.fkclass, parseInt(line.fkrow), line.fkfactoidmapping);
-                        factoidsEntities.push(target);
-                    }
+                // we add it to the local list only if it is new
+                if (existingIndex == -1) localFactoidEntities.push(localFactoidEntity)
+            })
 
-                    const statement = new FactoidStatement(line.fkproperty, line.isoutgoing, line.value, parseInt(line.pkentity), parseInt(line.fkcell), parseInt(line.fkdefault));
-                    if (parseInt(line.pkentity) === parseInt(pkEntity) || (line.pkentity == null && parseInt(line.fkdefault) === parseInt(pkEntity))) target.headerStatements.push(statement);
-                    else target.bodyStatements.push(statement);
+            // we add them to the global list. The distinction between local and global is made so that it does not wrap Factoid entities in case of the classes are the same for the same columns
+            factoidsEntities.push(...localFactoidEntities)
+        }
 
-
-                    // if (line.header) {
-                    //     target.bodyStatements = target.bodyStatements.filter(stm => stm.pkCell !== statement.pkCell);
-                    //     target.headerStatements.push(statement);
-                    // } else if (!target.headerStatements.some(stm => stm.pkCell === statement.pkCell)) target.bodyStatements.push(statement);
-                });
-                return factoidsEntities.sort((a, b) => a.pkClass - b.pkClass)
-                    .slice(offset, offset + size);
-            });
+        return factoidsEntities
     }
 
     async getFactoidNumber(pkProject: string, pkEntity: string) {
