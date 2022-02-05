@@ -180,11 +180,16 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
 
     this.loading$.next(true)
     const value = f.formFactory.formGroupFactory.valueChanges$.value;
-    let statement: Partial<InfStatementWithRelations> = {}
+    const isOutgoing = this.fieldWithOneTarget.isOutgoing
+
+    // add the ord num, so that the statement is added at first position of field
+    let statement: Partial<InfStatementWithRelations> = isOutgoing ?
+      { entity_version_project_rels: [{ ord_num_of_range: 1 }] } :
+      { entity_version_project_rels: [{ ord_num_of_domain: 1 }] }
 
     if (value.resource) {
       // create the statement to add
-      if (this.fieldWithOneTarget.isOutgoing) {
+      if (isOutgoing) {
         statement.fk_subject_info = this.data.source.fkInfo;
         statement.object_resource = value.resource;
       } else {
@@ -195,7 +200,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       statement.fk_property_of_property = this.fieldWithOneTarget.property.fkPropertyOfProperty;
     } else {
       statement = value.statement
-      if (this.fieldWithOneTarget.isOutgoing) statement.fk_subject_info = this.data.source.fkInfo;
+      if (isOutgoing) statement.fk_subject_info = this.data.source.fkInfo;
       else statement.fk_object_info = this.data.source.fkInfo
     }
 

@@ -1,8 +1,8 @@
-import {genSalt, hash} from 'bcrypt';
+import {genSalt, hash} from 'bcryptjs';
 import {InfAppellation, InfResource, InfStatement} from '../../../models';
 import {QuillDoc} from '../../../models/quill-doc/quill-doc.model';
 import {QuillOperation} from '../../../models/quill-doc/quill-operation.model';
-import {C_339_STRING_ID, C_456_CHUNK_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID} from '../../../ontome-ids';
+import {C_339_STRING_ID, C_365_APPELLATION_IN_A_LANGUAGE_ID, C_40_APPELLATION_ID, C_456_CHUNK_ID, C_503_EXPRESSION_PORTION_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1111_IS_APPELLATION_FOR_LANGUAGE_OF_ID, P_1113_REFERS_TO_NAME_ID, P_1317_IS_PART_OF_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID} from '../../../ontome-ids';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
 import {createDatColumn} from '../atomic/dat-column.helper';
@@ -15,6 +15,7 @@ import {createInfResource} from '../atomic/inf-resource.helper';
 import {createInfStatement} from '../atomic/inf-statement.helper';
 import {addProDfhClassToProject} from '../atomic/pro-dfh-class-proj-rel.helper';
 import {addProfileToProject} from '../atomic/pro-dfh-profile-proj-rel.helper';
+import {createProEntityLabelConfig} from '../atomic/pro-entity-label-config.helper';
 import {addInfosToProject} from '../atomic/pro-info-proj-rel.helper';
 import {createProProject} from '../atomic/pro-project.helper';
 import {createProTextProperty} from '../atomic/pro-text-property.helper';
@@ -40,6 +41,7 @@ import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
 import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../data/gvDB/InfStatementMock';
 import {OmitEntity} from '../data/gvDB/local-model.helpers';
+import {ProEntityLabelConfigMock} from '../data/gvDB/ProEntityLabelConfigMock';
 import {ProProjectMock} from '../data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../data/gvDB/ProTextPropertyMock';
 import {PubAccountMock} from '../data/gvDB/PubAccountMock';
@@ -54,7 +56,7 @@ import {TabRowMock} from '../data/gvDB/TabRowMock';
 import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
 import {PROFILE_12_BIOGRAPHICAL_BA_2022_01_18} from '../data/ontome-profiles/profile-12-biographical-ba-2022-01-18';
 import {PROFILE_5_GEOVISTORY_BASI_2022_01_18} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
-import {PROFILE_97_GEOVISTORY_DIGI_2022_01_18} from '../data/ontome-profiles/profile-97-geovistory-digi-2022-01-18';
+import {PROFILE_97_GEOVISTORY_DIGI_2022_02_05} from '../data/ontome-profiles/profile-97-geovistory-digi-2022-02-05';
 import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
 import {testdb} from '../testdb';
 import {createBunchOfPersons} from './person.helper';
@@ -101,7 +103,7 @@ export async function digitalsSeeds() {
 
   const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2022_01_18)
   const profileBiography = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_01_18)
-  const profileDigitals = await createOntomeProfileMock(PROFILE_97_GEOVISTORY_DIGI_2022_01_18)
+  const profileDigitals = await createOntomeProfileMock(PROFILE_97_GEOVISTORY_DIGI_2022_02_05)
 
 
   /****************************************************************************
@@ -119,9 +121,14 @@ export async function digitalsSeeds() {
   * Project Default Configuration Project
   ***************************************************************************/
 
-  // Project Default Configuration Project
-  await createProProject(ProProjectMock.DEFAULT_PROJECT);
+  // Default Configuration Project
+  const configProject = await createProProject(ProProjectMock.DEFAULT_PROJECT);
 
+  // Default Configuration Project > Name
+  await createProTextProperty(ProTextPropertyMock.DEFAULT_PROJECT_NAME);
+
+  // Default Configuration Project > Name
+  await createProEntityLabelConfig(ProEntityLabelConfigMock.F2_EXPRESSION_LABEL);
 
   /****************************************************************************
   * Project
@@ -133,16 +140,26 @@ export async function digitalsSeeds() {
   // Project > Name
   await createProTextProperty(ProTextPropertyMock.PROJECT_1_NAME);
 
-  // Project > Profiles
-  await addProfileToProject(profileGeovBasics.profile.dfh_pk_profile, project1.pk_entity)
-  await addProfileToProject(profileDigitals.profile.dfh_pk_profile, project1.pk_entity)
-  await addProfileToProject(profileBiography.profile.dfh_pk_profile, project1.pk_entity)
-
   // Project > Classes
   await addProDfhClassToProject(DfhApiClassMock.EN_21_PERSON.dfh_pk_class, project1.pk_entity)
 
   // Project > Namespace
   await createDatNamespace(DatNamespaceMock.NAMESPACE_1);
+
+  /****************************************************************************
+   * Project Profile relations
+   ***************************************************************************/
+
+  // Default Configuration Project > Profiles
+  await addProfileToProject(profileGeovBasics.profile.dfh_pk_profile, configProject.pk_entity)
+  await addProfileToProject(profileDigitals.profile.dfh_pk_profile, configProject.pk_entity)
+  await addProfileToProject(profileBiography.profile.dfh_pk_profile, configProject.pk_entity)
+
+  // Project > Profiles
+  await addProfileToProject(profileGeovBasics.profile.dfh_pk_profile, project1.pk_entity)
+  await addProfileToProject(profileDigitals.profile.dfh_pk_profile, project1.pk_entity)
+  await addProfileToProject(profileBiography.profile.dfh_pk_profile, project1.pk_entity)
+
 
 
   /****************************************************************************
@@ -153,15 +170,22 @@ export async function digitalsSeeds() {
   await createPubAccount(PubAccountMock.GAETAN_VERIFIED);
 
   // Account Gaetan > Credentials
-  const hashed = await hash(PubCredentialMock.GAETAN_PASSWORD.password, await genSalt());
+  const hashed = await hash(PubCredentialMock.GAETAN_PASSWORD.password ?? '', await genSalt());
   await new PubCredentialRepository(testdb)
     .create({accountId: PubAccountMock.GAETAN_VERIFIED.id, password: hashed});
 
   // Account Gaetan > Project 1
   await linkAccountProject(PubAccountMock.GAETAN_VERIFIED, ProProjectMock.PROJECT_1);
+  await linkAccountProject(PubAccountMock.GAETAN_VERIFIED, ProProjectMock.DEFAULT_PROJECT);
 
   // Account Gaetan > PubRole SysAdmin
   await createPubRoleMapping(PubRoleMappingMock.GAETAN_SYS_ADMIN)
+
+
+  /****************************************************************************
+  * Project Configuration
+  ***************************************************************************/
+
 
 
   /****************************************************************************
@@ -179,6 +203,8 @@ export async function digitalsSeeds() {
   await createInfStatement(InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2)
 
   const {entities, statements, appellations} = createTextVersionWithAnnotations(definition1.pk_entity ?? -1)
+
+
 
 
   for (const e of entities) {
@@ -214,6 +240,8 @@ export async function digitalsSeeds() {
     ].map(x => x.pk_entity)
   );
 
+
+  await createManySections(t.expression.pk_entity ?? -1, project1.pk_entity ?? -1);
 
 
   /****************************************************************************
@@ -336,28 +364,101 @@ async function createTextAndAnnotation() {
 
   s.push(await createInfStatement(InfStatementMock.TRANSCRIPTION_RODOLF_HAS_VALUE_VERSION))
   s.push(await createInfStatement(InfStatementMock.TRANSCRIPTION_IS_REPRO_OF_HABS_EMP))
-
-  // r.push(await createInfResource(InfResourceMock.HABS_EMP_EXPR))
-  // r.push(await createInfResource(InfResourceMock.HABS_EMP_MANIF_PROD_TYPE))
+  const expression = await createInfResource(InfResourceMock.HABS_EMP_EXPR)
+  r.push(expression)
+  r.push(await createInfResource(InfResourceMock.HABS_EMP_MANIF_PROD_TYPE))
   s.push(await createInfStatement(InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY))
+
+
+  r.push(await createInfResource(InfResourceMock.HABSBOURG_EMPIRE_NAMING))
+  await createInfAppellation(InfAppellationMock.SOURCE_HABSBOURG_EMPIRE)
+
+  s.push(await createInfStatement(InfStatementMock.NAMING_HABS_EMP_TO_PEIT_HABS_EMP))
+  s.push(await createInfStatement(InfStatementMock.NAMING_HABS_EMP_TO_APPE_HABS_EMP))
+
 
   r.push(await createInfResource(InfResourceMock.ANNOTATION_RUDOLF))
   s.push(await createInfStatement(InfStatementMock.ANNOTATION_RUDOLF_HAS_SPOT))
   s.push(await createInfStatement(InfStatementMock.ANNOTATION_RUDOLF_IS_ANNOTATED_IN))
   s.push(await createInfStatement(InfStatementMock.ANNOTATION_RUDOLF_REFERS_TO_RUDOLF))
   await createInfAppellation(InfAppellationMock.CHUNK_RUDOLF)
-  // r.push(await createInfResource(InfResourceMock.RUDOLF))
-
 
   s.push(await createInfStatement(InfStatementMock.HABS_EMP_EXPR_MENTIONS_RUDOLF))
 
+
   return {
+    expression,
     stmts: s,
     resources: r
   }
 }
 
 
+
+async function createManySections(expressionId: number, projectId: number) {
+  let pkEntity = 100000
+
+  const s = []
+  const r = []
+
+  for (let i = 0; i < 50; i++) {
+    const section: OmitEntity<InfResource> = {
+      pk_entity: pkEntity++,
+      fk_class: C_503_EXPRESSION_PORTION_ID,
+      community_visibility: {toolbox: true, dataApi: true, website: true},
+    };
+    r.push(await createInfResource(section));
+
+    const naming: OmitEntity<InfResource> = {
+      pk_entity: pkEntity++,
+      fk_class: C_365_APPELLATION_IN_A_LANGUAGE_ID,
+      community_visibility: {toolbox: true, dataApi: true, website: true},
+    };
+    r.push(await createInfResource(naming));
+    const sectionIsPartOfExpression: OmitEntity<InfStatement> = {
+      pk_entity: pkEntity++,
+      fk_subject_info: section.pk_entity ?? -1,
+      fk_property: P_1317_IS_PART_OF_ID,
+      fk_object_info: expressionId,
+    };
+    const isPartOf = await createInfStatement(sectionIsPartOfExpression)
+    s.push(isPartOf);
+
+    const string: OmitEntity<InfAppellation> = {
+      pk_entity: pkEntity++,
+      fk_class: C_40_APPELLATION_ID,
+      string: 'Section, stmt id: ' + (isPartOf.pk_entity ?? 0 - 1)
+    };
+    await createInfAppellation(string);
+
+
+    const namingIsNameOf: OmitEntity<InfStatement> = {
+      pk_entity: pkEntity++,
+      fk_subject_info: naming.pk_entity ?? -1,
+      fk_property: P_1111_IS_APPELLATION_FOR_LANGUAGE_OF_ID,
+      fk_object_info: section.pk_entity,
+    };
+    s.push(await createInfStatement(namingIsNameOf));
+
+    const namingRefersToName: OmitEntity<InfStatement> = {
+      pk_entity: pkEntity++,
+      fk_subject_info: naming.pk_entity ?? -1,
+      fk_property: P_1113_REFERS_TO_NAME_ID,
+      fk_object_info: string.pk_entity ?? -1,
+    };
+    s.push(await createInfStatement(namingRefersToName));
+  }
+  // add info to sandbox
+  await addInfosToProject(
+    projectId,
+    [
+      ...s,
+      ...r,
+    ].map(x => x.pk_entity)
+  );
+
+
+}
 
 async function createTableAndAnnotation() {
 

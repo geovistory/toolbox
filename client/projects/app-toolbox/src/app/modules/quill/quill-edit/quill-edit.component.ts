@@ -53,6 +53,9 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
   @Input() showCharIdToggleBtn = true;
 
+  // if false, the toolbar defined in html will be hidden
+  @Input() showDefaultToolbar = true;
+
   @Output() quillDocChange = new EventEmitter<QuillDoc>()
   @Output() blur = new EventEmitter<void>()
   @Output() focus = new EventEmitter<void>()
@@ -80,8 +83,6 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 
   showTokenIds = false;
 
-  // if false, the toolbar defined in html will be hidden
-  showDefaultToolbar = true;
 
   @ViewChild('editor', { static: true }) editorElem: ElementRef;
   @ViewChild('toolbar', { static: true }) toolbar: ElementRef;

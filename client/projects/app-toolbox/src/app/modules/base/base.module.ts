@@ -25,6 +25,7 @@ import { AddEntityMenuTypeItemComponent } from './components/add-entity-menu-typ
 import { AddEntityMenuComponent } from './components/add-entity-menu/add-entity-menu.component';
 import { AddStatementDialogComponent } from './components/add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent } from './components/choose-class-dialog/choose-class-dialog.component';
+import { ContentComponent } from './components/content/content.component';
 import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-appellation.component';
 import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityComponent } from './components/ctrl-entity/ctrl-entity.component';
@@ -36,6 +37,7 @@ import { CtrlTimeSpanComponent } from './components/ctrl-time-span/ctrl-time-spa
 import { ExistenceTimeHelpComponent } from './components/ctrl-time-span/existence-time-help/existence-time-help.component';
 import { CtrlTypeComponent } from './components/ctrl-type/ctrl-type.component';
 import { CtrlValueDialogComponent } from './components/ctrl-value/ctrl-value-dialog.component';
+import { EditTextDialogComponent } from './components/edit-text-dialog/edit-text-dialog.component';
 import { EntityAddExistingHitComponent } from './components/entity-add-existing-hit/entity-add-existing-hit.component';
 import { EntityCardHeaderComponent } from './components/entity-card-header/entity-card-header.component';
 import { EntityCardWrapperComponent } from './components/entity-card-wrapper/entity-card-wrapper.component';
@@ -62,12 +64,16 @@ import { ViewFieldAnnotationItemComponent } from './components/view-field-annota
 import { ViewFieldAnnotationsOfCellItemComponent } from './components/view-field-annotations-of-cell-item/view-field-annotations-of-cell-item.component';
 import { ViewFieldAnnotationsOfCellComponent } from './components/view-field-annotations-of-cell/view-field-annotations-of-cell.component';
 import { ViewFieldAnnotationsComponent } from './components/view-field-annotations/view-field-annotations.component';
+import { ViewFieldBody2Component } from './components/view-field-body-2/view-field-body-2.component';
 import { ViewFieldBodyComponent } from './components/view-field-body/view-field-body.component';
 import { ViewFieldDialogComponent } from './components/view-field-dialog/view-field-dialog.component';
+import { ViewFieldEmptyDropListComponent } from './components/view-field-empty-drop-list/view-field-empty-drop-list.component';
 import { ViewFieldHasValueVersionComponent } from './components/view-field-has-value-version/view-field-has-value-version.component';
 import { ViewFieldHeaderComponent } from './components/view-field-header/view-field-header.component';
 import { ViewFieldItemCellComponent } from './components/view-field-item-cell/view-field-item-cell.component';
 import { ViewFieldItemClassInfoComponent } from './components/view-field-item-class-info/view-field-item-class-info.component';
+import { ViewFieldItemContainerComponent } from './components/view-field-item-container/view-field-item-container.component';
+import { ViewFieldItemContentSectionComponent } from './components/view-field-item-content-section/view-field-item-content-section.component';
 import { ViewFieldItemEntityMenuComponent } from './components/view-field-item-entity-menu/view-field-item-entity-menu.component';
 import { ViewFieldItemLayoutComponent } from './components/view-field-item-layout/view-field-item-layout.component';
 import { ViewFieldItemNestedComponent } from './components/view-field-item-nested/view-field-item-nested.component';
@@ -76,7 +82,6 @@ import { ViewFieldItemTimePrimitiveComponent } from './components/view-field-ite
 import { ViewFieldItemValueVersionComponent } from './components/view-field-item-value-version/view-field-item-value-version.component';
 import { ViewFieldItemValueComponent } from './components/view-field-item-value/view-field-item-value.component';
 import { ViewFieldItemComponent } from './components/view-field-item/view-field-item.component';
-import { ViewFieldReferredToByComponent } from './components/view-field-referred-to-by/view-field-referred-to-by.component';
 import { ViewFieldComponent } from './components/view-field/view-field.component';
 import { ViewSectionBodyComponent } from './components/view-section-body/view-section-body.component';
 import { ViewSectionHeaderComponent } from './components/view-section-header/view-section-header.component';
@@ -90,9 +95,16 @@ import { ViewTimeSpanItemComponent } from './components/view-time-span-item/view
 import { ViewTimeSpanSectionBodyComponent } from './components/view-time-span-section-body/view-time-span-section-body.component';
 import { ViewTimeSpanSectionHeaderComponent } from './components/view-time-span-section-header/view-time-span-section-header.component';
 import { ViewTimeSpanSectionComponent } from './components/view-time-span-section/view-time-span-section.component';
+import { ViewFieldDropListDirective } from './directives/view-field-drop-list.directive';
 import { BaseModalsService } from './services/base-modals.service';
+import { GlobalDragDropService } from './services/global-drag-drop.service';
+import { installPatch } from './services/nested-drag-drop-patch';
 import { PaginationService } from './services/pagination.service';
 import { TimeSpanService } from './services/time-span.service';
+import { ViewFieldAddHooksService } from './services/view-field-add-hooks.service';
+import { ViewFieldDropListService } from './services/view-field-drop-list.service';
+import { ViewFieldItemCountSumService } from './services/view-field-item-count-sum.service';
+import { ViewFieldTreeNodeService } from './services/view-field-tree-node.service';
 
 const components = [
   TypeItemComponent,
@@ -134,6 +146,8 @@ const components = [
   EntityCardComponent,
   EntityCardWrapperComponent,
   EntityCardHeaderComponent,
+  EditTextDialogComponent,
+  ContentComponent,
   ViewSectionsComponent,
   ViewSectionComponent,
   ViewSectionsDialogComponent,
@@ -142,6 +156,7 @@ const components = [
   ViewFieldComponent,
   ViewFieldDialogComponent,
   ViewFieldBodyComponent,
+  ViewFieldBody2Component,
   ViewFieldHeaderComponent,
   ViewFieldItemComponent,
   ViewFieldItemClassInfoComponent,
@@ -152,7 +167,9 @@ const components = [
   ViewFieldItemValueComponent,
   ViewFieldItemCellComponent,
   ViewFieldItemValueVersionComponent,
+  ViewFieldItemContentSectionComponent,
   ViewFieldItemLayoutComponent,
+  ViewFieldItemContainerComponent,
   ViewTimeSpanItemPreviewComponent,
   ViewTimeSpanSectionComponent,
   ViewTimeSpanSectionHeaderComponent,
@@ -165,7 +182,8 @@ const components = [
   ViewFieldAnnotationItemComponent,
   ViewFieldAnnotationsOfCellComponent,
   ViewFieldAnnotationsOfCellItemComponent,
-  ViewFieldReferredToByComponent
+  ViewFieldDropListDirective,
+  ViewFieldEmptyDropListComponent,
 ]
 
 const baseModules = [
@@ -199,11 +217,20 @@ const baseModules = [
     PaginationService,
     TimeSpanService,
     ValidationService,
-    BaseModalsService
+    BaseModalsService,
+    ViewFieldAddHooksService,
+    ViewFieldTreeNodeService,
+    GlobalDragDropService,
+    ViewFieldDropListService,
+    ViewFieldItemCountSumService
   ],
   exports: [
     ...components,
     ...baseModules
   ]
 })
-export class BaseModule { }
+export class BaseModule {
+  constructor() {
+    installPatch()
+  }
+}

@@ -109,4 +109,13 @@ export class ProTextPropertyMock {
     fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
     string: 'Project 1'
   })
+
+  static readonly DEFAULT_PROJECT_NAME: Partial<ProTextProperty> = ({
+    pk_entity: 5011,
+    fk_project: ProProjectMock.DEFAULT_PROJECT.pk_entity,
+    fk_pro_project: ProProjectMock.DEFAULT_PROJECT.pk_entity,
+    fk_language: InfLanguageMock.ENGLISH.pk_entity,
+    fk_system_type: SysSystemTypeMock.PRO_TEXT_PROPTERTY_LABEL.pk_entity,
+    string: 'Default Config Project'
+  })
 }

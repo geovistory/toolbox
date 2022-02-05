@@ -8,7 +8,7 @@ import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../base.module';
-import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/view-field-item.component';
+import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
 import { ViewFieldComponent } from './view-field.component';
 
 const inProjectScope: GvFieldPageScope = { inProject: IAppStateMock.stateProject1.activeProject.pk_project }

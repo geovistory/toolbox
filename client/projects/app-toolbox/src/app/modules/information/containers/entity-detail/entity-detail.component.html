@@ -8,10 +8,11 @@
     <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
       <gv-detail-top-bar height="5rem" [openRightAreaBtn]="t.layoutMode=='left-only'"
+        [closeLeftAreaBtn]="t.layoutMode=='both'" (closeLeft)="t.setLayoutMode('right-only')"
         (openRight)="t.setLayoutMode('both')">
 
 
-        <gv-entity-card-header (removed)="close.emit()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
+        <gv-entity-card-header (removed)="closeTab()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
           [fkClass$]="fkClass$" [pkEntity]="pkEntity">
         </gv-entity-card-header>
       </gv-detail-top-bar>
@@ -22,7 +23,6 @@
         <span class="gv-tile">
 
           <div class="gv-tile-body">
-
             <gv-view-sections *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
               [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
             </gv-view-sections>
@@ -42,30 +42,29 @@
         'd-flex flex-column': t.layoutMode!=='left-only',
         'd-none': t.layoutMode=='left-only'
       }">
-      <button *ngIf="t.layoutMode=='both'" mat-stroked-button class="close-right-area-btn mat-text-secondary"
-        (click)="t.setLayoutMode('left-only')">
-        <mat-icon aria-label="Close right area">chevron_right</mat-icon>
-      </button>
-      <button *ngIf="t.layoutMode=='right-only'" mat-stroked-button class="close-right-area-btn mat-text-secondary"
-        (click)="t.setLayoutMode('both')">
-        <mat-icon aria-label="Close right area">chevron_right</mat-icon>
-      </button>
+      <gv-right-panel-btn (click)="t.onRightBtnClick()"> </gv-right-panel-btn>
       <mat-tab-group mat-stretch-tabs class="loc-tabs-right">
 
         <mat-tab *ngIf="tab.data.showContentTree">
           <ng-template mat-tab-label>
             <div class="loc-tab">
-              <mat-icon class="example-tab-icon">view_list</mat-icon>
+              <mat-icon [svgIcon]="'file-tree'"></mat-icon>
               has content
             </div>
           </ng-template>
-          <ng-template matTabContent>
+          <gv-content *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
+            [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [section]=linkedSources
+            [showEmptyFieldsOnInit]="true">
+          </gv-content>
+
+
+          <!-- <ng-template matTabContent>
             <gv-content-tree class="gv-tile gv-flex-fh" [pkEntity$]="pkEntity$" [fkClass$]="fkClass$">
             </gv-content-tree>
-          </ng-template>
+          </ng-template> -->
         </mat-tab>
 
-        <mat-tab *ngIf="tab.data.showAnnotations">
+        <!-- <mat-tab *ngIf="tab.data.showAnnotations">
           <ng-template mat-tab-label>
             <div class="loc-tab">
               <mat-icon [svgIcon]="'comment-quote-outline'" class="gv-digitals-primary-color"></mat-icon>
@@ -77,7 +76,7 @@
               [source]="source" [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
             </gv-view-field-referred-to-by>
           </ng-template>
-        </mat-tab>
+        </mat-tab> -->
 
         <mat-tab *ngIf="tab.data.showFactoids">
           <ng-template mat-tab-label>
@@ -89,7 +88,7 @@
           <gv-factoid-list [pkEntity]="pkEntity$|async"></gv-factoid-list>
         </mat-tab>
 
-        <mat-tab *ngIf="tab.data.showLinkedSources">
+        <!-- <mat-tab *ngIf="tab.data.showLinkedSources">
           <ng-template mat-tab-label>
             <div class="loc-tab">
               <mat-icon [svgIcon]="'gv:outlined-gv-source'" class="gv-sources-primary-color"></mat-icon>
@@ -102,12 +101,12 @@
             <span title>Linked sources</span>
           </gv-view-section>
 
-        </mat-tab>
+        </mat-tab> -->
 
         <mat-tab *ngIf="tab.data.showLinkedEntities">
           <ng-template mat-tab-label>
             <div class="loc-tab">
-              <mat-icon [svgIcon]="'gv:outlined-gv-entities'" class="gv-entities-primary-color"></mat-icon>
+              <mat-icon [svgIcon]="'link'" [color]="'primary'"></mat-icon>
               linked entities
             </div>
           </ng-template>

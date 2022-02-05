@@ -7,26 +7,28 @@ import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellati
 import { ReplaceStatementInFieldRequest } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/replaceStatementInFieldRequest';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from 'projects/app-toolbox/src/app/ontome-ids';
-import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { equals } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject, timer } from 'rxjs';
-import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
 import { DeltaI, Op, Ops } from '../../../quill/quill.models';
-import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/view-field-item.component';
+import { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
+import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
 interface QuillDocLoader {
   loading: boolean,
   error: boolean,
   quillDoc?: QuillDoc
 }
+const itemTypeProvider: ViewFieldItemTypeFn = (f, s) => 'valueVersion'
 @Component({
   selector: 'gv-view-field-has-value-version',
   templateUrl: './view-field-has-value-version.component.html',
   styleUrls: ['./view-field-has-value-version.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    { provide: VIEW_FIELD_ITEM_TYPE, useValue: 'valueVersion' },
+    { provide: VIEW_FIELD_ITEM_TYPE, useValue: itemTypeProvider },
   ]
 })
 export class ViewFieldHasValueVersionComponent implements OnInit {
@@ -36,7 +38,9 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
   @Input() source: GvFieldSourceEntity
   @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
-  editing$ = new BehaviorSubject(false)
+  @Input() editing$ = new BehaviorSubject(false)
+  @Input() showRightButtons = true
+  @Input() showHeader = true
 
   pkStringClass = C_339_STRING_ID;
   pkHasValueVersionPk = P_1864_HAS_VALUE_VERSION_ID;
@@ -114,10 +118,11 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
 
   /**
      * When user saves the text
+     * @returns Promise true, if saved, false if not
      */
-  save() {
+  async onSave(): Promise<boolean> {
     if (equals(this.newQuillDoc, this.oldQuillDoc)) {
-      this.dialog.open<ConfirmDialogComponent, ConfirmDialogData>(ConfirmDialogComponent, {
+      await this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn>(ConfirmDialogComponent, {
         data: {
           title: 'Info',
           paragraphs: ['No changes. No need to save the text.'],
@@ -125,15 +130,17 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
           noBtnText: '',
           hideNoButton: true
         }
-      })
+      }).afterClosed().pipe(first()).toPromise()
+      return false
     }
+
     const data: ProgressDialogData = {
       title: 'Saving Document',
       mode$: new BehaviorSubject<ProgressMode>('indeterminate'),
       hideValue: true,
       value$: new BehaviorSubject(0)
     }
-    const dialog = this.dialog.open(ProgressDialogComponent, {
+    const progressDialog = this.dialog.open(ProgressDialogComponent, {
       width: '250px', data, disableClose: true
     });
     const timer$ = timer(500)
@@ -156,7 +163,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
       statement
     }
     // Persist the update in the database
-    const apiCall = this.projectData.createProjectDataControllerReplaceStatementsOfField(req)
+    const apiCall$: Observable<{ error: boolean }> = this.projectData.createProjectDataControllerReplaceStatementsOfField(req)
       .pipe(
         map(e => ({ error: false })),
         catchError(() => of({ error: true })),
@@ -164,26 +171,24 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
 
 
     // wait until timer has passed and the api call is resolved$
-    combineLatest([apiCall, timer$]).pipe(
-      takeUntil(this.destroy$)
-    ).subscribe(([apiCall]) => {
-      dialog.close()
-      if (apiCall.error) {
-        this.dialog.open<ConfirmDialogComponent, ConfirmDialogData>(ConfirmDialogComponent, {
-          data: {
-            title: 'Error',
-            paragraphs: ['Error while saving. Please try again.'],
-            yesBtnText: 'Close',
-            noBtnText: '',
-            hideNoButton: true
-          }
-        })
-      }
-      else {
-        this.oldQuillDoc = this.newQuillDoc
-      }
-    })
+    const [apiCall] = await combineLatest([apiCall$, timer$]).pipe(first()).toPromise()
+    progressDialog.close()
 
+    if (apiCall.error) {
+      await this.dialog.open<ConfirmDialogComponent, ConfirmDialogData>(ConfirmDialogComponent, {
+        data: {
+          title: 'Error',
+          paragraphs: ['Error while saving. Please try again.'],
+          yesBtnText: 'Close',
+          noBtnText: '',
+          hideNoButton: true
+        }
+      }).afterClosed().pipe(first()).toPromise()
+      return false
+    }
+
+    this.oldQuillDoc = this.newQuillDoc
+    return true
   }
 
 
@@ -222,7 +227,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
           });
 
         if (!targetIsFix) {
-          this.p.ramOnSaveCallback = () => this.onSave()
+          this.p.ramOnSaveCallback = () => this.saveAnnotationCallback()
           this.p.ramBoxLeft$.next('select-text');
           this.p.ramProperty$.next(); // todo: check if this can be empty
           this.p.ramTarget$.next();
@@ -248,7 +253,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
   }
 
 
-  async onSave() {
+  private async saveAnnotationCallback() {
 
     const req = await combineLatest([this.p.pkProject$, this.p.ramTarget$.pipe(filter(x => !!x))])
       .pipe(

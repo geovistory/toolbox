@@ -1,0 +1,9 @@
+<ul #dropList cdkDropList [cdkDropListConnectedTo]="viewFieldDropListService.connectedToDropLists$|async"
+  [gvViewFieldDropList]="viewFieldDropListService" [dlField]="field" [dlSource]="source" [dlScope]="scope"
+  [cdkDropListData]="viewFieldDropListService"
+  [id]="'empty_'+source.fkInfo+ '_f_'+field.property.fkProperty+'_'+field.isOutgoing"
+  (cdkDropListDropped)="viewFieldDropListService.drop($event)"
+  [ngClass]="{'loc-dropzone-accepts':viewFieldDropListService.dropZoneAccepts$|async}">
+  <li cdkDrag>
+  </li>
+</ul>

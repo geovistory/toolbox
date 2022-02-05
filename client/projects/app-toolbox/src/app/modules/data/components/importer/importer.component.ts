@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
 import { ImportTable, ImportTableControllerService, ImportTableResponse, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
@@ -97,6 +97,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
     private p: ActiveProjectService,
     private a: ActiveAccountService,
     private apiImporter: ImportTableControllerService,
+    private dialogRef: MatDialogRef<ImporterComponent, ImporterDialogData>,
     @Inject(MAT_DIALOG_DATA) public data: ImporterDialogData
   ) {
     this.p.defaultLanguage$.pipe(takeUntil(this.destroy$)).subscribe(defaultLang => this.languageCtrl.setValue(defaultLang))
@@ -440,7 +441,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
    * @param title Title of the message from the server
    * @param message Message from the server
    */
-  loaded(title: string, message: string) {
+  async loaded(title: string, message: string) {
     const data: ConfirmDialogData = {
       noBtnText: '',
       yesBtnText: 'Ok',
@@ -448,7 +449,8 @@ export class ImporterComponent implements OnInit, OnDestroy {
       title: title,
       paragraphs: [message],
     }
-    const dialog = this.dialog.open(ConfirmDialogComponent, { data });
+    await this.dialog.open(ConfirmDialogComponent, { data }).afterClosed().pipe(first()).toPromise();
+    this.dialogRef.close()
   }
 
   /**

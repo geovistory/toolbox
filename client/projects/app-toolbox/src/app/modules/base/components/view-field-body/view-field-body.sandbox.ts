@@ -41,6 +41,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [scope]="scope"
           [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
+          [showBodyOnInit]=true
           ></gv-view-field-body>
       </div>
       <div>
@@ -66,6 +67,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [scope]="scope"
           [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
+          [showBodyOnInit]=true
           ></gv-view-field-body>
       </div>
       <div>
@@ -92,6 +94,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [scope]="scope"
           [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
+          [showBodyOnInit]=true
           ></gv-view-field-body>
       </div>
       <div>
@@ -119,6 +122,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [scope]="scope"
           [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
+          [showBodyOnInit]=true
           [addMode$]="addMode$"
           ></gv-view-field-body>
       </div>
@@ -149,6 +153,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [scope]="scope"
           [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
+          [showBodyOnInit]=true
           ></gv-view-field-body>
       </div>
       <div>
@@ -179,6 +184,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [scope]="scope"
           [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
+          [showBodyOnInit]=true
           ></gv-view-field-body>
       </div>
       <div>
@@ -215,6 +221,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [scope]="scope"
           [readonly$]="readonly$"
           [showOntoInfo$]="showOntoInfo$"
+          [showBodyOnInit]=true
           [addMode$]="addMode$"
           ></gv-view-field-body>
       </div>
@@ -222,63 +229,3 @@ export default sandboxOf(ViewFieldBodyComponent, {
     `
   })
 
-  // .add('ViewFieldBody | type: TimeSpan', {
-  //   context: {
-  //     field: FieldMock.appeHasTimeSpan,
-  //     source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
-  //     showOntoInfo$: new BehaviorSubject(false),
-  //     scope: inProjectScope,
-  //     schemaObjects: [
-  //       GvSchemaObjectMock.basicClassesAndProperties,
-  //       GvSchemaObjectMock.project1,
-  //       GvSchemaObjectMock.sysConfig,
-  //     ]
-  //   },
-  //   template: `
-  //   <gv-init-state [schemaObjects]="schemaObjects"></gv-init-state>
-  //   <div class="d-flex justify-content-center mt-5">
-  //      <div style="width:300px;height:400px" class="d-flex mr-4">
-  //         <gv-view-field-body
-  //         [source]="source"
-  //         [field]="field"
-  //         [scope]="scope"
-  //         [readonly$]="readonly$"
-  //         [showOntoInfo$]="showOntoInfo$"
-  //         ></gv-view-field-body>
-  //     </div>
-  //     <div>
-  //       <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-  //     </div>
-  //   </div>
-  //   `
-  // })
-  // .add('ViewFieldBody | type: TimeSpan empty', {
-  //   context: {
-  //     field: FieldMock.appeHasTimeSpan,
-  //     source: { fkInfo: InfResourceMock.NAMING_2_STADT.pk_entity },
-  //     showOntoInfo$: new BehaviorSubject(false),
-  //     scope: inProjectScope,
-  //     schemaObjects: [
-  //       GvSchemaObjectMock.basicClassesAndProperties,
-  //       GvSchemaObjectMock.project1,
-  //       GvSchemaObjectMock.sysConfig,
-  //     ]
-  //   },
-  //   template: `
-  //   <gv-init-state [schemaObjects]="schemaObjects"></gv-init-state>
-  //   <div class="d-flex justify-content-center mt-5">
-  //      <div style="width:300px;height:400px" class="d-flex mr-4">
-  //         <gv-view-field-body
-  //         [source]="source"
-  //         [field]="field"
-  //         [scope]="scope"
-  //         [readonly$]="readonly$"
-  //         [showOntoInfo$]="showOntoInfo$"
-  //         ></gv-view-field-body>
-  //     </div>
-  //     <div>
-  //       <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-  //     </div>
-  //   </div>
-  //   `
-  // })

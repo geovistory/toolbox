@@ -4,7 +4,8 @@
     <ng-container *ngIf="(fields$ | async)?.length > 0"></ng-container>
     <gv-view-field #f *ngFor="let field of fields$|async"
       [hidden]="(!(showEmptyFields$ |async) || field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)"
-      [field]="field" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [source]="source" [scope]="scope">
+      [field]="field" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [source]="source" [scope]="scope"
+      [showBodyOnInit]="true">
     </gv-view-field>
   </div>
 

@@ -1,7 +1,7 @@
-import {genSalt, hash} from 'bcrypt';
-import { testdb } from "../testdb";
+import {genSalt, hash} from 'bcryptjs';
 import {PubAccount} from '../../../models';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
+import {testdb} from "../testdb";
 
 export async function create(account: PubAccount, password: string) {
     const hashed = await hash(password, await genSalt());

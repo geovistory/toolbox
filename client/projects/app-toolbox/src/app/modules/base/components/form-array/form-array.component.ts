@@ -31,6 +31,11 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   }
 
   showRemoveBtn(child: FormArrayChild<FormControlData, FormArrayData, FormChildData>) {
+    const requiredLength = this.parent?.arrayFactory?.config?.data?.gvFormField?.config?.required;
+    if (requiredLength) {
+      const currentLength = this.parent?.arrayFactory?.children?.[0]?.arrayFactory?.children?.length;
+      if (currentLength <= requiredLength) return false
+    }
     if (this.parent?.arrayFactory?.config?.data?.gvFormField?.config?.hideRemoveBtn) return false
     return this.targetClasssesLength > 1 ||
       (

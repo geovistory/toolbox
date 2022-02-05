@@ -25,17 +25,35 @@
 </div>
 <div class="card-header-button">
   <!-- <div fxFlex fxLayout="row" fxLayoutAlign="end center"> -->
+  <gv-toggle-btn class="loc-toolbar-item" [value$]="readonly$">
+    <a gv-toggle-off mat-button color="primary" class="mat-btn-padding-x-8" [matTooltip]="'Stop Edit [Shift + E]'">
+      <mat-icon [svgIcon]="'eye'"></mat-icon> read
+    </a>
+
+    <a gv-toggle-on mat-flat-button color="primary" class="mat-btn-padding-x-8" [matTooltip]="'Start Edit [Shift + E]'">
+      <mat-icon [svgIcon]="'pencil'"></mat-icon> edit
+    </a>
+  </gv-toggle-btn>
+
+
   <button mat-icon-button [matMenuTriggerFor]="mainMenu">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #mainMenu="matMenu" xPosition="before">
 
     <!-- toggle onto info -->
-    <button mat-menu-item (click)="$event.stopPropagation();">
-      <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)" (change)="toggleOntoInfo();">
-        Ontology Info
+    <button mat-menu-item (click)="$event.stopPropagation();toggleOntoInfo();">
+      <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)">
+        Ontology Info [Shift + O]
       </mat-slide-toggle>
     </button>
+
+    <button mat-menu-item (click)="$event.stopPropagation();readonly$.next(!readonly$.value);">
+      <mat-slide-toggle color="accent" [checked]="(readonly$|async)">
+        Read mode [Shift + E]
+      </mat-slide-toggle>
+    </button>
+
     <mat-divider *ngIf="!(readonly$ | async)"></mat-divider>
     <div class="dropdown-header" *ngIf="!(readonly$ | async)">Settings for class {{classLabel$|async}}
     </div>

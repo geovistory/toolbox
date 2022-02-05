@@ -10,7 +10,7 @@
       [closeLeftAreaBtn]="t.layoutMode=='both'" (closeLeft)="t.setLayoutMode('right-only')"
       (openRight)="t.setLayoutMode('both');">
 
-      <gv-entity-card-header (removed)="close.emit()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
+      <gv-entity-card-header (removed)="closeTab()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
         [fkClass$]="fkClass$" [pkEntity]="pkEntity">
       </gv-entity-card-header>
     </gv-detail-top-bar>
@@ -28,14 +28,8 @@
     -------------------------------------------------------------------->
   <as-split-area [size]="t.splitSizeRight" class="gv-flex-fh">
 
-    <button *ngIf="t.layoutMode=='both'" mat-stroked-button class="close-right-area-btn mat-text-secondary"
-      (click)="t.setLayoutMode('left-only')">
-      <mat-icon aria-label="Close right area">chevron_right</mat-icon>
-    </button>
-    <button *ngIf="t.layoutMode=='right-only'" mat-stroked-button class="close-right-area-btn mat-text-secondary"
-      (click)="t.setLayoutMode('both')">
-      <mat-icon aria-label="Close right area">chevron_right</mat-icon>
-    </button>
+    <gv-right-panel-btn (click)="t.onRightBtnClick()"> </gv-right-panel-btn>
+
     <mat-tab-group mat-stretch-tabs class="loc-tabs-right">
       <mat-tab>
         <ng-template mat-tab-label>

@@ -15,11 +15,12 @@ import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../clas
 })
 export class EntityCardHeaderComponent implements OnInit {
 
-  @Input() readonly$: Observable<boolean>
+  @Input() readonly$: BehaviorSubject<boolean>
   @Input() showOntoInfo$: BehaviorSubject<boolean>;
   @Input() fkClass$: Observable<number>;
   @Input() pkEntity: number;
   @Input() pkProject: number;
+
 
   @Output() removed = new EventEmitter<void>();
 

@@ -64,6 +64,7 @@ model/apiProfile.ts
 model/apiProfileProject.ts
 model/apiProfileSelectedByProjects.ts
 model/apiPropertyProfile.ts
+model/changeOrdNumReq.ts
 model/chartLine.ts
 model/chartLinePoint.ts
 model/classConfig.ts
@@ -206,6 +207,7 @@ model/sysConfigClassCategory.ts
 model/sysConfigClassCategoryBelonging.ts
 model/sysConfigFieldDisplay.ts
 model/sysConfigFieldsOfSourceClass.ts
+model/sysConfigFieldsOfSourceSuperClass.ts
 model/sysConfigFormCtrlType.ts
 model/sysConfigOntomeProfiles.ts
 model/sysConfigOptionalProfiles.ts

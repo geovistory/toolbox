@@ -145,17 +145,15 @@
           <gv-tab-body [tab]="tab" [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
             *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
 
-            <gv-text-detail2 class="gv-flex-fh" *ngIf="tab.component=='text'" [tabId]="tab.path[2]"
-              [pkEntity]="tab.data.pkEntity"></gv-text-detail2>
+            <gv-text-detail2 class="gv-flex-fh" *ngIf="tab.component=='text'" [tab]="tab" #c [onActivateTab]="c">
+            </gv-text-detail2>
 
 
-            <gv-table-detail class="gv-flex-fh" *ngIf="tab.component=='table'" [pkEntity]="tab.data.pkEntity"
-              [filterOnRow]="tab.data.filterOnRow" [basePath]="tab.path"
-              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+            <gv-table-detail class="gv-flex-fh" *ngIf="tab.component=='table'" [tab]="tab" #c [onActivateTab]="c">
             </gv-table-detail>
 
 
-            <gv-entity-detail class="gv-flex-fh" *ngIf="tab.component=='entity'" [tab]="tab" [basePath]="tab.path"
+            <gv-entity-detail class="gv-flex-fh" *ngIf="tab.component=='entity'" [tab]="tab"
               (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-entity-detail>
 

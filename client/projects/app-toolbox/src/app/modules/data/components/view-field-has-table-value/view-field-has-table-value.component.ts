@@ -5,7 +5,7 @@ import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, ImportTableR
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { P_1879_HAS_VALUE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { catchError, first, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { catchError, first, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { ImporterComponent, ImporterDialogData } from '../importer/importer.component';
 interface PkTableValueLoader {
   loading: boolean,
@@ -87,31 +87,31 @@ export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
     )
   }
 
-  openImportDialog() {
+  async openImportDialog() {
 
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    const pkProject = await this.p.pkProject$.pipe(first()).toPromise()
+    const apiCall = (response: ImportTableResponse) => {
+      const a$ = this.dataApi.upsertInfStatementsWithRelations(
+        pkProject,
+        [{
+          fk_object_data: response.fk_digital,
+          fk_subject_info: this.source.fkInfo,
+          fk_property: this.pkHasValuePk
+        }]
+      ).pipe(map(r => r ? response : undefined));
 
-      const apiCall = (response: ImportTableResponse) => {
-        const a$ = this.dataApi.upsertInfStatementsWithRelations(
-          pkProject,
-          [{
-            fk_object_data: response.fk_digital,
-            fk_subject_info: this.source.fkInfo,
-            fk_property: this.pkHasValuePk
-          }]
-        ).pipe(map(r => r ? response : undefined));
 
+      return combineLatest([a$]).pipe(map((vals) => vals[0]))
+    }
 
-        return combineLatest([a$]).pipe(map((vals) => vals[0]))
-      }
+    await this.dialog.open<ImporterComponent, ImporterDialogData>(ImporterComponent, {
+      height: 'calc(100% - 30px)',
+      width: '90%',
+      maxHeight: '100%',
+      data: { apiCall }
+    }).afterClosed().pipe(first()).toPromise()
 
-      this.dialog.open<ImporterComponent, ImporterDialogData>(ImporterComponent, {
-        height: 'calc(100% - 30px)',
-        width: '90%',
-        maxHeight: '100%',
-        data: { apiCall }
-      });
-    })
+    this.loadTrigger$.next()
   }
   ngOnDestroy() {
     this.destroy$.next(true);

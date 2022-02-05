@@ -15,13 +15,13 @@ import { PanelBodyDirective } from '../../directives/panel-body.directive';
 
 
 
-export interface TabBody extends PanelTab<any> {
+export interface TabBody<M> extends PanelTab<M> {
   panelId: number;
   panelIndex: number;
   tabIndex: number;
 }
 
-export const getTabBodyKey = (b: TabBody) => b.path.join('');
+export const getTabBodyKey = <M>(b: TabBody<M>) => b.path.join('');
 
 @Component({
   selector: 'gv-project-edit',
@@ -41,8 +41,8 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   destroy$ = new Subject<boolean>();
   beforeDestroy$ = new Subject<boolean>();
 
-  allTabs$: Observable<TabBody[]>;
-  tabBodiesByKey$: Observable<{ [key: string]: TabBody }>;
+  allTabs$: Observable<TabBody<any>[]>;
+  tabBodiesByKey$: Observable<{ [key: string]: TabBody<any> }>;
   highlightPanel = {};
   tabDragging = false;
   panelBodies$ = new BehaviorSubject<PanelBodyDirective[]>([]);
@@ -82,10 +82,10 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     this.p.initProjectConfigData(id);
 
     this.allTabs$ = this.p.panels$.pipe(map(panels => {
-      let allTabs: TabBody[] = []
+      let allTabs: TabBody<any>[] = []
       panels.forEach((panel, panelIndex) => {
         allTabs = [...allTabs, ...[...panel.tabs].map((tab, tabIndex) => {
-          const tabBody: TabBody = {
+          const tabBody: TabBody<any> = {
             ...tab,
             panelId: panel.id,
             tabIndex,
@@ -126,7 +126,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     return index; // or item.id
   }
 
-  trackByPath(index, item: TabBody) {
+  trackByPath(index, item: TabBody<any>) {
     return getTabBodyKey(item);
   }
 

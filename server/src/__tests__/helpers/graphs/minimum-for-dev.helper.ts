@@ -1,4 +1,4 @@
-import {genSalt, hash} from 'bcrypt';
+import {genSalt, hash} from 'bcryptjs';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
 import {createDatNamespace} from '../atomic/dat-namespace.helper';
 import {createInfAppellation} from '../atomic/inf-appellation.helper';
@@ -137,7 +137,7 @@ export async function minimumForDev() {
   await createPubAccount(PubAccountMock.GAETAN_VERIFIED);
 
   // Account Gaetan > Credentials
-  const hashed = await hash(PubCredentialMock.GAETAN_PASSWORD.password, await genSalt());
+  const hashed = await hash(PubCredentialMock.GAETAN_PASSWORD.password ?? '', await genSalt());
   await new PubCredentialRepository(testdb)
     .create({accountId: PubAccountMock.GAETAN_VERIFIED.id, password: hashed});
 

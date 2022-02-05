@@ -7,4 +7,6 @@ import { FieldTargetClass } from './FieldTargetClass';
  * statements of an entity.
  *
  */
-export type Subfield = FieldBase & FieldTargetClass
+export type Subfield = FieldBase & FieldTargetClass & {
+  sourceSuperClasses: number[]
+}

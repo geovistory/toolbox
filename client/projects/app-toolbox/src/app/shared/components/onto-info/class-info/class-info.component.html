@@ -1,7 +1,7 @@
 <gv-onto-class-info [ngStyle]="{'font-size.px':size}" style="line-height: 1;" *ngIf="showOntoInfo$ | async" class="mr-2"
   [pkClass]="pkClass">
 </gv-onto-class-info>
-<span *ngIf="!(showOntoInfo$|async)" style="display:flex; line-height: 0;" [matTooltip]="tooltip">
+<span *ngIf="!(showOntoInfo$|async)" style="vertical-align: middle; line-height: 0;" [matTooltip]="tooltip">
 
   <mat-icon [ngStyle]="{
       'font-size.px':size,

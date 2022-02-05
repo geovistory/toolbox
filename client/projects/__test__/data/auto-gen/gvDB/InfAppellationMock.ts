@@ -1,6 +1,6 @@
 import {InfAppellation} from '@kleiolab/lib-sdk-lb4';
 import {QuillDoc} from '@kleiolab/lib-sdk-lb4';
-import {C_339_STRING_ID, C_456_CHUNK_ID} from '../../../../ontome-ids';
+import {C_339_STRING_ID, C_456_CHUNK_ID} from '../../../../app-toolbox/src/app/ontome-ids';
 import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
 

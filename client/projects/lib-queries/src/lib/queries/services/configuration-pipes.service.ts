@@ -1,21 +1,21 @@
 
-import {Injectable} from '@angular/core';
-import {DfhConfig, ProConfig, SysConfig} from '@kleiolab/lib-config';
-import {dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey} from '@kleiolab/lib-redux';
-import {ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, InfLanguage, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue} from '@kleiolab/lib-sdk-lb4';
-import {combineLatestOrEmpty} from '@kleiolab/lib-utils';
-import {flatten, indexBy, values} from 'ramda';
-import {BehaviorSubject, combineLatest, Observable, of} from 'rxjs';
-import {filter, map, shareReplay, switchMap} from 'rxjs/operators';
-import {Field} from '../models/Field';
-import {GvFieldTargets} from '../models/FieldTargets';
-import {SpecialFieldType} from '../models/SpecialFieldType';
-import {Subfield} from '../models/Subfield';
-import {ActiveProjectPipesService} from './active-project-pipes.service';
-import {PipeCache} from './PipeCache';
-import {SchemaSelectorsService} from './schema-selectors.service';
+import { Injectable } from '@angular/core';
+import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
+import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, InfLanguage, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { flatten, indexBy, values } from 'ramda';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { Field } from '../models/Field';
+import { GvFieldTargets } from '../models/FieldTargets';
+import { SpecialFieldType } from '../models/SpecialFieldType';
+import { Subfield } from '../models/Subfield';
+import { ActiveProjectPipesService } from './active-project-pipes.service';
+import { PipeCache } from './PipeCache';
+import { SchemaSelectorsService } from './schema-selectors.service';
 
-export enum DisplayType {form = 'form', view = 'view'}
+export enum DisplayType { form = 'form', view = 'view' }
 // export type SectionNameType = keyof Sections
 export enum SectionName {
   basic = 'basic',
@@ -81,7 +81,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   constructor(
     private a: ActiveProjectPipesService,
     private s: SchemaSelectorsService,
-  ) {super()}
+  ) { super() }
 
 
   /**
@@ -168,8 +168,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
               !!x.fk_domain_class
             ].join('_'), fieldConfigs)
 
-            const uniqFields: {[uid: string]: Field} = {}
-            const uniqSubfieldCache: {[uid: string]: true} = {}
+            const uniqFields: { [uid: string]: Field } = {}
+            const uniqSubfieldCache: { [uid: string]: true } = {}
 
 
             // group by source, pkProperty and isOutgoing
@@ -181,9 +181,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
               if (!uniqFields[fieldId]) {
                 let isSpecialField: SpecialFieldType = false;
                 if (s.isHasTypeField) isSpecialField = 'has-type';
-                // TODO time span!!!
-                // else if (s.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN) isSpecialField = 'time-span';
-                // else if (s.targetClass === DfhConfig.ClASS_PK_TIME_SPAN) isSpecialField = 'time-span';
                 else if (s.isTimeSpanShortCutField) isSpecialField = 'time-span';
                 uniqFields[fieldId] = {
                   sourceClass: s.sourceClass,
@@ -458,8 +455,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       //          console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing, x])
       //          return x
       //        })),
+      this.s.dfh$.class$.by_pk_class$.key(sourceClass)
     ])
-      .pipe(map(([sourceClassLabel, targetClassLabel, targetTypes, label]
+      .pipe(map(([sourceClassLabel, targetClassLabel, targetTypes, label, dfhClass]
       ) => {
 
         // console.log('pppp Subfield complete: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
@@ -468,6 +466,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           viewType: targetTypes.viewType,
           formControlType: targetTypes.formControlType,
           sourceClass,
+          sourceSuperClasses: [...dfhClass.parent_classes, ...dfhClass.ancestor_classes],
           sourceClassLabel,
           sourceMaxQuantity,
           sourceMinQuantity,
@@ -478,7 +477,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           label,
           isHasTypeField,
           isTimeSpanShortCutField: false,
-          property: {fkProperty: p.pk_property},
+          property: { fkProperty: p.pk_property },
           isOutgoing: o,
           identityDefiningForSource,
           identityDefiningForTarget,
@@ -515,7 +514,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     pkProperty?: number,
     isOutgoing?: boolean,
     noNesting = false
-  ): Observable<{viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType}> {
+  ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
     const obs$ = combineLatest([
       this.s.sys$.config$.main$.pipe(filter(x => !!x)),
       // freezing bug log
@@ -542,13 +541,13 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     pkProperty?: number,
     isOutgoing?: boolean,
     noNesting = false
-  ): Observable<{viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType}> {
+  ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
 
     // console.log('pppp found: ', [undefined, pkProperty, klass.pk_class, isOutgoing])
     const res = (
       v: GvFieldTargetViewType,
       f: SysConfigFormCtrlType
-    ) => new BehaviorSubject({viewType: v, formControlType: f})
+    ) => new BehaviorSubject({ viewType: v, formControlType: f })
     const classId = klass.pk_class
     const basicType = klass.basic_type
     const sysConfOfProp = isOutgoing ? s.specialFields.outgoingProperties : s.specialFields.incomingProperties;
@@ -565,7 +564,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
      * Particular Case 2: the field is has type field
      */
     if (basicType === 30 && targetMaxQuantity == 1 && classId !== DfhConfig.CLASS_PK_LANGUAGE) {
-      return res({typeItem: 'true'}, {typeItem: 'true'})
+      return res({ typeItem: 'true' }, { typeItem: 'true' })
     }
 
     /*
@@ -575,7 +574,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       s?.classes?.[classId]?.formControlType ??
       s?.classesByBasicType?.[basicType]?.formControlType ??
       s?.classesDefault?.formControlType ??
-      {entity: 'true'}; // <- fallback
+      { entity: 'true' }; // <- fallback
 
     /**
      * get view type (for display on entity card)
@@ -584,7 +583,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       s?.classes?.[classId]?.viewType ??
       s?.classesByBasicType?.[basicType]?.viewType ??
       s?.classesDefault?.viewType ??
-      {entityPreview: 'true'}; // <- fallback
+      { entityPreview: 'true' }; // <- fallback
 
     /**
     * If the view wants a nestedResource, but the nested fields are not yet defined, do it.
@@ -593,7 +592,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     if (viewType?.nestedResource?.length === 0 && noNesting !== true) {
 
       return this.pipeNestedResource(classId, pkProperty).pipe(map(nestedResource => ({
-        viewType: {nestedResource},
+        viewType: { nestedResource },
         formControlType
       })));
     }
@@ -620,7 +619,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
               const listType = field.targets[key].viewType;
               const subTargetType: GvFieldTargetViewType = listType.nestedResource ?
-                {entityPreview: 'true'} :
+                { entityPreview: 'true' } :
                 listType;
               nestedTargets[key] = subTargetType;
             }
@@ -706,7 +705,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       // freezing bug log
       // .pipe(tap(x => console.log('aaa   pkProject$'))),
     ]).pipe(
-      switchMap(([fkProject, language]) => this.pipeLabels({pkClass, fkProject, language, type: 'label'})
+      switchMap(([fkProject, language]) => this.pipeLabels({ pkClass, fkProject, language, type: 'label' })
         .pipe(
           map(items => {
 
@@ -783,7 +782,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         if (!item) return undefined;
         const origin: LabelOrigin = 'of project in project lang';
         // console.log('aaa pipeProTextProperty 1') // freezing bug log
-        return {origin, text: item.string}
+        return { origin, text: item.string }
       })),
 
       // label of default project
@@ -800,7 +799,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of default project in project lang';
         // console.log('aaa pipeProTextProperty 2') // freezing bug log
 
-        return {origin, text: item.string}
+        return { origin, text: item.string }
       })),
 
       // label of default project
@@ -817,7 +816,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of default project in english';
         // console.log('aaa pipeProTextProperty 3') // freezing bug log
 
-        return {origin, text: item.string}
+        return { origin, text: item.string }
       })),
 
       // label from ontome in default language of project
@@ -831,7 +830,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of ontome in project lang';
         // console.log('aaa pipeDfhLabel 1') // freezing bug log
 
-        return {origin, text: item.label}
+        return { origin, text: item.label }
       })),
 
       // label from ontome in english
@@ -845,7 +844,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const origin: LabelOrigin = 'of ontome in english';
         // console.log('aaa pipeDfhLabel 2') // freezing bug log
 
-        return {origin, text: item.label}
+        return { origin, text: item.label }
       })),
     ])
     return this.cache('pipeLabels', obs$, ...arguments)
@@ -1365,8 +1364,8 @@ function getFieldDisplay(
 
   // returns form/view sections of config if exists, else add to specific fields
   return {
-    formSections: settings?.formSections ?? {specific: {position: thePos}},
-    viewSections: settings?.viewSections ?? {specific: {position: thePos}}
+    formSections: settings?.formSections ?? { specific: { position: thePos } },
+    viewSections: settings?.viewSections ?? { specific: { position: thePos } }
   }
 
 }
@@ -1386,6 +1385,20 @@ function getSettingsFromSysConfig(
       specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty]) {
       settings = specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty];
     }
+    // get settings by source super class and property
+    else if (specialFields
+      ?.bySourceSuperClass
+      ?.find(x => subfield.sourceSuperClasses.some(y => x.pkSuperClass === y))
+      ?.outgoingProperties
+      ?.[subfield.property.fkProperty]
+    ) {
+
+      settings = specialFields
+        .bySourceSuperClass
+        .find(x => subfield.sourceSuperClasses.some(y => x.pkSuperClass === y))
+        .outgoingProperties
+      [subfield.property.fkProperty];
+    }
     // get seetings by property
     else if (specialFields.outgoingProperties &&
       specialFields.outgoingProperties[subfield.property.fkProperty]) {
@@ -1400,6 +1413,20 @@ function getSettingsFromSysConfig(
       specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty]) {
       settings = specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty];
     }
+    // get settings by source super class and property
+    else if (specialFields
+      ?.bySourceSuperClass
+      ?.find(x => subfield.sourceSuperClasses.some(y => x.pkSuperClass === y))
+      ?.incomingProperties
+      ?.[subfield.property.fkProperty]
+    ) {
+
+      settings = specialFields
+        .bySourceSuperClass
+        .find(x => subfield.sourceSuperClasses.some(y => x.pkSuperClass === y))
+        .incomingProperties
+      [subfield.property.fkProperty];
+    }
     // get seetings by property
     else if (specialFields.incomingProperties &&
       specialFields.incomingProperties[subfield.property.fkProperty]) {
@@ -1413,7 +1440,7 @@ function getClassCategoryBelonging(sysConfig: SysConfigValue, pkClass: number, b
   return sysConfig?.classes?.[pkClass]?.belongsToCategory ??
     sysConfig?.classesByBasicType?.[basicTypeId]?.belongsToCategory ??
     sysConfig?.classesDefault?.belongsToCategory ??
-    {entities: {showInAddMenu: true}};
+    { entities: { showInAddMenu: true } };
 }
 
 function getClassConfig(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): ClassConfig {

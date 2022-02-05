@@ -1,5 +1,5 @@
 import {InfResource} from '@kleiolab/lib-sdk-lb4';
-import {C_898_TABLE_ID, C_899_DEFINITION_ID, C_901_TRANSCRIPTION_ID, C_933_ANNOTATION_IN_TEXT_ID, C_934_ANNOTATION_IN_TABLE_ID} from '../../../../ontome-ids';
+import {C_785_TEXT_ID, C_898_TABLE_ID, C_899_DEFINITION_ID, C_933_ANNOTATION_IN_TEXT_ID, C_934_ANNOTATION_IN_TABLE_ID} from '../../../../app-toolbox/src/app/ontome-ids';
 import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
 
@@ -276,7 +276,7 @@ export class InfResourceMock {
   })
   static readonly TRANSCRIPTION_RODOLF_FOO: OmitEntity<InfResource> = ({
     pk_entity: 4028,
-    fk_class: C_901_TRANSCRIPTION_ID,
+    fk_class: C_785_TEXT_ID,
     community_visibility: {toolbox: true, dataApi: true, website: true}
   })
   static readonly ANNOTATION_RUDOLF: OmitEntity<InfResource> = ({

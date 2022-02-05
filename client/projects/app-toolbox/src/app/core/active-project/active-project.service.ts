@@ -13,6 +13,8 @@ import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { TableDetailConfig } from '../../modules/data/components/table-detail/table-detail.component';
+import { TextDetail2Config } from '../../modules/data/components/text-detail2/text-detail2.component';
 import { EntityDetailConfig } from '../../modules/information/containers/entity-detail/entity-detail.component';
 
 
@@ -56,14 +58,14 @@ export class ActiveProjectService {
    * Ram (Refers to, Annotated in, Mentioned in)
    ***************************************************************/
   ramOpen$ = new BehaviorSubject(false);
-  ramSource$ = new ReplaySubject<RamSource>();
-  ramProperty$ = new ReplaySubject<number>()
-  ramTarget$ = new ReplaySubject<number>();
-  ramTitle$ = new ReplaySubject<string>();
-  ramTitlePart2$ = new ReplaySubject<string>();
-  ramBoxLeft$ = new ReplaySubject<'select-text' | 'drag-source-or-section'>();
-  ramBoxCenter$ = new ReplaySubject<boolean>();
-  ramBoxRight$ = new ReplaySubject<boolean>();
+  ramSource$ = new ReplaySubject<RamSource>(1);
+  ramProperty$ = new ReplaySubject<number>(1)
+  ramTarget$ = new ReplaySubject<number>(1);
+  ramTitle$ = new ReplaySubject<string>(1);
+  ramTitlePart2$ = new ReplaySubject<string>(1);
+  ramBoxLeft$ = new ReplaySubject<'select-text' | 'drag-source-or-section'>(1);
+  ramBoxCenter$ = new ReplaySubject<boolean>(1);
+  ramBoxRight$ = new ReplaySubject<boolean>(1);
   ramTargetIsFix$ = new BehaviorSubject<boolean>(false);
 
 
@@ -323,7 +325,7 @@ export class ActiveProjectService {
   }
 
   private addText2Tab(pkEntity: number) {
-    this.addTab({
+    this.addTab<TextDetail2Config>({
       active: true,
       component: 'text',
       icon: 'text',
@@ -335,7 +337,7 @@ export class ActiveProjectService {
   }
 
   addTableTab(pkEntity: number, fkRow?: number) {
-    this.addTab({
+    this.addTab<TableDetailConfig>({
       active: true,
       component: 'table',
       icon: 'table',
@@ -356,20 +358,20 @@ export class ActiveProjectService {
       config = {
         pkEntity,
         showContentTree: true,
-        showAnnotations: true,
+        // showAnnotations: true,
         showFactoids: true,
         showLinkedEntities: true,
-        showLinkedSources: true
+        // showLinkedSources: true
       }
     }
     else {
       config = {
         pkEntity,
         showContentTree: false,
-        showAnnotations: true,
+        // showAnnotations: true,
         showFactoids: true,
-        showLinkedEntities: false,
-        showLinkedSources: true
+        showLinkedEntities: true,
+        // showLinkedSources: true
       }
     }
     this.addTab<EntityDetailConfig>({

@@ -3,7 +3,7 @@ import { Field, FieldBase, FieldTargetClass, SpecialFieldType } from '@kleiolab/
 import { GvFieldTargetViewType, GvSubentitFieldPageReq, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
-import { DfhApiClass, DfhApiProperty } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
+import { DfhApiClass, NewDfhApiProperty } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
 
 function fieldToSubentityFieldReq(field: Field, isCircular: boolean): GvSubentitFieldPageReq {
   const targets: { [key: number]: GvFieldTargetViewType } = {}
@@ -165,7 +165,7 @@ export namespace FieldMock {
 
 export function createFieldBase(
   source: DfhApiClass,
-  property: DfhApiProperty,
+  property: NewDfhApiProperty,
   isOutgoing: boolean,
 ): FieldBase {
 
@@ -220,7 +220,7 @@ export function createFieldBase(
 
 function createField(
   source: DfhApiClass,
-  property: DfhApiProperty,
+  property: NewDfhApiProperty,
   targets: {
     class: DfhApiClass,
     viewType: GvFieldTargetViewType,

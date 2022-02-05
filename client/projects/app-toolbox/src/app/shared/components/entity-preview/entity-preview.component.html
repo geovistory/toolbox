@@ -3,7 +3,7 @@
 
   <div class="wrap">
     <div class="label">
-      {{preview?.entity_label | truncate:['25']}}
+      {{preview?.entity_label | truncate:[truncateLabel]}}
     </div>
     <div *ngIf="!hideClass" class="type mat-text-secondary mat-caption">
 

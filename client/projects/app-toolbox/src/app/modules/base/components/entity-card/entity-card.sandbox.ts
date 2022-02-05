@@ -10,11 +10,11 @@ import { ProInfoProjRelMock } from 'projects/__test__/data/auto-gen/gvDB/ProInfo
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
-import { PROFILE_12_BIOGRAPHICAL_BA_2021_06_30 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2021-06-30';
-import { PROFILE_16_INTERACTIONS_S_2021_07_10 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2021-07-10';
-import { PROFILE_20_PHYSICAL_MAN_MA_2021_07_11 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2021-07-11';
-import { PROFILE_5_GEOVISTORY_BASI_2021_06_30 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2021-06-30';
-import { PROFILE_8_MARITIME_HISTOR_2021_07_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2021-07-09';
+import { PROFILE_12_BIOGRAPHICAL_BA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-01-18';
+import { PROFILE_16_INTERACTIONS_S_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-01-18';
+import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-18';
+import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
+import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
@@ -51,11 +51,11 @@ const appeTypeMock: GvPositiveSchemaObject = {
 const initialSchemaObects = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
-      PROFILE_5_GEOVISTORY_BASI_2021_06_30, // add basics profile
-      PROFILE_16_INTERACTIONS_S_2021_07_10, // add social interactions profile
-      PROFILE_12_BIOGRAPHICAL_BA_2021_06_30, // add biographical profile
-      PROFILE_8_MARITIME_HISTOR_2021_07_09, // add maritime profile
-      PROFILE_20_PHYSICAL_MAN_MA_2021_07_11 // add phyical profile
+      PROFILE_5_GEOVISTORY_BASI_2022_01_18, // add basics profile
+      PROFILE_16_INTERACTIONS_S_2022_01_18, // add social interactions profile
+      PROFILE_12_BIOGRAPHICAL_BA_2022_01_18, // add biographical profile
+      PROFILE_8_MARITIME_HISTOR_2022_01_18, // add maritime profile
+      PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 // add phyical profile
     ],
     sysConf: SysConfigValueMock.SYS_CONFIC_VALID, // add SYS_CONFIG json
     p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles
@@ -72,7 +72,7 @@ const person1FkClass$ = new BehaviorSubject(InfResourceMock.PERSON_1.fk_class);
 // showOntoInfo
 const showOntoInfo$ = new BehaviorSubject(false);
 // readonly
-const readonly$ = new BehaviorSubject(false);
+const readonly$ = new BehaviorSubject(true);
 // scope
 const inProjectScope: GvFieldPageScope = { inProject: ProProjectMock.PROJECT_1.pk_entity }
 
@@ -155,6 +155,7 @@ export default sandboxOf(EntityCardComponent, {
                   </div>
             <div>
               <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
+              <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
             </div>
         </div>`
   })

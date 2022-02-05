@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {InfStatement} from '@kleiolab/lib-sdk-lb4';
-import {P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_1879_HAS_VALUE_ID} from '../../../../ontome-ids';
+import {P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_1879_HAS_VALUE_ID} from '../../../../app-toolbox/src/app/ontome-ids';
 import {DatDigitalMock} from './DatDigitalMock';
 import {DfhApiPropertyMock} from './DfhApiPropertyMock';
 import {InfAppellationMock} from './InfAppellationMock';

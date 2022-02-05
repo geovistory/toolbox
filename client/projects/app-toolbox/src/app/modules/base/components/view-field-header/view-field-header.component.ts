@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Observable } from 'rxjs';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+
 
 @Component({
   selector: 'gv-view-field-header',
@@ -8,8 +10,8 @@ import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.compo
   styleUrls: ['./view-field-header.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ViewFieldHeaderComponent implements OnInit {
-
+export class ViewFieldHeaderComponent implements OnInit, OnDestroy {
+  destroy$ = new Subject<boolean>();
   @Input() body: ViewFieldBodyComponent
   @Input() itemsCount$: Observable<number>
   @Input() showAddButton$: Observable<boolean>
@@ -25,14 +27,25 @@ export class ViewFieldHeaderComponent implements OnInit {
   @Input() targetClassLabels: string[]
   @Input() required: boolean
   @Input() removedFromProfiles: boolean
+  @Input() displayMode: 'flat' | 'tree' = 'flat' // tree mode: looks like a node in a tree
+  @Input() indentation$ = new BehaviorSubject(0)
   @Output() add = new EventEmitter<void>()
+
+  pl$: Observable<number>
 
   itemMaxStr: string
   targetClassLabelsStr: string
   targetClassLabelsTooltip: string
-  constructor() { }
+  constructor(
+    private ref: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
+    if (this.displayMode === 'tree' && this.indentation$) {
+      this.pl$ = this.indentation$.pipe(map(indentation => 8 + (indentation * 40)))
+    } else {
+      this.pl$ = of(16)
+    }
     this.itemMaxStr = this.itemsMax == -1 ? 'n' : this.itemsMax.toString()
 
     if (this.targetClassLabels.length > 1) this.targetClassLabelsTooltip = `Related classes: ${this.targetClassLabels.join(' / ')}`
@@ -45,5 +58,9 @@ export class ViewFieldHeaderComponent implements OnInit {
 
   toggle() {
     this.body.showBody$.next(!this.body.showBody$.value)
+  }
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 }

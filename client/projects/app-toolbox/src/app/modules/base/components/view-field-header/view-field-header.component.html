@@ -1,4 +1,13 @@
-<div class="loc-left gv-pointer" [ngClass]="{ 'mat-text-primary': body.showBody$|async }" (click)="toggle()">
+<div class="loc-left gv-pointer" [ngStyle]="{'padding-left.px':pl$|async}"
+  [ngClass]="{ 'mat-text-primary': body.showBody$|async }" (click)="toggle()">
+
+  <button mat-icon-button *ngIf="displayMode==='tree'" [disabled]="disableToggle"
+    [attr.aria-label]="'toggle ' + fieldLabel">
+    <mat-icon class="mat-icon-rtl-mirror">
+      {{(body.showBody$|async) ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}}
+    </mat-icon>
+  </button>
+
   <!-- OntoInfo -->
   <a *ngIf="(showOntoInfo$|async)" class="loc-field-onto-info badge badge-success mr-2" href="{{ontoInfoUrl}}"
     target="_blank">
@@ -7,7 +16,7 @@
   <!-- Property Label -->
   <span class="mat-body-strong loc-field-label" [ngClass]="{'mat-text-secondary': !(itemsCount$ |async) }">
     {{ fieldLabel}}
-    <span matTooltip="Required and not changeable (identity defining)" *ngIf="required">
+    <span matTooltip="Required and not changeable (identity defining)" *ngIf="!(readonly$|async)&&required">
       *
     </span>
     <mat-icon *ngIf="removedFromProfiles" svgIcon="alert" color="warn"
@@ -16,7 +25,7 @@
   </span>
 
   <!-- Class Label -->
-  <span *ngIf="showTargetClassLabels" class="mat-text-secondary mat-caption loc-target-class-label"
+  <span *ngIf="!(readonly$|async)&&showTargetClassLabels" class="mat-text-secondary mat-caption loc-target-class-label"
     [matTooltip]="targetClassLabelsTooltip">
     {{targetClassLabelsStr}}
   </span>
@@ -26,16 +35,21 @@
 </div>
 
 <div class="loc-right  mat-text-secondary">
-  <!-- Items Count -->
-  <span *ngIf="!hideItemsCount" class="mat-body mat-text-secondary mat-caption loc-count"
-    matTooltip="{{itemsCount$ | async}} of max. {{itemMaxStr}}">
-    &nbsp;({{itemsCount$ | async}}/{{itemMaxStr}})
-  </span>
-  <button *ngIf="!(readonly$|async)" mat-icon-button [disabled]="!(showAddButton$ | async)" (click)="add.emit()">
-    <mat-icon>add</mat-icon>
-  </button>
+  <ng-container *ngIf="!(readonly$|async)">
+    <!-- Items Count -->
+    <span *ngIf="!hideItemsCount" class="mat-body mat-text-secondary mat-caption loc-count"
+      matTooltip="{{itemsCount$ | async}} of max. {{itemMaxStr}}">
+      &nbsp;({{itemsCount$ | async}}/{{itemMaxStr}})
+    </span>
+    <!-- Add button -->
+    <button mat-icon-button [disabled]="!(showAddButton$ | async)" (click)="add.emit()">
+      <mat-icon>add</mat-icon>
+    </button>
 
-  <button mat-icon-button (click)="toggle()" [disabled]="disableToggle" [attr.aria-label]="'toggle ' + fieldLabel">
+  </ng-container>
+
+  <button mat-icon-button *ngIf="displayMode==='flat'" (click)="toggle()" [disabled]="disableToggle"
+    [attr.aria-label]="'toggle ' + fieldLabel">
     <mat-icon class="mat-icon-rtl-mirror">
       {{(body.showBody$|async) ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}
     </mat-icon>

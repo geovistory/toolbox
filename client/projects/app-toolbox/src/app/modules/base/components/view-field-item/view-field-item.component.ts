@@ -1,15 +1,18 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Inject, InjectionToken, Input, OnInit, Optional, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
-import { Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
-export const VIEW_FIELD_ITEM_TYPE = new InjectionToken<ViewFieldItemType>('ViewFieldItemType');
-
-export type ViewFieldItemType = 'preview' | 'nested' | 'timePrimitive' | 'value' | 'valueVersion' | 'cell';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { first } from 'rxjs/operators';
+import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
+import { EditTextDialogComponent, EditTextDialogData } from '../edit-text-dialog/edit-text-dialog.component';
+import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+import { VIEW_FIELD_ITEM_TYPE } from './VIEW_FIELD_ITEM_TYPE';
+export type ViewFieldItemTypeFn = (field: Field, stmtWT: StatementWithTarget) => ViewFieldItemType | undefined
+export type ViewFieldItemType = 'preview' | 'nested' | 'timePrimitive' | 'value' | 'valueVersion' | 'cell' | 'content-tree';
 
 @Component({
   selector: 'gv-view-field-item',
@@ -37,14 +40,20 @@ export class ViewFieldItemComponent implements OnInit {
     private dataService: ReduxMainService,
     private p: ActiveProjectService,
     private dialog: MatDialog,
-    @Optional() @Inject(VIEW_FIELD_ITEM_TYPE) private itemTypeOverride: ViewFieldItemType
+    @Optional() private fieldDropService: ViewFieldDropListService,
+    @Optional() @Inject(VIEW_FIELD_ITEM_TYPE) private itemTypeOverride: ViewFieldItemTypeFn,
+    @Optional() private fieldBody: ViewFieldBodyComponent,
+
   ) { }
 
   ngOnInit(): void {
     this.itemType = this.getItemType(this.field, this.item)
   }
   getItemType(field: Field, item: StatementWithTarget): ViewFieldItemType {
-    if (this.itemTypeOverride) return this.itemTypeOverride;
+    if (this.itemTypeOverride) {
+      const override = this.itemTypeOverride(field, item)
+      if (override) return override
+    }
     if (field.targets[item.targetClass]?.viewType?.entityPreview || field.targets[item.targetClass]?.viewType?.typeItem) {
       return 'preview'
     }
@@ -52,18 +61,6 @@ export class ViewFieldItemComponent implements OnInit {
     if (item.target.timePrimitive) return 'timePrimitive'
     if (item.target.cell) return 'cell'
     return 'value'
-  }
-  remove() {
-    if (this.field.identityDefiningForSource && this.field.isOutgoing) {
-      alert('Item can not be removed, since it is defining the identity of the connected temporal entity. You might want to replace the entire temporal entity.')
-    } else {
-      this.ap.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
-
-        const statement = this.item.statement;
-        this.dataService.removeInfEntitiesFromProject([statement.pk_entity], pkProject)
-
-      })
-    }
   }
 
   openPopup(string: string) {
@@ -77,6 +74,31 @@ export class ViewFieldItemComponent implements OnInit {
     this.dialog.open(ConfirmDialogComponent, { data })
   }
 
+  openEditTextDialog() {
+    const data: EditTextDialogData = {
+      classLabel: this.field.targets[this.item.targetClass].targetClassLabel,
+      field: this.field,
+      scope: this.scope,
+      source: { fkInfo: this.item.target.entity.resource.pk_entity },
+      editing$: new BehaviorSubject(true),
+      readonly$: of(false),
+      showOntoInfo$: of(false),
+    }
+    this.dialog.open(EditTextDialogComponent, { data })
+  }
+
+  openViewTextDialog() {
+    const data: EditTextDialogData = {
+      classLabel: this.field.targets[this.item.targetClass].targetClassLabel,
+      field: this.field,
+      scope: this.scope,
+      source: { fkInfo: this.item.target.entity.resource.pk_entity },
+      editing$: new BehaviorSubject(false),
+      readonly$: of(true),
+      showOntoInfo$: of(false),
+    }
+    this.dialog.open(EditTextDialogComponent, { data })
+  }
 
 
   openInNewTabFromEntity(e: InfResource) {
@@ -104,18 +126,54 @@ export class ViewFieldItemComponent implements OnInit {
       this.p.pro$.info_proj_rel.markStatementAsFavorite(pkProject, this.item.statement.pk_entity, this.item.isOutgoing)
     })
   }
-  removeEntity() {
-    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
-      // remove the related temporal entity
-      this.p.removeEntityFromProject(this.item.target.entity.resource.pk_entity, () => {
-        // remove the statement
-        this.dataService.removeInfEntitiesFromProject([this.item.statement.pk_entity], pkProject)
-      })
-    })
+
+  async movePosition(targetOrdNum: number) {
+    this.fieldDropService.moveInSameFieldBackend(targetOrdNum, this.item.statement.pk_entity,)
+  }
+
+  async remove() {
+    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
+
+    if (this.field.identityDefiningForSource) {
+      return await this.displayNotRemovableWarning(pkProject);
+    }
+
+    if (this.field.identityDefiningForTarget) {
+      this.removeEntity(pkProject)
+    }
+    else {
+      this.removeStatement(pkProject);
+    }
 
   }
 
 
+  private async displayNotRemovableWarning(pkProject: number) {
+    const pkEntity = this?.fieldBody?.source?.fkInfo;
+    if (pkEntity) {
+      const ep = await this.ap.streamEntityPreview(pkEntity, true, pkProject).pipe(first()).toPromise();
+
+      if (ep) {
+
+        alert(`Item can not be removed, since it is defining the identity of "${ep.class_label} – ${ep.entity_label}". You might want to edit or delete the "${ep.class_label} – ${ep.entity_label}".`);
+      }
+    }
+    return false;
+  }
+
+  private removeStatement(pkProject: number) {
+    const statement = this.item.statement;
+    this.dataService.removeInfEntitiesFromProject([statement.pk_entity], pkProject);
+  }
+
+  private removeEntity(pkProject: number) {
+    // remove the related temporal entity
+    this.p.removeEntityFromProject(this.item.target.entity.resource.pk_entity, () => {
+      // remove the statement
+      this.dataService.removeInfEntitiesFromProject([this.item.statement.pk_entity], pkProject)
+    })
+
+  }
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

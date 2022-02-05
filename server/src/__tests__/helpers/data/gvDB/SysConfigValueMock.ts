@@ -173,7 +173,7 @@ export class SysConfigValueMock {
         }
       },
       "503": {
-        icon: IconType.source,
+        icon: IconType.section,
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
@@ -315,7 +315,7 @@ export class SysConfigValueMock {
           digitals: {showInAddMenu: false}
         }
       },
-      635: {
+      "635": {
         communityVisibilityRange: {toolbox: [false], dataApi: [false], website: [false]},
         communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
       },
@@ -417,45 +417,6 @@ export class SysConfigValueMock {
         }
       },
       "785": {
-        "viewType": {
-          "langString": TrueEnum.true
-        },
-        "formControlType": {
-          "langString": TrueEnum.true
-        },
-        "valueObjectType": {
-          "langString": TrueEnum.true
-        },
-        belongsToCategory: {
-          digitals: {showInAddMenu: false}
-        }
-      },
-      "868": {
-        "formControlType": {
-          "appellationTeEn": TrueEnum.true
-        }
-      },
-      "899": {
-        icon: IconType.text,
-        detailPage: TabComponent.text,
-        belongsToCategory: {
-          digitals: {
-            showInAddMenu: true,
-            positionInAddMenu: 2
-          }
-
-        }
-      },
-      "900": {
-        icon: IconType.text,
-        detailPage: TabComponent.text,
-        belongsToCategory: {
-          digitals: {
-            showInAddMenu: false,
-          }
-        }
-      },
-      "901": {
         icon: IconType.text,
         detailPage: TabComponent.text,
         belongsToCategory: {
@@ -463,6 +424,11 @@ export class SysConfigValueMock {
             showInAddMenu: true,
             positionInAddMenu: 1
           }
+        }
+      },
+      "868": {
+        "formControlType": {
+          "appellationTeEn": TrueEnum.true
         }
       },
       "898": {
@@ -475,6 +441,26 @@ export class SysConfigValueMock {
           }
         }
       },
+      "899": {
+        icon: IconType.text,
+        detailPage: TabComponent.text,
+        belongsToCategory: {
+          digitals: {
+            showInAddMenu: false,
+          }
+        }
+      },
+      "900": {
+        icon: IconType.text,
+        detailPage: TabComponent.text,
+        belongsToCategory: {
+          digitals: {
+            showInAddMenu: false,
+          }
+        }
+      },
+
+
       "934": {
         icon: IconType['persistent-item'],
         viewType: {nestedResource: []},
@@ -498,7 +484,7 @@ export class SysConfigValueMock {
       },
       "936": {
         icon: IconType.value,
-        "valueObjectType": {},
+        // "valueObjectType": {},
         belongsToCategory: {
           digitals: {showInAddMenu: false}
         }
@@ -506,74 +492,72 @@ export class SysConfigValueMock {
     },
     "addProperty": [
       {
-        "comment": "add <has appellation> to all teEn, peIt and types except for appe for lang itself",
+        "comment": "all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40), Appellation for Language (365) and Annotation (932) and excluding  Person (21) and excluding value classes",
         "isOutgoing": false,
         "toSourceClass": {
-          "whereBasicTypeIn": [
-            8,
-            9,
-            30
-          ],
-          "wherePkClassNotIn": [
-            365,
-            21,
-            870
-          ]
+          "whereSubclassOf": [2, 70],
+          "whereNotValueObjectType": true,
+          "wherePkClassNotIn": [21],
+          "whereNotSubclassOf": [40, 365, 932]
         },
         "whereFkDomain": 365,
         "wherePkProperty": 1111
       },
       {
-        "comment": "add <has definition> to all teEn, peIt and types",
+        "comment": "add <has definition> to all subclasses of PeIt (70), TeEn (2) and not subclass of Appellation (40) and not subclass of Annotation (932) and not Mentioning (935), Definition (899), Comment (900)",
         "isOutgoing": true,
-        "toSourceClass": {
-          "whereBasicTypeIn": [
-            8,
-            9,
-            30
-          ],
-          "whereNotSubclassOf": [
-            40,
-            455,
-            13
-          ]
-        },
         "wherePkProperty": 1762,
-        "whereFkRange": 899
-      },
-      {
-        "comment": "Entity is mentioned by mentioning",
-        "isOutgoing": false,
-        "wherePkProperty": 1876,
+        "whereFkRange": 899,
         "toSourceClass": {
-          "all": true,
+          "whereSubclassOf": [2, 70],
+          "whereNotSubclassOf": [40, 365, 932],
+          "wherePkClassNotIn": [899],
           "whereNotValueObjectType": true,
-          "whereNotSubclassOf": [13, 52],
-          "wherePkClassNotIn": [1, 2]
         }
       },
       {
-        "comment": "Entity is annotated by annotation in text",
+        "comment": "add <has comment> to all all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40) and the class Comment (900) and excluding value classes",
+        "isOutgoing": true,
+        "wherePkProperty": 1763,
+        "whereFkRange": 900,
+        "toSourceClass": {
+          "whereSubclassOf": [2, 70],
+          "whereNotSubclassOf": [40],
+          "wherePkClassNotIn": [900],
+          "whereNotValueObjectType": true,
+        }
+      },
+      {
+        "comment": "add CRM Entity <is mentioned in> Mentioning to all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40), Annotation (932) and Digital (455) and excluding value classes",
+        "isOutgoing": false,
+        "wherePkProperty": 1876,
+        "whereFkDomain": 935,
+        "toSourceClass": {
+          "whereSubclassOf": [2, 70],
+          "whereNotSubclassOf": [40, 455, 932],
+          "whereNotValueObjectType": true,
+        }
+      },
+      {
+        "comment": "Entity is annotated by annotation in text to all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40) and Annotation (932) and Digital (455) and excluding value classes",
         "isOutgoing": false,
         "wherePkProperty": 1875,
         "whereFkDomain": 933,
         "toSourceClass": {
-          "all": true,
+          "whereSubclassOf": [2, 70],
           "whereNotValueObjectType": true,
-          "whereNotSubclassOf": [13, 52],
-          "wherePkClassNotIn": [1, 2]
+          "whereNotSubclassOf": [40, 455, 932],
         }
       },
       {
-        "comment": "Entity is annotated by annotation in table",
+        "comment": "Entity is annotated by annotation in table to all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40) and Annotation (932) and Digital (455) and excluding value classes",
         "isOutgoing": false,
         "wherePkProperty": 1875,
         "whereFkDomain": 934,
         "toSourceClass": {
-          "all": true,
+          "whereSubclassOf": [2, 70],
           "whereNotValueObjectType": true,
-          "whereNotSubclassOf": [13, 52],
-          "wherePkClassNotIn": [1, 2]
+          "whereNotSubclassOf": [40, 455, 932],
         }
       },
       {
@@ -809,6 +793,56 @@ export class SysConfigValueMock {
             }
           }
         },
+        "785": {
+          outgoingProperties: {
+            "1864": {
+              "comment": "geov:P? has value version",
+              "formSections": {
+                "basic": {
+                  "position": 0,
+                  hideRemoveBtn: true,
+                  "noFieldHeader": true, // hide the field header
+                  controlsOnInit: 1,
+                },
+                "simpleForm": {
+                  hidden: true
+                }
+              },
+              "viewSections": {
+                "specific": {
+                  "hidden": true // hide it from the fields
+                }
+              }
+            },
+            1761: {
+              "comment": "Text has short title",
+              formSections: {
+                "simpleForm": {
+                  "position": 1,
+                  controlsOnInit: 1,
+                },
+                "basic": {
+                  "position": 1,
+                  controlsOnInit: 1,
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1
+                }
+              }
+            },
+            63: {
+              "comment": "Text has language",
+              viewSections: {
+                "specific": {
+                  "position": 2,
+                  controlsOnInit: 1,
+                }
+              }
+            }
+          }
+        },
         "870": {
           "outgoingProperties": {
             "63": {
@@ -902,49 +936,222 @@ export class SysConfigValueMock {
             }
           }
         },
-        "899": {
+        "898": {
           outgoingProperties: {
-            63: {
-              "comment": "Definition has language",
+            1761: {
+              "comment": "Table has short title",
               formSections: {
                 "simpleForm": {
-                  "position": 2,
-                  hideRemoveBtn: true,
-                  required: 1,
+                  "position": 1,
                   controlsOnInit: 1,
                 },
+                "basic": {
+                  "position": 1,
+                  controlsOnInit: 1,
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1
+                }
+              }
+            },
+            63: {
+              "comment": "Table has language",
+              viewSections: {
                 "specific": {
                   "position": 2,
-                  hideRemoveBtn: true,
-                  required: 1,
                   controlsOnInit: 1,
                 }
               }
             }
           }
         },
-        "898": {
-          outgoingProperties: {
-            1761: {
-              "comment": "has short title",
-              formSections: {
+        "899": {
+          "outgoingProperties": {
+            "1761": {
+              "comment": "Definition has short title",
+              "formSections": {
                 "simpleForm": {
-                  "position": 1,
-                  controlsOnInit: 1,
+                  "hidden": true
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 2
+                }
+              }
+            },
+            "63": {
+              "comment": "Definition has language",
+              "formSections": {
+                "simpleForm": {
+                  "position": 2,
+                  "hideRemoveBtn": true,
+                  "required": 1,
+                  "controlsOnInit": 1,
+                },
+                "specific": {
+                  "position": 2,
+                  "hideRemoveBtn": true,
+                  "required": 1,
+                  "controlsOnInit": 1,
                 }
               }
             }
           }
-        }
+        },
+        "900": {
+          "outgoingProperties": {
+            "1761": {
+              "comment": "Comment has short title",
+              "formSections": {
+                "simpleForm": {
+                  "hidden": true
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 2
+                }
+              }
+            },
+            "63": {
+              "comment": "Comment has language",
+              "formSections": {
+                "simpleForm": {
+                  "position": 2,
+                  "hideRemoveBtn": true,
+                  "required": 1,
+                  "controlsOnInit": 1,
+                },
+                "specific": {
+                  "position": 2,
+                  "hideRemoveBtn": true,
+                  "required": 1,
+                  "controlsOnInit": 1,
+                }
+              }
+            }
+          }
+        },
       },
+      "bySourceSuperClass": [
+        {
+          "pkSuperClass": 455,
+          "outgoingProperties": {
+            "1762": {
+              "comment": "P18 has definition (is definition of)",
+              "formSections": {
+                "simpleForm": {
+                  "hidden": true
+                },
+                "basic": {
+                  "position": 3,
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 3
+                }
+              }
+            },
+          },
+          "incomingProperties": {
+            "1111": {
+              "comment": "has appellation for language",
+              "formSections": {
+                "simpleForm": {
+                  "hidden": true
+                },
+                "basic": {
+                  "position": 1
+                },
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1
+                }
+              }
+            }
+          }
+        },
+
+        {
+          "pkSuperClass": 70,
+          "outgoingProperties": {
+            "1762": {
+              "comment": "P18 has definition (is definition of)",
+              "formSections": {
+                "basic": {
+                  "position": 2,
+                  required: 1,
+                  controlsOnInit: 1,
+                },
+                "simpleForm": {
+                  "position": 2,
+                  required: 1,
+                  controlsOnInit: 1,
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 2
+                }
+              }
+            },
+          },
+          "incomingProperties": {
+            "1111": {
+              "comment": "has appellation for language",
+              "formSections": {
+                "basic": {
+                  "position": 1,
+                  controlsOnInit: 1,
+                },
+                "simpleForm": {
+                  "position": 1,
+                  controlsOnInit: 1,
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1
+                }
+              }
+            },
+          }
+        },
+      ],
       "incomingProperties": {
+        "979": {
+          "comment": "Manifestation product type > comprises carriers of > Expression",
+          "viewSections": {
+            "linkedSources": {
+              "position": 1
+            }
+          }
+        },
+        "1216": {
+          "comment": "Expression > has reproduction > Transcription / Table",
+          "viewSections": {
+            "linkedSources": {
+              "position": 1
+            }
+          }
+        },
+        "1317": {
+          "comment": "Expression > has as part > Expression Portion",
+          "viewSections": {
+            "linkedSources": {
+              "position": 1
+            }
+          }
+        },
         "1111": {
           "comment": "has appellation for language",
           "formSections": {
             "basic": {
-              "position": 1
-            },
-            "simpleForm": {
               "position": 1
             }
           },
@@ -968,7 +1175,7 @@ export class SysConfigValueMock {
           }
         },
         "1872": {
-          "comment": "geov:P? is annotation in",
+          "comment": "Digital > has annotation > Annotation",
           "formSections": {
             "specific": {
               "hidden": true // hide it from the fields
@@ -988,21 +1195,31 @@ export class SysConfigValueMock {
             }
           },
           "viewSections": {
-            "specific": {
-              "hidden": true // hide it from the fields
+            "linkedEntities": {
+              "position": 3
             }
           }
         },
         "1876": {
           "comment": "Entity is mentioned by mentioning",
+          "formSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          },
           "viewSections": {
-            "linkedSources": {
-              "position": 1
+            "linkedEntities": {
+              "position": 2
             }
           }
         },
         "1877": {
-          "comment": "Source mentions mentioning",
+          "comment": "Source > mentions > Mentioning",
+          "formSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          },
           "viewSections": {
             "linkedEntities": {
               "position": 1
@@ -1154,11 +1371,9 @@ export class SysConfigValueMock {
           "comment": "P18 has definition (is definition of)",
           "formSections": {
             "basic": {
-              "position": 2
-            },
-            "simpleForm": {
-              "position": 2
+              "position": 2,
             }
+
           },
           "viewSections": {
             "basic": {
@@ -1167,10 +1382,16 @@ export class SysConfigValueMock {
           }
         },
         "1763": {
-          "comment": "P19 has comment (is comment about)",
+          "comment": "has comment > Comment",
           "formSections": {
+            "specific": {
+              "hidden": true
+            },
             "basic": {
-              "position": 6
+              "hidden": true
+            },
+            "simpleForm": {
+              "hidden": true
             }
           },
           "viewSections": {
@@ -1215,6 +1436,67 @@ export class SysConfigValueMock {
               "hidden": true // hide it from the fields
             }
           }
+        },
+        "1879": {
+          "comment": "Table > has value > Table Value",
+          "formSections": {
+            "specific": {
+              "hidden": true
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "hidden": true
+            }
+          }
+        },
+        "1876": {
+          "comment": "Mentioning mentions Entity",
+          "formSections": {
+            "simpleForm": {
+              "position": 1
+            },
+            "specific": {
+              "position": 1
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "position": 1
+            }
+          }
+        },
+        "1877": {
+          "comment": "Mentioning > is mentioned in > Source",
+          "formSections": {
+            "simpleForm": {
+              "position": 2
+            },
+            "specific": {
+              "position": 2
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "position": 2
+            }
+          }
+        },
+        "1878": {
+          "comment": "Mentioning > at position > Reference",
+          "formSections": {
+            "simpleForm": {
+              "position": 3
+            },
+            "specific": {
+              "position": 3
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "position": 3
+            }
+          }
         }
       },
       "hasTypeSubproperties": {
@@ -1234,367 +1516,4 @@ export class SysConfigValueMock {
 
   }
 
-  // static readonly SYS_CONFIC_DIGITALS: SysConfigValue = {
-  //   "ontome": {
-  //     "optionalOntomeProfiles": [
-  //       {
-  //         "profilesAvailableByOmProjects": [
-  //           6
-  //         ]
-  //       }
-  //     ],
-  //     "requiredOntomeProfiles": [
-  //       5
-  //     ]
-  //   },
-  //   "classesDefault": {
-  //     "viewType": {
-  //       "nestedResource": []
-  //     },
-  //     "formControlType": {
-  //       "entity": TrueEnum.true
-  //     },
-  //     communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
-  //     communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
-  //     projectVisibilityDefault: {dataApi: false, website: false},
-  //   },
-  //   "classesByBasicType": {
-  //     "8": {
-  //       "viewType": {
-  //         "entityPreview": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "entity": TrueEnum.true
-  //       },
-  //       communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
-  //       communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
-  //     },
-  //     9: {
-  //       communityVisibilityRange: {toolbox: [true], dataApi: [true, false], website: [true, false]},
-  //       communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
-  //     },
-  //     "30": {
-  //       "viewType": {
-  //         "entityPreview": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "entity": TrueEnum.true
-  //       },
-  //       communityVisibilityRange: {toolbox: [true], dataApi: [true], website: [true]},
-  //       communityVisibilityDefault: {toolbox: true, dataApi: true, website: true}
-  //     },
-  //     "54": {
-  //       "viewType": {
-  //         "language": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "language": TrueEnum.true
-  //       },
-  //       "valueObjectType": {
-  //         "language": TrueEnum.true
-  //       },
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //   },
-  //   "classes": {
-  //     "40": {
-  //       "viewType": {
-  //         "appellation": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "appellation": AppellationFormCtrlType.true
-  //       },
-  //       "valueObjectType": {
-  //         "appellation": TrueEnum.true
-  //       },
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "54": {
-  //       "viewType": {
-  //         "language": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "language": TrueEnum.true
-  //       },
-  //       "valueObjectType": {
-  //         "language": TrueEnum.true
-  //       },
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "218": {
-  //       icon: IconType.source,
-  //       belongsToCategory: {
-  //         sources: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "220": {
-  //       icon: IconType.source,
-  //       docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
-  //       belongsToCategory: {
-  //         sources: {
-  //           showInAddMenu: true,
-  //           positionInAddMenu: 10
-  //         }
-  //       }
-  //     },
-  //     "339": {
-  //       "viewType": {
-  //         "appellation": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "appellation": AppellationFormCtrlType.textEditor
-  //       },
-  //       "valueObjectType": {
-  //         "appellation": TrueEnum.true
-  //       },
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "521": {
-  //       icon: IconType.value,
-  //       "viewType": {
-  //         "cell": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "cell": TrueEnum.true
-  //       },
-  //       "valueObjectType": {
-  //         "cell": TrueEnum.true
-  //       },
-  //       belongsToCategory: {
-  //         digitals: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "456": {
-  //       "viewType": {
-  //         "appellation": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "appellation": AppellationFormCtrlType.textEditor
-  //       },
-  //       "valueObjectType": {
-  //         "appellation": TrueEnum.true
-  //       },
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "784": {
-  //       "viewType": {
-  //         "langString": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "langString": TrueEnum.true
-  //       },
-  //       "valueObjectType": {
-  //         "langString": TrueEnum.true
-  //       },
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "899": {
-  //       icon: IconType.text,
-  //       detailPage: TabComponent.text,
-  //       belongsToCategory: {
-  //         digitals: {
-  //           showInAddMenu: true,
-  //           positionInAddMenu: 2
-  //         }
-
-  //       }
-  //     },
-  //     "933": {
-  //       viewType: {nestedResource: []},
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "901": {
-  //       icon: IconType.text,
-  //       detailPage: TabComponent.text,
-  //       belongsToCategory: {
-  //         digitals: {
-  //           showInAddMenu: true,
-  //           positionInAddMenu: 1
-  //         }
-  //       }
-  //     },
-  //     "898": {
-  //       icon: IconType.table,
-  //       detailPage: TabComponent.table,
-  //       belongsToCategory: {
-  //         digitals: {
-  //           showInAddMenu: true,
-  //           positionInAddMenu: 3
-  //         }
-  //       }
-  //     },
-  //     "934": {
-  //       viewType: {nestedResource: []},
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "936": {
-  //       "valueObjectType": {},
-  //       belongsToCategory: {
-  //         digitals: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "935": {
-  //       viewType: {nestedResource: []},
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //     "657": {
-  //       "viewType": {
-  //         "langString": TrueEnum.true
-  //       },
-  //       "formControlType": {
-  //         "langString": TrueEnum.true
-  //       },
-  //       "valueObjectType": {
-  //         "langString": TrueEnum.true
-  //       },
-  //       belongsToCategory: {
-  //         entities: {showInAddMenu: false}
-  //       }
-  //     },
-  //   },
-  //   "addProperty": [
-  //     {
-  //       "comment": "Entity is mentioned by mentioning",
-  //       "isOutgoing": false,
-  //       "wherePkProperty": 1876,
-  //       "toSourceClass": {
-  //         "whereBasicTypeIn": [8, 30, 9]
-  //       }
-  //     },
-  //     {
-  //       "comment": "Entity is annotated by annotation in text",
-  //       "isOutgoing": false,
-  //       "wherePkProperty": 1875,
-  //       "whereFkDomain": 933,
-  //       "toSourceClass": {
-  //         "whereBasicTypeIn": [8, 30, 9]
-  //       }
-  //     },
-  //     {
-  //       "comment": "Entity is annotated by annotation in table",
-  //       "isOutgoing": false,
-  //       "wherePkProperty": 1875,
-  //       "whereFkDomain": 934,
-  //       "toSourceClass": {
-  //         "whereBasicTypeIn": [8, 30, 9]
-  //       }
-  //     }
-  //   ],
-  //   "specialFields": {
-  //     "bySourceClass": {
-  //       "899": {
-  //         outgoingProperties: {
-  //           63: {
-  //             "comment": "Definition has language",
-  //             formSections: {
-  //               "simpleForm": {
-  //                 "position": 2,
-  //                 hideRemoveBtn: true,
-  //                 required: 1,
-  //                 controlsOnInit: 1,
-  //               },
-  //               "specific": {
-  //                 "position": 2,
-  //                 hideRemoveBtn: true,
-  //                 required: 1,
-  //                 controlsOnInit: 1,
-  //               }
-  //             }
-  //           }
-  //         }
-  //       },
-  //       "898": {
-  //         outgoingProperties: {
-  //           1761: {
-  //             "comment": "has short title",
-  //             formSections: {
-  //               "simpleForm": {
-  //                 "position": 1,
-  //                 controlsOnInit: 1,
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     },
-  //     "outgoingProperties": {
-  //       "1864": {
-  //         "comment": "geov:P? has value version",
-  //         "formSections": {
-  //           "basic": {
-  //             "position": 1,
-  //             "noFieldHeader": true, // hide the field header
-  //             hideRemoveBtn: true,
-  //             required: 1,
-  //             controlsOnInit: 1,
-  //           },
-  //           "simpleForm": {
-  //             "position": 1,
-  //             "noFieldHeader": true,// hide the field header
-  //             hideRemoveBtn: true,
-  //             required: 1,
-  //             controlsOnInit: 1,
-  //           }
-  //         },
-  //         "viewSections": {
-  //           "specific": {
-  //             "hidden": true // hide it from the fields
-  //           }
-  //         }
-  //       }
-
-  //     },
-  //     "incomingProperties": {
-  //       "1872": {
-  //         "comment": "geov:P? is annotation in",
-  //         "formSections": {
-  //           "specific": {
-  //             "hidden": true // hide it from the fields
-  //           }
-  //         },
-  //         "viewSections": {
-  //           "specific": {
-  //             "hidden": true // hide it from the fields
-  //           }
-  //         }
-  //       },
-  //       "1876": {
-  //         "comment": "Entity is mentioned by mentioning",
-  //         "viewSections": {
-  //           "linkedSources": {
-  //             "position": 1
-  //           }
-  //         }
-  //       },
-  //       "1877": {
-  //         "comment": "Source mentions mentioning",
-  //         "viewSections": {
-  //           "linkedEntities": {
-  //             "position": 1
-  //           }
-  //         }
-  //       }
-  //     }
-
-  //   }
-
-  // }
 }

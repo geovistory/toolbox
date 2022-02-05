@@ -1,4 +1,4 @@
-<gv-slider class="gv-fh" [slide]="sliderView">
+<gv-slider class="gv-fh" [slide]="!data.showAddList?'center':sliderView">
 
   <!-- SLIDE 1 -->
   <ng-container left>
@@ -33,7 +33,7 @@
   </ng-container>
 
   <!-- SLIDE 2 -->
-  <ng-container center>
+  <ng-container center *ngIf="data.showAddList">
     <gv-hbf-panel [footer]="false">
 
       <!-- header -->
@@ -56,7 +56,7 @@
 
 
   <!-- SLIDE 3 -->
-  <ng-container right>
+  <ng-container right *ngIf="data.showAddList">
     <gv-hbf-panel [header]="false">
 
       <!-- body -->

@@ -1,5 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { CdkDropList } from '@angular/cdk/drag-drop';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
@@ -13,6 +14,9 @@ import { delay, distinctUntilChanged, first, map, shareReplay, startWith, switch
 import { openClose } from '../../../information/shared/animations';
 import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
+import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
+import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
+
 
 @Component({
   selector: 'gv-view-field-body',
@@ -20,6 +24,9 @@ import { PaginationService } from '../../services/pagination.service';
   styleUrls: ['./view-field-body.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [openClose],
+  providers: [
+    ViewFieldDropListService
+  ]
 })
 export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -33,9 +40,12 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   @Input() showBodyOnInit: boolean
   @Input() limit = temporalEntityListDefaultLimit
   @Input() noPagination = false
+  @Input() hideNoItemsInfo = false
+  @Input() showBody$ = new BehaviorSubject(false)
 
 
   items$: Observable<StatementWithTarget[]>
+  // items$ = new BehaviorSubject<StatementWithTarget[]>([])
   itemsCount$: Observable<number>
 
   limit$: BehaviorSubject<number>
@@ -51,8 +61,13 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter()
   @Output() next = new EventEmitter()
   adding$ = new BehaviorSubject(false)
-  showBody$ = new BehaviorSubject(false)
+  // dropZoneAccepts$ = new BehaviorSubject(false)
   targetIsUnique: boolean;
+
+  pageSizeOptions: number[]
+
+  @ViewChild(CdkDropList) dropList: CdkDropList<ViewFieldBodyComponent>
+  // connectedToDropLists$ = new BehaviorSubject<CdkDropList<ViewFieldBodyComponent>[]>([])
 
   constructor(
     private p: ActiveProjectService,
@@ -60,13 +75,17 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     private i: InformationPipesService,
     private s: SchemaService,
     private ap: ActiveProjectPipesService,
+    public viewFieldDropListService: ViewFieldDropListService,
+    @Optional() private itemCountService: ViewFieldItemCountSumService
+
   ) {
 
   }
-
+  trackByFn(i, _: StatementWithTarget) {
+    return _.statement.pk_entity;
+  }
   ngOnInit() {
     // const d = new Date()
-    // console.log(`SubfieldComponent Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
     const errors: string[] = []
     if (!this.field) errors.push('@Input() field is required.');
     if (!this.source) errors.push('@Input() pkEntity is required.');
@@ -75,6 +94,10 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
     if (!this.addMode$) this.addMode$ = new BehaviorSubject(false);
+
+    this.pageSizeOptions = [
+      this.limit, this.limit * 2, this.limit * 4
+    ]
 
     this.limit$ = new BehaviorSubject(this.limit)
     if (this.noPagination) this.limit$ = new BehaviorSubject(10000000)
@@ -140,10 +163,15 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: true, bufferSize: 1 }),
 
     )
+    const fromPageLoader$ = page$.pipe(map(page => page.statements))
+    this.items$ = merge(fromPageLoader$, this.viewFieldDropListService.itemsOptimisticUpdate$)
 
-    this.items$ = page$.pipe(map(page => page.statements))
+    // page$.pipe(takeUntil(this.destroy$), map(page => page.statements)).subscribe(items => {
+    //   this.items$.next(items)
+    // })
+
     this.itemsCount$ = page$.pipe(map(page => page.count))
-
+    if (this.itemCountService) this.itemCountService.addItemCountObservable(this.itemsCount$)
     // if after removing an item, we are on the last page with no items, move one page back
     combineLatest([this.itemsCount$, this.limit$, this.pageIndex$])
       .pipe(takeUntil(this.destroy$)).subscribe(([count, limit, pageIdx]) => {
@@ -158,9 +186,11 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
       map(s => s.source.selected.length),
       startWith(0)
     )
-
-    if (this.showBodyOnInit) this.showBody$.next(true)
+    this.itemsCount$.pipe(first()).subscribe((count) => {
+      if (count && this.showBodyOnInit) this.showBody$.next(true)
+    })
   }
+
 
   private loadFieldCount(until$: Observable<unknown>) {
     this.ap.pkProject$.pipe(first()).subscribe(pkProject => {
@@ -248,10 +278,27 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
 
   }
 
+  dragStarted() {
+    this.viewFieldDropListService.connectedToDropLists$.value.forEach(item => {
+      item.data.dropZoneAccepts$.next(true)
+    })
+  }
+  dragEnded() {
+    this.viewFieldDropListService.connectedToDropLists$.value.forEach(item => {
+      item.data.dropZoneAccepts$.next(false)
+    })
+  }
+  dragReleased() {
+  }
+
+
 
   ngOnDestroy() {
+
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+    if (this.itemCountService) this.itemCountService.removeItemCountObservable(this.itemsCount$)
+
   }
 
 }

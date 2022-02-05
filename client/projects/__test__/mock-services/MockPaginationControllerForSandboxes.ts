@@ -67,6 +67,12 @@ export class MockPaginationControllerForSandboxes {
   }
 
   generateData(gvLoadSubfieldPageReq?: GvFieldPageReq): GvPaginationObject {
+
+    // generate response with emtpy field for some properties
+    if ([1842, 1499, 1429, 133, 188, 1344, 1409].includes(gvLoadSubfieldPageReq?.page?.property.fkProperty)) {
+      return this.generateEmptyField(gvLoadSubfieldPageReq)
+    }
+
     if (values(gvLoadSubfieldPageReq.targets)[0].appellation) {
       return this.generateDataForAppe(gvLoadSubfieldPageReq);
     }
@@ -102,6 +108,18 @@ export class MockPaginationControllerForSandboxes {
   }
 
 
+  generateEmptyField(req: GvFieldPageReq) {
+    const paginationObject: GvPaginationObject = {
+      subfieldPages: [
+        {
+          req,
+          count: 0,
+          paginatedStatements: []
+        }
+      ]
+    }
+    return paginationObject
+  }
   generateDataForAppe(req: GvFieldPageReq): GvPaginationObject {
     const page = req.page
     const limit = page.limit

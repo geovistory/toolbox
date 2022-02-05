@@ -86,7 +86,7 @@ export namespace StatementWithTargetMock {
     projRel: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2,
     ordNum: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.ord_num_of_range,
     isOutgoing: true,
-    targetLabel: 'todo', //`Oct 31, 1756`,
+    targetLabel: 'todo', // `Oct 31, 1756`,
     targetClass: InfTimePrimitiveMock.TP_2.fk_class,
     target: {
       timePrimitive: {
@@ -104,7 +104,7 @@ export namespace StatementWithTargetMock {
     projRel: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
     ordNum: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.ord_num_of_range,
     isOutgoing: true,
-    targetLabel: 'todo', //`Oct 31, 1756`,
+    targetLabel: 'todo', // `Oct 31, 1756`,
     targetClass: InfTimePrimitiveMock.TP_5.fk_class,
     target: {
       timePrimitive: {
@@ -121,7 +121,7 @@ export namespace StatementWithTargetMock {
     projRel: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
     ordNum: ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.ord_num_of_range,
     isOutgoing: true,
-    targetLabel: 'todo', //`Oct 31, 1756`,
+    targetLabel: 'todo', // `Oct 31, 1756`,
     targetClass: InfTimePrimitiveMock.TP_4.fk_class,
     target:
     {
@@ -139,7 +139,7 @@ export namespace StatementWithTargetMock {
     projRel: ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1,
     ordNum: ProInfoProjRelMock.PROJ_1_STMT_UNOIN_1_HAS_PARTNER_1.ord_num_of_range,
     isOutgoing: true,
-    targetLabel: WarEntityPreviewMock.PERSON_1.entity_label, //`Oct 31, 1756`,
+    targetLabel: WarEntityPreviewMock.PERSON_1.entity_label, // `Oct 31, 1756`,
     targetClass: WarEntityPreviewMock.PERSON_1.fk_class,
     target:
     {

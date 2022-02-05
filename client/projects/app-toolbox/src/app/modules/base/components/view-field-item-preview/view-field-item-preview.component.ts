@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Field } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
 import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
@@ -15,7 +15,10 @@ export class ViewFieldItemPreviewComponent implements OnInit {
   field: Field
   showOntoInfo$: Observable<boolean>
 
-  constructor(public itemComponent: ViewFieldItemComponent) { }
+  constructor(
+    public itemComponent: ViewFieldItemComponent,
+    private c: ConfigurationPipesService
+  ) { }
 
   ngOnInit(): void {
     this.resource = this.itemComponent.item.target.entity.resource

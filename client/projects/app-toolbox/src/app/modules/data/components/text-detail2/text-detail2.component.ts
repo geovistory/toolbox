@@ -1,35 +1,30 @@
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
-import { GvFieldPageScope, GvFieldSourceEntity, QuillDoc } from '@kleiolab/lib-sdk-lb4';
+import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { P_1864_HAS_VALUE_VERSION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
-import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
+import { DetailBaseComponent } from 'projects/app-toolbox/src/app/shared/classes/detail-base-component';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { slideInOut } from '../../../information/shared/animations';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
 
+export interface TextDetail2Config {
+  pkEntity: number
+}
 @Component({
   selector: 'gv-text-detail2',
   templateUrl: './text-detail2.component.html',
-  styleUrls: ['./text-detail2.component.scss']
+  styleUrls: ['./text-detail2.component.scss'],
+  animations: [slideInOut],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TextDetail2Component implements OnInit, OnDestroy {
-  // emits true on destroy of this component
-  destroy$ = new Subject<boolean>();
-
-  // path to the substore
-  @Input() tabId: string;
-  @Input() pkEntity: number;
-  @Output() close = new EventEmitter<void>();
-
-  t: TabLayout;
-  readonly$ = new BehaviorSubject(false)
-  showOntoInfo$ = new BehaviorSubject(false)
-
-  scope$: Observable<GvFieldPageScope>
-  fkClass$: Observable<number>;
-  source: GvFieldSourceEntity
+export class TextDetail2Component
+  extends DetailBaseComponent<TextDetail2Config>
+  implements OnInit {
 
   hasValueVersionField$: Observable<Field>
 
@@ -54,34 +49,32 @@ export class TextDetail2Component implements OnInit, OnDestroy {
   quillDoc$ = new BehaviorSubject<QuillDoc>({});
 
   constructor(
-    public ref: ChangeDetectorRef,
-    private ap: ActiveProjectPipesService,
-    private b: InformationBasicPipesService,
-    private dataService: ReduxMainService,
     private c: ConfigurationPipesService,
-    private i: InformationPipesService,
-    private truncatePipe: TruncatePipe,
-
-
-  ) { }
-
+    protected p: ActiveProjectService,
+    dialog: MatDialog,
+    ref: ChangeDetectorRef,
+    ap: ActiveProjectPipesService,
+    i: InformationPipesService,
+    b: InformationBasicPipesService,
+    truncatePipe: TruncatePipe,
+    dataService: ReduxMainService,
+  ) {
+    super(
+      p,
+      dialog,
+      ref,
+      ap,
+      i,
+      b,
+      truncatePipe,
+      dataService
+    )
+  }
   ngOnInit(): void {
-    this.t = new TabLayout(this.tabId, this.ref, this.destroy$);
+    this.initialize()
     this.t.setLayoutMode('both')
 
-    this.t.setTabLoading(true)
 
-    this.source = { fkInfo: this.pkEntity }
-    this.scope$ = this.ap.pkProject$.pipe(first(), map(pkProject => ({ inProject: pkProject })));
-    this.fkClass$ = this.b.pipeClassOfEntity(this.pkEntity)
-
-    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.dataService.loadInfResource(this.pkEntity, pkProject)
-        .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
-          this.t.setTabLoading(false)
-        })
-
-    })
     this.hasValueVersionField$ = this.fkClass$.pipe(
       switchMap(pkClass => this.c.pipeFields(pkClass).pipe(
         map(fields => fields.find(field => field.isOutgoing && field.property?.fkProperty === P_1864_HAS_VALUE_VERSION_ID))
@@ -91,18 +84,7 @@ export class TextDetail2Component implements OnInit, OnDestroy {
       debounceTime(1000),
       map(q => this.createCharacterPositionMap(q))
     )
-    const preview$ = this.ap.streamEntityPreview(this.pkEntity, true)
-    const classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
-    const tabTitle$ = combineLatest(preview$, classLabel$).pipe(
-      map(([preview, classLabel]) => {
-        const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['7']);
-        return [trucatedClassLabel, preview.entity_label].filter(i => !!i).join(' - ')
-      })
-    )
-    tabTitle$.pipe(takeUntil(this.destroy$))
-      .subscribe((tabTitle) => {
-        this.t.setTabTitle(tabTitle)
-      })
+
   }
 
   public quillDocUpdated(q: QuillDoc) {

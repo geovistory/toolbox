@@ -87,7 +87,7 @@ export class TableEditorComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.filterOnRow = this?.tableDetailComponenent?.filterOnRow;
+    this.filterOnRow = this?.tableDetailComponenent?.tab.data.filterOnRow;
 
     // get the table columns and the table config and put everything in the store
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {

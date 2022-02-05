@@ -1,23 +1,28 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field, InformationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfActions } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, shareReplay, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { first, map, shareReplay } from 'rxjs/operators';
 import { fieldToFieldId, isValueObjectSubfield } from '../../base.helpers';
+import { ViewFieldAddHooksService } from '../../services/view-field-add-hooks.service';
+import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { AddStatementDialogComponent, AddStatementDialogData } from '../add-statement-dialog/add-statement-dialog.component';
-import { ChooseClassDialogComponent, ChooseClassDialogData } from '../choose-class-dialog/choose-class-dialog.component';
+import { ChooseClassDialogComponent, ChooseClassDialogData, ChooseClassDialogReturn } from '../choose-class-dialog/choose-class-dialog.component';
 import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
-
+import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 
 @Component({
   selector: 'gv-view-field',
   templateUrl: './view-field.component.html',
   styleUrls: ['./view-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    ViewFieldTreeNodeService
+  ]
 })
 export class ViewFieldComponent implements OnInit {
 
@@ -33,8 +38,10 @@ export class ViewFieldComponent implements OnInit {
   targetClassLabels: string[]
   @Input() onAddClickHook: () => void
 
+  @ViewChild(ViewFieldBodyComponent) bodyComponent: ViewFieldBodyComponent;
 
-  showAddButton$
+  showHeader$ = new BehaviorSubject(true)
+  showAddButton$: Observable<boolean>
   constructor(
     public i: InformationPipesService,
     public p: ActiveProjectService,
@@ -42,8 +49,9 @@ export class ViewFieldComponent implements OnInit {
     public ap: ActiveProjectPipesService,
     public inf: InfActions,
     public dialog: MatDialog,
+    private addHooks: ViewFieldAddHooksService,
+    public nodeService: ViewFieldTreeNodeService,
   ) {
-
   }
 
 
@@ -109,13 +117,15 @@ export class ViewFieldComponent implements OnInit {
 
   }
 
-  addClick() {
+  async addClick() {
     if (this.field.isSpecialField === 'time-span') {
       return;
     }
-    if (this.onAddClickHook) return this.onAddClickHook()
+    let hook = this.addHooks.beforeChoosingClass(this)
+    if (hook) return hook();
 
     const targetClasses = getFormTargetClasses(this.field)
+    let targetClass: number;
     // More than one target class?
     if (targetClasses.length > 1) {
 
@@ -125,23 +135,23 @@ export class ViewFieldComponent implements OnInit {
         pkClasses: targetClasses.map(t => t.targetClass),
         title: 'Choose a class'
       }
-      this.dialog.open(ChooseClassDialogComponent, { data })
-        .afterClosed().pipe(takeUntil(this.destroy$)).subscribe(chosenClass => {
-          if (chosenClass) {
-
-            this.openAddDialog(this.field, chosenClass);
-          }
-        });
+      targetClass = await this.dialog.open<ChooseClassDialogComponent, ChooseClassDialogData, ChooseClassDialogReturn>(
+        ChooseClassDialogComponent,
+        { data }
+      ).afterClosed().pipe(first()).toPromise()
     }
     // Only one target class!
     else {
-
-      const targetClass = targetClasses[0].targetClass;
-      this.openAddDialog(this.field, targetClass);
+      targetClass = targetClasses[0].targetClass;
     }
+
+    hook = this.addHooks.afterChoosingClass(this, targetClass)
+    if (hook) return hook();
+
+    if (targetClass) this.openAddStatementDialog(this.field, targetClass);
   }
 
-  private openAddDialog(field: Field, targetClass: number) {
+  private openAddStatementDialog(field: Field, targetClass: number) {
     const targetTyp = field.targets[targetClass]
     const isValue = isValueObjectSubfield(targetTyp.viewType);
     const showAddList = (!isValue && !field.identityDefiningForTarget)

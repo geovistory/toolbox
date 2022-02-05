@@ -3,7 +3,6 @@ import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {getModelSchemaRef, post, requestBody} from '@loopback/rest';
 import objectHash from 'object-hash';
-import {performance} from 'perf_hooks';
 import {concat, mergeDeepWith, values} from 'ramda';
 import {Roles} from '../../components/authorization/keys';
 import {QFieldPage3} from '../../components/query/q-field-page-3';
@@ -59,13 +58,13 @@ export class SubfieldPageController {
   ): Promise<GvPaginationObject> {
 
 
-    const t0 = performance.now()
+    // const t0 = performance.now()
     const result = this.mergeReqsBySourceInSql ?
       await this.queryPages(reqs) :
       await this.loadPages(reqs);
 
-    const t1 = performance.now()
-    console.log('Call to loadSubfieldPages took ms ', t1 - t0)
+    // const t1 = performance.now()
+    // console.log('Call to loadSubfieldPages took ms ', t1 - t0)
     return result;
   }
 
@@ -89,28 +88,28 @@ export class SubfieldPageController {
 
 
   async queryPages(reqs: GvFieldPageReq[]): Promise<GvPaginationObject> {
-    let t0 = performance.now()
+    // let t0 = performance.now()
     const result: GvPaginationObject = await this.queryFields(reqs);
-    let t1 = performance.now()
-    console.log('A Call to queryFields took ms ', t1 - t0)
+    // let t1 = performance.now()
+    // console.log('A Call to queryFields took ms ', t1 - t0)
 
     if (this.joinNestedInSql) return result
 
-    t0 = performance.now()
+    // t0 = performance.now()
 
     const nestedReqs = nestedRequestsFromPaginationObject(result)
-    t1 = performance.now()
-    console.log('A Call to nestedRequestsFromPaginationObject took ms ', t1 - t0)
+    // t1 = performance.now()
+    // console.log('A Call to nestedRequestsFromPaginationObject took ms ', t1 - t0)
 
-    t0 = performance.now()
+    // t0 = performance.now()
     const nestedResult = await this.queryNestedFields(nestedReqs)
-    t1 = performance.now()
-    console.log('A Call to queryNestedFields took ms ', t1 - t0)
+    // t1 = performance.now()
+    // console.log('A Call to queryNestedFields took ms ', t1 - t0)
 
-    t0 = performance.now()
+    // t0 = performance.now()
     const merged = mergePaginationObjects([result, nestedResult]);
-    t1 = performance.now()
-    console.log('A Call to mergePaginationObjects took ms ', t1 - t0)
+    // t1 = performance.now()
+    // console.log('A Call to mergePaginationObjects took ms ', t1 - t0)
     return merged
   }
 
@@ -138,31 +137,31 @@ export class SubfieldPageController {
   }
   private async queryNestedFields(reqs: GvFieldPageReq[]) {
 
-    let t0 = performance.now()
+    // let t0 = performance.now()
     const rs = groupReqsBySource(reqs);
     // logToFile(JSON.stringify(rs, null, 2), 'by-source')
-    let t1 = performance.now()
-    console.log('   Call to groupReqsBySource took ms ', t1 - t0)
+    // let t1 = performance.now()
+    // console.log('   Call to groupReqsBySource took ms ', t1 - t0)
 
 
-    t0 = performance.now()
+    // t0 = performance.now()
     const grouped = groupReqsByField(rs)
-    t1 = performance.now()
-    console.log('   Call to groupReqsByField took ms ', t1 - t0)
+    // t1 = performance.now()
+    // console.log('   Call to groupReqsByField took ms ', t1 - t0)
 
-    t0 = performance.now()
+    // t0 = performance.now()
 
     const results = await Promise.all(
       grouped.map(r => new QFieldPage3(this.datasource, this.joinNestedInSql).queryFields(r.reqs, r.sources))
     );
-    t1 = performance.now()
-    console.log('   Call to queryFields took ms ', t1 - t0)
+    // t1 = performance.now()
+    // console.log('   Call to queryFields took ms ', t1 - t0)
 
-    t0 = performance.now()
+    // t0 = performance.now()
 
     const result: GvPaginationObject = mergePaginationObjects(results);
-    t1 = performance.now()
-    console.log('   Call to mergePaginationObjects took ms ', t1 - t0)
+    // t1 = performance.now()
+    // console.log('   Call to mergePaginationObjects took ms ', t1 - t0)
 
     return result;
   }

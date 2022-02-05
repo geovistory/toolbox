@@ -196,7 +196,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private getPkColumnByColNb(colNb: number) {
-    return colNb != 0 ? this.headers[colNb].pk_column : -1;
+    return colNb != 0 ? this.headers?.[colNb]?.pk_column : -1;
   }
 
   filter(colNb: number, filter?: TColFilter) {
@@ -205,7 +205,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
       return;
     }
     const pkColumn = this.getPkColumnByColNb(colNb);
-
+    if (!pkColumn) return
     // if columns have pkColumn, use pkColumn to identify filter, else colNb
     const key = pkColumn > -2 ? pkColumn : colNb;
 

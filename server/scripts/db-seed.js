@@ -8,6 +8,7 @@ async function getUserInputs() {
   const factoids = require('../dist/__tests__/helpers/graphs/heavy-factoids.helper');
   const forFullText = require('../dist/__tests__/helpers/graphs/entity-fulltext.helper');
   const digitals = require('../dist/__tests__/helpers/graphs/digitals.helper');
+  const sysConfig = require('../dist/__tests__/helpers/graphs/sys-config-valid.helper');
   const cleanDb = require('../dist/__tests__/helpers/meta/clean-db.helper');
   const response = await prompts([
     {
@@ -40,6 +41,11 @@ async function getUserInputs() {
           description: `Creates mockdata useful for digitals.`,
           value: digitals.digitalsSeeds,
         },
+        {
+          title: 'Mockdata for SysConfig Valid',
+          description: `Deletes existing and inserts current SYS_CONFIC_VALID.`,
+          value: sysConfig.updateSysConfig,
+        },
       ],
     },
     {
@@ -53,7 +59,7 @@ async function getUserInputs() {
         },
         {
           title: 'No',
-          value: null,
+          value: () => {},
         },
       ],
     },

@@ -1,4 +1,4 @@
-import {ModelDefinition} from '@loopback/repository';
+import {ModelDefinition, Options} from '@loopback/repository';
 import {indexBy} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
 import {GvFieldProperty} from '../../models/field/gv-field-property';
@@ -151,8 +151,8 @@ export class SqlBuilderLb4Models extends SqlBuilderBase {
     const res = await this.dataSource.execute(this.sql, this.params);
     return res?.[0]?.data ?? {};
   }
-  async execute<M>(): Promise<M> {
-    const res = await this.dataSource.execute(this.sql, this.params);
+  async execute<M>(options?: Options): Promise<M> {
+    const res = await this.dataSource.execute(this.sql, this.params, options);
     return res;
   }
 

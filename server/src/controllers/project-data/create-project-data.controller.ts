@@ -8,6 +8,7 @@ import {getModelSchemaRef, HttpErrors, param, post, requestBody} from '@loopback
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {concat, isEmpty, mergeDeepWith} from 'ramda';
 import {PartialDeep} from 'type-fest';
+import {PartialObjectDeep} from 'type-fest/source/partial-deep';
 import {Roles} from '../../components/authorization';
 import {QEntityAddToProject} from '../../components/query/q-entity-add-to-project';
 import {CLASS_PK_MANIFESTATION_SINGLETON} from '../../config';
@@ -24,6 +25,7 @@ import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-proje
 import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../../repositories';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {VisibilityController} from '../backoffice/visibility.controller';
+import {OrdNumController} from './ord-num.controller';
 
 @tags('project data')
 export class CreateProjectDataController {
@@ -33,6 +35,8 @@ export class CreateProjectDataController {
   constructor(
     @inject('controllers.VisibilityController')
     public visibilityController: VisibilityController,
+    @inject('controllers.OrdNumController')
+    public ordNumController: OrdNumController,
     @repository(InfResourceRepository)
     public infResourceRepository: InfResourceRepository,
     @repository(InfStatementRepository)
@@ -132,6 +136,44 @@ export class CreateProjectDataController {
   }
 
 
+  @post('project-data/upsert-info-proj-rels', {
+    responses: {
+      '200': {
+        description: 'Upserted info-project relations and returned a GvSchemaModifier',
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvSchemaModifier
+            }
+          }
+        }
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async upsertInfoProjectRelations(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: getModelSchemaRef(ProInfoProjRel),
+          }
+        }
+      },
+    }) infoProjRels: ProInfoProjRel[]
+  ): Promise<GvSchemaModifier> {
+
+    const proms = infoProjRels.map(item => {
+      if (!item.fk_entity) throw new HttpErrors.NotAcceptable(`fk_entity missing on item ${JSON.stringify(item)}`)
+      if (pkProject !== item.fk_project) throw new HttpErrors.Unauthorized(`fk_project (${item.fk_project}) has to equal pkProject (${pkProject})`)
+      return this.upsertInfoProjRel(item.fk_entity, item, pkProject)
+    })
+    await Promise.all(proms)
+    return this.schemaModifier
+  }
 
   @post('project-data/replace-statements-of-field', {
     responses: {
@@ -316,9 +358,66 @@ export class CreateProjectDataController {
     })
     const override = statementWithRels?.entity_version_project_rels?.[0] ?? {}
 
+    await this.updateOrderOfStatementsInField(override, createdStatement.pk_entity, project, dataObject);
+
     await this.upsertInfoProjRel(createdStatement.pk_entity, override, project)
 
     return createdStatement;
+  }
+
+  /**
+   * Updates the order of other statements in this field
+   * @param override
+   * @param createdStatementId
+   * @param project
+   * @param dataObject
+   */
+  private async updateOrderOfStatementsInField(
+    override: PartialObjectDeep<ProInfoProjRel>,
+    createdStatementId: number,
+    project: number,
+    dataObject: PartialObjectDeep<InfStatement>) {
+    let isOutgoing: boolean;
+
+    if (override.ord_num_of_range) {
+      isOutgoing = true;
+      await this.ordNumController.changeOrder({
+        movedStatementId: createdStatementId,
+        pkProject: project,
+        targetOrdNum: override.ord_num_of_range,
+        fieldId: {
+          source: {fkData: dataObject.fk_subject_data, fkInfo: dataObject.fk_subject_info, fkTablesCell: dataObject.fk_subject_tables_cell, fkTablesRow: dataObject.fk_subject_tables_row},
+          isOutgoing,
+          property: {
+            fkProperty: dataObject.fk_property,
+            fkPropertyOfProperty: dataObject.fk_property_of_property,
+          },
+          scope: {
+            inProject: project
+          }
+        }
+      });
+    }
+    if (override.ord_num_of_domain) {
+      isOutgoing = false;
+      await this.ordNumController.changeOrder({
+        movedStatementId: createdStatementId,
+        pkProject: project,
+        targetOrdNum: override.ord_num_of_domain,
+        fieldId: {
+          source: {fkData: dataObject.fk_object_data, fkInfo: dataObject.fk_object_info, fkTablesCell: dataObject.fk_object_tables_cell, fkTablesRow: dataObject.fk_object_tables_row},
+          isOutgoing,
+          property: {
+            fkProperty: dataObject.fk_property,
+            fkPropertyOfProperty: dataObject.fk_property_of_property,
+          },
+          scope: {
+            inProject: project
+          }
+        }
+      });
+    }
+
   }
 
   /**

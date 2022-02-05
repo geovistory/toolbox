@@ -79,7 +79,7 @@ export class NgContentTreeService {
     return this.dataService.upsertInfStatementsWithRelations(pkProject, stmts);
   }
 
-  removeInfEntitiesFromProject(pkEntities: number[], pkProject: number): Observable<GvPositiveSchemaObject> {
+  removeInfEntitiesFromProject(pkEntities: number[], pkProject: number) {
     return this.dataService.removeInfEntitiesFromProject(pkEntities, pkProject);
   }
 

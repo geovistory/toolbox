@@ -1,19 +1,19 @@
 import {authenticate} from '@loopback/authentication';
 import {inject} from '@loopback/core';
+import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
 import {JsonSchemaWithExtensions, Model, model, property, repository} from '@loopback/repository';
 import {get, HttpErrors, oas, param, post, requestBody, Response, RestBindings} from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {hash, genSalt} from 'bcrypt';
+import {genSalt, hash} from 'bcryptjs';
 import _ from 'lodash';
 import {JWTService} from '../components/jwt';
 import {JWTBindings} from '../components/jwt/keys';
+import {Postgres1DataSource} from '../datasources';
 import {PubAccount} from '../models/pub-account.model';
 import {PubAccountRepository} from '../repositories/pub-account.repository';
 import {AccountService} from '../services/account.service';
 import {EmailService} from '../services/email.service';
 import {PasswordResetTokenService} from '../services/password-reset-token.service';
-import {Postgres1DataSource} from '../datasources';
-import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
 
 
 // the requirements for new passwords can be higher
@@ -99,7 +99,7 @@ export class AccountController {
     @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
     @repository(PubAccountRepository) protected accountRepository: PubAccountRepository,
     @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
-  ) {}
+  ) { }
 
 
   @post('/login', {

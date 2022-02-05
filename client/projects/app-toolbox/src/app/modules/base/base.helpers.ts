@@ -54,6 +54,14 @@ export function fieldToFieldId(field: Field, source: GvFieldSourceEntity, scope:
     scope
   }
 }
+export function fieldPageToFieldId(fieldPage: GvFieldPage): GvFieldId {
+  return {
+    source: fieldPage.source,
+    property: fieldPage.property,
+    isOutgoing: fieldPage.isOutgoing,
+    scope: fieldPage.scope
+  }
+}
 
 export function fieldToGvFieldTargets(field: Field): GvFieldTargets {
   const res: GvFieldTargets = {}

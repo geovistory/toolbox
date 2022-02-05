@@ -435,6 +435,11 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
 
 
 
+
+    const orderBy = scope.inProject ?
+      `ord_num ASC, pk_statement DESC` :
+      `pk_statement DESC`
+
     const sql = `
     (
      WITH paginatedStmtWithTarget AS (
@@ -454,7 +459,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
         FROM (
             TABLE allStmts
             -- WHERE stmt_with_target->'targetLabel' %ilike 'foo'
-            ORDER BY pk_statement DESC
+            ORDER BY ${orderBy}
             LIMIT ${this.addParam(limit)}
             OFFSET ${this.addParam(offset)}
           ) AS filteredStmts
@@ -558,6 +563,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
       t2.fk_property,
       t2.pk_entity as pk_statement,
       t2.fk_property_of_property,
+      ${scope.inProject ? `${isOutgoing ? `t3.ord_num_of_range` : `t3.ord_num_of_domain`} ord_num,` : ''}
       jsonb_strip_nulls(jsonb_build_object(
         'isOutgoing', ${this.addParam(isOutgoing)}::boolean,
         ${scope.inProject ? `

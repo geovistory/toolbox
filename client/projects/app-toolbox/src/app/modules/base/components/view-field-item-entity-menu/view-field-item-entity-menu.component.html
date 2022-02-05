@@ -1,4 +1,18 @@
 <mat-menu #appMenu="matMenu">
+  <!-- FOR TEXT ENTITIES ONLY -->
+  <ng-container *ngIf="targetIsTextWithValueVersion$|async">
+    <button mat-menu-item *ngIf="projRel?.is_in_project" (click)="openEditTextDialog()">
+      <mat-icon>edit</mat-icon>
+      Edit
+    </button>
+    <button mat-menu-item *ngIf="projRel?.is_in_project" (click)="openViewTextDialog(  )">
+      <mat-icon [svgIcon]="'eye'"></mat-icon>
+      View
+    </button>
+  </ng-container>
+
+
+  <!-- FOR ALL ENTITIES -->
   <button mat-menu-item *ngIf="projRel?.is_in_project" (click)="openInNewTabFromEntity(  )">
     <mat-icon>tab</mat-icon>
     Open {{field.targets[resource.fk_class]?.targetClassLabel}} in new Tab
@@ -7,10 +21,16 @@
     <mat-icon>add</mat-icon>
     Add {{field.targets[resource.fk_class]?.targetClassLabel}} to project and open
   </button>
-
+  <ng-content></ng-content>
+  <mat-divider></mat-divider>
+  <div class="dropdown-header">Position</div>
   <button mat-menu-item (click)="markAsFavorite()">
     <mat-icon>star</mat-icon>
     Mark As Favorite
+  </button>
+  <button mat-menu-item [matMenuTriggerFor]="moveTo">
+    <mat-icon [svgIcon]="'arrow-up-down'"></mat-icon>
+    Move to position
   </button>
 
   <mat-divider></mat-divider>
@@ -20,6 +40,14 @@
     <span>Remove</span>
   </button>
 </mat-menu>
+
+
+<mat-menu #moveTo="matMenu">
+  <button mat-menu-item (click)="itemComponent.movePosition(1)">1 (Mark as favorite)</button>
+  <button mat-menu-item (click)="itemComponent.movePosition(2)">2</button>
+  <button mat-menu-item (click)="itemComponent.movePosition(3)">3</button>
+</mat-menu>
+
 <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
   <mat-icon>more_vert</mat-icon>
 </button>

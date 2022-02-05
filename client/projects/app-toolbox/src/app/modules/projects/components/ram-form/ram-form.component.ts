@@ -76,17 +76,17 @@ export class RamFormComponent implements OnInit, OnDestroy {
       this.ref.detectChanges()
     })
 
-    this.ramFormValue$ = combineLatest(
+    this.ramFormValue$ = combineLatest([
       this.p.ramSource$,
       this.p.ramProperty$,
       this.p.ramTarget$,
       this.referenceCtrl.valueChanges as Observable<any>
-    ).pipe(
+    ]).pipe(
       map(([s, p, t, r]) => {
         // Validate source
         if (!s || (!s.annotation && !s.pkEntity)) return;
-        // Validate property
-        if (!p) return;
+        // Validate property or cb
+        if (!p && !this.p.ramOnSaveCallback) return;
         // validate target
         if (!t) return;
 

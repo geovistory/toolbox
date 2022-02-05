@@ -1,0 +1,66 @@
+:host {
+  flex: 1 1 0;
+  overflow: hidden;
+  position: relative;
+}
+.loc-first-line {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+.loc-left {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+
+.loc-right {
+  display: flex;
+  flex: 0 0 40px;
+  align-items: center;
+  justify-content: center;
+}
+.loc-class-info {
+  margin: 8px 16px 8px 0;
+}
+.loc-hidden-info {
+  display: flex;
+  height: 24px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.loc-border-dashed {
+  border-bottom-color: gray;
+  border-bottom-width: 1px;
+  border-bottom-style: dashed;
+}
+
+h3 {
+  margin-bottom: 0;
+  margin-right: auto;
+  height: 48px;
+  display: flex;
+  align-items: center;
+}
+.loc-header-left {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 48px;
+}
+.loc-header-right {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

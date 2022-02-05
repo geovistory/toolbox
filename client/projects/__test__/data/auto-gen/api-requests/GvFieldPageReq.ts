@@ -1,6 +1,6 @@
 import {GvFieldPageReq, GvFieldPageScope} from '@kleiolab/lib-sdk-lb4';
 import {TrueEnum} from '../enums/TrueEnum';
-import {C_219_MANIFESTATION_PRODUCT_TYPE_ID, C_220_MANIFESTATION_SINGLETON_ID, C_339_STRING_ID, C_456_CHUNK_ID, C_503_EXPRESSION_PORTION_ID, C_899_DEFINITION_ID, C_901_TRANSCRIPTION_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1016_IS_REPRESENTATIVE_MANIFESTATION_SINGLETON_FOR_ID, P_1216_IS_REPRODUCTION_OF_ID, P_1317_IS_PART_OF_ID, P_1762_HAS_DEFINITION_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_979_CARRIERS_PROVIDED_BY_ID} from '../../../../ontome-ids'
+import {C_219_MANIFESTATION_PRODUCT_TYPE_ID, C_220_MANIFESTATION_SINGLETON_ID, C_339_STRING_ID, C_456_CHUNK_ID, C_503_EXPRESSION_PORTION_ID, C_785_TEXT_ID, C_899_DEFINITION_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1016_IS_REPRESENTATIVE_MANIFESTATION_SINGLETON_FOR_ID, P_1216_IS_REPRODUCTION_OF_ID, P_1317_IS_PART_OF_ID, P_1762_HAS_DEFINITION_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_979_CARRIERS_PROVIDED_BY_ID} from '../../../../app-toolbox/src/app/ontome-ids';
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
@@ -268,9 +268,9 @@ export namespace GvFieldPageReqMock {
             },
             targets: {
               /**************************************
-               * Path from transcription to source
+               * Path from text to source
                *************************************/
-              [C_901_TRANSCRIPTION_ID]: {
+              [C_785_TEXT_ID]: {
                 subReqsRecursiveTargets: [
                   {
                     isCircular: false,

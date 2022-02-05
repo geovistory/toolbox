@@ -50,7 +50,7 @@ export class BaseModalsService {
       AddStatementDialogComponent,
       {
         height: 'calc(100% - 30px)',
-        width: '980px',
+        width: config.valueTarget ? '500px' : '980px',
         maxWidth: '100%',
         panelClass: 'gv-no-padding',
         data: config

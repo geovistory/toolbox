@@ -530,15 +530,15 @@ export class FormCreateEntityComponent implements OnInit, OnDestroy {
 
           return fields.map(f => {
 
-            // make one definition required for each persistent item
-            if (isPersistentItem && f.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
-              f.targetMinQuantity = 1;
-              f.identityDefiningForSource = true;
-            }
+            // // make one definition required for each persistent item
+            // if (isPersistentItem && f.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
+            //   f.targetMinQuantity = 1;
+            //   f.identityDefiningForSource = true;
+            // }
             let addItemsOnInit = 0;
-            if (isPersistentItem && f.isOutgoing === false && f.property.fkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
-              addItemsOnInit = 1
-            }
+            // if (isPersistentItem && f.isOutgoing === false && f.property.fkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
+            //   addItemsOnInit = 1
+            // }
 
             // Add default controls to some properties according to the config
             if (f.display.formSections?.[section.key]?.controlsOnInit) {

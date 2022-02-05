@@ -1,14 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { InformationPipesService } from "@kleiolab/lib-queries";
-import { ConfigurationPipesService } from "@kleiolab/lib-queries";
 export interface ChooseClassDialogData {
   title: string;
   pkClasses: number[]
 }
-
+export type ChooseClassDialogReturn = number
 @Component({
   selector: 'gv-choose-class-dialog',
   templateUrl: './choose-class-dialog.component.html',
@@ -18,7 +17,8 @@ export class ChooseClassDialogComponent implements OnInit {
 
   options$: Observable<{ pkClass: number, label: string }[]>
 
-  constructor(public dialogRef: MatDialogRef<ChooseClassDialogComponent>,
+  constructor(
+    public dialogRef: MatDialogRef<ChooseClassDialogComponent, ChooseClassDialogReturn>,
     @Inject(MAT_DIALOG_DATA) public data: ChooseClassDialogData,
     private c: ConfigurationPipesService
   ) { }

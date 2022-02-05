@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
-import { IAppState, PanelTab, PeItTabData } from '@kleiolab/lib-redux';
+import { IAppState, PanelTab } from '@kleiolab/lib-redux';
 import { GvFieldPageReq, GvPaginationObject, ProjectDataService, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
@@ -11,8 +11,8 @@ import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourc
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
-import { PROFILE_5_GEOVISTORY_BASI_2021_08_24 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2021-08-24';
-import { PROFILE_99_DIGITALS } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-99-digitals';
+import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
+import { PROFILE_97_GEOVISTORY_DIGI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-97-geovistory-digi-2022-01-18';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { MockProjectDataService } from 'projects/__test__/mock-services/MockProjectDataService';
@@ -20,7 +20,8 @@ import { values } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { DataModule } from '../../data.module';
-import { TextDetail2Component } from './text-detail2.component';
+import { TextDetail2Component, TextDetail2Config } from './text-detail2.component';
+
 const warEntityPreviews = [
   WarEntityPreviewMock.DEFINITION_1,
 ]
@@ -28,18 +29,11 @@ const warEntityPreviews = [
 const infResources = [
   InfResourceMock.DEFINITION_1,
 ]
-const tabData: PeItTabData = {
-  peItDetailConfig: {
-    peItDetail: {
-      pkEntity: InfResourceMock.DEFINITION_1.pk_entity,
-      showHeader: true,
-      showProperties: true,
-      rightPanelTabs: ['linked-sources']
-    }
-  }
+const tabData: TextDetail2Config = {
+  pkEntity: InfResourceMock.DEFINITION_1.pk_entity,
 }
 const tabId = 't1'
-const tab: PanelTab<PeItTabData> = {
+const tab: PanelTab<TextDetail2Config> = {
   active: true,
   component: 'entity',
   icon: 'persistent-item',
@@ -67,10 +61,10 @@ const initState: IAppState = {
 const initialSchemaObects = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
-      PROFILE_5_GEOVISTORY_BASI_2021_08_24, // add basics profile
-      PROFILE_99_DIGITALS
+      PROFILE_5_GEOVISTORY_BASI_2022_01_18, // add basics profile
+      PROFILE_97_GEOVISTORY_DIGI_2022_01_18
     ],
-    sysConf: SysConfigValueMock.SYS_CONFIC_DIGITALS, // add SYS_CONFIG json
+    sysConf: SysConfigValueMock.SYS_CONFIC_VALID, // add SYS_CONFIG json
     p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles
   }),
   GvSchemaObjectMock.project1, // add project and its default language
