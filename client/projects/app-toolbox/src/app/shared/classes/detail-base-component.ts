@@ -22,7 +22,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
 
   @Input() tab: TabBody<Config>;
   showOntoInfo$ = new BehaviorSubject(false);
-  readonly$ = new BehaviorSubject(true);
+  readmode$ = new BehaviorSubject(true);
 
   pkEntity: number;
   t: TabLayout;
@@ -58,7 +58,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     }
 
     if (event.key === 'E') {
-      this.readonly$.next(!this.readonly$.value);
+      this.readmode$.next(!this.readmode$.value);
     }
     if (event.key === 'O') {
       this.showOntoInfo$.next(!this.showOntoInfo$.value);

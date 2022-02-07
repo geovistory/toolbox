@@ -29,7 +29,7 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   field: Field;
-  readonly$ = new BehaviorSubject(true);
+  readmode$ = new BehaviorSubject(true);
   showOntoInfo$ = new BehaviorSubject(false)
   constructor(
     public p: ActiveProjectService,

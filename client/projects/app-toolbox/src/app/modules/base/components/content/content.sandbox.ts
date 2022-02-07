@@ -180,7 +180,7 @@ export default sandboxOf(ContentComponent, {
       pkClass$: new BehaviorSubject(InfResourceMock.HABS_EMP_MANIF_PROD_TYPE.fk_class),
       scope: inProjectScope,
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       sectionName: SectionName.linkedSources,
       selectedIndex: 0,
       schemaObjects: initialSchemaObects,
@@ -192,13 +192,13 @@ export default sandboxOf(ContentComponent, {
     <div class="mat-bg-grey-500" style="padding: 40px">
       <div>
         <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-        <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+        <button (click)="readmode$.next(!readmode$.value)">toggle readonly</button>
 
       </div>
       <div class="d-flex d-flex-direction-row justify-content-center mt-5">
 
         <gv-content [scope]="scope" [source]="source" [pkClass$]="pkClass$"
-          [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [section]=sectionName
+          [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [section]=sectionName
           [showEmptyFieldsOnInit]="true">
         </gv-content>
 

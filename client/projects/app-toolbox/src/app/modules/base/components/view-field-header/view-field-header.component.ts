@@ -15,7 +15,7 @@ export class ViewFieldHeaderComponent implements OnInit, OnDestroy {
   @Input() body: ViewFieldBodyComponent
   @Input() itemsCount$: Observable<number>
   @Input() showAddButton$: Observable<boolean>
-  @Input() readonly$: Observable<boolean>
+  @Input() readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() showTargetClassLabels = true
   @Input() itemsMax: number

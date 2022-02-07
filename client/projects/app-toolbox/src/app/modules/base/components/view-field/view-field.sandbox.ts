@@ -32,14 +32,14 @@ export default sandboxOf(ViewFieldComponent, {
       source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
       scope: inProjectScope,
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       selectedIndex: 0,
     },
     template: `
     <div class="mat-bg-grey-500" style="padding: 40px">
       <div>
         <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-        <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+        <button (click)="readmode$.next(!readmode$.value)">toggle readonly</button>
         <button (click)="selectedIndex=1">tab 2</button>
         <button (click)="selectedIndex=0">tab 1</button>
 
@@ -49,7 +49,7 @@ export default sandboxOf(ViewFieldComponent, {
           <mat-tab-group [selectedIndex]="selectedIndex">
             <mat-tab label="First">
               <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-              [readonly$]="readonly$" [source]="source"></gv-view-field>
+              [readmode$]="readmode$" [source]="source"></gv-view-field>
             </mat-tab>
             <mat-tab label="Second"> Content 2 </mat-tab>
             <mat-tab label="Third"> Content 3 </mat-tab>
@@ -61,7 +61,7 @@ export default sandboxOf(ViewFieldComponent, {
 
         <div style="width:600px;height:400px" class="d-flex mr-4">
             <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-            [readonly$]="readonly$" [source]="source"></gv-view-field>
+            [readmode$]="readmode$" [source]="source"></gv-view-field>
         </div>
 
 
@@ -76,14 +76,14 @@ export default sandboxOf(ViewFieldComponent, {
       source: { fkInfo: InfResourceMock.GEO_PLACE_MADRID.pk_entity },
       scope: inProjectScope,
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       selectedIndex: 0,
     },
     template: `
    <div class="mat-bg-grey-500" style="padding: 40px">
       <div>
         <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-        <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+        <button (click)="readmode$.next(!readmode$.value)">toggle readonly</button>
         <button (click)="selectedIndex=1">tab 2</button>
         <button (click)="selectedIndex=0">tab 1</button>
       </div>
@@ -91,7 +91,7 @@ export default sandboxOf(ViewFieldComponent, {
 
       <div style="width:600px;height:400px" class="d-flex mr-4">
           <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-          [readonly$]="readonly$" [source]="source"></gv-view-field>
+          [readmode$]="readmode$" [source]="source"></gv-view-field>
       </div>
    </div>
     `
@@ -102,7 +102,7 @@ export default sandboxOf(ViewFieldComponent, {
       source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
       scope: inProjectScope,
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       selectedIndex: 0,
     },
     providers: [
@@ -114,7 +114,7 @@ export default sandboxOf(ViewFieldComponent, {
        <mat-tab-group [selectedIndex]="selectedIndex">
         <mat-tab label="First">
           <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-          [readonly$]="readonly$" [source]="source"></gv-view-field>
+          [readmode$]="readmode$" [source]="source"></gv-view-field>
         </mat-tab>
         <mat-tab label="Second"> Content 2 </mat-tab>
         <mat-tab label="Third"> Content 3 </mat-tab>
@@ -123,7 +123,7 @@ export default sandboxOf(ViewFieldComponent, {
       </div>
       <div>
         <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-        <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+        <button (click)="readmode$.next(!readmode$.value)">toggle readonly</button>
         <button (click)="selectedIndex=1">tab 2</button>
         <button (click)="selectedIndex=0">tab 1</button>
 

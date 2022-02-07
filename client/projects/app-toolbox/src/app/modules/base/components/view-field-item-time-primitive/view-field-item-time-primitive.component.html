@@ -7,7 +7,7 @@
     <div> {{itemComponent.item.target.timePrimitive.timePrimitive|timePrimitive}}</div>
   </span>
 
-  <span class="loc-right" *ngIf="!(itemComponent.readonly$|async)">
+  <span class="loc-right" *ngIf="!(itemComponent.readmode$|async)">
     <mat-menu #appMenu="matMenu">
 
       <div class="dropdown-header">Danger Zone</div>

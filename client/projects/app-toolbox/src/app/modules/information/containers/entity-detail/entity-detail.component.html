@@ -12,7 +12,7 @@
         (openRight)="t.setLayoutMode('both')">
 
 
-        <gv-entity-card-header (removed)="closeTab()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
+        <gv-entity-card-header (removed)="closeTab()" [readmode$]="readmode$" [showOntoInfo$]="showOntoInfo$"
           [fkClass$]="fkClass$" [pkEntity]="pkEntity">
         </gv-entity-card-header>
       </gv-detail-top-bar>
@@ -24,7 +24,7 @@
 
           <div class="gv-tile-body">
             <gv-view-sections *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
-              [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+              [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$">
             </gv-view-sections>
 
           </div>
@@ -53,7 +53,7 @@
             </div>
           </ng-template>
           <gv-content *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
-            [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [section]=linkedSources
+            [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [section]=linkedSources
             [showEmptyFieldsOnInit]="true">
           </gv-content>
 
@@ -73,7 +73,7 @@
           </ng-template>
           <ng-template matTabContent>
             <gv-view-field-referred-to-by *ngIf="(scope$|async) && (fkClass$|async)" [scope]="scope$|async"
-              [source]="source" [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+              [source]="source" [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$">
             </gv-view-field-referred-to-by>
           </ng-template>
         </mat-tab> -->
@@ -96,7 +96,7 @@
             </div>
           </ng-template>
           <gv-view-section *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
-            [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [section]=linkedSources
+            [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [section]=linkedSources
             [showEmptyFieldsOnInit]="true">
             <span title>Linked sources</span>
           </gv-view-section>
@@ -111,8 +111,8 @@
             </div>
           </ng-template>
           <gv-view-section *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
-            [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [section]=linkedEntities
-            [showEmptyFieldsOnInit]="true">
+            [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [section]=linkedEntities
+            [showEmptyFieldsOnInit]="true" [hideEmptySectionInReadmode]="false">
             <span title>Linked entities</span>
           </gv-view-section>
 
@@ -160,7 +160,7 @@
             <mat-tab-group class="gv-slim-tabs gv-mat-tabs-shrink gv-flex-fh">
               <mat-tab label="Texts">
                 <gv-view-field-referred-to-by *ngIf="(scope$|async) && (fkClass$|async)" [scope]="scope$|async"
-                  [source]="source" [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+                  [source]="source" [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$">
                 </gv-view-field-referred-to-by>
                 <gv-ram-list *ngIf="scope$|async" [scope]="scope$|async" [pkEntity]="pkEntity$|async"
                   [fkProperty]="1334" [annotatedIn]="'digital-text'">

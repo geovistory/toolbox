@@ -10,7 +10,7 @@ export interface EditTextDialogData {
   field: Field
   scope: GvFieldPageScope
   editing$: BehaviorSubject<boolean>
-  readonly$: Observable<boolean>
+  readmode$: Observable<boolean>
   showOntoInfo$: Observable<boolean>
 }
 @Component({

@@ -1,19 +1,18 @@
 <gv-view-field-item-container>
   <span class="loc-left mat-typography">
 
-    <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="showOntoInfo$"
-      [readonly$]="itemComponent.readonly$" [resource]="resource"
+    <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="showOntoInfo$" [resource]="resource"
       [isInProject]="itemComponent.item.projRel?.is_in_project"
       [classLabel]="field.targets[resource.fk_class]?.targetClassLabel" [isFavorite]="ordNum===0">
     </gv-view-field-item-class-info>
 
     <gv-entity-preview class="loc-item" [hideClass]="true"
       [pkEntity]="itemComponent.item.target.entity.resource.pk_entity" [dragEnabled]="false"
-      [openTabOnClick]="!(itemComponent.readonly$|async)" [truncateLabel]="'250'">
+      [openTabOnClick]="!readonly" [truncateLabel]="'250'">
     </gv-entity-preview>
   </span>
 
   <span class="loc-right">
-    <gv-view-field-item-entity-menu *ngIf="!(itemComponent.readonly$|async)"></gv-view-field-item-entity-menu>
+    <gv-view-field-item-entity-menu *ngIf="!(itemComponent.readmode$|async)"></gv-view-field-item-entity-menu>
   </span>
 </gv-view-field-item-container>

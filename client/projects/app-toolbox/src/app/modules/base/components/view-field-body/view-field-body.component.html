@@ -25,10 +25,13 @@
         <div *ngFor="let item of (items$ | async); let i = index; trackBy:trackByFn"
           [ngClass]="{'mb-3': (addMode$|async), 'mt-3': (addMode$|async)}" cdkDrag [cdkDragData]="item"
           (cdkDragStarted)="dragStarted()" (cdkDragEnded)="dragEnded()" (cdkDragReleased)="dragReleased()">
-          <gv-view-field-item [item]=item [readonly$]=readonly$ [showOntoInfo$]=showOntoInfo$ [addMode$]=addMode$
+
+          <gv-view-field-item [item]=item [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [addMode$]=addMode$
             [field]=field [scope]=scope [checked]="selection.isSelected(item.statement.pk_entity)"
             [allowMultiSelect]=allowMultiSelect (selectionChange)="toggleSelection($event)"></gv-view-field-item>
           <mat-divider></mat-divider>
+
+
         </div>
 
       </div>

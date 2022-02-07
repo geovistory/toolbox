@@ -68,7 +68,7 @@ const initialSchemaObects = [
 // showOntoInfo
 const showOntoInfo$ = new BehaviorSubject(false);
 // readonly
-const readonly$ = new BehaviorSubject(false);
+const readmode$ = new BehaviorSubject(false);
 // scope
 const inProjectScope: GvFieldPageScope = { inProject: ProProjectMock.PROJECT_1.pk_entity }
 
@@ -145,7 +145,7 @@ export default sandboxOf(ViewSectionsComponent, {
       pkClass$: person1FkClass$,
       source: person1FieldSource,
       showOntoInfo$,
-      readonly$,
+      readmode$,
       scope: inProjectScope
     },
     template: `
@@ -157,13 +157,13 @@ export default sandboxOf(ViewSectionsComponent, {
                   [pkClass$]="pkClass$"
                   [source]="source"
                   [showOntoInfo$]="showOntoInfo$"
-                  [readonly$]="readonly$"
+                  [readmode$]="readmode$"
                   [scope]="scope"
                 ></gv-view-sections>
                   </div>
             <div>
               <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-              <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+              <button (click)="readmode$.next(!readmode$.value)">toggle readonly</button>
             </div>
         </div>`
   })
@@ -174,7 +174,7 @@ export default sandboxOf(ViewSectionsComponent, {
       pkClass$: union1FkClass$,
       source: union1FieldSource,
       showOntoInfo$,
-      readonly$,
+      readmode$,
       scope: inProjectScope,
       width: 300
     },
@@ -182,7 +182,7 @@ export default sandboxOf(ViewSectionsComponent, {
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div>
           <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-          <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+          <button (click)="readmode$.next(!readmode$.value)">toggle readonly</button>
           <button (click)="width=(width===300?600
             :width===600?1100:300)">Change Witdh</button>
           Width: {{width}}
@@ -193,7 +193,7 @@ export default sandboxOf(ViewSectionsComponent, {
                   [pkClass$]="pkClass$"
                   [source]="source"
                   [showOntoInfo$]="showOntoInfo$"
-                  [readonly$]="readonly$"
+                  [readmode$]="readmode$"
                   [scope]="scope"
                 ></gv-view-sections>
               </div>

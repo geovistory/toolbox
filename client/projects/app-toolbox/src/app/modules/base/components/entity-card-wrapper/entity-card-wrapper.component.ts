@@ -26,7 +26,7 @@ export class EntityCardWrapperComponent implements OnInit {
   pkClass$: Observable<number>
   showOntoInfo$: BehaviorSubject<boolean>;
   scope: GvFieldPageScope;
-  readonly$: BehaviorSubject<boolean>;
+  readmode$: BehaviorSubject<boolean>;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -70,7 +70,7 @@ export class EntityCardWrapperComponent implements OnInit {
   }
 
   private initReadonly(readonly: boolean) {
-    this.readonly$ = new BehaviorSubject(readonly);
+    this.readmode$ = new BehaviorSubject(readonly);
   }
 
   private initScope(community: boolean) {

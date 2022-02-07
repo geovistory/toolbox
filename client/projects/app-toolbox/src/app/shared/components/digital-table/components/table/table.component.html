@@ -9,7 +9,7 @@
   <span id="scrollAccess" style="width: 100%; height: 100%">
     <p-table [value]="table" [scrollable]="true" [resizableColumns]="true" columnResizeMode="expand"
       class="gv-p-datatable-full-height gv-p-datatable-border-cells"
-      [ngClass]="{'mat-border-edit-mode': !(readonly$|async)}">
+      [ngClass]="{'mat-border-edit-mode': !(readmode$|async)}">
 
       <!-- Header params for prime-ng -->
       <ng-template pTemplate="colgroup">
@@ -42,9 +42,9 @@
                   </span>
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
                   <mat-icon *ngIf="origin == 'importer' || i == 0"></mat-icon>
-                  <mat-icon *ngIf="origin !='importer' && i != 0 && !(readonly$|async)" svgIcon="link"
+                  <mat-icon *ngIf="origin !='importer' && i != 0 && !(readmode$|async)" svgIcon="link"
                     (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
-                  <mat-icon *ngIf="(readonly$|async) && i != 0"></mat-icon>
+                  <mat-icon *ngIf="(readmode$|async) && i != 0"></mat-icon>
                 </div>
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
@@ -68,10 +68,10 @@
                   <mat-icon></mat-icon>
                   <span (click)="sort(i)">{{col.colLabel}}</span>
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
-                  <mat-icon *ngIf="!(readonly$|async)" svgIcon="link"
+                  <mat-icon *ngIf="!(readmode$|async)" svgIcon="link"
                     (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)">
                   </mat-icon>
-                  <mat-icon *ngIf="(readonly$|async) && i != 0"></mat-icon>
+                  <mat-icon *ngIf="(readmode$|async) && i != 0"></mat-icon>
                 </div>
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
@@ -173,9 +173,9 @@
                 class="text-center align-self-center" pResizableColumn colspan="1"
                 [matTooltip]="(showIds$|async) ? 'Click to copy row id: ' + value.pkRow: ''" gvCopyClipboard
                 [toClipboard]="value.pkRow+''" [clipBoardActivated]="(showIds$|async)">
-                <div [ngStyle]=" {'justify-content': !(readonly$|async) ? 'space-between' : 'center' }"
+                <div [ngStyle]=" {'justify-content': !(readmode$|async) ? 'space-between' : 'center' }"
                   style="display: flex; min-height: 35px;">
-                  <mat-icon *ngIf="!(readonly$|async)"></mat-icon>
+                  <mat-icon *ngIf="!(readmode$|async)"></mat-icon>
                   <span style="margin-top: auto; margin-bottom: auto;">
                     {{value.text}}
                     <span *ngIf="(showIds$|async)" class="mat-caption">&nbsp;| id:
@@ -201,7 +201,7 @@
                       Delete row
                     </button> -->
                   </mat-menu>
-                  <mat-icon *ngIf="!(readonly$|async)" svgIcon="dots-vertical" [matMenuTriggerFor]="appMenu"
+                  <mat-icon *ngIf="!(readmode$|async)" svgIcon="dots-vertical" [matMenuTriggerFor]="appMenu"
                     style="margin-top: auto; margin-bottom: auto;"></mat-icon>
                 </div>
               </td>
@@ -214,13 +214,13 @@
                 [matTooltip]="(showIds$|async) && value && value.pkCell != null? 'Click to copy cell id: ' + value.pkCell : ''"
                 gvCopyClipboard [toClipboard]="value ? value.pkCell : ''" [clipBoardActivated]="(showIds$|async)">
 
-                <ng-container *ngIf="readonly$|async">
+                <ng-container *ngIf="readmode$|async">
                   <div class="content-cell" [ngClass]="{'gv-fade-out-right': !lineBreak}">
                     <span class="center-vert">{{value ? value.text : ''}}</span>
                   </div>
                 </ng-container>
 
-                <ng-container *ngIf="!(readonly$|async)">
+                <ng-container *ngIf="!(readmode$|async)">
                   <p-cellEditor id="cells_{{i}}_{{j}}">
                     <ng-template pTemplate="input">
 

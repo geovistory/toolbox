@@ -17,7 +17,7 @@ export class EntityWithFieldsComponent implements OnInit {
   @Input() source: GvFieldSourceEntity
   @Input() fkClass: number
   @Input() scope: GvFieldPageScope
-  @Input() readonly$: Observable<boolean>
+  @Input() readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
 
 
@@ -37,7 +37,7 @@ export class EntityWithFieldsComponent implements OnInit {
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.fkClass) errors.push('@Input() fkClass is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
     const sections = [

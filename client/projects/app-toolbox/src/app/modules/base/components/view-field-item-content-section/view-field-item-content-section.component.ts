@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional } from '@angular/core';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { C_218_EXPRESSION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
@@ -6,12 +6,14 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { BaseModalsService } from '../../services/base-modals.service';
 import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { AddButton, pipeAddButtons } from '../content/content.component';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 @Component({
   selector: 'gv-view-field-item-content-section',
   templateUrl: './view-field-item-content-section.component.html',
   styleUrls: ['./view-field-item-content-section.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     ViewFieldTreeNodeService,
     ViewFieldItemCountSumService
@@ -45,11 +47,11 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
 
   constructor(
     public itemComponent: ViewFieldItemComponent,
-    // public fieldComponent: ViewFieldComponent,
     public nodeService: ViewFieldTreeNodeService,
     private c: ConfigurationPipesService,
     private modals: BaseModalsService,
-    public itemCountService: ViewFieldItemCountSumService
+    public itemCountService: ViewFieldItemCountSumService,
+    @Optional() @Inject(READ_ONLY) public readonly: boolean
   ) { }
 
   ngOnInit(): void {
@@ -76,7 +78,7 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
 
   hideTreeNodeAndFieldHeader() {
     this.cachedIndentation = this.nodeService.indentation$.value;
-    this.nodeService.indentation$.next(-1)
+    this.nodeService.indentation$.next(0)
     this.hideTreeNodeAndFieldHeader$.next(true)
     // this.fieldComponent.showHeader$.next(false)
     // this.fieldComponent.bodyComponent.showBody$.next(true)

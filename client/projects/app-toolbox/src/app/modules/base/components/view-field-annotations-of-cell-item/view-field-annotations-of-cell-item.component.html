@@ -1,7 +1,6 @@
 <div class="loc-left" *ngFor="let statementWT of item.refersTo">
   <ng-container *ngIf="statementWT.target.entity; else default">
-    <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="!(tableComponent.readonly$|async)"
-      [preview]="statementWT.target.entity.entityPreview"
+    <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="true" [preview]="statementWT.target.entity.entityPreview"
       [matTooltip]="statementWT.target.entity.entityPreview.entity_label">
     </gv-entity-preview>
   </ng-container>
@@ -13,7 +12,7 @@
 </div>
 
 
-<button mat-icon-button [matMenuTriggerFor]="options" class="loc-right" *ngIf="!(tableComponent.readonly$|async)">
+<button mat-icon-button [matMenuTriggerFor]="options" class="loc-right" *ngIf="!(tableComponent.readmode$|async)">
   <mat-icon>more_vert</mat-icon>
 </button>
 

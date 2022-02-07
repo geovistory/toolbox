@@ -29,7 +29,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
       field: FieldMock.appeHasAppeString,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       scope: inProjectScope
     },
     template: `
@@ -39,7 +39,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readonly$]="readonly$"
+          [readmode$]="readmode$"
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -55,7 +55,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
       field: FieldMock.presenceWasAtPlace,
       source: { fkInfo: InfResourceMock.MADRIDS_PRESENCE.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       scope: inProjectScope
     },
     template: `
@@ -65,7 +65,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readonly$]="readonly$"
+          [readmode$]="readmode$"
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -82,7 +82,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
       field: FieldMock.accountOfJourneyHasDuration,
       source: { fkInfo: InfResourceMock.ACCOUNT_OF_JOURNEY.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       scope: inProjectScope
     },
     template: `
@@ -92,7 +92,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readonly$]="readonly$"
+          [readmode$]="readmode$"
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -109,7 +109,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
       field: FieldMock.manifestationSingletonHasShortTitle,
       source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       scope: inProjectScope
     },
@@ -120,7 +120,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readonly$]="readonly$"
+          [readmode$]="readmode$"
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           [addMode$]="addMode$"
@@ -141,7 +141,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
       field: FieldMock.appeTeEnUsedInLanguage,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       scope: inProjectScope
     },
     template: `
@@ -151,7 +151,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readonly$]="readonly$"
+          [readmode$]="readmode$"
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -167,7 +167,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
       field: FieldMock.appeTeEnIsAppeOfPerson,
       source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       scope: inProjectScope,
       // schemaObjects: [
       //   GvSchemaObjectMock.basicClassesAndProperties,
@@ -182,7 +182,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readonly$]="readonly$"
+          [readmode$]="readmode$"
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -198,7 +198,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
       field: FieldMock.personHasAppeTeEn,
       source: { fkInfo: InfResourceMock.PERSON_1.pk_entity },
       showOntoInfo$: new BehaviorSubject(false),
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       scope: inProjectScope,
       schemaObjects: [
@@ -219,7 +219,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readonly$]="readonly$"
+          [readmode$]="readmode$"
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           [addMode$]="addMode$"

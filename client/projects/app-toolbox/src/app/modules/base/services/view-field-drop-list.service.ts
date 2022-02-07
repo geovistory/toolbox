@@ -46,8 +46,6 @@ export class ViewFieldDropListService {
 
   async drop(event: CdkDragDrop<any, any, StatementWithTarget>) {
     const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
-
-
     if (event.container !== event.previousContainer) this.moveBetweenFields(event, pkProject);
     else await this.moveInSameField(event);
   }

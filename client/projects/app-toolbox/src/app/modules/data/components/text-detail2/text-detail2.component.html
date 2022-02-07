@@ -10,7 +10,7 @@
       [closeLeftAreaBtn]="t.layoutMode=='both'" (closeLeft)="t.setLayoutMode('right-only')"
       (openRight)="t.setLayoutMode('both');">
 
-      <gv-entity-card-header (removed)="closeTab()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
+      <gv-entity-card-header (removed)="closeTab()" [readmode$]="readmode$" [showOntoInfo$]="showOntoInfo$"
         [fkClass$]="fkClass$" [pkEntity]="pkEntity">
       </gv-entity-card-header>
     </gv-detail-top-bar>
@@ -18,7 +18,7 @@
 
       <gv-view-field-has-value-version class="gv-flex-fh" *ngIf="(scope$|async) && (hasValueVersionField$|async)"
         [field]="hasValueVersionField$|async" [scope]="scope$|async" [source]="source" [showOntoInfo$]="showOntoInfo$"
-        [readonly$]="readonly$">
+        [readmode$]="readmode$">
       </gv-view-field-has-value-version>
 
     </gv-detail-content>
@@ -45,7 +45,7 @@
           <mat-divider></mat-divider>
           <div class="gv-scroll-y-auto">
             <gv-view-field-annotations *ngIf="(scope$|async) && (fkClass$|async)" [scope]="scope$|async"
-              [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [source]="source">
+              [pkClass]="fkClass$|async" [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [source]="source">
             </gv-view-field-annotations>
           </div>
         </div>
@@ -58,7 +58,7 @@
           </div>
         </ng-template>
         <gv-view-sections *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
-          [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+          [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$">
         </gv-view-sections>
       </mat-tab>
 

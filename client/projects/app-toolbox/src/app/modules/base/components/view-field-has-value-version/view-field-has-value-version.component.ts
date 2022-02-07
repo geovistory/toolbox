@@ -36,7 +36,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
   @Input() field: Field
   @Input() scope: GvFieldPageScope
   @Input() source: GvFieldSourceEntity
-  @Input() readonly$: Observable<boolean>
+  @Input() readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() editing$ = new BehaviorSubject(false)
   @Input() showRightButtons = true
@@ -71,7 +71,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.source) errors.push('@Input() source is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
     this.quillDocLoader$ = this.initQuillDocLoader()

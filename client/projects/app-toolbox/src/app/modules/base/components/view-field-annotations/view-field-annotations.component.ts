@@ -27,7 +27,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
   @Input() pkClass: number;
   @Input() source: GvFieldSourceEntity;
   @Input() scope: GvFieldPageScope
-  @Input() readonly$: Observable<boolean>
+  @Input() readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   items$: Observable<ViewFieldAnnotationItemData[]>
   pinnedItems$: Observable<ViewFieldAnnotationItemData[]>
@@ -48,7 +48,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
     const errors: string[] = []
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 

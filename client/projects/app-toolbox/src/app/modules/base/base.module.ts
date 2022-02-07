@@ -98,7 +98,6 @@ import { ViewTimeSpanSectionComponent } from './components/view-time-span-sectio
 import { ViewFieldDropListDirective } from './directives/view-field-drop-list.directive';
 import { BaseModalsService } from './services/base-modals.service';
 import { GlobalDragDropService } from './services/global-drag-drop.service';
-import { installPatch } from './services/nested-drag-drop-patch';
 import { PaginationService } from './services/pagination.service';
 import { TimeSpanService } from './services/time-span.service';
 import { ViewFieldAddHooksService } from './services/view-field-add-hooks.service';
@@ -231,6 +230,6 @@ const baseModules = [
 })
 export class BaseModule {
   constructor() {
-    installPatch()
+    // installPatch()
   }
 }

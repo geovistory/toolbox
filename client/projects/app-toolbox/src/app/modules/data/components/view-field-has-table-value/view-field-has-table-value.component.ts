@@ -24,7 +24,7 @@ export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
   // @Input() field: Field
   @Input() scope: GvFieldPageScope
   @Input() source: GvFieldSourceEntity
-  @Input() readonly$: BehaviorSubject<boolean>
+  @Input() readmode$: BehaviorSubject<boolean>
   // @Input() showOntoInfo$: Observable<boolean>
   loadTrigger$ = new BehaviorSubject<void>(undefined)
   pkTableValueLoader$: Observable<PkTableValueLoader>
@@ -45,7 +45,7 @@ export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.source) errors.push('@Input() source is required.');
     // if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
 

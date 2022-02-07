@@ -12,7 +12,7 @@
   <!-- value of field -->
   <ng-container *ngFor="let statementWT of (page$|async)?.statements">
     <ng-container *ngIf="statementWT.target.entity; else cell">
-      <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="!(readonly$|async)"
+      <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="!readonly"
         [pkEntity]="statementWT.target.entity.resource.pk_entity"
         [matTooltip]="statementWT.target.entity.entityPreview.entity_label">
       </gv-entity-preview>

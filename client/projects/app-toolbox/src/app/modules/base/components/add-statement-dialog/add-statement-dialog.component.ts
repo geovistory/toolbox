@@ -42,7 +42,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
   alreadyHas$: Observable<boolean>;
   next$ = new BehaviorSubject(false);
   addMode$ = new BehaviorSubject(true);
-  readonly$ = new BehaviorSubject(true);
+  readmode$ = new BehaviorSubject(true);
 
   // for titles
   classLabel$: Observable<string>;

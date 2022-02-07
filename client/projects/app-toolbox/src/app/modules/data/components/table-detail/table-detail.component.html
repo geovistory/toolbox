@@ -10,14 +10,14 @@
       [closeLeftAreaBtn]="t.layoutMode=='both'" (closeLeft)="t.setLayoutMode('right-only')"
       (openRight)="t.setLayoutMode('both');">
 
-      <gv-entity-card-header (removed)="closeTab()" [readonly$]="readonly$" [showOntoInfo$]="showOntoInfo$"
+      <gv-entity-card-header (removed)="closeTab()" [readmode$]="readmode$" [showOntoInfo$]="showOntoInfo$"
         [fkClass$]="fkClass$" [pkEntity]="pkEntity">
       </gv-entity-card-header>
     </gv-detail-top-bar>
     <gv-detail-content>
 
       <gv-view-field-has-table-value class="gv-flex-fh" *ngIf="scope$|async" [scope]="scope$|async" [source]="source"
-        [readonly$]="readonly$">
+        [readmode$]="readmode$">
       </gv-view-field-has-table-value>
     </gv-detail-content>
 
@@ -39,7 +39,7 @@
           </div>
         </ng-template>
         <gv-view-sections *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
-          [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+          [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$">
         </gv-view-sections>
       </mat-tab>
     </mat-tab-group>

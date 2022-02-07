@@ -10,7 +10,7 @@
     </div>
   </span>
 
-  <span class="loc-right" *ngIf="!(itemComponent.readonly$|async)">
+  <span class="loc-right" *ngIf="!(itemComponent.readmode$|async)">
     <mat-menu #appMenu="matMenu">
 
       <ng-container *ngIf="itemComponent.item.target.langString">

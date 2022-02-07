@@ -74,7 +74,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() loading = false;
   @Input() headers$: Observable<Header[]>;
   @Input() table$: Observable<Array<Array<Cell>>>;
-  @Input() readonly$: BehaviorSubject<boolean>;
+  @Input() readmode$: BehaviorSubject<boolean>;
   @Input() showIds$: BehaviorSubject<boolean>;
 
   // optionnal inputs

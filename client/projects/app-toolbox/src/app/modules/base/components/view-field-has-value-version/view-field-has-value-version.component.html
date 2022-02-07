@@ -13,7 +13,7 @@
     [accentuatedNodes$]="textDetailComponent?.charsToHighlight$" (quillDocChange)="onQuillDocChange($event)"
     (selectedDeltaChange)="selectedDeltaChange($event)" (nodeMouseenter)="textNodeMouseenter($event)"
     (nodeMouseleave)="textNodeMouseleave()" (nodeClick)="onNodeClicked($event)" [readOnly]="!(editing$|async)"
-    [showCharIdToggleBtn]=false [showDefaultToolbar]="!(readonly$|async)">
+    [showCharIdToggleBtn]=false [showDefaultToolbar]="!(readmode$|async)">
     <ng-container buttonsRight *ngIf="showRightButtons">
       <a mat-button color="primary" class="loc-toolbar-item mat-btn-padding-x-8"
         *ngIf="(selectedDelta$|async)?.ops?.length; else addAnnotationDisabled" (click)="annotate()"
@@ -88,14 +88,14 @@
       </div>
 
       <gv-view-field-body [showBodyOnInit]=true [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-        [readonly$]="readonly$" [source]="source"></gv-view-field-body>
+        [readmode$]="readmode$" [source]="source"></gv-view-field-body>
 
 
       <div class="loc-header mat-bg-grey-50">
         All versions
       </div>
       <gv-view-field-body [showBodyOnInit]=true [field]="field" [scope]="{noContraint:true}"
-        [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [source]="source">
+        [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [source]="source">
       </gv-view-field-body>
 
 

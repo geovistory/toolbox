@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { InfResource } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 
@@ -13,7 +13,6 @@ import { ViewFieldItemComponent } from '../view-field-item/view-field-item.compo
 })
 export class ViewFieldItemClassInfoComponent implements OnInit {
   @Input() showOntoInfo$: Observable<boolean>
-  @Input() readonly$: Observable<boolean>
   @Input() resource: InfResource
   @Input() isInProject: boolean
   @Input() classLabel: string
@@ -23,8 +22,8 @@ export class ViewFieldItemClassInfoComponent implements OnInit {
 
   tooltip: string
   constructor(
-    private c: ConfigurationPipesService,
-    public itemComponent: ViewFieldItemComponent
+    public itemComponent: ViewFieldItemComponent,
+    @Optional() @Inject(READ_ONLY) public readonly: boolean
   ) { }
 
   ngOnInit(): void {

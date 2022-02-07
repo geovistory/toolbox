@@ -5,6 +5,7 @@ import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from 'projects/app-t
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { BaseModalsService } from '../../services/base-modals.service';
+import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
 import { ViewFieldDisplayMode, VIEW_FIELD_DISPLAY_MODE } from '../view-field/VIEW_FIELD_DISPLAY_MODE';
@@ -29,6 +30,7 @@ const displayMode: ViewFieldDisplayMode = 'tree'
   styleUrls: ['./content.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    ViewFieldTreeNodeService,
     { provide: VIEW_FIELD_ITEM_TYPE, useValue: itemTypeProvider },
     { provide: VIEW_FIELD_DISPLAY_MODE, useValue: displayMode }
   ]
@@ -37,7 +39,7 @@ export class ContentComponent implements OnInit {
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  @Input() readonly$: Observable<boolean>;
+  @Input() readmode$: Observable<boolean>;
   @Input() section: SectionName;
   @Input() scope: GvFieldPageScope;
 
@@ -46,7 +48,7 @@ export class ContentComponent implements OnInit {
   linkedSources = SectionName.linkedSources
   fields$: Observable<Field[]>
   addButtons$: Observable<AddButton[]>
-  isExpressionPortion$: Observable<boolean>;
+  isExpressionLike$: Observable<boolean>;
   expressionIds = [C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID]
 
   constructor(
@@ -57,7 +59,7 @@ export class ContentComponent implements OnInit {
   ngOnInit(): void {
     this.fields$ = this.pkClass$.pipe(switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.linkedSources)))
     this.addButtons$ = this.fields$.pipe(pipeAddButtons)
-    this.isExpressionPortion$ = this.pkClass$.pipe(map(id => id === C_503_EXPRESSION_PORTION_ID))
+    this.isExpressionLike$ = this.pkClass$.pipe(map(id => this.expressionIds.includes(id)))
   }
   openAddStatementDialog(item: AddButton) {
     this.modals.openAddStatementDialog({

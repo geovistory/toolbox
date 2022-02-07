@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { Field } from '@kleiolab/lib-queries';
 import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 @Component({
@@ -17,7 +18,7 @@ export class ViewFieldItemPreviewComponent implements OnInit {
 
   constructor(
     public itemComponent: ViewFieldItemComponent,
-    private c: ConfigurationPipesService
+    @Optional() @Inject(READ_ONLY) public readonly: boolean
   ) { }
 
   ngOnInit(): void {

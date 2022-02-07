@@ -10,7 +10,7 @@
   <ng-template #noMatch>
     <span class="loc-left mat-text-secondary">No entity matched</span>
     <button mat-icon-button [matMenuTriggerFor]="options" class="loc-right" [disabled]="pkCell === undefined"
-      *ngIf="!(tableComponent.readonly$|async)">
+      *ngIf="!(tableComponent.readmode$|async)">
       <mat-icon>more_vert</mat-icon>
     </button>
 

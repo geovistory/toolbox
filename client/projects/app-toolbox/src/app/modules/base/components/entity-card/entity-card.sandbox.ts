@@ -72,7 +72,7 @@ const person1FkClass$ = new BehaviorSubject(InfResourceMock.PERSON_1.fk_class);
 // showOntoInfo
 const showOntoInfo$ = new BehaviorSubject(false);
 // readonly
-const readonly$ = new BehaviorSubject(true);
+const readmode$ = new BehaviorSubject(true);
 // scope
 const inProjectScope: GvFieldPageScope = { inProject: ProProjectMock.PROJECT_1.pk_entity }
 
@@ -137,7 +137,7 @@ export default sandboxOf(EntityCardComponent, {
       pkClass$: person1FkClass$,
       source: person1FieldSource,
       showOntoInfo$,
-      readonly$,
+      readmode$,
       scope: inProjectScope
     },
     template: `
@@ -149,13 +149,13 @@ export default sandboxOf(EntityCardComponent, {
                   [pkClass$]="pkClass$"
                   [source]="source"
                   [showOntoInfo$]="showOntoInfo$"
-                  [readonly$]="readonly$"
+                  [readmode$]="readmode$"
                   [scope]="scope"
                 ></gv-entity-card>
                   </div>
             <div>
               <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-              <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+              <button (click)="readmode$.next(!readmode$.value)">toggle readonly</button>
             </div>
         </div>`
   })

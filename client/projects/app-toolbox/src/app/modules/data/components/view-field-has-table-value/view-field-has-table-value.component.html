@@ -12,5 +12,5 @@
 
 
 <gv-table-editor class="gv-flex-fh" *ngIf="(pkTableValueLoader$|async).hasValueCount===1"
-  [pkEntity]="(pkTableValueLoader$|async).pkTableValue" [readonly$]="readonly$">
+  [pkEntity]="(pkTableValueLoader$|async).pkTableValue" [readmode$]="readmode$">
 </gv-table-editor>

@@ -1,10 +1,11 @@
-<ng-container *ngIf="(s.fields$|async)?.length>0">
+<ng-container
+  *ngIf="(s.fields$|async)?.length>0 && !(hideEmptySectionInReadmode&&(s.readmode$|async)&&(itemCountService.sum$|async)<1)">
   <gv-view-section-header [section]="s">
     <ng-content title select="[title]"></ng-content>
   </gv-view-section-header>
   <mat-divider></mat-divider>
 </ng-container>
 <gv-view-section-body class="mat-typography" #s [showBodyOnInit]=true [source]="source" [scope]="scope"
-  [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [section]=section
+  [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [section]=section
   [showEmptyFieldsOnInit]=showEmptyFieldsOnInit>
 </gv-view-section-body>

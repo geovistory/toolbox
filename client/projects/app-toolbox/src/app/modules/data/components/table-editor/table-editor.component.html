@@ -3,12 +3,12 @@
   <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-toggler orange">
     <div
       style="height: 100%; display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px"
-      [ngClass]="{'mat-bg-edit-mode': !(readonly$|async)}">
+      [ngClass]="{'mat-bg-edit-mode': !(readmode$|async)}">
 
       <!-- Edit mode -->
       <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary"
-        (click)="readonly$.next(!readonly$.value)">
-        {{(readonly$|async) ? 'Edit table' : 'Stop editing'}}
+        (click)="readmode$.next(!readmode$.value)">
+        {{(readmode$|async) ? 'Edit table' : 'Stop editing'}}
       </button>
     </div>
   </div>
@@ -56,7 +56,7 @@
 <!-- // MOVED cellMapping TO EntityMatcherComponent -->
 <gv-table class="mat-border-edit-mode" [pkProject]="pkProject" [pkDigital]="pkEntity" [loading]="loading"
   [sortBy$]="sortByIndex$" [headers$]="headers$" [table$]="table$" [filteringEnabled]="colFiltersEnabled"
-  [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" [readonly$]="readonly$" [showIds$]="showIds$"
+  [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" [readmode$]="readmode$" [showIds$]="showIds$"
   [newRow]="newRowTemp" class="gv-overflow-hidden" (sortDemanded)="onSortChange($event)"
   (filterDemanded)="onFilterChange($event)" (createRowDemanded)="preNewRow($event.position)"
   (deleteRowDemanded)="deleteRow($event.pkRow)" (moveRowDemanded)="moveRow($event.pkRow, $event.position)"

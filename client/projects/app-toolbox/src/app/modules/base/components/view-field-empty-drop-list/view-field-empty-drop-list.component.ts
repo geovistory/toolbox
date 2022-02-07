@@ -24,7 +24,7 @@ export class ViewFieldEmptyDropListComponent implements OnInit {
     public viewFieldDropListService: ViewFieldDropListService,
     public treeNodeService: ViewFieldTreeNodeService,
   ) {
-    treeNodeService.indentation$.next(treeNodeService.indentation$.value)
+    // treeNodeService.indentation$.next(treeNodeService.indentation$.value)
   }
 
   ngOnInit(): void {

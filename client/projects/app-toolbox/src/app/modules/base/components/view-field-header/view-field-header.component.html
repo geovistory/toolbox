@@ -16,7 +16,7 @@
   <!-- Property Label -->
   <span class="mat-body-strong loc-field-label" [ngClass]="{'mat-text-secondary': !(itemsCount$ |async) }">
     {{ fieldLabel}}
-    <span matTooltip="Required and not changeable (identity defining)" *ngIf="!(readonly$|async)&&required">
+    <span matTooltip="Required and not changeable (identity defining)" *ngIf="!(readmode$|async)&&required">
       *
     </span>
     <mat-icon *ngIf="removedFromProfiles" svgIcon="alert" color="warn"
@@ -25,7 +25,7 @@
   </span>
 
   <!-- Class Label -->
-  <span *ngIf="!(readonly$|async)&&showTargetClassLabels" class="mat-text-secondary mat-caption loc-target-class-label"
+  <span *ngIf="!(readmode$|async)&&showTargetClassLabels" class="mat-text-secondary mat-caption loc-target-class-label"
     [matTooltip]="targetClassLabelsTooltip">
     {{targetClassLabelsStr}}
   </span>
@@ -35,7 +35,7 @@
 </div>
 
 <div class="loc-right  mat-text-secondary">
-  <ng-container *ngIf="!(readonly$|async)">
+  <ng-container *ngIf="!(readmode$|async)">
     <!-- Items Count -->
     <span *ngIf="!hideItemsCount" class="mat-body mat-text-secondary mat-caption loc-count"
       matTooltip="{{itemsCount$ | async}} of max. {{itemMaxStr}}">

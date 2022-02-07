@@ -65,13 +65,13 @@
 
           <mat-tab label="Your project version" [disabled]="!(selectedInProject$ | async)" class="gv-fh">
             <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)" [pkClass$]="pkClass$"
-              [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }" [readonly$]="entityCardReadOnly$">
+              [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }" [readmode$]="entityCardReadOnly$">
             </gv-entity-card>
           </mat-tab>
 
           <mat-tab label="Community version" class="gv-fh gv-col-space-between">
             <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)" [pkClass$]="pkClass$"
-              [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }" [readonly$]="entityCardReadOnly$">
+              [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }" [readmode$]="entityCardReadOnly$">
             </gv-entity-card>
           </mat-tab>
 

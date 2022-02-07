@@ -20,7 +20,7 @@ export class ViewFieldItemContainerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.nodeService.displayMode === 'tree') {
-      this.pl$ = this.nodeService.indentation$.pipe(map(indentation => this.treeExtraPl + (indentation * 40)))
+      this.pl$ = this.nodeService.indentation$.pipe(map(indentation => this.treeExtraPl + ((indentation - 1) * 40)))
     } else {
       this.pl$ = of(16)
     }

@@ -76,7 +76,7 @@ const person1FkClass$ = new BehaviorSubject(pkClass);
 // showOntoInfo
 const showOntoInfo$ = new BehaviorSubject(false);
 // readonly
-const readonly$ = new BehaviorSubject(false);
+const readmode$ = new BehaviorSubject(false);
 // scope
 const inProjectScope: GvFieldPageScope = { inProject: pkProject }
 
@@ -102,7 +102,7 @@ export default sandboxOf(EntityCardComponent, {
       pkClass$: person1FkClass$,
       source: person1FieldSource,
       showOntoInfo$,
-      readonly$,
+      readmode$,
       scope: inProjectScope
     },
     template: `
@@ -114,7 +114,7 @@ export default sandboxOf(EntityCardComponent, {
                   [pkClass$]="pkClass$"
                   [source]="source"
                   [showOntoInfo$]="showOntoInfo$"
-                  [readonly$]="readonly$"
+                  [readmode$]="readmode$"
                   [scope]="scope"
                 ></gv-entity-card>
                   </div>

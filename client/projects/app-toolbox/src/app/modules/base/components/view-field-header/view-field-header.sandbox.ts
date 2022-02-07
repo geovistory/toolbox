@@ -13,7 +13,7 @@ const inProjectScope: GvFieldPageScope = { inProject: IAppStateMock.stateProject
 const context = {
   body: { showBody$: new BehaviorSubject(true) },
   itemsCount$: new BehaviorSubject(3),
-  readonly$: new BehaviorSubject(false),
+  readmode$: new BehaviorSubject(false),
   showOntoInfo$: new BehaviorSubject(false),
   ontoInfoUrl: 'https://ontome.org/property/1',
   ontoInfoLabel: 'crm:P12',
@@ -54,7 +54,7 @@ export default sandboxOf(ViewFieldHeaderComponent, {
 
         <div style="width:{{width}}px;height:80px" class="d-flex mr-4">
           <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
-          [readonly$]=readonly$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+          [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
           [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
           [required]=required [disableToggle]=disableToggle
           [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
@@ -73,12 +73,12 @@ export default sandboxOf(ViewFieldHeaderComponent, {
     <div style="padding:40px; display:flex; flex-direction:column; justify-content:flex-start" class="mat-bg-grey-500">
       <div>
         <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
-        <button (click)="readonly$.next(!readonly$.value)">toggle readonly</button>
+        <button (click)="readmode$.next(!readmode$.value)">toggle readonly</button>
       </div>
       <h2>Indentation 0</h2>
       <div style="width:500px;height:80px" class="d-flex mr-4">
         <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=of(0) [showAddButton$]=showAddButton$
-        [readonly$]=readonly$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+        [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
         [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
         [required]=required [disableToggle]=disableToggle
         [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
@@ -88,7 +88,7 @@ export default sandboxOf(ViewFieldHeaderComponent, {
       <h2>Indentation 1</h2>
       <div style="width:500px;height:80px" class="d-flex mr-4">
         <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
-        [readonly$]=readonly$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+        [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
         [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
         [required]=required [disableToggle]=disableToggle
         [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
@@ -98,7 +98,7 @@ export default sandboxOf(ViewFieldHeaderComponent, {
       <h2>Indentation 2</h2>
       <div style="width:500px;height:80px" class="d-flex mr-4">
         <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
-        [readonly$]=readonly$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+        [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
         [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
         [required]=required [disableToggle]=disableToggle
         [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles

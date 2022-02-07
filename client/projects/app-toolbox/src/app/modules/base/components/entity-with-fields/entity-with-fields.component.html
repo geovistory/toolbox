@@ -1,5 +1,5 @@
 <gv-entity-field *ngFor="let field of (fields$|async)" class="loc-item" [field]="field" [source]="source"
-  [scope]="scope" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+  [scope]="scope" [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$">
 </gv-entity-field>
 <gv-entity-field-time-span [hidden]="x.isEmpty$|async" #x class="loc-item" [source]="source" [scope]="scope">
 </gv-entity-field-time-span>

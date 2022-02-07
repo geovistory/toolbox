@@ -13,14 +13,14 @@
 <!-- CLASS INFO -->
 
 <span class="loc-class-info">
-  <span *ngIf="!(readonly$|async)" [matMenuTriggerFor]="classInfoMenu">
+  <span [matMenuTriggerFor]="readonly?null:classInfoMenu">
     <gv-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="resource.fk_class" [classLabel]="classLabel"
       [isFavorite]="isFavorite">
     </gv-class-info>
   </span>
-  <span *ngIf="(readonly$|async)">
+  <!-- <span *ngIf="(readmode$|async)">
     <gv-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="resource.fk_class" [classLabel]="classLabel"
       [isFavorite]="isFavorite">
     </gv-class-info>
-  </span>
+  </span> -->
 </span>

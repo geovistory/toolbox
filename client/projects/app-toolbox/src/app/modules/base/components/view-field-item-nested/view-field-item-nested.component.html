@@ -4,13 +4,13 @@
 
     <!-- CLASS INFO -->
     <span class="loc-class-info">
-      <gv-view-field-item-class-info [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [resource]="resource"
+      <gv-view-field-item-class-info [showOntoInfo$]="showOntoInfo$" [resource]="resource"
         [isInProject]="projRel?.is_in_project" [classLabel]="field.targets[resource.fk_class]?.targetClassLabel"
         [isFavorite]="ordNum===0"></gv-view-field-item-class-info>
     </span>
     <!-- NESTED FIELDS -->
     <gv-entity-with-fields [source]="{fkInfo:resource.pk_entity}" [fkClass]="resource.fk_class"
-      [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope" [readonly$]="readonly$">
+      [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope" [readmode$]="readmode$">
 
     </gv-entity-with-fields>
   </span>
@@ -23,6 +23,6 @@
     <button mat-icon-button *ngIf="!(expanded$|async)" (click)="expanded$.next(true)">
       <mat-icon>unfold_more</mat-icon>
     </button>
-    <gv-view-field-item-entity-menu *ngIf="!(readonly$|async)"></gv-view-field-item-entity-menu>
+    <gv-view-field-item-entity-menu *ngIf="!(readmode$|async)"></gv-view-field-item-entity-menu>
   </span>
 </gv-view-field-item-container>

@@ -19,14 +19,13 @@
       </button>
       <button *ngIf="!(itemCountService.sum$|async)" mat-icon-button [disabled]=true> </button>
 
-      <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="showOntoInfo$"
-        [readonly$]="itemComponent.readonly$" [resource]="resource"
+      <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="showOntoInfo$" [resource]="resource"
         [isInProject]="itemComponent.item.projRel?.is_in_project" [classLabel]="classLabel" [isFavorite]="ordNum===0">
       </gv-view-field-item-class-info>
 
       <gv-entity-preview class="loc-item" [hideClass]="true"
         [pkEntity]="itemComponent.item.target.entity.resource.pk_entity" [dragEnabled]="false"
-        [openTabOnClick]="!(itemComponent.readonly$|async)" [truncateLabel]="'250'">
+        [openTabOnClick]="!readonly" [truncateLabel]="'250'">
       </gv-entity-preview>
       <div class="gv-flex-grow" (click)="showBody$.next(!showBody$.value)">
 
@@ -34,7 +33,7 @@
     </span>
 
     <span class="loc-right">
-      <gv-view-field-item-entity-menu *ngIf="!(itemComponent.readonly$|async) &&  !isExpression">
+      <gv-view-field-item-entity-menu *ngIf="!(itemComponent.readmode$|async) &&  !isExpression">
 
         <mat-divider></mat-divider>
         <div class="dropdown-header">Add a new</div>
@@ -50,7 +49,7 @@
 
 
       <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto"
-        *ngIf="!(itemComponent.readonly$|async) && isExpression">
+        *ngIf="!(itemComponent.readmode$|async) && isExpression">
         <mat-icon>more_vert</mat-icon>
       </button>
 
@@ -94,7 +93,7 @@
 </gv-view-field-empty-drop-list> -->
 <!--
 <gv-view-field-body-2 style="border:1px dashed pink; display: block;" #f *ngFor="let field of fields$|async"
-  [showBodyOnInit]=true [field]="field" [showOntoInfo$]="showOntoInfo$" [readonly$]="itemComponent.readonly$"
+  [showBodyOnInit]=true [field]="field" [showOntoInfo$]="showOntoInfo$" [readmode$]="itemComponent.readmode$"
   [source]="sectionSource" [scope]="itemComponent.scope" [limit]="100" [hideNoItemsInfo]="true"
   [hidden]="field.property.fkProperty==1216" [attr.xyz]="(f.itemsCount$ | async)">
 
@@ -103,17 +102,24 @@
 <!--
 <gv-view-section-body #s class="mat-typography" [showBodyOnInit]=isExpression [scope]="itemComponent.scope"
   [source]="sectionSource" [pkClass$]="sectionPkClass$" [showOntoInfo$]="showOntoInfo$"
-  [readonly$]="itemComponent.readonly$" [section]=sectionSection [showEmptyFieldsOnInit]="true">
+  [readmode$]="itemComponent.readmode$" [section]=sectionSection [showEmptyFieldsOnInit]="true">
 </gv-view-section-body> -->
-<gv-view-field-body #f *ngFor="let field of fields$|async" [showBody$]="showBody$"
-  [hidden]="((itemComponent.readonly$ |async) || field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)"
-  [field]="field" [showOntoInfo$]="showOntoInfo$" [readonly$]="itemComponent.readonly$" [source]="sectionSource"
-  [scope]="itemComponent.scope" [limit]="100" [hideNoItemsInfo]="true">
-</gv-view-field-body>
-<!-- <div class="loc-container" gvOpenCloseContainer [isOpen$]="showBody$">
-  <div gvOpenCloseChild>
-  </div>
-</div> -->
+
+<ng-container *ngIf="nodeService.indentation$.value<10; else maxLevelReached">
+
+
+  <gv-view-field-body #f *ngFor="let field of fields$|async" [showBody$]="showBody$"
+    [hidden]="((itemComponent.readmode$ |async) || field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)"
+    [field]="field" [showOntoInfo$]="showOntoInfo$" [readmode$]="itemComponent.readmode$" [source]="sectionSource"
+    [scope]="itemComponent.scope" [limit]="100" [hideNoItemsInfo]="true">
+  </gv-view-field-body>
+</ng-container>
+
+<ng-template #maxLevelReached>
+  <gv-view-field-item-container>
+    <span class="mat-text-secondary"> Maximum level of nesting reached</span>
+  </gv-view-field-item-container>
+</ng-template>
 
 
 <mat-menu #appMenu="matMenu">

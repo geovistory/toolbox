@@ -6,14 +6,11 @@ import { ViewSectionBodyComponent } from '../view-section-body/view-section-body
   selector: 'gv-view-section-header',
   templateUrl: './view-section-header.component.html',
   styleUrls: ['./view-section-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewSectionHeaderComponent implements OnInit {
 
   @Input() section: ViewSectionBodyComponent
-
-
-  constructor() { }
 
   ngOnInit(): void {
 

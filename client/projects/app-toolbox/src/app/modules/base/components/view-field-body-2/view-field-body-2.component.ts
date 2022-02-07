@@ -28,7 +28,7 @@ export class ViewFieldBody2Component implements OnInit, OnDestroy {
   @Input() field: Field
   @Input() source: GvFieldSourceEntity;
   @Input() scope: GvFieldPageScope
-  @Input() readonly$: Observable<boolean>
+  @Input() readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
   @Input() showBodyOnInit: boolean
@@ -80,7 +80,7 @@ export class ViewFieldBody2Component implements OnInit, OnDestroy {
     // if (!this.field) errors.push('@Input() field is required.');
     // if (!this.source) errors.push('@Input() pkEntity is required.');
     // if (!this.scope) errors.push('@Input() scope is required.');
-    // if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    // if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     // if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     // if (errors.length) throw new Error(errors.join('\n'));
     // if (!this.addMode$) this.addMode$ = new BehaviorSubject(false);

@@ -60,7 +60,7 @@ export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
 }
 const common = {
   scope: inProjectScope,
-  readonly$: new BehaviorSubject(false),
+  readmode$: new BehaviorSubject(false),
   showOntoInfo$: new BehaviorSubject(false),
   addMode$: new BehaviorSubject(false),
   allowMultiSelect: false,
@@ -125,7 +125,7 @@ export default sandboxOf(ViewFieldItemComponent, {
           <gv-view-field-item [item]="f.item"
           [field]="f.field"
           [scope]="f.scope"
-          [readonly$]="f.readonly$"
+          [readmode$]="f.readmode$"
           [showOntoInfo$]="f.showOntoInfo$"
           [addMode$]="f.addMode$"
           [allowMultiSelect]="f.allowMultiSelect"
@@ -142,7 +142,7 @@ export default sandboxOf(ViewFieldItemComponent, {
       item: StatementWithTargetMock.appeTeEnHasAppeVtWithTarget,
       field: FieldMock.appeHasAppeString,
       scope: inProjectScope,
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       allowMultiSelect: false,
@@ -161,7 +161,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -173,7 +173,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -185,7 +185,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -199,7 +199,7 @@ export default sandboxOf(ViewFieldItemComponent, {
       item: StatementWithTargetMock.shipVoyageAtSomeTimeWithin,
       field: FieldMock.shipVoyageAtSomeTimeWithin,
       scope: inProjectScope,
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       allowMultiSelect: false,
@@ -218,7 +218,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -230,7 +230,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -242,7 +242,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -256,7 +256,7 @@ export default sandboxOf(ViewFieldItemComponent, {
       item: StatementWithTargetMock.unionHasPartner,
       field: FieldMock.unionHasPartner,
       scope: inProjectScope,
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       allowMultiSelect: false,
@@ -275,7 +275,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -287,7 +287,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -299,7 +299,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -313,7 +313,7 @@ export default sandboxOf(ViewFieldItemComponent, {
       item: StatementWithTargetMock.person1HasAppeTeEnWithTarget,
       field: FieldMock.personHasAppeTeEn,
       scope: inProjectScope,
-      readonly$: new BehaviorSubject(false),
+      readmode$: new BehaviorSubject(false),
       showOntoInfo$: new BehaviorSubject(false),
       addMode$: new BehaviorSubject(false),
       allowMultiSelect: false,
@@ -337,7 +337,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -349,7 +349,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -361,7 +361,7 @@ export default sandboxOf(ViewFieldItemComponent, {
         [item]="item"
         [field]="field"
         [scope]="scope"
-        [readonly$]="readonly$"
+        [readmode$]="readmode$"
         [showOntoInfo$]="showOntoInfo$"
         [addMode$]="addMode$"
         [allowMultiSelect]="allowMultiSelect"
@@ -376,7 +376,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //     field: FieldMock.presenceWasAtPlace,
   //     source: { fkInfo: InfResourceMock.MADRIDS_PRESENCE.pk_entity },
   //     showOntoInfo$: new BehaviorSubject(false),
-  //     readonly$: new BehaviorSubject(false),
+  //     readmode$: new BehaviorSubject(false),
   //     scope: inProjectScope
   //   },
   //   template: `
@@ -386,7 +386,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //         [source]="source"
   //         [field]="field"
   //         [scope]="scope"
-  //         [readonly$]="readonly$"
+  //         [readmode$]="readmode$"
   //         [showOntoInfo$]="showOntoInfo$"
   //         ></gv-view-field-body>
   //     </div>
@@ -402,7 +402,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //     field: FieldMock.accountOfJourneyHasDuration,
   //     source: { fkInfo: InfResourceMock.ACCOUNT_OF_JOURNEY.pk_entity },
   //     showOntoInfo$: new BehaviorSubject(false),
-  //     readonly$: new BehaviorSubject(false),
+  //     readmode$: new BehaviorSubject(false),
   //     scope: inProjectScope
   //   },
   //   template: `
@@ -412,7 +412,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //         [source]="source"
   //         [field]="field"
   //         [scope]="scope"
-  //         [readonly$]="readonly$"
+  //         [readmode$]="readmode$"
   //         [showOntoInfo$]="showOntoInfo$"
   //         ></gv-view-field-body>
   //     </div>
@@ -428,7 +428,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //     field: FieldMock.manifestationSingletonHasShortTitle,
   //     source: { fkInfo: InfResourceMock.MANIF_SINGLETON_THE_MURDERER.pk_entity },
   //     showOntoInfo$: new BehaviorSubject(false),
-  //     readonly$: new BehaviorSubject(false),
+  //     readmode$: new BehaviorSubject(false),
   //     addMode$: new BehaviorSubject(false),
   //     scope: inProjectScope
   //   },
@@ -439,7 +439,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //         [source]="source"
   //         [field]="field"
   //         [scope]="scope"
-  //         [readonly$]="readonly$"
+  //         [readmode$]="readmode$"
   //         [showOntoInfo$]="showOntoInfo$"
   //         [addMode$]="addMode$"
   //         ></gv-view-field-body>
@@ -459,7 +459,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //     field: FieldMock.appeTeEnUsedInLanguage,
   //     source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
   //     showOntoInfo$: new BehaviorSubject(false),
-  //     readonly$: new BehaviorSubject(false),
+  //     readmode$: new BehaviorSubject(false),
   //     scope: inProjectScope
   //   },
   //   template: `
@@ -469,7 +469,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //         [source]="source"
   //         [field]="field"
   //         [scope]="scope"
-  //         [readonly$]="readonly$"
+  //         [readmode$]="readmode$"
   //         [showOntoInfo$]="showOntoInfo$"
   //         ></gv-view-field-body>
   //     </div>
@@ -484,7 +484,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //     field: FieldMock.appeTeEnIsAppeOfPerson,
   //     source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
   //     showOntoInfo$: new BehaviorSubject(false),
-  //     readonly$: new BehaviorSubject(false),
+  //     readmode$: new BehaviorSubject(false),
   //     scope: inProjectScope,
   //     // schemaObjects: [
   //     //   GvSchemaObjectMock.basicClassesAndProperties,
@@ -499,7 +499,7 @@ export default sandboxOf(ViewFieldItemComponent, {
   //         [source]="source"
   //         [field]="field"
   //         [scope]="scope"
-  //         [readonly$]="readonly$"
+  //         [readmode$]="readmode$"
   //         [showOntoInfo$]="showOntoInfo$"
   //         ></gv-view-field-body>
   //     </div>

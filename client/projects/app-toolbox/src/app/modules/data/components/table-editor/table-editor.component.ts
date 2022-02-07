@@ -30,7 +30,7 @@ export class TableEditorComponent implements OnInit {
   destroy$ = new Subject<boolean>();
 
   @Input() pkEntity: number; // Primary key of the table digital to be viewed or edited
-  @Input() readonly$: BehaviorSubject<boolean>;
+  @Input() readmode$: BehaviorSubject<boolean>;
   filterOnRow: number; // the row on which to filter on
   showIds$ = new BehaviorSubject(false);
 
@@ -275,7 +275,7 @@ export class TableEditorComponent implements OnInit {
 
 
   tableConfiguration() {
-    this.readonly$.next(true)
+    this.readmode$.next(true)
     this.dialog.open<TableConfigDialogComponent,
       TableConfigDialogData, TableConfigDialogResult>(TableConfigDialogComponent, {
         height: 'calc(80% - 30px)',
@@ -363,8 +363,8 @@ export class TableEditorComponent implements OnInit {
     this.newRowTemp = { position: -1, cells: [] };
 
     this.showIds$.next(!this.showIds$.value)
-    if (this.showIds$.value && !this.readonly$.value) {
-      this.readonly$.next(true)
+    if (this.showIds$.value && !this.readmode$.value) {
+      this.readmode$.next(true)
     }
   }
 

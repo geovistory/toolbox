@@ -16,7 +16,7 @@ export class EntityCardComponent implements OnInit {
   @Input() pkClass$: Observable<number>
   @Input() scope: GvFieldPageScope;
   @Input() showOntoInfo$: BehaviorSubject<boolean>;
-  @Input() readonly$: BehaviorSubject<boolean>;
+  @Input() readmode$: BehaviorSubject<boolean>;
 
   constructor() { }
 
@@ -26,7 +26,7 @@ export class EntityCardComponent implements OnInit {
     if (!this.pkClass$) errors.push('@Input() pkClass$ is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
   }
 }
