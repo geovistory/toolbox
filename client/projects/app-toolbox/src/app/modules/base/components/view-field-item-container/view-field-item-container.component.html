@@ -1,3 +1,26 @@
-<div class="loc-container" [ngStyle]="{'padding-left.px':pl$|async}">
+<div class="loc-container {{dragoverClass$|async}}"
+  [ngStyle]="{'padding-left.px':pl$|async, 'min-height.px':minHeight}">
   <ng-content></ng-content>
+  <!-- These Dropzones only appear, when user drags (and he is allowed to drop here) -->
+  <div class="dnd-dropzone-container" [ngStyle]="{'left.px':pl$|async}" *ngIf="(canDrop$|async) && hasDropZones">
+    <ng-container *ngIf="hasDropZoneStart" [ngTemplateOutlet]="dropZone" [ngTemplateOutletContext]="{
+      position: 'start',
+      enable$: enableDropZoneStart$
+    }"></ng-container>
+    <!-- <ng-container *ngIf="hasDropZoneCenter" [ngTemplateOutlet]="dropZone" [ngTemplateOutletContext]="{
+      position: 'center',
+      enable$: enableDropZoneCenter$
+    }"></ng-container> -->
+    <ng-container *ngIf="hasDropZoneEnd" [ngTemplateOutlet]="dropZone" [ngTemplateOutletContext]="{
+      position: 'end',
+      enable$: enableDropZoneEnd$
+    }"></ng-container>
+  </div>
 </div>
+
+<ng-template #dropZone let-position="position" let-enable$="enable$">
+  <div *ngIf="!(enable$|async)" class="dnd-dropzone dnd-dropzone-{{position}}"> </div>
+  <div *ngIf="(enable$|async)" class="dnd-dropzone dnd-dropzone-{{position}}" dndDropzone [dndEffectAllowed]="'copy'"
+    (dragenter)="onDropZoneEnter(position)" (dragleave)="onDropZoneLeave()" (dndDrop)="onDrop($event,position)">
+  </div>
+</ng-template>

@@ -9,28 +9,22 @@
         </mat-paginator>
       </span>
       <mat-divider [hidden]="(itemsCount$ | async) <= limit"></mat-divider>
-      <div #dropList cdkDropList [cdkDropListConnectedTo]="viewFieldDropListService.connectedToDropLists$|async"
-        [gvViewFieldDropList]="viewFieldDropListService" [dlField]="field" [dlSource]="source" [dlScope]="scope"
-        [dlLimit$]="limit$" [dlPageIndex$]="pageIndex$" [dlItems$]="items$" [cdkDropListData]="viewFieldDropListService"
-        [id]="source.fkInfo+ '_f_'+field.property.fkProperty+'_'+field.isOutgoing"
-        (cdkDropListDropped)="viewFieldDropListService.drop($event)"
-        [ngClass]="{'loc-dropzone-accepts':viewFieldDropListService.dropZoneAccepts$|async}">
+      <div [gvDndSortList]="{items:(items$ | async), field:field, id:sortListId}"
+        (optimisticUpdate)="itemsOptimisticUpdate$.next($event)">
 
-        <gv-view-field-item-container *ngIf="!((itemsCount$ |async) > 0) && !hideNoItemsInfo">
+        <gv-view-field-item-container *ngIf="!((itemsCount$ |async) > 0) && !hideNoItemsInfo" [hasDropZones]="false">
           <div class="loc-no-items mat-caption mat-text-secondary">No items</div>
         </gv-view-field-item-container>
-        <gv-view-field-item-container *ngIf="!(itemsCount$ |async) && viewFieldDropListService.dropZoneAccepts$|async">
-          <div class="loc-no-items mat-caption mat-text-secondary">Drop here</div>
-        </gv-view-field-item-container>
         <div *ngFor="let item of (items$ | async); let i = index; trackBy:trackByFn"
-          [ngClass]="{'mb-3': (addMode$|async), 'mt-3': (addMode$|async)}" cdkDrag [cdkDragData]="item"
-          (cdkDragStarted)="dragStarted()" (cdkDragEnded)="dragEnded()" (cdkDragReleased)="dragReleased()">
+          [ngClass]="{'mb-3': (addMode$|async), 'mt-3': (addMode$|async)}" [dndDraggable]="{item, sortListId}"
+          (dndStart)="onDragStart(item)" (dndEnd)="onDragEnd()">
 
+
+          <mat-divider *ngIf="dividerPosition==='top'"></mat-divider>
           <gv-view-field-item [item]=item [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [addMode$]=addMode$
             [field]=field [scope]=scope [checked]="selection.isSelected(item.statement.pk_entity)"
             [allowMultiSelect]=allowMultiSelect (selectionChange)="toggleSelection($event)"></gv-view-field-item>
-          <mat-divider></mat-divider>
-
+          <mat-divider *ngIf="dividerPosition==='bottom'"></mat-divider>
 
         </div>
 

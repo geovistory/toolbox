@@ -43,7 +43,7 @@
         'd-none': t.layoutMode=='left-only'
       }">
       <gv-right-panel-btn (click)="t.onRightBtnClick()"> </gv-right-panel-btn>
-      <mat-tab-group mat-stretch-tabs class="loc-tabs-right">
+      <mat-tab-group mat-stretch-tabs class="loc-tabs-right gv-flex-fh">
 
         <mat-tab *ngIf="tab.data.showContentTree">
           <ng-template mat-tab-label>
@@ -52,8 +52,8 @@
               has content
             </div>
           </ng-template>
-          <gv-content *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
-            [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [section]=linkedSources
+          <gv-content class="gv-flex-fh" *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source"
+            [pkClass$]="fkClass$" [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [section]=linkedSources
             [showEmptyFieldsOnInit]="true">
           </gv-content>
 

@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DndModule } from 'ng2-dnd';
+import { DndModule as NgxDndModule } from 'ngx-drag-drop';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { ControlMessagesModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
@@ -64,10 +65,8 @@ import { ViewFieldAnnotationItemComponent } from './components/view-field-annota
 import { ViewFieldAnnotationsOfCellItemComponent } from './components/view-field-annotations-of-cell-item/view-field-annotations-of-cell-item.component';
 import { ViewFieldAnnotationsOfCellComponent } from './components/view-field-annotations-of-cell/view-field-annotations-of-cell.component';
 import { ViewFieldAnnotationsComponent } from './components/view-field-annotations/view-field-annotations.component';
-import { ViewFieldBody2Component } from './components/view-field-body-2/view-field-body-2.component';
 import { ViewFieldBodyComponent } from './components/view-field-body/view-field-body.component';
 import { ViewFieldDialogComponent } from './components/view-field-dialog/view-field-dialog.component';
-import { ViewFieldEmptyDropListComponent } from './components/view-field-empty-drop-list/view-field-empty-drop-list.component';
 import { ViewFieldHasValueVersionComponent } from './components/view-field-has-value-version/view-field-has-value-version.component';
 import { ViewFieldHeaderComponent } from './components/view-field-header/view-field-header.component';
 import { ViewFieldItemCellComponent } from './components/view-field-item-cell/view-field-item-cell.component';
@@ -82,6 +81,7 @@ import { ViewFieldItemTimePrimitiveComponent } from './components/view-field-ite
 import { ViewFieldItemValueVersionComponent } from './components/view-field-item-value-version/view-field-item-value-version.component';
 import { ViewFieldItemValueComponent } from './components/view-field-item-value/view-field-item-value.component';
 import { ViewFieldItemComponent } from './components/view-field-item/view-field-item.component';
+import { ViewFieldTreeItemDropZoneComponent } from './components/view-field-tree-item-drop-zone/view-field-tree-item-drop-zone.component';
 import { ViewFieldComponent } from './components/view-field/view-field.component';
 import { ViewSectionBodyComponent } from './components/view-section-body/view-section-body.component';
 import { ViewSectionHeaderComponent } from './components/view-section-header/view-section-header.component';
@@ -95,9 +95,9 @@ import { ViewTimeSpanItemComponent } from './components/view-time-span-item/view
 import { ViewTimeSpanSectionBodyComponent } from './components/view-time-span-section-body/view-time-span-section-body.component';
 import { ViewTimeSpanSectionHeaderComponent } from './components/view-time-span-section-header/view-time-span-section-header.component';
 import { ViewTimeSpanSectionComponent } from './components/view-time-span-section/view-time-span-section.component';
-import { ViewFieldDropListDirective } from './directives/view-field-drop-list.directive';
+import { GvDndSortListDirective } from './directives/dnd-sort-list.directive';
 import { BaseModalsService } from './services/base-modals.service';
-import { GlobalDragDropService } from './services/global-drag-drop.service';
+import { GvDndGlobalService } from './services/dnd-global.service';
 import { PaginationService } from './services/pagination.service';
 import { TimeSpanService } from './services/time-span.service';
 import { ViewFieldAddHooksService } from './services/view-field-add-hooks.service';
@@ -155,7 +155,6 @@ const components = [
   ViewFieldComponent,
   ViewFieldDialogComponent,
   ViewFieldBodyComponent,
-  ViewFieldBody2Component,
   ViewFieldHeaderComponent,
   ViewFieldItemComponent,
   ViewFieldItemClassInfoComponent,
@@ -167,6 +166,7 @@ const components = [
   ViewFieldItemCellComponent,
   ViewFieldItemValueVersionComponent,
   ViewFieldItemContentSectionComponent,
+  ViewFieldTreeItemDropZoneComponent,
   ViewFieldItemLayoutComponent,
   ViewFieldItemContainerComponent,
   ViewTimeSpanItemPreviewComponent,
@@ -181,8 +181,7 @@ const components = [
   ViewFieldAnnotationItemComponent,
   ViewFieldAnnotationsOfCellComponent,
   ViewFieldAnnotationsOfCellItemComponent,
-  ViewFieldDropListDirective,
-  ViewFieldEmptyDropListComponent,
+  GvDndSortListDirective
 ]
 
 const baseModules = [
@@ -206,7 +205,8 @@ const baseModules = [
   EntityPreviewsPaginatedModule,
   EntityLabelConfigModule,
   OpenCloseModule,
-  GvButtonsModule
+  GvButtonsModule,
+  NgxDndModule
 ]
 
 @NgModule({
@@ -219,9 +219,9 @@ const baseModules = [
     BaseModalsService,
     ViewFieldAddHooksService,
     ViewFieldTreeNodeService,
-    GlobalDragDropService,
     ViewFieldDropListService,
-    ViewFieldItemCountSumService
+    ViewFieldItemCountSumService,
+    GvDndGlobalService
   ],
   exports: [
     ...components,
@@ -229,7 +229,5 @@ const baseModules = [
   ]
 })
 export class BaseModule {
-  constructor() {
-    // installPatch()
-  }
+  constructor() { }
 }

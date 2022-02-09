@@ -7,6 +7,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { BaseModalsService } from '../../services/base-modals.service';
 import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
 import { EditTextDialogComponent, EditTextDialogData } from '../edit-text-dialog/edit-text-dialog.component';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
@@ -39,6 +40,7 @@ export class ViewFieldItemComponent implements OnInit {
     private ap: ActiveProjectPipesService,
     private dataService: ReduxMainService,
     private p: ActiveProjectService,
+    private baseModals: BaseModalsService,
     private dialog: MatDialog,
     @Optional() private fieldDropService: ViewFieldDropListService,
     @Optional() @Inject(VIEW_FIELD_ITEM_TYPE) private itemTypeOverride: ViewFieldItemTypeFn,
@@ -73,7 +75,15 @@ export class ViewFieldItemComponent implements OnInit {
     }
     this.dialog.open(ConfirmDialogComponent, { data })
   }
-
+  openEditValueDialog(initVal: StatementWithTarget) {
+    this.baseModals.openAddStatementDialog({
+      field: this.field,
+      valueTarget: true,
+      source: this.fieldBody.source,
+      targetClass: initVal.targetClass,
+      hiddenProperty: {}
+    })
+  }
   openEditTextDialog() {
     const data: EditTextDialogData = {
       classLabel: this.field.targets[this.item.targetClass].targetClassLabel,
@@ -128,7 +138,13 @@ export class ViewFieldItemComponent implements OnInit {
   }
 
   async movePosition(targetOrdNum: number) {
-    this.fieldDropService.moveInSameFieldBackend(targetOrdNum, this.item.statement.pk_entity,)
+    this.fieldDropService.moveInSameFieldBackend(
+      this.field,
+      this.fieldBody.source,
+      this.scope,
+      targetOrdNum,
+      this.item.statement.pk_entity
+    )
   }
 
   async remove() {

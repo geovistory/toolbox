@@ -12,6 +12,13 @@
 
   <span class="loc-right" *ngIf="!(itemComponent.readmode$|async)">
     <mat-menu #appMenu="matMenu">
+      <ng-container *ngIf="itemComponent.item.target.langString">
+        <button mat-menu-item (click)="itemComponent.openEditValueDialog(itemComponent.item)">
+          <mat-icon>edit</mat-icon>
+          <span>Edit</span>
+        </button>
+        <mat-divider></mat-divider>
+      </ng-container>
 
       <ng-container *ngIf="itemComponent.item.target.langString">
         <button mat-menu-item

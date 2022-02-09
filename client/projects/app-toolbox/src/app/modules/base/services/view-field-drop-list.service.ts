@@ -1,11 +1,12 @@
-import { CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
-import { GvFieldId, GvFieldPageScope, GvFieldSourceEntity, InfStatementWithRelations, ProjectDataService, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { GvFieldId, GvFieldPageScope, GvFieldSourceEntity, InfStatement, InfStatementWithRelations, ProjectDataService, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { fieldToFieldId } from '../base.helpers';
+import { ViewFieldBodyComponent } from '../components/view-field-body/view-field-body.component';
 
 @Injectable({
   providedIn: 'root'
@@ -16,12 +17,6 @@ export class ViewFieldDropListService {
   itemsOptimisticUpdate$ = new Subject<StatementWithTarget[]>()
 
 
-  field: Field
-  source: GvFieldSourceEntity;
-  scope: GvFieldPageScope
-  limit$?: BehaviorSubject<number>
-  items$?: Observable<StatementWithTarget[]>
-  pageIndex$?: BehaviorSubject<number>
 
   constructor(
     private ap: ActiveProjectPipesService,
@@ -29,98 +24,122 @@ export class ViewFieldDropListService {
     private projectDataService: ProjectDataService
   ) { }
 
-  register(
-    field: Field,
-    source: GvFieldSourceEntity,
-    scope: GvFieldPageScope,
-    limit$: BehaviorSubject<number>,
-    items$: Observable<StatementWithTarget[]>,
-    pageIndex$: BehaviorSubject<number>,) {
-    this.field = field
-    this.source = source
-    this.scope = scope
-    this.limit$ = limit$
-    this.items$ = items$
-    this.pageIndex$ = pageIndex$
-  }
 
-  async drop(event: CdkDragDrop<any, any, StatementWithTarget>) {
-    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
-    if (event.container !== event.previousContainer) this.moveBetweenFields(event, pkProject);
-    else await this.moveInSameField(event);
-  }
+
+
 
   /**
    * move item from one field body to another
    * ('this' is the target field body)
    */
-  private async moveBetweenFields(event: CdkDragDrop<any, ViewFieldDropListService, StatementWithTarget>, pkProject: number) {
-    await this.moveBetweenFieldsOptimistic(event);
+  async moveBetweenFields(
+    previousComponent: ViewFieldBodyComponent,
+    previousIndex: number,
+    currentComponent: ViewFieldBodyComponent,
+    currentIndex: number,
+    draggedItem: StatementWithTarget,
+  ) {
+    const targetPosition = this.calculateTargetPosition(currentComponent, currentIndex);
 
-    this.moveBetweenFieldsBackend(event, pkProject);
+    this.moveBetweenFieldsBackend(
+      currentComponent.field,
+      currentComponent.source,
+      targetPosition,
+      draggedItem.statement,
+    );
+    return this.moveBetweenFieldsOptimistic(
+      previousComponent,
+      previousIndex,
+      currentComponent,
+      currentIndex,
+      draggedItem,
+    );
   }
 
-  private async moveBetweenFieldsOptimistic(event: CdkDragDrop<any, ViewFieldDropListService, StatementWithTarget>) {
+  private async moveBetweenFieldsOptimistic(
+    previousComponent: ViewFieldBodyComponent,
+    previousIndex: number,
+    currentComponent: ViewFieldBodyComponent,
+    currentIndex: number,
+    draggedItem: StatementWithTarget
+  ) {
     // remove optimistically from previous container
-    await this.removeFromPreviousContainerOptimistic(event);
+    const previous = await this.removeFromPreviousContainerOptimistic(previousComponent, previousIndex);
     // add optimistically to this container
-    await this.addToThisContainerOptimistic(event);
+    const current = await this.addToThisContainerOptimistic(currentComponent, currentIndex, draggedItem);
+
+    return { previous, current }
   }
 
-  private async addToThisContainerOptimistic(event: CdkDragDrop<any, ViewFieldDropListService, StatementWithTarget>) {
-    if (!this.items$) return;
-    const items = await this.items$.pipe(first()).toPromise();
-    items.splice(event.currentIndex, 0, event.item.data);
-    this.itemsOptimisticUpdate$.next(items);
+  private async addToThisContainerOptimistic(
+    currentComponent: ViewFieldBodyComponent,
+    currentIndex: number,
+    draggedItem: StatementWithTarget
+  ) {
+    if (!currentComponent.items$) return;
+    const items = await currentComponent.items$.pipe(first()).toPromise();
+    items.splice(currentIndex, 0, draggedItem);
+    // this.itemsOptimisticUpdate$.next(items);
+    return items
   }
 
-  private async removeFromPreviousContainerOptimistic(event: CdkDragDrop<any, ViewFieldDropListService, StatementWithTarget>) {
-    const previousComponent = event.previousContainer.data;
+  private async removeFromPreviousContainerOptimistic(
+    previousComponent: ViewFieldBodyComponent,
+    previousIndex: number
+  ) {
     if (!previousComponent.items$) return;
     const previousItems = await previousComponent.items$.pipe(first()).toPromise();
-    previousItems.splice(event.previousIndex, 1);
+    previousItems.splice(previousIndex, 1);
     previousComponent.itemsOptimisticUpdate$.next(previousItems);
+    return previousItems
   }
 
-  private async moveBetweenFieldsBackend(event: CdkDragDrop<any, any, StatementWithTarget>, pkProject: number) {
-    const statement = event.item.data.statement;
+  async moveBetweenFieldsBackend(
+    field: Field,
+    source: GvFieldSourceEntity,
+    targetPosition: number,
+    statement: InfStatement,
+
+  ) {
+    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
+
     // remove the statement from project
     await this.dataService.removeInfEntitiesFromProject([statement.pk_entity], pkProject).pipe(first()).toPromise();
 
     // use old statement to create a new statement connected to this source
     let newStatement: InfStatementWithRelations;
-    const targetPosition = this.calculateTargetPosition(event);
-    if (this.field.isOutgoing) {
+    if (field.isOutgoing) {
       newStatement = {
         ...statement,
         pk_entity: undefined,
-        fk_subject_info: this.source.fkInfo,
-        fk_subject_data: this.source.fkData,
-        fk_subject_tables_cell: this.source.fkTablesCell,
-        fk_subject_tables_row: this.source.fkTablesRow,
+        fk_subject_info: source.fkInfo,
+        fk_subject_data: source.fkData,
+        fk_subject_tables_cell: source.fkTablesCell,
+        fk_subject_tables_row: source.fkTablesRow,
         entity_version_project_rels: [{ ord_num_of_range: targetPosition }]
       };
     } else {
       newStatement = {
         ...statement,
         pk_entity: undefined,
-        fk_object_info: this.source.fkInfo,
-        fk_object_data: this.source.fkData,
-        fk_object_tables_cell: this.source.fkTablesCell,
-        fk_object_tables_row: this.source.fkTablesRow,
+        fk_object_info: source.fkInfo,
+        fk_object_data: source.fkData,
+        fk_object_tables_cell: source.fkTablesCell,
+        fk_object_tables_row: source.fkTablesRow,
         entity_version_project_rels: [{ ord_num_of_domain: targetPosition }]
       };
     }
     this.dataService.upsertInfStatementsWithRelations(pkProject, [newStatement]);
   }
 
+
   /**
    * move item within this field body
    */
-  private async moveInSameField(event: CdkDragDrop<any, any, StatementWithTarget>) {
-    await this.moveInSameFieldOptimistic(event.previousIndex, event.currentIndex);
-    const targetPosition = this.calculateTargetPosition(event);
-    this.moveInSameFieldBackend(targetPosition, event.item.data.statement.pk_entity);
+  async moveInSameField(vfb: ViewFieldBodyComponent, previousIndex: number, currentIndex: number, movedStatementId: number) {
+    const targetPosition = this.calculateTargetPosition(vfb, currentIndex);
+    this.moveInSameFieldBackend(vfb.field, vfb.source, vfb.scope, targetPosition, movedStatementId);
+    return this.moveInSameFieldOptimistic(vfb, previousIndex, currentIndex);
   }
 
   /**
@@ -130,21 +149,21 @@ export class ViewFieldDropListService {
    * @param event
    * @returns 1-based position
    */
-  private calculateTargetPosition(event: CdkDragDrop<any, any, StatementWithTarget>) {
+  private calculateTargetPosition(vfb: ViewFieldBodyComponent, currentIndex: number) {
 
-    if (!this.limit$ || !this.pageIndex$) return 1
+    if (!vfb.limit$ || !vfb.pageIndex$) return 1
 
-    return (event.currentIndex + 1) + (this.limit$.value * this.pageIndex$.value);
+    return (currentIndex + 1) + (vfb.limit$.value * vfb.pageIndex$.value);
   }
 
   /**
    * move item within this field body, doing a optimistic update in frontend
    */
-  private async moveInSameFieldOptimistic(previousIndex: number, currentIndex: number) {
-    if (!this.items$) return;
-    const items = await this.items$.pipe(first()).toPromise();
+  private async moveInSameFieldOptimistic(vfb: ViewFieldBodyComponent, previousIndex: number, currentIndex: number) {
+    if (!vfb.items$) return;
+    const items = await vfb.items$.pipe(first()).toPromise();
     moveItemInArray(items, previousIndex, currentIndex);
-    this.itemsOptimisticUpdate$.next(items);
+    return items;
   }
 
   /**
@@ -152,8 +171,14 @@ export class ViewFieldDropListService {
    * @param targetOrdNum
    * @param movedStatementId
    */
-  async moveInSameFieldBackend(targetOrdNum: number, movedStatementId: number) {
-    const fieldId: GvFieldId = fieldToFieldId(this.field, this.source, this.scope)
+  async moveInSameFieldBackend(
+    field: Field,
+    source: GvFieldSourceEntity,
+    scope: GvFieldPageScope,
+    targetOrdNum: number,
+    movedStatementId: number
+  ) {
+    const fieldId: GvFieldId = fieldToFieldId(field, source, scope)
 
     const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
 

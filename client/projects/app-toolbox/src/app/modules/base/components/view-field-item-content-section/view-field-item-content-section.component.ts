@@ -3,7 +3,9 @@ import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kle
 import { GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { C_218_EXPRESSION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { BaseModalsService } from '../../services/base-modals.service';
+import { GvDndGlobalService } from '../../services/dnd-global.service';
 import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
@@ -45,14 +47,20 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
 
   c218ExpressionId = C_218_EXPRESSION_ID
 
+  enableDropZoneEnd$: Observable<boolean>
+  dragover$ = new BehaviorSubject(false)
+
   constructor(
     public itemComponent: ViewFieldItemComponent,
     public nodeService: ViewFieldTreeNodeService,
     private c: ConfigurationPipesService,
     private modals: BaseModalsService,
     public itemCountService: ViewFieldItemCountSumService,
+    public dndGlobal: GvDndGlobalService,
     @Optional() @Inject(READ_ONLY) public readonly: boolean
-  ) { }
+  ) {
+    this.enableDropZoneEnd$ = this.showBody$.pipe(map(v => !v))
+  }
 
   ngOnInit(): void {
     this.resource = this.itemComponent.item.target.entity.resource
