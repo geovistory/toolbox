@@ -56,29 +56,29 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                 AND t0.fk_project = ${this.addParam(pkProject)}
                 AND t0.is_in_project = TRUE
                 AND t5.fk_project = ${this.addParam(pkProject)}
-            )
-            -- the properties (factoid_property_mappings) of all the factoid mappings
-            SELECT
-                t2.fk_digital as fkDigital,
-                t1.fk_factoid_mapping as fkFactoidMapping,
-                t2.fk_class AS fkClass,
-                t3.fk_property AS fkProperty,
-                t3.is_outgoing as isOutgoing,
-                coalesce(t5.numeric_value::text, t5.string_value) AS value,
-                t5.fk_row as fkRow,
-                t8.fk_object_info as pkEntity,
-                t5.pk_cell as fkCell,
-                t3.fk_default as fkDefault
-            FROM tw1 as t1
-            INNER JOIN data.factoid_mapping AS t2 ON (t2.pk_entity = t1.fk_factoid_mapping)
-            INNER JOIN data.factoid_property_mapping AS t3 ON (t2.pk_entity = t3.fk_factoid_mapping)
-            INNER JOIN tables.cell AS t5 ON (t1.fk_row = t5.fk_row AND t5.fk_column = t3.fk_column)
-            LEFT JOIN LATERAL (
-                    SELECT *
-                    FROM information.statement as t6
-                    INNER JOIN projects.info_proj_rel AS t7 ON (t6.pk_entity = t7.fk_entity) AND t7.is_in_project = TRUE AND t7.fk_project = ${this.addParam(pkProject)}
-                    WHERE t6.fk_subject_tables_cell = t5.pk_cell AND t6.fk_property = 1334
-            ) t8 ON true
+        )
+        -- the properties (factoid_property_mappings) of all the factoid mappings
+        SELECT
+            t2.fk_digital as fkDigital,
+            t1.fk_factoid_mapping as fkFactoidMapping,
+            t2.fk_class AS fkClass,
+            t3.fk_property AS fkProperty,
+            t3.is_outgoing as isOutgoing,
+            coalesce(t5.numeric_value::text, t5.string_value) AS value,
+            t5.fk_row as fkRow,
+            t8.fk_object_info as pkEntity,
+            t5.pk_cell as fkCell,
+            t3.fk_default as fkDefault
+        FROM tw1 as t1
+        INNER JOIN data.factoid_mapping AS t2 ON (t2.pk_entity = t1.fk_factoid_mapping)
+        INNER JOIN data.factoid_property_mapping AS t3 ON (t2.pk_entity = t3.fk_factoid_mapping)
+        INNER JOIN tables.cell AS t5 ON (t1.fk_row = t5.fk_row AND t5.fk_column = t3.fk_column)
+        LEFT JOIN LATERAL (
+                SELECT *
+                FROM information.statement as t6
+                INNER JOIN projects.info_proj_rel AS t7 ON (t6.pk_entity = t7.fk_entity) AND t7.is_in_project = TRUE AND t7.fk_project = ${this.addParam(pkProject)}
+                WHERE t6.fk_subject_tables_cell = t5.pk_cell AND t6.fk_property = 1334
+        ) t8 ON true
 
         -- Works for now because a cell can only be in one project.
         -- If in the future a cell can be in multiple projects, think of filtering the statements (t6) on the project

@@ -160,6 +160,10 @@ button:focus {
   -webkit-mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
   mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
 }
+.gv-fade-out-right-75 {
+  -webkit-mask-image: linear-gradient(to right, #000000 75%, transparent 100%);
+  mask-image: linear-gradient(to right, #000000 75%, transparent 100%);
+}
 .gv-fade-out-bottom {
   -webkit-mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
