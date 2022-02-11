@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
-import { FactoidControllerService, FactoidEntity, FactoidStatement, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { FactoidControllerService, FactoidEntity, FactoidStatement, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ValueObjectTypeName } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
@@ -91,36 +91,24 @@ export class FactoidListComponent implements OnInit, OnDestroy {
     )
   }
 
-  getValueVOT$(bodyStatement: FactoidStatement): Observable<InfValueObject> {
+  getValueVOT$(bodyStatement: FactoidStatement, isDefault?: boolean): Observable<InfValueObject> {
     if (bodyStatement.vot == ValueObjectTypeName.appellation) {
-      return this.p.inf$.appellation$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ appellation: value })))
+      return this.p.inf$.appellation$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ appellation: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.place) {
-      return this.p.inf$.place$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ place: value })))
+      return this.p.inf$.place$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ place: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.dimension) {
-      return this.p.inf$.dimension$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ dimension: value })))
+      return this.p.inf$.dimension$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ dimension: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.langString) {
-      return this.p.inf$.lang_string$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ langString: value })))
+      return this.p.inf$.lang_string$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ langString: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.language) {
-      return this.p.inf$.language$.by_pk_entity$.key(bodyStatement.pkEntity).pipe(switchMap(value => of({ language: value })))
+      return this.p.inf$.language$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ language: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.timePrimitive) {
-      return combineLatest([
-        this.p.inf$.time_primitive$.by_pk_entity$.key(bodyStatement.pkEntity),
-        this.sss.pro$.info_proj_rel$.by_fk_project__fk_entity$.key(this.pkProject + '_' + bodyStatement.pkStatement)
-      ]).pipe(
-        map(([tp, ipr]) => {
-          const t: TimePrimitiveWithCal = {
-            julianDay: tp.julian_day,
-            duration: tp.duration as TimePrimitiveWithCal.DurationEnum,
-            calendar: ipr?.calendar as TimePrimitiveWithCal.CalendarEnum,
-          }
-          return t
-        }),
-        switchMap(value => of({ timePrimitive: value })))
+      return this.p.inf$.time_primitive$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ timePrimitive: value })))
     }
   }
 }

@@ -24,9 +24,9 @@ export interface SysConfigFormCtrlType {
     cell?: SysConfigFormCtrlType.CellEnum;
     timePrimitive?: SysConfigFormCtrlType.TimePrimitiveEnum;
     langString?: SysConfigFormCtrlType.LangStringEnum;
+    textWithLang?: SysConfigFormCtrlType.TextWithLangEnum;
     dimension?: DimensionValueObjectType;
     typeItem?: SysConfigFormCtrlType.TypeItemEnum;
-    timeSpan?: SysConfigFormCtrlType.TimeSpanEnum;
 }
 export namespace SysConfigFormCtrlType {
     export type EntityEnum = 'true';
@@ -62,13 +62,13 @@ export namespace SysConfigFormCtrlType {
     export const LangStringEnum = {
         True: 'true' as LangStringEnum
     };
+    export type TextWithLangEnum = 'true';
+    export const TextWithLangEnum = {
+        True: 'true' as TextWithLangEnum
+    };
     export type TypeItemEnum = 'true';
     export const TypeItemEnum = {
         True: 'true' as TypeItemEnum
-    };
-    export type TimeSpanEnum = 'true';
-    export const TimeSpanEnum = {
-        True: 'true' as TimeSpanEnum
     };
 }
 

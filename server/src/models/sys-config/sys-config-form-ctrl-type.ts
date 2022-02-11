@@ -46,6 +46,10 @@ export class SysConfigFormCtrlType {
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   langString?: TrueEnum;
 
+  // form element to create a text (as a individual entity) with a language
+  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
+  textWithLang?: TrueEnum;
+
   // form element to create dimension
   @property({type: DimensionValueObjectType, })
   dimension?: DimensionValueObjectType;
@@ -54,8 +58,8 @@ export class SysConfigFormCtrlType {
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   typeItem?: TrueEnum;
 
-  // form element to create time span
-  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  timeSpan?: TrueEnum;
+  // // form element to create time span
+  // @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
+  // timeSpan?: TrueEnum;
 
 }

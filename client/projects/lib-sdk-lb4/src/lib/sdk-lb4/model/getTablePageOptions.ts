@@ -19,6 +19,7 @@ export interface GetTablePageOptions {
     sortBy: string;
     sortDirection: GetTablePageOptions.SortDirectionEnum;
     filters?: { [key: string]: TColFilter; };
+    filterOnRow?: number;
 }
 export namespace GetTablePageOptions {
     export type SortDirectionEnum = 'ASC' | 'DESC';

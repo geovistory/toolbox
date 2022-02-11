@@ -171,7 +171,7 @@ export class TableController {
 
     options.limit = options.limit <= 100 ? options.limit : 100;
 
-    const response = await new QTableTablePage(this.dataSource).query(pkProject, pkEntity, options, masterColumns, datColumns);
+    const response = await new QTableTablePage(this.dataSource).query(pkProject, pkEntity, options, masterColumns, datColumns, options.filterOnRow);
 
     // //add languages to schema object
     // if (response.schemaObject?.inf?.lang_string?.length) {

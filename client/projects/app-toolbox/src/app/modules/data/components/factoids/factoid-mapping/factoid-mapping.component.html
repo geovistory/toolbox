@@ -1,0 +1,8 @@
+<div class="my-2">
+    <gv-factoid-mapping-header [listNumber]="listNumber" [fm]="fm" (delete)="delete()" (fmChanged)="fmChange($event)"
+        (collapseBody)="collapseBody($event)">
+    </gv-factoid-mapping-header>
+    <gv-factoid-mapping-body [fm]="fm" [fpms]="fm.properties" (fpmsChanged)="fpmsChange($event)"
+        [ngClass]="{'collapse':bodyCollapsed}">
+    </gv-factoid-mapping-body>
+</div>

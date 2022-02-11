@@ -1,0 +1,23 @@
+::ng-deep .loc-colum-mapping {
+    .mat-option {
+        text-align: center !important;
+    }
+}
+
+::ng-deep .loc-col-map {
+    .mat-form-field-wrapper {
+        padding: 0 !important;
+        margin:0 !important;
+    }
+}
+
+::ng-deep .mat-select-panel mat-option.mat-option {
+    height: unset !important;
+}
+
+::ng-deep .mat-option-text.mat-option-text {
+    white-space: normal !important;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    line-height: 1.6;
+}

@@ -16,6 +16,7 @@ export interface InfTimePrimitive {
     fk_class: number;
     julian_day: number;
     duration: InfTimePrimitive.DurationEnum;
+    calendar: InfTimePrimitive.CalendarEnum;
 }
 export namespace InfTimePrimitive {
     export type DurationEnum = '1 century' | '1 decade' | '1 year' | '1 month' | '1 day' | '1 hour' | '1 minute' | '1 second';
@@ -28,6 +29,11 @@ export namespace InfTimePrimitive {
         Hour: '1 hour' as DurationEnum,
         Minute: '1 minute' as DurationEnum,
         Second: '1 second' as DurationEnum
+    };
+    export type CalendarEnum = 'gregorian' | 'julian';
+    export const CalendarEnum = {
+        Gregorian: 'gregorian' as CalendarEnum,
+        Julian: 'julian' as CalendarEnum
     };
 }
 

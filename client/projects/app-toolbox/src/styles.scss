@@ -1824,6 +1824,7 @@ gv-quill-edit.gv-quill-textarea-like {
 
   .gv-editor {
     height: auto;
+    background: unset;
   }
 
   .ql-editor {
@@ -1831,11 +1832,11 @@ gv-quill-edit.gv-quill-textarea-like {
     min-height: 3.5rem; // copy from .form-control except border and height
     display: block;
     width: 100%;
-    padding: $input-padding-y $input-padding-x;
+    padding: 0;
     font-size: $font-size-base;
     line-height: $input-line-height;
     color: $input-color;
-    background-color: $input-bg;
+    // background-color: $input-bg;
     background-clip: padding-box;
 
     @if $enable-rounded {
@@ -1857,7 +1858,7 @@ gv-quill-edit.gv-quill-textarea-like {
     }
 
     // Customize the `:focus` state to imitate native WebKit styles.
-    @include form-control-focus(); // Placeholder
+    // @include form-control-focus(); // Placeholder
 
     &::placeholder {
       color: $input-placeholder-color; // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
@@ -3232,6 +3233,11 @@ gv-importer {
   justify-content: space-between;
 }
 
+.gv-row-space-around {
+  @extend .gv-row;
+  justify-content: space-around;
+}
+
 .gv-row-start {
   @extend .gv-row;
   justify-content: start;
@@ -3249,6 +3255,10 @@ gv-importer {
 
 .gv-width-auto {
   width: auto;
+}
+
+.gv-center {
+  align-items: center;
 }
 
 // About heights

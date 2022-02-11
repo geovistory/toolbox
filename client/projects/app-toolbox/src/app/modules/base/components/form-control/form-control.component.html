@@ -1,5 +1,4 @@
-<mat-form-field *ngIf="config?.data.controlType.appellation==='true'" class="w-100"
-  [appearance]="config.data.appearance">
+<mat-form-field *ngIf="config?.data.controlType.appellation" class="w-100" [appearance]="config.data.appearance">
   <gv-ctrl-appellation placeholder="Start typing..." [formControl]="formControlFactory.control"
     [required]="config?.required" [type]="config?.data.controlType.appellation">
   </gv-ctrl-appellation>
@@ -10,11 +9,11 @@
     Oops, please re-enter the value. Sorry!
   </mat-error>
 </mat-form-field>
-<ng-container *ngIf="config?.data.controlType.appellation==='textEditor'">
+<!-- <ng-container *ngIf="config?.data.controlType.appellation==='textEditor'">
   <gv-ctrl-appellation placeholder="Start typing..." [formControl]="formControlFactory.control"
     [required]="config?.required" [type]="config?.data.controlType.appellation">
   </gv-ctrl-appellation>
-</ng-container>
+</ng-container> -->
 
 <mat-form-field *ngIf="config?.data.controlType.language" class="w-100" [appearance]="config.data.appearance">
   <gv-ctrl-language placeholder="Select a language..." [formControl]="formControlFactory.control"

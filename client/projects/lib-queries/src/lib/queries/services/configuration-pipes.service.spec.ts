@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { IAppState, SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldTargetViewType, GvPositiveSchemaObject, GvSubentityFieldTargetViewType, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldTargetViewType, GvPositiveSchemaObject, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
@@ -11,8 +11,8 @@ import { ProClassFieldConfigMock } from 'projects/__test__/data/auto-gen/gvDB/Pr
 import { ProDfhProfileProjRelMock } from 'projects/__test__/data/auto-gen/gvDB/ProDfhProfileProjRelMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
-import { PROFILE_12_BIOGRAPHICAL_BA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-01-18';
-import { PROFILE_32_LINKED_IDENTIFI_2021_07_23 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-32-linked-identifi-2021-07-23';
+import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
+import { PROFILE_32_IDENTIFIERS_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-32-identifiers-2022-02-09';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
@@ -115,7 +115,7 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv
         (
-          ontomeProfileMockToGvPositiveSchema(PROFILE_12_BIOGRAPHICAL_BA_2022_01_18, ProProjectMock.PROJECT_1.pk_entity),
+          ontomeProfileMockToGvPositiveSchema(PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, ProProjectMock.PROJECT_1.pk_entity),
           PK_DEFAULT_CONFIG_PROJECT
         )
       schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
@@ -466,7 +466,7 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv
         (
-          ontomeProfileMockToGvPositiveSchema(PROFILE_12_BIOGRAPHICAL_BA_2022_01_18, ProProjectMock.PROJECT_1.pk_entity),
+          ontomeProfileMockToGvPositiveSchema(PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, ProProjectMock.PROJECT_1.pk_entity),
           PK_DEFAULT_CONFIG_PROJECT
         )
       schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
@@ -493,7 +493,7 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv
         (
-          ontomeProfileMockToGvPositiveSchema(PROFILE_12_BIOGRAPHICAL_BA_2022_01_18, ProProjectMock.PROJECT_1.pk_entity),
+          ontomeProfileMockToGvPositiveSchema(PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, ProProjectMock.PROJECT_1.pk_entity),
           PK_DEFAULT_CONFIG_PROJECT
         )
       schemaObjService.storeSchemaObjectGv(GvSchemaObjectMock.project1, PK_DEFAULT_CONFIG_PROJECT)
@@ -512,7 +512,7 @@ describe('ConfigurationPipeService', () => {
             const stemsFromField = actualSequence[0].find(f => f.property.fkProperty === 1435) // stems from
             const targetUnion = stemsFromField.targets[633] // union
             const broughtIntoLifeField = targetUnion.viewType.nestedResource.find(sf => sf.page.property.fkProperty === 1435) // brought into life (stems from)
-            const targetBirth: GvSubentityFieldTargetViewType = broughtIntoLifeField.targets[61] // birth
+            const targetBirth: GvFieldTargetViewType = broughtIntoLifeField.targets[61] // birth
             expect(targetBirth.entityPreview).not.toBeUndefined()
           },
           null,
@@ -754,7 +754,7 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv(
         createCrmAsGvPositiveSchema({
-          ontoMocks: [PROFILE_5_GEOVISTORY_BASI_2022_01_18, PROFILE_32_LINKED_IDENTIFI_2021_07_23],
+          ontoMocks: [PROFILE_5_GEOVISTORY_BASI_2022_01_18, PROFILE_32_IDENTIFIERS_2022_02_09],
           sysConf: {
             classes: {},
             specialFields: {
@@ -794,7 +794,7 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv(
         createCrmAsGvPositiveSchema({
-          ontoMocks: [PROFILE_12_BIOGRAPHICAL_BA_2022_01_18, PROFILE_32_LINKED_IDENTIFI_2021_07_23],
+          ontoMocks: [PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, PROFILE_32_IDENTIFIERS_2022_02_09],
           sysConf: SysConfigValueMock.SYS_CONFIC_VALID,
           p: ProProjectMock.PROJECT_1.pk_entity
         }),
@@ -816,7 +816,7 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv(
         createCrmAsGvPositiveSchema({
-          ontoMocks: [PROFILE_12_BIOGRAPHICAL_BA_2022_01_18, PROFILE_32_LINKED_IDENTIFI_2021_07_23],
+          ontoMocks: [PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, PROFILE_32_IDENTIFIERS_2022_02_09],
           sysConf: SysConfigValueMock.SYS_CONFIC_VALID,
           p: ProProjectMock.PROJECT_1.pk_entity
         }),
@@ -839,7 +839,7 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv(
         createCrmAsGvPositiveSchema({
-          ontoMocks: [PROFILE_5_GEOVISTORY_BASI_2022_01_18, PROFILE_32_LINKED_IDENTIFI_2021_07_23],
+          ontoMocks: [PROFILE_5_GEOVISTORY_BASI_2022_01_18, PROFILE_32_IDENTIFIERS_2022_02_09],
           sysConf: SysConfigValueMock.SYS_CONFIC_VALID,
           p: ProProjectMock.PROJECT_1.pk_entity
         }),
@@ -861,17 +861,17 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv(
         createCrmAsGvPositiveSchema({
-          ontoMocks: [PROFILE_32_LINKED_IDENTIFI_2021_07_23],
+          ontoMocks: [PROFILE_32_IDENTIFIERS_2022_02_09],
           sysConf: {
             classes: {}, specialFields: {
               bySourceClass: {
                 21: {
-                  "incomingProperties": {
-                    "1782": {
-                      "comment": "has identification",
-                      "viewSections": {
-                        "metadata": {
-                          "position": 1
+                  'incomingProperties': {
+                    '1782': {
+                      'comment': 'has identification',
+                      'viewSections': {
+                        'metadata': {
+                          'position': 1
                         }
                       }
                     }
@@ -900,7 +900,7 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv(
         createCrmAsGvPositiveSchema({
-          ontoMocks: [PROFILE_12_BIOGRAPHICAL_BA_2022_01_18, PROFILE_32_LINKED_IDENTIFI_2021_07_23],
+          ontoMocks: [PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, PROFILE_32_IDENTIFIERS_2022_02_09],
           sysConf: SysConfigValueMock.SYS_CONFIC_VALID,
           p: ProProjectMock.PROJECT_1.pk_entity
         }),
@@ -922,7 +922,7 @@ describe('ConfigurationPipeService', () => {
       setAppState(ngRedux, IAppStateMock.stateProject1)
       schemaObjService.storeSchemaObjectGv(
         createCrmAsGvPositiveSchema({
-          ontoMocks: [PROFILE_5_GEOVISTORY_BASI_2022_01_18, PROFILE_32_LINKED_IDENTIFI_2021_07_23],
+          ontoMocks: [PROFILE_5_GEOVISTORY_BASI_2022_01_18, PROFILE_32_IDENTIFIERS_2022_02_09],
           sysConf: SysConfigValueMock.SYS_CONFIC_VALID,
           p: ProProjectMock.PROJECT_1.pk_entity
         }),

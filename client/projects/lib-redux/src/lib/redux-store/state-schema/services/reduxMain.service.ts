@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { GvSchemaActions } from '../actions/schema.actions';
 
@@ -77,6 +77,14 @@ export class ReduxMainService {
     return this.schemaActions.loadGvSchemaModifier(call$)
   }
 
+  upsertInfData(pkProject: number, infData: InfData) {
+    const call$ = this.projectDataApi.createProjectDataControllerUpsertData(
+      pkProject,
+      infData
+    )
+    return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
   upsertInfStatementsWithRelations(pkProject: number, infStatementWithRelations: InfStatementWithRelations[])
     : Observable<GvSchemaModifier> {
     const call$ = this.projectDataApi.createProjectDataControllerUpsertStatements(
@@ -131,6 +139,16 @@ export class ReduxMainService {
 
   loadContentTree(pkProject: number, pkTreeRootEntity: number): Observable<GvPositiveSchemaObject> {
     const call$ = this.contentTree.contentTreeControllerGetContentTree(pkProject, pkTreeRootEntity)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+
+
+  addEntityToProject(pkProject: number, pkEntity: number): Observable<GvPositiveSchemaObject> {
+    const call$ = this.projectDataApi.addOrRemoveEntityControllerAddEntityToProject(pkProject, pkEntity)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+  removeEntityFromProject(pkProject: number, pkEntity: number): Observable<GvPositiveSchemaObject> {
+    const call$ = this.projectDataApi.addOrRemoveEntityControllerRemoveEntityFromProject(pkProject, pkEntity)
     return this.schemaActions.loadGvSchemaObject(call$)
   }
 }

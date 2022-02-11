@@ -1,26 +1,26 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { Client, expect } from '@loopback/testlab';
-import { GetTablePageOptions, SortDirection } from '../../../components/query/q-table-page';
-import { DatTextProperty, TableConfig } from '../../../models';
-import { GvPositiveSchemaObject } from '../../../models/gv-positive-schema-object.model';
-import { GeovistoryServer } from '../../../server';
-import { createDatNamespace } from '../../helpers/atomic/dat-namespace.helper';
-import { DatClassColumnMappingMock } from '../../helpers/data/gvDB/DatClassColumnMappingMock';
-import { DatColumnMock } from '../../helpers/data/gvDB/DatColumnMock';
-import { DatDigitalMock } from '../../helpers/data/gvDB/DatDigitalMock';
-import { DatNamespaceMock } from '../../helpers/data/gvDB/DatNamespaceMock';
-import { DfhApiClassMock } from '../../helpers/data/gvDB/DfhApiClassMock';
-import { InfStatementMock } from '../../helpers/data/gvDB/InfStatementMock';
-import { ProProjectMock } from '../../helpers/data/gvDB/ProProjectMock';
-import { PubAccountMock } from '../../helpers/data/gvDB/PubAccountMock';
-import { PubCredentialMock } from '../../helpers/data/gvDB/PubCredentialMock';
-import { TabCellXMock } from '../../helpers/data/gvDB/TabCellXMock';
-import { TabRowMock } from '../../helpers/data/gvDB/TabRowMock';
-import { createJonasSchneider } from '../../helpers/graphs/account.helper';
-import { forFeatureX } from '../../helpers/graphs/feature-X.helper';
-import { createProject2 } from '../../helpers/graphs/project.helper';
-import { setupApplication } from '../../helpers/gv-server-helpers';
-import { cleanDb } from '../../helpers/meta/clean-db.helper';
+import {Client, expect} from '@loopback/testlab';
+import {GetTablePageOptions, SortDirection} from '../../../components/query/q-table-page';
+import {DatTextProperty, TableConfig} from '../../../models';
+import {GvPositiveSchemaObject} from '../../../models/gv-positive-schema-object.model';
+import {GeovistoryServer} from '../../../server';
+import {createDatNamespace} from '../../helpers/atomic/dat-namespace.helper';
+import {DatClassColumnMappingMock} from '../../helpers/data/gvDB/DatClassColumnMappingMock';
+import {DatColumnMock} from '../../helpers/data/gvDB/DatColumnMock';
+import {DatDigitalMock} from '../../helpers/data/gvDB/DatDigitalMock';
+import {DatNamespaceMock} from '../../helpers/data/gvDB/DatNamespaceMock';
+import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
+import {InfStatementMock} from '../../helpers/data/gvDB/InfStatementMock';
+import {ProProjectMock} from '../../helpers/data/gvDB/ProProjectMock';
+import {PubAccountMock} from '../../helpers/data/gvDB/PubAccountMock';
+import {PubCredentialMock} from '../../helpers/data/gvDB/PubCredentialMock';
+import {TabCellXMock} from '../../helpers/data/gvDB/TabCellXMock';
+import {TabRowMock} from '../../helpers/data/gvDB/TabRowMock';
+import {createJonasSchneider} from '../../helpers/graphs/account.helper';
+import {forFeatureX} from '../../helpers/graphs/feature-X.helper';
+import {createProject2} from '../../helpers/graphs/project.helper';
+import {setupApplication} from '../../helpers/gv-server-helpers';
+import {cleanDb} from '../../helpers/meta/clean-db.helper';
 const qs = require('querystring');
 
 
@@ -28,8 +28,8 @@ describe('TableController', () => {
     let server: GeovistoryServer;
     let client: Client;
 
-    before(async () => { ({ server, client } = await setupApplication()); });
-    after(async () => { await server.stop(); });
+    before(async () => {({server, client} = await setupApplication());});
+    after(async () => {await server.stop();});
 
 
 
@@ -41,7 +41,7 @@ describe('TableController', () => {
 
         const namespaceOUT = DatNamespaceMock.NAMESPACE_2
 
-        let query: { pkProject: number };
+        let query: {pkProject: number};
 
         beforeEach(async () => {
             await cleanDb();
@@ -49,85 +49,85 @@ describe('TableController', () => {
             await createJonasSchneider();
             await createProject2()
             await createDatNamespace(DatNamespaceMock.NAMESPACE_2);
-            query = { pkProject: project.pk_entity ?? -1 }
+            query = {pkProject: project.pk_entity ?? -1}
         })
 
         //AUTHORIZATION
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
             const res = await client.post('/map-column').send();
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
             const res = await client.post('/map-column').set('Authorization', randomJWT).query(query);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the namespace', async () => {
-            const x = await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })
+            const x = await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})
             const jwt = x.body.lb4Token;
-            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1, pkClass: -1 });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const res = await client.post('/map-column?' + qs.stringify({pkNamespace: namespaceOUT.pk_entity})).set('Authorization', jwt).send({pkColumn: -1, pkClass: -1});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: the namespace is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
             const res = await client.post('/map-column').set('Authorization', jwt).send({});
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: the class and the column are absent', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({});
-            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkColumn\'" });
-            expect(res.body.error.details[1]).to.containEql({ message: "should have required property \'pkClass\'" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({});
+            expect(res.body.error.details[0]).to.containEql({message: "should have required property \'pkColumn\'"});
+            expect(res.body.error.details[1]).to.containEql({message: "should have required property \'pkClass\'"});
         })
 
         it('MISS-PARAM: should reject the request: the class is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
-            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkClass\'" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: -1});
+            expect(res.body.error.details[0]).to.containEql({message: "should have required property \'pkClass\'"});
         })
 
         it('MISS-PARAM: should reject the request: the column is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkClass: -1 });
-            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkColumn\'" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkClass: -1});
+            expect(res.body.error.details[0]).to.containEql({message: "should have required property \'pkColumn\'"});
         })
 
         // CORE
 
         it('CORE: should reject the request: the namespace is wrong', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1, pkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({pkNamespace: namespaceOUT.pk_entity})).set('Authorization', jwt).send({pkColumn: -1, pkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: the column does not exists', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: 9998, pkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class });
-            expect(res.body.error).to.containEql({ statusCode: 404, message: "Entity not found: DatColumn with id " + 9998 });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: 9998, pkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class});
+            expect(res.body.error).to.containEql({statusCode: 404, message: "Entity not found: DatColumn with id " + 9998});
         })
 
         it('CORE: should reject the request: the class does not exists', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, pkClass: 9998 });
-            expect(res.body.error).to.containEql({ statusCode: 404, message: "Entity not found: DfhClass with id " + 9998 });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, pkClass: 9998});
+            expect(res.body.error).to.containEql({statusCode: 404, message: "Entity not found: DfhClass with id " + 9998});
         })
 
         it('CORE: should reject the request: the column is already mapped to this class', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, pkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class });
-            expect(res.body.error).to.containEql({ message: "The column is already mapped to this class" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, pkClass: DfhApiClassMock.EN_21_PERSON.dfh_pk_class});
+            expect(res.body.error).to.containEql({message: "The column is already mapped to this class"});
         })
 
         it('CORE: should accept the request: column has been mapped', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/map-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_BIRTHDATES.pk_entity, pkClass: DfhApiClassMock.EN_61_BIRTH.dfh_pk_class });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/map-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: DatColumnMock.COL_BIRTHDATES.pk_entity, pkClass: DfhApiClassMock.EN_61_BIRTH.dfh_pk_class});
 
             expect(res.body.dat.class_column_mapping[0].pk_entity).to.be.a.Number();
             expect(res.body.dat.class_column_mapping[0].fk_class).to.be.a.equal(DfhApiClassMock.EN_61_BIRTH.dfh_pk_class);
@@ -144,7 +144,7 @@ describe('TableController', () => {
 
         const namespaceOUT = DatNamespaceMock.NAMESPACE_2
 
-        let query: { pkProject: number };
+        let query: {pkProject: number};
 
         beforeEach(async () => {
             await cleanDb();
@@ -152,74 +152,74 @@ describe('TableController', () => {
             await createJonasSchneider();
             await createProject2()
             await createDatNamespace(DatNamespaceMock.NAMESPACE_2);
-            query = { pkProject: project.pk_entity ?? -1 }
+            query = {pkProject: project.pk_entity ?? -1}
         })
 
         //AUTHORIZATION
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
             const res = await client.post('/unmap-column').send();
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
             const res = await client.post('/unmap-column').set('Authorization', randomJWT).query(query);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the namespace', async () => {
-            const x = await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })
+            const x = await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})
             const jwt = x.body.lb4Token;
-            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const res = await client.post('/unmap-column?' + qs.stringify({pkNamespace: namespaceOUT.pk_entity})).set('Authorization', jwt).send({pkColumn: -1});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('AUTH: should reject the request: the namespace is wrong', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({pkNamespace: namespaceOUT.pk_entity})).set('Authorization', jwt).send({pkColumn: -1});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: the namespace is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
             const res = await client.post('/unmap-column').set('Authorization', jwt).send({});
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: the pkEntity is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({});
-            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkColumn\'" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({});
+            expect(res.body.error.details[0]).to.containEql({message: "should have required property \'pkColumn\'"});
         })
 
         // CORE
 
         it('CORE: should reject the request: the pkEntity does not exists', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: 9998 });
-            expect(res.body.error).to.containEql({ message: "The mapping does not exists" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: 9998});
+            expect(res.body.error).to.containEql({message: "The mapping does not exists"});
         })
 
         it('CORE: should reject the request: the column has cells that are matched with entities', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_NAMES.pk_entity });
-            expect(res.body.error).to.containEql({ message: 'Can not delete the mapping, the column has cells that are matched with entities (1 matchings)' });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: DatColumnMock.COL_NAMES.pk_entity});
+            expect(res.body.error).to.containEql({message: 'Can not delete the mapping, the column has cells that are matched with entities (1 matchings)'});
         })
 
         it('CORE: should accept the request: the column has cells that are matched with entities, but force deletion', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_NAMES.pk_entity, deleteAll: true });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: DatColumnMock.COL_NAMES.pk_entity, deleteAll: true});
             expect(res.body.negative.dat.class_column_mapping[0].pk_entity).to.be.equal(DatClassColumnMappingMock.MAPPING_COL_NAME_TO_CLASS_PERSON.pk_entity);
             expect(res.body.negative.inf.statement[0].pk_entity).to.be.equal(InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF.pk_entity);
             expect(res.body.negative.dat.class_column_mapping[0].pk_entity).to.be.equal(5056); // the pkEntity of the inf_proj_rel of the statement
         })
 
         it('CORE: should accept the request: column mapping has been removed', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_BIRTHDATES.pk_entity });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: DatColumnMock.COL_BIRTHDATES.pk_entity});
             expect(res.body.negative.dat.class_column_mapping[0].pk_entity).to.be.equal(DatClassColumnMappingMock.MAPPING_COL_BIRTHDATE_TO_CLASS_TIMEPRIMITIVE.pk_entity);
         })
 
@@ -234,7 +234,7 @@ describe('TableController', () => {
 
         const namespaceOUT = DatNamespaceMock.NAMESPACE_2
 
-        let query: { pkProject: number };
+        let query: {pkProject: number};
 
         beforeEach(async () => {
             await cleanDb();
@@ -242,60 +242,60 @@ describe('TableController', () => {
             await createJonasSchneider();
             await createProject2()
             await createDatNamespace(DatNamespaceMock.NAMESPACE_2);
-            query = { pkProject: project.pk_entity ?? -1 }
+            query = {pkProject: project.pk_entity ?? -1}
         })
 
         //AUTHORIZATION
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
             const res = await client.post('/unmap-column-check').send();
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
             const res = await client.post('/unmap-column-check').set('Authorization', randomJWT).query(query);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the namespace', async () => {
-            const x = await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })
+            const x = await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})
             const jwt = x.body.lb4Token;
-            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const res = await client.post('/unmap-column-check?' + qs.stringify({pkNamespace: namespaceOUT.pk_entity})).set('Authorization', jwt).send({pkColumn: -1});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('AUTH: should reject the request: the namespace is wrong', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceOUT.pk_entity })).set('Authorization', jwt).send({ pkColumn: -1 });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column-check?' + qs.stringify({pkNamespace: namespaceOUT.pk_entity})).set('Authorization', jwt).send({pkColumn: -1});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: the namespace is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
             const res = await client.post('/unmap-column-check').set('Authorization', jwt).send({});
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: the pkEntity is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({});
-            expect(res.body.error.details[0]).to.containEql({ message: "should have required property \'pkColumn\'" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column-check?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({});
+            expect(res.body.error.details[0]).to.containEql({message: "should have required property \'pkColumn\'"});
         })
 
         // CORE
 
         it('CORE: should reject the request: the pkEntity does not exists', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: 9998 });
-            expect(res.body.error).to.containEql({ message: "The mapping does not exists" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column-check?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: 9998});
+            expect(res.body.error).to.containEql({message: "The mapping does not exists"});
         })
 
         it('CORE: should accept the request: the columns has matching', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwdInProject })).body.lb4Token;
-            const res = await client.post('/unmap-column-check?' + qs.stringify({ pkNamespace: namespaceInProject.pk_entity })).set('Authorization', jwt).send({ pkColumn: DatColumnMock.COL_NAMES.pk_entity, deleteAll: true });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdInProject})).body.lb4Token;
+            const res = await client.post('/unmap-column-check?' + qs.stringify({pkNamespace: namespaceInProject.pk_entity})).set('Authorization', jwt).send({pkColumn: DatColumnMock.COL_NAMES.pk_entity, deleteAll: true});
             expect(res.body.ok).to.be.false();
             expect(res.body.matchingNb).to.be.a.Number();
         })
@@ -311,7 +311,7 @@ describe('TableController', () => {
         const digital = DatDigitalMock.DIGITAL_BIRTHDATES
         // const namespace = DatNamespaceMock.SANDBOX_NAMESPACE
 
-        let query: { pkProject: number, pkDigital: number };
+        let query: {pkProject: number, pkDigital: number};
 
         beforeEach(async () => {
             await cleanDb();
@@ -324,36 +324,36 @@ describe('TableController', () => {
         })
         it('should reject the request because the user is not authenticated', async () => {
             const res = await client.get('/get-columns-of-table').send();
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
             const res = await client.get('/get-columns-of-table').set('Authorization', randomJWT).query(query);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('should reject the request because the user is not in the project', async () => {
-            const x = await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })
+            const x = await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})
             const jwt = x.body.lb4Token;
             const res = await client.get('/get-columns-of-table').set('Authorization', jwt).query(query);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('should reject the request because the query params are empty', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwd})).body.lb4Token;
             const res = await client.get('/get-columns-of-table').set('Authorization', jwt).send({});
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         });
 
         it('should reject the request because query params are not in right format', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
-            const res = await client.get('/get-columns-of-table').set('Authorization', jwt).send({ foo: 'bar' });
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwd})).body.lb4Token;
+            const res = await client.get('/get-columns-of-table').set('Authorization', jwt).send({foo: 'bar'});
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         });
 
         it('should return a valid object', async () => {
-            const jwt = (await client.post('/login').send({ email: accountInProject.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwd})).body.lb4Token;
             const res = await client.get('/get-columns-of-table').set('Authorization', jwt).query(query);
             const expected: GvPositiveSchemaObject = {
                 dat: {
@@ -371,11 +371,11 @@ describe('TableController', () => {
                             pk_entity: 5000,
                             quill_doc: {
                                 ops: [
-                                    { insert: 'N', attributes: { charid: '1' } },
-                                    { insert: 'a', attributes: { charid: '2' } },
-                                    { insert: 'm', attributes: { charid: '3' } },
-                                    { insert: 'e', attributes: { charid: '4' } },
-                                    { insert: '\n', attributes: { blockid: '5' } }
+                                    {insert: 'N', attributes: {charid: '1'}},
+                                    {insert: 'a', attributes: {charid: '2'}},
+                                    {insert: 'm', attributes: {charid: '3'}},
+                                    {insert: 'e', attributes: {charid: '4'}},
+                                    {insert: '\n', attributes: {blockid: '5'}}
                                 ],
                                 latestId: 5
                             },
@@ -388,16 +388,16 @@ describe('TableController', () => {
                             pk_entity: 5001,
                             quill_doc: {
                                 ops: [
-                                    { insert: 'B', attributes: { charid: '1' } },
-                                    { insert: 'i', attributes: { charid: '2' } },
-                                    { insert: 'r', attributes: { charid: '3' } },
-                                    { insert: 't', attributes: { charid: '4' } },
-                                    { insert: 'h', attributes: { charid: '5' } },
-                                    { insert: 'd', attributes: { charid: '6' } },
-                                    { insert: 'a', attributes: { charid: '7' } },
-                                    { insert: 't', attributes: { charid: '8' } },
-                                    { insert: 'e', attributes: { charid: '9' } },
-                                    { insert: '\n', attributes: { blockid: '10' } }
+                                    {insert: 'B', attributes: {charid: '1'}},
+                                    {insert: 'i', attributes: {charid: '2'}},
+                                    {insert: 'r', attributes: {charid: '3'}},
+                                    {insert: 't', attributes: {charid: '4'}},
+                                    {insert: 'h', attributes: {charid: '5'}},
+                                    {insert: 'd', attributes: {charid: '6'}},
+                                    {insert: 'a', attributes: {charid: '7'}},
+                                    {insert: 't', attributes: {charid: '8'}},
+                                    {insert: 'e', attributes: {charid: '9'}},
+                                    {insert: '\n', attributes: {blockid: '10'}}
                                 ],
                                 latestId: 10
                             },
@@ -414,7 +414,7 @@ describe('TableController', () => {
     });
 
     describe('GET /get-table-page', () => {
-        let query: { pkProject: number, pkEntity: number };
+        let query: {pkProject: number, pkEntity: number};
         beforeEach(async () => {
             try {
                 await cleanDb();
@@ -452,18 +452,18 @@ describe('TableController', () => {
             const expected = {
                 "columns": ["3000", "3001"],
                 "rows": [{
-                    "3000": { "string_value": "Rudolf of Habsbourg", "numeric_value": null, "pk_cell": 2002 },
-                    "3001": { "string_value": null, "numeric_value": 1218, "pk_cell": 2003 },
+                    "3000": {"string_value": "Rudolf of Habsbourg", "numeric_value": null, "pk_cell": 2002},
+                    "3001": {"string_value": null, "numeric_value": 1218, "pk_cell": 2003},
                     "pk_row": 1000
                 }, {
-                    "3000": { "string_value": "Albert IV", "numeric_value": null, "pk_cell": 2000 },
-                    "3001": { "string_value": null, "numeric_value": 1180, "pk_cell": 2001 },
+                    "3000": {"string_value": "Albert IV", "numeric_value": null, "pk_cell": 2000},
+                    "3001": {"string_value": null, "numeric_value": 1180, "pk_cell": 2001},
                     "pk_row": 1001
                 }],
                 "length": 2,
                 "schemaObject": {
-                    "inf": { "statement": [{ "pk_entity": 3022, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 2005, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 2002, "fk_property_of_property": 0, "is_standard_in_project_count": 0 }] },
-                    "pro": { "info_proj_rel": [{ "fk_entity": 3022, "pk_entity": 5056, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001 }] }
+                    "inf": {"statement": [{"pk_entity": 3022, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 2005, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 2002, "fk_property_of_property": 0, "is_standard_in_project_count": 0}]},
+                    "pro": {"info_proj_rel": [{"fk_entity": 3022, "pk_entity": 5056, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001}]}
                 }
             }
             expect(res.body).to.containDeep(expected);
@@ -533,7 +533,7 @@ describe('TableController', () => {
         })
 
         it('should return a valid object for table with VOT mapping and statements', async () => {
-            const should = { "columns": ["100127", "100129", "100131", "100133", "100135"], "rows": [{ "100127": { "string_value": "Appellation Col", "numeric_value": null, "pk_cell": 100140 }, "100129": { "string_value": "Place Col", "numeric_value": null, "pk_cell": 100141 }, "100131": { "string_value": "Dimension Col", "numeric_value": null, "pk_cell": 100142 }, "100133": { "string_value": "Language Col", "numeric_value": null, "pk_cell": 100143 }, "100135": { "string_value": "TimePrimitive Col", "numeric_value": null, "pk_cell": 100144 }, "pk_row": 100137 }, { "100127": { "string_value": "Appellation 1", "numeric_value": null, "pk_cell": 100145 }, "100129": { "string_value": "Place 1", "numeric_value": null, "pk_cell": 100146 }, "100131": { "string_value": "Dimension 1", "numeric_value": null, "pk_cell": 100147 }, "100133": { "string_value": "Language 1", "numeric_value": null, "pk_cell": 100148 }, "100135": { "string_value": "TimePrimitive 1", "numeric_value": null, "pk_cell": 100149 }, "pk_row": 100138 }, { "100127": { "string_value": "Appellation 2", "numeric_value": null, "pk_cell": 100150 }, "100129": { "string_value": "Place 2", "numeric_value": null, "pk_cell": 100151 }, "100131": { "string_value": "Dimension 2", "numeric_value": null, "pk_cell": 100152 }, "100133": { "string_value": "Language 2", "numeric_value": null, "pk_cell": 100153 }, "100135": { "string_value": "TimePrimitive 2", "numeric_value": null, "pk_cell": 100154 }, "pk_row": 100139 }], "length": 3, "schemaObject": { "inf": { "statement": [{ "pk_entity": 100166, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100160, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100145, "fk_property_of_property": 0, "is_standard_in_project_count": 0 }, { "pk_entity": 100167, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100161, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100146, "fk_property_of_property": 0, "is_standard_in_project_count": 0 }, { "pk_entity": 100168, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100163, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100147, "fk_property_of_property": 0, "is_standard_in_project_count": 0 }, { "pk_entity": 100169, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100164, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100148, "fk_property_of_property": 0, "is_standard_in_project_count": 0 }, { "pk_entity": 100170, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100165, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100149, "fk_property_of_property": 0, "is_standard_in_project_count": 0 }], "appellation": [{ "string": "An appellation", "fk_class": 40, "pk_entity": 100160, "quill_doc": { "ops": [{ "insert": "A", "attributes": { "charid": "1" } }, { "insert": "n", "attributes": { "charid": "2" } }, { "insert": " ", "attributes": { "charid": "3" } }, { "insert": "a", "attributes": { "charid": "4" } }, { "insert": "p", "attributes": { "charid": "5" } }, { "insert": "p", "attributes": { "charid": "6" } }, { "insert": "e", "attributes": { "charid": "7" } }, { "insert": "l", "attributes": { "charid": "8" } }, { "insert": "l", "attributes": { "charid": "9" } }, { "insert": "a", "attributes": { "charid": "10" } }, { "insert": "t", "attributes": { "charid": "11" } }, { "insert": "i", "attributes": { "charid": "12" } }, { "insert": "o", "attributes": { "charid": "13" } }, { "insert": "n", "attributes": { "charid": "14" } }, { "insert": "\n", "attributes": { "blockid": "15" } }], "latestId": 15 } }], "place": [{ "lat": 51.5074, "long": 0.1278, "fk_class": 51, "pk_entity": 100161 }], "dimension": [{ "fk_class": 689, "pk_entity": 100163, "numeric_value": 4, "fk_measurement_unit": 100162 }], "lang_string": [], "time_primitive": [{ "duration": "1 day", "fk_class": 335, "pk_entity": 100165, "julian_day": 2431383 }] }, "pro": { "info_proj_rel": [{ "fk_entity": 100166, "pk_entity": 5074, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001 }, { "fk_entity": 100167, "pk_entity": 5075, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001 }, { "fk_entity": 100168, "pk_entity": 5076, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001 }, { "fk_entity": 100169, "pk_entity": 5077, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001 }, { "fk_entity": 100170, "pk_entity": 5078, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001 }] } } }
+            const should = {"columns": ["100127", "100129", "100131", "100133", "100135"], "rows": [{"100127": {"string_value": "Appellation Col", "numeric_value": null, "pk_cell": 100140}, "100129": {"string_value": "Place Col", "numeric_value": null, "pk_cell": 100141}, "100131": {"string_value": "Dimension Col", "numeric_value": null, "pk_cell": 100142}, "100133": {"string_value": "Language Col", "numeric_value": null, "pk_cell": 100143}, "100135": {"string_value": "TimePrimitive Col", "numeric_value": null, "pk_cell": 100144}, "pk_row": 100137}, {"100127": {"string_value": "Appellation 1", "numeric_value": null, "pk_cell": 100145}, "100129": {"string_value": "Place 1", "numeric_value": null, "pk_cell": 100146}, "100131": {"string_value": "Dimension 1", "numeric_value": null, "pk_cell": 100147}, "100133": {"string_value": "Language 1", "numeric_value": null, "pk_cell": 100148}, "100135": {"string_value": "TimePrimitive 1", "numeric_value": null, "pk_cell": 100149}, "pk_row": 100138}, {"100127": {"string_value": "Appellation 2", "numeric_value": null, "pk_cell": 100150}, "100129": {"string_value": "Place 2", "numeric_value": null, "pk_cell": 100151}, "100131": {"string_value": "Dimension 2", "numeric_value": null, "pk_cell": 100152}, "100133": {"string_value": "Language 2", "numeric_value": null, "pk_cell": 100153}, "100135": {"string_value": "TimePrimitive 2", "numeric_value": null, "pk_cell": 100154}, "pk_row": 100139}], "length": 3, "schemaObject": {"inf": {"statement": [{"pk_entity": 100166, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100160, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100145, "fk_property_of_property": 0, "is_standard_in_project_count": 0}, {"pk_entity": 100167, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100161, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100146, "fk_property_of_property": 0, "is_standard_in_project_count": 0}, {"pk_entity": 100168, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100163, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100147, "fk_property_of_property": 0, "is_standard_in_project_count": 0}, {"pk_entity": 100169, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100164, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100148, "fk_property_of_property": 0, "is_standard_in_project_count": 0}, {"pk_entity": 100170, "fk_property": 1334, "fk_object_data": 0, "fk_object_info": 100165, "fk_subject_data": 0, "fk_subject_info": 0, "is_in_project_count": 1, "fk_object_tables_row": 0, "fk_object_tables_cell": 0, "fk_subject_tables_row": 0, "fk_subject_tables_cell": 100149, "fk_property_of_property": 0, "is_standard_in_project_count": 0}], "appellation": [{"string": "An appellation", "fk_class": 40, "pk_entity": 100160, "quill_doc": {"ops": [{"insert": "A", "attributes": {"charid": "1"}}, {"insert": "n", "attributes": {"charid": "2"}}, {"insert": " ", "attributes": {"charid": "3"}}, {"insert": "a", "attributes": {"charid": "4"}}, {"insert": "p", "attributes": {"charid": "5"}}, {"insert": "p", "attributes": {"charid": "6"}}, {"insert": "e", "attributes": {"charid": "7"}}, {"insert": "l", "attributes": {"charid": "8"}}, {"insert": "l", "attributes": {"charid": "9"}}, {"insert": "a", "attributes": {"charid": "10"}}, {"insert": "t", "attributes": {"charid": "11"}}, {"insert": "i", "attributes": {"charid": "12"}}, {"insert": "o", "attributes": {"charid": "13"}}, {"insert": "n", "attributes": {"charid": "14"}}, {"insert": "\n", "attributes": {"blockid": "15"}}], "latestId": 15}}], "place": [{"lat": 51.5074, "long": 0.1278, "fk_class": 51, "pk_entity": 100161}], "dimension": [{"fk_class": 689, "pk_entity": 100163, "numeric_value": 4, "fk_measurement_unit": 100162}], "lang_string": [], "time_primitive": [{"duration": "1 day", "fk_class": 335, "pk_entity": 100165, "julian_day": 2431383}]}, "pro": {"info_proj_rel": [{"fk_entity": 100166, "pk_entity": 5074, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001}, {"fk_entity": 100167, "pk_entity": 5075, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001}, {"fk_entity": 100168, "pk_entity": 5076, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001}, {"fk_entity": 100169, "pk_entity": 5077, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001}, {"fk_entity": 100170, "pk_entity": 5078, "fk_project": 375232, "is_in_project": true, "fk_last_modifier": 1001}]}}}
             query = {
                 pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity ?? -1,
                 pkEntity: 100125
@@ -575,12 +575,12 @@ describe('TableController', () => {
         const outDigital = DatDigitalMock.DIGITAL_OUT;
         const path = '/set-table-config';
 
-        let query: { pkProject: number, accountId: number | undefined, pkDataEntity: number };
+        let query: {pkProject: number, accountId: number | undefined, pkDataEntity: number};
         const config: TableConfig = {
             columns: [
-                { fkColumn: 3004, visible: true },
-                { fkColumn: 3005, visible: false },
-                { fkColumn: 3006, visible: true }
+                {fkColumn: 3004, visible: true},
+                {fkColumn: 3005, visible: false},
+                {fkColumn: 3006, visible: true}
             ]
         };
 
@@ -602,92 +602,92 @@ describe('TableController', () => {
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
             const res = await client.post(path).query(query).send();
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
             const res = await client.post(path).set('Authorization', randomJWT).query(query);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the project', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
             const res = await client.post(path).set('Authorization', jwt).query(query).send(config);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('AUTH: should reject the request because the user is not in the digital\'s namespace', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: outDigital.pk_entity }).send(config);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: outDigital.pk_entity}).send(config);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('AUTH: should reject the request because the user try to set the config for someone else', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: wrongAccount.id, pkDataEntity: outDigital.pk_entity }).send(config);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: wrongAccount.id, pkDataEntity: outDigital.pk_entity}).send(config);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: pkProject is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkDataEntity: digital.pk_entity });
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkDataEntity: digital.pk_entity});
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: pkDataEntity is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity });
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity});
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         // CORE
 
         it('CORE: should reject the request: the project does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: wrongProject.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: wrongProject.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: the digital does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: 999 }).send(config);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: 999}).send(config);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: wrong config format', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send({ wrong: 'object' });
-            expect(res.body.error).to.containEql({ statusCode: 422, code: "VALIDATION_FAILED" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send({wrong: 'object'});
+            expect(res.body.error).to.containEql({statusCode: 422, code: "VALIDATION_FAILED"});
         })
 
         it('CORE: should reject the request: wrong config-column format', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send({ columns: [{ test: 'hello' }] });
-            expect(res.body.error).to.containEql({ statusCode: 422, code: "VALIDATION_FAILED" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send({columns: [{test: 'hello'}]});
+            expect(res.body.error).to.containEql({statusCode: 422, code: "VALIDATION_FAILED"});
         })
 
         it('CORE: should reject the request: columns in config do not match columns in digital, there is more', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            config.columns?.push({ visible: false, fkColumn: 1 });
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            config.columns?.push({visible: false, fkColumn: 1});
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config);
             config.columns?.pop();
-            expect(res.body.error).to.containEql({ message: "Too much columns provided for this digital" });
+            expect(res.body.error).to.containEql({message: "Too much columns provided for this digital"});
         })
 
         it('CORE: should reject the request: columns in config do not match columns in digital, there is less', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const temp = config.columns?.pop();
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config);
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config);
             if (temp) config.columns?.push(temp);
-            expect(res.body.error).to.containEql({ message: "Too few columns provided for this digital" });
+            expect(res.body.error).to.containEql({message: "Too few columns provided for this digital"});
         })
 
         it('CORE: should accept the request: config is good and account id is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: digital.pk_entity }).send(config);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: digital.pk_entity}).send(config);
             expect(res.body.positive.pro.table_config[0].fk_project).to.be.equal(project.pk_entity);
             expect(res.body.positive.pro.table_config[0].account_id).to.be.equal(undefined);
             expect(res.body.positive.pro.table_config[0].fk_digital).to.be.equal(digital.pk_entity);
@@ -700,8 +700,8 @@ describe('TableController', () => {
         })
 
         it('CORE: should accept the request: config is good and account id is present', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config);
             expect(res.body.positive.pro.table_config[0].fk_project).to.be.equal(project.pk_entity);
             expect(res.body.positive.pro.table_config[0].account_id).to.be.equal(account.id);
             expect(res.body.positive.pro.table_config[0].fk_digital).to.be.equal(digital.pk_entity);
@@ -715,16 +715,16 @@ describe('TableController', () => {
 
         const config2 = {
             columns: [
-                { fkColumn: 3004, visible: true },
-                { fkColumn: 3006, visible: true },
-                { fkColumn: 3005, visible: false }
+                {fkColumn: 3004, visible: true},
+                {fkColumn: 3006, visible: true},
+                {fkColumn: 3005, visible: false}
             ]
         }
 
         it('CORE: should accept the request: config updated', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config);
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config2);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config);
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config2);
             expect(res.body.positive.pro.table_config[0].fk_project).to.be.equal(project.pk_entity);
             expect(res.body.positive.pro.table_config[0].account_id).to.be.equal(account.id);
             expect(res.body.positive.pro.table_config[0].fk_digital).to.be.equal(digital.pk_entity);
@@ -738,9 +738,9 @@ describe('TableController', () => {
 
 
         it('CORE: should accept the request: There is 2 config, send back the one for the user', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config);
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config2);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config);
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config2);
             expect(res.body.positive.pro.table_config[0].fk_project).to.be.equal(project.pk_entity);
             expect(res.body.positive.pro.table_config[0].account_id).to.be.equal(account.id);
             expect(res.body.positive.pro.table_config[0].fk_digital).to.be.equal(digital.pk_entity);
@@ -753,9 +753,9 @@ describe('TableController', () => {
         })
 
         it('CORE: should accept the request: There is 2 config, send back the one for the project', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: digital.pk_entity }).send(config);
-            const res = await client.post(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: digital.pk_entity }).send(config2);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: digital.pk_entity}).send(config);
+            const res = await client.post(path).set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: digital.pk_entity}).send(config2);
             expect(res.body.positive.pro.table_config[0].fk_project).to.be.equal(project.pk_entity);
             expect(res.body.positive.pro.table_config[0].account_id).to.be.equal(null);
             expect(res.body.positive.pro.table_config[0].fk_digital).to.be.equal(digital.pk_entity);
@@ -781,7 +781,7 @@ describe('TableController', () => {
         const outDigital = DatDigitalMock.DIGITAL_OUT;
         const path = '/get-table-config';
 
-        let query: { pkProject: number, accountId: number | undefined, pkDataEntity: number };
+        let query: {pkProject: number, accountId: number | undefined, pkDataEntity: number};
 
         beforeEach(async () => {
             await cleanDb();
@@ -801,89 +801,89 @@ describe('TableController', () => {
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
             const res = await client.get(path);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
             const res = await client.get(path + '?' + qs.stringify(query)).set('Authorization', randomJWT);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the project', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
-            const res = await client.get(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: outDigital.pk_entity });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
+            const res = await client.get(path).set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: outDigital.pk_entity});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('AUTH: should reject the request because the user is not in the digital\'s namespace', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
-            const res = await client.get(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: outDigital.pk_entity });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
+            const res = await client.get(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: outDigital.pk_entity});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('AUTH: should reject the request because the user try to get the config for someone else', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
-            const res = await client.get(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: wrongAccount.id, pkDataEntity: outDigital.pk_entity });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
+            const res = await client.get(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: wrongAccount.id, pkDataEntity: outDigital.pk_entity});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: pkProject is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.get(path + '?' + qs.stringify({ pkDataEntity: digital.pk_entity })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.get(path + '?' + qs.stringify({pkDataEntity: digital.pk_entity})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: pkDataEntity is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.get(path + '?' + qs.stringify({ pkProject: project.pk_entity })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.get(path + '?' + qs.stringify({pkProject: project.pk_entity})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         // CORE
 
         it('CORE: should reject the request: the project does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.get(path + '?' + qs.stringify({ pkProject: wrongProject.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.get(path + '?' + qs.stringify({pkProject: wrongProject.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: the digital does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.get(path + '?' + qs.stringify({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: outDigital.pk_entity })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.get(path + '?' + qs.stringify({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: outDigital.pk_entity})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should accept the request: there is no config for this table', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.get(path + '?' + qs.stringify({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: wrongDigital.pk_entity })).set('Authorization', jwt);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.get(path + '?' + qs.stringify({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: wrongDigital.pk_entity})).set('Authorization', jwt);
             expect(JSON.stringify(res.body.positive)).to.be.equal('{}');
         })
 
         const config1: TableConfig = {
             columns: [
-                { fkColumn: 3004, visible: true },
-                { fkColumn: 3005, visible: false },
-                { fkColumn: 3006, visible: true }
+                {fkColumn: 3004, visible: true},
+                {fkColumn: 3005, visible: false},
+                {fkColumn: 3006, visible: true}
             ]
         };
         const config2 = {
             columns: [
-                { fkColumn: 3004, visible: false },
-                { fkColumn: 3006, visible: false },
-                { fkColumn: 3005, visible: false }
+                {fkColumn: 3004, visible: false},
+                {fkColumn: 3006, visible: false},
+                {fkColumn: 3005, visible: false}
             ]
         }
 
         it('CORE: should accept the request: fetch the config of the table (for the user)', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
 
-            await client.post('/set-table-config').set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config1);
-            await client.post('/set-table-config').set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: digital.pk_entity }).send(config2);
+            await client.post('/set-table-config').set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config1);
+            await client.post('/set-table-config').set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: digital.pk_entity}).send(config2);
 
-            const res = await client.get(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity });
+            const res = await client.get(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity});
             expect(res.body.positive.pro.table_config[0].fk_project).to.be.equal(project.pk_entity);
             expect(res.body.positive.pro.table_config[0].account_id).to.be.equal(account.id);
             expect(res.body.positive.pro.table_config[0].fk_digital).to.be.equal(digital.pk_entity);
@@ -896,12 +896,12 @@ describe('TableController', () => {
         })
 
         it('CORE: should accept the request: fetch the config of the table (for the project)', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
 
-            await client.post('/set-table-config').set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config1);
-            await client.post('/set-table-config').set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: digital.pk_entity }).send(config2);
+            await client.post('/set-table-config').set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config1);
+            await client.post('/set-table-config').set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: digital.pk_entity}).send(config2);
 
-            const res = await client.get(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: digital.pk_entity });
+            const res = await client.get(path).set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: digital.pk_entity});
             expect(res.body.positive.pro.table_config[0].fk_project).to.be.equal(project.pk_entity);
             expect(res.body.positive.pro.table_config[0].account_id).to.be.equal(null);
             expect(res.body.positive.pro.table_config[0].fk_digital).to.be.equal(digital.pk_entity);
@@ -914,12 +914,12 @@ describe('TableController', () => {
         })
 
         it('CORE: should accept the request: update the project config', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
 
-            await client.post('/set-table-config').set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: digital.pk_entity }).send(config1);
-            await client.post('/set-table-config').set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: digital.pk_entity }).send(config2);
+            await client.post('/set-table-config').set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: digital.pk_entity}).send(config1);
+            await client.post('/set-table-config').set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: digital.pk_entity}).send(config2);
 
-            const res = await client.get(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, pkDataEntity: digital.pk_entity });
+            const res = await client.get(path).set('Authorization', jwt).query({pkProject: project.pk_entity, pkDataEntity: digital.pk_entity});
             expect(res.body.positive.pro.table_config[0].fk_project).to.be.equal(project.pk_entity);
             expect(res.body.positive.pro.table_config[0].account_id).to.be.equal(null);
             expect(res.body.positive.pro.table_config[0].fk_digital).to.be.equal(digital.pk_entity);
@@ -932,12 +932,12 @@ describe('TableController', () => {
         })
 
         it('CORE: should accept the request: update the account config', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
 
-            await client.post('/set-table-config').set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config1);
-            await client.post('/set-table-config').set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity }).send(config2);
+            await client.post('/set-table-config').set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config1);
+            await client.post('/set-table-config').set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity}).send(config2);
 
-            const res = await client.get(path).set('Authorization', jwt).query({ pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity });
+            const res = await client.get(path).set('Authorization', jwt).query({pkProject: project.pk_entity, accountId: account.id, pkDataEntity: digital.pk_entity});
             expect(res.body.positive.pro.table_config[0].fk_project).to.be.equal(project.pk_entity);
             expect(res.body.positive.pro.table_config[0].account_id).to.be.equal(account.id);
             expect(res.body.positive.pro.table_config[0].fk_digital).to.be.equal(digital.pk_entity);
@@ -959,7 +959,7 @@ describe('TableController', () => {
         const digital = DatDigitalMock.DIGITAL_UNIONS;
         const path = '/update-columns-names';
 
-        let query: { pkProject: number, pkDigital: number };
+        let query: {pkProject: number, pkDigital: number};
 
         beforeEach(async () => {
             await cleanDb();
@@ -977,82 +977,82 @@ describe('TableController', () => {
         //AUTHORIZATION
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
-            const res = await client.post(path).send({ names: [] });;
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            const res = await client.post(path).send({names: []});;
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', randomJWT).send({ names: [] });
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', randomJWT).send({names: []});
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the project', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query(qs.stringify(query)).send({ names: [] });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query(qs.stringify(query)).send({names: []});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('AUTH: should reject the request because the user is not in the digital\'s namespace', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query(query).send({ names: [] });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query(query).send({names: []});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: pkProject is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkDigital: digital.pk_entity })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkDigital: digital.pk_entity})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: pkDigital is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: ColumnNames are at wrong format', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ hello: 'world' });
-            expect(res.body.error).to.containEql({ statusCode: 422, code: "VALIDATION_FAILED" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({hello: 'world'});
+            expect(res.body.error).to.containEql({statusCode: 422, code: "VALIDATION_FAILED"});
         })
 
         // CORE
 
         it('CORE: should reject the request: the project does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: wrongProject.pk_entity, pkDigital: digital.pk_entity })).set('Authorization', jwt).send({ names: [] });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: wrongProject.pk_entity, pkDigital: digital.pk_entity})).set('Authorization', jwt).send({names: []});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: the digital does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: 0 })).set('Authorization', jwt).send({ names: [] });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: 0})).set('Authorization', jwt).send({names: []});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should accept the request: there is no columns to rename', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ names: [] });
-            expect(res.body).to.deepEqual({ names: [] });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({names: []});
+            expect(res.body).to.deepEqual({names: []});
         })
 
         it('CORE: should reject the request: Column is not in the digital', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const wrongRenaming = { pkColumn: DatColumnMock.COL_BIRTHDATES.pk_entity, name: 'random name' };
-            const rightRenaming = { pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, name: 'random name' };
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ names: [wrongRenaming, rightRenaming] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "Column is not in the digital" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const wrongRenaming = {pkColumn: DatColumnMock.COL_BIRTHDATES.pk_entity, name: 'random name'};
+            const rightRenaming = {pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, name: 'random name'};
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({names: [wrongRenaming, rightRenaming]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "Column is not in the digital"});
         })
 
         it('CORE: should accept the request', async () => {
             const shouldNewName = 'random name'
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const renaming = { pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, name: shouldNewName };
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ names: [renaming] });
-            expect(res.body).to.deepEqual({ names: [renaming] });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const renaming = {pkColumn: DatColumnMock.COL_PEOPLE.pk_entity, name: shouldNewName};
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({names: [renaming]});
+            expect(res.body).to.deepEqual({names: [renaming]});
 
             //checkings
             const newcols = (await client.get('/get-columns-of-table?' + qs.stringify(query)).set('Authorization', jwt)).body
@@ -1069,7 +1069,7 @@ describe('TableController', () => {
         const digital = DatDigitalMock.DIGITAL_UNIONS;
         const path = '/insert-or-update-cells';
 
-        let query: { pkProject: number, pkDigital: number };
+        let query: {pkProject: number, pkDigital: number};
 
         beforeEach(async () => {
             await cleanDb();
@@ -1086,216 +1086,216 @@ describe('TableController', () => {
         //AUTHORIZATION
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
-            const res = await client.post(path).send({ cells: [] });
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            const res = await client.post(path).send({cells: []});
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', randomJWT).send({ cells: [] });
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', randomJWT).send({cells: []});
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the project', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query(qs.stringify(query)).send({ cells: [] });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query(qs.stringify(query)).send({cells: []});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('AUTH: should reject the request because the user is not in the digital\'s namespace', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
-            const res = await client.post(path).set('Authorization', jwt).query(query).send({ cells: [] });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
+            const res = await client.post(path).set('Authorization', jwt).query(query).send({cells: []});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: pkProject is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkDigital: digital.pk_entity })).set('Authorization', jwt).send({ cells: [] });;
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkDigital: digital.pk_entity})).set('Authorization', jwt).send({cells: []});;
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: pkDigital is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity })).set('Authorization', jwt).send({ cells: [] });;
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity})).set('Authorization', jwt).send({cells: []});;
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         // CORE
 
         it('CORE1: should reject the request: the project does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: wrongProject.pk_entity, pkDigital: digital.pk_entity })).set('Authorization', jwt).send({ cells: [] });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: wrongProject.pk_entity, pkDigital: digital.pk_entity})).set('Authorization', jwt).send({cells: []});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE1: should reject the request: the digital does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: 1 })).set('Authorization', jwt).send({ cells: [] });
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: 1})).set('Authorization', jwt).send({cells: []});
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE1: should accept the request: there is no cells to update', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [] });
-            expect(res.body).to.deepEqual({ cells: [] });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: []});
+            expect(res.body).to.deepEqual({cells: []});
         })
 
         // CORE UPDATE A EXISTING CELL
 
         it('CORE2: should reject the request: fkColumn is missing on cell', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 // fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
                 pk_cell: TabCellXMock.FEATURE_X_UNIONS_ALBERT.pk_cell,
                 string_value: 'UPDATED',
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "fkColumn is missing on cell" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "fkColumn is missing on cell"});
         })
 
         it('CORE2: should reject the request: fkRow is missing on cell', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 // fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
                 pk_cell: TabCellXMock.FEATURE_X_UNIONS_ALBERT.pk_cell,
                 string_value: 'UPDATED'
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "fkRow is missing on cell" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "fkRow is missing on cell"});
         })
 
         it('CORE2: should reject the request: Cell has no value', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
                 pk_cell: TabCellXMock.FEATURE_X_UNIONS_ALBERT.pk_cell,
                 // string_value: 'UPDATED',
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "Cell has no value" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "Cell has no value"});
         })
 
         it('CORE2: should reject the request: You can not add a cell to this column', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: 3,
                 fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
                 pk_cell: TabCellXMock.FEATURE_X_UNIONS_ALBERT.pk_cell,
                 string_value: 'UPDATED',
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "You can not add a cell to this column" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "You can not add a cell to this column"});
         })
 
         it('CORE2: should reject the request: You can not add a cell to this row', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 fk_row: 3,
                 pk_cell: TabCellXMock.FEATURE_X_UNIONS_ALBERT.pk_cell,
                 string_value: 'UPDATED',
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "You can not add a cell to this row" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "You can not add a cell to this row"});
         })
 
         it('CORE2: should reject the request: Inconstitency between pkCell and fkColumn/fkRow', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
                 pk_cell: TabCellXMock.FEATURE_X_UNIONS_ANGELA.pk_cell,
                 string_value: 'UPDATED',
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "Inconstitency between pkCell and fkColumn/fkRow" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "Inconstitency between pkCell and fkColumn/fkRow"});
         })
 
         it('CORE2: should accept the request (update cell)', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
                 pk_cell: TabCellXMock.FEATURE_X_UNIONS_ALBERT.pk_cell,
                 string_value: 'UPDATED',
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body).to.deepEqual({ cells: [{ ...tabCell, fk_digital: query.pkDigital }] });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body).to.deepEqual({cells: [{...tabCell, fk_digital: query.pkDigital}]});
         })
 
 
         // CORE CREATE A NEW CELL
 
         it('CORE3: should reject the request: the cell to create misses the fk_Column', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 // fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row,
                 string_value: 'UPDATED'
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "fkColumn is missing on cell" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "fkColumn is missing on cell"});
         })
 
         it('CORE3: should reject the request: the cell to create misses the fk_row', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 // fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row,
                 string_value: 'UPDATED'
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "fkRow is missing on cell" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "fkRow is missing on cell"});
         })
 
         it('CORE3: should reject the request: Cell has no value', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row,
                 // string_value: 'UPDATED',
 
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "Cell has no value" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "Cell has no value"});
         })
 
         it('CORE3: should reject the request: You can not add a cell to this column', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_RND2.pk_entity,
                 fk_row: TabRowMock.ROW_UNIONS_ALBERT.pk_row,
                 string_value: 'UPDATED'
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "You can not add a cell to this column" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "You can not add a cell to this column"});
         })
 
         it('CORE3: should reject the request: You can not add a cell to this row', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 fk_row: TabRowMock.ROW_RND_VAL2.pk_row,
                 string_value: 'UPDATED'
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "You can not add a cell to this row" });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body.error).to.containEql({statusCode: 422, message: "You can not add a cell to this row"});
         })
 
         it('CORE3: should accept the request (new cell)', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
             const tabCell = {
                 fk_column: DatColumnMock.COL_PEOPLE.pk_entity,
                 fk_row: TabRowMock.ROW_UNIONS_PIERRE.pk_row,
                 string_value: 'UPDATED'
             }
-            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({ cells: [tabCell] });
-            expect(res.body).to.deepEqual({ cells: [{ ...tabCell, fk_digital: query.pkDigital }] });
+            const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', jwt).send({cells: [tabCell]});
+            expect(res.body).to.deepEqual({cells: [{...tabCell, fk_digital: query.pkDigital}]});
         })
     });
 
@@ -1307,7 +1307,7 @@ describe('TableController', () => {
         const digital = DatDigitalMock.DIGITAL_UNIONS;
         const path = '/new-row';
 
-        let query: { pkProject: number, pkDigital: number, index: number };
+        let query: {pkProject: number, pkDigital: number, index: number};
 
         beforeEach(async () => {
             try {
@@ -1331,83 +1331,83 @@ describe('TableController', () => {
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
             const res = await client.post(path);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
             const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', randomJWT);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the project', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
             const res = await client.post(path).set('Authorization', jwt).query(qs.stringify(query));
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('AUTH: should reject the request because the user is not in the digital\'s namespace', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
             const res = await client.post(path).set('Authorization', jwt).query(query);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: pkProject is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkDigital: digital.pk_entity, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkDigital: digital.pk_entity, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: pkDigital is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: index is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         // CORE
 
         it('CORE: should reject the request: the project does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: wrongProject.pk_entity, pkDigital: digital.pk_entity, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: wrongProject.pk_entity, pkDigital: digital.pk_entity, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: the digital does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: 9, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: 9, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should accept the request: too high index put at the end', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, index: 99 })).set('Authorization', jwt);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, index: 99})).set('Authorization', jwt);
             expect(res.body).to.have.property('pk_row')
-            expect(res.body).to.containEql({ index: '7' });
-            expect(res.body).to.containEql({ fk_digital: digital.pk_entity });
+            expect(res.body).to.containEql({index: '7'});
+            expect(res.body).to.containEql({fk_digital: digital.pk_entity});
         })
 
         it('CORE: should accept the request: 0 index put at the begining', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, index: 0 })).set('Authorization', jwt);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, index: 0})).set('Authorization', jwt);
             expect(res.body).to.have.property('pk_row')
-            expect(res.body).to.containEql({ fk_digital: digital.pk_entity });
-            expect(res.body).to.containEql({ index: '1' });
+            expect(res.body).to.containEql({fk_digital: digital.pk_entity});
+            expect(res.body).to.containEql({index: '1'});
         })
 
         it('CORE: should accept the request: the index is already assigned', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, index: 2 })).set('Authorization', jwt);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, index: 2})).set('Authorization', jwt);
             expect(res.body).to.have.property('pk_row')
-            expect(res.body).to.containEql({ fk_digital: digital.pk_entity });
-            expect(res.body).to.containEql({ index: '2' });
+            expect(res.body).to.containEql({fk_digital: digital.pk_entity});
+            expect(res.body).to.containEql({index: '2'});
         })
     });
 
@@ -1419,7 +1419,7 @@ describe('TableController', () => {
         const digital = DatDigitalMock.DIGITAL_UNIONS;
         const path = '/move-row-to-index';
 
-        let query: { pkProject: number, pkDigital: number, pkRow: number, index: number };
+        let query: {pkProject: number, pkDigital: number, pkRow: number, index: number};
 
         beforeEach(async () => {
             await cleanDb();
@@ -1440,107 +1440,107 @@ describe('TableController', () => {
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
             const res = await client.post(path);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
             const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', randomJWT);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the project', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
             const res = await client.post(path).set('Authorization', jwt).query(qs.stringify(query));
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('AUTH: should reject the request because the user is not in the digital\'s namespace', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
             const res = await client.post(path).set('Authorization', jwt).query(query);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: pkProject is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: pkDigital is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: pkRow is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: index is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         // CORE
 
         it('CORE: should reject the request: the project does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: 0, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: 0, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: the digital does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: 9, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: 9, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: the row is in another digital', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_RND_VAL2.pk_row, index: 4 })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "Unknown row" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_RND_VAL2.pk_row, index: 4})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 422, message: "Unknown row"});
         })
 
         it('CORE: should accept the request: negative index', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: -4 })).set('Authorization', jwt);
-            expect(res.body).to.containEql({ index: '1' });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: -4})).set('Authorization', jwt);
+            expect(res.body).to.containEql({index: '1'});
         })
 
         it('CORE: should accept the request: float index', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 2.3 })).set('Authorization', jwt);
-            expect(res.body).to.containEql({ index: '2' });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 2.3})).set('Authorization', jwt);
+            expect(res.body).to.containEql({index: '2'});
         })
 
         it('CORE: should accept the request: too high index', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 99 })).set('Authorization', jwt);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 99})).set('Authorization', jwt);
             expect(res.body).to.have.property('pk_row')
-            expect(res.body).to.containEql({ index: '6' });
-            expect(res.body).to.containEql({ fk_digital: digital.pk_entity });
+            expect(res.body).to.containEql({index: '6'});
+            expect(res.body).to.containEql({fk_digital: digital.pk_entity});
         })
 
         it('CORE: should accept the request: 0 index put at the begining', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 0 })).set('Authorization', jwt);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 0})).set('Authorization', jwt);
             expect(res.body).to.have.property('pk_row')
-            expect(res.body).to.containEql({ fk_digital: digital.pk_entity });
-            expect(res.body).to.containEql({ index: '1' });
+            expect(res.body).to.containEql({fk_digital: digital.pk_entity});
+            expect(res.body).to.containEql({index: '1'});
         })
 
         it('CORE: should accept the request: the index is already assigned', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 2 })).set('Authorization', jwt);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row, index: 2})).set('Authorization', jwt);
             expect(res.body).to.have.property('pk_row')
-            expect(res.body).to.containEql({ fk_digital: digital.pk_entity });
-            expect(res.body).to.containEql({ index: '2' });
+            expect(res.body).to.containEql({fk_digital: digital.pk_entity});
+            expect(res.body).to.containEql({index: '2'});
         })
     });
 
@@ -1554,7 +1554,7 @@ describe('TableController', () => {
         const digital = DatDigitalMock.DIGITAL_UNIONS;
         const path = '/delete-row';
 
-        let query: { pkProject: number, pkDigital: number, pkRow: number };
+        let query: {pkProject: number, pkDigital: number, pkRow: number};
 
         beforeEach(async () => {
             await cleanDb();
@@ -1574,70 +1574,70 @@ describe('TableController', () => {
 
         it('AUTH: should reject the request because the user is not authenticated', async () => {
             const res = await client.post(path);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Authorization header not found." });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Authorization header not found."});
         })
 
         it('AUTH: should reject the request because the authorization header is wrong', async () => {
             const randomJWT = 'eyJ0eXAiOiAiand0IiwgImFsZyI6ICJIUzUxMiJ9.eyJuYW1lIjoiV2lraXBlZGlhIiwiaWF0IjoxNTI1Nzc3OTM4fQ.iu0aMCsaepPy6ULphSX5PT32oPvKkM5dPl131knIDq9Cr8OUzzACsuBnpSJ_rE9XkGjmQVawcvyCHLiM4Kr6NA';
             const res = await client.post(path + '?' + qs.stringify(query)).set('Authorization', randomJWT);
-            expect(res.body.error).to.containEql({ statusCode: 401, message: "Error verifying token : invalid signature" });
+            expect(res.body.error).to.containEql({statusCode: 401, message: "Error verifying token : invalid signature"});
         })
 
         it('AUTH: should reject the request because the user is not in the project', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
             const res = await client.post(path).set('Authorization', jwt).query(qs.stringify(query));
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         });
 
         it('AUTH: should reject the request because the user is not in the digital\'s namespace', async () => {
-            const jwt = (await client.post('/login').send({ email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password })).body.lb4Token;
+            const jwt = (await client.post('/login').send({email: PubAccountMock.JONAS.email, password: PubCredentialMock.JONAS_PASSWORD.password})).body.lb4Token;
             const res = await client.post(path).set('Authorization', jwt).query(query);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         // MISSING PARAMETERS
 
         it('MISS-PARAM: should reject the request: pkProject is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: pkDigital is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         it('MISS-PARAM: should reject the request: pkRow is absent', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 400, code: "MISSING_REQUIRED_PARAMETER" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 400, code: "MISSING_REQUIRED_PARAMETER"});
         })
 
         // CORE
 
         it('CORE: should reject the request: the project does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: wrongProject.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: wrongProject.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: the digital does not exist', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: 0, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 403, message: "Access denied" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: 0, pkRow: TabRowMock.ROW_UNIONS_JEAN.pk_row})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 403, message: "Access denied"});
         })
 
         it('CORE: should reject the request: the row is in another digital', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_RND_VAL2.pk_row })).set('Authorization', jwt);
-            expect(res.body.error).to.containEql({ statusCode: 422, message: "Unknown row" });
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_RND_VAL2.pk_row})).set('Authorization', jwt);
+            expect(res.body.error).to.containEql({statusCode: 422, message: "Unknown row"});
         })
 
         it('CORE: should accept the request', async () => {
-            const jwt = (await client.post('/login').send({ email: account.email, password: pwd })).body.lb4Token;
-            const res = await client.post(path + '?' + qs.stringify({ pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_ALBERT.pk_row })).set('Authorization', jwt);
+            const jwt = (await client.post('/login').send({email: account.email, password: pwd})).body.lb4Token;
+            const res = await client.post(path + '?' + qs.stringify({pkProject: project.pk_entity, pkDigital: digital.pk_entity, pkRow: TabRowMock.ROW_UNIONS_ALBERT.pk_row})).set('Authorization', jwt);
             expect(res.body).to.be.equal(TabRowMock.ROW_UNIONS_ALBERT.pk_row)
         })
 

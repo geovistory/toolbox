@@ -10,8 +10,8 @@ import { OmitEntity } from 'projects/__test__/data/auto-gen/gvDB/local-model.hel
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { PubAccountMock } from 'projects/__test__/data/auto-gen/gvDB/PubAccountMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
-import { PROFILE_12_BIOGRAPHICAL_BA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-01-18';
-import { PROFILE_16_INTERACTIONS_S_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-01-18';
+import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
+import { PROFILE_16_INTERACTIONS_S_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-02-09';
 import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-18';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
@@ -32,8 +32,8 @@ const initialSchemaObects = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
       PROFILE_5_GEOVISTORY_BASI_2022_01_18, // add basics profile
-      PROFILE_16_INTERACTIONS_S_2022_01_18, // add social interactions profile
-      PROFILE_12_BIOGRAPHICAL_BA_2022_01_18, // add biographical profile
+      PROFILE_16_INTERACTIONS_S_2022_02_09, // add social interactions profile
+      PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, // add biographical profile
       PROFILE_8_MARITIME_HISTOR_2022_01_18, // add maritime profile
       PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 // add phyical profile
     ],

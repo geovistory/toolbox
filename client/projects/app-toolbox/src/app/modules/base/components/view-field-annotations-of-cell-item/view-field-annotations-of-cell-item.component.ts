@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4/public-api';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TableComponent } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { ViewFieldAnnotationOfCellItemData, ViewFieldAnnotationsOfCellComponent } from '../view-field-annotations-of-cell/view-field-annotations-of-cell.component';
@@ -28,12 +29,12 @@ export class ViewFieldAnnotationsOfCellItemComponent implements OnInit {
       })
     })
   }
-  async edit() {
-    const result = await this.cellAnnotationsComponent.chooseEntity()
-    this.cellAnnotationsComponent.loadingTrigger$.next()
+  async edit(item: StatementWithTarget) {
+    const result = await this.cellAnnotationsComponent.chooseEntity(item)
 
     if (result) {
-      this.remove()
+      this.cellAnnotationsComponent.loadingTrigger$.next()
+      await this.remove()
       await this.cellAnnotationsComponent.upsertAnnotation(result)
     }
   }

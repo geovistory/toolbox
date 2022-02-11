@@ -1,0 +1,27 @@
+.loc-pointer {
+    cursor: pointer
+}
+
+.loc {
+    display: flex;
+    flex-direction: column;
+}
+
+::ng-deep .loc-content {
+    .mat-menu-content {
+        display: flex;
+        flex-direction: column;
+        padding: 8px;
+    }
+}
+
+::ng-deep .loc-comment {
+    .mat-form-field-wrapper {
+        padding: 0 !important;
+        margin:0 !important;
+    }
+}
+
+::ng-deep .mat-badge.hide-text .mat-badge-content {
+    color: transparent;
+  }

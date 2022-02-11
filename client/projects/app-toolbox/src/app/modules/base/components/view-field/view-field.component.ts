@@ -158,7 +158,7 @@ export class ViewFieldComponent implements OnInit {
     const data: AddStatementDialogData = {
       field: field,
       targetClass,
-      valueTarget: !showAddList,
+      showAddList,
       source: this.source,
       hiddenProperty: this.field.property
     };

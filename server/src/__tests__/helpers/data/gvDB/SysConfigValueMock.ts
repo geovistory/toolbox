@@ -112,6 +112,9 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "place": TrueEnum.true
         },
+        "viewType": {
+          "place": TrueEnum.true
+        },
         belongsToCategory: {
           entities: {showInAddMenu: false}
         }
@@ -444,6 +447,9 @@ export class SysConfigValueMock {
       "899": {
         icon: IconType.text,
         detailPage: TabComponent.text,
+        formControlType: {
+          textWithLang: TrueEnum.true
+        },
         belongsToCategory: {
           digitals: {
             showInAddMenu: false,
@@ -453,6 +459,9 @@ export class SysConfigValueMock {
       "900": {
         icon: IconType.text,
         detailPage: TabComponent.text,
+        formControlType: {
+          textWithLang: TrueEnum.true
+        },
         belongsToCategory: {
           digitals: {
             showInAddMenu: false,

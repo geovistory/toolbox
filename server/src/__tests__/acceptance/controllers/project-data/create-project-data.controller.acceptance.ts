@@ -2,7 +2,7 @@ import {DataObject} from '@loopback/repository/dist/common-types';
 import {Client, expect} from '@loopback/testlab';
 import {CLASS_PK_EXPRESSION, CLASS_PK_ITEM, CLASS_PK_MANIFESTATION_PRODUCT_TYPE, CLASS_PK_MANIFESTATION_SINGLETON, CLASS_PK_WEB_REQUEST, PROPERTY_PK_P4_IS_SERVER_RESPONSE_TO_REQUEST, PROPERTY_PK_P5_HAS_CARRIER_PROVIDED_BY, PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR, PROPERTY_PK_R4_CARRIERS_PROVIDED_BY} from '../../../../config';
 import {LoginResponse} from '../../../../controllers/account.controller';
-import {InfAppellation, InfDimension, InfLangString, InfPlace, InfResource, InfResourceWithRelations, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from '../../../../models';
+import {InfAppellation, InfDimension, InfLangString, InfPlace, InfResource, InfResourceWithRelations, InfStatementWithRelations, InfTimePrimitive} from '../../../../models';
 import {CalendarType} from '../../../../models/enums/CalendarType';
 import {Granularity} from '../../../../models/enums/Granularity';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
@@ -213,11 +213,10 @@ describe('CreateProjectDataController', () => {
             object_time_primitive: new InfTimePrimitive({
               fk_class: 2,
               duration: Granularity['1 year'],
+              calendar: CalendarType.julian,
               julian_day: 123456,
-            }),
-            entity_version_project_rels: [
-              new ProInfoProjRel({calendar: CalendarType.julian})
-            ]
+            })
+
           }
         ]
       }
@@ -233,43 +232,9 @@ describe('CreateProjectDataController', () => {
       expect(res.body.positive.inf?.resource?.length).to.equal(1)
       expect(res.body.positive.inf?.statement?.length).to.equal(1)
       expect(res.body.positive.pro?.info_proj_rel?.length).to.equal(2)
-      expect(res.body.positive.pro?.info_proj_rel?.filter(r => r.calendar === CalendarType.julian).length).to.equal(1)
       expect(res.body.positive.inf?.time_primitive?.length).to.equal(1)
     })
 
-
-    // it('should respond with GvSchemaModifier containing a chunk (from object)', async () => {
-    //   const resource: DataObject<InfResourceWithRelations> = {
-    //     fk_class: 1,
-    //     outgoing_statements: [
-    //       {
-    //         fk_property: 1,
-    //         object_chunk: new DatChunk({
-    //           fk_text: 1,
-    //           fk_entity_version: 1,
-    //           fk_namespace: 2,
-    //           quill_doc: DatChunkMock.RUDOLF.quill_doc
-    //         }),
-    //         entity_version_project_rels: [
-    //           new ProInfoProjRel({calendar: CalendarType.julian})
-    //         ]
-    //       }
-    //     ]
-    //   }
-    //   const params = {
-    //     pkProject: ProProjectMock.PROJECT_1.pk_entity,
-    //   }
-    //   const res: {body: GvSchemaModifier} = await client
-    //     .post('/project-data/upsert-resources')
-    //     .set('Authorization', lb4Token)
-    //     .query(params)
-    //     .send([resource])
-
-    //   expect(res.body.positive.inf?.resource?.length).to.equal(1)
-    //   expect(res.body.positive.inf?.statement?.length).to.equal(1)
-    //   expect(res.body.positive.pro?.info_proj_rel?.length).to.equal(2)
-    //   expect(res.body.positive.dat?.chunk?.length).to.equal(1)
-    // })
 
 
     it('should automatically create F2 Expression for F4 Manifestation Singleton', async () => {
@@ -548,6 +513,176 @@ describe('CreateProjectDataController', () => {
 
   })
 
+
+  describe('POST /project-data/upsert-data', () => {
+    const person = {...InfResourceMock.PERSON_1}
+    person.pk_entity = undefined;
+
+    it('Create simple entity - respond with a pkEntity', async () => {
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({resource: person})
+
+      expect(res.body.positive.inf.resource.length).to.equal(1);
+      expect(res.body.positive.inf.resource[0].pk_entity).to.not.be.undefined();
+    })
+
+    it('Create entity with relations - respond with a pkEntity', async () => {
+      const resource: DataObject<InfResourceWithRelations> = {
+        fk_class: 1,
+        outgoing_statements: [
+          {
+            fk_property: 1,
+            object_place: new InfPlace({
+              fk_class: 2,
+              lat: 1,
+              long: 1
+            })
+          }
+        ]
+      }
+
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({resource})
+
+      expect(res.body.positive.inf.resource.length).to.equal(1);
+      expect(res.body.positive.inf.resource[0].pk_entity).to.not.be.undefined();
+    })
+
+    it('Create simple statement - respond with a pkEntity', async () => {
+      await createInfResource(InfResourceMock.PERSON_1)
+      await createInfLanguage(InfLanguageMock.ITALIAN)
+
+      const statement = {
+        subject_statement: {fk_subject_info: 737365, fk_property: 1218, fk_object_info: 759082},
+        fk_property_of_property: 1,
+        object_lang_string: {quill_doc: {latestId: 4, ops: [{attributes: {charid: "4"}, insert: "3"}, {attributes: {blockid: "2"}, insert: "\n"}]}, fk_class: 657, fk_language: 18605}
+      }
+
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({statement})
+
+      expect(res.body.positive.inf.statement.length).to.equal(1);
+      expect(res.body.positive.inf.statement[0].pk_entity).to.not.be.undefined();
+    })
+
+
+    it('Create statement with relations - respond with a pkEntity', async () => {
+      await createInfResource(InfResourceMock.PERSON_1)
+      await createInfLanguage(InfLanguageMock.ITALIAN)
+
+      const statement: DataObject<InfStatementWithRelations> = {
+        fk_subject_info: InfResourceMock.PERSON_1.pk_entity,
+        fk_property: 1,
+        object_resource: {
+          fk_class: 1,
+          incoming_statements: [
+            {
+              fk_property: 1,
+              subject_resource: {
+                fk_class: 2,
+                outgoing_statements: [
+                  {
+                    fk_property: 2,
+                    object_language: InfLanguageMock.ITALIAN
+                  },
+                  {
+                    fk_property: 123,
+
+                    object_lang_string: {
+                      fk_language: InfLanguageMock.ITALIAN.pk_entity,
+                      fk_class: 44,
+                      string: 'foo'
+                    }
+                  }
+                ]
+              }
+            },
+          ]
+        }
+      }
+
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({statement})
+
+      expect(res.body.positive.inf.statement.length).to.equal(1);
+      expect(res.body.positive.inf.statement[0].pk_entity).to.not.be.undefined();
+    })
+
+    it('Create appellation - respond with a pkEntity', async () => {
+      const appellation = new InfAppellation({fk_class: 2, string: 'abc'})
+
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({appellation})
+
+      expect(res.body.positive.inf.appellation.length).to.equal(1);
+      expect(res.body.positive.inf.appellation[0].pk_entity).to.not.be.undefined();
+    })
+
+    it('Create place - respond with a pkEntity', async () => {
+      const place = new InfPlace({fk_class: 2, lat: 1, long: 1})
+
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({place})
+
+      expect(res.body.positive.inf.place.length).to.equal(1);
+      expect(res.body.positive.inf.place[0].pk_entity).to.not.be.undefined();
+    })
+
+    it('Create dimension - respond with a pkEntity', async () => {
+      await createInfResource(InfResourceMock.TIME_UNIT_MONTH)
+      const dimension = new InfDimension({fk_class: 2, fk_measurement_unit: InfResourceMock.TIME_UNIT_MONTH.pk_entity, numeric_value: 1})
+
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({dimension})
+
+      expect(res.body.positive.inf.dimension.length).to.equal(1);
+      expect(res.body.positive.inf.dimension[0].pk_entity).to.not.be.undefined();
+    })
+
+    it('Create timePrimitive - respond with a pkEntity', async () => {
+      const timePrimitive = new InfTimePrimitive({fk_class: 2, duration: Granularity['1 year'], calendar: CalendarType.julian, julian_day: 123456})
+
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({timePrimitive: timePrimitive})
+
+      expect(res.body.positive.inf.time_primitive.length).to.equal(1);
+      expect(res.body.positive.inf.time_primitive[0].pk_entity).to.not.be.undefined();
+    })
+
+    it('Create language - respond with a pkEntity', async () => {
+      const lang = {...InfLanguageMock.GERMAN}
+      lang.pk_entity = undefined
+      lang.pk_language = 'aaa'
+
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({language: lang})
+
+      expect(res.body.positive.inf.language.length).to.equal(1);
+      expect(res.body.positive.inf.language[0].pk_entity).to.not.be.undefined();
+    })
+
+    it('Create langString - respond with a pkEntity', async () => {
+      await createInfLanguage(InfLanguageMock.ITALIAN)
+      const langString = new InfLangString({fk_class: 2, fk_language: InfLanguageMock.ITALIAN.pk_entity, string: 'abcd'})
+
+      const res = await client.post('/project-data/upsert-data').set('Authorization', lb4Token)
+        .query({pkProject: ProProjectMock.PROJECT_1.pk_entity})
+        .send({langString: langString})
+
+      expect(res.body.positive.inf.lang_string.length).to.equal(1);
+      expect(res.body.positive.inf.lang_string[0].pk_entity).to.not.be.undefined();
+    })
+
+  })
 
 });
 

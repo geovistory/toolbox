@@ -1,33 +1,33 @@
-import {expect} from '@loopback/testlab';
-import {equals} from 'ramda';
+import { expect } from '@loopback/testlab';
+import { equals } from 'ramda';
 import 'reflect-metadata';
-import {WarEntityPreviewTimeSpan} from '../../../../../models/entity-preview/WarEntityPreviewTimeSpan';
-import {CalendarType} from '../../../../../models/enums/CalendarType';
-import {Granularity} from '../../../../../models/enums/Granularity';
-import {EntityPreviewService} from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
-import {PEntityTimeSpanService} from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
-import {WarehouseStubs} from '../../../../../warehouse/createWarehouse';
-import {PEdgeService} from '../../../../../warehouse/primary-ds/edge/PEdgeService';
-import {PEntityService} from '../../../../../warehouse/primary-ds/entity/PEntityService';
-import {Warehouse} from '../../../../../warehouse/Warehouse';
-import {createDfhApiClass} from '../../../../helpers/atomic/dfh-api-class.helper';
-import {createDfhApiProperty} from '../../../../helpers/atomic/dfh-api-property.helper';
-import {createInfLanguage} from '../../../../helpers/atomic/inf-language.helper';
-import {createInfResource} from '../../../../helpers/atomic/inf-resource.helper';
-import {createInfStatement} from '../../../../helpers/atomic/inf-statement.helper';
-import {createInfTimePrimitive} from '../../../../helpers/atomic/inf-time-primitive.helper';
-import {createProInfoProjRel, updateProInfoProjRel} from '../../../../helpers/atomic/pro-info-proj-rel.helper';
-import {createProProject} from '../../../../helpers/atomic/pro-project.helper';
-import {DfhApiClassMock} from '../../../../helpers/data/gvDB/DfhApiClassMock';
-import {DfhApiPropertyMock} from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
-import {InfLanguageMock} from '../../../../helpers/data/gvDB/InfLanguageMock';
-import {InfResourceMock} from '../../../../helpers/data/gvDB/InfResourceMock';
-import {InfStatementMock} from '../../../../helpers/data/gvDB/InfStatementMock';
-import {InfTimePrimitiveMock} from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
-import {ProInfoProjRelMock} from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
-import {ProProjectMock} from '../../../../helpers/data/gvDB/ProProjectMock';
-import {cleanDb} from '../../../../helpers/meta/clean-db.helper';
-import {searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil} from '../../../../helpers/warehouse-helpers';
+import { WarEntityPreviewTimeSpan } from '../../../../../models/entity-preview/WarEntityPreviewTimeSpan';
+import { CalendarType } from '../../../../../models/enums/CalendarType';
+import { Granularity } from '../../../../../models/enums/Granularity';
+import { EntityPreviewService } from '../../../../../warehouse/aggregator-ds/entity-preview/EntityPreviewService';
+import { PEntityTimeSpanService } from '../../../../../warehouse/aggregator-ds/entity-time-span/p-entity-time-span/PEntityTimeSpanService';
+import { WarehouseStubs } from '../../../../../warehouse/createWarehouse';
+import { PEdgeService } from '../../../../../warehouse/primary-ds/edge/PEdgeService';
+import { PEntityService } from '../../../../../warehouse/primary-ds/entity/PEntityService';
+import { Warehouse } from '../../../../../warehouse/Warehouse';
+import { createDfhApiClass } from '../../../../helpers/atomic/dfh-api-class.helper';
+import { createDfhApiProperty } from '../../../../helpers/atomic/dfh-api-property.helper';
+import { createInfLanguage } from '../../../../helpers/atomic/inf-language.helper';
+import { createInfResource } from '../../../../helpers/atomic/inf-resource.helper';
+import { createInfStatement } from '../../../../helpers/atomic/inf-statement.helper';
+import { createInfTimePrimitive } from '../../../../helpers/atomic/inf-time-primitive.helper';
+import { createProInfoProjRel, updateProInfoProjRel } from '../../../../helpers/atomic/pro-info-proj-rel.helper';
+import { createProProject } from '../../../../helpers/atomic/pro-project.helper';
+import { DfhApiClassMock } from '../../../../helpers/data/gvDB/DfhApiClassMock';
+import { DfhApiPropertyMock } from '../../../../helpers/data/gvDB/DfhApiPropertyMock';
+import { InfLanguageMock } from '../../../../helpers/data/gvDB/InfLanguageMock';
+import { InfResourceMock } from '../../../../helpers/data/gvDB/InfResourceMock';
+import { InfStatementMock } from '../../../../helpers/data/gvDB/InfStatementMock';
+import { InfTimePrimitiveMock } from '../../../../helpers/data/gvDB/InfTimePrimitiveMock';
+import { ProInfoProjRelMock } from '../../../../helpers/data/gvDB/ProInfoProjRelMock';
+import { ProProjectMock } from '../../../../helpers/data/gvDB/ProProjectMock';
+import { cleanDb } from '../../../../helpers/meta/clean-db.helper';
+import { searchUntilSatisfy, setupCleanAndStartWarehouse, stopWarehouse, truncateWarehouseTables, waitForEntityPreviewUntil } from '../../../../helpers/warehouse-helpers';
 const pEntityTimeSpanStub: WarehouseStubs = {
     primaryDataServices: [
         PEntityService,
@@ -62,7 +62,7 @@ describe('PEntityTimeSpanService', function () {
         await stopWarehouse(wh)
     })
     it('should create edges with time primitives', async () => {
-        const {shipVoyage, project} = await PEntityTimeSpanMock.createMock();
+        const { shipVoyage, project } = await PEntityTimeSpanMock.createMock();
 
         await searchUntilSatisfy({
             notifier$: edgeService.afterChange$,
@@ -77,7 +77,7 @@ describe('PEntityTimeSpanService', function () {
 
 
     it('should create timespanval of time primitive', async () => {
-        const {shipVoyage, project} = await PEntityTimeSpanMock.createMock();
+        const { shipVoyage, project } = await PEntityTimeSpanMock.createMock();
 
         const expectedTimeSpan: WarEntityPreviewTimeSpan = {
             "p81": {
@@ -134,7 +134,7 @@ describe('PEntityTimeSpanService', function () {
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_SHIP_VOYAGE);
         await searchUntilSatisfy({
             notifier$: s.afterChange$,
-            getFn: () => s.index.getFromIdx({pkEntity: shipVoyage.pk_entity ?? -1, fkProject: project.pk_entity ?? -1}),
+            getFn: () => s.index.getFromIdx({ pkEntity: shipVoyage.pk_entity ?? -1, fkProject: project.pk_entity ?? -1 }),
             compare: (val) => {
                 return equals(val?.timeSpan, {})
             }
@@ -149,16 +149,16 @@ describe('PEntityTimeSpanService', function () {
 
         await searchUntilSatisfy({
             notifier$: s.afterChange$,
-            getFn: () => s.index.getFromIdx({pkEntity: shipVoyage.pk_entity ?? -1, fkProject: prel.fk_project ?? -1}),
+            getFn: () => s.index.getFromIdx({ pkEntity: shipVoyage.pk_entity ?? -1, fkProject: prel.fk_project ?? -1 }),
             compare: (val) => {
                 return equals(val?.timeSpan, {})
             }
         })
         // remove person from the project
-        await updateProInfoProjRel(prel.pk_entity ?? -1, {is_in_project: false})
+        await updateProInfoProjRel(prel.pk_entity ?? -1, { is_in_project: false })
         await searchUntilSatisfy({
             notifier$: s.afterChange$,
-            getFn: () => s.index.getFromIdxWithTmsps({pkEntity: shipVoyage.pk_entity ?? -1, fkProject: prel.fk_project ?? -1}),
+            getFn: () => s.index.getFromIdxWithTmsps({ pkEntity: shipVoyage.pk_entity ?? -1, fkProject: prel.fk_project ?? -1 }),
             compare: (item) => {
                 return !!item?.deleted
             }
@@ -220,7 +220,7 @@ export namespace PEntityTimeSpanMock {
         // Project rel for stmt (With calender info !)
         await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_END_OF_THE_END_TP_6)
 
-        return {shipVoyage, project};
+        return { shipVoyage, project };
     }
 
 

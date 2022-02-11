@@ -1,0 +1,31 @@
+<mat-menu #classTypeMenu="matMenu">
+    <div class="loc-filter">
+        <div class="loc-tools" (click)="$event.stopPropagation();">
+            <div class="loc-padding-left"></div>
+            <input #filterinput type="text" class="loc-filter-input mat-text-secondary" [placeholder]="'Filter'"
+                autofocus="true" autocomplete="off" (keyup)="onFilter($event)" [value]="filter$|async">
+        </div>
+        <mat-divider class="w-100"></mat-divider>
+    </div>
+
+    <div *ngFor="let aClass of (classes$|async)" (click)="this.select(aClass)">
+        <div class="loc-container gv-row gv-pointer">
+            <div class="loc-padding-left"></div>
+            <div class="loc-label">{{aClass.label}}</div>
+        </div>
+    </div>
+</mat-menu>
+
+<mat-form-field class="loc-class-dropdown" appearance="outline" [matMenuTriggerFor]="classTypeMenu" style="width:95%"
+    *ngIf="!selected" (menuOpened)="this.focusFilterInput()">
+    <input matInput readonly placeholder="Choose a class">
+</mat-form-field>
+
+
+<ng-container *ngIf="!!selected">
+    <span *ngIf="selected.icon === 'peit'"
+        class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
+    <span *ngIf="selected.icon === 'teen'"
+        class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
+    <span class="mat-body-1 ml-3">{{selected.label}}</span>
+</ng-container>

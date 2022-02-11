@@ -13,8 +13,8 @@ import { ProInfoProjRelMock } from 'projects/__test__/data/auto-gen/gvDB/ProInfo
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
-import { PROFILE_12_BIOGRAPHICAL_BA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-01-18';
-import { PROFILE_16_INTERACTIONS_S_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-01-18';
+import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
+import { PROFILE_16_INTERACTIONS_S_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-02-09';
 import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-18';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
@@ -24,7 +24,7 @@ import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transform
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { BaseModule } from '../modules/base/base.module';
-import { AddEntityDialogComponent, AddEntityDialogData } from '../modules/base/components/add-entity-dialog/add-entity-dialog.component';
+import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from '../modules/base/components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 import { AddStatementDialogComponent, AddStatementDialogData } from '../modules/base/components/add-statement-dialog/add-statement-dialog.component';
 import { CreateOrAddEntityEvent, CtrlEntityDialogComponent, CtrlEntityDialogData } from '../modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../modules/base/components/ctrl-entity/ctrl-entity.component';
@@ -75,7 +75,7 @@ export class SandBoxCreateDialogsComponent {
       ...this.dialogSizing,
       panelClass: 'gv-no-padding',
       data: {
-        valueTarget: false,
+        showAddList: false,
         field: {
           'sourceClass': 61, 'sourceClassLabel': 'Birth', 'sourceMaxQuantity': 1, 'sourceMinQuantity': 1, 'targetMinQuantity': 0, 'targetMaxQuantity': -1, 'label': 'brought into life', 'isHasTypeField': false, 'isTimeSpanShortCutField': false, 'property': { 'fkProperty': 86 }, 'isOutgoing': true, 'identityDefiningForSource': true, 'identityDefiningForTarget': false, 'ontoInfoLabel': 'P98', 'ontoInfoUrl': 'https://ontome.net/property/86', 'allSubfieldsRemovedFromAllProfiles': false, 'targetClasses': [21], 'display': { 'formSections': { 'specific': { 'position': null } }, 'viewSections': { 'specific': { 'position': null } } }, 'isSpecialField': false, 'targets': { '21': { 'viewType': { 'entityPreview': 'true' }, 'formControlType': { 'entity': 'true' }, 'removedFromAllProfiles': false, 'targetClass': 21, 'targetClassLabel': 'Person' } }
         },
@@ -87,8 +87,8 @@ export class SandBoxCreateDialogsComponent {
   }
 
   fromNewEntity() {
-    this.dialog.open<AddEntityDialogComponent, AddEntityDialogData, CreateOrAddEntityEvent>(
-      AddEntityDialogComponent, {
+    this.dialog.open<AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateOrAddEntityEvent>(
+      AddEntityOrValueDialogComponent, {
       ...this.dialogSizing,
       panelClass: 'gv-no-padding',
       data: {
@@ -122,8 +122,8 @@ const initialSchemaObects = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
       PROFILE_5_GEOVISTORY_BASI_2022_01_18, // add basics profile
-      PROFILE_16_INTERACTIONS_S_2022_01_18, // add social interactions profile
-      PROFILE_12_BIOGRAPHICAL_BA_2022_01_18, // add biographical profile
+      PROFILE_16_INTERACTIONS_S_2022_02_09, // add social interactions profile
+      PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, // add biographical profile
       PROFILE_8_MARITIME_HISTOR_2022_01_18, // add maritime profile
       PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 // add phyical profile
     ],

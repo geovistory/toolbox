@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import {CalendarType} from '../../../models/enums/CalendarType';
 import {Granularity} from '../../../models/enums/Granularity';
 import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
 import {createDatColumn} from '../atomic/dat-column.helper';
@@ -39,7 +40,7 @@ import {PubAccountMock} from '../data/gvDB/PubAccountMock';
 import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
 import {TabCellXMock} from '../data/gvDB/TabCellXMock';
 import {TabRowMock} from '../data/gvDB/TabRowMock';
-import {PROFILE_12_BIOGRAPHICAL_BA_2022_01_18} from '../data/ontome-profiles/profile-12-biographical-ba-2022-01-18';
+import {PROFILE_12_BIOGRAPHICAL_BA_2022_02_09} from '../data/ontome-profiles/profile-12-biographical-ba-2022-02-09';
 import {PROFILE_5_GEOVISTORY_BASI_2022_01_18} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import {createDigital} from '../generic/digital.helper';
 import {createFactoid, createFactoidMapping} from '../generic/factoid.helper';
@@ -71,7 +72,7 @@ export async function forFeatureX() {
      ***************************************************************************/
 
     const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2022_01_18)
-    const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_01_18)
+    const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_02_09)
     // add profiles to project
     await addProfilesToProject(ProProjectMock.SANDBOX_PROJECT.pk_entity, [profileGeovBasics.profile.dfh_pk_profile, profileBibliograp.profile.dfh_pk_profile,])
 
@@ -265,7 +266,7 @@ export async function forFeatureX() {
     const place = await createInfPlace({pk_entity: getIndex(), lat: 51.5074, long: 0.1278, fk_class: 51});
     const dimension = await createInfDimension({pk_entity: getIndex(), fk_class: 689, fk_measurement_unit: timeUnitPEIT.pk_entity, numeric_value: 4});
     const languageString = await createInfLangString({pk_entity: getIndex(), fk_class: 657, fk_language: 18605, string: 'p. 12'})
-    const timePrimitive = await createInfTimePrimitive({pk_entity: getIndex(), julian_day: 2431383, duration: Granularity['1 day'], fk_class: 335})
+    const timePrimitive = await createInfTimePrimitive({pk_entity: getIndex(), julian_day: 2431383, duration: Granularity['1 day'], calendar: CalendarType.gregorian, fk_class: 335})
     //Matchings
     await mapCell(projectId, cell_1_0, appellation.pk_entity as number);
     await mapCell(projectId, cell_1_1, place.pk_entity as number);

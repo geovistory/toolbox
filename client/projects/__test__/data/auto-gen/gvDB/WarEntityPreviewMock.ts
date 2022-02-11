@@ -1,4 +1,3 @@
-
 import {WarEntityPreview} from '@kleiolab/lib-sdk-lb4';
 import {CalendarType} from '../enums/CalendarType';
 import {Granularity} from '../enums/Granularity';

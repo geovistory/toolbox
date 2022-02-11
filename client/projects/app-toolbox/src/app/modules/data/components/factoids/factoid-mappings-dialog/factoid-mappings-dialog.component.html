@@ -1,0 +1,25 @@
+<div class="gv-fh gv-col">
+
+    <span class="mat-h2 gv-row-center">Factoid mappings</span>
+
+    <div class="gv-row-space-between">
+        <!-- Description -->
+        <span class="mat-h3 gv-col-center loc-no-margin">For each row, produce factoids according to:</span>
+
+        <!-- Actions -->
+        <button mat-flat-button color=primary (click)="fmCreate()">
+            Add new factoid mapping
+        </button>
+    </div>
+
+    <div class="loc-body">
+        <gv-factoid-mapping *ngFor="let fm of fms; let i = index" [listNumber]="i + 1" [fm]="fm"
+            (fmChanged)="fmChanged(i, $event)" (deleteFM)="delete(i)">
+        </gv-factoid-mapping>
+    </div>
+
+    <div class="loc-footer">
+        <button mat-flat-button color="primary" (click)="onSave()" [disabled]="!valid">Save</button>
+        <button mat-button [mat-dialog-close]>Cancel</button>
+    </div>
+</div>

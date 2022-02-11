@@ -142,11 +142,13 @@
                 New row at position {{value.text}}
               </div>
               <div style="display: flex; justify-content: space-evenly;">
-                <mat-icon color="accent" svgIcon="check-circle-outline" (click)="validateNewRowDemanded.emit(newRow)"
-                  style="cursor: pointer;">
+                <mat-icon *ngIf="!rowCreationLoading" color="accent" svgIcon="check-circle-outline"
+                  (click)="validateCreateNewRow(newRow)" style="cursor: pointer;">
                 </mat-icon>
-                <mat-icon color="warn" svgIcon="close-circle-outline" (click)="cancelNewRowDemanded.emit()"
-                  style="cursor: pointer;"></mat-icon>
+                <mat-icon *ngIf="!rowCreationLoading" color="warn" svgIcon="close-circle-outline"
+                  (click)="cancelNewRowDemanded.emit()" style="cursor: pointer;"></mat-icon>
+                <mat-spinner *ngIf="rowCreationLoading" [diameter]="20"></mat-spinner>
+
               </div>
             </td>
 

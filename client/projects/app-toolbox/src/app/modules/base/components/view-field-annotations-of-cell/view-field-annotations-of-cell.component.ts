@@ -9,6 +9,7 @@ import { TableComponent } from 'projects/app-toolbox/src/app/shared/components/d
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { TableDetailComponent } from '../../../data/components/table-detail/table-detail.component';
+import { statemenTargetToInfData } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from '../ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
@@ -169,11 +170,13 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
 
   async create() {
     const result = await this.chooseEntity()
-    this.loadingTrigger$.next()
-    if (result) await this.upsertAnnotation(result)
+    if (result) {
+      this.loadingTrigger$.next()
+      await this.upsertAnnotation(result)
+    }
   }
 
-  async chooseEntity() {
+  async chooseEntity(item?: StatementWithTarget) {
     return this.dialog.open<CtrlEntityDialogComponent,
       CtrlEntityDialogData,
       CtrlEntityModel>(CtrlEntityDialogComponent, {
@@ -182,7 +185,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
         maxWidth: '100%',
         panelClass: 'gv-no-padding',
         data: {
-          initVal$: new BehaviorSubject(undefined),
+          initVal$: new BehaviorSubject(statemenTargetToInfData(item?.target)),
           showAddList: true,
           hiddenProperty: { fkProperty: P_1875_ANNOTATED_ENTITY_ID },
           disableIfHasStatement: undefined,
@@ -207,7 +210,13 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
         {
           fk_property: P_1875_ANNOTATED_ENTITY_ID,
           fk_object_info: result.pkEntity,
-          object_resource: result.resource
+          object_resource: result.resource,
+          object_appellation: result.appellation,
+          object_dimension: result.dimension,
+          object_lang_string: result.langString,
+          object_language: result.language,
+          object_place: result.place,
+          object_time_primitive: result.timePrimitive,
         }
       ]
     }

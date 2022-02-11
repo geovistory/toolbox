@@ -1,10 +1,10 @@
 import { InfTimePrimitive, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 
 
-export function infTimePrimToTimePrimWithCal(infTimePrim: InfTimePrimitive, cal: TimePrimitiveWithCal.CalendarEnum): TimePrimitiveWithCal {
+export function infTimePrimToTimePrimWithCal(infTimePrim: InfTimePrimitive): TimePrimitiveWithCal {
   return {
     julianDay: infTimePrim.julian_day,
-    duration: infTimePrim.duration as TimePrimitiveWithCal.DurationEnum,
-    calendar: cal,
+    duration: infTimePrim.duration,
+    calendar: infTimePrim.calendar,
   }
 }

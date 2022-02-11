@@ -5,7 +5,7 @@ var logSql = require('../../server/scripts/log-deserialized-sql');
 var SqlBuilderLbModels = require('../../../dist/lb3/server/utils/sql-builder-lb-models')
   .SqlBuilderLbModels;
 
-module.exports = function(ProProject) {
+module.exports = function (ProProject) {
   // Project.validatesUniquenessOf('name', {message: 'Project name already exists'});
 
   /**
@@ -25,7 +25,7 @@ module.exports = function(ProProject) {
    * @param  {type} cb        callback
    * @return {void}
    */
-  ProProject.createWithLabelAndDescription = function(
+  ProProject.createWithLabelAndDescription = function (
     accountId,
     pkLanguage,
     label,
@@ -82,7 +82,7 @@ module.exports = function(ProProject) {
           fk_entity_version_concat,
           is_in_project,
           is_standard_in_project,
-          calendar,
+          --calendar,
           ord_num_of_domain,
           ord_num_of_range,
           ord_num_of_text_property,
@@ -95,7 +95,7 @@ module.exports = function(ProProject) {
         fk_entity_version_concat,
         is_in_project,
         is_standard_in_project,
-        calendar,
+        --calendar,
         ord_num_of_domain,
         ord_num_of_range,
         ord_num_of_text_property,
@@ -147,7 +147,7 @@ module.exports = function(ProProject) {
     });
   };
 
-  ProProject.getBasics = function(pkProject, cb) {
+  ProProject.getBasics = function (pkProject, cb) {
     ProProject.findComplex(
       {
         where: ['pk_entity', '=', pkProject],
@@ -177,7 +177,7 @@ module.exports = function(ProProject) {
     );
   };
 
-  ProProject.ofAccount = function(accountId, ctx, cb) {
+  ProProject.ofAccount = function (accountId, ctx, cb) {
     const q = new SqlBuilderLbModels(ProProject.app.models);
     const params = [accountId];
     const sql = `

@@ -57,7 +57,6 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   @Input() confirmBtnTooltipInProject: string;
   @Input() confirmBtnTooltiptNotInProject: string;
 
-
   @Output() onMore = new EventEmitter<SeachExistingEntityMoreEvent>();
   @Output() onBack = new EventEmitter();
   @Output() onConfirm = new EventEmitter<SeachExistingEntityConfirmEvent>();

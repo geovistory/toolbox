@@ -101,8 +101,7 @@ WITH tw0 AS (
       t2.pk_entity,
       t1.fk_project,
       t1.ord_num_of_domain,
-      t1.ord_num_of_range,
-      t1.calendar
+      t1.ord_num_of_range
   FROM
       projects.info_proj_rel t1
   JOIN
@@ -149,7 +148,7 @@ SELECT
 
     -- time_primitive
     CASE WHEN t6.pk_entity IS NOT NULL THEN
-      commons.time_primitive__pretty_json(t6, t0.calendar)
+      commons.time_primitive__pretty_json(t6)
     ELSE NULL::jsonb END time_primitive,
 
     -- lang_string

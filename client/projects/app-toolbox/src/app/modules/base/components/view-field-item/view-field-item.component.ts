@@ -78,10 +78,11 @@ export class ViewFieldItemComponent implements OnInit {
   openEditValueDialog(initVal: StatementWithTarget) {
     this.baseModals.openAddStatementDialog({
       field: this.field,
-      valueTarget: true,
+      showAddList: false,
       source: this.fieldBody.source,
       targetClass: initVal.targetClass,
-      hiddenProperty: {}
+      hiddenProperty: {},
+      toBeReplaced: initVal
     })
   }
   openEditTextDialog() {

@@ -1,0 +1,113 @@
+<gv-slider class="gv-fh" [slide]="sliderView" style="height:'calc(100% - 95px)'; width:30%">
+
+  <!-- SLIDE 1 -->
+  <ng-container left>
+    <gv-hbf-panel>
+
+      <!-- header -->
+      <ng-container header>
+        <span class="mat-h2">Create a new {{classLabel$|async}}</span>
+      </ng-container>
+
+      <!-- body -->
+      <ng-container body>
+        <gv-form-create-data class="gv-ovf-auto" [pkClass]="(pkClass$ | async)" [hideTitle]="true" [hideButtons]="true"
+          (cancel)="closeAddForm()" (searchString)="searchStringChange($event)" #f>
+          <!-- (saved)="onCreated($event)" -->
+        </gv-form-create-data>
+      </ng-container>
+
+      <!-- footer -->
+      <ng-container footer>
+        <button mat-flat-button color="primary"
+          [disabled]="(f.submitted && f?.formFactory?.formGroup.invalid) || (loading$ | async)" (click)="onSubmit(f)">
+          <span *ngIf="!(loading$ | async)">Create</span>
+          <div *ngIf="loading$ | async" style="margin: 6px;">
+            <mat-spinner [diameter]="20"></mat-spinner>
+          </div>
+        </button>
+        <button mat-button type="button" class="ml-2 mr-2" (click)="closeAddForm()">Cancel</button>
+      </ng-container>
+
+    </gv-hbf-panel>
+  </ng-container>
+
+  <!-- SLIDE 2 -->
+  <ng-container center>
+    <gv-hbf-panel [footer]="false">
+
+      <!-- header -->
+      <ng-container header>
+        <span class="mat-h2">... or choose an existing {{classLabel$|async}}</span>
+      </ng-container>
+
+      <!-- body -->
+      <ng-container body>
+        <gv-search-existing-entity class="gv-fh gv-ovf-auto" [pkClass]="(pkClass$ | async)"
+          [searchString$]="searchString$" [mode]="sliderView == 'right' ? 'mode2' : 'mode1'"
+          [confirmBtnTextInProject]="data.selectMode ? 'Select' : 'Open'"
+          [confirmBtnTextNotInProject]="'Add and ' + (data.selectMode ? 'Select' : 'Open')"
+          [confirmBtnTooltipInProject]="data.selectMode ? 'Select entity' : 'Open in new tab'"
+          [confirmBtnTooltiptNotInProject]="'add to your project and ' + (data.selectMode ? 'select entity' : ' open in new tab')"
+          (onMore)="onMoreClick($event)" (onBack)="onBackClick()"
+          (onConfirm)="data.selectMode ? selectEntity($event) : onConfirmClick($event)">
+        </gv-search-existing-entity>
+      </ng-container>
+
+    </gv-hbf-panel>
+  </ng-container>
+
+
+  <!-- SLIDE 3 -->
+  <ng-container right>
+    <gv-hbf-panel [header]="false">
+
+      <!-- body -->
+      <ng-container body>
+        <mat-tab-group mat-align-tabs="center" [selectedIndex]="(selectedInProject$ | async) ? 0 : 1" class="gv-fh">
+
+          <mat-tab label="Your project version" [disabled]="!(selectedInProject$ | async)" class="gv-fh">
+            <ng-container *ngFor="let pkEntity of [(selectedPkEntity$ | async)];">
+              <gv-entity-card *ngIf="pkEntity" [source]="pkEntity ? { fkInfo: pkEntity } : undefined"
+                [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }"
+                [readmode$]="entityCardReadOnly$">
+              </gv-entity-card>
+            </ng-container>
+          </mat-tab>
+
+          <mat-tab label="Community version" class="gv-fh gv-col-space-between">
+            <ng-container *ngFor="let pkEntity of [(selectedPkEntity$ | async)];">
+              <gv-entity-card *ngIf="pkEntity" [source]="pkEntity ? { fkInfo: pkEntity } : undefined"
+                [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }"
+                [readmode$]="entityCardReadOnly$">
+              </gv-entity-card>
+            </ng-container>
+          </mat-tab>
+
+        </mat-tab-group>
+      </ng-container>
+
+      <!-- footer -->
+      <ng-container footer>
+        <!-- Not in the project -->
+        <button *ngIf="!data.selectMode && !(selectedInProject$ | async)" mat-flat-button type="button" color="primary"
+          class="ml-2 mr-2" (click)="addEntityToProject()">
+          Add Entity
+        </button>
+        <!-- Is in the project -->
+        <button *ngIf="!data.selectMode && (selectedInProject$ | async)" mat-flat-button type="button" color="primary"
+          class="ml-2 mr-2" (click)="openEntity()">
+          Open Entity in a new tab
+        </button>
+        <!-- If we want a select mode (factoid mapping) -->
+        <button *ngIf="data.selectMode" mat-flat-button type="button" color="primary" class="ml-2 mr-2"
+          (click)="selectEntity(undefined)">
+          Select
+        </button>
+        <!-- Cancel button -->
+        <button mat-button type="button" class="ml-2 mr-2" (click)="closeDialog()">Cancel</button>
+      </ng-container>
+    </gv-hbf-panel>
+  </ng-container>
+
+</gv-slider>

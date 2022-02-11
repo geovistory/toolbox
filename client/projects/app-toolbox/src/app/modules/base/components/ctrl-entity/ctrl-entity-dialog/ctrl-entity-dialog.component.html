@@ -1,4 +1,4 @@
-<gv-slider class="gv-fh" [slide]="!data.showAddList?'center':sliderView">
+<gv-slider class="gv-fh" [slide]="!data.showAddList ? 'center' : sliderView">
 
   <!-- SLIDE 1 -->
   <ng-container left>
@@ -11,19 +11,16 @@
 
       <!-- body -->
       <ng-container body>
-        <gv-form-create-entity [pkClass]="(pkClass$ | async)" [hiddenProperty]="data.hiddenProperty" [hideTitle]="true"
+        <gv-form-create-data [pkClass]="(pkClass$ | async)" [hiddenProperty]="data.hiddenProperty" [hideTitle]="true"
           [hideButtons]="true" [initVal$]="initVal$" (searchString)="searchStringChange($event)" #f>
-        </gv-form-create-entity>
+        </gv-form-create-data>
       </ng-container>
 
       <!-- footer -->
       <ng-container footer>
         <button mat-flat-button color="primary"
-          [disabled]="(f?.submitted && f?.formFactory?.formGroup.invalid) || f?.saving" (click)="onFormOk()">
-          <span *ngIf="!f?.saving">OK</span>
-          <div *ngIf="f?.saving" style="margin: 6px;">
-            <mat-spinner [diameter]="20"></mat-spinner>
-          </div>
+          [disabled]="f?.formFactory?.formGroup.invalid && f?.formFactory?.formGroup.touched" (click)="onFormOk()">
+          <span>OK</span>
         </button>
 
         <button mat-button type="button" class="ml-2 mr-2" (click)="dialogRef.close()">Cancel</button>

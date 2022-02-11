@@ -6,11 +6,9 @@
     <div class="loc-title mat-body-1">
       {{title}}
     </div>
-    <div class="loc-meta mat-caption mat-text-secondary" [matTooltip]="metaTooltipText">
-      <mat-icon [svgIcon]="isInProject?'check-all':'check'" class="mat-icon-caption"
-        [ngClass]="{'mat-text-secondary':!isInProject, 'mat-text-accent':isInProject}"></mat-icon>
-      {{numberOfProject}}
-    </div>
+    <mat-chip-list class="loc-meta" [matTooltip]="metaTooltipText">
+      <mat-chip color="{{isInProject ? 'accent' : 'secondary'}}" selected>{{numberOfProject}}</mat-chip>
+    </mat-chip-list>
   </div>
   <div class="loc-description mat-caption mat-text-secondary">
     <span [innerHTML]="composedDescription"></span>

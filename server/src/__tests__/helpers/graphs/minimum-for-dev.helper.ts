@@ -33,7 +33,7 @@ import {PubRoleMock} from '../data/gvDB/PubRoleMock';
 import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
 import {SysSystemRelevantClassMock} from '../data/gvDB/SysSystemRelevantClass';
 import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
-import {PROFILE_12_BIOGRAPHICAL_BA_2022_01_18} from '../data/ontome-profiles/profile-12-biographical-ba-2022-01-18';
+import {PROFILE_12_BIOGRAPHICAL_BA_2022_02_09} from '../data/ontome-profiles/profile-12-biographical-ba-2022-02-09';
 import {PROFILE_21_INTELLECTUAL_AN_2022_01_18} from '../data/ontome-profiles/profile-21-intellectual-an-2022-01-18';
 import {PROFILE_5_GEOVISTORY_BASI_2022_01_18} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
@@ -85,7 +85,7 @@ export async function minimumForDev() {
 
   const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2022_01_18)
   const profileIntellectu = await createOntomeProfileMock(PROFILE_21_INTELLECTUAL_AN_2022_01_18)
-  const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_01_18)
+  const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_02_09)
 
 
   /****************************************************************************

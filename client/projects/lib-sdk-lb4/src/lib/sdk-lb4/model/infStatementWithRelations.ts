@@ -38,7 +38,6 @@ export interface InfStatementWithRelations {
     fk_object_tables_row?: number;
     is_in_project_count?: number;
     is_standard_in_project_count?: number;
-    community_favorite_calendar?: string;
     entity_version_project_rels?: Array<ProInfoProjRelWithRelations>;
     subject_resource?: InfResourceWithRelations;
     subject_chunk?: DatChunkWithRelations;

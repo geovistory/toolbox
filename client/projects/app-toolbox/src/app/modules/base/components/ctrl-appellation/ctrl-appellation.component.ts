@@ -57,7 +57,7 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
     return this.model ? false : true;
   }
 
-  get shouldLabelFloat() { return this.focused || !this.empty || this.type === 'textEditor'; }
+  get shouldLabelFloat() { return this.focused || !this.empty }
 
   @Input()
   get placeholder(): string { return this._placeholder; }

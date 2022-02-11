@@ -54,7 +54,7 @@ import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
 import {TabCellXMock} from '../data/gvDB/TabCellXMock';
 import {TabRowMock} from '../data/gvDB/TabRowMock';
 import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
-import {PROFILE_12_BIOGRAPHICAL_BA_2022_01_18} from '../data/ontome-profiles/profile-12-biographical-ba-2022-01-18';
+import {PROFILE_12_BIOGRAPHICAL_BA_2022_02_09} from '../data/ontome-profiles/profile-12-biographical-ba-2022-02-09';
 import {PROFILE_5_GEOVISTORY_BASI_2022_01_18} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import {PROFILE_97_GEOVISTORY_DIGI_2022_02_05} from '../data/ontome-profiles/profile-97-geovistory-digi-2022-02-05';
 import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
@@ -102,7 +102,7 @@ export async function digitalsSeeds() {
    ***************************************************************************/
 
   const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2022_01_18)
-  const profileBiography = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_01_18)
+  const profileBiography = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_02_09)
   const profileDigitals = await createOntomeProfileMock(PROFILE_97_GEOVISTORY_DIGI_2022_02_05)
 
 

@@ -19,7 +19,8 @@
   }
 }
 .gv-text-editor {
-  margin-bottom: 16px;
+  min-height: 3.5rem;
+  // margin-bottom: 16px;
 }
 ::ng-deep .gv-text-editor .ql-editor {
   min-height: 165px;

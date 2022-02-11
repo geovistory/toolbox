@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { ValidationDirectivesModule } from "projects/app-toolbox/src/app/core/validation/validation.directives";
+import { ValidationDirectivesModule } from 'projects/app-toolbox/src/app/core/validation/validation.directives';
 import { AppellationFormCtrlType } from 'projects/__test__/data/auto-gen/enums/AppellationFormCtrlType';
 import { BaseModule } from '../../base.module';
 import { CtrlAppellationComponent } from './ctrl-appellation.component';
@@ -57,20 +57,20 @@ export default sandboxOf(CtrlAppellationComponent, {
     context: {
       model: {
         fk_class: 40,
-        "quill_doc": {
-          "latestId": 2,
-          "ops": [
+        'quill_doc': {
+          'latestId': 2,
+          'ops': [
             {
-              "attributes": {
-                "charid": "2"
+              'attributes': {
+                'charid': '2'
               },
-              "insert": "a"
+              'insert': 'a'
             },
             {
-              "attributes": {
-                "blockid": "1"
+              'attributes': {
+                'blockid': '1'
               },
-              "insert": "\n"
+              'insert': '\n'
             }
           ]
         }
@@ -111,20 +111,20 @@ export default sandboxOf(CtrlAppellationComponent, {
       type: AppellationFormCtrlType.textEditor,
       model: {
         fk_class: 40,
-        "quill_doc": {
-          "latestId": 2,
-          "ops": [
+        'quill_doc': {
+          'latestId': 2,
+          'ops': [
             {
-              "attributes": {
-                "charid": "2"
+              'attributes': {
+                'charid': '2'
               },
-              "insert": "a"
+              'insert': 'a'
             },
             {
-              "attributes": {
-                "blockid": "1"
+              'attributes': {
+                'blockid': '1'
               },
-              "insert": "\n"
+              'insert': '\n'
             }
           ]
         }
@@ -135,7 +135,9 @@ export default sandboxOf(CtrlAppellationComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:430px;height:400px" class="d-flex mr-4">
                 <form #f="ngForm" class="gv-grow-1">
-                    <gv-ctrl-appellation [required]="true" [type]="type" placeholder="Enter Foo" name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-appellation>
+                  <mat-form-field class="w-100" appearance="legacy">
+                      <gv-ctrl-appellation [required]="true" [type]="type" placeholder="Enter Foo" name="controlName" [(ngModel)]="model" #m="ngModel" required></gv-ctrl-appellation>
+                  </mat-form-field>
                 </form>
             </div>
             <div>

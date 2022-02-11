@@ -67,7 +67,7 @@ export class ContentComponent implements OnInit {
       hiddenProperty: item.field.property,
       source: this.source,
       targetClass: item.targetClass,
-      valueTarget: true // actually means: don't show add list
+      showAddList: false
     })
   }
 }

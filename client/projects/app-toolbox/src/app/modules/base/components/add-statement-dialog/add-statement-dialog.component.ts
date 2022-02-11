@@ -2,19 +2,27 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, FieldTargetClass, WarSelector } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
-import { GvFieldPageReq, GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfStatementWithRelations, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageReq, GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfStatementWithRelations, StatementWithTarget, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId } from '../../base.helpers';
+import { first, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId, statemenTargetToInfData } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
-import { FormCreateEntityComponent } from '../form-create-entity/form-create-entity.component';
+import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
 import { SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../search-existing-entity/search-existing-entity.component';
 
 export interface AddStatementDialogData {
   field: Field;
   targetClass: number;
-  valueTarget: boolean;
+  showAddList: boolean;
+
+
+  // if a statement with target (item in a field body)
+  // is provided, the target (object/subject) will be used
+  // as init value for the form
+  // when the user saves the form, remove the provided
+  // statement from the project (only the statement)
+  toBeReplaced?: StatementWithTarget
 
   // primary key of the source entity
   source: GvFieldSourceEntity;
@@ -53,6 +61,9 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
   // for the slider
   sliderView: 'right' | 'left' = 'left';
 
+  // for the form
+  initVal$: Observable<InfData>
+
   // for the search-entity-list
   searchInput: string;
   searchString$ = new BehaviorSubject<string>('');
@@ -65,6 +76,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
   entityCardReadOnly$ = new BehaviorSubject(true);
   entityCardScope: GvFieldPageScope;
   source$: Observable<GvFieldSourceEntity>;
+
 
   constructor(
     public p: ActiveProjectService,
@@ -93,6 +105,15 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
 
     // for the already existing statements
     this.scope$ = this.p.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
+
+    // assign init value for the form
+
+    if (data.toBeReplaced) {
+      const d = statemenTargetToInfData(data.toBeReplaced.target)
+      this.initVal$ = of(d)
+    }
+
+
   }
 
   ngOnInit() {
@@ -147,18 +168,17 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
         shareReplay(),
         startWith()
       )
-
-    this.alreadyHas$.subscribe(r => console.log('1', r))
-    this.next$.subscribe(r => console.log('2', r))
-
-
   }
 
   /**
    * gets called on change of the search string.
    */
   searchStringChange(term: string) {
-    this.searchString$.next(term)
+    this.searchString$.next(this.get4CharsForEachWords(term))
+  }
+
+  private get4CharsForEachWords(str: string) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').map(s => s.slice(0, 4)).join(' ')
   }
 
   private triggerPageReloads(pkProject: number, fkInfo: number, field: Field) {
@@ -175,7 +195,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
    * @param f
    * @returns
    */
-  onSubmit(f: FormCreateEntityComponent) {
+  onSubmit(f: FormCreateDataComponent) {
     if (!f.checkValidation()) return;
 
     this.loading$.next(true)
@@ -187,26 +207,31 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       { entity_version_project_rels: [{ ord_num_of_range: 1 }] } :
       { entity_version_project_rels: [{ ord_num_of_domain: 1 }] }
 
-    if (value.resource) {
+    if (!value.statement) {
       // create the statement to add
       if (isOutgoing) {
         statement.fk_subject_info = this.data.source.fkInfo;
         statement.object_resource = value.resource;
+        statement.object_appellation = value.appellation;
+        statement.object_dimension = value.dimension;
+        statement.object_lang_string = value.langString;
+        statement.object_language = value.language;
+        statement.object_place = value.place;
+        statement.object_time_primitive = value.timePrimitive
       } else {
         statement.fk_object_info = this.data.source.fkInfo
         statement.subject_resource = value.resource;
       }
       statement.fk_property = this.fieldWithOneTarget.property.fkProperty;
       statement.fk_property_of_property = this.fieldWithOneTarget.property.fkPropertyOfProperty;
-    } else {
+
+    } else if (value.statement) {
       statement = value.statement
       if (isOutgoing) statement.fk_subject_info = this.data.source.fkInfo;
       else statement.fk_object_info = this.data.source.fkInfo
     }
 
-    this.dataService.upsertInfStatementsWithRelations(this.pkProject, [statement])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(x => this.onSaved());
+    this.finalize(statement)
   }
 
   /**
@@ -228,7 +253,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
    * upserts a statement, where the selected existing entity is the target
    * @param pkEntity
    */
-  private upsertSelected(pkEntity: number) {
+  async upsertSelected(pkEntity: number) {
     this.loading$.next(true)
     const ff = this.fieldWithOneTarget;
     // create the statement to add
@@ -243,11 +268,30 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     r.fk_property = ff.property.fkProperty;
     r.fk_property_of_property = ff.property.fkPropertyOfProperty;
 
-    this.dataService.upsertInfStatementsWithRelations(this.pkProject, [r])
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(x => this.onSaved());
+    await this.finalize(r);
   }
 
+
+  private async finalize(s: Partial<InfStatementWithRelations>) {
+    if (this.data.toBeReplaced) {
+      // we need to await this, because, if the user saves without modifying the
+      // form, the upsert function below will use the existing statement and add
+      // it again to the project. For this reason, remove must be done before upsert
+      await this.dataService.removeEntityFromProject(
+        this.pkProject,
+        this.data.toBeReplaced.statement.pk_entity
+      ).pipe(first()).toPromise()
+
+      // add the ord-num to the new statement, to keep its position
+      s.entity_version_project_rels = this.data.field.isOutgoing ?
+        [{ ord_num_of_range: this.data.toBeReplaced.ordNum }] :
+        [{ ord_num_of_domain: this.data.toBeReplaced.ordNum }]
+    }
+    await this.dataService.upsertInfStatementsWithRelations(this.pkProject, [s])
+      .pipe(first()).toPromise();
+
+    this.onSaved();
+  }
 
   onNext() {
     this.next$.next(true);

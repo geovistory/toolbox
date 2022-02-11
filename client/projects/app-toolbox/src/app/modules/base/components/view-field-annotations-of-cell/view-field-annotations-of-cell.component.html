@@ -8,7 +8,7 @@
   </ng-container>
 
   <ng-template #noMatch>
-    <span class="loc-left mat-text-secondary">No entity matched</span>
+    <span class="loc-left mat-text-secondary">Nothing matched</span>
     <button mat-icon-button [matMenuTriggerFor]="options" class="loc-right" [disabled]="pkCell === undefined"
       *ngIf="!(tableComponent.readmode$|async)">
       <mat-icon>more_vert</mat-icon>
@@ -17,7 +17,7 @@
     <mat-menu #options="matMenu" xPosition="before">
       <button mat-menu-item *ngIf="!(itemsCount$|async)" (click)="create()">
         <mat-icon>add</mat-icon>
-        Match an entity
+        Create matching
       </button>
     </mat-menu>
   </ng-template>

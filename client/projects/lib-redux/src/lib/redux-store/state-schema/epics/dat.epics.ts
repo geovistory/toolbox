@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { DatChunkApi, DatColumnApi, DatDigitalApi, DatNamespaceApi } from '@kleiolab/lib-sdk-lb3';
-import { DatColumn, DatDigital, DatNamespace, SchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { DatColumn, DatDigital, DatNamespace } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { ColumnActionsFactory, DatActions, DigitalActionsFactory, LoadColumnsOfTableAction } from '../actions/dat.actions';
+import { DatActions, DigitalActionsFactory } from '../actions/dat.actions';
 import { InfActions } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
 import { ColumnSlice, DigitalSlice, NamespaceSlice } from '../models/dat.models';
@@ -72,15 +72,15 @@ export class DatEpics {
         (meta) => this.namespaceApi.byProject(meta.pk), ''
       ),
 
-      columnEpicsFactory.createLoadEpic<LoadColumnsOfTableAction>(
-        (meta) => this.columnApi.ofDigital(meta.pk, meta.pkDigital),
-        ColumnActionsFactory.COLUMNS_OF_TABLE,
-        (results, pk) => {
-          const schemaObject = results as unknown as SchemaObject;
+      // columnEpicsFactory.createLoadEpic<LoadColumnsOfTableAction>(
+      //   (meta) => this.columnApi.ofDigital(meta.pk, meta.pkDigital),
+      //   ColumnActionsFactory.COLUMNS_OF_TABLE,
+      //   (results, pk) => {
+      //     const schemaObject = results as unknown as SchemaObject;
 
-          this.schemaObjectService.storeSchemaObject(schemaObject, pk)
-        }
-      ),
+      //     this.schemaObjectService.storeSchemaObject(schemaObject, pk)
+      //   }
+      // ),
 
     )
   }

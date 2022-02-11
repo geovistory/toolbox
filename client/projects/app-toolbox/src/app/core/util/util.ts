@@ -70,21 +70,6 @@ export class Utils {
   }
 
 
-  // /**
-  //  *  Extracts the calendar from  InfTimePrimitve to TimePrimitive
-  // */
-  // static getCalendarFromStatement(statement: InfStatement): CalendarType {
-  //   if (!statement) return null;
-
-  //   const cal = (statement.entity_version_project_rels && statement.entity_version_project_rels[0].calendar) ?
-  //     statement.entity_version_project_rels[0].calendar :
-  //     statement.community_favorite_calendar ?
-  //       statement.community_favorite_calendar : null;
-
-  //   return cal as CalendarType;
-  // }
-
-
   static stringFromQuillDoc(quillDoc: QuillDoc): string {
     if (quillDoc && quillDoc.ops && quillDoc.ops.length) return quillDoc.ops.map(op => op.insert).join('');
     else return '';

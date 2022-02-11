@@ -12,7 +12,7 @@ import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectM
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
-import { PROFILE_97_GEOVISTORY_DIGI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-97-geovistory-digi-2022-01-18';
+import { PROFILE_97_GEOVISTORY_DIGI_2022_02_05 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-97-geovistory-digi-2022-02-05';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { MockProjectDataService } from 'projects/__test__/mock-services/MockProjectDataService';
@@ -62,7 +62,7 @@ const initialSchemaObects = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
       PROFILE_5_GEOVISTORY_BASI_2022_01_18, // add basics profile
-      PROFILE_97_GEOVISTORY_DIGI_2022_01_18
+      PROFILE_97_GEOVISTORY_DIGI_2022_02_05
     ],
     sysConf: SysConfigValueMock.SYS_CONFIC_VALID, // add SYS_CONFIG json
     p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles

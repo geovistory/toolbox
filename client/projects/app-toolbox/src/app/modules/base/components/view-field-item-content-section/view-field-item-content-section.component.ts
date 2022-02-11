@@ -106,7 +106,7 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
       hiddenProperty: item.field.property,
       source: this.sectionSource,
       targetClass: item.targetClass,
-      valueTarget: true // actually means: don't show add list
+      showAddList: false
     })
   }
 }

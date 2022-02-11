@@ -112,6 +112,9 @@ export class SysConfigValueMock {
         "valueObjectType": {
           "place": TrueEnum.true
         },
+        "viewType": {
+          "place": TrueEnum.true
+        },
         belongsToCategory: {
           entities: {showInAddMenu: false}
         }
@@ -444,6 +447,9 @@ export class SysConfigValueMock {
       "899": {
         icon: IconType.text,
         detailPage: TabComponent.text,
+        formControlType: {
+          textWithLang: TrueEnum.true
+        },
         belongsToCategory: {
           digitals: {
             showInAddMenu: false,
@@ -453,6 +459,9 @@ export class SysConfigValueMock {
       "900": {
         icon: IconType.text,
         detailPage: TabComponent.text,
+        formControlType: {
+          textWithLang: TrueEnum.true
+        },
         belongsToCategory: {
           digitals: {
             showInAddMenu: false,
@@ -492,13 +501,13 @@ export class SysConfigValueMock {
     },
     "addProperty": [
       {
-        "comment": "all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40) and Appellation for Language (365) excluding Person (21) and excluding value classes",
+        "comment": "all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40), Appellation for Language (365) and Annotation (932) and excluding  Person (21) and excluding value classes",
         "isOutgoing": false,
         "toSourceClass": {
           "whereSubclassOf": [2, 70],
           "whereNotValueObjectType": true,
           "wherePkClassNotIn": [21],
-          "whereNotSubclassOf": [40, 365]
+          "whereNotSubclassOf": [40, 365, 932]
         },
         "whereFkDomain": 365,
         "wherePkProperty": 1111
@@ -510,7 +519,7 @@ export class SysConfigValueMock {
         "whereFkRange": 899,
         "toSourceClass": {
           "whereSubclassOf": [2, 70],
-          "whereNotSubclassOf": [40, 932],
+          "whereNotSubclassOf": [40, 365, 932],
           "wherePkClassNotIn": [899],
           "whereNotValueObjectType": true,
         }
@@ -788,6 +797,56 @@ export class SysConfigValueMock {
               "viewSections": {
                 "basic": {
                   "position": 1
+                }
+              }
+            }
+          }
+        },
+        "785": {
+          outgoingProperties: {
+            "1864": {
+              "comment": "geov:P? has value version",
+              "formSections": {
+                "basic": {
+                  "position": 0,
+                  hideRemoveBtn: true,
+                  "noFieldHeader": true, // hide the field header
+                  controlsOnInit: 1,
+                },
+                "simpleForm": {
+                  hidden: true
+                }
+              },
+              "viewSections": {
+                "specific": {
+                  "hidden": true // hide it from the fields
+                }
+              }
+            },
+            1761: {
+              "comment": "Text has short title",
+              formSections: {
+                "simpleForm": {
+                  "position": 1,
+                  controlsOnInit: 1,
+                },
+                "basic": {
+                  "position": 1,
+                  controlsOnInit: 1,
+                }
+              },
+              "viewSections": {
+                "basic": {
+                  "position": 1
+                }
+              }
+            },
+            63: {
+              "comment": "Text has language",
+              viewSections: {
+                "specific": {
+                  "position": 2,
+                  controlsOnInit: 1,
                 }
               }
             }
@@ -1397,6 +1456,54 @@ export class SysConfigValueMock {
           "viewSections": {
             "specific": {
               "hidden": true
+            }
+          }
+        },
+        "1876": {
+          "comment": "Mentioning mentions Entity",
+          "formSections": {
+            "simpleForm": {
+              "position": 1
+            },
+            "specific": {
+              "position": 1
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "position": 1
+            }
+          }
+        },
+        "1877": {
+          "comment": "Mentioning > is mentioned in > Source",
+          "formSections": {
+            "simpleForm": {
+              "position": 2
+            },
+            "specific": {
+              "position": 2
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "position": 2
+            }
+          }
+        },
+        "1878": {
+          "comment": "Mentioning > at position > Reference",
+          "formSections": {
+            "simpleForm": {
+              "position": 3
+            },
+            "specific": {
+              "position": 3
+            }
+          },
+          "viewSections": {
+            "specific": {
+              "position": 3
             }
           }
         }

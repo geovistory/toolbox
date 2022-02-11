@@ -1,6 +1,6 @@
 import { QueryList } from '@angular/core';
 import { Field, FieldBase, GvFieldTargets } from '@kleiolab/lib-queries';
-import { GvFieldId, GvFieldPage, GvFieldPageScope, GvFieldProperty, GvFieldTargetViewType, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldId, GvFieldPage, GvFieldPageScope, GvFieldProperty, GvFieldTargetViewType, InfData, StatementWithTarget, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { values } from 'd3';
 import { first } from 'rxjs/internal/operators/first';
@@ -126,4 +126,19 @@ export async function getFirstElementFormQueryList<M>(queryList: QueryList<M>): 
         resolve(items.first)
       })
   })
+}
+
+
+
+export function statemenTargetToInfData(input: StatementWithTarget['target'] = {}): InfData {
+  return {
+    appellation: input.appellation,
+    timePrimitive: input.timePrimitive?.infTimePrimitive,
+    place: input.place,
+    dimension: input.dimension?.dimension,
+    langString: input.langString?.langString,
+    language: input.language,
+    statement: input.place,
+    resource: input.entity?.resource
+  }
 }

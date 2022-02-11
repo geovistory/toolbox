@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
-import { SchemaService } from '@kleiolab/lib-redux';
+import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -78,10 +78,13 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     private i: InformationPipesService,
     private s: SchemaService,
     private ap: ActiveProjectPipesService,
+    private dataApi: ReduxMainService,
     public viewFieldDropListService: ViewFieldDropListService,
-    @Optional() private itemCountService: ViewFieldItemCountSumService
-
+    @Optional() private itemCountService: ViewFieldItemCountSumService,
   ) {
+    this.offset$ = combineLatest([this.limit$, this.pageIndex$]).pipe(
+      map(([limit, pageIndex]) => limit * pageIndex)
+    )
     this.sortListId = dndGlobal.registerAndGetId(this)
   }
   trackByFn(i, _: StatementWithTarget) {
@@ -242,7 +245,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
           const pkEntity = s.target.entity.resource.pk_entity
 
           // create api call
-          return this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
+          return this.dataApi.addEntityToProject(pkProject, pkEntity)
         })
 
       // prepare entity project rels for the statement pointing to target entity

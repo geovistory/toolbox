@@ -76,6 +76,7 @@ export class GetTablePageOptions {
     }
   }) sortDirection: SortDirection;
   @property() filters: TColFilters;
+  @property() filterOnRow?: number;
 }
 
 
@@ -139,7 +140,8 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     pkEntity: number,
     options: GetTablePageOptions,
     masterColumns: string[],
-    colMeta: DatColumn[]
+    colMeta: DatColumn[],
+    filterOnRow?: number
   ): Promise<TablePageResponse> {
 
     options.columns.forEach((pkCol, i) => {
@@ -168,6 +170,10 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       t1.fk_digital = ${this.addParam(pkEntity)}
       AND
       t3.fk_project = ${this.addParam(fkProject)}
+      ${filterOnRow ?
+        'AND t1.pk_row = ' + filterOnRow :
+        ''
+      }
 
       ${this.addFilters(options.filters)}
 
@@ -200,6 +206,11 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       AND
         t3.fk_project = ${this.addParam(fkProject)}
         ${this.addFilters(options.filters)}
+
+      ${filterOnRow ?
+        'AND t1.pk_row = ' + filterOnRow :
+        ''
+      }
     ),
     tw4 AS (
       SELECT json_agg(t1) as rows FROM tw2 t1
@@ -216,6 +227,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     `
 
     logSql(this.sql, this.params)
+    console.log(this.sql)
 
     const res = await this.executeAndReturnFirstData<{
       rows: TableRow[],

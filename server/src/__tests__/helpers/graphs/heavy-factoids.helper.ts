@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { createDigital } from '../generic/digital.helper';
-import { createFactoid, createFactoidMapping } from '../generic/factoid.helper';
-import { createPerson } from '../generic/person.helper';
-import { createSource } from '../generic/source.helper';
-import { createCell, createColumn, createColumnMapping, createRow, createTable, mapCell } from '../generic/table.helper';
-import { initDBWithGaetan } from './init.helper';
+import {createSysSystemConfig} from '../atomic/sys-system-config.helper';
+import {createRowTable} from '../atomic/tab-row.helper';
+import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
+import {createDigital} from '../generic/digital.helper';
+import {createFactoid, createFactoidMapping} from '../generic/factoid.helper';
+import {createPerson} from '../generic/person.helper';
+import {createSource} from '../generic/source.helper';
+import {createCell, createColumn, createColumnMapping, createRow, createTable, mapCell} from '../generic/table.helper';
+import {initDBWithGaetan} from './init.helper';
 import readline = require('readline');
 
 const personNb = 100;
@@ -15,6 +18,7 @@ export async function createHeavyFactoids() {
     console.log('=== Preparing DB to have Heavy factoids ===');
 
     const ids = await initDBWithGaetan();
+    await createSysSystemConfig(SysConfigValueMock.SYS_CONFIC_VALID)
 
     //create persons
     const persons: Array<number> = [];
@@ -45,6 +49,7 @@ export async function createHeavyFactoids() {
     console.log('Columns created');
 
     const rows = [];
+    await createRowTable(digital)
     for (let i = 0; i < rowsNb; i++) {
         rows.push(await createRow(digital));
         readline.cursorTo(process.stdout, 0);
@@ -104,8 +109,8 @@ export async function createHeavyFactoids() {
     //create factoids
     process.stdout.write('Creating factoids... ')
     const birth = await createFactoidMapping(digital, 61); // a birth on each row
-    await createFactoid(86, cols[0], birth); //brought into life col1
-    await createFactoid(152, cols[1], birth); //begin of the begin col1
+    await createFactoid(birth, cols[0], 86); //brought into life col1
+    await createFactoid(birth, cols[1], 152); //begin of the begin col1
     // await createFactoid(birth, cols[2], 84); //by mother col3
     // await createFactoid(birth, cols[3], 85); //from father col4
     const union = await createFactoidMapping(digital, 633); //a union on each row

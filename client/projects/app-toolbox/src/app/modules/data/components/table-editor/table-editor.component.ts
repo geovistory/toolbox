@@ -5,7 +5,7 @@ import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
 import { DatColumn } from '@kleiolab/lib-sdk-lb3';
-import { GetTablePageOptions, InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
+import { FactoidMapping, GetTablePageOptions, InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -14,6 +14,7 @@ import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from 'projects/
 import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { FactoidMappingsDialogComponent, FactoidMappingsDialogData } from '../factoids/factoid-mappings-dialog/factoid-mappings-dialog.component';
 import { TableConfigDialogComponent, TableConfigDialogData, TableConfigDialogResult } from '../table-config-dialog/table-config-dialog.component';
 import { TableDetailComponent } from '../table-detail/table-detail.component';
 
@@ -137,7 +138,8 @@ export class TableEditorComponent implements OnInit {
         columns: config.columns.map(tc => tc.fkColumn + ''),
         sortBy,
         sortDirection,
-        filters: this.filters$.value
+        filters: this.filters$.value,
+        filterOnRow: this.filterOnRow
       })),
       tap((res) => { this.loading = false; }),
       shareReplay({ bufferSize: 1, refCount: true })
@@ -291,7 +293,22 @@ export class TableEditorComponent implements OnInit {
           , this.pkProject);
       });
   }
-
+  factoidMapping() {
+    this.readmode$.next(true)
+    this.dialog.open<FactoidMappingsDialogComponent, FactoidMappingsDialogData, Array<FactoidMapping>>(
+      FactoidMappingsDialogComponent, {
+      height: 'calc(100% - 30px)',
+      width: '1000px',
+      maxWidth: '100%',
+      data: { pkTable: this.pkEntity }
+    }).afterClosed()
+    // .pipe(takeUntil(this.destroy$)).subscribe((result) => {
+    //   if (!result) return;
+    //   this.s.modifyGvSchema(this.tableAPI.tableControllerUpdateColumn(
+    //     this.pkProject, this.pkEntity, this.a.account.id, this.defaultLanguage.pk_entity, result.cols)
+    //     , this.pkProject);
+    // });
+  }
   preNewRow(newPosition: number) {
     this.newRowTemp.position = newPosition;
     this.newRowTemp.cells = this.headers.map(h => ({ text: '', pkCell: -1, pkRow: -1, pkColumn: h.pk_column }))
@@ -366,6 +383,12 @@ export class TableEditorComponent implements OnInit {
     if (this.showIds$.value && !this.readmode$.value) {
       this.readmode$.next(true)
     }
+  }
+
+
+  removeFilterOnRow() {
+    this.filterOnRow = undefined;
+    this.reload$.next(this.reload$.value + 1) // trick to reload the content
   }
 
 }

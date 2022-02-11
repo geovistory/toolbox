@@ -2,12 +2,12 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, WarSelector } from '@kleiolab/lib-queries';
-import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfResource, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfResource, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { FormCreateEntityComponent } from '../../form-create-entity/form-create-entity.component';
+import { FormCreateDataComponent } from '../../form-create-data/form-create-data.component';
 import { DisableIfHasStatement, SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityModel } from '../ctrl-entity.component';
 
@@ -47,7 +47,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   sliderView: 'right' | 'left' = 'left';
 
   // for the form-create-entity
-  initVal$: Observable<InfResource>
+  initVal$: Observable<InfData>
 
   // for the search-entity-list
   searchInput: string;
@@ -64,7 +64,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   selectButtonDisabled: boolean;
   selectButtonTooltip: string;
 
-  @ViewChild(FormCreateEntityComponent, { static: true }) createEntity: FormCreateEntityComponent;
+  @ViewChild(FormCreateDataComponent, { static: true }) createEntity: FormCreateDataComponent;
 
   constructor(
     private p: ActiveProjectService,
@@ -81,9 +81,8 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
 
     this.pkClass$ = of(data.pkClass);
     this.pkClass = data.pkClass;
-    this.initVal$ = this.data.initVal$.pipe(map(v => v ? v.resource : null));
-
-    if (this.data.defaultSearch) this.searchString$.next(this.data.defaultSearch);
+    this.initVal$ = this.data.initVal$
+    if (this.data.defaultSearch) this.searchString$.next(this.get4CharsForEachWords(this.data.defaultSearch));
   }
 
 
@@ -110,7 +109,12 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
    * gets called on change of the search string.
    */
   searchStringChange(newStr: string) {
-    this.searchString$.next(newStr)
+    if (newStr != '') this.searchString$.next(this.get4CharsForEachWords(newStr))
+    else this.searchString$.next(this.get4CharsForEachWords(this.data.defaultSearch))
+  }
+
+  private get4CharsForEachWords(str: string) {
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').map(s => s.slice(0, 4)).join(' ')
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
@@ -131,7 +135,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     this.createEntity.submitted = true
 
     if (this.createEntity.formFactory.formGroup.valid) {
-      const value: CtrlEntityModel = this.createEntity.formFactory.formGroupFactory.valueChanges$.value
+      const value: InfData = this.createEntity.formFactory.formGroupFactory.valueChanges$.value
       this.dialogRef.close(value)
     } else {
       const f = this.createEntity.formFactory.formGroup.controls.childControl as FormArray;

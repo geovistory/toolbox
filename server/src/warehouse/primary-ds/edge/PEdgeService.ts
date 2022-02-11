@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {sum} from 'lodash';
+import {PoolClient} from 'pg';
+import {Logger} from '../../base/classes/Logger';
+import {PgDataReplicator} from '../../base/classes/PgDataReplicator';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {Warehouse} from '../../Warehouse';
 import {PEntityId, pEntityKeyDefs} from '../entity/PEntityService';
 import {buildIncomingEdges, buildOutgoingEdges, EntityFields} from './edge.commons';
-import {Injectable, Inject, forwardRef} from 'injection-js';
-import {PoolClient} from 'pg';
-import {Logger} from '../../base/classes/Logger';
-import {PgDataReplicator} from '../../base/classes/PgDataReplicator';
-import {sum} from 'lodash';
 
 interface Noun {
     table: string;
@@ -152,7 +152,6 @@ tw1 AS (
     t1.fk_project,
     t1.ord_num_of_domain,
     t1.ord_num_of_range,
-    t1.calendar,
     t2.pk_entity as pk_statement,
     t2.fk_property,
     t2.fk_subject_info,
@@ -163,7 +162,8 @@ tw1 AS (
     t4.notes as language,
     t7.string as lang_string,
     t6.julian_day,
-    t6.duration
+    t6.duration,
+    t6.calendar
     FROM
     tw0 t0
     JOIN projects.info_proj_rel t1 ON t1.fk_project = t0.fk_project

@@ -1,6 +1,62 @@
-import {Entity, model, property} from '@loopback/repository';
-import {WarEntityPreviewTimeSpan} from './entity-preview/WarEntityPreviewTimeSpan';
+import { Entity, model, property } from '@loopback/repository';
+import { CalendarType } from './enums/CalendarType';
+import { Granularity } from './enums/Granularity';
 
+/**
+ * TODO-LB3-LB4
+ *
+ * Relations: outgoing_statements, incoming_statements, text_properties
+ *
+ * acls, methods, mixins
+ */
+export interface WarEntityPreviewId {
+  pk_entity: number,
+  fk_project?: number | null
+}
+@model()
+class TimePrimitiveWithCal {
+  @property({ required: true })
+  julianDay: number;
+
+  @property({
+    required: true,
+    type: 'string',
+    jsonSchema: {
+      enum: Object.values(Granularity),
+    },
+  })
+  duration: Granularity;
+
+  @property({
+    required: true,
+    type: 'string',
+    jsonSchema: {
+      enum: Object.values(CalendarType),
+    },
+  }) calendar: CalendarType;
+}
+
+@model()
+export class WarEntityPreviewTimeSpan {
+
+  @property({ type: TimePrimitiveWithCal })
+  p82?: TimePrimitiveWithCal;
+
+  @property({ type: TimePrimitiveWithCal })
+  p81?: TimePrimitiveWithCal;
+
+  @property({ type: TimePrimitiveWithCal })
+  p81a?: TimePrimitiveWithCal;
+
+  @property({ type: TimePrimitiveWithCal })
+  p82a?: TimePrimitiveWithCal;
+
+  @property({ type: TimePrimitiveWithCal })
+  p81b?: TimePrimitiveWithCal;
+
+  @property({ type: TimePrimitiveWithCal })
+  p82b?: TimePrimitiveWithCal;
+}
 @model()
 export class WarEntityPreview extends Entity {
   @property({

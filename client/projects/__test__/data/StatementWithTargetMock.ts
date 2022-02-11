@@ -1,5 +1,5 @@
 import { infTimePrimToTimePrimWithCal } from '@kleiolab/lib-queries';
-import { StatementWithTarget, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { InfAppellationMock } from './auto-gen/gvDB/InfAppellationMock';
 import { InfDimensionMock } from './auto-gen/gvDB/InfDimensionMock';
 import { InfLangStringMock } from './auto-gen/gvDB/InfLangStringMock';
@@ -92,7 +92,7 @@ export namespace StatementWithTargetMock {
       timePrimitive: {
         timePrimitive: infTimePrimToTimePrimWithCal(
           InfTimePrimitiveMock.TP_2,
-          ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar as TimePrimitiveWithCal.CalendarEnum
+          // ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2.calendar as TimePrimitiveWithCal.CalendarEnum
         ),
         infTimePrimitive: InfTimePrimitiveMock.TP_2
       }
@@ -110,7 +110,7 @@ export namespace StatementWithTargetMock {
       timePrimitive: {
         timePrimitive: infTimePrimToTimePrimWithCal(
           InfTimePrimitiveMock.TP_5,
-          ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as TimePrimitiveWithCal.CalendarEnum
+          // ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5.calendar as TimePrimitiveWithCal.CalendarEnum
         ),
         infTimePrimitive: InfTimePrimitiveMock.TP_5
       }
@@ -128,7 +128,7 @@ export namespace StatementWithTargetMock {
       timePrimitive: {
         timePrimitive: infTimePrimToTimePrimWithCal(
           InfTimePrimitiveMock.TP_4,
-          ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as TimePrimitiveWithCal.CalendarEnum
+          // ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4.calendar as TimePrimitiveWithCal.CalendarEnum
         ),
         infTimePrimitive: InfTimePrimitiveMock.TP_4
       }

@@ -69,13 +69,11 @@ export class ViewFieldItemContainerComponent implements OnInit, OnDestroy {
   constructor(
     public nodeService: ViewFieldTreeNodeService,
     public dndGlobal: GvDndGlobalService,
-    private parentSortList: GvDndSortListDirective,
+    @Optional() private parentSortList: GvDndSortListDirective,
     @Optional() @Inject(READ_ONLY) readonly: boolean,
     @Optional() private itemComponent: ViewFieldItemComponent,
 
   ) {
-    if (!parentSortList) throw new Error('DndNestedItemComponent must be child of a DndSortListDirective');
-
     if (readonly) this.hasDropZones = false
 
 
