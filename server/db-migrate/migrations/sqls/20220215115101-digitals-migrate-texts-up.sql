@@ -1,3 +1,6 @@
+-- drop the index on appellation.string
+DROP INDEX information.appellation_string_idx;
+
 -- select the digitals with system type text
 CREATE TEMP TABLE texts ON COMMIT DROP AS
 SELECT

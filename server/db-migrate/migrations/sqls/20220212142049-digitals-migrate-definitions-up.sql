@@ -1,9 +1,9 @@
 -- drop quill doc checks, for performance reasons
 ALTER TABLE commons.text
-  DROP CONSTRAINT text_quill_doc_check;
+  DROP CONSTRAINT IF EXISTS text_quill_doc_check;
 
 ALTER TABLE information.appellation
-  DROP CONSTRAINT text_quill_doc_check;
+  DROP CONSTRAINT IF EXISTS text_quill_doc_check;
 
 ALTER TABLE information.lang_string
   DROP CONSTRAINT IF EXISTS text_quill_doc_check;
