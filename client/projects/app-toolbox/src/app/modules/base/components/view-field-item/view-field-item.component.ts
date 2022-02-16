@@ -133,9 +133,10 @@ export class ViewFieldItemComponent implements OnInit {
 
 
   markAsFavorite() {
-    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
-      this.p.pro$.info_proj_rel.markStatementAsFavorite(pkProject, this.item.statement.pk_entity, this.item.isOutgoing)
-    })
+    this.movePosition(1)
+    // this.p.pkProject$.pipe(first()).subscribe(pkProject => {
+    //   this.p.pro$.info_proj_rel.markStatementAsFavorite(pkProject, this.item.statement.pk_entity, this.item.isOutgoing)
+    // })
   }
 
   async movePosition(targetOrdNum: number) {

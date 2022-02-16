@@ -23,7 +23,7 @@ export class QDfhProfilesOfProject extends SqlBuilderLb4Models {
   *
   * @param {*} fkProject
   */
-  query(fkProject: number): Promise<DfhProfile[]> {
+  query(fkProject: number, requiredOntomeProfiles: number[]): Promise<DfhProfile[]> {
 
     this.sql = `
       SELECT
@@ -38,7 +38,7 @@ export class QDfhProfilesOfProject extends SqlBuilderLb4Models {
         ${this.createSelect('t1', DfhProfile.definition)}
       FROM
         data_for_history.v_profile t1
-      WHERE t1.pk_profile = 5; -- GEOVISTORY BASICS PROFILE
+      WHERE t1.pk_profile = ANY (ARRAY[${this.addParams(requiredOntomeProfiles)}]::int[])
       `;
 
     return this.execute<DfhProfile[]>();

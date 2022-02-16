@@ -48,6 +48,7 @@ export class DfhPropertyController {
   async ofProject(
     @param.query.number('pkProject') pkProject: number
   ): Promise<GvSchemaModifier> {
+    const sysConfig = await this.sysConfigController.getSystemConfig()
 
     const q = new SqlBuilderLb4Models(this.datasource)
     // const addProperties = await this.createAddPropertiesSql(q);
@@ -65,8 +66,8 @@ export class DfhPropertyController {
         AND
           enabled = true
         UNION
-        SELECT
-          5 AS fk_profile -- GEOVISTORY BASICS
+        SELECT DISTINCT fk_profile
+        FROM unnest(ARRAY[${q.addParams(sysConfig.ontome?.requiredOntomeProfiles ?? [])}]::int[]) as fk_profile
       ),
 		  tw1 AS (
 			  select fk_profile as enabled_profiles
@@ -160,7 +161,6 @@ export class DfhPropertyController {
 
       `;
     const properties = await q.execute<DfhProperty[]>()
-    const sysConfig = await this.sysConfigController.getSystemConfig()
     const schemaModifier = await this.findDataModelController.dfhClassesOfProject(pkProject)
     const schemaObj: GvPositiveSchemaObject = {dfh: {property: properties, klass: schemaModifier.positive.dfh?.klass}}
     const addedPropeties = this.addProperties(sysConfig, schemaObj)

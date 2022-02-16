@@ -15,7 +15,7 @@ export class SysConfigValueMock {
         },
         {
           "profilesAvailableByOmProjects": [
-            48
+            48, 125
           ],
           "restrictedToGvProjects": [
             591,
@@ -24,7 +24,7 @@ export class SysConfigValueMock {
         }
       ],
       "requiredOntomeProfiles": [
-        5
+        5, 97
       ]
     },
     "classesDefault": {
@@ -427,6 +427,16 @@ export class SysConfigValueMock {
             showInAddMenu: true,
             positionInAddMenu: 1
           }
+        },
+        communityVisibilityRange: {
+          toolbox: [false, true],
+          dataApi: [false, true],
+          website: [false, true]
+        },
+        communityVisibilityDefault: {
+          toolbox: false,
+          dataApi: false,
+          website: false
         }
       },
       "868": {
@@ -442,6 +452,16 @@ export class SysConfigValueMock {
             showInAddMenu: true,
             positionInAddMenu: 3
           }
+        },
+        communityVisibilityRange: {
+          toolbox: [false, true],
+          dataApi: [false, true],
+          website: [false, true]
+        },
+        communityVisibilityDefault: {
+          toolbox: false,
+          dataApi: false,
+          website: false
         }
       },
       "899": {
@@ -454,6 +474,16 @@ export class SysConfigValueMock {
           digitals: {
             showInAddMenu: false,
           }
+        },
+        communityVisibilityRange: {
+          toolbox: [true],
+          dataApi: [true],
+          website: [true]
+        },
+        communityVisibilityDefault: {
+          toolbox: true,
+          dataApi: true,
+          website: true
         }
       },
       "900": {
@@ -466,10 +496,18 @@ export class SysConfigValueMock {
           digitals: {
             showInAddMenu: false,
           }
+        },
+        communityVisibilityRange: {
+          toolbox: [false, true],
+          dataApi: [false, true],
+          website: [false, true]
+        },
+        communityVisibilityDefault: {
+          toolbox: false,
+          dataApi: false,
+          website: false
         }
       },
-
-
       "934": {
         icon: IconType['persistent-item'],
         viewType: {nestedResource: []},
@@ -1149,6 +1187,14 @@ export class SysConfigValueMock {
             }
           }
         },
+        "1316": {
+          "comment": "Item > provides carrier to > Expression",
+          "viewSections": {
+            "linkedSources": {
+              "position": 1
+            }
+          }
+        },
         "1317": {
           "comment": "Expression > has as part > Expression Portion",
           "viewSections": {
@@ -1334,6 +1380,14 @@ export class SysConfigValueMock {
             }
           },
           "isHasTimeSpanShortCut": true
+        },
+        "1016": {
+          "comment": "Manifestation Singleton > is representative manifestation singleton for > Expression",
+          "viewSections": {
+            "linkedSources": {
+              "position": 1
+            }
+          }
         },
         "1499": {
           "comment": "has to be merged with",

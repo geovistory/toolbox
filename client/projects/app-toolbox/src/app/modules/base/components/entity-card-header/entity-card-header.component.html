@@ -26,12 +26,12 @@
 <div class="card-header-button">
   <!-- <div fxFlex fxLayout="row" fxLayoutAlign="end center"> -->
   <gv-toggle-btn *ngIf="!readonly" class="loc-toolbar-item" [value$]="readmode$">
-    <a gv-toggle-off mat-button color="primary" class="mat-btn-padding-x-8" [matTooltip]="'Stop Edit [Shift + E]'">
-      <mat-icon [svgIcon]="'eye'"></mat-icon> read
+    <a gv-toggle-off mat-icon-button color="primary" [matTooltip]="'Switch to read mode [Shift + E]'">
+      <mat-icon [svgIcon]="'eye'"></mat-icon>
     </a>
 
-    <a gv-toggle-on mat-flat-button color="primary" class="mat-btn-padding-x-8" [matTooltip]="'Start Edit [Shift + E]'">
-      <mat-icon [svgIcon]="'pencil'"></mat-icon> edit
+    <a gv-toggle-on mat-icon-button color="primary" [matTooltip]="'Switch to edit mode [Shift + E]'">
+      <mat-icon [svgIcon]="'pencil'"></mat-icon>
     </a>
   </gv-toggle-btn>
 

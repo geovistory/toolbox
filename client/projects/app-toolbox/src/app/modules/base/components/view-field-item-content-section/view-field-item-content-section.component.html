@@ -21,7 +21,7 @@
       <button *ngIf="!(itemCountService.sum$|async)" mat-icon-button [disabled]=true> </button>
 
       <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="showOntoInfo$" [resource]="resource"
-        [isInProject]="itemComponent.item.projRel?.is_in_project" [classLabel]="classLabel" [isFavorite]="ordNum===0">
+        [isInProject]="itemComponent.item.projRel?.is_in_project" [classLabel]="classLabel" [isFavorite]="false">
       </gv-view-field-item-class-info>
 
       <gv-entity-preview class="loc-item" [hideClass]="true"

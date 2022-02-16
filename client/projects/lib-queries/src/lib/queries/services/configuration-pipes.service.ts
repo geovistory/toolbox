@@ -92,14 +92,17 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   public pipeProfilesEnabledByProject(): Observable<number[]> {
-    return this.a.pkProject$.pipe(
-      switchMap(pkProject => this.s.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
+    return combineLatest([
+      this.a.pkProject$,
+      this.s.sys$.config$.main$
+    ]).pipe(
+      switchMap(([pkProject, sysConfig]) => this.s.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
         .key(pkProject + '_true').pipe(
           map(projectProfileRels => values(projectProfileRels)
             .filter(rel => rel.enabled)
             .map(rel => rel.fk_profile)
           ),
-          map(enabled => [...enabled, DfhConfig.PK_PROFILE_GEOVISTORY_BASIC]),
+          map(enabled => [...enabled, ...sysConfig.ontome.requiredOntomeProfiles]),
         )),
       shareReplay()
     )

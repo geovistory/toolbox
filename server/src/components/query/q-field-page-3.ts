@@ -378,7 +378,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
         t2.fk_property_of_property,
         t2.is_outgoing,
         t2.scope,
-        COALESCE(jsonb_agg(t2.stmt_with_target) FILTER (WHERE t2.stmt_with_target IS NOT NULL), '[]'::jsonb) paginatedStatements,
+        COALESCE(jsonb_agg(t2.stmt_with_target ORDER BY t2.priority) FILTER (WHERE t2.stmt_with_target IS NOT NULL), '[]'::jsonb) paginatedStatements,
         jsonb_agg(t2."data") FILTER (WHERE t2."data" IS NOT NULL) nested,
         t2.count
       FROM
@@ -437,7 +437,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
 
 
     const orderBy = scope.inProject ?
-      `ord_num ASC, pk_statement DESC` :
+      `ord_num ASC NULLS LAST, pk_statement DESC` :
       `pk_statement DESC`
 
     const sql = `
@@ -448,6 +448,7 @@ export class QFieldPage3 extends SqlBuilderLb4Models {
           ${statementsWithTarget}
         )
         SELECT
+          ROW_NUMBER() OVER()	priority,
           t1.pk_entity as fk_source,
           ${this.addParam(property.fkProperty ?? 0)} as fk_property,
           ${this.addParam(property.fkPropertyOfProperty ?? 0)} as fk_property_of_property,

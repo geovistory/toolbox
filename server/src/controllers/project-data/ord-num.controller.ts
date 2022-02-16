@@ -59,19 +59,15 @@ export class OrdNumController {
        * ensure all statements have a ord num until target position
        */
       await this.setOrdNumsUntilTargetPos(req, ordNumCol, transaction);
-      console.log('co 1')
       /**
        * get current position of statement within the target field
        */
       const {sourceOrdNum} = await this.getStatementPositionInTargetField(ordNumCol, req, transaction);
-      console.log('co 2')
 
       if (sourceOrdNum !== req.targetOrdNum) {
 
 
         await this.updateOrdNumOfOtherStatements(req, sourceOrdNum, ordNumCol, transaction);
-        console.log('co 3')
-
 
         /**
         * Update this statements positions

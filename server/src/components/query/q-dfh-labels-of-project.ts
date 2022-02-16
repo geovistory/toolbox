@@ -19,7 +19,7 @@ export class QDfhLabelsOfProject extends SqlBuilderLb4Models {
   *
   * @param {*} fkProject
   */
-  query(fkProject: number): Promise<DfhLabel[]> {
+  query(fkProject: number, requiredOntomeProfiles: number[]): Promise<DfhLabel[]> {
 
 
     this.sql = `
@@ -37,7 +37,8 @@ export class QDfhLabelsOfProject extends SqlBuilderLb4Models {
       projects.dfh_profile_proj_rel t1
       WHERE fk_project = ${this.addParam(fkProject)}
       UNION
-      SELECT 5 -- GEOVISTORY BASIC PROJECT
+      SELECT DISTINCT fk_profile
+      FROM unnest(ARRAY[${this.addParams(requiredOntomeProfiles)}]::int[])  as fk_profile
     ),
     tw1 as (
       SELECT DISTINCT t2.dfh_pk_class

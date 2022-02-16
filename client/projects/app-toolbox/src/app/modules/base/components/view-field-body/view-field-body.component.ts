@@ -88,7 +88,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     this.sortListId = dndGlobal.registerAndGetId(this)
   }
   trackByFn(i, _: StatementWithTarget) {
-    return _.statement.pk_entity;
+    return `${_.statement.pk_entity}_${_.ordNum}`;
   }
   ngOnInit() {
     // const d = new Date()

@@ -2,7 +2,7 @@
   <span class="loc-left mat-typography">
     <gv-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
       [pkClass]="timePrimitive.fk_class" [classLabel]="field.targets[timePrimitive.fk_class]?.targetClassLabel"
-      [isFavorite]="ordNum===0">
+      [isFavorite]="ordNum===1">
     </gv-class-info>
     <div> {{itemComponent.item.target.timePrimitive.timePrimitive|timePrimitive}}</div>
   </span>

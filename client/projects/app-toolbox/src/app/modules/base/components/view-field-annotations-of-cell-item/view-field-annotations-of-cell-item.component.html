@@ -2,7 +2,7 @@
   <div class="loc-left">
     <ng-container *ngIf="statementWT.target.entity; else timePrimitive">
       <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="true"
-        [preview]="statementWT.target.entity.entityPreview"
+        [pkEntity]="statementWT.target.entity.resource.pk_entity"
         [matTooltip]="statementWT.target.entity.entityPreview.entity_label">
       </gv-entity-preview>
     </ng-container>

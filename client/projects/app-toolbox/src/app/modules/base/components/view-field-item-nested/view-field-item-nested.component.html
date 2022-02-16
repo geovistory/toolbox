@@ -6,7 +6,7 @@
     <span class="loc-class-info">
       <gv-view-field-item-class-info [showOntoInfo$]="showOntoInfo$" [resource]="resource"
         [isInProject]="projRel?.is_in_project" [classLabel]="field.targets[resource.fk_class]?.targetClassLabel"
-        [isFavorite]="ordNum===0"></gv-view-field-item-class-info>
+        [isFavorite]="ordNum===1"></gv-view-field-item-class-info>
     </span>
     <!-- NESTED FIELDS -->
     <gv-entity-with-fields [source]="{fkInfo:resource.pk_entity}" [fkClass]="resource.fk_class"
