@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { Field } from '@kleiolab/lib-queries';
 import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 @Component({
@@ -15,7 +16,10 @@ export class ViewFieldItemPreviewComponent implements OnInit {
   field: Field
   showOntoInfo$: Observable<boolean>
 
-  constructor(public itemComponent: ViewFieldItemComponent) { }
+  constructor(
+    public itemComponent: ViewFieldItemComponent,
+    @Optional() @Inject(READ_ONLY) public readonly: boolean
+  ) { }
 
   ngOnInit(): void {
     this.resource = this.itemComponent.item.target.entity.resource

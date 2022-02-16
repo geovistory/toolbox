@@ -124,11 +124,20 @@ export namespace SubfieldHelper {
 
 
   }
-  export async function statementOfStatementHasExactReference() {
-    await createInfStatement(InfStatementMock.MENTIONS_STMT_HAS_EXACT_REFERENCE)
-    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MENTIONS_STMT_HAS_EXACT_REFERENCE)
-    await createInfLanguage(InfLanguageMock.ENGLISH)
-    await createInfLangString(InfLangStringMock.EN_PAGE_1)
+  // export async function statementOfStatementHasExactReference() {
+  //   await createInfStatement(InfStatementMock.MENTIONS_STMT_HAS_EXACT_REFERENCE)
+  //   await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_MENTIONS_STMT_HAS_EXACT_REFERENCE)
+  //   await createInfLanguage(InfLanguageMock.ENGLISH)
+  //   await createInfLangString(InfLangStringMock.EN_PAGE_1)
+  // }
+
+  // Data to test subfield-page-query for AppeTeEn->refers to name->Appellation
+  export async function definitionHasValueVersions() {
+    await createInfStatement(InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_1)
+    await createInfStatement(InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2)
+    await createInfAppellation(InfAppellationMock.VALUE_VERSION_1)
+    await createInfAppellation(InfAppellationMock.VALUE_VERSION_2)
+    await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_DEFINITION_1_HAS_VALUE_VERSION_2)
   }
 
   export async function makeProject1() {

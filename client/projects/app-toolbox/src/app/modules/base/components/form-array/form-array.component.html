@@ -3,8 +3,9 @@
   <gv-form-section-header *ngIf="data.gvFormSection?.section?.showHeader$|async" [section]="data.gvFormSection.section"
     [control]="control"></gv-form-section-header>
 
-  <gv-form-field-header [formField]="data.gvFormField" [length]="length" [maxLength]="maxLength" [control]="control"
-    [formArrayFactory]="formArrayFactory"></gv-form-field-header>
+  <gv-form-field-header [hidden]="data.gvFormField?.config?.noFieldHeader" [formField]="data.gvFormField"
+    [length]="length" [maxLength]="maxLength" [control]="control" [formArrayFactory]="formArrayFactory">
+  </gv-form-field-header>
 
   <div [@openClose]="((data?.gvFormSection?.section?.expanded$|async) === false) ? 'closed':'open'">
 

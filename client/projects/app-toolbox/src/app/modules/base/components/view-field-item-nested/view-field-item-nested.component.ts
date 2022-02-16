@@ -16,7 +16,7 @@ export class ViewFieldItemNestedComponent implements OnInit {
   projRel?: ProInfoProjRel;
   ordNum?: number;
   field: Field
-  readonly$: Observable<boolean>
+  readmode$: Observable<boolean>
   showOntoInfo$: Observable<boolean>
   scope: GvFieldPageScope
 
@@ -30,7 +30,7 @@ export class ViewFieldItemNestedComponent implements OnInit {
     this.projRel = this.itemComponent.item.projRel
     this.ordNum = this.itemComponent.item.ordNum
     this.field = this.itemComponent.field
-    this.readonly$ = this.itemComponent.readonly$
+    this.readmode$ = this.itemComponent.readmode$
     this.showOntoInfo$ = this.itemComponent.showOntoInfo$
     this.scope = this.itemComponent.scope
   }

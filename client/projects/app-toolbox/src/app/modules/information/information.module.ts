@@ -25,7 +25,7 @@ import { ContentTreeNodeLabelComponent } from './components/content-tree-node-la
 import { ContentTreeNodeOptionsComponent } from './components/content-tree-node-options/content-tree-node-options.component';
 import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
-import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
+// import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { InformationAPIActions } from './containers/entity-list/api/entity-list.actions';
 import { InformationAPIEpics } from './containers/entity-list/api/entity-list.epics';
@@ -74,7 +74,7 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
   providers: [
     InformationAPIActions,
     InformationAPIEpics,
-    EntityDetailAPIActions,
+    // EntityDetailAPIActions,
   ],
   exports: [
     InformationComponent,

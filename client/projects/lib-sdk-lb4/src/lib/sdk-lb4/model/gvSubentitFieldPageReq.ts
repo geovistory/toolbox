@@ -9,12 +9,12 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { GvSubentityFieldTargets } from './gvSubentityFieldTargets';
+import { GvFieldTargetViewType } from './gvFieldTargetViewType';
 import { GvSubentityFieldPage } from './gvSubentityFieldPage';
 
 
 export interface GvSubentitFieldPageReq { 
     page: GvSubentityFieldPage;
-    targets: GvSubentityFieldTargets;
+    targets: { [key: string]: GvFieldTargetViewType; };
 }
 

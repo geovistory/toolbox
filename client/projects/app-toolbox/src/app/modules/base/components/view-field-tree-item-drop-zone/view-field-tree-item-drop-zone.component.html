@@ -1,0 +1,3 @@
+<div *ngIf="(canDrop$|async)" dndDropzone [dndEffectAllowed]="'copy'" (dragenter)="onDropZoneEnter()"
+  (dragleave)="onDropZoneLeave()" (dndDrop)="onDrop($event)">
+</div>

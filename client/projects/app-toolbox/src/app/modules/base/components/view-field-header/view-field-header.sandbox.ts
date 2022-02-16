@@ -4,11 +4,33 @@ import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { BaseModule } from '../../base.module';
 import { ViewFieldHeaderComponent } from './view-field-header.component';
 
 const inProjectScope: GvFieldPageScope = { inProject: IAppStateMock.stateProject1.activeProject.pk_project }
+
+const context = {
+  body: { showBody$: new BehaviorSubject(true) },
+  itemsCount$: new BehaviorSubject(3),
+  readmode$: new BehaviorSubject(false),
+  showOntoInfo$: new BehaviorSubject(false),
+  ontoInfoUrl: 'https://ontome.org/property/1',
+  ontoInfoLabel: 'crm:P12',
+  fieldLabel: 'has a very nice long property label',
+  required: true,
+  disableToggle: false,
+  hideItemsCount: false,
+  removedFromProfiles: false,
+  itemsMax: -1,
+  targetClassLabels: ['Person', 'Group', 'Class 1', 'Class 1', 'Class 1', 'Class 1', 'Class 1', 'Class 1', 'Class 1'],
+  showAddButton$: new BehaviorSubject(true),
+  addClick: () => alert('add button clicked'),
+  widths: [300, 500, 700, 900, 1200],
+  of: of
+}
+
+const context2 = { ...context, displayMode: 'tree' }
 
 export default sandboxOf(ViewFieldHeaderComponent, {
   declareComponent: false,
@@ -22,24 +44,7 @@ export default sandboxOf(ViewFieldHeaderComponent, {
   ]
 })
   .add('ViewFieldHeader', {
-    context: {
-      body: { showBody$: new BehaviorSubject(true) },
-      itemsCount$: new BehaviorSubject(3),
-      readonly$: new BehaviorSubject(false),
-      showOntoInfo$: new BehaviorSubject(false),
-      ontoInfoUrl: 'https://ontome.org/property/1',
-      ontoInfoLabel: 'crm:P12',
-      fieldLabel: 'has a very nice long property label',
-      required: true,
-      disableToggle: false,
-      hideItemsCount: false,
-      removedFromProfiles: false,
-      itemsMax: -1,
-      targetClassLabels: ['Person', 'Group', 'Class 1', 'Class 1', 'Class 1', 'Class 1', 'Class 1', 'Class 1', 'Class 1'],
-      showAddButton$: new BehaviorSubject(true),
-      addClick: () => alert('add button clicked'),
-      widths: [300, 500, 700, 900, 1200]
-    },
+    context,
     template: `
     <div style="padding:40px; display:flex; flex-direction:column; justify-content:flex-start" class="mat-bg-grey-500">
       <div>
@@ -49,7 +54,7 @@ export default sandboxOf(ViewFieldHeaderComponent, {
 
         <div style="width:{{width}}px;height:80px" class="d-flex mr-4">
           <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
-          [readonly$]=readonly$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+          [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
           [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
           [required]=required [disableToggle]=disableToggle
           [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
@@ -58,6 +63,48 @@ export default sandboxOf(ViewFieldHeaderComponent, {
         </div>
       </ng-container>
 
+
+    </div>
+    `
+  })
+  .add('ViewFieldHeader Tree', {
+    context: context2,
+    template: `
+    <div style="padding:40px; display:flex; flex-direction:column; justify-content:flex-start" class="mat-bg-grey-500">
+      <div>
+        <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
+        <button (click)="readmode$.next(!readmode$.value)">toggle readonly</button>
+      </div>
+      <h2>Indentation 0</h2>
+      <div style="width:500px;height:80px" class="d-flex mr-4">
+        <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=of(0) [showAddButton$]=showAddButton$
+        [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+        [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
+        [required]=required [disableToggle]=disableToggle
+        [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
+        [itemsMax]=itemsMax [targetClassLabels]=targetClassLabels [displayMode]=displayMode (add)="addClick()">
+        </gv-view-field-header>
+      </div>
+      <h2>Indentation 1</h2>
+      <div style="width:500px;height:80px" class="d-flex mr-4">
+        <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
+        [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+        [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
+        [required]=required [disableToggle]=disableToggle
+        [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
+        [itemsMax]=itemsMax [targetClassLabels]=targetClassLabels [displayMode]=displayMode [indentation]=1 (add)="addClick()">
+        </gv-view-field-header>
+      </div>
+      <h2>Indentation 2</h2>
+      <div style="width:500px;height:80px" class="d-flex mr-4">
+        <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
+        [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+        [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
+        [required]=required [disableToggle]=disableToggle
+        [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
+        [itemsMax]=itemsMax [targetClassLabels]=targetClassLabels [displayMode]=displayMode [indentation]=2 (add)="addClick()">
+        </gv-view-field-header>
+      </div>
 
     </div>
     `

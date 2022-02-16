@@ -32,6 +32,13 @@ export class WarFieldChange extends Entity {
     required: true,
     id: true
   })
+  fk_source_tables_cell: number;
+
+  @property({
+    type: 'number',
+    required: true,
+    id: true
+  })
   fk_property: number;
 
   @property({

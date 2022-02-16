@@ -10,7 +10,7 @@
     Select and add items from the list below or create a new item.
   </span>
   <gv-view-field-body [source]="data.source" [field]="fieldWithOneTarget" [showBodyOnInit]="true" [scope]="scope$|async"
-    [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" [readonly$]="readonly$" (close)="onClose()" (next)="onNext()">
+    [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" [readmode$]="readmode$" (close)="onClose()" (next)="onNext()">
   </gv-view-field-body>
 </ng-container>
 
@@ -46,7 +46,7 @@
         <ng-container body>
           <gv-form-create-data class="gv-ovf-auto" [field]="data.field" [pkClass]="data.targetClass"
             [source]="data.source" [hideTitle]="true" [hiddenProperty]="data.hiddenProperty" [hideButtons]="true"
-            (searchString)="searchStringChange($event)" #f>
+            [initVal$]="initVal$" (searchString)="searchStringChange($event)" #f>
           </gv-form-create-data>
         </ng-container>
 
@@ -104,14 +104,14 @@
             <mat-tab label="Your project version" [disabled]="!(selectedInProject$ | async)" class="gv-fh">
               <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)"
                 [pkClass$]="pkClass_target$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }"
-                [readonly$]="entityCardReadOnly$">
+                [readmode$]="entityCardReadOnly$">
               </gv-entity-card>
             </mat-tab>
 
             <mat-tab label="Community version" class="gv-fh gv-col-space-between">
               <gv-entity-card *ngIf="(selectedPkEntity$ | async)" [source]="(source$ | async)"
                 [pkClass$]="pkClass_target$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }"
-                [readonly$]="entityCardReadOnly$">
+                [readmode$]="entityCardReadOnly$">
               </gv-entity-card>
             </mat-tab>
           </mat-tab-group>

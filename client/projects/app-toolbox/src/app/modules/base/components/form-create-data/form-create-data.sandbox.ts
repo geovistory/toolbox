@@ -6,26 +6,27 @@ import { sandboxOf } from 'angular-playground';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
+import { InfTimePrimitiveMock } from 'projects/__test__/data/auto-gen/gvDB/InfTimePrimitiveMock';
 import { ProInfoProjRelMock } from 'projects/__test__/data/auto-gen/gvDB/ProInfoProjRelMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
-import { PROFILE_12_BIOGRAPHICAL_BA_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-01-14';
-import { PROFILE_16_INTERACTIONS_S_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-01-14';
-import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-14';
-import { PROFILE_5_GEOVISTORY_BASI_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-14';
-import { PROFILE_8_MARITIME_HISTOR_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-14';
+import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
+import { PROFILE_16_INTERACTIONS_S_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-02-09';
+import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-18';
+import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
+import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
+import { PROFILE_97_GEOVISTORY_DIGI_2022_02_05 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-97-geovistory-digi-2022-02-05';
 import { FieldMock } from 'projects/__test__/data/FieldMock';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
-import { InfResourceWithRelationsMock } from 'projects/__test__/data/InfResourceWithRelationsMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../base.module';
 import { FormCreateDataComponent } from './form-create-data.component';
-import { mockGeoreference } from './georeference.mock';
+import { appeInALangMock, birthMock, geoPlaceMock, georeferenceMock, langStringMock, personMock } from './initValue.mock';
 
 /*****************************************************************************
  * MOCK data
@@ -42,11 +43,12 @@ const warEntityPreviews = [
 const initialSchemaObects = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
-      PROFILE_5_GEOVISTORY_BASI_2022_01_14, // add basics profile
-      PROFILE_16_INTERACTIONS_S_2022_01_14, // add social interactions profile
-      PROFILE_12_BIOGRAPHICAL_BA_2022_01_14, // add biographical profile
-      PROFILE_8_MARITIME_HISTOR_2022_01_14, // add maritime profile
-      PROFILE_20_PHYSICAL_MAN_MA_2022_01_14 // add phyical profile
+      PROFILE_5_GEOVISTORY_BASI_2022_01_18, // add basics profile
+      PROFILE_16_INTERACTIONS_S_2022_02_09, // add social interactions profile
+      PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, // add biographical profile
+      PROFILE_8_MARITIME_HISTOR_2022_01_18, // add maritime profile
+      PROFILE_20_PHYSICAL_MAN_MA_2022_01_18, // add phyical profile
+      PROFILE_97_GEOVISTORY_DIGI_2022_02_05 // add digitals profile
     ],
     sysConf: SysConfigValueMock.SYS_CONFIC_VALID, // add SYS_CONFIG json
     p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles
@@ -68,6 +70,8 @@ const geoPlaceTypeMock: GvPositiveSchemaObject = {
   war: { entity_preview: [WarEntityPreviewMock.GEO_PLACE_TYPE_CITY] },
   pro: { info_proj_rel: [ProInfoProjRelMock.PROJ_1_CITY_TYPE] }
 }
+
+
 
 /*****************************************************************************
  * MOCK services
@@ -145,7 +149,7 @@ export default sandboxOf(FormCreateDataComponent, {
   })
   .add('Georeference (edit)', {
     context: {
-      initVal$: of(mockGeoreference),
+      initVal$: of(georeferenceMock),
       initState: IAppStateMock.stateProject1,
       schemaObjects: initialSchemaObects
     },
@@ -168,7 +172,6 @@ export default sandboxOf(FormCreateDataComponent, {
   })
   .add('Appellation in a language TeEn (new)', {
     context: {
-      initVal$: of(mockGeoreference),
       initState: IAppStateMock.stateProject1,
       schemaObjects: initialSchemaObects
     },
@@ -190,7 +193,7 @@ export default sandboxOf(FormCreateDataComponent, {
   })
   .add('Appellation in a language TeEn (edit)', {
     context: {
-      initVal$: of(InfResourceWithRelationsMock.mockNaming),
+      initVal$: of(appeInALangMock),
       initState: IAppStateMock.stateProject1,
       schemaObjects: [...initialSchemaObects, appeTypeMock]
     },
@@ -259,7 +262,7 @@ export default sandboxOf(FormCreateDataComponent, {
   })
   .add('Birth (edit)', {
     context: {
-      initVal$: of(InfResourceWithRelationsMock.birth),
+      initVal$: of(birthMock),
       initState: IAppStateMock.stateProject1,
       schemaObjects: [
         ...initialSchemaObects,
@@ -348,7 +351,7 @@ export default sandboxOf(FormCreateDataComponent, {
   })
   .add('Person (edit)', {
     context: {
-      initVal$: of(InfResourceWithRelationsMock.mockPerson),
+      initVal$: of(personMock),
       initState: IAppStateMock.stateProject1,
       schemaObjects: initialSchemaObects
     },
@@ -391,7 +394,7 @@ export default sandboxOf(FormCreateDataComponent, {
   })
   .add('Geographical Place (edit)', {
     context: {
-      initVal$: of(InfResourceWithRelationsMock.mockGeoPlaceWithType),
+      initVal$: of(geoPlaceMock),
       initState: IAppStateMock.stateProject1,
       schemaObjects: [...initialSchemaObects, geoPlaceTypeMock]
     },
@@ -561,6 +564,29 @@ export default sandboxOf(FormCreateDataComponent, {
             </div>
         </div>`
   })
+  .add('LangString (edit)', {
+    context: {
+      pkClass: langStringMock.langString.fk_class,
+      initVal$: of(langStringMock),
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: initialSchemaObects
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-data [initVal$]="initVal$" [pkClass]="pkClass" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
 
   .add('Dimension (new)', {
     context: {
@@ -605,6 +631,28 @@ export default sandboxOf(FormCreateDataComponent, {
             </div>
         </div>`
   })
+  .add('Time primitive (edit)', {
+    context: {
+      initVal$: of({ timePrimitive: InfTimePrimitiveMock.TP_1 }),
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: initialSchemaObects
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-data [initVal$]="initVal$" [pkClass]="335" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
   .add('Localisation – C2 (new)', {
     context: {
       initState: IAppStateMock.stateProject1,
@@ -615,6 +663,38 @@ export default sandboxOf(FormCreateDataComponent, {
         <div class="d-flex justify-content-center mt-5">
             <div style="width:480px;height:500px" class="d-flex mr-5">
                 <gv-form-create-data [pkClass]="212" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+            </div>
+            <div>
+                <p>searchString: {{s}}</p>
+                <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+                <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+                <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+                <p>Form.value </p>
+                <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+            </div>
+        </div>`
+  })
+  .add('Definition', {
+    context: {
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: [
+        createCrmAsGvPositiveSchema({
+          ontoMocks: [
+            PROFILE_5_GEOVISTORY_BASI_2022_01_18,
+            PROFILE_97_GEOVISTORY_DIGI_2022_02_05
+          ],
+          sysConf: SysConfigValueMock.SYS_CONFIC_VALID, // add SYS_CONFIG json
+          p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles
+        }),
+        GvSchemaObjectMock.project1, // add project and its default language
+      ]
+    },
+    template: `
+        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+
+        <div class="d-flex justify-content-center mt-5">
+            <div style="width:480px;height:500px" class="d-flex mr-5">
+                <gv-form-create-entity [pkClass]="9901" #c class="w-100" (searchString)="s=$event"></gv-form-create-entity>
             </div>
             <div>
                 <p>searchString: {{s}}</p>

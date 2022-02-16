@@ -10,9 +10,7 @@ import { ValuePreviewModule } from '../value-preview/value-preview.module';
 import { ColFilterNumericComponent } from './components/table/col-filter-numeric/col-filter-numeric.component';
 import { ColFilterTextComponent } from './components/table/col-filter-text/col-filter-text.component';
 import { ColMappingComponent } from './components/table/col-mapping/col-mapping.component';
-import { EntityMatcherComponent } from './components/table/entity-matcher/entity-matcher.component';
 import { TableComponent } from './components/table/table.component';
-import { ValueMatcherComponent } from './components/table/value-matcher/value-matcher.component';
 
 
 @NgModule({
@@ -21,8 +19,6 @@ import { ValueMatcherComponent } from './components/table/value-matcher/value-ma
     ColFilterTextComponent,
     ColFilterNumericComponent,
     ColMappingComponent,
-    EntityMatcherComponent,
-    ValueMatcherComponent
   ],
   exports: [
     TableComponent

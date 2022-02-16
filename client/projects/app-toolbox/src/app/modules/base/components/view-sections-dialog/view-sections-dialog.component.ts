@@ -10,7 +10,7 @@ export interface ViewSectionsDialogData {
   pkClass$: Observable<number>
   showOntoInfo$: Observable<boolean>;
   appContext: number;
-  readonly$: BehaviorSubject<boolean>
+  readmode$: BehaviorSubject<boolean>
   showOpenInNewTabButton: boolean
 }
 

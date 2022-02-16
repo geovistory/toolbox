@@ -1,6 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 export interface GraphPathEntity {
   label: string;
   icon: string;
@@ -46,11 +46,11 @@ export class GraphPathComponent implements OnInit {
   }
 
   openTextInNewTab(pkEntity: number) {
-    this.p.addTextTab(pkEntity)
+    this.p.addEntityTabWithoutClass(pkEntity)
   }
 
   openTableInNewTab(pkEntity: number) {
-    this.p.addTableTab(pkEntity)
+    this.p.addEntityTabWithoutClass(pkEntity)
   }
 
   openCellInNewTab(fkDigital: number, fkRow: string) {

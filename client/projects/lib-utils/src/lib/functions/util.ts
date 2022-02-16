@@ -1,6 +1,5 @@
-import { FormArray, FormGroup } from '@angular/forms';
-import { ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
+import {FormArray, FormGroup} from '@angular/forms';
+import {ProTextProperty} from '@kleiolab/lib-sdk-lb3';
 
 
 export interface LabelGeneratorSettings {
@@ -19,7 +18,7 @@ export interface LabelGeneratorSettings {
 
 export class U {
 
-  static obj2Arr<T>(obj: { [key: string]: T }): T[] {
+  static obj2Arr<T>(obj: {[key: string]: T}): T[] {
     const arr = [];
 
     if (obj == undefined) return arr;
@@ -31,7 +30,7 @@ export class U {
     return arr;
   }
 
-  static objNr2Arr<T>(obj: { [key: number]: T }): T[] {
+  static objNr2Arr<T>(obj: {[key: number]: T}): T[] {
     const arr = [];
 
     if (obj == undefined) return arr;
@@ -49,11 +48,11 @@ export class U {
    *
    * @param obj
    */
-  static obj2KeyValueArr<T>(obj: { [key: string]: T }): { key: string, value: T }[] {
+  static obj2KeyValueArr<T>(obj: {[key: string]: T}): {key: string, value: T}[] {
     const keys = [];
     for (const key in obj) {
       if (obj[key]) {
-        keys.push({ key: key, value: obj[key] });
+        keys.push({key: key, value: obj[key]});
       }
     }
     return keys;
@@ -62,7 +61,7 @@ export class U {
 
 
   static firstProTextPropStringOfType(textProperties: ProTextProperty[], fkSystemType): string {
-    return (textProperties.find(t => t.fk_system_type === fkSystemType) || { string: '' }).string
+    return (textProperties.find(t => t.fk_system_type === fkSystemType) || {string: ''}).string
   }
 
   /**
@@ -139,12 +138,3 @@ export class U {
   }
 }
 
-export function createQuillDoc(string: string): QuillDoc {
-  return {
-    latestId: string.length + 1,
-    ops: [
-      ...string.split('').map((char, i) => ({ insert: char, attributes: { charid: '' + (i + 1) } })),
-      { insert: '\n', attributes: { blockid: '' + (string.length + 1) } }
-    ]
-  };
-}

@@ -186,6 +186,15 @@ export class WarEntityPreviewMock {
         entity_label: 'Expression of Habs-Empire',
         entity_type: 'peIt',
     })
+    static readonly DEFINITION_1: OmitEntity<WarEntityPreview> = ({
+        pk_entity: InfResourceMock.DEFINITION_1.pk_entity,
+        fk_class: InfResourceMock.DEFINITION_1.fk_class,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: 'Definition', // todo: use DfhApiClassMock when available
+        entity_label: 'This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data.',
+        entity_type: 'peIt',
+    })
 
     static readonly TYPE_OF_MANIF_PROD_TYPE_BOOK: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_BOOK.pk_entity,

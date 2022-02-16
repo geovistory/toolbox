@@ -1,0 +1,46 @@
+.loc-row {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+.loc-row-left {
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+  flex: 1 1 0;
+  overflow: hidden;
+}
+.loc-col {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 50%;
+}
+.loc-col ~ .loc-col {
+  margin-left: 16px;
+}
+.loc-actions {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 40px;
+  flex-shrink: 0;
+  flex-grow: 0;
+  padding: 8px;
+}
+.loc-col-header {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.loc-deleting {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background: rgb(255 255 255 / 78%);
+  align-items: center;
+  z-index: 1;
+}

@@ -10,13 +10,11 @@
  * Do not edit the class manually.
  */
 import { TableRow } from './tableRow';
-import { GvPositiveSchemaObject } from './gvPositiveSchemaObject';
 
 
 export interface TablePageResponse { 
     rows?: Array<TableRow>;
     columns?: Array<string>;
     length?: number;
-    schemaObject?: GvPositiveSchemaObject;
 }
 

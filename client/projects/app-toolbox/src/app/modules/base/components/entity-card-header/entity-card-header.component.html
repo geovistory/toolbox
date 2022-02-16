@@ -3,7 +3,7 @@
   [isFavorite]="false" [shade]="'light'">
 </gv-class-info>
 
-<div class="card-header-texts">
+<div class="card-header-texts mat-typography">
   <div class="ellipsis">
     <h2 class="card-header-entity-label gv-row-start loc-title">
       <span [matTooltip]="'Entity ' + pkEntity" class="loc-ellipsis">
@@ -25,34 +25,52 @@
 </div>
 <div class="card-header-button">
   <!-- <div fxFlex fxLayout="row" fxLayoutAlign="end center"> -->
+  <gv-toggle-btn *ngIf="!readonly" class="loc-toolbar-item" [value$]="readmode$">
+    <a gv-toggle-off mat-icon-button color="primary" [matTooltip]="'Switch to read mode [Shift + E]'">
+      <mat-icon [svgIcon]="'eye'"></mat-icon>
+    </a>
+
+    <a gv-toggle-on mat-icon-button color="primary" [matTooltip]="'Switch to edit mode [Shift + E]'">
+      <mat-icon [svgIcon]="'pencil'"></mat-icon>
+    </a>
+  </gv-toggle-btn>
+
+
   <button mat-icon-button [matMenuTriggerFor]="mainMenu">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #mainMenu="matMenu" xPosition="before">
 
     <!-- toggle onto info -->
-    <button mat-menu-item (click)="$event.stopPropagation();">
-      <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)" (change)="toggleOntoInfo();">
-        Ontology Info
+    <button mat-menu-item (click)="$event.stopPropagation();toggleOntoInfo();">
+      <mat-slide-toggle color="accent" [checked]="(showOntoInfo$|async)">
+        Ontology Info [Shift + O]
       </mat-slide-toggle>
     </button>
-    <mat-divider *ngIf="!(readonly$ | async)"></mat-divider>
-    <div class="dropdown-header" *ngIf="!(readonly$ | async)">Settings for class {{classLabel$|async}}
+
+    <button *ngIf="!readonly" mat-menu-item (click)="$event.stopPropagation();readmode$.next(!readmode$.value);">
+      <mat-slide-toggle color="accent" [checked]="!(readmode$|async)">
+        Edit mode [Shift + E]
+      </mat-slide-toggle>
+    </button>
+
+    <mat-divider *ngIf="!readonly"></mat-divider>
+    <div class="dropdown-header" *ngIf="!readonly">Settings for class {{classLabel$|async}}
     </div>
     <gv-entity-label-config-open-btn *ngIf="fkClass$|async" [fkClass]="fkClass$ | async">
-      <button mat-menu-item *ngIf="!(readonly$ | async)">
+      <button mat-menu-item *ngIf="!readonly">
         <mat-icon svgIcon="cogs"></mat-icon>
         <span>Configure Labels</span>
       </button>
     </gv-entity-label-config-open-btn>
-    <button *ngIf="!(readonly$ | async)" mat-menu-item (click)="openClassConfig()">
+    <button *ngIf="!readonly" mat-menu-item (click)="openClassConfig()">
       <mat-icon svgIcon="cogs"></mat-icon>
       Configure Fields
     </button>
     <!-- remove -->
-    <mat-divider *ngIf="!(readonly$ | async)"></mat-divider>
-    <div class="dropdown-header" *ngIf="!(readonly$ | async)">Danger Zone</div>
-    <button mat-menu-item (click)="openRemoveDialog();" *ngIf="!(readonly$ | async)">
+    <mat-divider *ngIf="!readonly"></mat-divider>
+    <div class="dropdown-header" *ngIf="!readonly">Danger Zone</div>
+    <button mat-menu-item (click)="openRemoveDialog();" *ngIf="!readonly">
       <mat-icon color="warn">delete</mat-icon>
       <span>Remove</span>
     </button>

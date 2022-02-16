@@ -1,23 +1,26 @@
-<span class="loc-left mat-typography">
-  <gv-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$" [pkClass]="timePrimitive.fk_class"
-    [classLabel]="field.targets[timePrimitive.fk_class]?.targetClassLabel" [isFavorite]="ordNum===0">
-  </gv-class-info>
-  <div> {{itemComponent.item.target.timePrimitive.timePrimitive|timePrimitive}}</div>
-</span>
+<gv-view-field-item-container>
+  <span class="loc-left mat-typography">
+    <gv-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
+      [pkClass]="timePrimitive.fk_class" [classLabel]="field.targets[timePrimitive.fk_class]?.targetClassLabel"
+      [isFavorite]="ordNum===1">
+    </gv-class-info>
+    <div> {{itemComponent.item.target.timePrimitive.timePrimitive|timePrimitive}}</div>
+  </span>
 
-<span class="loc-right" *ngIf="!(itemComponent.readonly$|async)">
-  <mat-menu #appMenu="matMenu">
+  <span class="loc-right" *ngIf="!(itemComponent.readmode$|async)">
+    <mat-menu #appMenu="matMenu">
 
-    <div class="dropdown-header">Danger Zone</div>
-    <button mat-menu-item (click)="itemComponent.remove()">
-      <mat-icon color="warn">delete</mat-icon>
-      <span>Remove</span>
+      <div class="dropdown-header">Danger Zone</div>
+      <button mat-menu-item (click)="itemComponent.remove()">
+        <mat-icon color="warn">delete</mat-icon>
+        <span>Remove</span>
+      </button>
+
+    </mat-menu>
+
+    <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+      <mat-icon>more_vert</mat-icon>
     </button>
 
-  </mat-menu>
-
-  <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-
-</span>
+  </span>
+</gv-view-field-item-container>

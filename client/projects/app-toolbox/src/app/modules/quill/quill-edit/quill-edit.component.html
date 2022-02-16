@@ -1,36 +1,50 @@
-<div #toolbar class="gv-toolbar" [hidden]="!showDefaultToolbar">
+<div #toolbar class="gv-toolbar mat-bg-grey-100" [hidden]="!showDefaultToolbar">
 
-    <span [hidden]="creatingAnnotation || readOnly">
-        <span class="ql-formats">
-            <!-- Add font size dropdown -->
-            <select class="ql-size">
-                <option value="small"></option>
-                <!-- Note a missing, thus falsy value, is used to reset to default -->
-                <option selected></option>
-                <option value="large"></option>
-                <option value="huge"></option>
-            </select>
-            <!-- Add buttons as you would before -->
-            <button class="ql-bold"></button>
-            <button class="ql-italic"></button>
-            <button class="ql-underline"></button>
-        </span>
-
-        <span class="ql-formats">
-            <select class="ql-header">
-                <!-- Note a missing, thus falsy value, is used to reset to default -->
-                <option selected></option>
-                <option value="1"></option>
-                <option value="2"></option>
-                <option value="3"></option>
-                <option value="4"></option>
-            </select>
-        </span>
+  <span class="loc-toolbar-btns-left" [hidden]="creatingAnnotation || readOnly">
+    <span class="ql-formats">
+      <!-- Add font size dropdown -->
+      <select class="ql-size">
+        <option value="small"></option>
+        <!-- Note a missing, thus falsy value, is used to reset to default -->
+        <option selected></option>
+        <option value="large"></option>
+        <option value="huge"></option>
+      </select>
+      <!-- Add buttons as you would before -->
+      <button class="ql-bold"></button>
+      <button class="ql-italic"></button>
+      <button class="ql-underline"></button>
     </span>
 
-    <!-- But you can also add your own -->
-    <button class="d-flex justify-content-center float-right" [ngClass]="{'ql-active': showTokenIds}" (click)="toggleShowTokenIds()">
-        <i class="fa fa-hashtag"></i>
+    <span class="ql-formats">
+      <select class="ql-header">
+        <!-- Note a missing, thus falsy value, is used to reset to default -->
+        <option selected></option>
+        <option value="1"></option>
+        <option value="2"></option>
+        <option value="3"></option>
+        <option value="4"></option>
+      </select>
+    </span>
+    <mat-divider [vertical]="true"></mat-divider>
+
+
+    <div class="mat-caption mat-text-secondary"
+      [matTooltip]="(textLength$|async)+' of max. ' + maxLength + ' characters'">
+      {{textLength$|async}} / {{maxLength}}
+    </div>
+
+  </span>
+  <!-- But you can also add your own -->
+  <div class="loc-toolbar-btns-right">
+
+    <button *ngIf="showCharIdToggleBtn" class="loc-btn-show-ids" [ngClass]="{'ql-active': showTokenIds}"
+      (click)="toggleShowTokenIds()">
+      <i class="fa fa-hashtag"></i>
     </button>
+    <ng-content select="[buttonsRight]"></ng-content>
+  </div>
+
 </div>
-<div #editor class="gv-editor" [ngClass]="{'gv-show-token-ids': showTokenIds}"></div>
+
+<div #editor class="gv-editor" [ngClass]="{'gv-show-token-ids': showTokenIds, 'mat-bg-grey-50':!matInputLike}"></div>

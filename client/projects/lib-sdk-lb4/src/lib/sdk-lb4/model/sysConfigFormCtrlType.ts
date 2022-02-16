@@ -21,11 +21,12 @@ export interface SysConfigFormCtrlType {
     appellation?: SysConfigFormCtrlType.AppellationEnum;
     language?: SysConfigFormCtrlType.LanguageEnum;
     place?: SysConfigFormCtrlType.PlaceEnum;
+    cell?: SysConfigFormCtrlType.CellEnum;
     timePrimitive?: SysConfigFormCtrlType.TimePrimitiveEnum;
     langString?: SysConfigFormCtrlType.LangStringEnum;
+    textWithLang?: SysConfigFormCtrlType.TextWithLangEnum;
     dimension?: DimensionValueObjectType;
     typeItem?: SysConfigFormCtrlType.TypeItemEnum;
-    timeSpan?: SysConfigFormCtrlType.TimeSpanEnum;
 }
 export namespace SysConfigFormCtrlType {
     export type EntityEnum = 'true';
@@ -36,9 +37,10 @@ export namespace SysConfigFormCtrlType {
     export const AppellationTeEnEnum = {
         True: 'true' as AppellationTeEnEnum
     };
-    export type AppellationEnum = 'true';
+    export type AppellationEnum = 'true' | 'textEditor';
     export const AppellationEnum = {
-        True: 'true' as AppellationEnum
+        True: 'true' as AppellationEnum,
+        TextEditor: 'textEditor' as AppellationEnum
     };
     export type LanguageEnum = 'true';
     export const LanguageEnum = {
@@ -48,6 +50,10 @@ export namespace SysConfigFormCtrlType {
     export const PlaceEnum = {
         True: 'true' as PlaceEnum
     };
+    export type CellEnum = 'true';
+    export const CellEnum = {
+        True: 'true' as CellEnum
+    };
     export type TimePrimitiveEnum = 'true';
     export const TimePrimitiveEnum = {
         True: 'true' as TimePrimitiveEnum
@@ -56,13 +62,13 @@ export namespace SysConfigFormCtrlType {
     export const LangStringEnum = {
         True: 'true' as LangStringEnum
     };
+    export type TextWithLangEnum = 'true';
+    export const TextWithLangEnum = {
+        True: 'true' as TextWithLangEnum
+    };
     export type TypeItemEnum = 'true';
     export const TypeItemEnum = {
         True: 'true' as TypeItemEnum
-    };
-    export type TimeSpanEnum = 'true';
-    export const TimeSpanEnum = {
-        True: 'true' as TimeSpanEnum
     };
 }
 

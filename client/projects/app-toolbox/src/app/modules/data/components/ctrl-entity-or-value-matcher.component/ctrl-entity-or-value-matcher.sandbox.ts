@@ -10,11 +10,11 @@ import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguag
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
-import { PROFILE_12_BIOGRAPHICAL_BA_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-01-14';
-import { PROFILE_16_INTERACTIONS_S_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-01-14';
-import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-14';
-import { PROFILE_5_GEOVISTORY_BASI_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-14';
-import { PROFILE_8_MARITIME_HISTOR_2022_01_14 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-14';
+import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
+import { PROFILE_16_INTERACTIONS_S_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-02-09';
+import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-18';
+import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
+import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -27,44 +27,44 @@ import { CtrlEntityOrValueMatcherComponent } from './ctrl-entity-or-value-matche
  *****************************************************************************/
 // mock entity previews (used below in ActiveProjectPipesServiceMock)
 const warEntityPreviews = [
-    WarEntityPreviewMock.APPE_IN_LANG_TYPE_FIRST_NAME,
-    WarEntityPreviewMock.APPE_IN_LANG_TYPE_LAST_NAME,
-    WarEntityPreviewMock.PERSON_1,
-    WarEntityPreviewMock.VOLUME_UNIT_CUBIC_METER,
-    WarEntityPreviewMock.GEO_PLACE_TYPE_CITY
+  WarEntityPreviewMock.APPE_IN_LANG_TYPE_FIRST_NAME,
+  WarEntityPreviewMock.APPE_IN_LANG_TYPE_LAST_NAME,
+  WarEntityPreviewMock.PERSON_1,
+  WarEntityPreviewMock.VOLUME_UNIT_CUBIC_METER,
+  WarEntityPreviewMock.GEO_PLACE_TYPE_CITY
 ]
 // mock schema objects to initialize sandboxes below
 const initialSchemaObects = [
-    createCrmAsGvPositiveSchema({
-        ontoMocks: [
-            PROFILE_5_GEOVISTORY_BASI_2022_01_14, // add basics profile
-            PROFILE_16_INTERACTIONS_S_2022_01_14, // add social interactions profile
-            PROFILE_12_BIOGRAPHICAL_BA_2022_01_14, // add biographical profile
-            PROFILE_8_MARITIME_HISTOR_2022_01_14, // add maritime profile
-            PROFILE_20_PHYSICAL_MAN_MA_2022_01_14 // add phyical profile
-        ],
-        sysConf: SysConfigValueMock.SYS_CONFIC_VALID, // add SYS_CONFIG json
-        p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles
-    }),
-    GvSchemaObjectMock.project1, // add project and its default language
+  createCrmAsGvPositiveSchema({
+    ontoMocks: [
+      PROFILE_5_GEOVISTORY_BASI_2022_01_18, // add basics profile
+      PROFILE_16_INTERACTIONS_S_2022_02_09, // add social interactions profile
+      PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, // add biographical profile
+      PROFILE_8_MARITIME_HISTOR_2022_01_18, // add maritime profile
+      PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 // add phyical profile
+    ],
+    sysConf: SysConfigValueMock.SYS_CONFIC_VALID, // add SYS_CONFIG json
+    p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles
+  }),
+  GvSchemaObjectMock.project1, // add project and its default language
 ]
 
 class ActiveProjectServiceMock {
-    inf$ = {
-        place$: {
-            by_pk_entity$: {
-                key: (pk) => new BehaviorSubject({
-                    lat: 333,
-                    long: 444
-                })
-            }
-        }
+  inf$ = {
+    place$: {
+      by_pk_entity$: {
+        key: (pk) => new BehaviorSubject({
+          lat: 333,
+          long: 444
+        })
+      }
     }
-    sys$ = {
-        config$: {
-            main$: new BehaviorSubject(SysConfigValueMock.SYS_CONFIC_VALID)
-        }
+  }
+  sys$ = {
+    config$: {
+      main$: new BehaviorSubject(SysConfigValueMock.SYS_CONFIC_VALID)
     }
+  }
 }
 
 /*****************************************************************************
@@ -75,15 +75,15 @@ class ActiveProjectServiceMock {
  * This service mocks the find-laguages REST API
  */
 class LanguagesServiceMock {
-    findLanguagesControllerSearchInLanguages(searchString?: string): Observable<InfLanguage[]> {
+  findLanguagesControllerSearchInLanguages(searchString?: string): Observable<InfLanguage[]> {
 
-        const langs = [InfLanguageMock.GERMAN, InfLanguageMock.FRENCH]
-        if (!searchString) return of(langs)
-        else {
-            const filtered = langs.filter(lang => lang.notes.toUpperCase().includes(searchString.toUpperCase()))
-            return of(filtered)
-        }
+    const langs = [InfLanguageMock.GERMAN, InfLanguageMock.FRENCH]
+    if (!searchString) return of(langs)
+    else {
+      const filtered = langs.filter(lang => lang.notes.toUpperCase().includes(searchString.toUpperCase()))
+      return of(filtered)
     }
+  }
 }
 
 
@@ -92,23 +92,23 @@ class LanguagesServiceMock {
  */
 @Injectable()
 export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
-    pkProject$ = new BehaviorSubject(ProProjectMock.PROJECT_1.pk_entity)
-    datNamespaces$ = new BehaviorSubject([DatNamespaceMock.SANDBOX_NAMESPACE])
+  pkProject$ = new BehaviorSubject(ProProjectMock.PROJECT_1.pk_entity)
+  datNamespaces$ = new BehaviorSubject([DatNamespaceMock.SANDBOX_NAMESPACE])
 
-    streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<WarEntityPreview> {
-        return of({
-            class_label: "Person",
-            entity_label: "Albertzzzzzzzzzz IV",
-            entity_type: "peIt",
-            fk_class: 21,
-            fk_project: 375232,
-            fk_type: null,
-            key: "375232_2004",
-            pk_entity: 2004,
-            project: 375232,
-            type_label: null
-        })
-    }
+  streamEntityPreview(pkEntity: number, forceReload?: boolean): Observable<WarEntityPreview> {
+    return of({
+      class_label: 'Person',
+      entity_label: 'Albertzzzzzzzzzz IV',
+      entity_type: 'peIt',
+      fk_class: 21,
+      fk_project: 375232,
+      fk_type: null,
+      key: '375232_2004',
+      pk_entity: 2004,
+      project: 375232,
+      type_label: null
+    })
+  }
 }
 
 
@@ -117,24 +117,24 @@ export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
  * Sandboxes
  *****************************************************************************/
 export default sandboxOf(CtrlEntityOrValueMatcherComponent, {
-    declareComponent: false,
-    imports: [
-        DataModule,
-        BaseModule,
-        FormsModule,
-        InitStateModule
-    ],
-    providers: [
-        { provide: ActiveProjectPipesService, useClass: ActiveProjectPipesServiceMock },
-        { provide: LanguagesService, useClass: LanguagesServiceMock },
-        { provide: ActiveProjectService, useClass: ActiveProjectServiceMock }
-    ]
+  declareComponent: false,
+  imports: [
+    DataModule,
+    BaseModule,
+    FormsModule,
+    InitStateModule
+  ],
+  providers: [
+    { provide: ActiveProjectPipesService, useClass: ActiveProjectPipesServiceMock },
+    { provide: LanguagesService, useClass: LanguagesServiceMock },
+    { provide: ActiveProjectService, useClass: ActiveProjectServiceMock }
+  ]
 })
-    .add('CtrlEntityOrValueMatcherComponent', {
-        context: {
-            schemaObjects: initialSchemaObects,
-        },
-        template: `
+  .add('CtrlEntityOrValueMatcherComponent', {
+    context: {
+      schemaObjects: initialSchemaObects,
+    },
+    template: `
     <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
     <span style="display:flex;flex-direction:row;justify-content:center">entity:</span>
     <div style="display:flex;flex-direction:row;justify-content:center">
@@ -179,4 +179,4 @@ export default sandboxOf(CtrlEntityOrValueMatcherComponent, {
         <gv-ctrl-entity-or-value-matcher [pkClass]="51" [pkEntity]="1"></gv-ctrl-entity-or-value-matcher>
     </div>
     `
-    })
+  })

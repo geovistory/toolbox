@@ -1,0 +1,16 @@
+<div *ngIf="(pkTableValueLoader$|async).loading" class="loc-loading-spinner">
+  <mat-spinner [diameter]="20"></mat-spinner>
+</div>
+<div *ngIf="(pkTableValueLoader$|async).error" class="loc-loading-error mat-body">
+  <p>Error when loading the table</p>
+  <button mat-button (click)="loadTrigger$.next()">try again</button>
+</div>
+<div *ngIf="(pkTableValueLoader$|async).hasValueCount===0" class="loc-count-0 mat-body">
+  <button mat-flat-button color="primary" (click)="openImportDialog()">Import a table</button>
+  Accepted formats are .csv and any .xls (excel files)
+</div>
+
+
+<gv-table-editor class="gv-flex-fh" *ngIf="(pkTableValueLoader$|async).hasValueCount===1"
+  [pkEntity]="(pkTableValueLoader$|async).pkTableValue" [readmode$]="readmode$">
+</gv-table-editor>

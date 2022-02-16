@@ -11,12 +11,29 @@
   </div>
   <!-- value of field -->
   <ng-container *ngFor="let statementWT of (page$|async)?.statements">
-    <ng-container *ngIf="statementWT.target.entity; else default">
-      <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="!(readonly$|async)"
-        [preview]="statementWT.target.entity.entityPreview"
+    <ng-container *ngIf="statementWT.target.entity; else cell">
+      <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="!readonly"
+        [pkEntity]="statementWT.target.entity.resource.pk_entity"
         [matTooltip]="statementWT.target.entity.entityPreview.entity_label">
       </gv-entity-preview>
     </ng-container>
+    <ng-template #cell>
+      <div class="loc-cell" *ngIf="statementWT.target.cell; else default">
+
+
+        <div class="loc-cell-line-one">
+          {{statementWT.targetLabel}}
+        </div>
+        <div class="loc-cell-line-two  mat-caption mat-text-secondary">
+          <gv-class-info class="loc-cell-class-info" [size]="12" [showOntoInfo$]="showOntoInfo$"
+            [pkClass]="statementWT.targetClass" [classLabel]="field.targets[statementWT.targetClass]?.targetClassLabel"
+            [isFavorite]="statementWT.ordNum===1">
+          </gv-class-info>
+          Cell [{{statementWT.target.cell.fk_column}}:{{statementWT.target.cell.fk_row}}]
+        </div>
+      </div>
+    </ng-template>
+
     <ng-template #default>
       <span [matTooltip]="statementWT?.targetLabel">
         {{statementWT?.targetLabel}}

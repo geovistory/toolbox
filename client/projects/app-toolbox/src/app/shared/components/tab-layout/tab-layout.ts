@@ -91,6 +91,10 @@ export class TabLayout {
     if (event.sizes[0] < 5) this.setLayoutMode('right-only')
   }
 
+  onRightBtnClick() {
+    if (this.layoutMode === 'both') this.setLayoutMode('left-only')
+    else if (this.layoutMode === 'right-only') this.setLayoutMode('both')
+  }
 
   /**
    * END

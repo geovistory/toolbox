@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, Input, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
@@ -6,6 +6,7 @@ import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { PaginationService } from '../../services/pagination.service';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
 
 @Component({
@@ -21,7 +22,7 @@ export class EntityFieldComponent implements OnInit {
   @Input() field: Field
   @Input() source: GvFieldSourceEntity
   @Input() scope: GvFieldPageScope
-  @Input() readonly$: Observable<boolean>
+  @Input() readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   isCircular = false;
   page$: Observable<FieldPage>
@@ -31,13 +32,14 @@ export class EntityFieldComponent implements OnInit {
     private pag: PaginationService,
     private dialog: MatDialog,
     private ref: ChangeDetectorRef,
+    @Optional() @Inject(READ_ONLY) public readonly: boolean
   ) { }
 
   ngOnInit() {
     const errors: string[] = []
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
@@ -91,7 +93,7 @@ export class EntityFieldComponent implements OnInit {
         field: this.field,
         source: this.source,
         scope: this.scope,
-        readonly$: this.readonly$,
+        readmode$: this.readmode$,
         showOntoInfo$: this.showOntoInfo$,
       }
       this.dialog.open(ViewFieldDialogComponent, {

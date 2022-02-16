@@ -157,7 +157,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
             hasError = true
             await c1.query('ROLLBACK')
             await c2.query('ROLLBACK')
-            Logger.err(this.constructor.name, `ERROR in aggregation: ${e}`)
+            Logger.err(this.constructor.name, `ERROR in primary data service: ${e}`)
         } finally {
             c1.release()
             c2.release()

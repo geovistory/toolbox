@@ -18,5 +18,7 @@ export interface Sections {
     specific?: Section;
     timeSpan?: Section;
     simpleForm?: Section;
+    linkedEntities?: Section;
+    linkedSources?: Section;
 }
 

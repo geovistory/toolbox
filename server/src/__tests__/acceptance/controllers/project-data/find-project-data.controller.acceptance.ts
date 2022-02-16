@@ -1,23 +1,13 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
 import {LoginResponse} from '../../../../controllers/account.controller';
 import {GvPositiveSchemaObject} from '../../../../models/gv-positive-schema-object.model';
 import {GeovistoryServer} from '../../../../server';
-import {createDatChunk} from '../../../helpers/atomic/dat-chunk.helper';
-import {createDatDigital} from '../../../helpers/atomic/dat-digital.helper';
-import {createDatNamespace} from '../../../helpers/atomic/dat-namespace.helper';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
-import {createInfStatement} from '../../../helpers/atomic/inf-statement.helper';
-import {addInfoToProject, createProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
-import {createProProject} from '../../../helpers/atomic/pro-project.helper';
+import {createProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
-import {DatChunkMock} from '../../../helpers/data/gvDB/DatChunkMock';
-import {DatDigitalMock} from '../../../helpers/data/gvDB/DatDigitalMock';
-import {DatNamespaceMock} from '../../../helpers/data/gvDB/DatNamespaceMock';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
 import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
-import {InfStatementMock} from '../../../helpers/data/gvDB/InfStatementMock';
 import {ProInfoProjRelMock} from '../../../helpers/data/gvDB/ProInfoProjRelMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {createAccountVerified} from '../../../helpers/generic/account.helper';
@@ -93,32 +83,32 @@ describe('FindProjectDataController', () => {
   })
 
 
-  describe('GET project-data/get-chunks-of-digital', () => {
+  // describe('GET project-data/get-chunks-of-digital', () => {
 
-    it('should respond with GvPositiveSchemaObject containing the resource', async () => {
-      await createProProject(ProProjectMock.SANDBOX_PROJECT)
-      await linkAccountToProject(accountInProject, ProProjectMock.SANDBOX_PROJECT.pk_entity as number);
-      await createDatNamespace(DatNamespaceMock.SANDBOX_NAMESPACE);
-      await createDatDigital(DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO);
-      await createDatChunk(DatChunkMock.RUDOLF)
-      await createInfStatement(InfStatementMock.CHUNK_RUDOLF_REFERS_TO_RUDOLF)
-      await addInfoToProject(
-        InfStatementMock.CHUNK_RUDOLF_REFERS_TO_RUDOLF.pk_entity,
-        ProProjectMock.SANDBOX_PROJECT.pk_entity,
-      )
+  //   it('should respond with GvPositiveSchemaObject containing the resource', async () => {
+  //     await createProProject(ProProjectMock.SANDBOX_PROJECT)
+  //     await linkAccountToProject(accountInProject, ProProjectMock.SANDBOX_PROJECT.pk_entity as number);
+  //     await createDatNamespace(DatNamespaceMock.SANDBOX_NAMESPACE);
+  //     await createDatDigital(DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO);
+  //     await createDatChunk(DatChunkMock.RUDOLF)
+  //     await createInfStatement(InfStatementMock.CHUNK_RUDOLF_REFERS_TO_RUDOLF)
+  //     await addInfoToProject(
+  //       InfStatementMock.CHUNK_RUDOLF_REFERS_TO_RUDOLF.pk_entity,
+  //       ProProjectMock.SANDBOX_PROJECT.pk_entity,
+  //     )
 
-      const params = {
-        pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity,
-        pkDigital: DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO.pk_entity
-      }
-      const res: {body: GvPositiveSchemaObject} = await client
-        .get('/project-data/get-chunks-of-digital')
-        .set('Authorization', lb4Token)
-        .query(params)
-      expect(res.body.inf?.statement?.length).to.equal(1)
-      expect(res.body.pro?.info_proj_rel?.length).to.equal(1)
-      expect(res.body.dat?.chunk?.length).to.equal(1)
-    })
-  })
+  //     const params = {
+  //       pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity,
+  //       pkDigital: DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO.pk_entity
+  //     }
+  //     const res: {body: GvPositiveSchemaObject} = await client
+  //       .get('/project-data/get-chunks-of-digital')
+  //       .set('Authorization', lb4Token)
+  //       .query(params)
+  //     expect(res.body.inf?.statement?.length).to.equal(1)
+  //     expect(res.body.pro?.info_proj_rel?.length).to.equal(1)
+  //     expect(res.body.dat?.chunk?.length).to.equal(1)
+  //   })
+  // })
 });
 

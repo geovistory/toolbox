@@ -1,26 +1,28 @@
-<span class="loc-left mat-typography" [ngClass]="{'loc-collapsed':!(expanded$|async)}">
+<gv-view-field-item-container>
+  <span class="loc-left mat-typography" [ngClass]="{'loc-collapsed':!(expanded$|async)}">
 
 
-  <!-- CLASS INFO -->
-  <span class="loc-class-info">
-    <gv-view-field-item-class-info [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$" [resource]="resource"
-      [isInProject]="projRel?.is_in_project" [classLabel]="field.targets[resource.fk_class]?.targetClassLabel"
-      [isFavorite]="ordNum===0"></gv-view-field-item-class-info>
+    <!-- CLASS INFO -->
+    <span class="loc-class-info">
+      <gv-view-field-item-class-info [showOntoInfo$]="showOntoInfo$" [resource]="resource"
+        [isInProject]="projRel?.is_in_project" [classLabel]="field.targets[resource.fk_class]?.targetClassLabel"
+        [isFavorite]="ordNum===1"></gv-view-field-item-class-info>
+    </span>
+    <!-- NESTED FIELDS -->
+    <gv-entity-with-fields [source]="{fkInfo:resource.pk_entity}" [fkClass]="resource.fk_class"
+      [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope" [readmode$]="readmode$">
+
+    </gv-entity-with-fields>
   </span>
-  <!-- NESTED FIELDS -->
-  <gv-entity-with-fields [source]="{fkInfo:resource.pk_entity}" [fkClass]="resource.fk_class"
-    [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope" [readonly$]="readonly$">
-
-  </gv-entity-with-fields>
-</span>
 
 
-<span class="loc-right">
-  <button mat-icon-button *ngIf="(expanded$|async)" (click)="expanded$.next(false)">
-    <mat-icon>unfold_less</mat-icon>
-  </button>
-  <button mat-icon-button *ngIf="!(expanded$|async)" (click)="expanded$.next(true)">
-    <mat-icon>unfold_more</mat-icon>
-  </button>
-  <gv-view-field-item-entity-menu *ngIf="!(readonly$|async)"></gv-view-field-item-entity-menu>
-</span>
+  <span class="loc-right">
+    <button mat-icon-button *ngIf="(expanded$|async)" (click)="expanded$.next(false)">
+      <mat-icon>unfold_less</mat-icon>
+    </button>
+    <button mat-icon-button *ngIf="!(expanded$|async)" (click)="expanded$.next(true)">
+      <mat-icon>unfold_more</mat-icon>
+    </button>
+    <gv-view-field-item-entity-menu *ngIf="!(readmode$|async)"></gv-view-field-item-entity-menu>
+  </span>
+</gv-view-field-item-container>

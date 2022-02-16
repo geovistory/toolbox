@@ -1,0 +1,24 @@
+<span class="loc-spinner" *ngIf="loading$|async">
+  <mat-spinner [diameter]="20"></mat-spinner>
+</span>
+<span class="loc-container" [hidden]="loading$|async">
+  <ng-container *ngIf="itemsCount$|async ; else noMatch">
+    <gv-view-field-annotations-of-cell-item *ngFor="let item of (items$|async)" [item]="item">
+    </gv-view-field-annotations-of-cell-item>
+  </ng-container>
+
+  <ng-template #noMatch>
+    <span class="loc-left mat-text-secondary">Nothing matched</span>
+    <button mat-icon-button [matMenuTriggerFor]="options" class="loc-right" [disabled]="pkCell === undefined"
+      *ngIf="!(tableComponent.readmode$|async)">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+    <mat-menu #options="matMenu" xPosition="before">
+      <button mat-menu-item *ngIf="!(itemsCount$|async)" (click)="create()">
+        <mat-icon>add</mat-icon>
+        Create matching
+      </button>
+    </mat-menu>
+  </ng-template>
+</span>

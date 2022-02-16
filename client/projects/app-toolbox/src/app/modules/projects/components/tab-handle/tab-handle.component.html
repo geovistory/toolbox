@@ -1,9 +1,10 @@
 <div class="left" (mousedown)="activateTab.emit()">
   <div *ngIf="!(loading$ | async )" class="icon">
-    <mat-icon *ngIf="tab.icon =='table'" class="gv-digital-color" style="font-size: 18px" svgIcon="file-table">
+    <!-- <mat-icon *ngIf="tab.icon =='table'" class="gv-digitals-primary-color" style="font-size: 18px" svgIcon="file-table">
     </mat-icon>
 
-    <mat-icon *ngIf="tab.icon =='text'" class="gv-digital-color" style="font-size: 18px" svgIcon="file-document">
+    <mat-icon *ngIf="tab.icon =='text'" class="gv-digitals-primary-color" style="font-size: 18px"
+      svgIcon="file-document">
     </mat-icon>
 
     <mat-icon *ngIf="tab.icon =='expression-portion'" class="gv-source-color" style="font-size: 18px" svgIcon="folder">
@@ -20,7 +21,10 @@
     <ng-container *ngIf="tab.icon =='analysis'">
       <mat-icon class="mat-icon-sm gv-visual-color" [svgIcon]="tab?.data?.fkAnalysisType | analysisIcon">
       </mat-icon>
-    </ng-container>
+    </ng-container> -->
+
+    <mat-icon style="font-size:18px;height:18px;width:18px" [svgIcon]="svgIcon" [ngClass]="colorClass">
+    </mat-icon>
 
   </div>
   <div *ngIf="(loading$ | async )" class="icon">

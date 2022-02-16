@@ -10,7 +10,7 @@ export interface ViewFieldDialogData {
   source: GvFieldSourceEntity
   scope: GvFieldPageScope
   showOntoInfo$: Observable<boolean>
-  readonly$: Observable<boolean>
+  readmode$: Observable<boolean>
 }
 @Component({
   selector: 'gv-view-field-dialog',

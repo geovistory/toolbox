@@ -13,7 +13,7 @@ export class ViewFieldItemLayoutComponent implements OnInit {
 
 
   @Input() item: StatementWithTarget
-  @Input() readonly$: Observable<boolean>
+  @Input() readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
   @Input() field: Field

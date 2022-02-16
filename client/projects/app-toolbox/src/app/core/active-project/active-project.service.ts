@@ -2,11 +2,10 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, DatSelector, DfhSelector, InfSelector, ProSelector, ShouldPauseService, SysSelector, TabSelector } from '@kleiolab/lib-queries';
-import { ActiveProjectActions, EntityDetail, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
+import { ActiveProjectPipesService, ConfigurationPipesService, DatSelector, DfhClassEnriched, DfhSelector, InfSelector, ProSelector, ShouldPauseService, SysSelector, TabSelector } from '@kleiolab/lib-queries';
+import { ActiveProjectActions, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
 import { DatNamespace, InfLanguage, LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { GvPositiveSchemaObject, ProProject } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig, GvPositiveSchemaObject, ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
@@ -14,6 +13,9 @@ import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
+import { TableDetailConfig } from '../../modules/data/components/table-detail/table-detail.component';
+import { TextDetail2Config } from '../../modules/data/components/text-detail2/text-detail2.component';
+import { EntityDetailConfig } from '../../modules/information/containers/entity-detail/entity-detail.component';
 
 
 
@@ -56,22 +58,24 @@ export class ActiveProjectService {
    * Ram (Refers to, Annotated in, Mentioned in)
    ***************************************************************/
   ramOpen$ = new BehaviorSubject(false);
-  ramSource$ = new ReplaySubject<RamSource>();
-  ramProperty$ = new ReplaySubject<number>()
-  ramTarget$ = new ReplaySubject<number>();
-  ramTitle$ = new ReplaySubject<string>();
-  ramTitlePart2$ = new ReplaySubject<string>();
-  ramBoxLeft$ = new ReplaySubject<'select-text' | 'drag-source-or-section'>();
-  ramBoxCenter$ = new ReplaySubject<boolean>();
-  ramBoxRight$ = new ReplaySubject<boolean>();
+  ramSource$ = new ReplaySubject<RamSource>(1);
+  ramProperty$ = new ReplaySubject<number>(1)
+  ramTarget$ = new ReplaySubject<number>(1);
+  ramTitle$ = new ReplaySubject<string>(1);
+  ramTitlePart2$ = new ReplaySubject<string>(1);
+  ramBoxLeft$ = new ReplaySubject<'select-text' | 'drag-source-or-section'>(1);
+  ramBoxCenter$ = new ReplaySubject<boolean>(1);
+  ramBoxRight$ = new ReplaySubject<boolean>(1);
   ramTargetIsFix$ = new BehaviorSubject<boolean>(false);
 
 
   requestedEntityPreviews: { [pkEntity: number]: boolean } = {}
+  ramOnSaveCallback = async (): Promise<any> => { };
 
   get state(): ProjectDetail {
     return this.ngRedux.getState().activeProject;
   }
+
   constructor(
     private ngRedux: NgRedux<IAppState>,
     private actions: ActiveProjectActions,
@@ -83,6 +87,7 @@ export class ActiveProjectService {
     public inf: InfActions,
     public shouldPause: ShouldPauseService,
     private s: SchemaService,
+    private c: ConfigurationPipesService,
     private dataService: ReduxMainService
   ) {
     LoopBackConfig.setBaseURL(environment.apiUrl);
@@ -256,6 +261,7 @@ export class ActiveProjectService {
     this.ramBoxCenter$.next(false)
     this.ramBoxRight$.next(false)
     this.ramTargetIsFix$.next(false)
+    this.ramOnSaveCallback = undefined
   }
 
 
@@ -306,105 +312,25 @@ export class ActiveProjectService {
     })
   }
   addEntityTab(pkEntity: number, pkClass: number) {
+    this.c.pipeClassEnriched(pkClass).pipe(first(x => !!x)).subscribe(classEnriched => {
 
-    if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
-      this.addSourceExpressionPortionTab(pkEntity)
-    }
-    else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
-      this.addSourceTab(pkEntity)
-    }
-    else {
-      this.addEntityPeItTab(pkEntity)
-    }
-  }
-
-  private addSourceTab(pkEntity: number) {
-
-    const peItDetail = new EntityDetail({
-      showHeader: true,
-      showProperties: true,
-      showRightArea: false,
-      rightPanelTabs: [
-        'content-tree',
-        'linked-sources',
-        'linked-digitals'
-      ],
-      rightPanelActiveTab: 0
-    })
-
-    this.addTab({
-      active: true,
-      component: 'entity-detail',
-      icon: 'source',
-      pathSegment: 'peItDetails',
-      data: {
-        pkEntity: pkEntity,
-        peItDetailConfig: {
-          peItDetail
-        }
+      if (classEnriched.detailPage === ClassConfig.DetailPageEnum.Entity) {
+        this._addEntityTab(pkEntity, classEnriched)
       }
-    });
-  }
-
-  private addSourceExpressionPortionTab(pkEntity: number) {
-    const peItDetail = new EntityDetail({
-      showHeader: true,
-      showProperties: true,
-      showRightArea: false,
-      rightPanelTabs: [
-        'content-tree',
-        'linked-sources',
-        'linked-digitals'
-      ],
-      rightPanelActiveTab: 0
-    })
-
-    this.addTab({
-      active: true,
-      component: 'entity-detail',
-      icon: 'expression-portion',
-      data: {
-        pkEntity: pkEntity,
-        peItDetailConfig: {
-          peItDetail
-        }
-      },
-      pathSegment: 'peItDetails'
-    })
-  }
-
-  private addEntityPeItTab(pkEntity: number) {
-    const peItDetail = new EntityDetail({
-      showHeader: true,
-      showProperties: true,
-      showRightArea: false,
-      rightPanelTabs: [
-        'linked-sources',
-        'linked-digitals'
-      ],
-      rightPanelActiveTab: 0
-    })
-
-    this.addTab({
-      active: true,
-      component: 'entity-detail',
-      icon: 'persistent-entity',
-      pathSegment: 'peItDetails',
-      data: {
-        pkEntity: pkEntity,
-        peItDetailConfig: {
-          peItDetail
-        }
+      else if (classEnriched.detailPage === ClassConfig.DetailPageEnum.Text) {
+        this.addText2Tab(pkEntity)
       }
+      else if (classEnriched.detailPage === ClassConfig.DetailPageEnum.Table) {
+        this.addTableTab(pkEntity)
+      }
+
     })
-
-
   }
 
-  addTextTab(pkEntity: number) {
-    this.addTab({
+  private addText2Tab(pkEntity: number) {
+    this.addTab<TextDetail2Config>({
       active: true,
-      component: 'text-detail',
+      component: 'text',
       icon: 'text',
       data: {
         pkEntity: pkEntity
@@ -413,11 +339,10 @@ export class ActiveProjectService {
     })
   }
 
-
   addTableTab(pkEntity: number, fkRow?: number) {
-    this.addTab({
+    this.addTab<TableDetailConfig>({
       active: true,
-      component: 'table-detail',
+      component: 'table',
       icon: 'table',
       data: {
         pkEntity: pkEntity,
@@ -427,6 +352,52 @@ export class ActiveProjectService {
     })
   }
 
+
+
+
+  private _addEntityTab(pkEntity: number, classEnriched: DfhClassEnriched) {
+    let config: EntityDetailConfig;
+    if (classEnriched.belongsToCategory.sources) {
+      config = {
+        pkEntity,
+        showContentTree: true,
+        // showAnnotations: true,
+        showFactoids: true,
+        showLinkedEntities: true,
+        // showLinkedSources: true
+      }
+    }
+    else {
+      config = {
+        pkEntity,
+        showContentTree: false,
+        // showAnnotations: true,
+        showFactoids: true,
+        showLinkedEntities: true,
+        // showLinkedSources: true
+      }
+    }
+    this.addTab<EntityDetailConfig>({
+      active: true,
+      component: classEnriched.detailPage,
+      icon: classEnriched.icon,
+      pathSegment: 'peItDetails',
+      data: config
+    })
+  }
+
+
+  // addTextTab(pkEntity: number) {
+  //   this.addTab({
+  //     active: true,
+  //     component: 'text-detail',
+  //     icon: 'text',
+  //     data: {
+  //       pkEntity: pkEntity
+  //     },
+  //     pathSegment: 'textDetails'
+  //   })
+  // }
   /************************************************************************************
   * Layout -- Modals
   ************************************************************************************/

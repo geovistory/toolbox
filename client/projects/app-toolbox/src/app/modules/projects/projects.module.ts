@@ -18,6 +18,8 @@ import { QuillOpsToStrModule } from 'projects/app-toolbox/src/app/shared/pipes/q
 import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/confirm-dialog.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
+import { ListModule } from '../../shared/components/list/list.module';
+import { OntoInfoModule } from '../../shared/components/onto-info/onto-info.module';
 import { AnalysisModule } from '../analysis/analysis.module';
 import { BaseModule } from '../base/base.module';
 import { ClassConfigModule } from '../class-config/class-config.module';
@@ -27,6 +29,7 @@ import { QueriesModule } from '../queries/queries.module';
 import { SettingsModule } from '../settings/settings.module';
 import { SourcesModule } from '../sources';
 import { ProjectsActions } from './api/projects.actions';
+import { DigitalsListComponent } from './components/digitals-list/digitals-list.component';
 import { RamFormComponent } from './components/ram-form/ram-form.component';
 import { SettingsListComponent } from './components/settings-list/settings-list.component';
 import { TabBodyComponent } from './components/tab-body/tab-body.component';
@@ -76,13 +79,14 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     HttpClientModule,
     AnalysisIconModule,
     SettingsModule,
-    // OntoInfoModule,
+    OntoInfoModule,
     ClassConfigModule, // TODO: REMOVE
     // MaterialModule,
     DndModule,
     QuillOpsToStrModule,
     // TruncateModule
-    EntityLabelConfigModule
+    EntityLabelConfigModule,
+    ListModule
   ],
   declarations: [
     ProjectCreateComponent,
@@ -98,6 +102,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     TabHandleComponent,
     SettingsListComponent,
     OnActivateTabDirective,
+    DigitalsListComponent,
   ],
 
   providers: [

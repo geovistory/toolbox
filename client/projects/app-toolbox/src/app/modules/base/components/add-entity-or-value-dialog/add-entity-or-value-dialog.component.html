@@ -70,7 +70,7 @@
             <ng-container *ngFor="let pkEntity of [(selectedPkEntity$ | async)];">
               <gv-entity-card *ngIf="pkEntity" [source]="pkEntity ? { fkInfo: pkEntity } : undefined"
                 [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inProject: pkProject }"
-                [readonly$]="entityCardReadOnly$">
+                [readmode$]="entityCardReadOnly$">
               </gv-entity-card>
             </ng-container>
           </mat-tab>
@@ -79,7 +79,7 @@
             <ng-container *ngFor="let pkEntity of [(selectedPkEntity$ | async)];">
               <gv-entity-card *ngIf="pkEntity" [source]="pkEntity ? { fkInfo: pkEntity } : undefined"
                 [pkClass$]="pkClass$" [showOntoInfo$]="showOntoInfo$" [scope]="{ inRepo: true }"
-                [readonly$]="entityCardReadOnly$">
+                [readmode$]="entityCardReadOnly$">
               </gv-entity-card>
             </ng-container>
           </mat-tab>

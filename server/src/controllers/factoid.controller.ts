@@ -10,9 +10,9 @@ import {Postgres1DataSource} from '../datasources';
 import {DatFactoidMapping} from '../models/dat-factoid-mapping.model';
 import {DatFactoidPropertyMapping} from '../models/dat-factoid-property-mapping.model';
 import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
+import {InfData} from "../models/inf-data";
 import {SysConfigValue} from '../models/sys-config/sys-config-value.model';
 import {DatDigitalRepository, DatFactoidMappingRepository, DatFactoidPropertyMappingRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../repositories';
-import {InfData} from './project-data/create-project-data.controller';
 
 enum ValueObjectTypeName {
   appellation = 'appellation',
@@ -217,11 +217,6 @@ export class FactoidController {
     const offset = page * factoidNumber;
     const request = new QFactoidsFromEntity(this.dataSource);
 
-    // const l1 = (await request.getFactoidNumber(pkProject, pkEntity))[0]
-    // const l2 = (await request.getDefaultFactoidNumber(pkProject, pkEntity))[0]
-    // const length = parseInt(l1.length) + parseInt(l2.length)
-    // const factoidEntities = await request.query(pkProject, pkEntity, offset, factoidNumber);
-
     const allFactoidEntities = await request.query(pkProject, pkEntity, offset, factoidNumber);
     const length = allFactoidEntities.length
     const factoidEntities = allFactoidEntities
@@ -317,7 +312,7 @@ export class FactoidController {
     }
 
 
-    for (let incFM of factoidMappings.mappings) {
+    for (const incFM of factoidMappings.mappings) {
 
       if (!incFM.pkEntity) { // needs to be created (according to the presence of the incoming pkEntity)
         // the Factoid mapping
@@ -328,7 +323,7 @@ export class FactoidController {
           comment: incFM.comment ?? ""
         })
         // the factoid property mappings
-        for (let fpm of incFM.properties) {
+        for (const fpm of incFM.properties) {
           await this.datFactoidPropertyMappingRepository.create({
             fk_property: fpm.pkProperty,
             fk_column: fpm.pkColumn,
@@ -348,7 +343,7 @@ export class FactoidController {
           comment: incFM.comment ?? ""
         }))
         // the factoid property mappings
-        for (let fpm of incFM.properties) {
+        for (const fpm of incFM.properties) {
           // the new properties  (according to the presence of the incoming pkEntity)
           if (!fpm.pkEntity) {
             await this.datFactoidPropertyMappingRepository.create({
@@ -386,7 +381,7 @@ export class FactoidController {
       if (!factoidMappings.mappings.some(fm => fm.pkEntity == cfm.pk_entity)) {
         // first delete all properties
         const props = currentFPM.filter(p => p.fk_factoid_mapping == cfm.pk_entity);
-        for (let p of props) {await this.datFactoidPropertyMappingRepository.deleteById(p.pk_entity)}
+        for (const p of props) {await this.datFactoidPropertyMappingRepository.deleteById(p.pk_entity)}
         // delete the factoid mappings
         await this.datFactoidMappingRepository.deleteById(cfm.pk_entity)
       }

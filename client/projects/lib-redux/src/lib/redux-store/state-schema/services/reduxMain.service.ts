@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { GvSchemaActions } from '../actions/schema.actions';
 
 @Injectable({
@@ -15,14 +14,14 @@ import { GvSchemaActions } from '../actions/schema.actions';
 export class ReduxMainService {
 
   constructor(
-    private schemaActions: GvSchemaActions,
-    private projectDataApi: ProjectDataService,
-    private projectConfigApi: ProjectConfigurationService,
-    private dataModelApi: DataModelService,
-    private accountDataApi: AccountDataService,
-    private contentTree: ContentTreeService,
-    private pag: SubfieldPageControllerService,
-    private proInfoProjRelApi: ProInfoProjRelApi
+    protected schemaActions: GvSchemaActions,
+    protected projectDataApi: ProjectDataService,
+    protected projectConfigApi: ProjectConfigurationService,
+    protected dataModelApi: DataModelService,
+    protected accountDataApi: AccountDataService,
+    protected contentTree: ContentTreeService,
+    protected pag: SubfieldPageControllerService,
+    protected proInfoProjRelApi: ProInfoProjRelApi
   ) { }
 
   /**
@@ -35,12 +34,16 @@ export class ReduxMainService {
    * @param pkEntities
    * @param pkProject
    */
-  removeInfEntitiesFromProject(pkEntities: number[], pkProject: number): Observable<GvPositiveSchemaObject> {
-    const call$ = this.proInfoProjRelApi.bulkUpdateEprAttributes(
+  removeInfEntitiesFromProject(pkEntities: number[], pkProject: number) {
+    const call$ = this.projectDataApi.createProjectDataControllerUpsertInfoProjectRelations(
       pkProject,
-      pkEntities.map((pk) => ({ fk_entity: pk, is_in_project: false }))
-    ) as Observable<ProInfoProjRel[]>
-    return this.schemaActions.loadGvSchemaObject(call$.pipe(map(x => ({ pro: { info_proj_rel: x } }))))
+      pkEntities.map((pk) => ({ fk_entity: pk, fk_project: pkProject, is_in_project: false }))
+    )
+    // bulkUpdateEprAttributes(
+    //   pkProject,
+    //   pkEntities.map((pk) => ({ fk_entity: pk, is_in_project: false }))
+    // ) as Observable<ProInfoProjRel[]>
+    return this.schemaActions.loadGvSchemaModifier(call$)
   }
 
   loadDatChunksOfDigital(pkDigital: number, pkProject: number): Observable<GvPositiveSchemaObject> {

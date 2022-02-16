@@ -1,0 +1,35 @@
+<ng-container *ngIf="isExpressionLike$|async">
+  <div class="mat-typography mat-bg-grey-100 gv-section-header">
+    <h3 class="loc-left d-flex mat-text-secondary">
+      Sections and digital reproductions
+    </h3>
+    <div class="loc-right">
+      <mat-menu #appMenu="matMenu">
+        <div class="dropdown-header">Add a new</div>
+        <button *ngFor="let item of addButtons$|async" mat-menu-item (click)="openAddStatementDialog(item)">
+          <mat-icon>
+            <gv-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="item.targetClass" [isFavorite]="false"
+              [classLabel]="item.targetClassLabel"></gv-class-info>
+          </mat-icon>
+          <span>{{item.targetClassLabel}}</span>
+        </button>
+
+      </mat-menu>
+
+
+      <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto" *ngIf="!(readmode$|async)">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+</ng-container>
+<div class="gv-scroll-y-auto">
+  <gv-view-field-body #f *ngFor="let field of fields$|async" [showBodyOnInit]=true
+    [hidden]="( field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)" [field]="field"
+    [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [source]="source" [scope]="scope" [limit]="100"
+    [hideNoItemsInfo]="true">
+  </gv-view-field-body>
+
+</div>

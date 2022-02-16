@@ -2,7 +2,6 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatRadioChange } from '@angular/material/radio';
-import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
 import { TableService, UnMapCheckResponse } from '@kleiolab/lib-sdk-lb4';
@@ -107,15 +106,16 @@ export class ColMappingComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$),
     )
 
-    // save the statements concerned by the mapping in order to be able to delete them if needed
-    this.data.pkCells.forEach(pkCell => {
-      this.p.inf$.statement$.by_subject_and_property$({
-        fk_property_of_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
-        fk_subject_tables_cell: pkCell
-      }).pipe(takeUntil(this.destroy$)).subscribe(statements => {
-        this.pkStatements = statements.map(s => s.pk_entity);
-      })
-    })
+    // todo: delete this part, if not needed:
+    // // save the statements concerned by the mapping in order to be able to delete them if needed
+    // this.data.pkCells.forEach(pkCell => {
+    //   this.p.inf$.statement$.by_subject_and_property$({
+    //     fk_property_of_property: DfhConfig.PROPERTY_PK_GEOVP11_REFERS_TO,
+    //     fk_subject_tables_cell: pkCell
+    //   }).pipe(takeUntil(this.destroy$)).subscribe(statements => {
+    //     this.pkStatements = statements.map(s => s.pk_entity);
+    //   })
+    // })
 
   }
 

@@ -1,4 +1,6 @@
 import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
+import { C_339_STRING_ID, C_899_DEFINITION_ID, P_1864_HAS_VALUE_VERSION_ID, P_63_HAS_LANGUAGE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
+import { InfLanguageMock } from './auto-gen/gvDB/InfLanguageMock';
 import { InfResourceMock } from './auto-gen/gvDB/InfResourceMock';
 import { InfStatementMock } from './auto-gen/gvDB/InfStatementMock';
 import { WarEntityPreviewMock } from './auto-gen/gvDB/WarEntityPreviewMock';
@@ -90,35 +92,37 @@ export namespace InfResourceWithRelationsMock {
     'outgoing_statements': [
       {
         'fk_property': 1762,
-        'object_lang_string': {
-          'fk_class': 785,
-          'fk_language': 18605,
-          'language': {
-            'fk_class': 54,
-            'notes': 'German',
-            'iso6391': 'de ',
-            'iso6392b': 'ger',
-            'iso6392t': 'deu',
-            'pk_entity': 18605,
-            'pk_language': 'deu'
-          },
-          'quill_doc': {
-            'latestId': 3,
-            'ops': [
-              {
-                'attributes': {
-                  'charid': '3'
-                },
-                'insert': 'a'
-              },
-              {
-                'attributes': {
-                  'blockid': '2'
-                },
-                'insert': '\n'
+        object_resource: {
+          fk_class: C_899_DEFINITION_ID,
+          outgoing_statements: [
+            {
+              fk_property: P_63_HAS_LANGUAGE_ID,
+              object_language: InfLanguageMock.FRENCH
+            },
+            {
+              fk_property: P_1864_HAS_VALUE_VERSION_ID,
+              object_appellation: {
+                fk_class: C_339_STRING_ID,
+                'quill_doc': {
+                  'latestId': 3,
+                  'ops': [
+                    {
+                      'attributes': {
+                        'charid': '3'
+                      },
+                      'insert': 'a'
+                    },
+                    {
+                      'attributes': {
+                        'blockid': '2'
+                      },
+                      'insert': '\n'
+                    }
+                  ]
+                }
               }
-            ]
-          }
+            }
+          ]
         }
       }
     ],

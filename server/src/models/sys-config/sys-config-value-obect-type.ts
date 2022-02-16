@@ -32,4 +32,8 @@ export class SysConfigValueObjectType {
 
   @property({type: DimensionValueObjectType, })
   dimension?: DimensionValueObjectType;
+
+
+  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
+  cell?: TrueEnum;
 }

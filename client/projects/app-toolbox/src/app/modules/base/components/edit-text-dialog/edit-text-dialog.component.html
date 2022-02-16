@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>
+  {{(data.readmode$|async)?'View':'Edit'}} {{data.classLabel}}
+</h1>
+<div mat-dialog-content class="p-0">
+  <gv-view-field-has-value-version class="gv-flex-fh" [field]="data.field" [scope]="data.scope" [source]="data.source"
+    [editing$]="data.editing$" [showOntoInfo$]="data.showOntoInfo$" [readmode$]="data.readmode$"
+    [showRightButtons]="false">
+  </gv-view-field-has-value-version>
+
+</div>
+<div *ngIf="!(data.readmode$|async)" mat-dialog-actions>
+  <button mat-button [color]="'primary'" (click)="cancel()">Cancel</button>
+  <button mat-button [color]="'primary'" cdkFocusInitial (click)="save()">Save</button>
+</div>
+<div *ngIf="data.readmode$|async" mat-dialog-actions>
+  <button mat-button [color]="'primary'" cdkFocusInitial (click)="dialogRef.close()">Ok</button>
+</div>

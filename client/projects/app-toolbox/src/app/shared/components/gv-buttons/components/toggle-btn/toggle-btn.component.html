@@ -1,0 +1,6 @@
+<div [hidden]="!(_value$|async)" (click)="onClick()">
+  <ng-content select="[gv-toggle-on]"></ng-content>
+</div>
+<div [hidden]="_value$|async" (click)="offClick()">
+  <ng-content select="[gv-toggle-off]"></ng-content>
+</div>

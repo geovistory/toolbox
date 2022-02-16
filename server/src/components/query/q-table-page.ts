@@ -1,7 +1,7 @@
-import {model, ModelDefinition, property} from '@loopback/repository';
+import {model, property} from '@loopback/repository';
 import {without} from 'ramda';
 import {Postgres1DataSource} from '../../datasources';
-import {DatColumn, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, ProInfoProjRel} from '../../models';
+import {DatColumn} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {SysConfigValue} from '../../models/sys-config/sys-config-value.model';
 import {logSql} from '../../utils/helpers';
@@ -106,14 +106,14 @@ export class TablePageResponse {
   @property.array(TableRow) rows: TableRow[];
   @property.array(String) columns: string[];
   @property() length: number;
-  @property() schemaObject: GvPositiveSchemaObject
+  // @property() schemaObject: GvPositiveSchemaObject
 }
 
 interface ColBatchWith {name: string, columns: string[]}
 interface TwNameColName {twName: string, colName: string, pkColumn?: number, vot?: 'appellation' | 'place' | 'dimension' | 'lang_string' | 'time_primitive' | 'language'}
 const PK_CELL_SUFFIX = '_pk_cell'
-const TW_JOIN_STMT = 'tw_stmt_'
-const TW_JOIN_VOT = 'tw_vot_'
+// const TW_JOIN_STMT = 'tw_stmt_'
+// const TW_JOIN_VOT = 'tw_vot_'
 /**
  * Class to create select queries on data tables
  */
@@ -215,52 +215,15 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     tw4 AS (
       SELECT json_agg(t1) as rows FROM tw2 t1
     )
-    ------------------------------------
-    --- join elements for schema object
-    ------------------------------------
-    -- information.statement
-    ${this.leftJoinStatements(await this.getRefersToColumns(), fkProject)}
 
-    -- information.VOT
-    ${this.leftJoinValueObjectTables(await this.getRefersToColumns())}
-    ------------------------------------
-    --- group parts by model
-    ------------------------------------
-    -- group information.statement
-    ${this.groupStatements(await this.getRefersToColumns())}
-
-    -- group information.VOT TEST
-    ${this.groupVOTs(await this.getRefersToColumns())}
 
     SELECT
     json_build_object (
         'rows', COALESCE(tw4.rows, '[]'::json),
-        'length', tw3.length,
-         'schemaObject', json_build_object (
-          'inf', json_strip_nulls(json_build_object(
-            'statement', statement.json,
-            'appellation', appellation.json,
-            'place', place.json,
-            'dimension', dimension.json,
-            'lang_string', lang_string.json,
-            'time_primitive', time_primitive.json,
-            'language', language.json
-          )),
-          'pro', json_strip_nulls(json_build_object(
-            'info_proj_rel', info_proj_rel.json
-          ))
-        )
+        'length', tw3.length
     ) as data
     FROM tw4
     LEFT JOIN tw3 ON true
-    LEFT JOIN statement ON true
-    LEFT JOIN appellation ON true
-    LEFT JOIN place ON true
-    LEFT JOIN dimension ON true
-    LEFT JOIN lang_string ON true
-    LEFT JOIN time_primitive ON true
-    LEFT JOIN language ON true
-    LEFT JOIN info_proj_rel ON true;
     `
 
     logSql(this.sql, this.params)
@@ -276,7 +239,7 @@ export class QTableTablePage extends SqlBuilderLb4Models {
       columns: options.columns,
       rows: res?.rows,
       length: res?.length,
-      schemaObject: res?.schemaObject
+      // schemaObject: res?.schemaObject
     }
 
   }
@@ -327,233 +290,233 @@ export class QTableTablePage extends SqlBuilderLb4Models {
     return refersToColumns
   }
 
-  private groupStatements(refersToColumns: TwNameColName[]) {
-    if (!refersToColumns.length) return `,
-    info_proj_rel AS (
-      SELECT '[]'::json as json
-    ),
-    statement AS (
-      SELECT '[]'::json as json
-    )
-    `;
-    return `,
-    info_proj_rel AS (
-      SELECT json_agg(t1.objects) as json
-      FROM (
-        select
-        distinct on (t1.proj_rel ->> 'pk_entity') t1.proj_rel as objects
-        FROM
-        (
-          ${refersToColumns
-        .map(item => `SELECT proj_rel FROM ${TW_JOIN_STMT}${item.colName}`)
-        .join('\nUNION ALL\n')}
-        ) AS t1
-      ) as t1
-      GROUP BY true
-    ),
-    statement AS (
-      SELECT json_agg(t1.objects) as json
-      FROM (
-        select
-        distinct on (t1.pk_entity)
-        ${this.createBuildObject('t1', InfStatement.definition)} as objects
-        FROM
-        (
-          ${refersToColumns
-        .map(item => `SELECT * FROM ${TW_JOIN_STMT}${item.colName}`)
-        .join('\nUNION ALL\n')}
-        ) AS t1
-      ) as t1
-      GROUP BY true
-    )`
+  // private groupStatements(refersToColumns: TwNameColName[]) {
+  //   if (!refersToColumns.length) return `,
+  //   info_proj_rel AS (
+  //     SELECT '[]'::json as json
+  //   ),
+  //   statement AS (
+  //     SELECT '[]'::json as json
+  //   )
+  //   `;
+  //   return `,
+  //   info_proj_rel AS (
+  //     SELECT json_agg(t1.objects) as json
+  //     FROM (
+  //       select
+  //       distinct on (t1.proj_rel ->> 'pk_entity') t1.proj_rel as objects
+  //       FROM
+  //       (
+  //         ${refersToColumns
+  //       .map(item => `SELECT proj_rel FROM ${TW_JOIN_STMT}${item.colName}`)
+  //       .join('\nUNION ALL\n')}
+  //       ) AS t1
+  //     ) as t1
+  //     GROUP BY true
+  //   ),
+  //   statement AS (
+  //     SELECT json_agg(t1.objects) as json
+  //     FROM (
+  //       select
+  //       distinct on (t1.pk_entity)
+  //       ${this.createBuildObject('t1', InfStatement.definition)} as objects
+  //       FROM
+  //       (
+  //         ${refersToColumns
+  //       .map(item => `SELECT * FROM ${TW_JOIN_STMT}${item.colName}`)
+  //       .join('\nUNION ALL\n')}
+  //       ) AS t1
+  //     ) as t1
+  //     GROUP BY true
+  //   )`
 
-  }
-
-
-  private leftJoinStatements(refersToColumns: TwNameColName[], fkProject: number) {
-    if (!refersToColumns.length) return '';
-    const sqlPerCol: string[] = []
-    for (const item of refersToColumns) {
-      sqlPerCol.push(this.leftJoinStatement(item.twName, item.colName, fkProject))
-    }
-    const sql = ',\n' + sqlPerCol.join(',\n')
-    return sql
-  }
+  // }
 
 
-  private leftJoinStatement(twName: string, pkCellColName: string, fkProject: number) {
-    return `
-      -- statements where cell in column ${pkCellColName} 'refers to' entity
-        ${TW_JOIN_STMT}${pkCellColName} AS (
-        SELECT
-          ${this.createSelect('t1', InfStatement.definition)},
-          ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
-        FROM
-          ${twName}
-          CROSS JOIN information.v_statement t1,
-          projects.info_proj_rel t2
-        WHERE
-          ${twName}."${pkCellColName}" = t1.fk_subject_tables_cell
-          AND t1.pk_entity = t2.fk_entity
-          AND t1.fk_property = 1334
-          AND t2.is_in_project = true
-          AND t2.fk_project = ${this.addParam(fkProject)}
-      )
-    `
-  }
+  // private leftJoinStatements(refersToColumns: TwNameColName[], fkProject: number) {
+  //   if (!refersToColumns.length) return '';
+  //   const sqlPerCol: string[] = []
+  //   for (const item of refersToColumns) {
+  //     sqlPerCol.push(this.leftJoinStatement(item.twName, item.colName, fkProject))
+  //   }
+  //   const sql = ',\n' + sqlPerCol.join(',\n')
+  //   return sql
+  // }
 
 
-  private groupVOTs(refersToColumns: TwNameColName[]) {
-    let sql = ',';
-
-    if (refersToColumns.some(item => item.vot === 'appellation'))
-      sql += `appellation AS (
-        SELECT json_agg(t1.objects) as json
-        FROM (
-          select
-          distinct on (t1.pk_entity)
-          ${this.createBuildObject('t1', InfAppellation.definition)} as objects
-          FROM
-          (
-            ${refersToColumns
-          .filter(item => item.vot === 'appellation')
-          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
-          .join('\nUNION ALL\n')}
-          ) AS t1
-        ) as t1
-        GROUP BY true
-      ),`
-    else sql += `appellation AS (SELECT '[]'::json as json),`
-
-    if (refersToColumns.some(item => item.vot === 'place'))
-      sql += `place AS (
-      SELECT json_agg(t1.objects) as json
-      FROM (
-        select
-        distinct on (t1.pk_entity)
-        ${this.createBuildObject('t1', InfPlace.definition)} as objects
-        FROM
-        (
-          ${refersToColumns
-          .filter(item => item.vot === 'place')
-          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
-          .join('\nUNION ALL\n')}
-        ) AS t1
-      ) as t1
-      GROUP BY true
-    ),`
-    else sql += `place AS (SELECT '[]'::json as json),`
-
-    if (refersToColumns.some(item => item.vot === 'dimension'))
-      sql += `dimension AS (
-      SELECT json_agg(t1.objects) as json
-      FROM (
-        select
-        distinct on (t1.pk_entity)
-        ${this.createBuildObject('t1', InfDimension.definition)} as objects
-        FROM
-        (
-          ${refersToColumns
-          .filter(item => item.vot === 'dimension')
-          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
-          .join('\nUNION ALL\n')}
-        ) AS t1
-      ) as t1
-      GROUP BY true
-    ),`
-    else sql += `dimension AS (SELECT '[]'::json as json),`
-
-    if (refersToColumns.some(item => item.vot === 'lang_string'))
-      sql += `lang_string AS (
-      SELECT json_agg(t1.objects) as json
-      FROM (
-        select
-        distinct on (t1.pk_entity)
-        ${this.createBuildObject('t1', InfLangString.definition)} as objects
-        FROM
-        (
-          ${refersToColumns
-          .filter(item => item.vot === 'lang_string')
-          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
-          .join('\nUNION ALL\n')}
-        ) AS t1
-      ) as t1
-      GROUP BY true
-    ),`
-    else sql += `lang_string AS (SELECT '[]'::json as json),`
-
-    if (refersToColumns.some(item => item.vot === 'time_primitive'))
-      sql += `time_primitive AS (
-      SELECT json_agg(t1.objects) as json
-      FROM (
-        select
-        distinct on (t1.pk_entity)
-        ${this.createBuildObject('t1', InfTimePrimitive.definition)} as objects
-        FROM
-        (
-          ${refersToColumns
-          .filter(item => item.vot === 'time_primitive')
-          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
-          .join('\nUNION ALL\n')}
-        ) AS t1
-      ) as t1
-      GROUP BY true
-    ),`
-    else sql += `time_primitive AS (SELECT '[]'::json as json),`
-
-    if (refersToColumns.some(item => item.vot === 'language'))
-      sql += `language AS (
-      SELECT json_agg(t1.objects) as json
-      FROM (
-        select
-        distinct on (t1.pk_entity)
-        ${this.createBuildObject('t1', InfLanguage.definition)} as objects
-        FROM
-        (
-          ${refersToColumns
-          .filter(item => item.vot === 'language')
-          .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
-          .join('\nUNION ALL\n')}
-        ) AS t1
-      ) as t1
-      GROUP BY true
-    ),`
-    else sql += `language AS (SELECT '[]'::json as json),`
-
-    return sql.slice(0, sql.length - 1);//remove last comma
-  }
-
-  private leftJoinValueObjectTables(refersToColumns: TwNameColName[]) {
-    if (!refersToColumns.length) return '';
-    const sqlPerCol: string[] = []
-    for (const item of refersToColumns) {
-      if (item.vot) sqlPerCol.push(this.leftJoinValueObjectTable(item))
-    }
-    if (sqlPerCol.length !== 0) return ',\n' + sqlPerCol.join(',\n')
-    else return ''
-  }
+  // private leftJoinStatement(twName: string, pkCellColName: string, fkProject: number) {
+  //   return `
+  //     -- statements where cell in column ${pkCellColName} 'refers to' entity
+  //       ${TW_JOIN_STMT}${pkCellColName} AS (
+  //       SELECT
+  //         ${this.createSelect('t1', InfStatement.definition)},
+  //         ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
+  //       FROM
+  //         ${twName}
+  //         CROSS JOIN information.v_statement t1,
+  //         projects.info_proj_rel t2
+  //       WHERE
+  //         ${twName}."${pkCellColName}" = t1.fk_subject_tables_cell
+  //         AND t1.pk_entity = t2.fk_entity
+  //         AND t1.fk_property = 1334
+  //         AND t2.is_in_project = true
+  //         AND t2.fk_project = ${this.addParam(fkProject)}
+  //     )
+  //   `
+  // }
 
 
-  private leftJoinValueObjectTable(item: TwNameColName): string {
-    let modelDef: ModelDefinition;
-    if (item.vot === 'appellation') modelDef = InfAppellation.definition;
-    else if (item.vot === 'place') modelDef = InfPlace.definition;
-    else if (item.vot === 'dimension') modelDef = InfDimension.definition;
-    else if (item.vot === 'lang_string') modelDef = InfLangString.definition;
-    else if (item.vot === 'time_primitive') modelDef = InfTimePrimitive.definition;
-    else if (item.vot === 'language') modelDef = InfLanguage.definition;
-    else throw new Error('Impossible error');
+  // private groupVOTs(refersToColumns: TwNameColName[]) {
+  //   let sql = ',';
 
-    return `
-    ${TW_JOIN_VOT}${item.colName} AS (
-        -- fetch the values object type for the statements
-        SELECT
-          ${this.createSelect('t1', modelDef)}
-        FROM information.${item.vot === 'place' ? 'v_place' : item.vot} t1
-        INNER JOIN ${TW_JOIN_STMT}${item.colName} ON t1.pk_entity = ${TW_JOIN_STMT}${item.colName}.fk_object_info
-      )
-    `
-  }
+  //   if (refersToColumns.some(item => item.vot === 'appellation'))
+  //     sql += `appellation AS (
+  //       SELECT json_agg(t1.objects) as json
+  //       FROM (
+  //         select
+  //         distinct on (t1.pk_entity)
+  //         ${this.createBuildObject('t1', InfAppellation.definition)} as objects
+  //         FROM
+  //         (
+  //           ${refersToColumns
+  //         .filter(item => item.vot === 'appellation')
+  //         .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+  //         .join('\nUNION ALL\n')}
+  //         ) AS t1
+  //       ) as t1
+  //       GROUP BY true
+  //     ),`
+  //   else sql += `appellation AS (SELECT '[]'::json as json),`
+
+  //   if (refersToColumns.some(item => item.vot === 'place'))
+  //     sql += `place AS (
+  //     SELECT json_agg(t1.objects) as json
+  //     FROM (
+  //       select
+  //       distinct on (t1.pk_entity)
+  //       ${this.createBuildObject('t1', InfPlace.definition)} as objects
+  //       FROM
+  //       (
+  //         ${refersToColumns
+  //         .filter(item => item.vot === 'place')
+  //         .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+  //         .join('\nUNION ALL\n')}
+  //       ) AS t1
+  //     ) as t1
+  //     GROUP BY true
+  //   ),`
+  //   else sql += `place AS (SELECT '[]'::json as json),`
+
+  //   if (refersToColumns.some(item => item.vot === 'dimension'))
+  //     sql += `dimension AS (
+  //     SELECT json_agg(t1.objects) as json
+  //     FROM (
+  //       select
+  //       distinct on (t1.pk_entity)
+  //       ${this.createBuildObject('t1', InfDimension.definition)} as objects
+  //       FROM
+  //       (
+  //         ${refersToColumns
+  //         .filter(item => item.vot === 'dimension')
+  //         .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+  //         .join('\nUNION ALL\n')}
+  //       ) AS t1
+  //     ) as t1
+  //     GROUP BY true
+  //   ),`
+  //   else sql += `dimension AS (SELECT '[]'::json as json),`
+
+  //   if (refersToColumns.some(item => item.vot === 'lang_string'))
+  //     sql += `lang_string AS (
+  //     SELECT json_agg(t1.objects) as json
+  //     FROM (
+  //       select
+  //       distinct on (t1.pk_entity)
+  //       ${this.createBuildObject('t1', InfLangString.definition)} as objects
+  //       FROM
+  //       (
+  //         ${refersToColumns
+  //         .filter(item => item.vot === 'lang_string')
+  //         .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+  //         .join('\nUNION ALL\n')}
+  //       ) AS t1
+  //     ) as t1
+  //     GROUP BY true
+  //   ),`
+  //   else sql += `lang_string AS (SELECT '[]'::json as json),`
+
+  //   if (refersToColumns.some(item => item.vot === 'time_primitive'))
+  //     sql += `time_primitive AS (
+  //     SELECT json_agg(t1.objects) as json
+  //     FROM (
+  //       select
+  //       distinct on (t1.pk_entity)
+  //       ${this.createBuildObject('t1', InfTimePrimitive.definition)} as objects
+  //       FROM
+  //       (
+  //         ${refersToColumns
+  //         .filter(item => item.vot === 'time_primitive')
+  //         .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+  //         .join('\nUNION ALL\n')}
+  //       ) AS t1
+  //     ) as t1
+  //     GROUP BY true
+  //   ),`
+  //   else sql += `time_primitive AS (SELECT '[]'::json as json),`
+
+  //   if (refersToColumns.some(item => item.vot === 'language'))
+  //     sql += `language AS (
+  //     SELECT json_agg(t1.objects) as json
+  //     FROM (
+  //       select
+  //       distinct on (t1.pk_entity)
+  //       ${this.createBuildObject('t1', InfLanguage.definition)} as objects
+  //       FROM
+  //       (
+  //         ${refersToColumns
+  //         .filter(item => item.vot === 'language')
+  //         .map(item => `SELECT * FROM ${TW_JOIN_VOT}${item.colName}`)
+  //         .join('\nUNION ALL\n')}
+  //       ) AS t1
+  //     ) as t1
+  //     GROUP BY true
+  //   ),`
+  //   else sql += `language AS (SELECT '[]'::json as json),`
+
+  //   return sql.slice(0, sql.length - 1);//remove last comma
+  // }
+
+  // private leftJoinValueObjectTables(refersToColumns: TwNameColName[]) {
+  //   if (!refersToColumns.length) return '';
+  //   const sqlPerCol: string[] = []
+  //   for (const item of refersToColumns) {
+  //     if (item.vot) sqlPerCol.push(this.leftJoinValueObjectTable(item))
+  //   }
+  //   if (sqlPerCol.length !== 0) return ',\n' + sqlPerCol.join(',\n')
+  //   else return ''
+  // }
+
+
+  // private leftJoinValueObjectTable(item: TwNameColName): string {
+  //   let modelDef: ModelDefinition;
+  //   if (item.vot === 'appellation') modelDef = InfAppellation.definition;
+  //   else if (item.vot === 'place') modelDef = InfPlace.definition;
+  //   else if (item.vot === 'dimension') modelDef = InfDimension.definition;
+  //   else if (item.vot === 'lang_string') modelDef = InfLangString.definition;
+  //   else if (item.vot === 'time_primitive') modelDef = InfTimePrimitive.definition;
+  //   else if (item.vot === 'language') modelDef = InfLanguage.definition;
+  //   else throw new Error('Impossible error');
+
+  //   return `
+  //   ${TW_JOIN_VOT}${item.colName} AS (
+  //       -- fetch the values object type for the statements
+  //       SELECT
+  //         ${this.createSelect('t1', modelDef)}
+  //       FROM information.${item.vot === 'place' ? 'v_place' : item.vot} t1
+  //       INNER JOIN ${TW_JOIN_STMT}${item.colName} ON t1.pk_entity = ${TW_JOIN_STMT}${item.colName}.fk_object_info
+  //     )
+  //   `
+  // }
 
   private addColumnSelects(columns: string[]) {
     return columns.map(pk => {
@@ -631,8 +594,6 @@ export class QTableTablePage extends SqlBuilderLb4Models {
   }
 
   private joinColBatchWiths(masterColumns: string[], sortBy: string, sortDirection: string) {
-    let direction = 'ASC';
-    if (sortBy === 'index') direction = sortDirection;
 
     return `
         Select

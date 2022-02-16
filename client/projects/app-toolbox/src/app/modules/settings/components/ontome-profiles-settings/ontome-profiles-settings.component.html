@@ -64,7 +64,7 @@
       <th mat-header-cell *matHeaderCellDef> </th>
       <td mat-cell *matCellDef="let element">
         <button mat-button color="primary" (click)="openDeactivationReportModal(element)"
-          [disabled]="element.profileId === 5">Deactivate...</button>
+          [disabled]="element.required">Deactivate...</button>
       </td>
     </ng-container>
     <ng-container matColumnDef="update">

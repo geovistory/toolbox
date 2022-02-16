@@ -164,6 +164,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
     else if (v.string) return { ...res, label: v.string.string }
     else if (v.langString) return { ...res, label: v.langString.string }
     else if (v.timePrimitive) return { ...res, label: v.timePrimitive.label }
+    else if (v.cell) return { ...res, label: `${v.cell.stringValue !== undefined ? v.cell.stringValue : v.cell.numericValue}` }
     else return { ...res, label: '' }
   }
   transformEntity(x: WarEntityPreview): ResultTableCell {

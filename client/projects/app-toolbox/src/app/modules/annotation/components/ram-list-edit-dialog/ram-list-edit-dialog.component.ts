@@ -64,7 +64,7 @@ export const fieldAtReferencePoP: Field = {
 })
 export class RamListEditDialogComponent implements OnInit {
 
-  readonly$ = new BehaviorSubject(false);
+  readmode$ = new BehaviorSubject(false);
   showOntoInfo$ = new BehaviorSubject(false)
   field: Field
   constructor(

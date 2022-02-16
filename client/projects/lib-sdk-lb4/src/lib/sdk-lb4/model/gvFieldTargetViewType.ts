@@ -11,6 +11,7 @@
  */
 import { GvSubentitFieldPageReq } from './gvSubentitFieldPageReq';
 import { DimensionValueObjectType } from './dimensionValueObjectType';
+import { GvSubentityFieldPage } from './gvSubentityFieldPage';
 
 
 /**
@@ -23,9 +24,11 @@ export interface GvFieldTargetViewType {
     timePrimitive?: GvFieldTargetViewType.TimePrimitiveEnum;
     langString?: GvFieldTargetViewType.LangStringEnum;
     dimension?: DimensionValueObjectType;
+    cell?: GvFieldTargetViewType.CellEnum;
     entityPreview?: GvFieldTargetViewType.EntityPreviewEnum;
     typeItem?: GvFieldTargetViewType.TypeItemEnum;
     nestedResource?: Array<GvSubentitFieldPageReq>;
+    subReqsRecursiveTargets?: Array<GvSubentityFieldPage>;
 }
 export namespace GvFieldTargetViewType {
     export type AppellationEnum = 'true';
@@ -47,6 +50,10 @@ export namespace GvFieldTargetViewType {
     export type LangStringEnum = 'true';
     export const LangStringEnum = {
         True: 'true' as LangStringEnum
+    };
+    export type CellEnum = 'true';
+    export const CellEnum = {
+        True: 'true' as CellEnum
     };
     export type EntityPreviewEnum = 'true';
     export const EntityPreviewEnum = {

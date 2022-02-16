@@ -9,7 +9,9 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { InfStatementWithRelations } from './infStatementWithRelations';
 import { InfTimePrimitive } from './infTimePrimitive';
+import { InfResourceWithRelations } from './infResourceWithRelations';
 import { InfAppellation } from './infAppellation';
 import { InfDimension } from './infDimension';
 import { InfLangString } from './infLangString';
@@ -18,8 +20,8 @@ import { InfLanguage } from './infLanguage';
 
 
 export interface InfData { 
-    resource?: object;
-    statement?: object;
+    resource?: InfResourceWithRelations;
+    statement?: InfStatementWithRelations;
     appellation?: InfAppellation;
     place?: InfPlace;
     dimension?: InfDimension;

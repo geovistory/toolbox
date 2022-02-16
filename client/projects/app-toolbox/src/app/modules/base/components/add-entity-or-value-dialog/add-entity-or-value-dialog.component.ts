@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, SysSelector, WarSelector } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
-import { GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier, InfData, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
@@ -15,6 +15,12 @@ import { SliderEnum } from '../slider/slider.component';
 export interface AddEntityOrValueDialogData {
   pkClass: number;
   initVal?: InfResourceWithRelations;
+
+  insteadOfCreationHook?: () => {
+    pkEntity?: number, // this is the pkEntity of an existing resource
+    infData?: InfData // this contains the
+  }
+
   selectMode?: boolean;
 }
 
@@ -112,7 +118,7 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   }
 
   private get4CharsForEachWords(str: string) {
-    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").split(' ').map(s => s.slice(0, 4)).join(' ')
+    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').map(s => s.slice(0, 4)).join(' ')
   }
 
   closeAddForm() {
@@ -148,6 +154,8 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   }
 
   onConfirmClick(d: { pkEntity: number, isInProject: boolean }) {
+    // insteadOfCreationCallback, if provided and return
+
     this.selectedPkEntity$.next(d.pkEntity)
     if (d.isInProject) this.openEntity()
     else this.addEntityToProject()
@@ -159,6 +167,8 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   }
 
   addEntityToProject() {
+    // insteadOfCreationCallback, if provided and return
+
     this.p.addEntityToProject(this.selectedPkEntity$.value, () => {
       this.dialogRef.close({
         action: 'added',
@@ -169,12 +179,16 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   }
 
   selectEntity(d: { pkEntity: number, isInProject: boolean }) {
+    // insteadOfCreationCallback, if provided and return
+
     this.selectedPkEntity$.next(d.pkEntity)
-    if (d.isInProject || !d) this.dialogRef.close({
-      action: 'selected',
-      pkEntity: this.selectedPkEntity$.value,
-      pkClass: this.pkClass
-    })
+    if (d.isInProject || !d) {
+      this.dialogRef.close({
+        action: 'selected',
+        pkEntity: this.selectedPkEntity$.value,
+        pkClass: this.pkClass
+      })
+    }
     else this.addEntityToProject()
   }
 
@@ -188,26 +202,29 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   }
 
 
-  onSubmit(f: FormCreateDataComponent) {
+  async onSubmit(f: FormCreateDataComponent) {
     if (!f.checkValidation()) return;
 
     this.loading$.next(true);
 
-    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      const value = f.formFactory.formGroupFactory.valueChanges$.value
+    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise()
 
-      this.dataService.upsertInfData(pkProject, value).pipe(takeUntil(this.destroy$))
-        .subscribe((res: GvSchemaModifier) => {
-          const inf = res.positive.inf;
-          const mainPkEntity = (inf.resource ?? inf.statement ?? inf.appellation ?? inf.place ?? inf.dimension ?? inf.time_primitive ?? inf.lang_string ?? inf.language)[0].pk_entity
+    // insteadOfCreationCallback, if provided and return
 
-          this.dialogRef.close({
-            action: 'created',
-            pkEntity: mainPkEntity,
-            pkClass: this.pkClass
-          })
+    const value = f.formFactory.formGroupFactory.valueChanges$.value
+
+    this.dataService.upsertInfData(pkProject, value).pipe(takeUntil(this.destroy$))
+      .subscribe((res: GvSchemaModifier) => {
+        const inf = res.positive.inf;
+        const mainPkEntity = (inf.resource ?? inf.statement ?? inf.appellation ?? inf.place ?? inf.dimension ?? inf.time_primitive ?? inf.lang_string ?? inf.language)[0].pk_entity
+
+        this.dialogRef.close({
+          action: 'created',
+          pkEntity: mainPkEntity,
+          pkClass: this.pkClass
         })
-    })
+      })
+
   }
 
 }

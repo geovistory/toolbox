@@ -1,4 +1,5 @@
 import {InfResource} from '@kleiolab/lib-sdk-lb4';
+import {C_785_TEXT_ID, C_898_TABLE_ID, C_899_DEFINITION_ID, C_933_ANNOTATION_IN_TEXT_ID, C_934_ANNOTATION_IN_TABLE_ID} from '../../../../app-toolbox/src/app/ontome-ids';
 import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
 
@@ -257,15 +258,41 @@ export class InfResourceMock {
     community_visibility: {toolbox: true, dataApi: true, website: true}
   })
 
-  static readonly TYPE_OF_MANIF_PROD_TYPE_BOOK: OmitEntity<InfResource> = ({
+  static readonly DEFINITION_1: OmitEntity<InfResource> = ({
     pk_entity: 4025,
-    fk_class: DfhApiClassMock.EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
+    fk_class: C_899_DEFINITION_ID,
     community_visibility: {toolbox: true, dataApi: true, website: true}
   })
-  static readonly TYPE_OF_MANIF_PROD_TYPE_JOURNAL: OmitEntity<InfResource> = ({
+
+  static readonly TYPE_OF_MANIF_PROD_TYPE_BOOK: OmitEntity<InfResource> = ({
     pk_entity: 4026,
     fk_class: DfhApiClassMock.EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
     community_visibility: {toolbox: true, dataApi: true, website: true}
   })
+  static readonly TYPE_OF_MANIF_PROD_TYPE_JOURNAL: OmitEntity<InfResource> = ({
+    pk_entity: 4027,
+    fk_class: DfhApiClassMock.EN_452_TYPE_OF_MANIFESTATION_PRODUCT_TYPE.dfh_pk_class,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
+  static readonly TRANSCRIPTION_RODOLF_FOO: OmitEntity<InfResource> = ({
+    pk_entity: 4028,
+    fk_class: C_785_TEXT_ID,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
+  static readonly ANNOTATION_RUDOLF: OmitEntity<InfResource> = ({
+    pk_entity: 4029,
+    fk_class: C_933_ANNOTATION_IN_TEXT_ID,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
 
+  static readonly TABLE_1: OmitEntity<InfResource> = ({
+    pk_entity: 4030,
+    fk_class: C_898_TABLE_ID,
+    community_visibility: {toolbox: false, dataApi: false, website: false}
+  })
+  static readonly ANNOTATION_ANGELA: OmitEntity<InfResource> = ({
+    pk_entity: 4031,
+    fk_class: C_934_ANNOTATION_IN_TABLE_ID,
+    community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
 }

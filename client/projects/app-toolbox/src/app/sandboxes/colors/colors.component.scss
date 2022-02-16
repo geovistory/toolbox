@@ -1,0 +1,11 @@
+.palette {
+  display: inline-block;
+  padding: 20px;
+  background-color: antiquewhite;
+  .area {
+    width: 200px;
+    height: 50px;
+    text-align: center;
+    padding-top: 10px;
+  }
+}

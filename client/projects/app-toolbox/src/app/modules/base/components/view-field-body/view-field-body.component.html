@@ -1,24 +1,37 @@
 <div class="loc-container" gvOpenCloseContainer [isOpen$]="showBody$">
   <div gvOpenCloseChild>
 
-    <ng-container *ngIf="(items$|async)?.length">
-      <div [ngClass]="{'gv-fh': (addMode$|async)}">
-        <span class="mat-bg-grey-50">
-          <mat-paginator [length]="itemsCount$ | async" [pageSize]="limit$ | async" [pageIndex]="pageIndex$ | async"
-            [pageSizeOptions]="[5, 10, 20]" [showFirstLastButtons]=true [hidden]="(itemsCount$ | async) <= 5"
-            (page)="onPageChange($event)">
-          </mat-paginator>
-        </span>
-        <mat-divider [hidden]="(itemsCount$ | async) <= 5"></mat-divider>
-        <div *ngFor="let item of (items$ | async); let i = index;" class="literal-item"
-          [ngClass]="{'mb-3': (addMode$|async), 'mt-3': (addMode$|async)}">
-          <gv-view-field-item [item]=item [readonly$]=readonly$ [showOntoInfo$]=showOntoInfo$ [addMode$]=addMode$
+    <div [ngClass]="{'gv-fh': (addMode$|async)&&(items$|async)?.length}">
+      <span class="mat-bg-grey-50">
+        <mat-paginator *ngIf="!noPagination" [length]="itemsCount$ | async" [pageSize]="limit$ | async"
+          [pageIndex]="pageIndex$ | async" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]=true
+          [hidden]="(itemsCount$ | async) <= limit" (page)="onPageChange($event)">
+        </mat-paginator>
+      </span>
+      <mat-divider [hidden]="(itemsCount$ | async) <= limit"></mat-divider>
+      <div [gvDndSortList]="{items:(items$ | async), field:field, id:sortListId}"
+        (optimisticUpdate)="itemsOptimisticUpdate$.next($event)">
+
+        <gv-view-field-item-container *ngIf="!((itemsCount$ |async) > 0) && !hideNoItemsInfo" [hasDropZones]="false">
+          <div class="loc-no-items mat-caption mat-text-secondary">No items</div>
+        </gv-view-field-item-container>
+        <div *ngFor="let item of (items$ | async); let i = index; trackBy:trackByFn"
+          [ngClass]="{'mb-3': (addMode$|async), 'mt-3': (addMode$|async)}" [dndDraggable]="{item, sortListId}"
+          (dndStart)="onDragStart(item)" (dndEnd)="onDragEnd()">
+
+
+          <mat-divider *ngIf="dividerPosition==='top'"></mat-divider>
+          <gv-view-field-item [item]=item [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [addMode$]=addMode$
             [field]=field [scope]=scope [checked]="selection.isSelected(item.statement.pk_entity)"
             [allowMultiSelect]=allowMultiSelect (selectionChange)="toggleSelection($event)"></gv-view-field-item>
-          <mat-divider></mat-divider>
-        </div>
-      </div>
+          <mat-divider *ngIf="dividerPosition==='bottom'"></mat-divider>
 
+        </div>
+
+      </div>
+    </div>
+
+    <ng-container *ngIf="(items$|async)?.length">
       <div *ngIf="addMode$|async" class="gv-row-space-between">
         <div class="gv-row-center">
           <button [disabled]="(selectedCount$ | async) < 1 || (adding$|async)" type="submit" mat-flat-button
@@ -39,7 +52,6 @@
 
     </ng-container>
 
-    <div *ngIf="!((itemsCount$ |async) > 0)" class="loc-no-items mat-caption mat-text-secondary">No items</div>
 
     <div *ngIf="!(items$|async)" class="gv-flex-fh justify-content-center align-items-center">
       <mat-spinner [diameter]="20"></mat-spinner>

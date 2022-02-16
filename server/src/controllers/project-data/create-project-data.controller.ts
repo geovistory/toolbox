@@ -3,46 +3,30 @@ import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3';
-import {model, property, repository} from '@loopback/repository';
+import {repository} from '@loopback/repository';
 import {getModelSchemaRef, HttpErrors, param, post, requestBody} from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {concat, isEmpty, mergeDeepWith} from 'ramda';
 import {PartialDeep} from 'type-fest';
+import {PartialObjectDeep} from 'type-fest/source/partial-deep';
 import {Roles} from '../../components/authorization';
 import {QEntityAddToProject} from '../../components/query/q-entity-add-to-project';
 import {CLASS_PK_MANIFESTATION_SINGLETON} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
-import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from '../../models';
+import {InfLangString, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, ProInfoProjRel} from '../../models';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
+import {InfData} from '../../models/inf-data';
 import {InfStatementObjectFks} from '../../models/statement/InfStatementObjectFks';
 import {InfStatementObjectValues} from '../../models/statement/InfStatementObjectValues';
 import {InfStatementSubjectFks} from '../../models/statement/InfStatementSubjectFks';
 import {InfStatementSubjectValues} from '../../models/statement/InfStatementSubjectValues';
+import {ReplaceStatementInFieldRequest} from '../../models/statement/replace-statement-in-field-request';
 import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-community-visibility-options';
 import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-project-visibility-options';
 import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../../repositories';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {VisibilityController} from '../backoffice/visibility.controller';
-
-
-@model()
-export class InfData {
-  @property()
-  resource?: InfResourceWithRelations;
-  @property()
-  statement?: InfStatementWithRelations;
-  @property()
-  appellation?: InfAppellation;
-  @property()
-  place?: InfPlace;
-  @property()
-  dimension?: InfDimension;
-  @property()
-  timePrimitive?: InfTimePrimitive;
-  @property()
-  language?: InfLanguage;
-  @property()
-  langString?: InfLangString;
-}
+import {OrdNumController} from './ord-num.controller';
 
 
 @tags('project data')
@@ -53,6 +37,8 @@ export class CreateProjectDataController {
   constructor(
     @inject('controllers.VisibilityController')
     public visibilityController: VisibilityController,
+    @inject('controllers.OrdNumController')
+    public ordNumController: OrdNumController,
     @repository(InfResourceRepository)
     public infResourceRepository: InfResourceRepository,
     @repository(InfStatementRepository)
@@ -151,6 +137,75 @@ export class CreateProjectDataController {
     return this.schemaModifier
   }
 
+
+  @post('project-data/upsert-info-proj-rels', {
+    responses: {
+      '200': {
+        description: 'Upserted info-project relations and returned a GvSchemaModifier',
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvSchemaModifier
+            }
+          }
+        }
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async upsertInfoProjectRelations(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: getModelSchemaRef(ProInfoProjRel),
+          }
+        }
+      },
+    }) infoProjRels: ProInfoProjRel[]
+  ): Promise<GvSchemaModifier> {
+
+    const proms = infoProjRels.map(item => {
+      if (!item.fk_entity) throw new HttpErrors.NotAcceptable(`fk_entity missing on item ${JSON.stringify(item)}`)
+      if (pkProject !== item.fk_project) throw new HttpErrors.Unauthorized(`fk_project (${item.fk_project}) has to equal pkProject (${pkProject})`)
+      return this.upsertInfoProjRel(item.fk_entity, item, pkProject)
+    })
+    await Promise.all(proms)
+    return this.schemaModifier
+  }
+
+  @post('project-data/replace-statements-of-field', {
+    responses: {
+      '200': {
+        description: 'Upsert a statement of a field and remove all other statements of that field',
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async replaceStatementsOfField(
+    @requestBody() req: ReplaceStatementInFieldRequest
+  ): Promise<void> {
+    const newStmt = await this.findOrCreateStatementWithRelations(req.statement, req.pkProject)
+    const q = new SqlBuilderLb4Models(this.datasource)
+    const filter = q.createStatementFilterObject(req.isOutgoing, req.source, req.property)
+    q.sql = `
+      UPDATE projects.info_proj_rel
+      SET is_in_project=false
+      WHERE fk_entity IN (
+        SELECT pk_entity
+        FROM information.statement t1
+        WHERE ${q.getStatementWhereFilter('t1', filter).join(' AND ')}
+        AND t1.pk_entity != ${q.addParam(newStmt.pk_entity)}
+      )
+      AND fk_project = ${q.addParam(req.pkProject)}
+      AND is_in_project = true
+    `
+    await q.execute()
+  }
 
   @post('project-data/upsert-data', {
     responses: {
@@ -379,9 +434,66 @@ export class CreateProjectDataController {
     })
     const override = statementWithRels?.entity_version_project_rels?.[0] ?? {}
 
+    await this.updateOrderOfStatementsInField(override, createdStatement.pk_entity, project, dataObject);
+
     await this.upsertInfoProjRel(createdStatement.pk_entity, override, project)
 
     return createdStatement;
+  }
+
+  /**
+   * Updates the order of other statements in this field
+   * @param override
+   * @param createdStatementId
+   * @param project
+   * @param dataObject
+   */
+  private async updateOrderOfStatementsInField(
+    override: PartialObjectDeep<ProInfoProjRel>,
+    createdStatementId: number,
+    project: number,
+    dataObject: PartialObjectDeep<InfStatement>) {
+    let isOutgoing: boolean;
+
+    if (override.ord_num_of_range) {
+      isOutgoing = true;
+      await this.ordNumController.changeOrder({
+        movedStatementId: createdStatementId,
+        pkProject: project,
+        targetOrdNum: override.ord_num_of_range,
+        fieldId: {
+          source: {fkData: dataObject.fk_subject_data, fkInfo: dataObject.fk_subject_info, fkTablesCell: dataObject.fk_subject_tables_cell, fkTablesRow: dataObject.fk_subject_tables_row},
+          isOutgoing,
+          property: {
+            fkProperty: dataObject.fk_property,
+            fkPropertyOfProperty: dataObject.fk_property_of_property,
+          },
+          scope: {
+            inProject: project
+          }
+        }
+      });
+    }
+    if (override.ord_num_of_domain) {
+      isOutgoing = false;
+      await this.ordNumController.changeOrder({
+        movedStatementId: createdStatementId,
+        pkProject: project,
+        targetOrdNum: override.ord_num_of_domain,
+        fieldId: {
+          source: {fkData: dataObject.fk_object_data, fkInfo: dataObject.fk_object_info, fkTablesCell: dataObject.fk_object_tables_cell, fkTablesRow: dataObject.fk_object_tables_row},
+          isOutgoing,
+          property: {
+            fkProperty: dataObject.fk_property,
+            fkPropertyOfProperty: dataObject.fk_property_of_property,
+          },
+          scope: {
+            inProject: project
+          }
+        }
+      });
+    }
+
   }
 
   /**

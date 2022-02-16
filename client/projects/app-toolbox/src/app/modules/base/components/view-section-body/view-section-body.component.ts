@@ -23,10 +23,11 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  @Input() readonly$: Observable<boolean>;
+  @Input() readmode$: Observable<boolean>;
   @Input() section: SectionName;
   @Input() scope: GvFieldPageScope;
   @Input() showBodyOnInit: boolean;
+  @Input() showEmptyFieldsOnInit: boolean;
 
 
   fields$: Observable<Field[]>
@@ -44,11 +45,17 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
     if (this.showBodyOnInit) this.showBody$.next(this.showBodyOnInit)
-    this.fields$ = this.pkClass$.pipe(first(x => !!x), switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.section)))
+    this.readmode$.pipe(takeUntil(this.destroy$)).subscribe(readonly => {
+      this.showEmptyFields$.next(!readonly)
+    })
+    // if (this.showEmptyFieldsOnInit) this.showEmptyFields$.next(this.showEmptyFieldsOnInit)
+    this.fields$ = this.pkClass$.pipe(first(x => {
+      return !!x
+    }), switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.section)))
 
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.dataSource.data = data;

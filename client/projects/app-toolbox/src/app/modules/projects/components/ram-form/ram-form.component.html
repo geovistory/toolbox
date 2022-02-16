@@ -37,7 +37,7 @@
         <p class="mat-caption mat-text-secondary">{{(source$|async)?.ep?.class_label}}</p>
         <p>{{(source$|async)?.ep?.entity_label}}</p>
       </div>
-      <div class="gv-ram-box-text gv-fade-out-bottom" [hidden]="!(p.ramSource$ | async)?.chunk">
+      <div class="gv-ram-box-text gv-fade-out-bottom" [hidden]="!(p.ramSource$ | async)?.annotation?.textChunk">
         <p class="mat-caption mat-text-secondary">Selected text:</p>
         <p>"{{(source$|async)?.chunk?.quill_doc?.ops | quillOpsToStr }}"</p>
       </div>

@@ -40,7 +40,7 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() {
     this.config = this.formControlFactory.config
 
-    if (this.config.data.controlType == 'ctrl-entity') {
+    if (this.config.data.controlType.entity) {
       this.configureEntityCtrl();
     }
   }

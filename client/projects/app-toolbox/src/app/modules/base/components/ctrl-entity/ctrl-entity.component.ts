@@ -4,15 +4,14 @@ import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { GvFieldProperty, InfResourceWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, InfData, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
 
-export interface CtrlEntityModel {
+export interface CtrlEntityModel extends InfData {
   pkEntity?: number, // if pkEntity, an entity has been selected on the right side
-  resource?: InfResourceWithRelations, // if resource, the output is just created
 }
 
 @Component({

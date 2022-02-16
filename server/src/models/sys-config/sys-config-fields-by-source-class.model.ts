@@ -7,3 +7,6 @@ export class SysConfigFieldsBySourceClass {
   [pkClass: number]: SysConfigFieldsOfSourceClass | undefined;
   // @property({type: SysConfigFieldsOfSourceClass}) 1?: SysConfigFieldsOfSourceClass // to comment out
 }
+
+
+

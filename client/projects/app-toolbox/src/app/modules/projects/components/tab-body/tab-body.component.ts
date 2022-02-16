@@ -15,7 +15,7 @@ import { PanelBodyDirective } from '../../directives/panel-body.directive';
   `,
 })
 export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
-  @Input() tab: TabBody;
+  @Input() tab: TabBody<any>;
   @Input() active: boolean;
   @Input() panelId: number;
   @Input() panelBodies$: Observable<PanelBodyDirective[]>;

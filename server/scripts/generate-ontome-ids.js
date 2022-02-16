@@ -2,7 +2,7 @@ require('./__dotenv');
 const {writeFileSync} = require('fs');
 const prompts = require('prompts');
 const fetch = require('node-fetch');
-const {uniqBy, uniq} = require('lodash');
+const {uniqBy, uniq, sortBy} = require('lodash');
 
 const date = new Date();
 const regexSpecialChars = /[^A-Za-z0-9]/g;
@@ -31,8 +31,15 @@ async function start() {
   const ps = properties.map(p => propertyToDfhApiProperty(p));
 
   // prepare file
-  const filepath = './src/ontome-ids.ts';
   const filecontent = createFileContent(profs, ks, ps);
+  createFile('./src/ontome-ids.ts', filecontent);
+  createFile(
+    '../client/projects/app-toolbox/src/app/ontome-ids.ts',
+    filecontent,
+  );
+}
+
+function createFile(filepath, filecontent) {
   // write file
   writeFileSync(filepath, filecontent);
 
@@ -49,7 +56,12 @@ async function fetchProfiles() {
     'https://ontome.net/api/profiles.json?selected-by-project=6',
   );
   const profiles = await response.json();
-  return profiles;
+  const response2 = await fetch(
+    'https://ontome.net/api/profiles.json?selected-by-project=125',
+  );
+  const profiles2 = await response2.json();
+
+  return uniqBy([...profiles, ...profiles2], p => p.profileID);
 }
 async function fetchClasses(profileIds) {
   const classes = [];
@@ -118,48 +130,51 @@ function toConstName(label) {
     .replace(/_+/g, '_');
 }
 function propConstName(l) {
-  const x = `P_NS${l.dfh_fk_namespace}_${l.dfh_property_identifier_in_namespace}_${l.dfh_property_label}_ID`;
+  const x = `P_${l.dfh_pk_property}_${l.dfh_property_label}_ID`;
   return toConstName(x);
 }
 
 function processProperties(dfhApiProperties) {
   const uniq = uniqBy(dfhApiProperties, i => i.dfh_pk_property);
+  const sorted = sortBy(uniq, i => i.dfh_pk_property);
 
   /**
-   * PRINT PROPERTI
+   * PRINT PROPERTIES
    */
-  for (const p of uniq) {
-    if (p.dfh_identity_defining) {
-      if (!p.dfh_parent_properties.includes(1376))
-        console.log('https://ontome.net/property/' + p.dfh_pk_property);
-    }
-  }
+  // for (const p of sorted) {
+  //   if (p.dfh_identity_defining) {
+  //     if (!p.dfh_parent_properties.includes(1376))
+  //       console.log('https://ontome.net/property/' + p.dfh_pk_property);
+  //   }
+  // }
 
-  return uniq
+  return sorted
     .map(i => `export const ${propConstName(i)} = ${i.dfh_pk_property}`)
     .join('\n');
 }
 function profileConstName(i) {
-  const x = `PROFILE_${i.dfh_profile_label}_ID`;
+  const x = `PROFILE_${i.dfh_pk_profile}_${i.dfh_profile_label}_ID`;
   return toConstName(x);
 }
 function processProfiles(dfhApiProfiles) {
   const uniq = uniqBy(dfhApiProfiles, i => i.dfh_pk_profile);
+  const sorted = sortBy(uniq, i => i.dfh_pk_profile);
 
-  return uniq
+  return sorted
     .map(i => `export const ${profileConstName(i)} = ${i.dfh_pk_profile}`)
     .join('\n');
 }
 
 function classConstName(l) {
-  const x = `C_NS${l.dfh_fk_namespace}_${l.dfh_class_identifier_in_namespace}_${l.dfh_class_label}_ID`;
+  const x = `C_${l.dfh_pk_class}_${l.dfh_class_label}_ID`;
   return toConstName(x);
 }
 
 function processClasses(dfhApiClasses) {
   const uniq = uniqBy(dfhApiClasses, i => i.dfh_pk_class);
+  const sorted = sortBy(uniq, i => i.dfh_pk_class);
 
-  return uniq
+  return sorted
     .map(i => `export const ${classConstName(i)} = ${i.dfh_pk_class}`)
     .join('\n');
 }

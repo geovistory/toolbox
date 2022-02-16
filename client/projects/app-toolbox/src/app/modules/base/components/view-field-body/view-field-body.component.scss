@@ -4,9 +4,10 @@
 .loc-container {
   background-color: white;
 }
+.loc-dropzone-accepts {
+  background-color: rgba(240, 240, 240, 0.589);
+}
 .loc-no-items {
-  height: 40px;
-  padding-left: 16px;
   display: flex;
   align-items: center;
 }

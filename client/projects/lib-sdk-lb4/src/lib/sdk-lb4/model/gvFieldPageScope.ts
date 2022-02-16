@@ -18,5 +18,6 @@ export interface GvFieldPageScope {
     inProject?: number;
     notInProject?: number;
     inRepo?: boolean;
+    noContraint?: boolean;
 }
 

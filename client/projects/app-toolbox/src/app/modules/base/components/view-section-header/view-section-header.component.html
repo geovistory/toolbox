@@ -1,12 +1,13 @@
-<div class="mat-typography mat-bg-grey-100 loc-container">
+<div class="mat-typography mat-bg-grey-100 gv-section-header">
   <h3 class="loc-left d-flex mat-text-secondary">
     <!-- UNCOMMENT THIS TO TOGGLE BODY ON CLICK ON HEADER -->
     <!-- <h3 class="loc-left d-flex mat-text-secondary gv-pointer" (click)="toggleBody()"> -->
     <ng-content select="[title]"></ng-content>
   </h3>
   <div class="loc-right">
-    <mat-slide-toggle [matTooltip]="'Show empty fields'" (change)="toggleEmptyFields($event)">
-    </mat-slide-toggle>
+    <!-- <mat-slide-toggle [checked]="this.section.showEmptyFields$|async" [matTooltip]="'Show empty fields'"
+      (change)="toggleEmptyFields($event)">
+    </mat-slide-toggle> -->
 
     <!-- UNCOMMENT THIS TO TOGGLE BODY ON CLICK ON TOGGLE BTN -->
     <!-- <button mat-icon-button class="loc-toggle-btn" (click)="toggleBody()">

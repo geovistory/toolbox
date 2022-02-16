@@ -105,6 +105,7 @@ function autoGenFiles(from, to, type) {
     let content = fs.readFileSync(path, 'utf8').split('\n');
     content = changeImportEnumsToSdk(content);
     content = changeImportModelToSdk(content);
+    content = changeImportOntomeIds(content);
     // content = treatEnum(
     //   content,
     //   'ColDef',
@@ -160,6 +161,21 @@ function changeImportModelToSdk(content) {
       line = line.replace(
         line.substring(line.indexOf('from ') + 5),
         "'@kleiolab/lib-sdk-lb4';",
+      );
+    }
+    return line;
+  });
+}
+
+function changeImportOntomeIds(content) {
+  return content.map(line => {
+    if (
+      line.trim().replace(/"/g, "'").indexOf('import') === 0 &&
+      line.indexOf('/ontome-ids') !== -1
+    ) {
+      line = line.replace(
+        line.substring(line.indexOf('from ') + 5),
+        "'../../../../app-toolbox/src/app/ontome-ids';",
       );
     }
     return line;

@@ -13,7 +13,7 @@ export class ViewTimeSpanSectionComponent implements OnInit {
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  @Input() readonly$: Observable<boolean>;
+  @Input() readmode$: Observable<boolean>;
   @Input() scope: GvFieldPageScope;
   sectionName = SectionName.timeSpan;
   showSection$: Observable<boolean>

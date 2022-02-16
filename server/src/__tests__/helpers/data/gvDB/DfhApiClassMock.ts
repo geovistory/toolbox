@@ -752,9 +752,335 @@ export class DfhApiClassMock {
     "dfh_parent_classes": [],
     "dfh_ancestor_classes": []
   }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_9901_DEFINITION: DfhApiClass = {
+  //   pk_entity: 9901,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 9901,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Definition",
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "This class is a subclass of Text. It contains Definitions of the entities it is about.",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "E21",
+  //   "dfh_profile_association_type": "inferred",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_9902_TEXT_ANNOTATION: DfhApiClass = {
+  //   pk_entity: 9902,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 9902,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Text Annotation",
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "Annotation.",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "E21",
+  //   "dfh_profile_association_type": "inferred",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_456_CHUNK: DfhApiClass = {
+  //   pk_entity: 456,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 456,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Chunk",
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "Chunks are intended here in the sense of NLP, i.e. as the result of shallow parsing or chunking: a sentence is analyzed with the aim of identifying constituent parts of sentences (nouns, verbs, adjectives, etc.) and then of linking them to higher order units that have discrete grammatical meanings (noun groups or phrases, verb groups, etc.). Chunks are therefore groups of tokens, generally below the sentence level. They can be used to identify noun phrases, especially in the process of named entities recognition",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "C2",
+  //   "dfh_profile_association_type": "selected",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+
+
+  // static readonly EN_339_STRING: DfhApiClass = {
+  //   pk_entity: 339,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 339,
+  //   "dfh_basic_type": 0,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "String",
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_basic_type_label": null,
+  //   "dfh_class_scope_note": "This class comprises the instances of E59 Primitive Values used for documentation such as free text strings, bitmaps, vector graphics, etc.\r\nE62 String is not further elaborated upon within the model",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "E62",
+  //   "dfh_profile_association_type": "inferred",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_9903_TRANSCRIPTION: DfhApiClass = {
+  //   pk_entity: 9903,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 9903,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Transcription",
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "This class is a subclass of Text. It contains Transcriptions of Expressions.",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "E21",
+  //   "dfh_profile_association_type": "inferred",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_9904_TABLE: DfhApiClass = {
+  //   pk_entity: 9904,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 9904,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Table",
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "This class comprises Tables, as a subclass of Digital.",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "E21",
+  //   "dfh_profile_association_type": "inferred",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_9905_TABLE_ANNOTATION: DfhApiClass = {
+  //   pk_entity: 9905,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 9905,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Table Annotation",
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "Table Annotation.",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "E21",
+  //   "dfh_profile_association_type": "inferred",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_9906_TABLE_VALUE: DfhApiClass = {
+  //   pk_entity: 9906,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 9904,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Table",
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "This class comprises Table Value.",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "E21",
+  //   "dfh_profile_association_type": "inferred",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_521_CELL: DfhApiClass = {
+  //   pk_entity: 521,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 521,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Cell",
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "A cell in a table in a database",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "C7",
+  //   "dfh_profile_association_type": "selected",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_784_SHORT_TITLE_IN_99: DfhApiClass = {
+  //   "pk_entity": 8422,
+  //   "dfh_pk_class": 784,
+  //   "dfh_basic_type": 0,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Short title",
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_basic_type_label": null,
+  //   "dfh_class_scope_note": "An abbreviated form of an appellation or name by which an entity is commonly known and cited, contrasting with the full one which is more descriptive but is too long to be of use in most purposes.\r\nA short title should be used as metadata in the information system while the full appellation is the historical or identifying one.",
+  //   "tmsp_last_modification": "2020-12-21T20:45:14.592171+00:00",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": "selected",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "C15",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+
+  // // this is not from OntoME, it is added manually for digitals
+  // static readonly EN_9907_MENTIONING: DfhApiClass = {
+  //   pk_entity: 9907,
+  //   "tmsp_last_modification": "2021-03-25T20:06:37.47053+00:00",
+  //   "dfh_pk_class": 9907,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Mentioning",
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Digitals",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "Mentioning.",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "E21",
+  //   "dfh_profile_association_type": "inferred",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+  // static readonly EN_657_REFERENCE_IN_99: DfhApiClass = {
+  //   "pk_entity": 4875,
+  //   "dfh_pk_class": 657,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Reference",
+  //   "dfh_fk_namespace": 30,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_namespace_label": "Geovistory (ongoing)",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "Description of the location of a segment within a larger unit, such as the page reference within a book.",
+  //   "tmsp_last_modification": "2020-12-21T20:44:43.625419+00:00",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": "selected",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "C11",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+
+
+  // static readonly EN_220_MANIFESTATION_SINGLETON_IN_99: DfhApiClass = {
+  //   "pk_entity": 37332,
+  //   "dfh_pk_class": 220,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Manifestation Singleton",
+  //   "dfh_fk_namespace": 6,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Basics",
+  //   "dfh_namespace_label": "FRBRoo version 2.4",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "This class comprises physical objects that each carry an instance of F2 Expression, and that were produced as unique objects, with no\n\t\t\tsiblings intended in the course of their production. It should be noted that if all but one copy of a given publication are destroyed,\n\t\t\tthen that copy does not become an instance of F4 Manifestation Singleton, because it was produced together with sibling copies, even\n\t\t\tthough it now happens to be unique. Examples of instances of F4 Manifestation Singleton include manuscripts, preparatory sketches and the\n\t\t\tfinal clean draft sent by an author or a composer to a publisher. ",
+  //   "tmsp_last_modification": "2020-07-21T15:41:15.55671+00:00",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": "selected",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "F4",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
+
+  // static readonly EN_21_PERSON_IN_99: DfhApiClass = {
+  //   "pk_entity": 36502,
+  //   "dfh_pk_class": 21,
+  //   "dfh_basic_type": 8,
+  //   "dfh_fk_profile": 99,
+  //   "dfh_class_label": "Person",
+  //   "dfh_fk_namespace": 1,
+  //   "dfh_namespace_uri": null,
+  //   "dfh_profile_label": "Geovistory Generic Historical Information Profile",
+  //   "dfh_namespace_label": "CIDOC CRM version 6.2",
+  //   "dfh_basic_type_label": "Persistent Item",
+  //   "dfh_class_scope_note": "This class comprises real persons who live or are assumed to have lived. Legendary figures that may have existed, such as Ulysses and\n            King Arthur, fall into this class if the documentation refers to them as historical figures. In cases where doubt exists as to whether\n            several persons are in fact identical, multiple instances can be created and linked to indicate their relationship. The CRM does not\n            propose a specific form to support reasoning about possible identity. ",
+  //   "tmsp_last_modification": "2020-07-15T14:27:17.710051+00:00",
+  //   "dfh_class_label_language": "en",
+  //   "dfh_profile_label_language": "en",
+  //   "dfh_namespace_label_language": "en",
+  //   "dfh_profile_association_type": "selected",
+  //   "dfh_class_scope_note_language": "en",
+  //   "dfh_class_identifier_in_namespace": "E21",
+  //   "dfh_parent_classes": [],
+  //   "dfh_ancestor_classes": []
+  // }
 }
-
-
 
 /**
  * SQL to create mock items

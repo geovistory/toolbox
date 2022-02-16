@@ -17,7 +17,7 @@ import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
 import { InfSelector } from '../selectors/inf.service';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
-import { AddMenuClassItem, ConfigurationPipesService, DisplayType, HasTypePropertyInfo } from './configuration-pipes.service';
+import { AddMenuClassItem, ConfigurationPipesService, HasTypePropertyInfo } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';
 import { PipeCache } from './PipeCache';
 import { SchemaSelectorsService } from './schema-selectors.service';
@@ -585,7 +585,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
   pipePropertyOptionsFormClasses(classes: number[]): Observable<PropertyOption[]> {
     const obs$ = combineLatestOrEmpty(classes.map(pkClass => this.s.dfh$.class$.by_pk_class$.key(pkClass).pipe(
       map(c => c.basic_type === 9),
-      switchMap(isTeEn => this.c.pipeAllSections(pkClass, DisplayType.view)
+      switchMap(isTeEn => this.c.pipeFields(pkClass)
         .pipe(
           map(classFields => classFields
             .filter(f => !!f.property.fkProperty)

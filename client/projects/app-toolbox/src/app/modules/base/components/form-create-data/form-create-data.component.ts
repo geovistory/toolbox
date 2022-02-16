@@ -4,7 +4,7 @@ import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, SysSelector, TableName } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
-import { GvFieldProperty, GvFieldSourceEntity, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, SysConfigFormCtrlType, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldProperty, GvFieldSourceEntity, InfAppellation, InfData, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, Section, SysConfigFormCtrlType, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, TimeSpanResult, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
@@ -15,16 +15,17 @@ import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-fa
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
-import { InfData } from 'projects/lib-sdk-lb4/src/public-api';
+import { TrueEnum } from 'projects/__test__/data/auto-gen/enums/TrueEnum';
 import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-appellation-te-en/fg-appellation-te-en.component';
 import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
+import { FgTextWithLangComponent, FgTextWithLangInjectData } from '../fg-text-with-lang/fg-text-with-lang.component';
 import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 export interface FormArrayData {
   pkClass?: number
@@ -56,13 +57,11 @@ export interface FormArrayData {
 }
 
 
-export interface FormCreateDataValue {
-  resource?: InfResourceWithRelations;
-  statement?: InfStatementWithRelations;
-}
+
 
 export interface FormField {
   field: Field
+  config?: Section
   addItemsOnInit: number
   minLength: number
   maxLength: number
@@ -76,6 +75,7 @@ interface FormGroupData {
     initVal: InfValueObject
   }
 }
+export interface ControlType extends SysConfigFormCtrlType { timeSpan?: 'true' }
 export interface FormControlData {
   controlType: ControlType
   field?: Field
@@ -98,12 +98,12 @@ interface GvSectionsModel {
   statement?: InfStatementWithRelations,
 }
 
-export type ControlType = 'ctrl-appellation' | 'ctrl-entity' | 'ctrl-language' | 'ctrl-place' | 'ctrl-time-primitive' | 'ctrl-type' | 'ctrl-time-span'
 export type LocalArrayConfig = FormArrayConfig<FormArrayData>;
 export type LocalNodeConfig = FormNodeConfig<FormGroupData, FormArrayData, FormControlData, FormChildData>;
 export type LocalFormArrayFactory = FormArrayFactory<FormControlData, FormArrayData, FormChildData>
 export type LocalFormControlFactory = FormControlFactory<FormControlData>
 export type LocalFormChildFactory = FormChildFactory<FormChildData>
+
 export interface FieldSection {
   key: SectionName,
   label: string,
@@ -127,8 +127,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   @Input() hideButtons = false // : boolean;
   @Input() hideTitle: boolean;
 
-  @Input() initVal$: Observable<InfResourceWithRelations | undefined>;
-  @Input() initVal_vot$ = new BehaviorSubject<InfValueObject>(undefined)
+  @Input() initVal$: Observable<InfData>;
 
 
   @Input() hiddenProperty: GvFieldProperty;
@@ -140,7 +139,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
 
   appearance: MatFormFieldAppearance = 'outline';
 
-  _initVal$ = new BehaviorSubject<InfResourceWithRelations>(undefined)
+  _initVal$ = new BehaviorSubject<InfData>(undefined)
   destroy$ = new Subject<boolean>();
   formFactory$: Observable<FormFactory>;
   formFactory: FormFactory
@@ -265,7 +264,12 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     else if (n.array) {
       const a = n.array
       if (a?.data?.rootArray?.section) return this.getGvFormSections(n.array?.data?.rootArray.pkClass)
-      if (a?.data?.rootArray?.value) return this.getValueLeafControl(a?.data?.rootArray.value.config, a?.data?.rootArray.value.initVal, this.pkClass)
+      if (a?.data?.rootArray?.value) {
+        return this.getValueLeafControl(
+          a?.data?.rootArray.value.config,
+          a?.data?.rootArray.value.initVal, this.pkClass
+        )
+      }
       if (a.data.gvFormSection) return this.getGvFormFields(a)
       if (a.data.gvFormField) return this.getFieldItems(a.data.gvFormField, a.initValue)
       if (a.data.gvFieldItem) {
@@ -280,19 +284,44 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   private getRootArray(data: FormGroupData): Observable<LocalNodeConfig[]> {
 
     return combineLatest([
-      this.initVal_vot$.pipe(startWith({})),
       this.isValue$
     ]).pipe(
-      map(([initVal, value]) => {
-        let rootArray, mapValue;
+      switchMap(([isValue]) => {
 
-        if (!value) { // if it is not a value
+        let rootArray, mapValue;
+        // if is value -> we need the initval now
+        if (isValue) {
+          return this._initVal$.pipe(
+            map(initVal => {
+              rootArray = {
+                ...data,
+                value: {
+                  config: isValue,
+                  initVal
+                }
+              }
+
+              mapValue = (items?: InfData[]): InfData => items[0]
+
+              const n: LocalNodeConfig = {
+                array: {
+                  placeholder: '',
+                  data: { rootArray: rootArray },
+                  mapValue: mapValue
+                }
+              }
+              return [n]
+            })
+          )
+        }
+        // else, do this later
+        else {
           rootArray = {
             ...data,
             section: true
           }
 
-          mapValue = (items?: FormCreateDataValue[]): FormCreateDataValue => {
+          mapValue = (items?: InfData[]): InfData => {
             if (items?.[0]?.resource) {
               // merge the resources produced by each section
               const outgoing_statements: InfStatementWithRelations[] = []
@@ -306,26 +335,57 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
             } else if (items?.[0]?.statement) return items[0]
             else return {}
           }
-        } else { // if it is a value
-          rootArray = {
-            ...data,
-            value: {
-              config: value,
-              initVal
+
+          const n: LocalNodeConfig = {
+            array: {
+              placeholder: '',
+              data: { rootArray: rootArray },
+              mapValue: mapValue
             }
           }
-
-          mapValue = (items?: InfData[]): InfData => items[0]
+          return of([n])
         }
 
-        const n: LocalNodeConfig = {
-          array: {
-            placeholder: '',
-            data: { rootArray: rootArray },
-            mapValue: mapValue
-          }
-        }
-        return [n]
+        // if (!isValue) { // if it is not a value
+        //   rootArray = {
+        //     ...data,
+        //     section: true
+        //   }
+
+        //   mapValue = (items?: InfData[]): InfData => {
+        //     if (items?.[0]?.resource) {
+        //       // merge the resources produced by each section
+        //       const outgoing_statements: InfStatementWithRelations[] = []
+        //       const incoming_statements: InfStatementWithRelations[] = []
+        //       items.forEach(i => {
+        //         outgoing_statements.push(...i.resource?.outgoing_statements ?? [])
+        //         incoming_statements.push(...i.resource?.incoming_statements ?? [])
+        //       })
+        //       return { resource: { ...items[0].resource, outgoing_statements, incoming_statements } }
+
+        //     } else if (items?.[0]?.statement) return items[0]
+        //     else return {}
+        //   }
+        // } else { // if it is a value
+        //   rootArray = {
+        //     ...data,
+        //     value: {
+        //       config: isValue,
+        //       initVal
+        //     }
+        //   }
+
+        //   mapValue = (items?: InfData[]): InfData => items[0]
+        // }
+
+        // const n: LocalNodeConfig = {
+        //   array: {
+        //     placeholder: '',
+        //     data: { rootArray: rootArray },
+        //     mapValue: mapValue
+        //   }
+        // }
+        // return [n]
       })
     )
 
@@ -360,9 +420,9 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
       ),
     ]).pipe(
       switchMap(([advancedMode, initVal, klass, targets, parentModel, label]) => {
-
+        const fct = targets.formControlType
         // if we don't create an entity but a value object
-        if (!targets.formControlType.entity) { // skip all the sections and wrap control directly
+        if (!fct.entity && !fct.appellationTeEn) { // skip all the sections and wrap control directly
 
           const c = this.getFieldItem(this.field, pkClass);
           c.array.addOnInit = 1;
@@ -425,10 +485,10 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
 
                 // Q: does init val need advanced mode?
                 const requiredFieldKeys = []
-                for (const s of initVal?.incoming_statements ?? []) {
+                for (const s of initVal?.resource?.incoming_statements ?? []) {
                   requiredFieldKeys.push('in_' + s.fk_property + '_' + s.fk_property_of_property)
                 }
-                for (const s of initVal?.outgoing_statements ?? []) {
+                for (const s of initVal?.resource?.outgoing_statements ?? []) {
                   requiredFieldKeys.push('out_' + s.fk_property + '_' + s.fk_property_of_property)
                 }
                 const existingFieldKeys = {}
@@ -470,7 +530,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
                     placeholder: label,
                     data: {
                       gvFormSection: {
-                        initValue: initVal,
+                        initValue: initVal?.resource,
                         section: s.section,
                         fields: s.fields
                       },
@@ -526,8 +586,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   private getGvFormFields(arrayConfig: LocalArrayConfig): Observable<LocalNodeConfig[]> {
     const section = arrayConfig.data.gvFormSection.section;
     const fields = arrayConfig.data.gvFormSection.fields;
-    const init: any = arrayConfig.data.gvFormSection.initValue;
-    const initVal: InfResourceWithRelations = init?.resource ?? init // todo, fix this at the root of the problem
+    const initVal = arrayConfig.data.gvFormSection.initValue
 
     // if the section is time-span section, add a timespan ctrl
     if (section.key === SectionName.timeSpan) {
@@ -565,21 +624,22 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
 
           return fields.map(f => {
 
-            // make one definition required for each persistent item
-            if (isPersistentItem && f.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
-              f.targetMinQuantity = 1;
-              f.identityDefiningForSource = true;
-            }
+            // // make one definition required for each persistent item
+            // if (isPersistentItem && f.property.fkProperty === DfhConfig.PROPERTY_PK_P18_HAS_DEFINITION) {
+            //   f.targetMinQuantity = 1;
+            //   f.identityDefiningForSource = true;
+            // }
             let addItemsOnInit = 0;
-            if (isPersistentItem && f.isOutgoing === false && f.property.fkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
-              addItemsOnInit = 1
-            }
+            // if (isPersistentItem && f.isOutgoing === false && f.property.fkProperty === DfhConfig.PROPERTY_PK_IS_APPELLATION_OF) {
+            //   addItemsOnInit = 1
+            // }
 
             // Add default controls to some properties according to the config
             if (f.display.formSections?.[section.key]?.controlsOnInit) {
               addItemsOnInit = f.display.formSections[section.key].controlsOnInit;
             }
 
+            const config = f.display.formSections?.[section.key]
             const maxLength = f.targetMaxQuantity == -1 ? Number.POSITIVE_INFINITY : f.targetMaxQuantity;
             const minLength = f.identityDefiningForSource ? f.targetMinQuantity : 0;
 
@@ -590,6 +650,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
                     minLength,
                     maxLength,
                     field: f,
+                    config,
                     addItemsOnInit
                   },
                   pkClass: undefined,
@@ -599,7 +660,9 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
                 required: this.ctrlRequired(f),
                 validators: [
                   (control: FormArray): { [key: string]: any } | null => {
-                    const length = sum(control.controls.map((ctrl: FormArray) => ctrl.controls.length))
+                    const length = sum(
+                      control.controls.map((ctrl: FormArray) => ctrl.controls
+                        .filter(c => c.status === 'VALID').length))
                     return length >= minLength
                       ? null : { 'minLength': { value: control.value, minLength } }
                   },
@@ -647,16 +710,20 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     // get the target class for each initial statement
     const o$ = initStatements.map((s) => {
       // -> for each initVal
-      const relObj = s.object_appellation ||
+
+      const target = isOutgoing ?
+
+        s.object_resource ||
+        s.object_appellation ||
         s.object_language ||
         s.object_place ||
         s.object_lang_string ||
-        s.subject_resource ||
         s.object_dimension ||
-        s.object_time_primitive;
-      if (relObj) {
+        s.object_time_primitive :
+        s.subject_resource;
+      if (target) {
         // --> if statement.appellation, .place, .lang_string, .time_primitive, .language, .dimension
-        return of({ fk_class: relObj.fk_class, statement: s })
+        return of({ fk_class: target.fk_class, statement: s })
       } else {
         // --> else get related entity preview and its class
 
@@ -668,10 +735,6 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
         return this.ap.streamEntityPreview(pkEntity).pipe(
           map(preview => ({ fk_class: preview.fk_class, statement: s }))
         )
-
-        // return this.ap.streamEntityPreview(isOutgoing ? s.fk_object_info : s.fk_subject_info).pipe(
-        //   map(preview => ({ fk_class: preview.fk_class, statement: s }))
-        // )
       }
     })
     // add a list, where initial statements are available
@@ -803,45 +866,51 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     initStmts: InfStatementWithRelations[] = [{}]
   ): Observable<LocalNodeConfig[]> {
 
-    // Time Span Control
-    if (formCtrlType.timeSpan) {
-      // create init value
-      const initValue: CtrlTimeSpanModel = {}
-      for (let i = 0; i < initStmts.length; i++) {
-        const element = initStmts[i];
-        const infTp = element.object_time_primitive
-        if (infTp) {
-          const tpWithCal: TimePrimitiveWithCal = {
-            calendar: infTp.calendar,
-            duration: infTp.duration,
-            julianDay: infTp.julian_day,
-          }
-          initValue[element.fk_property] = tpWithCal
-        }
-      }
-      // get the control
-      return of([this.timeSpanCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initValue, (val) => {
-        if (!val) return null;
-        const v = val as CtrlTimeSpanDialogResult;
-        const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
-          const timePrim: TimePrimitiveWithCal = v[key]
-          const statement: InfStatementWithRelations = {
-            fk_property: parseInt(key, 10),
-            object_time_primitive: {
-              calendar: timePrim.calendar,
-              julian_day: timePrim.julianDay,
-              duration: timePrim.duration,
-              fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
-            }
-          }
-          return statement
-        });
-        return value;
-      })])
-    }
+    // // Time Span Control
+    // if (formCtrlType.timeSpan) {
+    //   // create init value
+    //   const initValue: CtrlTimeSpanModel = {}
+    //   for (let i = 0; i < initStmts.length; i++) {
+    //     const element = initStmts[i];
+    //     const infTp = element.object_time_primitive
+    //     if (infTp) {
+    //       const tpWithCal: TimePrimitiveWithCal = {
+    //         calendar: infTp.calendar,
+    //         duration: infTp.duration,
+    //         julianDay: infTp.julian_day,
+    //       }
+    //       initValue[element.fk_property] = tpWithCal
+    //     }
+    //   }
+    //   // get the control
+    //   return of([this.timeSpanCtrl(
+    //     this.ctrlRequired(field),
+    //     field.label,
+    //     targetClass,
+    //     field.targets[targetClass].targetClassLabel,
+    //     initValue,
+    //     (val) => {
+    //       if (!val) return null;
+    //       const v = val as CtrlTimeSpanDialogResult;
+    //       const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
+    //         const timePrim: TimePrimitiveWithCal = v[key]
+    //         const statement: InfStatementWithRelations = {
+    //           fk_property: parseInt(key, 10),
+    //           object_time_primitive: {
+    //             calendar: timePrim.calendar,
+    //             julian_day: timePrim.julianDay,
+    //             duration: timePrim.duration,
+    //             fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
+    //           }
+    //         }
+    //         return statement
+    //       });
+    //       return value;
+    //     })])
+    // }
 
     // Place Control
-    else if (formCtrlType.place) {
+    if (formCtrlType.place) {
       return of(initStmts.map((initVal) => {
         return this.placeCtrl(this.ctrlRequired(field), initVal.object_place, (val: InfPlace) => {
           if (!val) return null;
@@ -867,36 +936,51 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     // Language Control
     else if (formCtrlType.language) {
       return this.ap.pipeActiveDefaultLanguage().pipe(map(defaultLanguage => {
-        return initStmts.map((initVal) => this.languageCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initVal.object_language, defaultLanguage, (val: InfLanguage) => {
-          if (!val) return null;
-          const value: InfStatementWithRelations = {
-            fk_object_info: undefined,
-            fk_property: field.property.fkProperty,
-            object_language: {
-              ...val,
-              fk_class: targetClass,
-            },
-          };
-          return value;
-        }))
+        return initStmts.map((initVal) => this.languageCtrl(
+          this.ctrlRequired(field),
+          field.label,
+          targetClass,
+          field.targets[targetClass].targetClassLabel,
+          initVal.object_language,
+          defaultLanguage,
+          (val: InfLanguage) => {
+            if (!val) return null;
+            const value: InfStatementWithRelations = {
+              fk_object_info: undefined,
+              fk_property: field.property.fkProperty,
+              object_language: {
+                ...val,
+                fk_class: targetClass,
+              },
+            };
+            return value;
+          }))
       }))
     }
 
     // Appellation Control
     else if (formCtrlType.appellation) {
       return of(initStmts.map((initVal) => {
-        return this.appellationCtrl(this.ctrlRequired(field), field.label, targetClass, field.targets[targetClass].targetClassLabel, initVal.object_appellation, (val: InfAppellation) => {
-          if (!val) return null;
-          const value: InfStatementWithRelations = {
-            fk_object_info: undefined,
-            fk_property: field.property.fkProperty,
-            object_appellation: {
-              ...val,
-              fk_class: targetClass,
-            },
-          };
-          return value;
-        })
+        return this.appellationCtrl(
+          this.ctrlRequired(field),
+          field.label,
+          targetClass,
+          field.targets[targetClass].targetClassLabel,
+          initVal.object_appellation,
+          formCtrlType,
+          (val: InfAppellation) => {
+            if (!val) return null;
+            const value: InfStatementWithRelations = {
+              fk_object_info: undefined,
+              fk_property: field.property.fkProperty,
+              object_appellation: {
+                ...val,
+                fk_class: targetClass,
+              },
+            };
+            return value;
+          },
+        )
       }))
     }
 
@@ -965,6 +1049,8 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
       }))
     }
 
+    // Text with language (Entity) Control
+    else if (formCtrlType.textWithLang) return this.textWithLangCtrl(targetClass, field, initStmts)
 
     else console.error('formCtrlType not found: ', JSON.stringify(formCtrlType))
   }
@@ -988,16 +1074,37 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
       return combineLatest([
         this.c.pipeClassLabel(targetClass),
         this.ap.pipeActiveDefaultLanguage()])
-        .pipe(map(([label, defaultLanguage]) => [this.languageCtrl(true, '', targetClass, label, initVal?.language, defaultLanguage, (val: InfLanguage): InfData => {
-          return { language: { ...val, fk_class: targetClass } }
-        })]))
+        .pipe(map(([label, defaultLanguage]) => [this.languageCtrl(
+          true,
+          '',
+          targetClass,
+          label,
+          initVal?.language,
+          defaultLanguage,
+          (val: InfLanguage): InfData => {
+            return { language: { ...val, fk_class: targetClass } }
+          }
+        )]))
     }
 
     // Appellation
     else if (formCtrlType.appellation) {
-      return this.c.pipeClassLabel(targetClass).pipe(map(label => [this.appellationCtrl(true, '', targetClass, label, initVal?.appellation, (val: InfAppellation): InfData => {
-        return { appellation: { ...val, fk_class: targetClass } }
-      })]))
+      return this.c.pipeClassLabel(targetClass).pipe(map(label => [this.appellationCtrl(
+        true,
+        '',
+        targetClass,
+        label,
+        initVal?.appellation,
+        formCtrlType,
+        (val: InfAppellation): InfData => {
+          return {
+            appellation: {
+              ...val,
+              fk_class: targetClass
+            }
+          }
+        }
+      )]))
     }
 
     // Language String
@@ -1065,29 +1172,29 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
    * Leaf nodes generators
    */
 
-  private timeSpanCtrl(
-    required: boolean,
-    placeholder: string,
-    targetClass: number,
-    targetClassLabel: string,
-    initValue: CtrlTimeSpanModel,
-    mapValue: (val) => any
-  ): LocalNodeConfig {
-    return {
-      control: {
-        initValue,
-        placeholder,
-        required,
-        data: {
-          appearance: this.appearance,
-          controlType: 'ctrl-time-span',
-          targetClass,
-          targetClassLabel
-        },
-        mapValue: mapValue
-      }
-    }
-  }
+  // private timeSpanCtrl(
+  //   required: boolean,
+  //   placeholder: string,
+  //   targetClass: number,
+  //   targetClassLabel: string,
+  //   initValue: CtrlTimeSpanModel,
+  //   mapValue: (val) => any
+  // ): LocalNodeConfig {
+  //   return {
+  //     control: {
+  //       initValue,
+  //       placeholder,
+  //       required,
+  //       data: {
+  //         appearance: this.appearance,
+  //         controlType: formControlType,
+  //         targetClass,
+  //         targetClassLabel
+  //       },
+  //       mapValue: mapValue
+  //     }
+  //   }
+  // }
 
   private timeSpanCtrl2<R>(
     targetClass: number,
@@ -1116,7 +1223,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
         required,
         data: {
           appearance: this.appearance,
-          controlType: 'ctrl-time-span',
+          controlType: { timeSpan: TrueEnum.true },
           targetClass,
           targetClassLabel
         },
@@ -1142,7 +1249,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
         required,
         data: {
           appearance: this.appearance,
-          controlType: 'ctrl-language',
+          controlType: { language: 'true' },
           targetClass,
           targetClassLabel
         },
@@ -1155,7 +1262,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   private typeCtrl(
     targetClass: number,
     field: Field,
-    initItems: InfStatementWithRelations[] = [{}]
+    initItems: InfStatementWithRelations[] = [{}],
   ): Observable<LocalNodeConfig[]> {
     const targetClassLabel = field.targets[targetClass].targetClassLabel
     const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => {
@@ -1169,7 +1276,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
           required: this.ctrlRequired(field),
           data: {
             appearance: this.appearance,
-            controlType: 'ctrl-type',
+            controlType: { typeItem: 'true' },
             field,
             targetClass,
             targetClassLabel
@@ -1202,6 +1309,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     targetClass: number,
     targetClassLabel: string,
     initValue: InfAppellation,
+    controlType: SysConfigFormCtrlType,
     mapValue: (val) => any
   ): LocalNodeConfig {
     return {
@@ -1212,7 +1320,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
         validators: [ValidationService.appellationValidator()],
         data: {
           appearance: this.appearance,
-          controlType: 'ctrl-appellation',
+          controlType,
           targetClass,
           targetClassLabel
         },
@@ -1301,7 +1409,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   private entityCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
   ): Observable<LocalNodeConfig[]> {
     const targetClassLabel = field.targets[targetClass].targetClassLabel
 
@@ -1331,7 +1439,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
               required: true,
               data: {
                 appearance: this.appearance,
-                controlType: 'ctrl-entity',
+                controlType: { entity: 'true' },
                 field,
                 targetClass,
                 targetClassLabel,
@@ -1386,7 +1494,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
         validators: [],
         data: {
           appearance: this.appearance,
-          controlType: 'ctrl-time-primitive',
+          controlType: { timePrimitive: 'true' },
           targetClass,
           targetClassLabel
         },
@@ -1398,20 +1506,50 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   private appellationTeEnCtrl(
     targetClass: number,
     field: Field,
-    initStmts: InfStatementWithRelations[] = [{}]
+    initStmts: InfStatementWithRelations[] = [{}],
   ): Observable<LocalNodeConfig[]> {
+    const component = FgAppellationTeEnComponent
+    return this.customizedEntityCtrl<typeof FgAppellationTeEnComponent, Partial<FgAppellationTeEnInjectData>>(
+      initStmts, component, {}, field, targetClass
+    );
+  }
+
+  private textWithLangCtrl(
+    targetClass: number,
+    field: Field,
+    initStmts: InfStatementWithRelations[] = [{}],
+  ): Observable<LocalNodeConfig[]> {
+    return this.customizedEntityCtrl<typeof FgTextWithLangComponent, Partial<FgTextWithLangInjectData>>(
+      initStmts,
+      FgTextWithLangComponent,
+      { stringFieldPlaceholder: field.targets[targetClass].targetClassLabel },
+      field,
+      targetClass
+    );
+  }
+
+
+
+  private customizedEntityCtrl<Comp, CompInjectData>(
+    initStmts: InfStatementWithRelations[],
+    component: Comp,
+    injectData: CompInjectData,
+    field: Field,
+    targetClass: number
+  ) {
     const controlConfigs: LocalNodeConfig[] = initStmts.map((initVal) => ({
       childFactory: {
-        component: FgAppellationTeEnComponent,
+        component,
         getInjectData: (d) => {
-          return d.appellationTeEn
+          return d.appellationTeEn;
         },
         required: this.ctrlRequired(field),
         data: {
           appellationTeEn: {
             pkClass: targetClass,
             appearance: this.appearance,
-            initVal$: of(field.isOutgoing ? initVal.object_resource : initVal.subject_resource)
+            initVal$: of(field.isOutgoing ? initVal.object_resource : initVal.subject_resource),
+            ...injectData
           }
         },
         mapValue: (val: InfResourceWithRelations) => {
@@ -1442,7 +1580,6 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     }));
     return of(controlConfigs);
   }
-
 
   /**
    * returns true if control is required

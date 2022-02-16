@@ -108,6 +108,15 @@ class WarStatementDimensionVT {
   @property({required: true}) numericValue: number;
 }
 @model()
+class WarStatementCellVT {
+  @property({required: true}) pkCell: number;
+  @property({required: true}) fkClass: number;
+  @property({required: true}) fkColumn: number;
+  @property({required: true}) fkRow: number;
+  @property({required: true}) stringValue: string;
+  @property({required: true}) numericValue: number;
+}
+@model()
 export class WarStatementObjectValue {
   @property() string?: WarStatementStringVT
   @property() geometry?: WarStatementGeometryVT
@@ -115,6 +124,7 @@ export class WarStatementObjectValue {
   @property() timePrimitive?: WarStatementTimePrimitiveVT
   @property() langString?: WarStatementLangStringVT
   @property() dimension?: WarStatementDimensionVT
+  @property() cell?: WarStatementCellVT
 }
 
 @model({
