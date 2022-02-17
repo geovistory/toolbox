@@ -61,9 +61,7 @@ SELECT
   t1.pk_text,
   json_build_object('id', 'digitals_5', 'created', 'By Jonas Schneider for Digitals', 'refersToStmt', t1.pk_statement)
 FROM
-  stmt_refersto_and_new_resource t1
-RETURNING
-  pk_entity;
+  stmt_refersto_and_new_resource t1;
 
 -- For each stmt_refersto, we create a new information.statement
 -- C26 Annotation in Text	P24 at position (is spot of) 1874	geov:C2 Chunk
@@ -74,9 +72,7 @@ SELECT
   t1.pk_appellation_chunk,
   json_build_object('id', 'digitals_5', 'created', 'By Jonas Schneider for Digitals', 'refersToStmt', t1.pk_statement)
 FROM
-  stmt_refersto_and_new_chunk t1
-RETURNING
-  pk_entity;
+  stmt_refersto_and_new_chunk t1;
 
 -- For each stmt_refersto, we create a new information.statement
 -- C26 Annotation in Text	P25 annotated entity (is annotated by) 1875	crm:E1 CRM Entity
@@ -87,9 +83,7 @@ SELECT
   t1.pk_referred_entity,
   json_build_object('id', 'digitals_5', 'created', 'By Jonas Schneider for Digitals', 'refersToStmt', t1.pk_statement)
 FROM
-  stmt_refersto_and_new_resource t1
-RETURNING
-  pk_entity;
+  stmt_refersto_and_new_resource t1;
 
 ------- project relations --------
 -- disable triggers to keep original timestamps
@@ -143,9 +137,7 @@ FROM
 WHERE
   t2.pk_statement = (t1.metadata ->> 'refersToStmt')::int
   AND t1.metadata ->> 'id' = 'digitals_5'
-  AND t1.metadata ->> 'created' IS NOT NULL
-RETURNING
-  *;
+  AND t1.metadata ->> 'created' IS NOT NULL;
 
 -- enable the triggers again
 CREATE TRIGGER creation_tmsp
