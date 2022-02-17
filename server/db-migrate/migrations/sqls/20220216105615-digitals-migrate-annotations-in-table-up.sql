@@ -38,9 +38,7 @@ SELECT
   t1.pk_table,
   json_build_object('id', 'digitals_8', 'created', 'By Jonas Schneider for Digitals', 'refersToStmt', t1.pk_statement)
 FROM
-  stmt_refersto_and_new_resource t1
-RETURNING
-  pk_entity;
+  stmt_refersto_and_new_resource t1;
 
 -- For each stmt_refersto, we create a new information.statement
 -- C27 Annotation in Table >	P24 at position (is spot of) 1874  > geov:C7 Cell
@@ -51,9 +49,7 @@ SELECT
   t1.pk_spot,
   json_build_object('id', 'digitals_8', 'created', 'By Jonas Schneider for Digitals', 'refersToStmt', t1.pk_statement)
 FROM
-  stmt_refersto_and_new_resource t1
-RETURNING
-  pk_entity;
+  stmt_refersto_and_new_resource t1;
 
 -- For each stmt_refersto, we create a new information.statement
 -- C27 Annotation in Table >	P25 annotated entity (is annotated by) 1875	> crm:E1 CRM Entity
@@ -64,9 +60,7 @@ SELECT
   t1.pk_referred_entity,
   json_build_object('id', 'digitals_8', 'created', 'By Jonas Schneider for Digitals', 'refersToStmt', t1.pk_statement)
 FROM
-  stmt_refersto_and_new_resource t1
-RETURNING
-  pk_entity;
+  stmt_refersto_and_new_resource t1;
 
 ------- project relations --------
 -- disable triggers to keep original timestamps
@@ -100,9 +94,7 @@ FROM
 WHERE
   t2.pk_statement = (t1.metadata ->> 'refersToStmt')::int
   AND t1.metadata ->> 'id' = 'digitals_8'
-  AND t1.metadata ->> 'created' IS NOT NULL
-RETURNING
-  *;
+  AND t1.metadata ->> 'created' IS NOT NULL;
 
 -- add the new entity to the projects
 INSERT INTO projects.info_proj_rel (fk_entity, fk_project, fk_last_modifier, fk_creator, tmsp_last_modification, tmsp_creation, is_in_project)
@@ -120,9 +112,7 @@ FROM
 WHERE
   t2.pk_statement = (t1.metadata ->> 'refersToStmt')::int
   AND t1.metadata ->> 'id' = 'digitals_8'
-  AND t1.metadata ->> 'created' IS NOT NULL
-RETURNING
-  *;
+  AND t1.metadata ->> 'created' IS NOT NULL;
 
 -- enable the triggers again
 CREATE TRIGGER creation_tmsp

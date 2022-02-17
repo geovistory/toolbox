@@ -38,9 +38,7 @@ FROM
 WHERE
   t1.entity_label = t2.string
   AND t1.fk_language = t2.fk_language
-  AND t2.fk_class = 784
-RETURNING
-  *;
+  AND t2.fk_class = 784;
 
 -- add to projects
 INSERT INTO projects.info_proj_rel (fk_entity, fk_project, fk_last_modifier, fk_creator, is_in_project)
@@ -53,7 +51,5 @@ SELECT
 FROM
   information.statement t1
 WHERE
-  t1.metadata ->> 'id' = 'digitals_7'
-RETURNING
-  *;
+  t1.metadata ->> 'id' = 'digitals_7';
 

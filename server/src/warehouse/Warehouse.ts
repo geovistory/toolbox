@@ -104,7 +104,6 @@ export class Warehouse {
     }
 
 
-
     /**
      * sets the databases up:
      * - connects to pg

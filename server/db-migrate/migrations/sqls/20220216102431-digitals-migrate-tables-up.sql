@@ -47,9 +47,7 @@ FROM
   information.resource t2
 WHERE
   t1.pk_entity = (t2.metadata ->> 'pkDigital')::int
-  AND t2.metadata ->> 'id' = 'digitals_6'
-RETURNING
-  *;
+  AND t2.metadata ->> 'id' = 'digitals_6';
 
 -- select the project relations of the has reproduction statements
 CREATE TEMP TABLE has_repro_stmt_project_rels ON COMMIT DROP AS
@@ -84,9 +82,7 @@ FROM
 WHERE
   t1.metadata ->> 'id' = 'digitals_6'
   AND t1.metadata ->> 'pkDigital' = t2.pk_digital
-  AND t1.fk_property = 1879
-RETURNING
-  *;
+  AND t1.fk_property = 1879;
 
 -- add the resources to the projects
 INSERT INTO projects.info_proj_rel (fk_entity, fk_project, fk_last_modifier, fk_creator, tmsp_last_modification, tmsp_creation, is_in_project)
