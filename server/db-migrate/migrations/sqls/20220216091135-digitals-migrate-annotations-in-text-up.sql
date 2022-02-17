@@ -1,4 +1,4 @@
--- select 'refersto' statements
+-- select 'refersto' statements (v2)
 CREATE TEMP TABLE stmt_refersto ON COMMIT DROP AS
 SELECT
   t1.pk_entity AS pk_statement, t1.fk_subject_data AS pk_spot, -- chunk
@@ -117,9 +117,7 @@ FROM
 WHERE
   t2.pk_statement = (t1.metadata ->> 'refersToStmt')::int
   AND t1.metadata ->> 'id' = 'digitals_5'
-  AND t1.metadata ->> 'created' IS NOT NULL
-RETURNING
-  *;
+  AND t1.metadata ->> 'created' IS NOT NULL;
 
 -- add the new entity to the projects
 INSERT INTO projects.info_proj_rel (fk_entity, fk_project, fk_last_modifier, fk_creator, tmsp_last_modification, tmsp_creation, is_in_project)
