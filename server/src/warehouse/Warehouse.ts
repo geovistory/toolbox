@@ -103,7 +103,6 @@ export class Warehouse {
         await this.listen()
     }
 
-
     /**
      * sets the databases up:
      * - connects to pg
