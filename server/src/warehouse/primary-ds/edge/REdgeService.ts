@@ -10,6 +10,8 @@ import { EntityFields } from "./edge.commons";
 export class REdgeService extends PrimaryDataService<REntityId, EntityFields>{
 
   measure = 10000;
+  replicationBatchSizeUpdates = 1000;
+  replicationBatchSizeDeletes = 1000;
 
   constructor(@Inject(forwardRef(() => Warehouse)) wh: Warehouse) {
     super(
