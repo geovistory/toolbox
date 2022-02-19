@@ -7,7 +7,7 @@ CHECK_OUTPUT=$(bash ./db-migrate/up.sh --check)
 while [[ $CHECK_OUTPUT =~ '[INFO] Migrations to run:' ]]; do
   echo "Waiting for database to be migrated up..."
   sleep 2
-  CHECK_OUTPUT='$(bash ./db-migrate/up.sh --check)'
+  CHECK_OUTPUT=$(bash ./db-migrate/up.sh --check)
 done
 
 echo "Database is ready, starting warehouse server..."

@@ -66,7 +66,6 @@ export class Warehouse {
     ) {
         this.schemaName = config.warehouseSchema;
 
-
         const whPgConfig = createPoolConfig(config.warehouseDatabase, config.warehouseDatabaseMaxConnections)
         this.whPgPool = new Pool(whPgConfig);
         Logger.msg(this.constructor.name, `warehouse DB: ${config.warehouseDatabase.split('@')[1]}`)
