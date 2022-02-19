@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {forwardRef, Inject, Injectable, InjectionToken, Injector, Type} from 'injection-js';
-import {Notification, Pool, PoolClient, PoolConfig} from 'pg';
-import {parse} from 'pg-connection-string';
-import {values} from 'ramda';
-import {combineLatest, ReplaySubject, Subject} from 'rxjs';
-import {filter, first, mapTo} from 'rxjs/operators';
-import {createPoolConfig, getPgSslForPg8} from '../utils/databaseUrl';
-import {AggregatedDataService2} from './base/classes/AggregatedDataService2';
-import {IndexDBGeneric} from './base/classes/IndexDBGeneric';
-import {Logger} from './base/classes/Logger';
-import {PrimaryDataService} from './base/classes/PrimaryDataService';
+import { forwardRef, Inject, Injectable, InjectionToken, Injector, Type } from 'injection-js';
+import { Notification, Pool, PoolClient, PoolConfig } from 'pg';
+import { parse } from 'pg-connection-string';
+import { values } from 'ramda';
+import { combineLatest, ReplaySubject, Subject } from 'rxjs';
+import { filter, first, mapTo } from 'rxjs/operators';
+import { createPoolConfig, getPgSslForPg8 } from '../utils/databaseUrl';
+import { AggregatedDataService2 } from './base/classes/AggregatedDataService2';
+import { IndexDBGeneric } from './base/classes/IndexDBGeneric';
+import { Logger } from './base/classes/Logger';
+import { PrimaryDataService } from './base/classes/PrimaryDataService';
 
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 export const PK_ENGLISH = 18889;
@@ -34,11 +34,10 @@ export interface WarehouseConfig {
     warehouseSchema: string,
 }
 // used for consideredUpdatesUntil and leftDSupdateDone
-export interface LeftDSDates {[DsName: string]: string}
+export interface LeftDSDates { [DsName: string]: string }
 
 @Injectable()
 export class Warehouse {
-
 
     // Geovistory postgres
     gvPgPool: Pool;
@@ -46,16 +45,15 @@ export class Warehouse {
     gvPgListenerConnected$ = new ReplaySubject<PoolClient>()
     gvPgNotifications$ = new Subject<Notification>()
 
-
     // Warehouse postgres
     whPgPool: Pool;
     createSchema$ = new Subject<void>()
     schemaName: string;
-    metaTimestamps: IndexDBGeneric<string, {tmsp: string}>;
+    metaTimestamps: IndexDBGeneric<string, { tmsp: string }>;
     aggregationTimestamps: IndexDBGeneric<string, LeftDSDates>;
 
     // Warehosue inner logic
-    notificationHandlers: {[key: string]: NotificationHandler} = {}
+    notificationHandlers: { [key: string]: NotificationHandler } = {}
     // if true, changes on dependencies are not propagated to aggregators
     preventPropagation = false
     status: 'stopped' | 'initializing' | 'starting' | 'running' | 'backuping'
@@ -360,7 +358,7 @@ export class Warehouse {
      * returns now() tmsp from wh postgres as Date
      */
     async whPgNowDate() {
-        const res = await this.whPgPool.query<{now: Date}>('select now()')
+        const res = await this.whPgPool.query<{ now: Date }>('select now()')
         return res.rows[0].now
     }
 
@@ -376,7 +374,7 @@ export class Warehouse {
      * returns now() tmsp from gv postgres as Date
      */
     async gvPgNowDate() {
-        const res = await this.gvPgPool.query<{now: Date}>('select now()')
+        const res = await this.gvPgPool.query<{ now: Date }>('select now()')
         return res.rows[0].now
     }
 
