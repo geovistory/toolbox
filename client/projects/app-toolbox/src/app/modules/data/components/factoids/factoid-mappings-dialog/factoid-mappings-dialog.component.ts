@@ -56,10 +56,11 @@ export class FactoidMappingsDialogComponent implements OnInit {
   }
 
   fmCreate() {
-    this.fms.push({
+    this.fms.unshift({
       pkDigital: this.pkTable,
-      properties: []
-    })
+      properties: [],
+      isNew: true  // trick to make new Factoid mapping open by default. Not so clean, but it is a quick fix.
+    } as FactoidMapping)
     this.checkValid();
   }
 

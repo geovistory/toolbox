@@ -37,14 +37,17 @@ export class ClassDropdownComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    const allClasses$ = this.c.pipeClassesEnabledByProjectProfiles().pipe(
-      switchMap(klasses => combineLatestOrEmpty(klasses.map(klass => this.c.pipeClassLabel(klass.pk_class).pipe(
-        map(label => ({
-          label,
-          pkClass: klass.pk_class,
-          icon: klass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || klass.basic_type == 30 ? 'peit' : 'teen'
-        }))
-      )))
+    const allClasses$ = this.c.pipeClassesOfProject().pipe(
+      switchMap(klasses => combineLatestOrEmpty(klasses
+        .filter(klass => klass.belongsToCategory?.entities?.showInAddMenu)
+        .filter(klass => klass.projectRel?.enabled_in_entities)
+        .map(klass => this.c.pipeClassLabel(klass.dfhClass.pk_class).pipe(
+          map(label => ({
+            label,
+            pkClass: klass.dfhClass.pk_class,
+            icon: klass.dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || klass.dfhClass.basic_type == 30 ? 'peit' : 'teen'
+          }))
+        )))
       )
     )
 
