@@ -31,7 +31,6 @@ export class OntomeProfilesListComponent implements OnInit {
 
   destroy$ = new Subject<boolean>();
   loading = false;
-  pkProject: number
 
   columnsToDisplay = ['expand', 'label', 'owner', 'ontomeLink', 'actions'];
   expandedElement: ProfileItem | null;
@@ -105,9 +104,10 @@ export class OntomeProfilesListComponent implements OnInit {
       ).toPromise()
   }
 
-  activate(item: ProfileItem) {
+  async activate(item: ProfileItem) {
+    const pkProject = await this.p.pkProject$.pipe(first()).toPromise()
     const data: OntomeProfileActivationReportDialogData = {
-      pkProject: this.pkProject,
+      pkProject,
       profileId: item.profileId,
       profileLabel: item.label
     }

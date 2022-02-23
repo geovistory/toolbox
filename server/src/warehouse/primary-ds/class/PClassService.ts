@@ -1,7 +1,7 @@
+import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {Warehouse} from '../../Warehouse';
 import {pClassIdKeyDef} from '../ProClassFieldsConfigService';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface PClassId {fkProject: number, pkClass: number}
 export interface PClassVal {
   fkClass: number
@@ -20,7 +20,8 @@ export class PClassService extends PrimaryDataService<PClassId, PClassVal>{
       [
         'modified_projects_project',
         'modified_projects_dfh_profile_proj_rel',
-        'modified_data_for_history_api_class'
+        'modified_data_for_history_api_class',
+        'modified_system_config'
       ],
       pClassIdKeyDef
     )
@@ -66,9 +67,13 @@ const updateSql = `
     SELECT fk_profile, fk_project, enabled, tmsp_last_modification
     FROM projects.dfh_profile_proj_rel
     WHERE enabled = true
-    UNION
-    SELECT 5, pk_entity as fk_project, true, null -- GEOVISTORY BASICS
-    FROM projects.project
+    UNION ALL
+    SELECT fk_profile, pk_entity as fk_project, true, null
+    FROM projects.project,
+    (
+      SELECT jsonb_array_elements_text(config->'ontome'->'requiredOntomeProfiles')::int fk_profile
+      FROM system.config
+    ) as requiredProfiles
   )
   SELECT DISTINCT ON (dfh_pk_class, fk_project)
     dfh_pk_class "pkClass",

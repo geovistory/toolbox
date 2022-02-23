@@ -165,9 +165,9 @@ export class SysConfigValueMock {
           sources: {showInAddMenu: false}
         }
       },
-      "220": {
+      "219": {
         icon: IconType.source,
-        docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
+        // docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-serially-produced-source',
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
@@ -175,18 +175,9 @@ export class SysConfigValueMock {
           }
         }
       },
-      "503": {
-        icon: IconType.section,
-        belongsToCategory: {
-          sources: {
-            showInAddMenu: true,
-            positionInAddMenu: 20
-          }
-        }
-      },
-      "219": {
+      "220": {
         icon: IconType.source,
-        docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-serially-produced-source',
+        // docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
@@ -199,7 +190,7 @@ export class SysConfigValueMock {
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
-            positionInAddMenu: 40
+            positionInAddMenu: 50
           }
         }
       },
@@ -208,16 +199,22 @@ export class SysConfigValueMock {
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
-            positionInAddMenu: 50
+            positionInAddMenu: 40
           }
         }
       },
       "502": {
-        icon: IconType.source,
-        belongsToCategory: {
-          sources: {
-            showInAddMenu: true,
-            positionInAddMenu: 60
+        "belongsToCategory": {
+          "sources": {
+            "positionInAddMenu": 20,
+            "showInAddMenu": true
+          }
+        }
+      },
+      "503": {
+        "belongsToCategory": {
+          "sources": {
+            "showInAddMenu": false
           }
         }
       },

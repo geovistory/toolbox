@@ -3,12 +3,18 @@ import {SysConfigValue} from '../../../models/sys-config/sys-config-value.model'
 import {testdb} from '../testdb';
 
 export async function createSysSystemConfig(config: SysConfigValue) {
-  await testdb.execute(
-    `DELETE FROM system.config WHERE key = $1`,
-    [SYS_CONFIG_KEY]
-  )
+  await deleteSysSystemConfig();
   return testdb.execute(
     `INSERT INTO system.config (key, config) VALUES ($1,$2)`,
     [SYS_CONFIG_KEY, config]
   )
 }
+
+
+export async function deleteSysSystemConfig() {
+  await testdb.execute(
+    `DELETE FROM system.config WHERE key = $1`,
+    [SYS_CONFIG_KEY]
+  );
+}
+
