@@ -28,8 +28,10 @@ export class FactoidMappingHeaderComponent implements OnInit {
     if (!this.fm?.title) this.fm.title = ""
 
     // send default collapse mode
-    if ((this.fm as any).isNew) this.collapsed = false; // trick to make new Factoid mapping open by default. Not so clean, but it is a quick fix.
-    else this.collapseBody.emit(this.collapsed)
+    if ((this.fm as any).isNew) { // trick to make new Factoid mapping open by default. Not so clean, but it is a quick fix.
+      this.collapsed = false;
+      delete (this.fm as any).isNew
+    } else this.collapseBody.emit(this.collapsed)
   }
 
   fmChange(key: string, value: any) {
