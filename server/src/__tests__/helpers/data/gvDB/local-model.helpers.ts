@@ -92,7 +92,7 @@ export interface DfhApiProperty extends NewDfhApiProperty {
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 
 export interface OntomeProfileMock {
-    profile: OmitEntity<DfhApiProfile>,
+    profile: Omit<OmitEntity<DfhApiProfile>, 'pk_entity'>,
     properties: Omit<NewDfhApiProperty, 'pk_entity'>[],
     classes: Omit<DfhApiClass, 'pk_entity'>[],
 }
