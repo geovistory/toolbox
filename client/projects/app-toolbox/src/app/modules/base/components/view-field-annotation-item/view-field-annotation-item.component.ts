@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
 import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldAnnotationItemData } from '../view-field-annotations/view-field-annotations.component';
 
 @Component({
@@ -22,6 +23,7 @@ export class ViewFieldAnnotationItemComponent implements OnInit {
   constructor(
     public textEditComponent: TextDetail2Component,
     public p: ActiveProjectService,
+    public editMode: EditModeService
   ) {
 
   }

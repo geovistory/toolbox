@@ -2,7 +2,8 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/cor
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { EditModeService } from '../../services/edit-mode.service';
 
 export interface ViewSectionsDialogData {
   scope: GvFieldPageScope,
@@ -10,7 +11,7 @@ export interface ViewSectionsDialogData {
   pkClass$: Observable<number>
   showOntoInfo$: Observable<boolean>;
   appContext: number;
-  readmode$: BehaviorSubject<boolean>
+  readonly: boolean
   showOpenInNewTabButton: boolean
 }
 
@@ -18,7 +19,8 @@ export interface ViewSectionsDialogData {
   selector: 'gv-view-sections-dialog',
   templateUrl: './view-sections-dialog.component.html',
   styleUrls: ['./view-sections-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [EditModeService]
 })
 export class ViewSectionsDialogComponent implements OnInit {
 
@@ -26,8 +28,11 @@ export class ViewSectionsDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ViewSectionsDialogComponent>,
     private p: ActiveProjectService,
-    @Inject(MAT_DIALOG_DATA) public data: ViewSectionsDialogData
-  ) { }
+    @Inject(MAT_DIALOG_DATA) public data: ViewSectionsDialogData,
+    public editMode: EditModeService
+  ) {
+    editMode.setValue(data.readonly ? false : true)
+  }
 
   ngOnInit() {
   }

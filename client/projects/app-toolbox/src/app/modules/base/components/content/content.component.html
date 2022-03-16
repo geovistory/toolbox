@@ -17,7 +17,7 @@
       </mat-menu>
 
 
-      <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto" *ngIf="!(readmode$|async)">
+      <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto" *ngIf="(editMode.value$|async)">
         <mat-icon>more_vert</mat-icon>
       </button>
 
@@ -28,8 +28,7 @@
 <div class="gv-scroll-y-auto">
   <gv-view-field-body #f *ngFor="let field of fields$|async" [showBodyOnInit]=true
     [hidden]="( field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)" [field]="field"
-    [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [source]="source" [scope]="scope" [limit]="100"
-    [hideNoItemsInfo]="true">
+    [showOntoInfo$]="showOntoInfo$" [source]="source" [scope]="scope" [limit]="100" [hideNoItemsInfo]="true">
   </gv-view-field-body>
 
 </div>

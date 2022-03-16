@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { BaseModalsService } from '../../services/base-modals.service';
 import { GvDndGlobalService } from '../../services/dnd-global.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
@@ -57,7 +58,8 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
     private modals: BaseModalsService,
     public itemCountService: ViewFieldItemCountSumService,
     public dndGlobal: GvDndGlobalService,
-    @Optional() @Inject(READ_ONLY) public readonly: boolean
+    @Optional() @Inject(READ_ONLY) public readonly: boolean,
+    public editMode: EditModeService
   ) {
     this.enableDropZoneEnd$ = this.showBody$.pipe(map(v => !v))
   }

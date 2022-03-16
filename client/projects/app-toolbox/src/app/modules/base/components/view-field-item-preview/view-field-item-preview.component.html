@@ -13,6 +13,6 @@
   </span>
 
   <span class="loc-right">
-    <gv-view-field-item-entity-menu *ngIf="!(itemComponent.readmode$|async)"></gv-view-field-item-entity-menu>
+    <gv-view-field-item-entity-menu *ngIf="editMode.value$|async"></gv-view-field-item-entity-menu>
   </span>
 </gv-view-field-item-container>

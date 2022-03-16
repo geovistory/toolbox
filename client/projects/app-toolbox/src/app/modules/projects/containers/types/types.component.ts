@@ -224,7 +224,7 @@ export class TypesComponent implements OnInit, OnDestroy {
         appContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE,
         pkClass$: of(this.pkClass),
         source: { fkInfo: pkEntity },
-        readmode$: new BehaviorSubject(false),
+        readonly: false,
         showOntoInfo$: new BehaviorSubject(false),
         showOpenInNewTabButton: true
       }

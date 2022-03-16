@@ -5,6 +5,7 @@ import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from 'projects/app-t
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { BaseModalsService } from '../../services/base-modals.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
@@ -39,7 +40,7 @@ export class ContentComponent implements OnInit {
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  @Input() readmode$: Observable<boolean>;
+  readmode$: Observable<boolean>;
   @Input() section: SectionName;
   @Input() scope: GvFieldPageScope;
 
@@ -54,7 +55,10 @@ export class ContentComponent implements OnInit {
   constructor(
     private c: ConfigurationPipesService,
     private modals: BaseModalsService,
-  ) { }
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
 
   ngOnInit(): void {
     this.fields$ = this.pkClass$.pipe(switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.linkedSources)))

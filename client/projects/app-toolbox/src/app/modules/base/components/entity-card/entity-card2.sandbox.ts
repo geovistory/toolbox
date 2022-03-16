@@ -114,7 +114,7 @@ export default sandboxOf(EntityCardComponent, {
                   [pkClass$]="pkClass$"
                   [source]="source"
                   [showOntoInfo$]="showOntoInfo$"
-                  [readmode$]="readmode$"
+
                   [scope]="scope"
                 ></gv-entity-card>
                   </div>

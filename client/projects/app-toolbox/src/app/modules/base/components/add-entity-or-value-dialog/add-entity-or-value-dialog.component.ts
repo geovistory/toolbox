@@ -35,7 +35,8 @@ export interface CreateEntityEvent {
 @Component({
   selector: 'gv-add-entity-or-value-dialog.component',
   templateUrl: './add-entity-or-value-dialog.component.html',
-  styleUrls: ['./add-entity-or-value-dialog.component.scss']
+  styleUrls: ['./add-entity-or-value-dialog.component.scss'],
+
 })
 export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();
@@ -59,7 +60,6 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   // for entity card
   pkProject: number;
   showOntoInfo$ = new BehaviorSubject(false);
-  entityCardReadOnly$ = new BehaviorSubject(true);
   entityCardScope: GvFieldPageScope;
   source$: Observable<GvFieldSourceEntity>;
   initVal$: Observable<InfResourceWithRelations>

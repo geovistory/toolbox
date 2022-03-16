@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, Optional } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { InformationBasicPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
@@ -6,6 +6,8 @@ import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProjectEditComponent } from '../../../projects/containers/project-edit/project-edit.component';
+import { EditModeService } from '../../services/edit-mode.service';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 
 /**
  * This component prepares the configuration data and parameters
@@ -15,7 +17,11 @@ import { ProjectEditComponent } from '../../../projects/containers/project-edit/
   selector: 'gv-entity-card-wrapper',
   templateUrl: './entity-card-wrapper.component.html',
   styleUrls: ['./entity-card-wrapper.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    EditModeService,
+    { provide: READ_ONLY, useValue: true }
+  ]
 })
 export class EntityCardWrapperComponent implements OnInit {
   pkProject: number;
@@ -26,7 +32,6 @@ export class EntityCardWrapperComponent implements OnInit {
   pkClass$: Observable<number>
   showOntoInfo$: BehaviorSubject<boolean>;
   scope: GvFieldPageScope;
-  readmode$: BehaviorSubject<boolean>;
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -34,6 +39,7 @@ export class EntityCardWrapperComponent implements OnInit {
     @Optional() private parentProjectEditComponent: ProjectEditComponent,
     private dataService: ReduxMainService,
     private b: InformationBasicPipesService,
+    @Inject(READ_ONLY) public readonly: boolean,
 
 
   ) {
@@ -41,12 +47,10 @@ export class EntityCardWrapperComponent implements OnInit {
     this.isChildOfProjectEdit = !!this.parentProjectEditComponent;
     const pkEntity: number = parseInt(this.activatedRoute.snapshot.params['pkEntity'], 10);
     const community: boolean = this.activatedRoute.snapshot.data['community'];
-    const readonly: boolean = this.activatedRoute.snapshot.data['readonly'];
+    this.readonly = this.activatedRoute.snapshot.data['readonly'];
 
 
     this.initScope(community);
-
-    this.initReadonly(readonly);
 
     this.initSource(pkEntity);
 
@@ -69,9 +73,7 @@ export class EntityCardWrapperComponent implements OnInit {
     this.source = { fkInfo: pkEntity };
   }
 
-  private initReadonly(readonly: boolean) {
-    this.readmode$ = new BehaviorSubject(readonly);
-  }
+
 
   private initScope(community: boolean) {
     if (community) {

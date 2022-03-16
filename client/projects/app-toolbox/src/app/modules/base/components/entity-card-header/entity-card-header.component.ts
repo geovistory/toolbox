@@ -7,6 +7,7 @@ import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
+import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 
 @Component({
@@ -16,7 +17,6 @@ import { READ_ONLY } from '../../tokens/READ_ONLY';
 })
 export class EntityCardHeaderComponent implements OnInit {
 
-  @Input() readmode$: BehaviorSubject<boolean>
   @Input() showOntoInfo$: BehaviorSubject<boolean>;
   @Input() fkClass$: Observable<number>;
   @Input() pkEntity: number;
@@ -29,14 +29,16 @@ export class EntityCardHeaderComponent implements OnInit {
   classLabel$: Observable<string>;
 
   constructor(
+    public editMode: EditModeService,
     private p: ActiveProjectService,
     private ap: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
-
     private dialog: MatDialog,
     private truncatePipe: TruncatePipe,
     @Optional() @Inject(READ_ONLY) public readonly: boolean
-  ) { }
+  ) {
+
+  }
 
   ngOnInit(): void {
     const errors: string[] = []

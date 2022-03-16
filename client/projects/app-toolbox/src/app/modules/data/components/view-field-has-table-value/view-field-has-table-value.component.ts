@@ -6,6 +6,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { P_1879_HAS_VALUE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { catchError, first, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { EditModeService } from '../../../base/services/edit-mode.service';
 import { ImporterComponent, ImporterDialogData } from '../importer/importer.component';
 interface PkTableValueLoader {
   loading: boolean,
@@ -24,7 +25,7 @@ export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
   // @Input() field: Field
   @Input() scope: GvFieldPageScope
   @Input() source: GvFieldSourceEntity
-  @Input() readmode$: BehaviorSubject<boolean>
+  readmode$: Observable<boolean>
   // @Input() showOntoInfo$: Observable<boolean>
   loadTrigger$ = new BehaviorSubject<void>(undefined)
   pkTableValueLoader$: Observable<PkTableValueLoader>
@@ -35,17 +36,15 @@ export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
     public projectData: ProjectDataService,
     public dialog: MatDialog,
     public p: ActiveProjectService,
+    public editMode: EditModeService
   ) {
-
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
   }
 
   ngOnInit(): void {
     const errors: string[] = []
-    // if (!this.field) errors.push('@Input() field is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.source) errors.push('@Input() source is required.');
-    // if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
 

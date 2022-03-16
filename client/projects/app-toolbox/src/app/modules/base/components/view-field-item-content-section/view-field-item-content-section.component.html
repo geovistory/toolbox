@@ -34,7 +34,7 @@
     </span>
 
     <span class="loc-right">
-      <gv-view-field-item-entity-menu *ngIf="!(itemComponent.readmode$|async) &&  !isExpression">
+      <gv-view-field-item-entity-menu *ngIf="(editMode.value$|async) &&  !isExpression">
 
         <mat-divider></mat-divider>
         <div class="dropdown-header">Add a new</div>
@@ -50,7 +50,7 @@
 
 
       <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto"
-        *ngIf="!(itemComponent.readmode$|async) && isExpression">
+        *ngIf="(editMode.value$|async) && isExpression">
         <mat-icon>more_vert</mat-icon>
       </button>
 
@@ -68,7 +68,7 @@
       Sections and digital reproductions
     </h3>
     <div class="loc-header-right">
-      <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+      <button *ngIf="editMode.value$|async" mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
         <mat-icon>more_vert</mat-icon>
       </button>
     </div>
@@ -95,9 +95,9 @@
 
 
   <gv-view-field-body #f *ngFor="let field of fields$|async" [showBody$]="showBody$" [dividerPosition]="'top'"
-    [hidden]="((itemComponent.readmode$ |async) || field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)"
-    [field]="field" [showOntoInfo$]="showOntoInfo$" [readmode$]="itemComponent.readmode$" [source]="sectionSource"
-    [scope]="itemComponent.scope" [limit]="100" [hideNoItemsInfo]="true">
+    [hidden]="(!(editMode.value$|async) || field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)"
+    [field]="field" [showOntoInfo$]="showOntoInfo$" [source]="sectionSource" [scope]="itemComponent.scope" [limit]="100"
+    [hideNoItemsInfo]="true">
   </gv-view-field-body>
 </ng-container>
 

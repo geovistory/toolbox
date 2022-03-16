@@ -49,7 +49,7 @@ export default sandboxOf(ViewFieldComponent, {
           <mat-tab-group [selectedIndex]="selectedIndex">
             <mat-tab label="First">
               <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-              [readmode$]="readmode$" [source]="source"></gv-view-field>
+               [source]="source"></gv-view-field>
             </mat-tab>
             <mat-tab label="Second"> Content 2 </mat-tab>
             <mat-tab label="Third"> Content 3 </mat-tab>
@@ -61,7 +61,7 @@ export default sandboxOf(ViewFieldComponent, {
 
         <div style="width:600px;height:400px" class="d-flex mr-4">
             <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-            [readmode$]="readmode$" [source]="source"></gv-view-field>
+             [source]="source"></gv-view-field>
         </div>
 
 
@@ -91,7 +91,7 @@ export default sandboxOf(ViewFieldComponent, {
 
       <div style="width:600px;height:400px" class="d-flex mr-4">
           <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-          [readmode$]="readmode$" [source]="source"></gv-view-field>
+           [source]="source"></gv-view-field>
       </div>
    </div>
     `
@@ -114,7 +114,7 @@ export default sandboxOf(ViewFieldComponent, {
        <mat-tab-group [selectedIndex]="selectedIndex">
         <mat-tab label="First">
           <gv-view-field [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-          [readmode$]="readmode$" [source]="source"></gv-view-field>
+           [source]="source"></gv-view-field>
         </mat-tab>
         <mat-tab label="Second"> Content 2 </mat-tab>
         <mat-tab label="Third"> Content 3 </mat-tab>

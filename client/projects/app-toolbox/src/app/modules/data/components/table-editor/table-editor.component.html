@@ -65,11 +65,11 @@
 <!-- // MOVED cellMapping TO EntityMatcherComponent -->
 <gv-table class="mat-border-edit-mode" [pkProject]="pkProject" [pkDigital]="pkEntity" [loading]="loading"
   [sortBy$]="sortByIndex$" [headers$]="headers$" [table$]="table$" [filteringEnabled]="colFiltersEnabled"
-  [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" [readmode$]="readmode$" [showIds$]="showIds$"
-  [newRow]="newRowTemp" class="gv-overflow-hidden" (sortDemanded)="onSortChange($event)"
-  (filterDemanded)="onFilterChange($event)" (createRowDemanded)="preNewRow($event.position)"
-  (deleteRowDemanded)="deleteRow($event.pkRow)" (moveRowDemanded)="moveRow($event.pkRow, $event.position)"
-  (validateNewRowDemanded)="newRow($event)" (cancelNewRowDemanded)="cancelNewRow()">
+  [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" [showIds$]="showIds$" [newRow]="newRowTemp"
+  class="gv-overflow-hidden" (sortDemanded)="onSortChange($event)" (filterDemanded)="onFilterChange($event)"
+  (createRowDemanded)="preNewRow($event.position)" (deleteRowDemanded)="deleteRow($event.pkRow)"
+  (moveRowDemanded)="moveRow($event.pkRow, $event.position)" (validateNewRowDemanded)="newRow($event)"
+  (cancelNewRowDemanded)="cancelNewRow()">
 </gv-table>
 
 <div class="gv-row-center mt-4" *ngIf="filterOnRow">

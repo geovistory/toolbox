@@ -2,6 +2,7 @@ import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { Field } from '@kleiolab/lib-queries';
 import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
+import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
@@ -18,7 +19,8 @@ export class ViewFieldItemPreviewComponent implements OnInit {
 
   constructor(
     public itemComponent: ViewFieldItemComponent,
-    @Optional() @Inject(READ_ONLY) public readonly: boolean
+    @Optional() @Inject(READ_ONLY) public readonly: boolean,
+    public editMode: EditModeService
   ) { }
 
   ngOnInit(): void {

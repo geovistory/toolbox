@@ -39,7 +39,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readmode$]="readmode$"
+
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -65,7 +65,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readmode$]="readmode$"
+
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -92,7 +92,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readmode$]="readmode$"
+
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -120,7 +120,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readmode$]="readmode$"
+
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           [addMode$]="addMode$"
@@ -151,7 +151,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readmode$]="readmode$"
+
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -182,7 +182,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readmode$]="readmode$"
+
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           ></gv-view-field-body>
@@ -219,7 +219,7 @@ export default sandboxOf(ViewFieldBodyComponent, {
           [source]="source"
           [field]="field"
           [scope]="scope"
-          [readmode$]="readmode$"
+
           [showOntoInfo$]="showOntoInfo$"
           [showBodyOnInit]=true
           [addMode$]="addMode$"

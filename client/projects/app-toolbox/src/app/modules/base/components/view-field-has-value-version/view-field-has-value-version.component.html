@@ -11,34 +11,36 @@
   [annotationsVisible$]="annotationsVisible$" [annotatedNodes$]="textDetailComponent?.annotatedCharsMap$"
   [accentuatedNodes$]="textDetailComponent?.charsToHighlight$" (quillDocChange)="onQuillDocChange($event)"
   (selectedDeltaChange)="selectedDeltaChange($event)" (nodeMouseenter)="textNodeMouseenter($event)"
-  (nodeMouseleave)="textNodeMouseleave()" (nodeClick)="onNodeClicked($event)" [readOnly]="!(editing$|async)"
-  [showCharIdToggleBtn]=false [showDefaultToolbar]="!(readmode$|async)">
+  (nodeMouseleave)="textNodeMouseleave()" (nodeClick)="onNodeClicked($event)" [readOnly]="!(editMode.value$|async)"
+  [showCharIdToggleBtn]=false>
   <ng-container buttonsRight *ngIf="showRightButtons">
-    <a mat-button color="primary" class="loc-toolbar-item mat-btn-padding-x-8"
-      *ngIf="(selectedDelta$|async)?.ops?.length; else addAnnotationDisabled" (click)="annotate()"
-      [matTooltip]="'Create an annotation'">
-      <mat-icon [svgIcon]="'comment-plus'"></mat-icon>
-    </a>
-    <ng-template #addAnnotationDisabled>
-      <a mat-button [disabled]="true" class="loc-toolbar-item mat-btn-padding-x-8"
-        [matTooltip]="'Select text and create an annotation'">
+    <ng-container *ngIf="editMode.value$|async">
+      <a mat-button color="primary" class="loc-toolbar-item mat-btn-padding-x-8"
+        *ngIf="(selectedDelta$|async)?.ops?.length; else addAnnotationDisabled" (click)="annotate()"
+        [matTooltip]="'Create an annotation'">
         <mat-icon [svgIcon]="'comment-plus'"></mat-icon>
       </a>
-    </ng-template>
+      <ng-template #addAnnotationDisabled>
+        <a mat-button [disabled]="true" class="loc-toolbar-item mat-btn-padding-x-8"
+          [matTooltip]="'Select text and create an annotation'">
+          <mat-icon [svgIcon]="'comment-plus'"></mat-icon>
+        </a>
+      </ng-template>
+    </ng-container>
 
-    <gv-toggle-btn class="loc-toolbar-item" [value$]="annotationsVisible$">
-      <a gv-toggle-on mat-flat-button color="primary" class="mat-btn-padding-x-8" [matTooltip]="'hide annotations'">
+    <gv-toggle-btn class="loc-toolbar-item" [value$]="annotationsVisible$" (change)="annotationsVisible$.next($event)">
+      <a gv-toggle-off mat-flat-button color="primary" class="mat-btn-padding-x-8" [matTooltip]="'hide annotations'">
         <mat-icon [svgIcon]="'comment-quote-outline'"></mat-icon> Hide Annotations
       </a>
 
-      <a gv-toggle-off mat-button color="primary" class="mat-btn-padding-x-8" [matTooltip]="'show annotations'">
+      <a gv-toggle-on mat-button color="primary" class="mat-btn-padding-x-8" [matTooltip]="'show annotations'">
         <mat-icon [svgIcon]="'comment-quote-outline'"></mat-icon> Show Annotations
       </a>
     </gv-toggle-btn>
 
     <!-- Edit mode -->
-    <ng-container *ngIf="(editing$|async)">
-      <a mat-button color="primary" class="loc-toolbar-item mat-btn-padding-x-8" (click)="onSave();editing$.next(false)"
+    <ng-container *ngIf="(editMode.value$|async)">
+      <a mat-button color="primary" class="loc-toolbar-item mat-btn-padding-x-8" (click)="onSave();"
         [matTooltip]="'Save edits'">
         <mat-icon>save</mat-icon> Save
       </a>
@@ -49,10 +51,10 @@
     </ng-container>
 
     <!-- View mode -->
-    <ng-container *ngIf="!(editing$|async)">
-      <a mat-button color="primary" class="loc-toolbar-item mat-btn-padding-left-8" (click)="editing$.next(true)">
+    <ng-container *ngIf="!(editMode.value$|async)">
+      <!-- <a mat-button color="primary" class="loc-toolbar-item mat-btn-padding-left-8" (click)="editing$.next(true)">
         <mat-icon>edit</mat-icon> Edit
-      </a>
+      </a> -->
       <a mat-button color="primary" class="loc-toolbar-item mat-btn-padding-x-8" [matMenuTriggerFor]="export_menu">
         <mat-icon>more_vert</mat-icon>
       </a>
@@ -87,14 +89,14 @@
     </div>
 
     <gv-view-field-body [showBodyOnInit]=true [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$"
-      [readmode$]="readmode$" [source]="source"></gv-view-field-body>
+      [source]="source"></gv-view-field-body>
 
 
     <div class="loc-header mat-bg-grey-50">
       All versions
     </div>
     <gv-view-field-body [showBodyOnInit]=true [field]="field" [scope]="{noContraint:true}"
-      [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [source]="source">
+      [showOntoInfo$]="showOntoInfo$" [source]="source">
     </gv-view-field-body>
 
 

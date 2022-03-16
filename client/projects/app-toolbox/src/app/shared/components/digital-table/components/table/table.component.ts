@@ -2,6 +2,7 @@ import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Ou
 import { MatDialog } from '@angular/material/dialog';
 import { GetTablePageOptions, SysConfigValue, SysConfigValueObjectType, TabCell, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { EditModeService } from 'projects/app-toolbox/src/app/modules/base/services/edit-mode.service';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -74,7 +75,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() loading = false;
   @Input() headers$: Observable<Header[]>;
   @Input() table$: Observable<Array<Array<Cell>>>;
-  @Input() readmode$: BehaviorSubject<boolean>;
+  readmode$: Observable<boolean>;
   @Input() showIds$: BehaviorSubject<boolean>;
 
   // optionnal inputs
@@ -127,7 +128,10 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     public p: ActiveProjectService,
     private dialog: MatDialog,
     private tableAPI: TableService,
-  ) { }
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
 
   ngOnInit() {
     this.headers = [];

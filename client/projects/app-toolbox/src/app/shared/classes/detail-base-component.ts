@@ -6,6 +6,7 @@ import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiol
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService } from '../../core/active-project/active-project.service';
+import { EditModeService } from '../../modules/base/services/edit-mode.service';
 import { TabBody } from '../../modules/projects/containers/project-edit/project-edit.component';
 import { TabLayoutComponentInterface } from '../../modules/projects/directives/on-activate-tab.directive';
 import { TabLayout } from '../components/tab-layout/tab-layout';
@@ -58,7 +59,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     }
 
     if (event.key === 'E') {
-      this.readmode$.next(!this.readmode$.value);
+      this.editMode.toggleValue();
     }
     if (event.key === 'O') {
       this.showOntoInfo$.next(!this.showOntoInfo$.value);
@@ -73,7 +74,8 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     private i: InformationPipesService,
     private b: InformationBasicPipesService,
     private truncatePipe: TruncatePipe,
-    private dataService: ReduxMainService
+    private dataService: ReduxMainService,
+    public editMode: EditModeService
   ) { }
 
   protected initialize() {

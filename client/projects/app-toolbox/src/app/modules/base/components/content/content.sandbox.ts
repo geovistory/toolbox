@@ -198,7 +198,7 @@ export default sandboxOf(ContentComponent, {
       <div class="d-flex d-flex-direction-row justify-content-center mt-5">
 
         <gv-content [scope]="scope" [source]="source" [pkClass$]="pkClass$"
-          [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$" [section]=sectionName
+          [showOntoInfo$]="showOntoInfo$"  [section]=sectionName
           [showEmptyFieldsOnInit]="true">
         </gv-content>
 

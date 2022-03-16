@@ -22,7 +22,7 @@
 </h1>
 <div *ngIf="data.propertyHasReferences" mat-dialog-content>
   <mat-divider></mat-divider>
-  <gv-view-field [showBodyOnInit]=true [field]="field" [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$"
+  <gv-view-field [showBodyOnInit]=true [field]="field" [showOntoInfo$]="showOntoInfo$"
     [source]="{fkInfo:data.statement.pk_entity}" [scope]="data.scope">
   </gv-view-field>
 

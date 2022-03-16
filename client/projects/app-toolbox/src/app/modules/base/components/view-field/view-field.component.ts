@@ -8,6 +8,7 @@ import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
 import { fieldToFieldId, isValueObjectSubfield } from '../../base.helpers';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldAddHooksService } from '../../services/view-field-add-hooks.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { AddStatementDialogComponent, AddStatementDialogData } from '../add-statement-dialog/add-statement-dialog.component';
@@ -30,7 +31,7 @@ export class ViewFieldComponent implements OnInit {
 
   @Input() source: GvFieldSourceEntity;
   @Input() field: Field
-  @Input() readmode$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() scope: GvFieldPageScope;
   @Input() showBodyOnInit = false;
@@ -51,7 +52,9 @@ export class ViewFieldComponent implements OnInit {
     public dialog: MatDialog,
     private addHooks: ViewFieldAddHooksService,
     public nodeService: ViewFieldTreeNodeService,
+    public editMode: EditModeService
   ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
   }
 
 
@@ -66,8 +69,6 @@ export class ViewFieldComponent implements OnInit {
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
-    // if (!this.treeControl) errors.push('@Input() treeControl is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
 

@@ -8,6 +8,7 @@ import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
+import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 export interface ViewFieldAnnotationItemData {
   hasAnnotation: StatementWithTarget;
@@ -27,7 +28,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
   @Input() pkClass: number;
   @Input() source: GvFieldSourceEntity;
   @Input() scope: GvFieldPageScope
-  @Input() readmode$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   items$: Observable<ViewFieldAnnotationItemData[]>
   pinnedItems$: Observable<ViewFieldAnnotationItemData[]>
@@ -37,8 +38,10 @@ export class ViewFieldAnnotationsComponent implements OnInit {
     private pag: PaginationService,
     private i: InformationPipesService,
     private c: ConfigurationPipesService,
-    public textDetailComponent: TextDetail2Component
+    public textDetailComponent: TextDetail2Component,
+    public editMode: EditModeService
   ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
 
   }
   trackByFn(_, i: ViewFieldAnnotationItemData) {
@@ -48,7 +51,6 @@ export class ViewFieldAnnotationsComponent implements OnInit {
     const errors: string[] = []
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
-    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 

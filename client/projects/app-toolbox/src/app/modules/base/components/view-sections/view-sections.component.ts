@@ -3,6 +3,8 @@ import { ConfigurationPipesService, SectionName } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { EditModeService } from '../../services/edit-mode.service';
 
 @Component({
   selector: 'gv-view-sections',
@@ -19,7 +21,7 @@ export class ViewSectionsComponent implements OnInit {
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
   @Input() scope: GvFieldPageScope;
-  @Input() readmode$: Observable<boolean>;
+  readmode$: Observable<boolean>;
 
   basic = SectionName.basic;
   metadata = SectionName.metadata;
@@ -28,8 +30,11 @@ export class ViewSectionsComponent implements OnInit {
 
   constructor(
     public c: ConfigurationPipesService,
-    public p: ActiveProjectService
-  ) { }
+    public p: ActiveProjectService,
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
 
   ngOnInit() {
     const errors: string[] = []
@@ -37,7 +42,7 @@ export class ViewSectionsComponent implements OnInit {
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
+    if (!this.readmode$) errors.push('readmode$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
   }

@@ -7,6 +7,7 @@ import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { BehaviorSubject, combineLatest, Observable, of, Subject, timer } from 'rxjs';
 import { catchError, first, map, takeUntil } from 'rxjs/operators';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
@@ -25,7 +26,8 @@ export class ViewFieldItemValueVersionComponent {
     public bodyComponent: ViewFieldBodyComponent,
     private ap: ActiveProjectPipesService,
     private projectData: ProjectDataService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    public editMode: EditModeService
   ) { }
   ngOnInit(): void {
     this.ordNum = this.itemComponent.item.ordNum

@@ -15,13 +15,13 @@ export default sandboxOf(ToggleBtnComponent, {
       value$: new BehaviorSubject(true)
     },
     template: `
-      <gv-toggle-btn [value$]="value$">
+      <gv-toggle-btn [value$]="value$" (change)="value$.next($event)">
         <button gv-toggle-on mat-flat-button color="primary" class="mat-btn-padding-left-8">
-          <mat-icon>edit</mat-icon> editing
+          <mat-icon>edit</mat-icon> switch on
         </button>
 
         <button gv-toggle-off mat-button color="primary" class="mat-btn-padding-left-8">
-            <mat-icon>edit</mat-icon> editing
+            <mat-icon>edit</mat-icon> switch off
         </button>
 
       </gv-toggle-btn>
@@ -32,7 +32,7 @@ export default sandboxOf(ToggleBtnComponent, {
       value$: new BehaviorSubject(true)
     },
     template: `
-      <gv-toggle-btn [value$]="value$">
+      <gv-toggle-btn [value$]="value$" (change)="value$.next($event)">
         <button gv-toggle-on mat-flat-button color="primary" class="mat-btn-padding-x-8">
           <mat-icon>edit</mat-icon>
         </button>

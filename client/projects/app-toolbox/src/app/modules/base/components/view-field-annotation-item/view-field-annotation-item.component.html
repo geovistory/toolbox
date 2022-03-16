@@ -33,12 +33,14 @@
         <mat-icon>tab</mat-icon>
         Open annotation in new tab
       </button>
-      <mat-divider></mat-divider>
-      <div class="dropdown-header">Danger Zone</div>
-      <button mat-menu-item (click)="removeAnnotation()">
-        <mat-icon color="warn">delete</mat-icon>
-        <span>Remove</span>
-      </button>
+      <ng-container *ngIf="editMode.value$|async">
+        <mat-divider></mat-divider>
+        <div class="dropdown-header">Danger Zone</div>
+        <button mat-menu-item (click)="removeAnnotation()">
+          <mat-icon color="warn">delete</mat-icon>
+          <span>Remove</span>
+        </button>
+      </ng-container>
     </mat-menu>
 
   </div>

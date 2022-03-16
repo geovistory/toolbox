@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Field } from '@kleiolab/lib-queries';
 import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 @Component({
@@ -15,7 +16,10 @@ export class ViewFieldItemTimePrimitiveComponent {
   field: Field
   showOntoInfo$: Observable<boolean>
 
-  constructor(public itemComponent: ViewFieldItemComponent) { }
+  constructor(
+    public itemComponent: ViewFieldItemComponent,
+    public editMode: EditModeService
+  ) { }
   ngOnInit(): void {
     this.timePrimitive = this.itemComponent.item.target.timePrimitive.infTimePrimitive
     this.ordNum = this.itemComponent.item.ordNum

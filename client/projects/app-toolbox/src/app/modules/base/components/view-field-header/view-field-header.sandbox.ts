@@ -54,7 +54,7 @@ export default sandboxOf(ViewFieldHeaderComponent, {
 
         <div style="width:{{width}}px;height:80px" class="d-flex mr-4">
           <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
-          [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+           [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
           [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
           [required]=required [disableToggle]=disableToggle
           [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
@@ -78,7 +78,7 @@ export default sandboxOf(ViewFieldHeaderComponent, {
       <h2>Indentation 0</h2>
       <div style="width:500px;height:80px" class="d-flex mr-4">
         <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=of(0) [showAddButton$]=showAddButton$
-        [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+         [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
         [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
         [required]=required [disableToggle]=disableToggle
         [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
@@ -88,7 +88,7 @@ export default sandboxOf(ViewFieldHeaderComponent, {
       <h2>Indentation 1</h2>
       <div style="width:500px;height:80px" class="d-flex mr-4">
         <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
-        [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+         [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
         [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
         [required]=required [disableToggle]=disableToggle
         [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles
@@ -98,7 +98,7 @@ export default sandboxOf(ViewFieldHeaderComponent, {
       <h2>Indentation 2</h2>
       <div style="width:500px;height:80px" class="d-flex mr-4">
         <gv-view-field-header class="mat-bg-grey-50" [body]=body [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
-        [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
+         [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=ontoInfoUrl
         [ontoInfoLabel]=ontoInfoLabel [fieldLabel]=fieldLabel
         [required]=required [disableToggle]=disableToggle
         [hideItemsCount]=hideItemsCount [removedFromProfiles]=removedFromProfiles

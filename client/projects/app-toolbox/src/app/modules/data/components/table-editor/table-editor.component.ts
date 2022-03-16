@@ -31,7 +31,7 @@ export class TableEditorComponent implements OnInit {
   destroy$ = new Subject<boolean>();
 
   @Input() pkEntity: number; // Primary key of the table digital to be viewed or edited
-  @Input() readmode$: BehaviorSubject<boolean>;
+  readmode$: BehaviorSubject<boolean>;
   filterOnRow: number; // the row on which to filter on
   showIds$ = new BehaviorSubject(false);
 

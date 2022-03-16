@@ -21,9 +21,9 @@
 
 
           <mat-divider *ngIf="dividerPosition==='top'"></mat-divider>
-          <gv-view-field-item [item]=item [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [addMode$]=addMode$
-            [field]=field [scope]=scope [checked]="selection.isSelected(item.statement.pk_entity)"
-            [allowMultiSelect]=allowMultiSelect (selectionChange)="toggleSelection($event)"></gv-view-field-item>
+          <gv-view-field-item [item]=item [showOntoInfo$]=showOntoInfo$ [addMode$]=addMode$ [field]=field [scope]=scope
+            [checked]="selection.isSelected(item.statement.pk_entity)" [allowMultiSelect]=allowMultiSelect
+            (selectionChange)="toggleSelection($event)"></gv-view-field-item>
           <mat-divider *ngIf="dividerPosition==='bottom'"></mat-divider>
 
         </div>

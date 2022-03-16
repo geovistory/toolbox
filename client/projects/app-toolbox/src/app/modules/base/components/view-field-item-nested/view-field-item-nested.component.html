@@ -10,7 +10,7 @@
     </span>
     <!-- NESTED FIELDS -->
     <gv-entity-with-fields [source]="{fkInfo:resource.pk_entity}" [fkClass]="resource.fk_class"
-      [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope" [readmode$]="readmode$">
+      [showOntoInfo$]="showOntoInfo$" [scope]="scope.notInProject ? {inRepo:true} : scope">
 
     </gv-entity-with-fields>
   </span>
@@ -23,6 +23,6 @@
     <button mat-icon-button *ngIf="!(expanded$|async)" (click)="expanded$.next(true)">
       <mat-icon>unfold_more</mat-icon>
     </button>
-    <gv-view-field-item-entity-menu *ngIf="!(readmode$|async)"></gv-view-field-item-entity-menu>
+    <gv-view-field-item-entity-menu *ngIf="(editMode.value$|async)"></gv-view-field-item-entity-menu>
   </span>
 </gv-view-field-item-container>

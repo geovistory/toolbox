@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 
 
@@ -15,7 +16,7 @@ export class ViewFieldHeaderComponent implements OnInit, OnDestroy {
   @Input() body: ViewFieldBodyComponent
   @Input() itemsCount$: Observable<number>
   @Input() showAddButton$: Observable<boolean>
-  @Input() readmode$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() showTargetClassLabels = true
   @Input() itemsMax: number
@@ -37,8 +38,10 @@ export class ViewFieldHeaderComponent implements OnInit, OnDestroy {
   targetClassLabelsStr: string
   targetClassLabelsTooltip: string
   constructor(
-    private ref: ChangeDetectorRef
-  ) { }
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
 
   ngOnInit(): void {
     if (this.displayMode === 'tree' && this.indentation$) {

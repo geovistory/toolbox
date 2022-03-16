@@ -157,7 +157,7 @@ export default sandboxOf(ViewSectionsComponent, {
                   [pkClass$]="pkClass$"
                   [source]="source"
                   [showOntoInfo$]="showOntoInfo$"
-                  [readmode$]="readmode$"
+
                   [scope]="scope"
                 ></gv-view-sections>
                   </div>
@@ -193,7 +193,7 @@ export default sandboxOf(ViewSectionsComponent, {
                   [pkClass$]="pkClass$"
                   [source]="source"
                   [showOntoInfo$]="showOntoInfo$"
-                  [readmode$]="readmode$"
+
                   [scope]="scope"
                 ></gv-view-sections>
               </div>

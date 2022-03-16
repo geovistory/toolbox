@@ -1,6 +1,6 @@
 <!-- Header -->
 <gv-view-field-header [hidden]="!(showHeader$|async)" class="mat-bg-grey-50" [body]=b [itemsCount$]=itemsCount$
-  [showAddButton$]=showAddButton$ [readmode$]=readmode$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=field.ontoInfoUrl
+  [showAddButton$]=showAddButton$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=field.ontoInfoUrl
   [ontoInfoLabel]=field.ontoInfoLabel [fieldLabel]=field.label [required]="(field.identityDefiningForSource)"
   [disableToggle]="field.isSpecialField==='has-type'" [hideItemsCount]="field.isSpecialField==='has-type'"
   [removedFromProfiles]=field.allSubfieldsRemovedFromAllProfiles [itemsMax]="field.targetMaxQuantity"
@@ -17,5 +17,5 @@
 
 <!-- Body -->
 <gv-view-field-body [showBodyOnInit]="showBodyOnInit" [hidden]="field.isSpecialField" #b [source]="source"
-  [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$" [readmode$]="readmode$">
+  [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$">
 </gv-view-field-body>

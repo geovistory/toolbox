@@ -7,7 +7,9 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId, statemenTargetToInfData } from '../../base.helpers';
+import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
 import { SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../search-existing-entity/search-existing-entity.component';
 
@@ -32,7 +34,11 @@ export interface AddStatementDialogData {
 @Component({
   selector: 'gv-add-statement-dialog',
   templateUrl: './add-statement-dialog.component.html',
-  styleUrls: ['./add-statement-dialog.component.scss']
+  styleUrls: ['./add-statement-dialog.component.scss'],
+  providers: [
+    EditModeService,
+    { provide: READ_ONLY, useValue: true }
+  ]
 })
 export class AddStatementDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

@@ -4,8 +4,9 @@ import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kle
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first, switchMap, takeUntil } from 'rxjs/operators';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
+import { EditModeService } from '../../services/edit-mode.service';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  @Input() readmode$: Observable<boolean>;
+  readmode$: Observable<boolean>;
   @Input() section: SectionName;
   @Input() scope: GvFieldPageScope;
   @Input() showBodyOnInit: boolean;
@@ -38,14 +39,17 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
 
   constructor(
     public c: ConfigurationPipesService,
-    public p: ActiveProjectService
-  ) { }
+    public p: ActiveProjectService,
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
   ngOnInit() {
     const errors: string[] = []
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
+    if (!this.readmode$) errors.push('readmode$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
     if (this.showBodyOnInit) this.showBody$.next(this.showBodyOnInit)

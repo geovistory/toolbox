@@ -9,6 +9,7 @@ import { DetailBaseComponent } from 'projects/app-toolbox/src/app/shared/classes
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { EditModeService } from '../../../base/services/edit-mode.service';
 import { slideInOut } from '../../../information/shared/animations';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
 
@@ -21,6 +22,7 @@ export interface TextDetail2Config {
   styleUrls: ['./text-detail2.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [EditModeService]
 })
 export class TextDetail2Component
   extends DetailBaseComponent<TextDetail2Config>
@@ -58,6 +60,7 @@ export class TextDetail2Component
     b: InformationBasicPipesService,
     truncatePipe: TruncatePipe,
     dataService: ReduxMainService,
+    public editMode: EditModeService
   ) {
     super(
       p,
@@ -67,7 +70,8 @@ export class TextDetail2Component
       i,
       b,
       truncatePipe,
-      dataService
+      dataService,
+      editMode
     )
   }
   ngOnInit(): void {

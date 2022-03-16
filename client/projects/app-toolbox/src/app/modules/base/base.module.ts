@@ -99,6 +99,7 @@ import { ViewTimeSpanSectionComponent } from './components/view-time-span-sectio
 import { GvDndSortListDirective } from './directives/dnd-sort-list.directive';
 import { BaseModalsService } from './services/base-modals.service';
 import { GvDndGlobalService } from './services/dnd-global.service';
+import { EditModeService } from './services/edit-mode.service';
 import { PaginationService } from './services/pagination.service';
 import { TimeSpanService } from './services/time-span.service';
 import { ViewFieldAddHooksService } from './services/view-field-add-hooks.service';
@@ -223,7 +224,8 @@ const baseModules = [
     ViewFieldTreeNodeService,
     ViewFieldDropListService,
     ViewFieldItemCountSumService,
-    GvDndGlobalService
+    GvDndGlobalService,
+    EditModeService
   ],
   exports: [
     ...components,

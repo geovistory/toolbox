@@ -25,7 +25,8 @@
 </div>
 <div class="card-header-button">
   <!-- <div fxFlex fxLayout="row" fxLayoutAlign="end center"> -->
-  <gv-toggle-btn *ngIf="!readonly" class="loc-toolbar-item" [value$]="readmode$">
+  <gv-toggle-btn *ngIf="!readonly" class="loc-toolbar-item" [value$]="editMode.value$"
+    (change)="editMode.setValue($event)">
     <a gv-toggle-off mat-icon-button color="primary" [matTooltip]="'Switch to read mode [Shift + E]'">
       <mat-icon [svgIcon]="'eye'"></mat-icon>
     </a>
@@ -48,8 +49,8 @@
       </mat-slide-toggle>
     </button>
 
-    <button *ngIf="!readonly" mat-menu-item (click)="$event.stopPropagation();readmode$.next(!readmode$.value);">
-      <mat-slide-toggle color="accent" [checked]="!(readmode$|async)">
+    <button *ngIf="!readonly" mat-menu-item (click)="$event.stopPropagation();editMode.toggleValue();">
+      <mat-slide-toggle color="accent" [checked]="editMode.value$|async">
         Edit mode [Shift + E]
       </mat-slide-toggle>
     </button>

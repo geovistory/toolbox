@@ -10,7 +10,7 @@
     </div>
   </span>
 
-  <span class="loc-right" *ngIf="!(itemComponent.readmode$|async)">
+  <span class="loc-right" *ngIf="editMode.value$|async">
     <mat-menu #appMenu="matMenu">
       <ng-container *ngIf="itemComponent.item.target.langString">
         <button mat-menu-item (click)="itemComponent.openEditValueDialog(itemComponent.item)">

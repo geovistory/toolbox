@@ -4,7 +4,8 @@ import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, Informatio
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { first, map, takeUntil } from 'rxjs/operators';
+import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
@@ -22,7 +23,7 @@ export class EntityFieldComponent implements OnInit {
   @Input() field: Field
   @Input() source: GvFieldSourceEntity
   @Input() scope: GvFieldPageScope
-  @Input() readmode$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   isCircular = false;
   page$: Observable<FieldPage>
@@ -32,14 +33,16 @@ export class EntityFieldComponent implements OnInit {
     private pag: PaginationService,
     private dialog: MatDialog,
     private ref: ChangeDetectorRef,
-    @Optional() @Inject(READ_ONLY) public readonly: boolean
-  ) { }
+    @Optional() @Inject(READ_ONLY) public readonly: boolean,
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
 
   ngOnInit() {
     const errors: string[] = []
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
-    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
@@ -93,7 +96,7 @@ export class EntityFieldComponent implements OnInit {
         field: this.field,
         source: this.source,
         scope: this.scope,
-        readmode$: this.readmode$,
+        readonly: this.readonly,
         showOntoInfo$: this.showOntoInfo$,
       }
       this.dialog.open(ViewFieldDialogComponent, {

@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'gv-toggle-btn',
@@ -11,10 +10,8 @@ import { map } from 'rxjs/operators';
 export class ToggleBtnComponent implements OnInit {
 
   @Input() value$: BehaviorSubject<boolean>;
-  @Input() inversedBehavior = false;
 
-  _value$: Observable<boolean>
-
+  @Output() change = new EventEmitter<boolean>()
 
   constructor() { }
 
@@ -22,20 +19,14 @@ export class ToggleBtnComponent implements OnInit {
     const errors: string[] = []
     if (!this.value$) errors.push('@Input() value$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
-
-    if (this.inversedBehavior) {
-      this._value$ = this.value$.pipe(map(v => !v))
-    } else {
-      this._value$ = this.value$
-    }
   }
 
   onClick() {
-    this.value$.next(this.inversedBehavior)
+    this.change.emit(true)
   }
 
   offClick() {
-    this.value$.next(!this.inversedBehavior)
+    this.change.emit(false)
   }
 
 }

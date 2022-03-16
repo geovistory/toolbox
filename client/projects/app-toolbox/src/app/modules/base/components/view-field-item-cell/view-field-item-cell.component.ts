@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Field } from '@kleiolab/lib-queries';
 import { Observable } from 'rxjs';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 @Component({
@@ -12,7 +13,10 @@ export class ViewFieldItemCellComponent {
   ordNum?: number;
   field: Field
   showOntoInfo$: Observable<boolean>
-  constructor(public itemComponent: ViewFieldItemComponent) { }
+  constructor(
+    public itemComponent: ViewFieldItemComponent,
+    public editMode: EditModeService
+  ) { }
   ngOnInit(): void {
     this.ordNum = this.itemComponent.item.ordNum
     this.field = this.itemComponent.field

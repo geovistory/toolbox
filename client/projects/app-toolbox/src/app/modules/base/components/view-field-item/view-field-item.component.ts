@@ -27,7 +27,7 @@ export class ViewFieldItemComponent implements OnInit {
   @Input() item: StatementWithTarget
   @Input() field: Field
   @Input() scope: GvFieldPageScope
-  @Input() readmode$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
 
@@ -92,7 +92,7 @@ export class ViewFieldItemComponent implements OnInit {
       scope: this.scope,
       source: { fkInfo: this.item.target.entity.resource.pk_entity },
       editing$: new BehaviorSubject(true),
-      readmode$: of(false),
+      editMode: true,
       showOntoInfo$: of(false),
     }
     this.dialog.open(EditTextDialogComponent, { data })
@@ -105,7 +105,7 @@ export class ViewFieldItemComponent implements OnInit {
       scope: this.scope,
       source: { fkInfo: this.item.target.entity.resource.pk_entity },
       editing$: new BehaviorSubject(false),
-      readmode$: of(true),
+      editMode: false,
       showOntoInfo$: of(false),
     }
     this.dialog.open(EditTextDialogComponent, { data })

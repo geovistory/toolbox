@@ -14,6 +14,7 @@ import { BehaviorSubject, combineLatest, Observable, of, Subject, timer } from '
 import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
 import { DeltaI, Op, Ops } from '../../../quill/quill.models';
+import { ConfirmHook, EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
 interface QuillDocLoader {
@@ -36,9 +37,8 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
   @Input() field: Field
   @Input() scope: GvFieldPageScope
   @Input() source: GvFieldSourceEntity
-  @Input() readmode$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
-  @Input() editing$ = new BehaviorSubject(false)
   @Input() showRightButtons = true
   @Input() showHeader = true
 
@@ -62,8 +62,11 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     public projectData: ProjectDataService,
     public dialog: MatDialog,
     public p: ActiveProjectService,
-    @Optional() public textDetailComponent: TextDetail2Component
-  ) { }
+    @Optional() public textDetailComponent: TextDetail2Component,
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
 
   ngOnInit(): void {
     const errors: string[] = []
@@ -71,10 +74,11 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.source) errors.push('@Input() source is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
     this.quillDocLoader$ = this.initQuillDocLoader()
+
+    this.editMode.registerBeforeSwitchOffHook(this.confirmHook)
 
   }
 
@@ -285,25 +289,34 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
       .pipe(first())
       .toPromise()
   }
-  onCancel() {
-    const data: ConfirmDialogData = {
-      title: 'Cancel edits?',
-      paragraphs: [
-        'Attention: Unsaved changes will be lost.'
-      ],
-      noBtnText: 'Cancel',
-      yesBtnText: 'Confirm',
-      yesBtnColor: 'warn',
 
+  onCancel() {
+    this.editMode.setValue(false)
+  }
+  confirmHook: ConfirmHook = async () => {
+    const hasChanged = !equals(this.newQuillDoc, this.oldQuillDoc)
+
+    if (hasChanged) {
+      const data: ConfirmDialogData = {
+        title: 'Cancel edits?',
+        paragraphs: [
+          'Attention: Unsaved changes will be lost.'
+        ],
+        noBtnText: 'Cancel',
+        yesBtnText: 'Confirm',
+        yesBtnColor: 'warn',
+
+      }
+      const confirmed = await this.dialog.open(ConfirmDialogComponent, { data })
+        .afterClosed().pipe(first()).toPromise()
+
+      if (confirmed) this.loadTrigger$.next();
+
+      return confirmed;
     }
-    this.dialog.open(ConfirmDialogComponent, { data })
-      .afterClosed()
-      .subscribe(confirmed => {
-        if (confirmed) {
-          this.loadTrigger$.next();
-          this.editing$.next(false)
-        }
-      })
+    else {
+      return true
+    }
   }
 
   onQuillDocChange(q: QuillDoc) {

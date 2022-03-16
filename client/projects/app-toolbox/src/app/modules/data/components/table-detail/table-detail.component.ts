@@ -6,6 +6,7 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { DetailBaseComponent } from 'projects/app-toolbox/src/app/shared/classes/detail-base-component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
+import { EditModeService } from '../../../base/services/edit-mode.service';
 import { slideInOut } from '../../../information/shared/animations';
 import { TabBody } from '../../../projects/containers/project-edit/project-edit.component';
 
@@ -22,6 +23,7 @@ export interface TableDetailConfig {
   styleUrls: ['./table-detail.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [EditModeService]
 })
 export class TableDetailComponent
   extends DetailBaseComponent<TableDetailConfig>
@@ -39,6 +41,7 @@ export class TableDetailComponent
     b: InformationBasicPipesService,
     truncatePipe: TruncatePipe,
     dataService: ReduxMainService,
+    public editMode: EditModeService
   ) {
     super(
       p,
@@ -48,7 +51,8 @@ export class TableDetailComponent
       i,
       b,
       truncatePipe,
-      dataService
+      dataService,
+      editMode
     )
   }
 

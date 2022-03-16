@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Field } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/public-api';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldHasValueVersionComponent } from '../view-field-has-value-version/view-field-has-value-version.component';
 export interface EditTextDialogData {
   classLabel: string;
@@ -10,13 +11,14 @@ export interface EditTextDialogData {
   field: Field
   scope: GvFieldPageScope
   editing$: BehaviorSubject<boolean>
-  readmode$: Observable<boolean>
+  editMode: boolean
   showOntoInfo$: Observable<boolean>
 }
 @Component({
   selector: 'gv-edit-text-dialog',
   templateUrl: './edit-text-dialog.component.html',
-  styleUrls: ['./edit-text-dialog.component.scss']
+  styleUrls: ['./edit-text-dialog.component.scss'],
+  providers: [EditModeService]
 })
 export class EditTextDialogComponent {
 
@@ -24,7 +26,10 @@ export class EditTextDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<EditTextDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: EditTextDialogData,
-  ) { }
+    public editMode: EditModeService
+  ) {
+    editMode.setValue(data.editMode)
+  }
 
   async save() {
     await this.editor.onSave()

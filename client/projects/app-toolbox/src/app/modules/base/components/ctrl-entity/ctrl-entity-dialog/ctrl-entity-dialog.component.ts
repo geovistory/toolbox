@@ -7,6 +7,8 @@ import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { EditModeService } from '../../../services/edit-mode.service';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { FormCreateDataComponent } from '../../form-create-data/form-create-data.component';
 import { DisableIfHasStatement, SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityModel } from '../ctrl-entity.component';
@@ -32,7 +34,11 @@ export interface CreateOrAddEntityEvent {
 @Component({
   selector: 'gv-ctrl-entity-dialog',
   templateUrl: './ctrl-entity-dialog.component.html',
-  styleUrls: ['./ctrl-entity-dialog.component.scss']
+  styleUrls: ['./ctrl-entity-dialog.component.scss'],
+  providers: [
+    EditModeService,
+    { provide: READ_ONLY, useValue: true }
+  ]
 })
 export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();

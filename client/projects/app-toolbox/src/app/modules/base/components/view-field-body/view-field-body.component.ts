@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnI
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -14,6 +14,7 @@ import { openClose } from '../../../information/shared/animations';
 import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { GvDndSortListDirective } from '../../directives/dnd-sort-list.directive';
 import { GvDndGlobalService, TreeItem } from '../../services/dnd-global.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
 import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
@@ -35,7 +36,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   @Input() field: Field
   @Input() source: GvFieldSourceEntity;
   @Input() scope: GvFieldPageScope
-  @Input() readmode$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
   @Input() showBodyOnInit: boolean
@@ -76,12 +77,13 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     private p: ActiveProjectService,
     private pag: PaginationService,
     private i: InformationPipesService,
-    private s: SchemaService,
     private ap: ActiveProjectPipesService,
     private dataApi: ReduxMainService,
     public viewFieldDropListService: ViewFieldDropListService,
     @Optional() private itemCountService: ViewFieldItemCountSumService,
+    public editMode: EditModeService
   ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
     this.offset$ = combineLatest([this.limit$, this.pageIndex$]).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
     )
@@ -96,7 +98,6 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     if (!this.field) errors.push('@Input() field is required.');
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
-    if (!this.readmode$) errors.push('@Input() readmode$ is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
     if (!this.addMode$) this.addMode$ = new BehaviorSubject(false);
