@@ -160,10 +160,10 @@ export class SysConfigValueMock {
         }
       },
       "218": {
-        icon: IconType.source,
+        icon: IconType.section,
         belongsToCategory: {
           sources: {showInAddMenu: false}
-        }
+        },
       },
       "219": {
         icon: IconType.source,
@@ -216,7 +216,8 @@ export class SysConfigValueMock {
           "sources": {
             "showInAddMenu": false
           }
-        }
+        },
+        icon: IconType.section
       },
       "335": {
         icon: IconType.value,
@@ -556,7 +557,7 @@ export class SysConfigValueMock {
     },
     "addProperty": [
       {
-        "comment": "all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40), Appellation for Language (365) and Annotation (932) and excluding  Person (21) and excluding value classes",
+        "comment": "add <has appellation> to all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40), Appellation for Language (365) and Annotation (932) and excluding  Person (21) and excluding value classes",
         "isOutgoing": false,
         "toSourceClass": {
           "whereSubclassOf": [2, 70],
@@ -863,10 +864,11 @@ export class SysConfigValueMock {
               "comment": "geov:P? has value version",
               "formSections": {
                 "basic": {
-                  "position": 0,
-                  hideRemoveBtn: true,
-                  "noFieldHeader": true, // hide the field header
-                  controlsOnInit: 1,
+                  hidden: true
+                  // "position": 0,
+                  // hideRemoveBtn: true,
+                  // "noFieldHeader": true, // hide the field header
+                  // controlsOnInit: 1,
                 },
                 "simpleForm": {
                   hidden: true
@@ -903,6 +905,26 @@ export class SysConfigValueMock {
                   "position": 2,
                   controlsOnInit: 1,
                 }
+              }
+            }
+          },
+          incomingProperties: {
+            1762: {
+              viewSections: {
+                specific: {hidden: true},
+              },
+              formSections: {
+                basic: {hidden: true},
+                simpleForm: {hidden: true},
+              }
+            },
+            1763: {
+              viewSections: {
+                specific: {hidden: true},
+              },
+              formSections: {
+                basic: {hidden: true},
+                simpleForm: {hidden: true},
               }
             }
           }
