@@ -987,7 +987,11 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     // Language String Control
     else if (formCtrlType.langString) {
       return of(initStmts.map((initVal) => {
-        return this.langStringCtrl(this.ctrlRequired(field), initVal.object_lang_string, (val: InfLangString) => {
+        const initLangString = {
+          ...initVal?.object_lang_string,
+          fk_class: targetClass,
+        }
+        return this.langStringCtrl(this.ctrlRequired(field), initLangString, (val: InfLangString) => {
           const value: InfStatementWithRelations = {
             fk_object_info: undefined,
             fk_property: field.property.fkProperty,
@@ -1109,7 +1113,11 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
 
     // Language String
     else if (formCtrlType.langString) {
-      return of([this.langStringCtrl(true, initVal?.langString, (val: InfLangString): InfData => {
+      const initLangString = {
+        ...initVal?.langString,
+        fk_class: targetClass,
+      }
+      return of([this.langStringCtrl(true, initLangString, (val: InfLangString): InfData => {
         if ((val as any).language) delete (val as any).language
         return { langString: { ...val, fk_class: targetClass } }
       })])
