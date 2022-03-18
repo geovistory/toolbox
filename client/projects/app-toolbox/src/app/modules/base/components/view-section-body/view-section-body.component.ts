@@ -4,8 +4,9 @@ import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kle
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { first, switchMap, takeUntil } from 'rxjs/operators';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
+import { EditModeService } from '../../services/edit-mode.service';
 
 
 @Component({
@@ -23,10 +24,11 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
   @Input() showOntoInfo$: Observable<boolean>;
-  @Input() readonly$: Observable<boolean>;
+  readmode$: Observable<boolean>;
   @Input() section: SectionName;
   @Input() scope: GvFieldPageScope;
   @Input() showBodyOnInit: boolean;
+  @Input() showEmptyFieldsOnInit: boolean;
 
 
   fields$: Observable<Field[]>
@@ -37,18 +39,27 @@ export class ViewSectionBodyComponent implements OnInit, OnDestroy {
 
   constructor(
     public c: ConfigurationPipesService,
-    public p: ActiveProjectService
-  ) { }
+    public p: ActiveProjectService,
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
   ngOnInit() {
     const errors: string[] = []
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
+    if (!this.readmode$) errors.push('readmode$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
     if (this.showBodyOnInit) this.showBody$.next(this.showBodyOnInit)
-    this.fields$ = this.pkClass$.pipe(first(x => !!x), switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.section)))
+    this.readmode$.pipe(takeUntil(this.destroy$)).subscribe(readonly => {
+      this.showEmptyFields$.next(!readonly)
+    })
+    // if (this.showEmptyFieldsOnInit) this.showEmptyFields$.next(this.showEmptyFieldsOnInit)
+    this.fields$ = this.pkClass$.pipe(first(x => {
+      return !!x
+    }), switchMap(pkClass => this.c.pipeSection(pkClass, DisplayType.view, this.section)))
 
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe(data => {
       this.dataSource.data = data;

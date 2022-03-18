@@ -3,14 +3,14 @@ import { Profiles } from '@kleiolab/lib-queries';
 import { DfhClass, DfhLabel, DfhProperty, GvPositiveSchemaObject, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { concat, mergeDeepWith } from 'ramda';
 import { DfhApiPropertyMock } from '../data/auto-gen/gvDB/DfhApiPropertyMock';
-import { DfhApiClass, NewDfhApiProperty, OntomeProfileMock } from '../data/auto-gen/gvDB/local-model.helpers';
+import { NewDfhApiClass, NewDfhApiProperty, OntomeProfileMock } from '../data/auto-gen/gvDB/local-model.helpers';
 
 
 /**
  * converts a DfhApiClass (database format)
  * to a DfhClass (redux store format)
  */
-export function transformDfhApiClassToDfhClass(dfhApiClass: Omit<DfhApiClass, 'pk_entity'>): DfhClass {
+export function transformDfhApiClassToDfhClass(dfhApiClass: NewDfhApiClass): DfhClass {
   return {
     pk_class: dfhApiClass.dfh_pk_class,
     identifier_in_namespace: dfhApiClass.dfh_class_identifier_in_namespace,
@@ -43,7 +43,7 @@ export function transformDfhApiPropertyToDfhProperty(dfhApiProperty: NewDfhApiPr
       removed_from_api: false
     }],
     parent_properties: dfhApiProperty.dfh_parent_properties,
-    ancestor_properties: dfhApiProperty.dfh_ancestor_properties,
+    ancestor_properties: dfhApiProperty.dfh_ancestor_properties
   }
 }
 
@@ -52,7 +52,7 @@ export function transformDfhApiPropertyToDfhProperty(dfhApiProperty: NewDfhApiPr
 * converts a DfhApiClass (database format)
 * to a DfhLabel (redux store format)
 */
-export function transformDfhApiClassToDfhLabel(dfhApiClass: Omit<DfhApiClass, 'pk_entity'>): DfhLabel {
+export function transformDfhApiClassToDfhLabel(dfhApiClass: NewDfhApiClass): DfhLabel {
   return {
     fk_class: dfhApiClass.dfh_pk_class,
     label: dfhApiClass.dfh_class_label,
@@ -172,43 +172,86 @@ export function createCrmAsGvPositiveSchema(d: {
     o = mergeDeepWith(concat, o, o2)
   })
 
-  const property = addProperties(d.sysConf, o)
+  const property = addProperties(d.sysConf, o) as DfhProperty[]
   const autoPropsObj: GvPositiveSchemaObject = { dfh: { property }, sys: { config: [d.sysConf] } }
   return mergeDeepWith(concat, o, autoPropsObj)
 }
 
 function addProperties(sysConf: SysConfigValue, schemaObj: GvPositiveSchemaObject) {
-  const autoProps: DfhProperty[] = []
+  const autoProps: Partial<DfhProperty>[] = []
   const toAdd = sysConf.addProperty ?? []
   toAdd.forEach(i => {
 
     // find property
-    const prop = schemaObj?.dfh?.property?.find(p =>
-      i.wherePkProperty ? p.pk_property === i.wherePkProperty : true &&
-        i.whereFkRange ? p.has_range === i.whereFkRange : true &&
-          i.whereFkDomain ? p.has_domain === i.whereFkDomain : true
-    )
+    const prop = schemaObj?.dfh?.property?.find(p => {
+      if (i.wherePkProperty && p.pk_property !== i.wherePkProperty) return false;
+      if (i.whereFkRange && p.has_range !== i.whereFkRange) return false;
+      if (i.whereFkDomain && p.has_domain !== i.whereFkDomain) return false;
+      return true
+    })
 
     // extend property
-    if (prop) {
+    if (prop && schemaObj?.dfh?.klass) {
       schemaObj.dfh.klass.forEach(k => {
-        if (i.toSourceClass?.whereBasicTypeNotIn?.includes(k.basic_type)) return;
-        if (i.toSourceClass?.wherePkClassNotIn?.includes(k.pk_class)) return;
-        if (i.toSourceClass?.all ||
-          i.toSourceClass?.wherePkClassIn?.includes(k.pk_class) ||
-          i.toSourceClass?.whereBasicTypeIn?.includes(k.basic_type)
-        ) {
+        if (k.basic_type && i.toSourceClass?.whereBasicTypeNotIn?.includes(k.basic_type)) return;
+        if (k.pk_class && i.toSourceClass?.wherePkClassNotIn?.includes(k.pk_class)) return;
 
-          autoProps.push(
-            {
+        const superclasses = [...k?.parent_classes, ...k?.ancestor_classes]
+        if (superclasses.length && i.toSourceClass?.whereNotSubclassOf?.some(superC => superclasses.includes(superC))) return;
+
+        const isValueObjectType = getClassIsVot(sysConf, k.pk_class, k.basic_type)
+        if (i.toSourceClass?.whereNotValueObjectType && isValueObjectType) return;
+
+        if (i.toSourceClass?.all ||
+          (k.pk_class && i.toSourceClass?.wherePkClassIn?.includes(k.pk_class)) ||
+          (k.basic_type && i.toSourceClass?.whereBasicTypeIn?.includes(k.basic_type)) ||
+          (superclasses.length && i.toSourceClass?.whereSubclassOf?.some(superC => superclasses.includes(superC))) ||
+          (i.toSourceClass?.whereValueObjectType && isValueObjectType)
+        ) {
+          let newProp: Partial<DfhProperty>;
+          if (i.replaceTargetClassWithSourceClass) {
+            newProp = {
+              ...prop,
+              has_domain: k.pk_class,
+              has_range: k.pk_class
+            }
+          } else {
+            newProp = {
               ...prop,
               [i.isOutgoing ? 'has_domain' : 'has_range']: k.pk_class
             }
-          )
+          }
+
+          // prevent duplication
+          if (
+            !(prop.has_domain === newProp.has_domain &&
+              prop.pk_property === newProp.pk_property &&
+              prop.has_range === newProp.has_range)
+          ) {
+            autoProps.push(newProp)
+          }
+
 
         }
       })
     }
   })
   return autoProps
+}
+
+
+
+/**
+ * Retrieve if class is value object type
+ * @param sysConfig
+ * @param pkClass
+ * @param basicTypeId
+ * @returns true, if class is value object type, else false
+ */
+function getClassIsVot(sysConfig: SysConfigValue, pkClass = -1, basicTypeId = -1): boolean {
+  const vot = sysConfig?.classes?.[pkClass]?.valueObjectType ??
+    sysConfig?.classesByBasicType?.[basicTypeId]?.valueObjectType ??
+    sysConfig?.classesDefault?.valueObjectType
+
+  return !!vot
 }

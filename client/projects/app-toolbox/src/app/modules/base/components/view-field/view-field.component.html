@@ -1,13 +1,11 @@
-<!-- <ng-container *ngIf="!field.isSpecialField; else hasType"> -->
-
 <!-- Header -->
-<gv-view-field-header class="mat-bg-grey-50" [body]=b [itemsCount$]=itemsCount$ [showAddButton$]=showAddButton$
-  [readonly$]=readonly$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=field.ontoInfoUrl
-  [ontoInfoLabel]=field.ontoInfoLabel [fieldLabel]=field.label
-  [required]="(field.isOutgoing && field.identityDefiningForSource)" [disableToggle]="field.isSpecialField==='has-type'"
-  [hideItemsCount]="field.isSpecialField==='has-type'" [removedFromProfiles]=field.allSubfieldsRemovedFromAllProfiles
-  [itemsMax]="field.targetMaxQuantity" [targetClassLabels]=targetClassLabels
-  [showTargetClassLabels]="field.isSpecialField!=='has-type'" (add)="addClick()">
+<gv-view-field-header [hidden]="!(showHeader$|async)" class="mat-bg-grey-50" [body]=b [itemsCount$]=itemsCount$
+  [showAddButton$]=showAddButton$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=field.ontoInfoUrl
+  [ontoInfoLabel]=field.ontoInfoLabel [fieldLabel]=field.label [required]="(field.identityDefiningForSource)"
+  [disableToggle]="field.isSpecialField==='has-type'" [hideItemsCount]="field.isSpecialField==='has-type'"
+  [removedFromProfiles]=field.allSubfieldsRemovedFromAllProfiles [itemsMax]="field.targetMaxQuantity"
+  [targetClassLabels]=targetClassLabels [showTargetClassLabels]="field.isSpecialField!=='has-type'"
+  [displayMode]="nodeService.displayMode" [indentation$]="nodeService.indentation$" (add)="addClick()">
 
   <gv-type-item hastype *ngIf="field.isSpecialField==='has-type'" class="ml-3 mat-body mat-text-secondary"
     [pkEntity]="source.fkInfo" [pkProperty]="field.property.fkProperty" [pkTypedClass]="field.sourceClass"
@@ -15,9 +13,9 @@
   </gv-type-item>
 
 </gv-view-field-header>
-<mat-divider></mat-divider>
+<mat-divider [hidden]="!(showHeader$|async)"></mat-divider>
 
 <!-- Body -->
 <gv-view-field-body [showBodyOnInit]="showBodyOnInit" [hidden]="field.isSpecialField" #b [source]="source"
-  [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$" [readonly$]="readonly$">
+  [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$">
 </gv-view-field-body>

@@ -499,6 +499,7 @@ export class AnalysisController {
     else if (v.string) return v.string.string
     else if (v.langString) return v.langString.string
     else if (v.timePrimitive) return v.timePrimitive.label
+    else if (v.cell) return `${v.cell.stringValue !== undefined ? v.cell.stringValue : v.cell.numericValue}`
     else return ''
   }
 }

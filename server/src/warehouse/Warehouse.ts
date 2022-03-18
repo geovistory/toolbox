@@ -4,7 +4,7 @@ import {Notification, Pool, PoolClient, PoolConfig} from 'pg';
 import {parse} from 'pg-connection-string';
 import {values} from 'ramda';
 import {combineLatest, ReplaySubject, Subject} from 'rxjs';
-import {filter, first, mapTo} from 'rxjs/operators';
+import {first} from 'rxjs/operators';
 import {createPoolConfig, getPgSslForPg8} from '../utils/databaseUrl';
 import {AggregatedDataService2} from './base/classes/AggregatedDataService2';
 import {IndexDBGeneric} from './base/classes/IndexDBGeneric';
@@ -39,13 +39,11 @@ export interface LeftDSDates {[DsName: string]: string}
 @Injectable()
 export class Warehouse {
 
-
     // Geovistory postgres
     gvPgPool: Pool;
     gvPgListener: PoolClient;
     gvPgListenerConnected$ = new ReplaySubject<PoolClient>()
     gvPgNotifications$ = new Subject<Notification>()
-
 
     // Warehouse postgres
     whPgPool: Pool;
@@ -67,7 +65,6 @@ export class Warehouse {
         @Inject(forwardRef(() => Injector)) private injector: Injector
     ) {
         this.schemaName = config.warehouseSchema;
-
 
         const whPgConfig = createPoolConfig(config.warehouseDatabase, config.warehouseDatabaseMaxConnections)
         this.whPgPool = new Pool(whPgConfig);
@@ -102,8 +99,6 @@ export class Warehouse {
 
         await this.listen()
     }
-
-
 
     /**
      * sets the databases up:
@@ -279,22 +274,12 @@ export class Warehouse {
             this
         )
 
-
-        // await this.initializeForeignDataWrappers();
-
-
-        const primReady$ = combineLatest(
-            this.getPrimaryDs().map(ds => ds.index.ready$.pipe(filter(r => r === true)))
-        ).pipe(mapTo(true))
-
+        const primaryDsPromises = this.getPrimaryDs().map(ds => ds.index.ready$.pipe(first()).toPromise())
         this.createSchema$.next()
-        return new Promise((res, rej) => {
-            combineLatest(
-                primReady$.pipe(filter(r => r === true)),
-                // aggInitialized$.pipe(filter(r => r === true)),
-                // this.dep.ready$.pipe(filter(r => r === true)),
-            ).pipe(first()).subscribe(_ => res())
-        })
+
+        await this.metaTimestamps.ready$.pipe(first()).toPromise()
+        await this.aggregationTimestamps.ready$.pipe(first()).toPromise()
+        await Promise.all(primaryDsPromises)
     }
 
     /**

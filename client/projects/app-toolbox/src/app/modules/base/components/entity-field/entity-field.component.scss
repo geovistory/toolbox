@@ -8,8 +8,16 @@ gv-field-label {
   width: 100%;
   overflow: hidden;
 }
+.loc-cell {
+  line-height: 1.2;
+  white-space: nowrap;
 
-// .main:hover {
-//   width: auto;
-//   min-width: 200px;
-// }
+  .loc-cell-line-two {
+    display: flex;
+    line-height: 1;
+    margin-top: 2px;
+  }
+}
+.loc-cell-class-info {
+  margin-right: 2px;
+}

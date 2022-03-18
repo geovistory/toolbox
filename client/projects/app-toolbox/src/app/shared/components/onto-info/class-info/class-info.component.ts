@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 
 
@@ -17,6 +17,7 @@ export class ClassInfoComponent implements OnInit {
   @Input() isFavorite: boolean
   @Input() size = 24
   @Input() shade = 'secondary'
+  @Input() iconGray = false // if true, keep icons gray
 
   svgIcon$: Observable<string>
   colorClass$: Observable<string>
@@ -27,9 +28,10 @@ export class ClassInfoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const type$ = this.c.pipeIconTypeFromClass(this.pkClass).pipe(shareReplay())
-    this.svgIcon$ = type$.pipe(
-      map(type => {
+    const classEnriched$ = this.c.pipeClassEnriched(this.pkClass).pipe(shareReplay())
+    this.svgIcon$ = classEnriched$.pipe(
+      map(classEnriched => {
+        const type = classEnriched.icon
         const prefix = this.isFavorite ? 'filled' : 'outlined'
         switch (type) {
           case 'text':
@@ -39,42 +41,40 @@ export class ClassInfoComponent implements OnInit {
           case 'source':
             return `gv:outlined-gv-source`; // create filled icon and use next line
           // return `gv:${prefix}-gv-source`;
-          case 'expression-portion':
+          case 'section':
             return `gv:${prefix}-gv-section`;
-          case 'persistent-entity':
+          case 'persistent-item':
             return `gv:${prefix}-gv-persistent-item`;
           case 'temporal-entity':
             return `gv:${prefix}-gv-temporal-entity`;
           case 'value':
             return `gv:${prefix}-gv-value`;
-          case 'analysis':
-            return `gv:${prefix}-gv-analysis`;
+          case 'expression':
+            return `gv:${prefix}-gv-expression`;
           default:
-            break;
+            return `gv:${prefix}-gv-persistent-item`;
         }
       })
     )
-    this.colorClass$ = type$.pipe(
-      map(type => {
-        switch (type) {
-          case 'text':
-          case 'table':
-            return 'gv-digitals-' + this.shade + '-color';
-          case 'source':
-          case 'expression-portion':
-            return 'gv-sources-' + this.shade + '-color';
-          case 'persistent-entity':
-          case 'temporal-entity':
-            return 'gv-entities-' + this.shade + '-color'
-          case 'analysis':
-            return 'gv-analysis-' + this.shade + '-color'
-          case 'value':
-            return 'gv-values-' + this.shade + '-color'
-          default:
-            break;
-        }
-      })
-    )
+    if (this.iconGray) {
+      this.colorClass$ = of('mat-text-secondary')
+    }
+    else {
+
+      this.colorClass$ = classEnriched$.pipe(
+        map(classEnriched => {
+
+          if (classEnriched.belongsToCategory.digitals) return 'gv-digitals-' + this.shade + '-color';
+          else if (classEnriched.belongsToCategory.sources) return 'gv-sources-' + this.shade + '-color';
+          else if (classEnriched.belongsToCategory.entities) return 'gv-entities-' + this.shade + '-color';
+          else if (classEnriched.belongsToCategory.stories) return 'gv-stories-' + this.shade + '-color';
+          else if (classEnriched.classConfig.valueObjectType) return 'gv-value-' + this.shade + '-color';
+
+          return 'gv-entities-' + this.shade + '-color';
+
+        })
+      )
+    }
     this.tooltip = `${this.classLabel}`
   }
 

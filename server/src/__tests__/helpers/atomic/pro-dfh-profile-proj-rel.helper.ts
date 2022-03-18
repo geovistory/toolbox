@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { testdb } from "../testdb";
 import {ProDfhProfileProjRel} from '../../../models';
 import {ProDfhProfileProjRelRepository} from '../../../repositories';
+import {testdb} from "../testdb";
 import {dealWithPkEntity} from './_sequences.helper';
-import {PubAccountMock} from '../data/gvDB/PubAccountMock';
 
 function createProDfhProfileProjRelRepo() {
   return new ProDfhProfileProjRelRepository(
@@ -37,9 +35,9 @@ export async function addProfilesToProject(fkProject: (number | undefined), dfhP
 */
 export async function addProfileToProject(dfhProfile = -1, fkProject = -1) {
   const item: Partial<ProDfhProfileProjRel> = {
-      fk_project: fkProject,
-      fk_profile: dfhProfile,
-      enabled: true
+    fk_project: fkProject,
+    fk_profile: dfhProfile,
+    enabled: true
   }
   return createProDfhProfileProjRelRepo().create(item);
 }

@@ -11,8 +11,8 @@ import {ProProjectMock} from './ProProjectMock'
 /**
  * pk_entity prefix: depends on entity type. If peIt, 200, if teEn 400
  */
-export class WarEntityPreviewMock {
-    static readonly GEO_PLACE_BASEL: OmitEntity<WarEntityPreview> = ({
+export namespace WarEntityPreviewMock {
+    export const GEO_PLACE_BASEL: OmitEntity<WarEntityPreview> = ({
         pk_entity: 1000,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -22,18 +22,9 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly GEO_PLACE_ZURICH: OmitEntity<WarEntityPreview> = ({
-        pk_entity: 1001,
-        fk_project: ProProjectMock.PROJECT_1.pk_entity,
-        project: ProProjectMock.PROJECT_1.pk_entity,
-        fk_class: DfhApiClassMock.EN_363_GEO_PLACE.dfh_pk_class,
-        class_label: 'Geographical Place',
-        entity_label: 'Zürich',
-        entity_type: 'peIt',
-    })
 
 
-    static readonly BIRTH_OEKOLOMBAD: OmitEntity<WarEntityPreview> = ({
+    export const BIRTH_OEKOLOMBAD: OmitEntity<WarEntityPreview> = ({
         pk_entity: 1002,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -50,7 +41,7 @@ export class WarEntityPreviewMock {
         }
     })
 
-    static readonly BIRTH_ZWINGLI: OmitEntity<WarEntityPreview> = ({
+    export const BIRTH_ZWINGLI: OmitEntity<WarEntityPreview> = ({
         pk_entity: 1003,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -68,7 +59,7 @@ export class WarEntityPreviewMock {
     })
 
 
-    static readonly TIME_UNIT_ONE_MONTH: OmitEntity<WarEntityPreview> = ({
+    export const TIME_UNIT_ONE_MONTH: OmitEntity<WarEntityPreview> = ({
         pk_entity: 2017,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -78,7 +69,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly PERSON_1: OmitEntity<WarEntityPreview> = ({
+    export const PERSON_1: OmitEntity<WarEntityPreview> = ({
         pk_entity: 2001,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
         project: ProProjectMock.PROJECT_1.pk_entity,
@@ -88,7 +79,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly EXPRESSION_PORTION_HABS_EMP_CHAPTER_1: OmitEntity<WarEntityPreview> = ({
+    export const EXPRESSION_PORTION_HABS_EMP_CHAPTER_1: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1.pk_entity,
         fk_class: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -97,7 +88,7 @@ export class WarEntityPreviewMock {
         entity_label: 'Chapter 1',
         entity_type: 'peIt',
     })
-    static readonly EXPRESSION_PORTION_HABS_EMP_CHAPTER_2: OmitEntity<WarEntityPreview> = ({
+    export const EXPRESSION_PORTION_HABS_EMP_CHAPTER_2: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_2.pk_entity,
         fk_class: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_2.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -107,7 +98,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly APPE_IN_LANG_TYPE_FIRST_NAME: OmitEntity<WarEntityPreview> = ({
+    export const APPE_IN_LANG_TYPE_FIRST_NAME: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.APPE_IN_LANG_TYPE_FIRST_NAME.pk_entity,
         fk_class: InfResourceMock.APPE_IN_LANG_TYPE_FIRST_NAME.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -117,7 +108,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly APPE_IN_LANG_TYPE_LAST_NAME: OmitEntity<WarEntityPreview> = ({
+    export const APPE_IN_LANG_TYPE_LAST_NAME: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.APPE_IN_LANG_TYPE_LAST_NAME.pk_entity,
         fk_class: InfResourceMock.APPE_IN_LANG_TYPE_LAST_NAME.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -127,7 +118,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly VOLUME_UNIT_CUBIC_METER: OmitEntity<WarEntityPreview> = ({
+    export const VOLUME_UNIT_CUBIC_METER: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.VOLUME_UNIT_CUBIC_METER.pk_entity,
         fk_class: InfResourceMock.VOLUME_UNIT_CUBIC_METER.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -137,7 +128,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly GEO_PLACE_TYPE_CITY: OmitEntity<WarEntityPreview> = ({
+    export const GEO_PLACE_TYPE_CITY: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.GEO_PLACE_TYPE_CITY.pk_entity,
         fk_class: InfResourceMock.GEO_PLACE_TYPE_CITY.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -147,7 +138,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly GEO_PLACE_TYPE_VILLAGE: OmitEntity<WarEntityPreview> = ({
+    export const GEO_PLACE_TYPE_VILLAGE: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.GEO_PLACE_TYPE_VILLAGE.pk_entity,
         fk_class: InfResourceMock.GEO_PLACE_TYPE_VILLAGE.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -157,7 +148,7 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
-    static readonly NAMING_1: OmitEntity<WarEntityPreview> = ({
+    export const NAMING_1: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.NAMING_1.pk_entity,
         fk_class: InfResourceMock.NAMING_1.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -167,7 +158,7 @@ export class WarEntityPreviewMock {
         entity_type: 'teEn',
     })
 
-    static readonly NAMING_2: OmitEntity<WarEntityPreview> = ({
+    export const NAMING_2: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.NAMING_2.pk_entity,
         fk_class: InfResourceMock.NAMING_2.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -177,7 +168,7 @@ export class WarEntityPreviewMock {
         entity_type: 'teEn',
     })
 
-    static readonly HABS_EMP_EXPR: OmitEntity<WarEntityPreview> = ({
+    export const HABS_EMP_EXPR: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.HABS_EMP_EXPR.pk_entity,
         fk_class: InfResourceMock.HABS_EMP_EXPR.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -186,8 +177,17 @@ export class WarEntityPreviewMock {
         entity_label: 'Expression of Habs-Empire',
         entity_type: 'peIt',
     })
+    export const DEFINITION_1: OmitEntity<WarEntityPreview> = ({
+        pk_entity: InfResourceMock.DEFINITION_1.pk_entity,
+        fk_class: InfResourceMock.DEFINITION_1.fk_class,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        class_label: 'Definition', // todo: use DfhApiClassMock when available
+        entity_label: 'This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data.',
+        entity_type: 'peIt',
+    })
 
-    static readonly TYPE_OF_MANIF_PROD_TYPE_BOOK: OmitEntity<WarEntityPreview> = ({
+    export const TYPE_OF_MANIF_PROD_TYPE_BOOK: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_BOOK.pk_entity,
         fk_class: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_BOOK.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -196,7 +196,7 @@ export class WarEntityPreviewMock {
         entity_label: 'Book',
         entity_type: 'peIt',
     })
-    static readonly TYPE_OF_MANIF_PROD_TYPE_JOURNAL: OmitEntity<WarEntityPreview> = ({
+    export const TYPE_OF_MANIF_PROD_TYPE_JOURNAL: OmitEntity<WarEntityPreview> = ({
         pk_entity: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_JOURNAL.pk_entity,
         fk_class: InfResourceMock.TYPE_OF_MANIF_PROD_TYPE_JOURNAL.fk_class,
         fk_project: ProProjectMock.PROJECT_1.pk_entity,
@@ -206,6 +206,17 @@ export class WarEntityPreviewMock {
         entity_type: 'peIt',
     })
 
+    export const GEO_PLACE_ZURICH: OmitEntity<WarEntityPreview> = ({
+        pk_entity: 1001,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        project: ProProjectMock.PROJECT_1.pk_entity,
+        fk_class: DfhApiClassMock.EN_363_GEO_PLACE.dfh_pk_class,
+        class_label: 'Geographical Place',
+        entity_label: 'Zürich',
+        entity_type: 'peIt',
+        fk_type: WarEntityPreviewMock.GEO_PLACE_TYPE_CITY.pk_entity,
+        type_label: WarEntityPreviewMock.GEO_PLACE_TYPE_CITY.entity_label
+    })
 
 }
 

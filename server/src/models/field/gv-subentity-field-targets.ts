@@ -1,11 +1,10 @@
-import {model, property} from '@loopback/repository';
-import {registerType} from '../../components/spec-enhancer/model.spec.enhancer';
-import {GvSubentityFieldTargetViewType} from './gv-subentity-field-target-view-type';
+import {model} from '@loopback/repository';
+import {GvFieldTargetViewType} from './gv-field-target-view-type';
 
 
-const ref = registerType(GvSubentityFieldTargetViewType);
+// const ref = registerType(GvFieldTargetViewType);
+const ref = `#/components/schemas/GvFieldTargetViewType`
 @model({jsonSchema: {additionalProperties: {$ref: ref}, }})
 export class GvSubentityFieldTargets {
-  [key: number]: GvSubentityFieldTargetViewType | undefined;
-  @property({type: GvSubentityFieldTargetViewType}) 1?: GvSubentityFieldTargetViewType;
+  [key: number]: GvFieldTargetViewType | undefined;
 }

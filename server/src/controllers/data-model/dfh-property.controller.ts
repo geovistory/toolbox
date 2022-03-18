@@ -48,6 +48,7 @@ export class DfhPropertyController {
   async ofProject(
     @param.query.number('pkProject') pkProject: number
   ): Promise<GvSchemaModifier> {
+    const sysConfig = await this.sysConfigController.getSystemConfig()
 
     const q = new SqlBuilderLb4Models(this.datasource)
     // const addProperties = await this.createAddPropertiesSql(q);
@@ -65,8 +66,8 @@ export class DfhPropertyController {
         AND
           enabled = true
         UNION
-        SELECT
-          5 AS fk_profile -- GEOVISTORY BASICS
+        SELECT DISTINCT fk_profile
+        FROM unnest(ARRAY[${q.addParams(sysConfig.ontome?.requiredOntomeProfiles ?? [])}]::int[]) as fk_profile
       ),
 		  tw1 AS (
 			  select fk_profile as enabled_profiles
@@ -160,7 +161,6 @@ export class DfhPropertyController {
 
       `;
     const properties = await q.execute<DfhProperty[]>()
-    const sysConfig = await this.sysConfigController.getSystemConfig()
     const schemaModifier = await this.findDataModelController.dfhClassesOfProject(pkProject)
     const schemaObj: GvPositiveSchemaObject = {dfh: {property: properties, klass: schemaModifier.positive.dfh?.klass}}
     const addedPropeties = this.addProperties(sysConfig, schemaObj)
@@ -181,20 +181,30 @@ export class DfhPropertyController {
     toAdd.forEach(i => {
 
       // find property
-      const prop = schemaObj?.dfh?.property?.find(p =>
-        i.wherePkProperty ? p.pk_property === i.wherePkProperty : true &&
-          i.whereFkRange ? p.has_range === i.whereFkRange : true &&
-            i.whereFkDomain ? p.has_domain === i.whereFkDomain : true
-      )
+      const prop = schemaObj?.dfh?.property?.find(p => {
+        if (i.wherePkProperty && p.pk_property !== i.wherePkProperty) return false;
+        if (i.whereFkRange && p.has_range !== i.whereFkRange) return false;
+        if (i.whereFkDomain && p.has_domain !== i.whereFkDomain) return false;
+        return true
+      })
 
       // extend property
       if (prop && schemaObj?.dfh?.klass) {
         schemaObj.dfh.klass.forEach(k => {
           if (k.basic_type && i.toSourceClass?.whereBasicTypeNotIn?.includes(k.basic_type)) return;
           if (k.pk_class && i.toSourceClass?.wherePkClassNotIn?.includes(k.pk_class)) return;
+
+          const superclasses = [...k?.parent_classes, ...k?.ancestor_classes]
+          if (superclasses.length && i.toSourceClass?.whereNotSubclassOf?.some(superC => superclasses.includes(superC))) return;
+
+          const isValueObjectType = getClassIsVot(sysConf, k.pk_class, k.basic_type)
+          if (i.toSourceClass?.whereNotValueObjectType && isValueObjectType) return;
+
           if (i.toSourceClass?.all ||
             (k.pk_class && i.toSourceClass?.wherePkClassIn?.includes(k.pk_class)) ||
-            (k.basic_type && i.toSourceClass?.whereBasicTypeIn?.includes(k.basic_type))
+            (k.basic_type && i.toSourceClass?.whereBasicTypeIn?.includes(k.basic_type)) ||
+            (superclasses.length && i.toSourceClass?.whereSubclassOf?.some(superC => superclasses.includes(superC))) ||
+            (i.toSourceClass?.whereValueObjectType && isValueObjectType)
           ) {
             let newProp: Partial<DfhProperty>;
             if (i.replaceTargetClassWithSourceClass) {
@@ -228,4 +238,20 @@ export class DfhPropertyController {
   }
 
 
+}
+
+
+/**
+ * Retrieve if class is value object type
+ * @param sysConfig
+ * @param pkClass
+ * @param basicTypeId
+ * @returns true, if class is value object type, else false
+ */
+function getClassIsVot(sysConfig: SysConfigValue, pkClass = -1, basicTypeId = -1): boolean {
+  const vot = sysConfig?.classes?.[pkClass]?.valueObjectType ??
+    sysConfig?.classesByBasicType?.[basicTypeId]?.valueObjectType ??
+    sysConfig?.classesDefault?.valueObjectType
+
+  return !!vot
 }

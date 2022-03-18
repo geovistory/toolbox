@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
@@ -42,8 +41,9 @@ export class FindDataModelController {
   async dfhProfilesOfProject(
     @param.query.number('pkProject') pkProject: number
   ): Promise<GvSchemaModifier> {
+    const sysConfig = await this.sysConfigController.getSystemConfig()
 
-    const profiles = await new QDfhProfilesOfProject(this.datasource).query(pkProject)
+    const profiles = await new QDfhProfilesOfProject(this.datasource).query(pkProject, sysConfig.ontome?.requiredOntomeProfiles ?? [])
     return {positive: {dfh: {profile: profiles}}, negative: {}}
   }
 
@@ -66,6 +66,8 @@ export class FindDataModelController {
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   async dfhClassesOfProject(
     @param.query.number('pkProject') pkProject: number): Promise<GvSchemaModifier> {
+    const sysConfig = await this.sysConfigController.getSystemConfig()
+
     const q = new SqlBuilderLb4Models(this.datasource)
     q.sql = `
     WITH tw1 AS (
@@ -73,7 +75,8 @@ export class FindDataModelController {
       FROM projects.dfh_profile_proj_rel
       WHERE fk_project = ${q.addParam(pkProject)}
       UNION
-      SELECT 5 as fk_profile -- GEOVISTORY BASICS
+      SELECT DISTINCT fk_profile
+      FROM unnest(ARRAY[${q.addParams(sysConfig.ontome?.requiredOntomeProfiles ?? [])}]::int[]) as fk_profile
     )
     SELECT DISTINCT ON (pk_class)
       ${q.createSelect('t3', DfhClass.definition)}
@@ -110,8 +113,9 @@ export class FindDataModelController {
   async dfhLabelsOfProject(
     @param.query.number('pkProject') pkProject: number
   ): Promise<GvSchemaModifier> {
+    const sysConfig = await this.sysConfigController.getSystemConfig()
 
-    const labels = await new QDfhLabelsOfProject(this.datasource).query(pkProject)
+    const labels = await new QDfhLabelsOfProject(this.datasource).query(pkProject, sysConfig.ontome?.requiredOntomeProfiles ?? [])
     return {positive: {dfh: {label: labels}}, negative: {}}
   }
 

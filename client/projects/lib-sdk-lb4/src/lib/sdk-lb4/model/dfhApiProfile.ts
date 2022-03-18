@@ -28,5 +28,7 @@ export interface DfhApiProfile {
     dfh_is_ongoing_forced_publication?: boolean;
     dfh_date_profile_published?: string;
     dfh_date_profile_deprecated?: string;
+    dfh_is_root_profile?: boolean;
+    dfh_fk_root_profile?: number;
 }
 

@@ -9,7 +9,7 @@ import {QuillDoc} from './quill-doc/quill-doc.model';
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'information', table: 'v_appellation'}
+    postgresql: {schema: 'information', table: 'appellation'}
   }
 })
 export class InfAppellation extends Entity implements InfEntity {

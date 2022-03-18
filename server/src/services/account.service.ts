@@ -7,11 +7,11 @@ import {UserService} from '@loopback/authentication';
 import {repository} from '@loopback/repository';
 import {HttpErrors} from '@loopback/rest';
 import {securityId, UserProfile} from '@loopback/security';
-import {compare} from 'bcrypt';
+import {compare} from 'bcryptjs';
+import * as crypto from 'crypto';
+import {SignupValidationError} from '../controllers/account.controller';
 import {PubAccount} from '../models/pub-account.model';
 import {PubAccountRepository} from '../repositories/pub-account.repository';
-import * as crypto from 'crypto';
-import {SignupResponse, SignupValidationError} from '../controllers/account.controller';
 
 /**
  * A pre-defined type for user credentials. It assumes a user logs in
@@ -25,7 +25,7 @@ export type Credentials = {
 export class AccountService implements UserService<PubAccount, Credentials> {
   constructor(
     @repository(PubAccountRepository) public accountRepository: PubAccountRepository,
-  ) {}
+  ) { }
 
   async verifyCredentials(credentials: Credentials): Promise<PubAccount> {
     const invalidCredentialsError = 'Invalid email or password.';

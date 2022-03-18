@@ -21,6 +21,11 @@ export class TabCell extends Entity {
     @property({
         type: 'number',
     })
+    fk_class?: number;
+
+    @property({
+        type: 'number',
+    })
     fk_column?: number;
 
     @property({

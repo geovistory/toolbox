@@ -79,17 +79,17 @@ export class NgContentTreeService {
     return this.dataService.upsertInfStatementsWithRelations(pkProject, stmts);
   }
 
-  removeInfEntitiesFromProject(pkEntities: number[], pkProject: number): Observable<GvPositiveSchemaObject> {
+  removeInfEntitiesFromProject(pkEntities: number[], pkProject: number) {
     return this.dataService.removeInfEntitiesFromProject(pkEntities, pkProject);
   }
 
 
   openText(node: ContentTreeNode) {
-    this.aps.addTextTab(node.statement.fk_subject_data)
+    this.aps.addEntityTabWithoutClass(node.statement.fk_subject_data)
   }
 
   openTable(node: ContentTreeNode) {
-    this.aps.addTableTab(node.statement.fk_subject_data)
+    this.aps.addEntityTabWithoutClass(node.statement.fk_subject_data)
   }
 
   openExpressionPortion(node: ContentTreeNode) {

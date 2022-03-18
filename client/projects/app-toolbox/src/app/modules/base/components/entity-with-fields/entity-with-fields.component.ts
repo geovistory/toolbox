@@ -3,6 +3,7 @@ import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kle
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldComponent } from '../view-field/view-field.component';
 
 @Component({
@@ -17,7 +18,7 @@ export class EntityWithFieldsComponent implements OnInit {
   @Input() source: GvFieldSourceEntity
   @Input() fkClass: number
   @Input() scope: GvFieldPageScope
-  @Input() readonly$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
 
 
@@ -28,8 +29,10 @@ export class EntityWithFieldsComponent implements OnInit {
 
   constructor(
     private c: ConfigurationPipesService,
-    @Optional() public parentField: ViewFieldComponent
+    @Optional() public parentField: ViewFieldComponent,
+    public editMode: EditModeService
   ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
   }
 
   ngOnInit() {
@@ -37,7 +40,6 @@ export class EntityWithFieldsComponent implements OnInit {
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.fkClass) errors.push('@Input() fkClass is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
     const sections = [

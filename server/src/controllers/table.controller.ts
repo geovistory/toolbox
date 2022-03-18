@@ -15,7 +15,6 @@ import {QTablesRow} from '../components/query/tables/q-tables-rows';
 import {Postgres1DataSource} from '../datasources';
 import {ProTableConfig, TabCell, TableConfig, TabRow} from '../models';
 import {DatColumn} from '../models/dat-column.model';
-import {FkProjectFkEntity, PkEntity} from '../models/gv-negative-schema-object.model';
 import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
 import {GvSchemaModifier} from '../models/gv-schema-modifier.model';
 import {DatClassColumnMappingRepository, DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, DfhClassRepository, InfLanguageRepository, InfStatementRepository, ProInfoProjRelRepository, ProTableConfigRepository, PubAccountRepository} from '../repositories';
@@ -174,14 +173,14 @@ export class TableController {
 
     const response = await new QTableTablePage(this.dataSource).query(pkProject, pkEntity, options, masterColumns, datColumns, options.filterOnRow);
 
-    //add languages to schema object
-    if (response.schemaObject?.inf?.lang_string?.length) {
+    // //add languages to schema object
+    // if (response.schemaObject?.inf?.lang_string?.length) {
 
-      const pksLanguages = uniq((response.schemaObject.inf?.lang_string).map(ls => ls.fk_language ?? -1));
-      if (pksLanguages.length) {
-        response.schemaObject.inf.language = await this.infLanguageRepo.find({where: {pk_entity: {inq: pksLanguages}}})
-      }
-    }
+    //   const pksLanguages = uniq((response.schemaObject.inf?.lang_string).map(ls => ls.fk_language ?? -1));
+    //   if (pksLanguages.length) {
+    //     response.schemaObject.inf.language = await this.infLanguageRepo.find({where: {pk_entity: {inq: pksLanguages}}})
+    //   }
+    // }
     return response
   }
 
@@ -247,11 +246,10 @@ export class TableController {
     const pkProject = await this.getPkProject(pkNamespace);
 
     const request = new QMatchedRowsFromColumn(this.dataSource);
-    let count = 0, statements: Array<PkEntity> = [], infoProjRels: Array<FkProjectFkEntity> = [];
+    let count = 0
     if (body.deleteAll) {
-      const deletions = await request.query(pkProject, body.pkColumn);
-      statements = deletions.map(d => ({pk_entity: d.pkStatement}));
-      infoProjRels = deletions.map(d => d.infProjRel);
+      await request.query(pkProject, body.pkColumn);
+
     }
     else count = parseInt((await request.queryCount(pkProject, body.pkColumn))[0].count, 10);
 
@@ -263,8 +261,6 @@ export class TableController {
       positive: {},
       negative: {
         dat: {class_column_mapping: [{pk_entity: theMapping.pk_entity as number}]},
-        inf: {statement: statements},
-        pro: {info_proj_rel: infoProjRels}
       }
     }
   }

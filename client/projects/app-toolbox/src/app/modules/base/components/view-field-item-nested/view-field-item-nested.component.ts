@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Field } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, InfResourceWithRelations, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 @Component({
@@ -16,13 +17,15 @@ export class ViewFieldItemNestedComponent implements OnInit {
   projRel?: ProInfoProjRel;
   ordNum?: number;
   field: Field
-  readonly$: Observable<boolean>
   showOntoInfo$: Observable<boolean>
   scope: GvFieldPageScope
 
   expanded$ = new BehaviorSubject(true)
 
-  constructor(public itemComponent: ViewFieldItemComponent) { }
+  constructor(
+    public itemComponent: ViewFieldItemComponent,
+    public editMode: EditModeService
+  ) { }
 
 
   ngOnInit(): void {
@@ -30,7 +33,6 @@ export class ViewFieldItemNestedComponent implements OnInit {
     this.projRel = this.itemComponent.item.projRel
     this.ordNum = this.itemComponent.item.ordNum
     this.field = this.itemComponent.field
-    this.readonly$ = this.itemComponent.readonly$
     this.showOntoInfo$ = this.itemComponent.showOntoInfo$
     this.scope = this.itemComponent.scope
   }

@@ -1,91 +1,28 @@
-<div class="gv-td-menu-container">
+<gv-tab-layout class="gv-flex-fh">
 
-  <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-toggler orange">
-    <div
-      style="height: 100%; display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px"
-      [ngClass]="{'mat-bg-edit-mode': tableMode == 'edit'}">
+  <gv-entity-card-header layout-top class="gv-flex-fh" (removed)="closeTab()" [showOntoInfo$]="showOntoInfo$"
+    [fkClass$]="fkClass$" [pkEntity]="pkEntity">
+  </gv-entity-card-header>
 
-      <!-- Edit mode -->
-      <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary"
-        (click)="changeTableMode(tableMode != 'edit')">
-        {{tableMode != "edit" ? 'Edit table' : 'Stop editing'}}
-      </button>
-    </div>
+  <div layout-left class="gv-flex-fh">
+    <div class="loc-white-spacer mat-bg-white"></div>
+    <mat-divider></mat-divider>
+    <gv-view-field-has-table-value class="gv-flex-fh" *ngIf="scope$|async" [scope]="scope$|async" [source]="source">
+    </gv-view-field-has-table-value>
   </div>
 
-  <div class="gv-td-menu-item mat-border-top orange"
-    style="display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px">
+  <div layout-right class="gv-flex-fh">
 
-    <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary center-vert"
-      (click)="tableConfiguration()">
-      Edit columns
-    </button>
-
+    <mat-tab-group [disablePagination]="true" mat-stretch-tabs class="gv-flex-fh gv-tab-group-sm mat-bg-white">
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <mat-icon class="example-tab-icon">view_list</mat-icon>
+          Fields
+        </ng-template>
+        <gv-view-sections *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
+          [showOntoInfo$]="showOntoInfo$">
+        </gv-view-sections>
+      </mat-tab>
+    </mat-tab-group>
   </div>
-
-  <div class="gv-td-menu-item mat-border-top orange"
-    style="display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px">
-
-    <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary center-vert" (click)="factoidMapping()">
-      Factoid mapping
-    </button>
-
-  </div>
-
-
-
-  <div class="gv-td-menu-item mat-border-top gv-td-col-checkbox orange">
-
-    <!-- Filter Toggler -->
-    <mat-checkbox [(ngModel)]="colFiltersEnabled">Filters</mat-checkbox>
-
-    <!-- Metadata Toggler -->
-    <mat-checkbox [(ngModel)]="lineBrakeInCells">Text break</mat-checkbox>
-  </div>
-  <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-paginator orange">
-    <!-- Paginator -->
-    <mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
-      [pageSizeOptions]="[5, 10, 20, 50]" [showFirstLastButtons]=true (page)="onPageChange($event)">
-    </mat-paginator>
-
-    <!-- Additional options -->
-    <button mat-icon-button [matMenuTriggerFor]="mainMenu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <mat-menu #mainMenu="matMenu" xPosition="before">
-      <!-- toggle onto info -->
-      <button mat-menu-item>
-        <mat-slide-toggle color="accent" [ngModel]="tableMode == 'ids'"
-          (change)="$event.checked ? setTableMode('ids') : setTableMode('view')">
-          Display IDs
-        </mat-slide-toggle>
-      </button>
-    </mat-menu>
-  </div>
-</div>
-<!-- <mat-divider></mat-divider> -->
-
-<!--  [columnComments$]="" [loading]="" -->
-<!-- // MOVED cellMapping TO EntityMatcherComponent -->
-<gv-table class="mat-border-edit-mode" [pkProject]="pkProject" [pkDigital]="pkEntity" [loading]="loading"
-  [sortBy$]="sortByIndex$" [headers$]="headers$" [table$]="table$" [filteringEnabled]="colFiltersEnabled"
-  [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" [mode]="tableMode" [newRow]="newRowTemp"
-  class="gv-overflow-hidden" (sortDemanded)="onSortChange($event)" (filterDemanded)="onFilterChange($event)"
-  (createRowDemanded)="preNewRow($event.position)" (deleteRowDemanded)="deleteRow($event.pkRow)"
-  (moveRowDemanded)="moveRow($event.pkRow, $event.position)" (validateNewRowDemanded)="newRow($event)"
-  (cancelNewRowDemanded)="cancelNewRow()">
-</gv-table>
-
-<div class="gv-row-center mt-4" *ngIf="filterOnRow">
-  <mat-card class="mb-4">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon color="primary">info</mat-icon>
-      </div>
-      <mat-card-subtitle>Filtered on row {{(table$|async)?.[0]?.[0]?.text}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-actions align="end">
-      <button mat-button color=primary (click)="removeFilterOnRow()">Show all rows</button>
-    </mat-card-actions>
-  </mat-card>
-</div>
+</gv-tab-layout>

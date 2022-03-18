@@ -1,9 +1,9 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -12,7 +12,13 @@ import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs
 import { delay, distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
 import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
+import { GvDndSortListDirective } from '../../directives/dnd-sort-list.directive';
+import { GvDndGlobalService, TreeItem } from '../../services/dnd-global.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
+import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
+import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
+
 
 @Component({
   selector: 'gv-view-field-body',
@@ -20,6 +26,9 @@ import { PaginationService } from '../../services/pagination.service';
   styleUrls: ['./view-field-body.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [openClose],
+  providers: [
+    ViewFieldDropListService
+  ]
 })
 export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -27,16 +36,24 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   @Input() field: Field
   @Input() source: GvFieldSourceEntity;
   @Input() scope: GvFieldPageScope
-  @Input() readonly$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
   @Input() showBodyOnInit: boolean
+  @Input() limit = temporalEntityListDefaultLimit
+  @Input() noPagination = false
+  @Input() hideNoItemsInfo = false
+  @Input() showBody$ = new BehaviorSubject(false)
+  @Input() dividerPosition: 'top' | 'bottom' = 'bottom'
+
 
 
   items$: Observable<StatementWithTarget[]>
+  itemsOptimisticUpdate$ = new Subject<StatementWithTarget[]>()
   itemsCount$: Observable<number>
 
-  limit$ = new BehaviorSubject(temporalEntityListDefaultLimit)
+  limit$: BehaviorSubject<number>
+
   pageIndex$ = new BehaviorSubject(temporalEntityListDefaultPageIndex);
   offset$: Observable<number>;
 
@@ -48,34 +65,52 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   @Output() close = new EventEmitter()
   @Output() next = new EventEmitter()
   adding$ = new BehaviorSubject(false)
-  showBody$ = new BehaviorSubject(false)
+  // dropZoneAccepts$ = new BehaviorSubject(false)
   targetIsUnique: boolean;
 
+  pageSizeOptions: number[]
+
+  @ViewChild(GvDndSortListDirective) gvDndSortList: GvDndSortListDirective
+  sortListId: string
   constructor(
+    public dndGlobal: GvDndGlobalService,
     private p: ActiveProjectService,
     private pag: PaginationService,
     private i: InformationPipesService,
-    private s: SchemaService,
     private ap: ActiveProjectPipesService,
-    private dataApi: ReduxMainService
+    private dataApi: ReduxMainService,
+    public viewFieldDropListService: ViewFieldDropListService,
+    @Optional() private itemCountService: ViewFieldItemCountSumService,
+    public editMode: EditModeService
   ) {
-    this.offset$ = combineLatest(this.limit$, this.pageIndex$).pipe(
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+    this.offset$ = combineLatest([this.limit$, this.pageIndex$]).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)
     )
-
+    this.sortListId = dndGlobal.registerAndGetId(this)
   }
-
+  trackByFn(i, _: StatementWithTarget) {
+    return `${_.statement.pk_entity}_${_.ordNum}`;
+  }
   ngOnInit() {
     // const d = new Date()
-    // console.log(`SubfieldComponent Init: ${d.getMinutes()}:${d.getSeconds()}:${d.getMilliseconds()}`)
     const errors: string[] = []
     if (!this.field) errors.push('@Input() field is required.');
     if (!this.source) errors.push('@Input() pkEntity is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
     if (!this.addMode$) this.addMode$ = new BehaviorSubject(false);
+
+    this.pageSizeOptions = [
+      this.limit, this.limit * 2, this.limit * 4
+    ]
+
+    this.limit$ = new BehaviorSubject(this.limit)
+    if (this.noPagination) this.limit$ = new BehaviorSubject(10000000)
+    this.offset$ = combineLatest([this.limit$, this.pageIndex$]).pipe(
+      map(([limit, pageIndex]) => limit * pageIndex)
+    )
 
     this.targetIsUnique = this.field.identityDefiningForTarget && this.field.targetMaxQuantity == 1;
 
@@ -84,7 +119,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
       this.offset$,
       this.ap.pkProject$
     ]).pipe(shareReplay({ refCount: true, bufferSize: 1 }));
-    const nextPage$ = new Subject();
+    const nextPage$ = new Subject()
     const until$ = merge(nextPage$, this.destroy$);
 
     /**
@@ -135,10 +170,15 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
       shareReplay({ refCount: true, bufferSize: 1 }),
 
     )
+    const fromPageLoader$ = page$.pipe(map(page => page.statements))
+    this.items$ = merge(fromPageLoader$, this.itemsOptimisticUpdate$)
 
-    this.items$ = page$.pipe(map(page => page.statements))
+    // page$.pipe(takeUntil(this.destroy$), map(page => page.statements)).subscribe(items => {
+    //   this.items$.next(items)
+    // })
+
     this.itemsCount$ = page$.pipe(map(page => page.count))
-
+    if (this.itemCountService) this.itemCountService.addItemCountObservable(this.itemsCount$)
     // if after removing an item, we are on the last page with no items, move one page back
     combineLatest([this.itemsCount$, this.limit$, this.pageIndex$])
       .pipe(takeUntil(this.destroy$)).subscribe(([count, limit, pageIdx]) => {
@@ -153,9 +193,11 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
       map(s => s.source.selected.length),
       startWith(0)
     )
-
-    if (this.showBodyOnInit) this.showBody$.next(true)
+    this.itemsCount$.pipe(first()).subscribe((count) => {
+      if (count && this.showBodyOnInit) this.showBody$.next(true)
+    })
   }
+
 
   private loadFieldCount(until$: Observable<unknown>) {
     this.ap.pkProject$.pipe(first()).subscribe(pkProject => {
@@ -243,10 +285,35 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
 
   }
 
+  // dragStarted() {
+  //   this.viewFieldDropListService.connectedToDropLists$.value.forEach(item => {
+  //     item.data.dropZoneAccepts$.next(true)
+  //   })
+  // }
+  // dragEnded() {
+  //   this.viewFieldDropListService.connectedToDropLists$.value.forEach(item => {
+  //     item.data.dropZoneAccepts$.next(false)
+  //   })
+  // }
+  // dragReleased() {
+  // }
+
+  onDragStart(item: TreeItem) {
+    this.dndGlobal.isDragging$.next(item)
+    // console.log("drag started", JSON.stringify(event, null, 2));
+  }
+
+  onDragEnd() {
+    this.dndGlobal.isDragging$.next(false)
+    // console.log("drag ended", JSON.stringify(event, null, 2));
+  }
 
   ngOnDestroy() {
+
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
+    if (this.itemCountService) this.itemCountService.removeItemCountObservable(this.itemsCount$)
+    this.dndGlobal.unregister(this.sortListId)
   }
 
 }

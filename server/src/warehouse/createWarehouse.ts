@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import 'reflect-metadata';
 import {Provider, ReflectiveInjector} from 'injection-js';
+import 'reflect-metadata';
 // import {PClassFieldLabelDependencies} from './aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelDependencies';
 import {PClassFieldLabelService} from './aggregator-ds/class-field-label/p-class-field-label/PClassFieldLabelService';
 import {RClassFieldLabelService} from './aggregator-ds/class-field-label/r-class-field-label/RClassFieldLabelService';
@@ -27,6 +27,7 @@ import {PEdgeService} from './primary-ds/edge/PEdgeService';
 import {REdgeService} from './primary-ds/edge/REdgeService';
 import {PEntityService} from './primary-ds/entity/PEntityService';
 import {REntityService} from './primary-ds/entity/REntityService';
+import {PFieldChangeService} from './primary-ds/PFieldChangeService';
 import {ProClassFieldsConfigService} from './primary-ds/ProClassFieldsConfigService';
 import {ProClassLabelService} from './primary-ds/ProClassLabelService';
 import {ProEntityLabelConfigService} from './primary-ds/ProEntityLabelConfigService';
@@ -34,9 +35,9 @@ import {PPropertyService} from './primary-ds/property/PPropertyService';
 import {RPropertyService} from './primary-ds/property/RPropertyService';
 import {ProProjectService} from './primary-ds/ProProjectService';
 import {ProPropertyLabelService} from './primary-ds/ProPropertyLabelService';
-import {AGG_DS, APP_CONFIG, PRIMARY_DS, Warehouse, WarehouseConfig} from './Warehouse';
+import {RFieldChangeService} from './primary-ds/RFieldChangeService';
 import {PStatementService} from './primary-ds/statement/PStatementService';
-import {PFieldChangeService} from './primary-ds/PFieldChangeService';
+import {AGG_DS, APP_CONFIG, PRIMARY_DS, Warehouse, WarehouseConfig} from './Warehouse';
 
 export interface WarehouseStubs {
   primaryDataServices: Provider[];
@@ -92,6 +93,7 @@ const defaultPrimaryDataServices = [
   PEntityService,
   PStatementService,
   PFieldChangeService,
+  RFieldChangeService,
 
   RClassService,
   RPropertyService,

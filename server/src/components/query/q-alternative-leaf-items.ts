@@ -1,5 +1,5 @@
 import {Postgres1DataSource} from '../../datasources';
-import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, WarEntityPreview, GvPaginationStatementFilter, GvPaginationObject} from '../../models';
+import {GvPaginationObject, GvPaginationStatementFilter, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatement, InfTimePrimitive, WarEntityPreview} from '../../models';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
@@ -74,7 +74,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
           ${this.createSelect('t1', InfAppellation.definition)}
         FROM
           tw2
-          CROSS JOIN information.v_appellation t1
+          CROSS JOIN information.appellation t1
         WHERE
           tw2.fk_object_info = t1.pk_entity
       ),

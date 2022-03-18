@@ -22,6 +22,7 @@ export interface SysConfigValueObjectType {
     timePrimitive?: SysConfigValueObjectType.TimePrimitiveEnum;
     langString?: SysConfigValueObjectType.LangStringEnum;
     dimension?: DimensionValueObjectType;
+    cell?: SysConfigValueObjectType.CellEnum;
 }
 export namespace SysConfigValueObjectType {
     export type AppellationEnum = 'true';
@@ -43,6 +44,10 @@ export namespace SysConfigValueObjectType {
     export type LangStringEnum = 'true';
     export const LangStringEnum = {
         True: 'true' as LangStringEnum
+    };
+    export type CellEnum = 'true';
+    export const CellEnum = {
+        True: 'true' as CellEnum
     };
 }
 

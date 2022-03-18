@@ -11,10 +11,12 @@ import { ViewSectionsDialogComponent, ViewSectionsDialogData } from 'projects/ap
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/services/pagination.service';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
+import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets } from '../../../base/base.helpers';
+import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
 
 interface TypeItem {
   pkEntity: number
@@ -30,9 +32,9 @@ interface TypeItem {
 @Component({
   selector: 'gv-types',
   templateUrl: './types.component.html',
-  styleUrls: ['./types.component.css']
+  styleUrls: ['./types.component.css'],
 })
-export class TypesComponent implements OnInit, OnDestroy {
+export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   // emits true on destroy of this component
@@ -68,7 +70,8 @@ export class TypesComponent implements OnInit, OnDestroy {
     private pag: PaginationService,
     public s: SchemaService,
     private m: BaseModalsService,
-    private dataService: ReduxMainService
+    private dataService: ReduxMainService,
+    public tabLayout: TabLayoutService,
   ) {
   }
 
@@ -81,7 +84,7 @@ export class TypesComponent implements OnInit, OnDestroy {
     // this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
+    this.t = this.tabLayout.t;
 
     this.typeClassLabel$ = this.c.pipeClassLabel(this.pkClass)
 
@@ -224,7 +227,7 @@ export class TypesComponent implements OnInit, OnDestroy {
         appContext: SysConfig.PK_UI_CONTEXT_DATA_SETTINGS_TYPES_EDITABLE,
         pkClass$: of(this.pkClass),
         source: { fkInfo: pkEntity },
-        readonly$: new BehaviorSubject(false),
+        readonly: false,
         showOntoInfo$: new BehaviorSubject(false),
         showOpenInNewTabButton: true
       }

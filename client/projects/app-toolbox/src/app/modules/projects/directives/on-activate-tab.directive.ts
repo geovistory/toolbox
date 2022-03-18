@@ -1,8 +1,8 @@
 import { Directive, Input } from '@angular/core';
-import { TabLayout } from '../../../shared/components/tab-layout/tab-layout';
+import { TabLayoutService } from '../../../shared/components/tab-layout/tab-layout.service';
 
 export interface TabLayoutComponentInterface {
-  t: TabLayout
+  tabLayout: TabLayoutService
 }
 
 @Directive({
@@ -12,9 +12,9 @@ export class OnActivateTabDirective {
   @Input('onActivateTab') c: TabLayoutComponentInterface;
 
   onActivateTab() {
-    this.c.t.onActivateTab()
+    this.c.tabLayout.t.onActivateTab()
   }
   beforeDeactivateTab() {
-    this.c.t.beforeDeactivateTab()
+    this.c.tabLayout.t.beforeDeactivateTab()
   }
 }

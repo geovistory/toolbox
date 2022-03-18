@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { ClassAndTypeSelectModel, ConfigurationPipesService } from "@kleiolab/lib-queries";
-import { AnalysisDefinition, ColDef, QueryFilter, QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
+import { ClassAndTypeSelectModel, ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { AnalysisDefinition, ColDef, QueryFilter, QueryPathSegment } from '@kleiolab/lib-sdk-lb4';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { classOrTypeRequiredValidator } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { FilterDefinition, QueryFilterComponent } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
 import { QueryPathFormComponent } from 'projects/app-toolbox/src/app/modules/queries/forms/query-path/query-path-form/query-path-form.component';
-import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TableFormNodeConfig } from './table-form.component';
@@ -35,7 +34,8 @@ export class TableFormService {
   ) {
     this.rootClasses$ = this.c.pipeClassesOfProject().pipe(
       map(items => items
-        .filter(item => values(item.belongsToCategory)?.[0]?.showInAddMenu)
+        // .filter(item => values(item.belongsToCategory)?.[0]?.showInAddMenu)
+        .filter(item => !item.classConfig.valueObjectType)
         .map(item => item.dfhClass.pk_class)
       ))
   }

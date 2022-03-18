@@ -8,7 +8,6 @@ import {Roles} from '../components/authorization/keys';
 import {TColFilter} from '../components/query/q-table-page';
 import {StatementWithTarget} from '../models/field-response/gv-statement-with-target';
 import {GvFieldTargetViewType} from '../models/field/gv-field-target-view-type';
-import {GvSubentityFieldTargetViewType} from '../models/field/gv-subentity-field-target-view-type';
 import {QuillOperation} from '../models/quill-doc/quill-operation.model';
 import {ClassConfig} from '../models/sys-config/sys-config-class-config';
 import {CommunityVisibilityOptionsWithRelations} from '../models/sys-config/sys-config-community-visibility-options';
@@ -129,15 +128,15 @@ export class PingController {
   })
   xGvTargetType() { }
 
-  @post('/GvSubentityTargetType', {
-    responses: {
-      '200': {
-        description: '',
-        content: {'application/json': {schema: {'x-ts-type': GvSubentityFieldTargetViewType}}}
-      }
-    }
-  })
-  xGvSubentityTargetType() { }
+  // @post('/GvSubentityTargetType', {
+  //   responses: {
+  //     '200': {
+  //       description: '',
+  //       content: {'application/json': {schema: {'x-ts-type': GvSubentityFieldTargetViewType}}}
+  //     }
+  //   }
+  // })
+  // xGvSubentityTargetType() { }
 
   @post('/ClassConfig', {
     responses: {

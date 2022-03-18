@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
-import { DatChunk, InfLangString, InfStatement, InfStatementWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfLangString, InfStatement, InfStatementWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
@@ -23,7 +23,7 @@ import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rx
 export class RamFormComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
-  source$: Observable<{ chunk?: DatChunk, ep?: WarEntityPreview }>;
+  source$: Observable<{ chunk?: InfAppellation, ep?: WarEntityPreview }>;
 
   targetEntityPreview$: Observable<WarEntityPreview>;
 
@@ -67,7 +67,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
             map(ep => ({ ep }))
           )
         }
-        return new BehaviorSubject({ chunk: source.chunk })
+        return new BehaviorSubject({ chunk: source.annotation.textChunk })
       })
     )
 
@@ -76,17 +76,17 @@ export class RamFormComponent implements OnInit, OnDestroy {
       this.ref.detectChanges()
     })
 
-    this.ramFormValue$ = combineLatest(
+    this.ramFormValue$ = combineLatest([
       this.p.ramSource$,
       this.p.ramProperty$,
       this.p.ramTarget$,
       this.referenceCtrl.valueChanges as Observable<any>
-    ).pipe(
+    ]).pipe(
       map(([s, p, t, r]) => {
         // Validate source
-        if (!s || (!s.chunk && !s.pkEntity)) return;
-        // Validate property
-        if (!p) return;
+        if (!s || (!s.annotation && !s.pkEntity)) return;
+        // Validate property or cb
+        if (!p && !this.p.ramOnSaveCallback) return;
         // validate target
         if (!t) return;
 
@@ -100,7 +100,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
 
           // subject
           fk_subject_info: subject.pkEntity,
-          subject_chunk: subject.chunk,
+          // subject_chunk: subject.chunk,
           fk_subject_data: undefined,
           fk_subject_tables_cell: undefined,
           fk_subject_tables_row: undefined,
@@ -168,26 +168,36 @@ export class RamFormComponent implements OnInit, OnDestroy {
     )
   }
 
-  onSave() {
-    combineLatest(this.p.pkProject$, this.ramFormValue$)
-      .pipe(
-        first(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(
-        ([pkProject, val]) => {
-          this.saving = true;
-          if (!!val) {
-            this.dataService.upsertInfStatementsWithRelations(pkProject, [val])
-              .pipe(first(res => !!res), takeUntil(this.destroy$)).subscribe(
-                success => {
-                  this.saving = false;
-                  this.p.ramReset()
-                }
-              );
+  async onSave() {
+    if (this.p.ramOnSaveCallback) {
+      this.saving = true;
+      await this.p.ramOnSaveCallback()
+      this.saving = false
+      this.p.ramReset()
+    }
+    else {
+
+      combineLatest(this.p.pkProject$, this.ramFormValue$)
+        .pipe(
+          first(),
+          takeUntil(this.destroy$)
+        )
+        .subscribe(
+          ([pkProject, val]) => {
+            this.saving = true;
+            if (!!val) {
+              this.dataService.upsertInfStatementsWithRelations(pkProject, [val])
+                .pipe(first(res => !!res), takeUntil(this.destroy$)).subscribe(
+                  success => {
+                    this.saving = false;
+                    this.p.ramReset()
+                  }
+                );
+            }
           }
-        }
-      )
+        )
+    }
+
   }
 
   onDropSource(entity: WarEntityPreview) {

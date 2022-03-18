@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { InfAppellation, InfLangString, InfLangStringWithRelations, InfLanguage, QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
@@ -38,6 +39,7 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
   constructor(
     private p: ActiveProjectService,
     private ff: FormFactoryService,
+    private c: ConfigurationPipesService,
     @Optional() @Inject(CONTAINER_DATA) public injectedData: FgLangStringInjectData
   ) {
     /**
@@ -130,6 +132,13 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
     } else if (n.array && n.array.data.type === 'root') {
 
       return this.initVal$.pipe(
+        switchMap(initVal => initVal.fk_class ?
+          this.c.pipeClassLabel(initVal.fk_class)
+            .pipe(
+              map(classLabel => ({ ...initVal, classLabel }))
+            ) :
+          of({ ...initVal, classLabel: 'Text' })
+        ),
         map((initVal) => {
           const textInitVal: InfAppellation = {
             quill_doc: initVal.quill_doc,
@@ -145,7 +154,7 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
                 type: 'text'
               },
               mapValue: (x: CtrlAppellationModel) => (x ? x.quill_doc : undefined),
-              placeholder: 'Text'
+              placeholder: initVal.classLabel
             }
           }
 

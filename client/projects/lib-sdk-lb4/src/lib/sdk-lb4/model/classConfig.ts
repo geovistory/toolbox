@@ -9,8 +9,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { SysConfigViewType } from './sysConfigViewType';
 import { CommunityVisibilityOptions } from './communityVisibilityOptions';
-import { GvFieldTargetViewType } from './gvFieldTargetViewType';
 import { AllowedCommunityVisibility } from './allowedCommunityVisibility';
 import { ProjectVisibilityOptions } from './projectVisibilityOptions';
 import { SysConfigClassCategoryBelonging } from './sysConfigClassCategoryBelonging';
@@ -22,13 +22,42 @@ import { SysConfigValueObjectType } from './sysConfigValueObjectType';
  * System wide configuration for the class.
  */
 export interface ClassConfig { 
-    viewType?: GvFieldTargetViewType;
+    viewType?: SysConfigViewType;
     formControlType?: SysConfigFormCtrlType;
     valueObjectType?: SysConfigValueObjectType;
     belongsToCategory?: SysConfigClassCategoryBelonging;
+    icon?: ClassConfig.IconEnum;
+    detailPage?: ClassConfig.DetailPageEnum;
     communityVisibilityRange?: AllowedCommunityVisibility;
     communityVisibilityDefault?: CommunityVisibilityOptions;
     projectVisibilityDefault?: ProjectVisibilityOptions;
     docUrl?: string;
 }
+export namespace ClassConfig {
+    export type IconEnum = 'text' | 'table' | 'source' | 'section' | 'expression' | 'persistent-item' | 'temporal-entity' | 'value' | 'story' | 'analysis' | 'settings';
+    export const IconEnum = {
+        Text: 'text' as IconEnum,
+        Table: 'table' as IconEnum,
+        Source: 'source' as IconEnum,
+        Section: 'section' as IconEnum,
+        Expression: 'expression' as IconEnum,
+        PersistentItem: 'persistent-item' as IconEnum,
+        TemporalEntity: 'temporal-entity' as IconEnum,
+        Value: 'value' as IconEnum,
+        Story: 'story' as IconEnum,
+        Analysis: 'analysis' as IconEnum,
+        Settings: 'settings' as IconEnum
+    };
+    export type DetailPageEnum = 'entity' | 'text' | 'table' | 'analysis' | 'ontome-profiles-settings' | 'classes-settings' | 'contr-vocab-settings';
+    export const DetailPageEnum = {
+        Entity: 'entity' as DetailPageEnum,
+        Text: 'text' as DetailPageEnum,
+        Table: 'table' as DetailPageEnum,
+        Analysis: 'analysis' as DetailPageEnum,
+        OntomeProfilesSettings: 'ontome-profiles-settings' as DetailPageEnum,
+        ClassesSettings: 'classes-settings' as DetailPageEnum,
+        ContrVocabSettings: 'contr-vocab-settings' as DetailPageEnum
+    };
+}
+
 

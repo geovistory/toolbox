@@ -1,7 +1,7 @@
+import {forwardRef, Inject, Injectable} from 'injection-js';
 import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
 import {KeyDefinition} from '../../base/interfaces/KeyDefinition';
 import {Warehouse} from '../../Warehouse';
-import {Injectable, Inject, forwardRef} from 'injection-js';
 export interface PPropertyId {
   fkProject: number,
   pkProperty: number,
@@ -36,30 +36,6 @@ export class PPropertyService extends PrimaryDataService<PPropertyId, PPropertyV
       pPropertyKeyDef
     )
 
-    // /**
-    //  * Add actions after a new ProjectProperty is put/updated into index
-    //  */
-    // this.afterPut$.subscribe(item => {
-    //   // Add update requests on aggregaters based on project property
-    //   const outgoingField: PClassFieldId = {
-    //     fkProject: item.key.fkProject,
-    //     fkClass: item.val.fkDomain,
-    //     fkProperty: item.val.fkProperty,
-    //     isOutgoing: true
-    //   }
-    //   wh.agg.pClassFieldLabel.updater.addItemToQueue(outgoingField).catch(e => console.log(e))
-
-    //   const incomingField: PClassFieldId = {
-    //     fkProject: item.key.fkProject,
-    //     fkClass: item.val.fkRange,
-    //     fkProperty: item.val.fkProperty,
-    //     isOutgoing: false
-    //   }
-    //   wh.agg.pClassFieldLabel.updater.addItemToQueue(incomingField).catch(e => console.log(e))
-    // })
-
-
-
   }
 
   getUpdatesSql(tmsp: Date) {
@@ -70,22 +46,18 @@ export class PPropertyService extends PrimaryDataService<PPropertyId, PPropertyV
   };
 }
 
-
-interface InitItem {
-  fkProject: number,
-  fkProperty: number,
-  fkDomain: number
-  fkRange: number
-}
-
 const updateSql = `
   WITH tw1 AS (
     SELECT fk_profile, fk_project, enabled, tmsp_last_modification
     FROM projects.dfh_profile_proj_rel
     WHERE enabled = true
-    UNION
-    SELECT 5, pk_entity as fk_project, true, null -- GEOVISTORY BASICS
-    FROM projects.project
+    UNION ALL
+    SELECT fk_profile, pk_entity as fk_project, true, null
+    FROM projects.project,
+    (
+      SELECT jsonb_array_elements_text(config->'ontome'->'requiredOntomeProfiles')::int fk_profile
+      FROM system.config
+    ) as requiredProfiles
   )
   SELECT DISTINCT
     fk_project "fkProject",

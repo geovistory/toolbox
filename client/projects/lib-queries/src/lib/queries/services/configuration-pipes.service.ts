@@ -1,13 +1,14 @@
 
 import { Injectable } from '@angular/core';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
-import { dfhLabelByFksKey, IconType, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
-import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, GvSubentityFieldTargets, GvSubentityFieldTargetViewType, InfLanguage, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { dfhLabelByFksKey, proClassFieldConfgByProjectAndClassKey, textPropertyByFksKey } from '@kleiolab/lib-redux';
+import { ClassConfig, DfhClass, DfhLabel, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, InfLanguage, ProClassFieldConfig, ProDfhClassProjRel, ProTextProperty, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { Field } from '../models/Field';
+import { GvFieldTargets } from '../models/FieldTargets';
 import { SpecialFieldType } from '../models/SpecialFieldType';
 import { Subfield } from '../models/Subfield';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
@@ -16,7 +17,15 @@ import { SchemaSelectorsService } from './schema-selectors.service';
 
 export enum DisplayType { form = 'form', view = 'view' }
 // export type SectionNameType = keyof Sections
-export enum SectionName { basic = 'basic', timeSpan = 'timeSpan', metadata = 'metadata', specific = 'specific', simpleForm = 'simpleForm' }
+export enum SectionName {
+  basic = 'basic',
+  timeSpan = 'timeSpan',
+  metadata = 'metadata',
+  specific = 'specific',
+  linkedEntities = 'linkedEntities',
+  linkedSources = 'linkedSources',
+  simpleForm = 'simpleForm'
+}
 
 
 // this is the
@@ -49,6 +58,8 @@ export interface DfhClassEnrichedWithLabel extends DfhClassEnriched {
   classLabel: string
 }
 export interface DfhClassEnriched {
+  icon: ClassConfig.IconEnum,
+  detailPage: ClassConfig.DetailPageEnum,
   belongsToCategory: SysConfigClassCategoryBelonging;
   dfhClass: DfhClass;
   classConfig: ClassConfig;
@@ -81,14 +92,17 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   // @spyTag
   // @cache({ refCount: false })
   public pipeProfilesEnabledByProject(): Observable<number[]> {
-    return this.a.pkProject$.pipe(
-      switchMap(pkProject => this.s.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
+    return combineLatest([
+      this.a.pkProject$,
+      this.s.sys$.config$.main$
+    ]).pipe(
+      switchMap(([pkProject, sysConfig]) => this.s.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
         .key(pkProject + '_true').pipe(
           map(projectProfileRels => values(projectProfileRels)
             .filter(rel => rel.enabled)
             .map(rel => rel.fk_profile)
           ),
-          map(enabled => [...enabled, DfhConfig.PK_PROFILE_GEOVISTORY_BASIC]),
+          map(enabled => [...enabled, ...sysConfig.ontome.requiredOntomeProfiles]),
         )),
       shareReplay()
     )
@@ -170,9 +184,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
               if (!uniqFields[fieldId]) {
                 let isSpecialField: SpecialFieldType = false;
                 if (s.isHasTypeField) isSpecialField = 'has-type';
-                // TODO time span!!!
-                // else if (s.property.fkProperty === DfhConfig.PROPERTY_PK_HAS_TIME_SPAN) isSpecialField = 'time-span';
-                // else if (s.targetClass === DfhConfig.ClASS_PK_TIME_SPAN) isSpecialField = 'time-span';
                 else if (s.isTimeSpanShortCutField) isSpecialField = 'time-span';
                 uniqFields[fieldId] = {
                   sourceClass: s.sourceClass,
@@ -347,10 +358,12 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       this.pipeSection(pkClass, displayType, SectionName.basic, noNesting),
       this.pipeSection(pkClass, displayType, SectionName.metadata, noNesting),
       this.pipeSection(pkClass, displayType, SectionName.specific, noNesting),
+      this.pipeSection(pkClass, displayType, SectionName.linkedSources, noNesting),
+      this.pipeSection(pkClass, displayType, SectionName.linkedEntities, noNesting),
       this.pipeSection(pkClass, displayType, SectionName.timeSpan, noNesting),
     ])
       .pipe(
-        map(([a, b, c, d]) => [...a, ...b, ...c, ...d])
+        map(([a, b, c, d, e, f]) => [...a, ...b, ...c, ...d, ...e, ...f])
       )
     return this.cache('pipeAllSections', obs$, ...arguments)
   }
@@ -445,8 +458,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       //          console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing, x])
       //          return x
       //        })),
+      this.s.dfh$.class$.by_pk_class$.key(sourceClass)
     ])
-      .pipe(map(([sourceClassLabel, targetClassLabel, targetTypes, label]
+      .pipe(map(([sourceClassLabel, targetClassLabel, targetTypes, label, dfhClass]
       ) => {
 
         // console.log('pppp Subfield complete: ', [sourceClass, p.pk_property, targetClass, isOutgoing])
@@ -455,6 +469,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           viewType: targetTypes.viewType,
           formControlType: targetTypes.formControlType,
           sourceClass,
+          sourceSuperClasses: [...dfhClass.parent_classes, ...dfhClass.ancestor_classes],
           sourceClassLabel,
           sourceMaxQuantity,
           sourceMinQuantity,
@@ -602,11 +617,11 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         for (const field of fields) {
           // for each of these subfields
           // create page:GvSubfieldPage
-          const nestedTargets: GvSubentityFieldTargets = {};
+          const nestedTargets: GvFieldTargets = {};
           for (const key in field.targets) {
             if (Object.prototype.hasOwnProperty.call(field.targets, key)) {
               const listType = field.targets[key].viewType;
-              const subTargetType: GvSubentityFieldTargetViewType = listType.nestedResource ?
+              const subTargetType: GvFieldTargetViewType = listType.nestedResource ?
                 { entityPreview: 'true' } :
                 listType;
               nestedTargets[key] = subTargetType;
@@ -998,10 +1013,14 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         .pipe(map(([dfhClasses, classProjRels, sysConfig]) => {
           return dfhClasses.map(dfhClass => {
             const belongsToCategory = getClassCategoryBelonging(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
+            const icon = getClassIconType(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
+            const detailPage = getClassDetailPageType(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
             const classConfig = getClassConfig(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
             const projectRel = classProjRels?.[pkProject + '_' + dfhClass.pk_class]
 
             return {
+              icon,
+              detailPage,
               belongsToCategory,
               classConfig,
               dfhClass,
@@ -1012,6 +1031,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     }))
     return this.cache('pipeClassesOfProject', obs$, ...arguments)
 
+  }
+
+  pipeClassEnriched(pkClass: number): Observable<DfhClassEnriched> {
+    return this.pipeClassesOfProject().pipe(map(classes => classes.find(klass => klass.dfhClass.pk_class === pkClass)))
   }
 
   // /**
@@ -1290,37 +1313,37 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
   }
 
-  /**
-   * gets the icon type for the class
-   * @param pkClass
-   */
-  pipeIconTypeFromClass(pkClass: number): Observable<IconType> {
-    if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
-      return of('expression-portion')
-    } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
-      return of('source')
-    }
-    const obs$ = combineLatest([
-      this.s.sys$.config$.main$,
-      this.s.dfh$.class$.by_pk_class$.key(pkClass)
-    ]).pipe(
-      filter(i => !i.includes(undefined)),
-      map(([config, klass]) => {
-        const classConfig: ClassConfig = config.classes[pkClass];
-        if (classConfig?.valueObjectType) {
-          return 'value'
-        }
-        else {
-          if (klass.basic_type === 9) {
-            return 'temporal-entity'
-          }
-          return 'persistent-entity'
-        }
-      })
-    )
+  // /**
+  //  * gets the icon type for the class
+  //  * @param pkClass
+  //  */
+  // pipeIconTypeFromClass(pkClass: number): Observable<IconType> {
+  //   if (pkClass === DfhConfig.CLASS_PK_EXPRESSION_PORTION) {
+  //     return of('expression-portion')
+  //   } else if (DfhConfig.CLASS_PKS_SOURCE_PE_IT.includes(pkClass)) {
+  //     return of('source')
+  //   }
+  //   const obs$ = combineLatest([
+  //     this.s.sys$.config$.main$,
+  //     this.s.dfh$.class$.by_pk_class$.key(pkClass)
+  //   ]).pipe(
+  //     filter(i => !i.includes(undefined)),
+  //     map(([config, klass]) => {
+  //       const classConfig: ClassConfig = config.classes[pkClass];
+  //       if (classConfig?.valueObjectType) {
+  //         return 'value'
+  //       }
+  //       else {
+  //         if (klass.basic_type === 9) {
+  //           return 'temporal-entity'
+  //         }
+  //         return 'persistent-entity'
+  //       }
+  //     })
+  //   )
 
-    return obs$
-  }
+  //   return obs$
+  // }
 }
 
 
@@ -1365,6 +1388,20 @@ function getSettingsFromSysConfig(
       specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty]) {
       settings = specialFields.bySourceClass[subfield.sourceClass].outgoingProperties[subfield.property.fkProperty];
     }
+    // get settings by source super class and property
+    else if (specialFields
+      ?.bySourceSuperClass
+      ?.find(x => subfield.sourceSuperClasses.some(y => x.pkSuperClass === y))
+      ?.outgoingProperties
+      ?.[subfield.property.fkProperty]
+    ) {
+
+      settings = specialFields
+        .bySourceSuperClass
+        .find(x => subfield.sourceSuperClasses.some(y => x.pkSuperClass === y))
+        .outgoingProperties
+      [subfield.property.fkProperty];
+    }
     // get seetings by property
     else if (specialFields.outgoingProperties &&
       specialFields.outgoingProperties[subfield.property.fkProperty]) {
@@ -1378,6 +1415,20 @@ function getSettingsFromSysConfig(
       specialFields.bySourceClass[subfield.sourceClass].incomingProperties &&
       specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty]) {
       settings = specialFields.bySourceClass[subfield.sourceClass].incomingProperties[subfield.property.fkProperty];
+    }
+    // get settings by source super class and property
+    else if (specialFields
+      ?.bySourceSuperClass
+      ?.find(x => subfield.sourceSuperClasses.some(y => x.pkSuperClass === y))
+      ?.incomingProperties
+      ?.[subfield.property.fkProperty]
+    ) {
+
+      settings = specialFields
+        .bySourceSuperClass
+        .find(x => subfield.sourceSuperClasses.some(y => x.pkSuperClass === y))
+        .incomingProperties
+      [subfield.property.fkProperty];
     }
     // get seetings by property
     else if (specialFields.incomingProperties &&
@@ -1399,4 +1450,18 @@ function getClassConfig(sysConfig: SysConfigValue, pkClass: number, basicTypeId:
   return sysConfig?.classes?.[pkClass] ??
     sysConfig?.classesByBasicType?.[basicTypeId] ??
     sysConfig?.classesDefault;
+}
+
+function getClassDetailPageType(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): ClassConfig.DetailPageEnum {
+  return sysConfig?.classes?.[pkClass]?.detailPage ??
+    sysConfig?.classesByBasicType?.[basicTypeId]?.detailPage ??
+    sysConfig?.classesDefault?.detailPage ??
+    ClassConfig.DetailPageEnum.Entity;
+}
+
+function getClassIconType(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): ClassConfig.IconEnum {
+  return sysConfig?.classes?.[pkClass]?.icon ??
+    sysConfig?.classesByBasicType?.[basicTypeId]?.icon ??
+    sysConfig?.classesDefault?.icon ??
+    ClassConfig.IconEnum.PersistentItem;
 }

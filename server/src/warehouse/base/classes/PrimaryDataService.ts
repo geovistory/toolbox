@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {PoolClient} from 'pg';
-import {sum} from 'ramda';
-import {BehaviorSubject, Subject} from 'rxjs';
-import {CHANGES_CONSIDERED_UNTIL_SUFFIX, Warehouse} from '../../Warehouse';
-import {KeyDefinition} from '../interfaces/KeyDefinition';
-import {ClearAll} from './ClearAll';
-import {DataIndexPostgres} from './DataIndexPostgres';
-import {DataService} from './DataService';
-import {Logger} from './Logger';
-import {DataReplicatorSqlFn, PgDataReplicator} from './PgDataReplicator';
+import { PoolClient } from 'pg';
+import { sum } from 'ramda';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { CHANGES_CONSIDERED_UNTIL_SUFFIX, Warehouse } from '../../Warehouse';
+import { KeyDefinition } from '../interfaces/KeyDefinition';
+import { ClearAll } from './ClearAll';
+import { DataIndexPostgres } from './DataIndexPostgres';
+import { DataService } from './DataService';
+import { Logger } from './Logger';
+import { DataReplicatorSqlFn, PgDataReplicator } from './PgDataReplicator';
 
 export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataService<KeyModel, ValueModel> implements ClearAll {
 
@@ -28,6 +28,9 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         targetTable: string,
         sqlFn: DataReplicatorSqlFn
     }[] = []
+
+    replicationBatchSizeUpdates = 10000; // batch size of the replication of updates or inserts
+    replicationBatchSizeDeletes = 10000; // batch size of the replication of deletes
 
     constructor(
         public wh: Warehouse,
@@ -157,7 +160,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
             hasError = true
             await c1.query('ROLLBACK')
             await c2.query('ROLLBACK')
-            Logger.err(this.constructor.name, `ERROR in aggregation: ${e}`)
+            Logger.err(this.constructor.name, `ERROR in primary data service: ${e}`)
         } finally {
             c1.release()
             c2.release()
@@ -210,9 +213,9 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const updateSql = this.getUpdatesSql(date)
 
         await pool1.query(`CREATE TEMP TABLE ${tmpTable} ON COMMIT DROP AS ${updateSql}`, [date])
-        const stats = await new PgDataReplicator<{count: number}>(
-            {client: pool1, table: tmpTable},
-            {client: pool2, table: this.index.schemaTable},
+        const stats = await new PgDataReplicator<{ count: number }>(
+            { client: pool1, table: tmpTable },
+            { client: pool2, table: this.index.schemaTable },
             [this.index.keyCols, 'val'],
             (insertClause, fromClause) => `
                 WITH tw1 AS (
@@ -225,7 +228,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
                 )
                 SELECT count(*)::int FROM tw1
             `
-        ).replicateTable()
+        ).replicateTable(this.replicationBatchSizeUpdates)
         const upserted = sum(stats.map(s => s.rows?.[0].count))
 
         Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted} new lines`, 2);
@@ -233,9 +236,9 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         if (this.updateReplications.length > 0) {
             const pool1b = await this.wh.gvPgPool.connect()
             const replicationRequest = this.updateReplications.map(repl => {
-                return new PgDataReplicator<{count: number}>(
-                    {client: pool1, table: tmpTable},
-                    {client: pool1b, table: repl.targetTable},
+                return new PgDataReplicator<{ count: number }>(
+                    { client: pool1, table: tmpTable },
+                    { client: pool1b, table: repl.targetTable },
                     [this.index.keyCols, 'val'],
                     repl.sqlFn
                 ).replicateTable()
@@ -264,9 +267,9 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
         const tmpTable = `${this.constructor.name}_delete_tmp`
 
         await pool1.query(`CREATE TEMP TABLE ${tmpTable} ON COMMIT DROP AS ${deleteSql}`, [date])
-        const stats = await new PgDataReplicator<{count: number}>(
-            {client: pool1, table: tmpTable},
-            {client: pool2, table: this.index.schemaTable},
+        const stats = await new PgDataReplicator<{ count: number }>(
+            { client: pool1, table: tmpTable },
+            { client: pool2, table: this.index.schemaTable },
             [this.index.keyCols],
             (insertClause, fromClause) => `
                 WITH tw2 AS (
@@ -279,7 +282,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
                 )
                 SELECT count(*)::int FROM tw2
             `
-        ).replicateTable()
+        ).replicateTable(this.replicationBatchSizeDeletes)
         const deleted = sum(stats.map(s => s.rows?.[0].count))
 
 
@@ -307,7 +310,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
     // than its end. It is null until sync() is called the first time.
 
     async setChangesConsideredUntil(date: Date) {
-        await this.wh.metaTimestamps.addToIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX, {tmsp: date.toISOString()});
+        await this.wh.metaTimestamps.addToIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX, { tmsp: date.toISOString() });
     }
     async getChangesConsideredUntil(): Promise<Date | undefined> {
         const val = await this.wh.metaTimestamps.getFromIdx(this.constructor.name + CHANGES_CONSIDERED_UNTIL_SUFFIX);
@@ -317,7 +320,7 @@ export abstract class PrimaryDataService<KeyModel, ValueModel> extends DataServi
 
 
     registerUpdateReplication(targetTable: string, sqlFn: DataReplicatorSqlFn) {
-        this.updateReplications.push({targetTable, sqlFn})
+        this.updateReplications.push({ targetTable, sqlFn })
     }
 
 }

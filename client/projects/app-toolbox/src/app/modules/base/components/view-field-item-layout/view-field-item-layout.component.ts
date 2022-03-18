@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output
 import { Field } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, StatementWithTarget } from '@kleiolab/lib-sdk-lb4/public-api';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { EditModeService } from '../../services/edit-mode.service';
 
 @Component({
   selector: 'gv-view-field-item-layout',
@@ -13,7 +15,7 @@ export class ViewFieldItemLayoutComponent implements OnInit {
 
 
   @Input() item: StatementWithTarget
-  @Input() readonly$: Observable<boolean>
+  readmode$: Observable<boolean>
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
   @Input() field: Field
@@ -23,7 +25,11 @@ export class ViewFieldItemLayoutComponent implements OnInit {
   @Input() checked: boolean
   @Output() selectionChange = new EventEmitter<StatementWithTarget>()
 
-  constructor() { }
+  constructor(
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
 
   ngOnInit(): void {
   }

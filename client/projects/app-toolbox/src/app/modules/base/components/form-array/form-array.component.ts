@@ -26,18 +26,21 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   control: FormArray
 
 
-  get parentListDefsLength() {
+  get targetClasssesLength() {
     return this.parent?.arrayFactory?.config?.data?.gvFormField?.field?.targetClasses?.length
   }
 
   showRemoveBtn(child: FormArrayChild<FormControlData, FormArrayData, FormChildData>) {
-    return this.parentListDefsLength > 1 ||
+    const requiredLength = this.parent?.arrayFactory?.config?.data?.gvFormField?.config?.required;
+    if (requiredLength) {
+      const currentLength = this.parent?.arrayFactory?.children?.[0]?.arrayFactory?.children?.length;
+      if (currentLength <= requiredLength) return false
+    }
+    if (this.parent?.arrayFactory?.config?.data?.gvFormField?.config?.hideRemoveBtn) return false
+    return this.targetClasssesLength > 1 ||
       (
         (child.factoryType === 'control' || child.factoryType == 'childFactory')
         && this.parentLength > this.parentMinLength
-        && !(
-          (child?.controlFactory?.config.data.controlType) == 'ctrl-time-span'
-        )
       )
   }
 

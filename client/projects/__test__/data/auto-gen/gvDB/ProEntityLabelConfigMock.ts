@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { ProEntityLabelConfig } from '@kleiolab/lib-sdk-lb4';
-import { DfhApiClassMock } from './DfhApiClassMock';
-import { PK_DEFAULT_CONFIG_PROJECT } from './local-model.helpers';
-import { DfhApiPropertyMock } from './DfhApiPropertyMock';
-import { ProProjectMock } from './ProProjectMock';
+import {ProEntityLabelConfig} from '@kleiolab/lib-sdk-lb4';
+import {C_218_EXPRESSION_ID, P_1316_HAS_CARRIER_PROVIDED_BY_ID, P_979_CARRIERS_PROVIDED_BY_ID} from '../../../../app-toolbox/src/app/ontome-ids';
+import {DfhApiClassMock} from './DfhApiClassMock';
+import {DfhApiPropertyMock} from './DfhApiPropertyMock';
+import {PK_DEFAULT_CONFIG_PROJECT} from './local-model.helpers';
+import {ProProjectMock} from './ProProjectMock';
 
 /**
  * pk_entity prefixed with 600
@@ -117,6 +117,32 @@ export class ProEntityLabelConfigMock {
             nrOfStatementsInLabel: 1
           }
         }
+      ]
+    }
+  })
+  static readonly F2_EXPRESSION_LABEL: Partial<ProEntityLabelConfig> = ({
+    pk_entity: 6002,
+    fk_project: PK_DEFAULT_CONFIG_PROJECT,
+    fk_class: C_218_EXPRESSION_ID,
+    config: {
+      labelParts: [
+        {
+          ordNum: 0,
+          field: {
+            fkProperty: P_979_CARRIERS_PROVIDED_BY_ID,
+            isOutgoing: true,
+            nrOfStatementsInLabel: 1
+          }
+        },
+        {
+          ordNum: 1,
+          field: {
+            fkProperty: P_1316_HAS_CARRIER_PROVIDED_BY_ID,
+            isOutgoing: true,
+            nrOfStatementsInLabel: 1
+          }
+        }
+
       ]
     }
   })

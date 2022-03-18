@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { DetailTopBarComponent } from './detail-top-bar.component';
+import { RightPanelBtnComponent } from './right-panel-btn/right-panel-btn.component';
 
 @NgModule({
   imports: [
@@ -10,7 +11,7 @@ import { DetailTopBarComponent } from './detail-top-bar.component';
     FlexLayoutModule,
     MaterialModule
   ],
-  declarations: [DetailTopBarComponent],
-  exports: [DetailTopBarComponent]
+  declarations: [DetailTopBarComponent, RightPanelBtnComponent],
+  exports: [DetailTopBarComponent, RightPanelBtnComponent]
 })
 export class DetailTopBarModule { }

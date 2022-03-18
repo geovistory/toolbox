@@ -1,4 +1,3 @@
-import {DfhApiProfile} from '@kleiolab/lib-sdk-lb4';
 
 /**
  * this class mirrors {Entity} from '@loopback/repository'
@@ -26,7 +25,21 @@ export interface DatFactoidPropertyMapping {
     fk_column: number,
     fk_factoid_mapping: number
 }
-
+export interface NewDfhApiProfile {
+    "removed_from_api": boolean,
+    "requested_language": string,
+    "dfh_pk_profile": number,
+    "dfh_profile_label": string,
+    "dfh_project_label": string,
+    "dfh_owned_by_project": number,
+    "dfh_profile_definition": string,
+    "dfh_project_label_language": string,
+    "dfh_profile_label_language": string,
+    "dfh_profile_definition_language": string,
+    "dfh_is_ongoing_forced_publication": boolean,
+    "dfh_is_root_profile": boolean,
+    "dfh_fk_root_profile"?: number
+}
 export interface NewDfhApiClass {
     dfh_pk_class: number,
     dfh_class_identifier_in_namespace: string,
@@ -92,7 +105,7 @@ export interface DfhApiProperty extends NewDfhApiProperty {
 export const PK_DEFAULT_CONFIG_PROJECT = 375669;
 
 export interface OntomeProfileMock {
-    profile: OmitEntity<DfhApiProfile>,
-    properties: Omit<NewDfhApiProperty, 'pk_entity'>[],
-    classes: Omit<DfhApiClass, 'pk_entity'>[],
+    profile: NewDfhApiProfile,
+    properties: NewDfhApiProperty[],
+    classes: NewDfhApiClass[],
 }

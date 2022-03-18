@@ -1,5 +1,38 @@
 .ql-container {
-    display: flex;
-    flex-grow: 1;
+  display: flex;
+  flex-grow: 1;
 }
-
+.gv-toolbar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+  padding: 0;
+  box-sizing: content-box;
+  flex: 0 0 48px;
+}
+.loc-toolbar-spacer {
+  flex-grow: 1;
+}
+.loc-toolbar-btns-left {
+  flex-grow: 0;
+  flex-basis: 440px;
+  flex-shrink: 0;
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.loc-toolbar-btns-right {
+  margin-left: auto;
+  flex-grow: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 3px 8px;
+}
+.loc-btn-show-ids {
+  margin: 7px 8px 9px 8px;
+}
+mat-divider {
+  margin: 0 8px;
+}

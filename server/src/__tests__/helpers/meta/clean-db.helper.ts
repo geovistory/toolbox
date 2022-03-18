@@ -1,9 +1,10 @@
-import { DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProEntityLabelConfigRepository, ProProjectRepository, ProTableConfigRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarClassPreviewRepository, WarEntityPreviewRepository, WarStatementRepository } from '../../../repositories';
-import { PubCredentialRepository } from '../../../repositories/pub-credential.repository';
-import { PubRoleMappingRepository } from '../../../repositories/pub-role-mapping.repository';
-import { PubRoleRepository } from '../../../repositories/pub-role.repository';
-import { WarFieldChangeRepository } from '../../../repositories/war-field-change.repository';
-import { testdb } from "../testdb";
+import {DatColumnRepository, DatDigitalRepository, DatNamespaceRepository, DatTextPropertyRepository, ProAnalysisRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProEntityLabelConfigRepository, ProProjectRepository, ProTableConfigRepository, ProTextPropertyRepository, PubAccountProjectRelRepository, PubAccountRepository, SysAppContextRepository, SysClassFieldPropertyRelRepository, SysClassFieldRepository, SysSystemRelevantClassRepository, SysSystemTypeRepository, WarClassPreviewRepository, WarEntityPreviewRepository, WarStatementRepository} from '../../../repositories';
+import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
+import {PubRoleMappingRepository} from '../../../repositories/pub-role-mapping.repository';
+import {PubRoleRepository} from '../../../repositories/pub-role.repository';
+import {WarFieldChangeRepository} from '../../../repositories/war-field-change.repository';
+import {deleteSysSystemConfig} from '../atomic/sys-system-config.helper';
+import {testdb} from "../testdb";
 
 export async function cleanDb() {
     //because we update it to create an information.language
@@ -14,21 +15,21 @@ export async function cleanDb() {
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE '%_vt'`);
-    tables.forEach(async (t: { name: string }) => { await testdb.execute('DELETE FROM ' + t.name) });
+    tables.forEach(async (t: {name: string}) => {await testdb.execute('DELETE FROM ' + t.name)});
 
     //delete all cell partitionned table
     const cellTables = await testdb.execute(`
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE 'cell_%'`);
-    cellTables.forEach(async (t: { name: string }) => { if (t.name !== 'tables.cell_vt') await testdb.execute('DELETE FROM ' + t.name) });
+    cellTables.forEach(async (t: {name: string}) => {if (t.name !== 'tables.cell_vt') await testdb.execute('DELETE FROM ' + t.name)});
 
     //delete all row partitionned table
     const rowTables = await testdb.execute(`
     SELECT table_schema || '.' || table_name as name
     FROM information_schema."tables"
     WHERE table_type = 'BASE TABLE' AND table_name LIKE 'row_%'`);
-    rowTables.forEach(async (t: { name: string }) => { if (t.name !== 'tables.row_vt') await testdb.execute('DELETE FROM ' + t.name) });
+    rowTables.forEach(async (t: {name: string}) => {if (t.name !== 'tables.row_vt') await testdb.execute('DELETE FROM ' + t.name)});
 
     const proTableConfig = new ProTableConfigRepository(testdb);
     const datColumnRepository = new DatColumnRepository(testdb, async () => datNamespaceRepository);
@@ -245,4 +246,6 @@ export async function cleanDb() {
     await testdb.execute('ALTER TABLE information.language DISABLE TRIGGER versioning_trigger');
     await testdb.execute('DELETE FROM information.language'); //update or delete on table "language" violates foreign key constraint "project_fk_language_fkey" on table "project"
     await testdb.execute('ALTER TABLE information.language ENABLE TRIGGER versioning_trigger');
+
+    await deleteSysSystemConfig()
 }

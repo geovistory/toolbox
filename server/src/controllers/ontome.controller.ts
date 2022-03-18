@@ -2,8 +2,10 @@
 import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
-import {get, param, post, HttpErrors} from '@loopback/rest';
+import {get, HttpErrors, param, post} from '@loopback/rest';
 import {get as getHttp} from 'https';
+import path from 'path';
+import {indexBy} from 'ramda';
 import {GeovistoryApplication} from '../application';
 import {Roles} from '../components/authorization/keys';
 import {applyValidator, createValidator} from '../components/json-schema-validation/json-schema-validation';
@@ -11,11 +13,9 @@ import {Postgres1DataSource} from '../datasources';
 import {ApiClassProfile, ApiClassProfileList} from '../models/ontome-api/api-class-profile';
 import {ApiProfile, ApiProfileList} from '../models/ontome-api/api-profile';
 import {ApiPropertyProfile, ApiPropertyProfileList} from '../models/ontome-api/api-property-profile';
-import {ProfileActivationReport, ActivationReportItem} from '../models/ontome-api/profile-activation-report';
-import {ProfileDeactivationReport, DeactivationReportItem} from '../models/ontome-api/profile-deactivation-report';
+import {ActivationReportItem, ProfileActivationReport} from '../models/ontome-api/profile-activation-report';
+import {DeactivationReportItem, ProfileDeactivationReport} from '../models/ontome-api/profile-deactivation-report';
 import {SqlBuilderBase} from '../utils/sql-builders/sql-builder-base';
-import {indexBy} from 'ramda';
-import path from 'path';
 interface DeactivationReportQueryRow {
   category: 'property' | 'class',
   id: number,
@@ -168,8 +168,9 @@ export class OntoMeController {
         FROM projects.dfh_profile_proj_rel
         WHERE fk_project = ${q.addParam(pkProject)}
         AND enabled = true
-        UNION
-        SELECT 5 as fk_profile -- GEOVISTORY BASICS
+        UNION ALL
+        SELECT jsonb_array_elements_text(config->'ontome'->'requiredOntomeProfiles')::int fk_profile
+        FROM system.config
       )
       SELECT DISTINCT
         'class' category, t3.pk_class as id
@@ -305,8 +306,9 @@ export class OntoMeController {
           WHERE fk_project = $1
           AND fk_profile != $2
           AND enabled = true
-          UNION
-          SELECT 5 as fk_profile -- GEOVISTORY BASICS
+          UNION ALL
+          SELECT jsonb_array_elements_text(config->'ontome'->'requiredOntomeProfiles')::int fk_profile
+          FROM system.config
         ),
         -- select the classes of the profiles of the project except the deactivation-profile
         ctw4 AS (
@@ -396,8 +398,9 @@ export class OntoMeController {
           WHERE fk_project = $1
           AND fk_profile != $2
           AND enabled = true
-          UNION
-          SELECT 5 as fk_profile -- GEOVISTORY BASICS
+          UNION ALL
+          SELECT jsonb_array_elements_text(config->'ontome'->'requiredOntomeProfiles')::int fk_profile
+          FROM system.config
         ),
         -- select the properties of the profiles of the project except the deactivation-profile
         ptw4 AS (

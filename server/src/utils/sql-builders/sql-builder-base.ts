@@ -54,8 +54,8 @@ export class SqlBuilderBase {
   /**
    * Returns the built query
    */
-  getBuiltQuery(): BuiltQuery {
-    logSql(this.sql, this.params)
+  getBuiltQuery(prefix?: string): BuiltQuery {
+    logSql(this.sql, this.params, prefix)
     return {sql: this.sql, params: this.params}
   }
 

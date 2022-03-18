@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/camelcase */
 import {CalendarType} from '../../../models/enums/CalendarType';
 import {Granularity} from '../../../models/enums/Granularity';
-import {createDatChunk} from '../atomic/dat-chunk.helper';
 import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
 import {createDatColumn} from '../atomic/dat-column.helper';
 import {createDatDigital} from '../atomic/dat-digital.helper';
@@ -23,7 +21,6 @@ import {linkAccountProject} from '../atomic/pub-account_project_rel.helper';
 import {createSysSystemConfig} from '../atomic/sys-system-config.helper';
 import {createCellTable_old, createTabCell} from '../atomic/tab-cell-X.helper';
 import {createRowTable, createTabRow} from '../atomic/tab-row.helper';
-import {DatChunkMock} from '../data/gvDB/DatChunkMock';
 import {DatClassColumnMappingMock} from '../data/gvDB/DatClassColumnMappingMock';
 import {DatColumnMock} from '../data/gvDB/DatColumnMock';
 import {DatDigitalMock} from '../data/gvDB/DatDigitalMock';
@@ -33,6 +30,7 @@ import {DatNamespaceMock} from '../data/gvDB/DatNamespaceMock';
 import {DatTextPropertyMock} from '../data/gvDB/DatTextPropertyMock';
 import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
+import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
 import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../data/gvDB/InfStatementMock';
@@ -42,8 +40,8 @@ import {PubAccountMock} from '../data/gvDB/PubAccountMock';
 import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
 import {TabCellXMock} from '../data/gvDB/TabCellXMock';
 import {TabRowMock} from '../data/gvDB/TabRowMock';
-import {PROFILE_12_BIOGRAPHICAL_BA_2022_01_14} from '../data/ontome-profiles/profile-12-biographical-ba-2022-01-14';
-import {PROFILE_5_GEOVISTORY_BASI_2022_01_14} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-14';
+import {PROFILE_12_BIOGRAPHICAL_BA_2022_02_09} from '../data/ontome-profiles/profile-12-biographical-ba-2022-02-09';
+import {PROFILE_5_GEOVISTORY_BASI_2022_01_18} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import {createDigital} from '../generic/digital.helper';
 import {createFactoid, createFactoidMapping} from '../generic/factoid.helper';
 import {createCity} from '../generic/geo-place.helper';
@@ -73,8 +71,8 @@ export async function forFeatureX() {
      * OntoME data
      ***************************************************************************/
 
-    const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2022_01_14)
-    const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_01_14)
+    const profileGeovBasics = await createOntomeProfileMock(PROFILE_5_GEOVISTORY_BASI_2022_01_18)
+    const profileBibliograp = await createOntomeProfileMock(PROFILE_12_BIOGRAPHICAL_BA_2022_02_09)
     // add profiles to project
     await addProfilesToProject(ProProjectMock.SANDBOX_PROJECT.pk_entity, [profileGeovBasics.profile.dfh_pk_profile, profileBibliograp.profile.dfh_pk_profile,])
 
@@ -183,6 +181,7 @@ export async function forFeatureX() {
         ...entities.teens, ...entities.peits, ...entities.stmts,
         ...source.teens, ...source.peits, ...source.stmts,
         ...txtAnnot.stmts,
+        ...txtAnnot.resources,
         statementMapping, statementMapping2, statementMapping3, statementMapping4, statementMapping5, statementMapping6] //
         .map(x => x.pk_entity));
 
@@ -300,14 +299,31 @@ export async function forFeatureX() {
 
 
 export async function createTextAndAnnotation() {
-    await createDatDigital(DatDigitalMock.DIGITAL_TEXT_RODOLF_FOO)
-    await createDatChunk(DatChunkMock.RUDOLF)
 
-    const infStmtIsRepro = await createInfStatement(InfStatementMock.DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP)
-    const infStmtRefersTo = await createInfStatement(InfStatementMock.CHUNK_RUDOLF_REFERS_TO_RUDOLF)
-    const infStmtMentions = await createInfStatement(InfStatementMock.HABS_EMP_EXPR_MENTIONS_RUDOLF)
+    const s = []
+    const r = []
+    r.push(await createInfResource(InfResourceMock.TRANSCRIPTION_RODOLF_FOO))
+    await createInfAppellation(InfAppellationMock.TEXT_VALUE_RODOLF_FOO_V1)
+
+    s.push(await createInfStatement(InfStatementMock.TRANSCRIPTION_RODOLF_HAS_VALUE_VERSION))
+    s.push(await createInfStatement(InfStatementMock.TRANSCRIPTION_IS_REPRO_OF_HABS_EMP))
+
+    // r.push(await createInfResource(InfResourceMock.HABS_EMP_EXPR))
+    // r.push(await createInfResource(InfResourceMock.HABS_EMP_MANIF_PROD_TYPE))
+    s.push(await createInfStatement(InfStatementMock.HABS_EMP_CARRIERS_PROVIDED_BY))
+
+    r.push(await createInfResource(InfResourceMock.ANNOTATION_RUDOLF))
+    s.push(await createInfStatement(InfStatementMock.ANNOTATION_RUDOLF_HAS_SPOT))
+    s.push(await createInfStatement(InfStatementMock.ANNOTATION_RUDOLF_IS_ANNOTATED_IN))
+    s.push(await createInfStatement(InfStatementMock.ANNOTATION_RUDOLF_REFERS_TO_RUDOLF))
+    await createInfAppellation(InfAppellationMock.CHUNK_RUDOLF)
+    // r.push(await createInfResource(InfResourceMock.RUDOLF))
+
+
+    s.push(await createInfStatement(InfStatementMock.HABS_EMP_EXPR_MENTIONS_RUDOLF))
 
     return {
-        stmts: [infStmtIsRepro, infStmtRefersTo, infStmtMentions]
+        stmts: s,
+        resources: r
     }
 }

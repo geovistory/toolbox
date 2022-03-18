@@ -8,7 +8,8 @@
   <!-- TABLE -->
   <span id="scrollAccess" style="width: 100%; height: 100%">
     <p-table [value]="table" [scrollable]="true" [resizableColumns]="true" columnResizeMode="expand"
-      class="gv-p-datatable-full-height gv-p-datatable-border-cells" [ngClass]="{'mat-border-edit-mode': mode=='edit'}">
+      class="gv-p-datatable-full-height gv-p-datatable-border-cells"
+      [ngClass]="{'mat-border-edit-mode': !(readmode$|async)}">
 
       <!-- Header params for prime-ng -->
       <ng-template pTemplate="colgroup">
@@ -41,15 +42,15 @@
                   </span>
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
                   <mat-icon *ngIf="origin == 'importer' || i == 0"></mat-icon>
-                  <mat-icon *ngIf="origin !='importer' && i != 0 && mode == 'edit'" svgIcon="link"
+                  <mat-icon *ngIf="origin !='importer' && i != 0 && !(readmode$|async)" svgIcon="link"
                     (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
-                  <mat-icon *ngIf="mode != 'edit' && i != 0"></mat-icon>
+                  <mat-icon *ngIf="(readmode$|async) && i != 0"></mat-icon>
                 </div>
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
                   {{col.comment == 'number' ? 'number' : 'text'}}
-                  <span *ngIf="mode == 'ids' && i != 0" gvCopyClipboard [toClipboard]="col.pk_column+''"
+                  <span *ngIf="(showIds$|async) && i != 0" gvCopyClipboard [toClipboard]="col.pk_column+''"
                     [matTooltip]="'Click to copy colum id: ' + col.pk_column">
                     &nbsp;| id: {{col.pk_column}}
                   </span>
@@ -67,16 +68,16 @@
                   <mat-icon></mat-icon>
                   <span (click)="sort(i)">{{col.colLabel}}</span>
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
-                  <mat-icon *ngIf="mode == 'edit'" svgIcon="link"
+                  <mat-icon *ngIf="!(readmode$|async)" svgIcon="link"
                     (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)">
                   </mat-icon>
-                  <mat-icon *ngIf="mode != 'edit' && i != 0"></mat-icon>
+                  <mat-icon *ngIf="(readmode$|async) && i != 0"></mat-icon>
                 </div>
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
                   {{col.comment == 'number' ? 'number' : 'text'}}
-                  <span *ngIf="mode == 'ids' && i != 0" gvCopyClipboard [toClipboard]="col.pk_column+''"
+                  <span *ngIf="(showIds$|async) && i != 0" gvCopyClipboard [toClipboard]="col.pk_column+''"
                     [matTooltip]="'Click to copy colum id: ' + col.pk_column">
                     &nbsp;| id: {{col.pk_column}}
                   </span>
@@ -172,14 +173,14 @@
               <td
                 [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak, 'mat-bg-grey-100': origin !='importer'}"
                 class="text-center align-self-center" pResizableColumn colspan="1"
-                [matTooltip]="mode == 'ids' ? 'Click to copy row id: ' + value.pkRow: ''" gvCopyClipboard
-                [toClipboard]="value.pkRow+''" [clipBoardActivated]="mode == 'ids'">
-                <div [ngStyle]=" {'justify-content': mode=='edit' ? 'space-between' : 'center' }"
+                [matTooltip]="(showIds$|async) ? 'Click to copy row id: ' + value.pkRow: ''" gvCopyClipboard
+                [toClipboard]="value.pkRow+''" [clipBoardActivated]="(showIds$|async)">
+                <div [ngStyle]=" {'justify-content': !(readmode$|async) ? 'space-between' : 'center' }"
                   style="display: flex; min-height: 35px;">
-                  <mat-icon *ngIf="mode == 'edit'"></mat-icon>
+                  <mat-icon *ngIf="!(readmode$|async)"></mat-icon>
                   <span style="margin-top: auto; margin-bottom: auto;">
                     {{value.text}}
-                    <span *ngIf="mode == 'ids'" class="mat-caption">&nbsp;| id:
+                    <span *ngIf="(showIds$|async)" class="mat-caption">&nbsp;| id:
                       {{value.pkRow}}</span>
                   </span>
                   <mat-menu #appMenu="matMenu">
@@ -202,7 +203,7 @@
                       Delete row
                     </button> -->
                   </mat-menu>
-                  <mat-icon *ngIf="mode=='edit'" svgIcon="dots-vertical" [matMenuTriggerFor]="appMenu"
+                  <mat-icon *ngIf="!(readmode$|async)" svgIcon="dots-vertical" [matMenuTriggerFor]="appMenu"
                     style="margin-top: auto; margin-bottom: auto;"></mat-icon>
                 </div>
               </td>
@@ -212,16 +213,16 @@
               <!-- Cell content on columns -->
               <td [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}"
                 class="text-center align-self-center" pResizableColumn colspan="1" pEditableColumn
-                [matTooltip]="mode == 'ids' && value && value.pkCell != null? 'Click to copy cell id: ' + value.pkCell : ''"
-                gvCopyClipboard [toClipboard]="value ? value.pkCell : ''" [clipBoardActivated]="mode == 'ids'">
+                [matTooltip]="(showIds$|async) && value && value.pkCell != null? 'Click to copy cell id: ' + value.pkCell : ''"
+                gvCopyClipboard [toClipboard]="value ? value.pkCell : ''" [clipBoardActivated]="(showIds$|async)">
 
-                <ng-container *ngIf="mode === 'view'">
+                <ng-container *ngIf="readmode$|async">
                   <div class="content-cell" [ngClass]="{'gv-fade-out-right': !lineBreak}">
                     <span class="center-vert">{{value ? value.text : ''}}</span>
                   </div>
                 </ng-container>
 
-                <ng-container *ngIf="mode === 'edit'">
+                <ng-container *ngIf="!(readmode$|async)">
                   <p-cellEditor id="cells_{{i}}_{{j}}">
                     <ng-template pTemplate="input">
 
@@ -242,7 +243,7 @@
                   </p-cellEditor>
                 </ng-container>
 
-                <ng-container *ngIf="mode === 'ids'">
+                <ng-container *ngIf="showIds$|async">
                   <div class="id-cell mat-caption">
                     <span *ngIf="!!value.pkCell">
                       id: {{value.pkCell}}
@@ -257,13 +258,10 @@
 
               <td *ngIf="headers[j]?.mapping" pResizableColumn colspan="1" class="mat-bg-grey-50"
                 [ngClass]="{'gv-white-space-nowrap': true}">
-                <gv-entity-matcher *ngIf="!isClassValueObjectType(headers[j].mapping.fkClass)"
-                  [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell" [cellContent]="value.text">
-                </gv-entity-matcher>
-                <gv-value-matcher *ngIf="isClassValueObjectType(headers[j].mapping.fkClass)"
-                  [vot]="getVOT(headers[j].mapping.fkClass)" [pkClass]="headers[j].mapping.fkClass"
-                  [pkCell]="value.pkCell">
-                </gv-value-matcher>
+                <gv-view-field-annotations-of-cell *ngIf="value.pkCell" [pkMappedClass]="headers[j].mapping.fkClass"
+                  [pkCell]="value.pkCell" [pkProject]="pkProject" [cellContent]="value.text">
+                </gv-view-field-annotations-of-cell>
+
               </td>
             </ng-container>
           </ng-container>

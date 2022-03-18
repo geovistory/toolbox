@@ -2,8 +2,9 @@ import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Ou
 import { MatDialog } from '@angular/material/dialog';
 import { GetTablePageOptions, SysConfigValue, SysConfigValueObjectType, TabCell, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { EditModeService } from 'projects/app-toolbox/src/app/modules/base/services/edit-mode.service';
 import { values } from 'ramda';
-import { Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { NumberDialogComponent, NumberDialogData, NumberDialogReturn } from '../../../number-dialog/number-dialog.component';
 import { ColMappingComponent } from './col-mapping/col-mapping.component';
@@ -15,11 +16,7 @@ export interface TableSort {
   colNb: number; // if === -1, sorting is not by col but by index of the roe
   direction: GetTablePageOptions.SortDirectionEnum
 }
-export enum TableMode {
-  edit = 'edit',
-  view = 'view',
-  ids = 'ids'
-}
+
 
 export interface ColumnMapping {
   fkClass: number,
@@ -78,6 +75,8 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() loading = false;
   @Input() headers$: Observable<Header[]>;
   @Input() table$: Observable<Array<Array<Cell>>>;
+  readmode$: Observable<boolean>;
+  @Input() showIds$: BehaviorSubject<boolean>;
 
   // optionnal inputs
   @Input() filteringEnabled = false;
@@ -85,7 +84,6 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   @Input() lineBreak = false;
   @Input() sortBy$: Observable<TableSort>;
   @Input() origin = 'classic';
-  @Input() mode: TableMode = TableMode.view;
   @Input() newRow: Row;
 
   // outputs
@@ -130,7 +128,10 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
     public p: ActiveProjectService,
     private dialog: MatDialog,
     private tableAPI: TableService,
-  ) { }
+    public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
 
   ngOnInit() {
     this.headers = [];
@@ -200,7 +201,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
   private getPkColumnByColNb(colNb: number) {
-    return colNb != 0 ? this.headers[colNb]?.pk_column : -1;
+    return colNb != 0 ? this.headers?.[colNb]?.pk_column : -1;
   }
 
   filter(colNb: number, filter?: TColFilter) {
@@ -209,7 +210,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
       return;
     }
     const pkColumn = this.getPkColumnByColNb(colNb);
-
+    if (!pkColumn) return
     // if columns have pkColumn, use pkColumn to identify filter, else colNb
     const key = pkColumn > -2 ? pkColumn : colNb;
 

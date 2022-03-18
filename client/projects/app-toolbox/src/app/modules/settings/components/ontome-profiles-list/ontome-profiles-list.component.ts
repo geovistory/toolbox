@@ -4,14 +4,13 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
-import { SysSelector } from '@kleiolab/lib-queries';
+import { SysConfig } from '@kleiolab/lib-config';
+import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
 import { ApiProfile } from '@kleiolab/lib-sdk-lb4';
-import { values } from 'd3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { flatten, indexBy, uniqBy } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { first, map, takeUntil } from 'rxjs/operators';
 import { OntomeProfileActivationReportDialogComponent, OntomeProfileActivationReportDialogData } from '../ontome-profile-activation-report-dialog/ontome-profile-activation-report-dialog.component';
 import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-settings.component';
 
@@ -32,7 +31,6 @@ export class OntomeProfilesListComponent implements OnInit {
 
   destroy$ = new Subject<boolean>();
   loading = false;
-  pkProject: number
 
   columnsToDisplay = ['expand', 'label', 'owner', 'ontomeLink', 'actions'];
   expandedElement: ProfileItem | null;
@@ -46,6 +44,7 @@ export class OntomeProfilesListComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private p: ActiveProjectService,
+    private c: ConfigurationPipesService,
     private dialog: MatDialog,
     private sys$: SysSelector
   ) { }
@@ -54,20 +53,8 @@ export class OntomeProfilesListComponent implements OnInit {
     this.paginator.pageSize = 5;
     this.dataSource.paginator = this.paginator;
 
-    this.enabledProfiles$ = this.p.pkProject$.pipe(
-      tap((pkProject) => {
-        this.pkProject = pkProject
-      }),
-      switchMap(pkProject => this.p.pro$.dfh_profile_proj_rel$
-        .by_fk_project__enabled$.key(pkProject + '_true').pipe(
-          map(rels => indexBy(
-            (key) => key.toString(),
-            [
-              DfhConfig.PK_PROFILE_GEOVISTORY_BASIC,
-              ...values(rels).map(rel => rel.fk_profile),
-            ]
-          ))
-        ))
+    this.enabledProfiles$ = this.c.pipeProfilesEnabledByProject().pipe(
+      map(profiles => indexBy((key) => key.toString(), profiles))
     )
 
     this.loadProfiles()
@@ -94,7 +81,8 @@ export class OntomeProfilesListComponent implements OnInit {
             ownerId: apiItem.ownedByProjectID,
             ownerLabel: apiItem.ownedByProjectLabel,
             profileId: apiItem.profileID,
-            scopeNote: apiItem.profileDefinition
+            scopeNote: apiItem.profileDefinition,
+            required: false
           }
           return item
         })
@@ -107,8 +95,8 @@ export class OntomeProfilesListComponent implements OnInit {
         map(([pkProject, sysConfig]) => {
           const ontomeProjectIds = []
           sysConfig.ontome.optionalOntomeProfiles?.forEach(i => {
-            if (!i.restrictedToGvProjects) return ontomeProjectIds.push(i.profilesAvailableByOmProjects);
-            if (i.restrictedToGvProjects.includes(pkProject)) ontomeProjectIds.push(i.profilesAvailableByOmProjects);
+            if (!i.restrictedToGvProjects) return ontomeProjectIds.push(...i.profilesAvailableByOmProjects);
+            if (i.restrictedToGvProjects.includes(pkProject)) ontomeProjectIds.push(...i.profilesAvailableByOmProjects);
           })
           return ontomeProjectIds;
         }),
@@ -116,9 +104,10 @@ export class OntomeProfilesListComponent implements OnInit {
       ).toPromise()
   }
 
-  activate(item: ProfileItem) {
+  async activate(item: ProfileItem) {
+    const pkProject = await this.p.pkProject$.pipe(first()).toPromise()
     const data: OntomeProfileActivationReportDialogData = {
-      pkProject: this.pkProject,
+      pkProject,
       profileId: item.profileId,
       profileLabel: item.label
     }

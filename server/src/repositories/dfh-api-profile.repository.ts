@@ -5,7 +5,7 @@ import {DfhApiProfile, DfhApiProfileRelations} from '../models';
 
 export class DfhApiProfileRepository extends DefaultCrudRepository<
   DfhApiProfile,
-  typeof DfhApiProfile.prototype.pk_entity,
+  typeof DfhApiProfile.prototype.dfh_pk_profile,
   DfhApiProfileRelations
 > {
   constructor(

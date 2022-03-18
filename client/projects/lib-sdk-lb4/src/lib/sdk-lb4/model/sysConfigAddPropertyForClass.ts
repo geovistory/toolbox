@@ -17,5 +17,9 @@ export interface SysConfigAddPropertyForClass {
     whereBasicTypeNotIn?: Array<number>;
     wherePkClassIn?: Array<number>;
     wherePkClassNotIn?: Array<number>;
+    whereValueObjectType?: boolean;
+    whereNotValueObjectType?: boolean;
+    whereSubclassOf?: Array<number>;
+    whereNotSubclassOf?: Array<number>;
 }
 

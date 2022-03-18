@@ -1,5 +1,5 @@
-import {testdb} from "../testdb";
 import {omit} from 'ramda';
+import {testdb} from "../testdb";
 
 
 interface PkEntity {
@@ -52,5 +52,8 @@ export async function setSequencesToMax() {
   for (const schema of ['information', 'projects', 'data', 'data_for_history', 'system']) {
     await testdb.execute(`SELECT setval('${schema}.entity_pk_entity_seq', (SELECT MAX(pk_entity) FROM ${schema}.entity));`);
   }
+  await testdb.execute(`SELECT setval('tables.cell_pk_cell_seq', (SELECT MAX(pk_cell) FROM tables.cell));`);
+  await testdb.execute(`SELECT setval('tables.row_pk_row_seq', (SELECT MAX(pk_row) FROM tables.row));`);
+
 }
 

@@ -51,8 +51,9 @@ describe('PFieldChangeService', () => {
 
     const id: PFieldChangeId = {
       fkProject: project.pk_entity ?? -1,
-      fkSourceInfo: InfStatementMock.NAME_1_TO_APPE.fk_subject_info ?? -1,
-      fkProperty: InfStatementMock.NAME_1_TO_APPE.fk_property ?? -1,
+      fkSourceInfo: InfStatementMock.NAME_1_TO_APPE.fk_subject_info ?? 0,
+      fkSourceTablesCell: InfStatementMock.NAME_1_TO_APPE.fk_subject_tables_cell ?? 0,
+      fkProperty: InfStatementMock.NAME_1_TO_APPE.fk_property ?? 0,
       fkPropertyOfProperty: 0,
       isOutgoing: true
     }

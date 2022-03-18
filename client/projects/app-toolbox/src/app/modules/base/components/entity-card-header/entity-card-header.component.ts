@@ -1,13 +1,14 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, ConfigurationPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
-import { IconType } from '@kleiolab/lib-redux';
+import { ActiveProjectPipesService, ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
+import { EditModeService } from '../../services/edit-mode.service';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 
 @Component({
   selector: 'gv-entity-card-header',
@@ -16,28 +17,28 @@ import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../clas
 })
 export class EntityCardHeaderComponent implements OnInit {
 
-  @Input() readonly$: Observable<boolean>
   @Input() showOntoInfo$: BehaviorSubject<boolean>;
   @Input() fkClass$: Observable<number>;
   @Input() pkEntity: number;
   @Input() pkProject: number;
 
+
   @Output() removed = new EventEmitter<void>();
 
-  iconType$: Observable<IconType>;
   preview$: Observable<WarEntityPreview>;
   classLabel$: Observable<string>;
 
   constructor(
+    public editMode: EditModeService,
     private p: ActiveProjectService,
-    private i: InformationPipesService,
-    private b: InformationBasicPipesService,
     private ap: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
-
     private dialog: MatDialog,
     private truncatePipe: TruncatePipe,
-  ) { }
+    @Optional() @Inject(READ_ONLY) public readonly: boolean
+  ) {
+
+  }
 
   ngOnInit(): void {
     const errors: string[] = []

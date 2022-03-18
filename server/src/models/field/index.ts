@@ -9,6 +9,5 @@ export * from './gv-pagination-alternative-leaf-items-req';
 export * from './gv-pagination-statement-filter';
 export * from './gv-subentity-field-page';
 export * from './gv-subentity-field-page-req';
-export * from './gv-subentity-field-target-view-type';
 // end:ng42.barrel
 

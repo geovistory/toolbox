@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { EditModeService } from '../../services/edit-mode.service';
 
 /**
  * This component is a standalone view for an entity
@@ -16,9 +18,12 @@ export class EntityCardComponent implements OnInit {
   @Input() pkClass$: Observable<number>
   @Input() scope: GvFieldPageScope;
   @Input() showOntoInfo$: BehaviorSubject<boolean>;
-  @Input() readonly$: BehaviorSubject<boolean>;
+  readmode$: Observable<boolean>;
 
-  constructor() { }
+  constructor(public editMode: EditModeService
+  ) {
+    this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+  }
 
   ngOnInit(): void {
     const errors: string[] = []
@@ -26,7 +31,6 @@ export class EntityCardComponent implements OnInit {
     if (!this.pkClass$) errors.push('@Input() pkClass$ is required.');
     if (!this.scope) errors.push('@Input() scope is required.');
     if (!this.showOntoInfo$) errors.push('@Input() showOntoInfo$ is required.');
-    if (!this.readonly$) errors.push('@Input() readonly$ is required.');
     if (errors.length) throw new Error(errors.join('\n'));
   }
 }

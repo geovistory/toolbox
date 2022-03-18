@@ -5,21 +5,22 @@ import { MatDialog } from '@angular/material/dialog';
 import { matExpansionAnimations } from '@angular/material/expansion';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { ProConfig, SysConfig } from '@kleiolab/lib-config';
+import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { EntityType, IAppState, ProjectSettingsData, RootEpics } from '@kleiolab/lib-redux';
-import { ProDfhClassProjRel, SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb4';
+import { ProDfhClassProjRel, SysConfigClassCategoryBelonging, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
-import { Utils } from 'projects/app-toolbox/src/app/core/util/util';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from 'projects/app-toolbox/src/app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
 import { DetailContentComponent } from 'projects/app-toolbox/src/app/shared/components/detail-content/detail-content.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
+import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { HighlightPipe } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.pipe';
-import { equals, indexBy, values } from 'ramda';
+import { equals, indexBy, keys, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 
@@ -39,24 +40,28 @@ export interface ClassItem {
 
   projRel?: ProDfhClassProjRel;
 
-  systemRelevantClass: SysSystemRelevantClass,
+  // systemRelevantClass: SysSystemRelevantClass,
 
   subclassOf?: 'peIt' | 'teEnt' | 'other'; // to distinguish TeEnts from PeIts
 
   subclassOfType?: boolean; // true if subclass of E55 Type
   identifier_in_namespace: string;
 
-  required_by_sources?: boolean
-  required_by_entities?: boolean
-  required_by_basics?: boolean
-  excluded_from_entities?: boolean
+  belongsToCategory: SysConfigClassCategoryBelonging;
+  showInAddMenu: boolean
+  categoryLabel: string
+  categoryKey: keyof SysConfigClassCategoryBelonging
+  // required_by_sources?: boolean
+  // required_by_entities?: boolean
+  // required_by_basics?: boolean
+  // excluded_from_entities?: boolean
 
   profiles: Profile[]
 
   removedFromAllProfiles: boolean
 
   changingProjRel?: boolean
-
+  enabled_in_entities?: boolean
 }
 
 
@@ -81,7 +86,8 @@ export interface ClassItem {
     matExpansionAnimations.indicatorRotate,
   ],
 })
-export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
+  implements OnInit, OnDestroy, SubstoreComponent, TabLayoutComponentInterface {
   @HostBinding('class.gv-flex-fh') flexFh = true;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(DetailContentComponent, { static: true }) detailContentComponent: DetailContentComponent;
@@ -162,7 +168,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     public p: ActiveProjectService,
     public ref: ChangeDetectorRef,
     private dialog: MatDialog,
-    private c: ConfigurationPipesService
+    private c: ConfigurationPipesService,
+    public tabLayout: TabLayoutService,
   ) {
     super();
     // this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
@@ -179,29 +186,33 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.localStore = this.ngRedux.configureSubStore(this.basePath, projectSettingsDataReducer);
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
+    this.t = this.tabLayout.t;
 
     this.p.pro$.dfh_profile_proj_rel.loadOfProject(this.p.state.pk_project);
 
     const classesEnabledByProfiles$ = this.c.pipeClassesEnabledByProjectProfiles()
 
-    this.items$ = classesEnabledByProfiles$
+    this.items$ = combineLatest([
+      classesEnabledByProfiles$,
+      this.p.dfh$.label$.by_fk_profile__type$.all$,
+      this.c.pipeProfilesEnabledByProject(),
+      this.c.pipeTypeClassesEnabledByProjectProfiles(),
+      this.p.sys$.config$.main$
+    ])
       .pipe(
-        switchMap((dfhClasses) => {
+        switchMap(([
+          dfhClasses, profileLabels, enabledProfiles, typeClasses, sysConfig
+        ]) => {
           return combineLatestOrEmpty(
             // Pipe all related informations for each class
-            dfhClasses.map(dfhClass => combineLatest(
+            dfhClasses.map(dfhClass => combineLatest([
               this.c.pipeClassLabel(dfhClass.pk_class),
               this.p.pro$.dfh_class_proj_rel$.by_fk_project__fk_class$
                 .key(this.p.state.pk_project + '_' + dfhClass.pk_class),
-              this.p.sys$.system_relevant_class$.by_fk_class$
-                .key(dfhClass.pk_class),
-              this.p.dfh$.label$.by_fk_profile__type$.all$,
-              this.c.pipeProfilesEnabledByProject(),
-              this.c.pipeTypeClassesEnabledByProjectProfiles()
-            )
+
+            ])
               .pipe(
-                map(([label, projRel, sysClass, profileLabels, enabledProfiles, typeClasses]) => {
+                map(([label, projRel]) => {
 
                   const typeClassMap = indexBy((c) => c.pk_class.toString(), typeClasses)
 
@@ -210,14 +221,13 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
                     identifier_in_namespace
                   } = dfhClass;
 
-
-                  const systemRelevantClass = Utils.firstItemInObject(sysClass);
-                  const {
-                    excluded_from_entities,
-                    required_by_basics,
-                    required_by_entities,
-                    required_by_sources
-                  } = systemRelevantClass || {} as SysSystemRelevantClass;
+                  const belongsToCategory = getClassCategoryBelonging(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
+                  const categoryKey = keys(belongsToCategory)?.[0]
+                  const categoryLabel = belongsToCategory.digitals ? 'digitals' :
+                    belongsToCategory.entities ? 'entities' :
+                      belongsToCategory.sources ? 'sources' :
+                        belongsToCategory.stories ? 'stories' : 'other';
+                  const showInAddMenu = values(belongsToCategory)?.[0].showInAddMenu
 
                   const profiles: Profile[] = []
 
@@ -242,15 +252,12 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
                     label,
                     projRel,
-                    systemRelevantClass,
-
+                    belongsToCategory,
+                    showInAddMenu,
+                    categoryLabel,
+                    categoryKey,
                     subclassOfType: !!typeClassMap[dfhClass.pk_class],
                     subclassOf: (dfhClass.basic_type === 8 || dfhClass.basic_type === 30) ? 'peIt' : dfhClass.basic_type === 9 ? 'teEnt' : 'other',
-
-                    excluded_from_entities,
-                    required_by_basics,
-                    required_by_entities,
-                    required_by_sources,
 
                     removedFromAllProfiles: !dfhClass.profiles.some(p => p.removed_from_api === false),
                     profiles,
@@ -271,44 +278,29 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
     this.dataSource.sort = this.sort;
 
-    combineLatest(this.showBasicClasses$, this.p.pkProject$).pipe(takeUntil(this.destroy$)).subscribe(([showBasicClasses, pkProject]) => {
+    this.displayedColumns = [
+      'categoryLabel',
+      'enabled',
+      'label',
+      'subclassOf',
+      'identifier_in_namespace',
+      'profiles',
+      'subclassOfType',
+      'classConfig'
+    ];
 
-      if (showBasicClasses) {
-        this.displayedColumns = [
-          'enabled_in_entities',
-          'required_by_sources',
-          'required_by_basics',
-          'label',
-          'subclassOf',
-          'identifier_in_namespace',
-          'profiles',
-          'subclassOfType',
-          'classConfig'
-        ];
-      }
-      else {
-        this.displayedColumns = [
-          'enabled_in_entities',
-          'required_by_sources',
-          'label',
-          'subclassOf',
-          'identifier_in_namespace',
-          'profiles',
-          'subclassOfType',
-          'classConfig'
-        ];
-      }
+    // combineLatest(this.showBasicClasses$, this.p.pkProject$).pipe(takeUntil(this.destroy$)).subscribe(([showBasicClasses, pkProject]) => {
 
-      if (pkProject === ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT) {
-        this.displayedColumns = [
-          ...this.displayedColumns,
-          'edit_required_by_basics',
-          'edit_required_by_sources',
-          // 'edit_required_by_entities',
-          'edit_excluded_from_entities',
-        ]
-      }
-    })
+    // if (pkProject === ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT) {
+    //   this.displayedColumns = [
+    //     ...this.displayedColumns,
+    //     'edit_required_by_basics',
+    //     'edit_required_by_sources',
+    //     // 'edit_required_by_entities',
+    //     'edit_excluded_from_entities',
+    //   ]
+    // }
+    // })
   }
 
   ngOnDestroy() {
@@ -325,7 +317,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
 
 
 
-    combineLatest<any>(
+    combineLatest([
       this.debouncedText$,
       this.items$,
       this.subclassOf$,
@@ -333,74 +325,78 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
       this.profile$,
       this.sorting$,
       this.showBasicClasses$
-    ).pipe(
+    ]).pipe(
       distinctUntilChanged(equals)
-    )
-      .subscribe((d) => {
-        const text: string = d[0],
-          items: ClassItem[] = d[1],
-          subclassOf: string = d[2],
-          status: boolean = d[3],
-          profile: number = d[4],
-          sorting: Sort = d[5],
-          showBasicClasses: boolean = d[6];
+    ).subscribe((d) => {
+      const text: string = d[0],
+        items: ClassItem[] = d[1],
+        subclassOf: string = d[2],
+        status: boolean = d[3],
+        profile: number = d[4],
+        sorting: Sort = d[5],
+        showBasicClasses: boolean = d[6];
 
-        const sortFn = (a, b) => {
-          let nameA;
-          let nameB;
-          if (typeof a[sorting.active] === 'string') {
-            nameA = a[sorting.active].toUpperCase(); // ignore upper and lowercase
-            nameB = b[sorting.active].toUpperCase(); // ignore upper and lowercase
-          } else if (typeof a[sorting.active] === 'boolean') {
-            nameA = a[sorting.active] ? 0 : 1;
-            nameB = b[sorting.active] ? 0 : 1;
-          }
-          if (nameA < nameB) return sorting.direction === 'asc' ? -1 : 1;
-          if (nameA > nameB) return sorting.direction === 'asc' ? 1 : -1;
-          // names are equal
-          return 0;
-        };
-
-        if (items && items.length) {
-
-          const mapped = items.map(i => ({
-            ...i,
-            enabled_in_entities: (!i.projRel ? false : i.projRel.enabled_in_entities),
-            subclassOf: (i.subclassOf || 'other'),
-            // dfh_standard_label: i.dfh_standard_label + ' – ' + i.identifier_in_namespace
-          }))
-
-          this.filteredItems$.next(
-            (text === '' && subclassOf === undefined && status === undefined && profile === undefined && showBasicClasses === true) ?
-              mapped.sort(sortFn) :
-              mapped.filter(item => (
-                // filter for show basic classes
-                (showBasicClasses || !item.required_by_basics)
-                // filter for search term
-                && (text === '' ||
-                  (item.label + ' ' + item.identifier_in_namespace + ' ' + item.scopeNote)
-                    .toLowerCase().indexOf(text.toLowerCase()) > -1)
-                // filter for subclassOf
-                && (subclassOf === undefined || item.subclassOf === subclassOf)
-                // filter for status
-                && (status === undefined || status === (!item.projRel ? false : item.projRel.enabled_in_entities))
-                // filter for profiles
-                && (profile === undefined || item.profilePks.indexOf(profile) > -1)
-              ))
-                .sort(sortFn)
-                // highlighting
-                .map((item) => ({
-                  ...item,
-                  label: this.highilghtPipe.transform(item.label, text),
-                  identifier_in_namespace: this.highilghtPipe.transform(item.identifier_in_namespace, text),
-                  // dfh_standard_label: this.highilghtPipe.transform(item.dfh_standard_label, text),
-                  scopeNote: this.highilghtPipe.transform(item.scopeNote, text),
-                }))
-          )
+      const sortFn = (a, b) => {
+        let nameA;
+        let nameB;
+        if (typeof a[sorting.active] === 'string') {
+          nameA = a[sorting.active].toUpperCase(); // ignore upper and lowercase
+          nameB = b[sorting.active].toUpperCase(); // ignore upper and lowercase
+        } else if (typeof a[sorting.active] === 'boolean') {
+          nameA = a[sorting.active] ? 0 : 1;
+          nameB = b[sorting.active] ? 0 : 1;
         }
+        if (nameA < nameB) return sorting.direction === 'asc' ? -1 : 1;
+        if (nameA > nameB) return sorting.direction === 'asc' ? 1 : -1;
+        // names are equal
+        return 0;
+      };
+
+      if (items && items.length) {
+
+        const mapped = items.map(i => ({
+          ...i,
+          enabled_in_entities: (!i.projRel ? false : i.projRel.enabled_in_entities),
+          subclassOf: (i.subclassOf || 'other'),
+          // dfh_standard_label: i.dfh_standard_label + ' – ' + i.identifier_in_namespace
+        }))
+
+        this.filteredItems$.next(
+          (text === '' && subclassOf === undefined && status === undefined && profile === undefined && showBasicClasses === true) ?
+            mapped.sort(sortFn) :
+            mapped.filter(item => {
+              if (!showBasicClasses && values(item.belongsToCategory)?.[0].showInAddMenu === false) return false;
+
+              if (
+                text !== '' &&
+                ((item.label + ' ' + item.identifier_in_namespace + ' ' + item.scopeNote)
+                  .toLowerCase().indexOf(text.toLowerCase()) === -1)) return false
 
 
-      })
+              return true
+
+              // // filter for subclassOf
+              // && (subclassOf === undefined || item.subclassOf === subclassOf)
+              // // filter for status
+              // && (status === undefined || status === (!item.projRel ? false : item.projRel.enabled_in_entities))
+              // // filter for profiles
+              // && (profile === undefined || item.profilePks.indexOf(profile) > -1)
+
+            })
+              .sort(sortFn)
+              // highlighting
+              .map((item) => ({
+                ...item,
+                label: this.highilghtPipe.transform(item.label, text),
+                identifier_in_namespace: this.highilghtPipe.transform(item.identifier_in_namespace, text),
+                // dfh_standard_label: this.highilghtPipe.transform(item.dfh_standard_label, text),
+                scopeNote: this.highilghtPipe.transform(item.scopeNote, text),
+              }))
+        )
+      }
+
+
+    })
 
   }
 
@@ -513,18 +509,27 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     })
   }
 
-  toggleSystemRelevantClassBool(classItem: ClassItem, col: string) {
-    this.p.changingSystemRelevantClass[classItem.pkClass] = true;
+  // toggleSystemRelevantClassBool(classItem: ClassItem, col: string) {
+  //   this.p.changingSystemRelevantClass[classItem.pkClass] = true;
 
-    this.p.sys$.system_relevant_class.upsert([
-      {
-        ...classItem.systemRelevantClass,
-        fk_class: classItem.pkClass,
-        [col]: !classItem.systemRelevantClass ? true : !classItem.systemRelevantClass[col]
-      }
-    ]).resolved$.pipe(takeUntil(this.destroy$)).subscribe((resolved) => {
-      if (resolved) this.p.changingSystemRelevantClass[classItem.pkClass] = false;
-    });
-  }
+  //   this.p.sys$.system_relevant_class.upsert([
+  //     {
+  //       ...classItem.systemRelevantClass,
+  //       fk_class: classItem.pkClass,
+  //       [col]: !classItem.systemRelevantClass ? true : !classItem.systemRelevantClass[col]
+  //     }
+  //   ]).resolved$.pipe(takeUntil(this.destroy$)).subscribe((resolved) => {
+  //     if (resolved) this.p.changingSystemRelevantClass[classItem.pkClass] = false;
+  //   });
+  // }
 }
 
+
+
+
+function getClassCategoryBelonging(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): SysConfigClassCategoryBelonging {
+  return sysConfig?.classes?.[pkClass]?.belongsToCategory ??
+    sysConfig?.classesByBasicType?.[basicTypeId]?.belongsToCategory ??
+    sysConfig?.classesDefault?.belongsToCategory ??
+    { entities: { showInAddMenu: true } };
+}

@@ -1,7 +1,7 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
+import { SysConfig } from '@kleiolab/lib-config';
 import { DfhProfile } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
@@ -20,6 +20,7 @@ export interface ProfileItem {
   ownerLabel: string;
   profileId: number;
   scopeNote: string;
+  required: boolean
 }
 
 
@@ -27,7 +28,7 @@ export interface ProfileItem {
   selector: 'gv-ontome-profiles-settings',
   templateUrl: './ontome-profiles-settings.component.html',
   styleUrls: ['./ontome-profiles-settings.component.scss'],
-  providers: [TabLayoutService, GvAnalysisService],
+  providers: [GvAnalysisService],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
@@ -59,35 +60,40 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
   constructor(
     public ref: ChangeDetectorRef,
     public p: ActiveProjectService,
-    private ts: TabLayoutService,
+    public tabLayout: TabLayoutService,
     private dialog: MatDialog
   ) { }
 
   ngOnInit() {
-    this.t = this.ts.create(this.basePath[2], this.ref, this.destroy$);
+    this.t = this.tabLayout.t
     this.t.setTabTitle('Ontome Profiles')
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.pkProject = pkProject;
       this.p.pro$.dfh_profile_proj_rel.loadOfProject(pkProject)
     })
-    this.dataSource$ = this.p.pkProject$.pipe(
-      switchMap(pkProject => this.p.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
+
+    this.dataSource$ = combineLatest([
+      this.p.pkProject$,
+      this.p.sys$.config$.main$
+    ]).pipe(
+      switchMap(([pkProject, sysConfig]) => this.p.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
         .key(pkProject + '_true').pipe(
           switchMap((rels) => {
             const enabledProfiles = [
-              ...values(rels).map(rel => rel.fk_profile),
-              DfhConfig.PK_PROFILE_GEOVISTORY_BASIC
+              ...values(rels).map(rel => ({ id: rel.fk_profile, required: false })),
+              ...sysConfig.ontome.requiredOntomeProfiles.map(id => ({ id, required: true })) ?? []
             ]
-            return combineLatest(enabledProfiles.map(profileId => {
+            return combineLatest(enabledProfiles.map(i => {
               return combineLatest([
-                this.pipeProfileLabel(profileId),
-                this.pipeProfileScopeNote(profileId),
-                this.pipeProfile(profileId)
+                this.pipeProfileLabel(i.id),
+                this.pipeProfileScopeNote(i.id),
+                this.pipeProfile(i.id)
               ]).pipe(
                 map(([label, scopeNote, profile]) => {
                   const item: ProfileItem = {
-                    profileId,
+                    profileId: i.id,
+                    required: i.required,
                     label,
                     scopeNote,
                     ownerId: profile.owned_by_project,

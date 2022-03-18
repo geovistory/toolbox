@@ -1,0 +1,129 @@
+<!-- Header, if the expression is shown -->
+
+<ng-container *ngIf="isExpression&&!(hideTreeNodeAndFieldHeader$|async)">
+  <div class="mat-typography mat-bg-grey-100 gv-section-header">
+    <h3 class="loc-header-left d-flex mat-text-secondary">
+      Sections and digital reproductions
+    </h3>
+  </div>
+  <mat-divider></mat-divider>
+</ng-container>
+
+<gv-view-field-item-container [enableDropZoneEnd$]="enableDropZoneEnd$" [field]="field" [item]="itemComponent.item"
+  [treeExtraPl]="0" [hidden]="hideTreeNodeAndFieldHeader$|async">
+  <div class="loc-first-line" [ngClass]="{'mat-bg-grey-100':dragover$|async}">
+    <span class="loc-left mat-typography  gv-pointer">
+      <button *ngIf="itemCountService.sum$|async" mat-icon-button (click)="showBody$.next(!showBody$.value)">
+        <mat-icon class="mat-icon-rtl-mirror">
+          {{(showBody$|async) ? 'keyboard_arrow_down' : 'keyboard_arrow_right'}}
+        </mat-icon>
+      </button>
+      <button *ngIf="!(itemCountService.sum$|async)" mat-icon-button [disabled]=true> </button>
+
+      <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="showOntoInfo$" [resource]="resource"
+        [isInProject]="itemComponent.item.projRel?.is_in_project" [classLabel]="classLabel" [isFavorite]="false">
+      </gv-view-field-item-class-info>
+
+      <gv-entity-preview class="loc-item" [hideClass]="true"
+        [pkEntity]="itemComponent.item.target.entity.resource.pk_entity" [dragEnabled]="false"
+        [openTabOnClick]="!readonly" [truncateLabel]="'250'">
+      </gv-entity-preview>
+      <div class="gv-flex-grow mat-caption mat-text-secondary ml-2" (click)="showBody$.next(!showBody$.value)">
+        <ng-container *ngIf="editMode.value$|async">{{classLabel}}</ng-container>
+      </div>
+    </span>
+
+    <span class="loc-right">
+      <gv-view-field-item-entity-menu *ngIf="(editMode.value$|async) &&  !isExpression">
+
+        <mat-divider></mat-divider>
+        <div class="dropdown-header">Add a new</div>
+        <button *ngFor="let item of addButtons$|async" mat-menu-item (click)="openAddStatementDialog(item)">
+          <mat-icon>
+            <gv-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="item.targetClass" [isFavorite]="false"
+              [classLabel]="item.targetClassLabel"></gv-class-info>
+          </mat-icon>
+          <span>{{item.targetClassLabel}}</span>
+        </button>
+      </gv-view-field-item-entity-menu>
+
+
+
+      <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto"
+        *ngIf="(editMode.value$|async) && isExpression">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+
+
+    </span>
+
+  </div>
+</gv-view-field-item-container>
+
+<!-- Header, if the expression is hidden -->
+<ng-container *ngIf="hideTreeNodeAndFieldHeader$|async">
+
+  <div class="mat-typography mat-bg-grey-100 gv-section-header">
+    <h3 class="loc-header-left d-flex mat-text-secondary">
+      Sections and digital reproductions
+    </h3>
+    <div class="loc-header-right">
+      <button *ngIf="editMode.value$|async" mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-divider></mat-divider>
+  <div class="loc-hidden-info mat-caption mat-bg-grey-50" (click)="showTreeNodeAndFieldHeader()"> Hidden elements</div>
+</ng-container>
+
+
+
+<div class="loc-hidden-info mat-caption loc-border-dashed mat-bg-grey-50" (click)="hideTreeNodeAndFieldHeader()"
+  *ngIf="isExpression && !(hideTreeNodeAndFieldHeader$|async)">
+  Hide elements above this line
+</div>
+
+
+<!-- ADD A DROPLIST FOR EACH FIELD BODY HERE, WHEN BODY HIDDEN AND DRAG ENABLED -->
+<gv-view-field-tree-item-drop-zone #dz class="loc-central-drop-zone" *ngFor="let field of fields$|async"
+  [dragover$]="dragover$" [field]="field" [source]="{fkInfo:resource.pk_entity}" [item]="itemComponent.item">
+</gv-view-field-tree-item-drop-zone>
+
+
+<ng-container *ngIf="nodeService.indentation$.value<10; else maxLevelReached">
+
+
+  <gv-view-field-body #f *ngFor="let field of fields$|async" [showBody$]="showBody$" [dividerPosition]="'top'"
+    [hidden]="(!(editMode.value$|async) || field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)"
+    [field]="field" [showOntoInfo$]="showOntoInfo$" [source]="sectionSource" [scope]="itemComponent.scope" [limit]="100"
+    [hideNoItemsInfo]="true">
+  </gv-view-field-body>
+</ng-container>
+
+
+<!-- DROP ZONE AT BOTTOM OF LIST, IF BODY IS SHOWN, ALLOWS USERS TO MOVE ITEM AFTER THIS ITEM -->
+<gv-view-field-item-container *ngIf="(showBody$|async)&&(itemCountService.sum$|async)" [minHeight]="10"
+  [hasDropZoneStart]="false" [hasDropZoneEnd]="true" [field]="field" [item]="itemComponent.item" [treeExtraPl]="0"
+  [hidden]="hideTreeNodeAndFieldHeader$|async">
+</gv-view-field-item-container>
+
+
+<ng-template #maxLevelReached>
+  <gv-view-field-item-container>
+    <span class="mat-text-secondary"> Maximum level of nesting reached</span>
+  </gv-view-field-item-container>
+</ng-template>
+
+
+<mat-menu #appMenu="matMenu">
+  <div class="dropdown-header">Add a new</div>
+  <button *ngFor="let item of addButtons$|async" mat-menu-item (click)="openAddStatementDialog(item)">
+    <mat-icon>
+      <gv-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="item.targetClass" [isFavorite]="false"
+        [classLabel]="item.targetClassLabel"></gv-class-info>
+    </mat-icon>
+    <span>{{item.targetClassLabel}}</span>
+  </button>
+
+</mat-menu>

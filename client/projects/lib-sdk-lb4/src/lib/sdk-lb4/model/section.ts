@@ -15,5 +15,8 @@ export interface Section {
     position?: number;
     hidden?: boolean;
     controlsOnInit?: number;
+    required?: number;
+    hideRemoveBtn?: boolean;
+    noFieldHeader?: boolean;
 }
 

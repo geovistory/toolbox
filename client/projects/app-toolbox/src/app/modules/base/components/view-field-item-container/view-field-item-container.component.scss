@@ -1,0 +1,60 @@
+:host,
+.loc-container {
+  display: flex;
+  width: 100%;
+  background-color: white;
+}
+
+.loc-container {
+  padding-right: 8px;
+  position: relative;
+}
+
+.loc-container.dnd-dragover-start::before {
+  display: inline-block;
+  position: absolute;
+  content: "";
+  border-top: 8px solid rgba(141, 141, 141, 0.767);
+  width: 100%;
+  /* margin: 0 0; */
+  top: 0px;
+}
+.loc-container.dnd-dragover-center {
+  background-color: rgba(121, 121, 121, 0.123);
+}
+.loc-container.dnd-dragover-end::after {
+  display: inline-block;
+  position: absolute;
+  content: "";
+  border-bottom: 8px solid rgba(141, 141, 141, 0.767);
+  width: 100%;
+  /* margin: 0 0; */
+  bottom: 0px;
+}
+
+.dnd-dropzone-container {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.dnd-dropzone {
+  overflow: hidden;
+  flex-grow: 1;
+  flex-shrink: 1;
+  // border: 1px dashed red;
+}
+.dnd-dropzone ~ .dnd-dropzone {
+  margin-top: 2px;
+}
+.dnd-dropzone-center {
+  flex-basis: 100%;
+}
+
+.dnd-dropzone-start,
+.dnd-dropzone-end {
+  flex-basis: 20px;
+}

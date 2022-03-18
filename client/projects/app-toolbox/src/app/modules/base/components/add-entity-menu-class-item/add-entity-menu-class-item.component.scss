@@ -22,6 +22,7 @@
   justify-content: center;
 }
 .loc-label {
+  display: flex;
   height: 48px;
   padding-top: 13px;
   flex-grow: 1;
@@ -30,6 +31,9 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  gv-class-info {
+    margin-right: 8px;
+  }
 }
 .loc-container {
   width: 100%;

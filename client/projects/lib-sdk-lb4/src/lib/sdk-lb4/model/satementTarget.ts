@@ -10,6 +10,7 @@
  * Do not edit the class manually.
  */
 import { StatementTargetLangString } from './statementTargetLangString';
+import { TabCell } from './tabCell';
 import { InfAppellation } from './infAppellation';
 import { StatementTargeTimePrimitive } from './statementTargeTimePrimitive';
 import { InfPlace } from './infPlace';
@@ -25,6 +26,7 @@ export interface SatementTarget {
     language?: InfLanguage;
     timePrimitive?: StatementTargeTimePrimitive;
     place?: InfPlace;
+    cell?: TabCell;
     entity?: StatementTargetEntity;
 }
 

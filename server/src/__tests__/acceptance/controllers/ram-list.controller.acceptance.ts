@@ -1,9 +1,6 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
-import {PubAccount} from '../../../models';
 import {GeovistoryServer} from '../../../server';
-import {cleanDb} from '../../helpers/meta/clean-db.helper';
-import {DatChunkMock} from '../../helpers/data/gvDB/DatChunkMock';
+import {InfAppellationMock} from '../../helpers/data/gvDB/InfAppellationMock';
 import {InfResourceMock} from '../../helpers/data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../../helpers/data/gvDB/InfStatementMock';
 import {ProProjectMock} from '../../helpers/data/gvDB/ProProjectMock';
@@ -12,6 +9,7 @@ import {PubCredentialMock} from '../../helpers/data/gvDB/PubCredentialMock';
 import {TabCellXMock} from '../../helpers/data/gvDB/TabCellXMock';
 import {forFeatureX} from '../../helpers/graphs/feature-X.helper';
 import {setupApplication} from '../../helpers/gv-server-helpers';
+import {cleanDb} from '../../helpers/meta/clean-db.helper';
 
 
 describe('RamListController', () => {
@@ -31,9 +29,9 @@ describe('RamListController', () => {
         const cellRefersToRudolf = InfStatementMock.CELL_RUDOLF_NAME_REFERS8_TO_RUDOLF
         const tableIsReproOfHabsEmp = InfStatementMock.DIGITAL_BIRTHDATES_IS_REPRODUCTION_OF_HABS_EMP
 
-        const chunk = DatChunkMock.RUDOLF
-        const chunkRefersToRudol = InfStatementMock.CHUNK_RUDOLF_REFERS_TO_RUDOLF
-        const textIsReproOfHabsEmp = InfStatementMock.DIGITAL_TEXT_IS_REPRO_OF_HABS_EMP
+        const chunk = InfAppellationMock.CHUNK_RUDOLF
+        const annotationRefersToRudol = InfStatementMock.ANNOTATION_RUDOLF_REFERS_TO_RUDOLF
+        const textIsReproOfHabsEmp = InfStatementMock.TRANSCRIPTION_IS_REPRO_OF_HABS_EMP
 
         const habsEmpMentionsRufolf = InfStatementMock.HABS_EMP_EXPR_MENTIONS_RUDOLF
 
@@ -55,7 +53,7 @@ describe('RamListController', () => {
         })
 
 
-        it('should return a valid object for ramlist where rudolf is refered to by a chunk', async () => {
+        it('should return a valid object for ramlist where rudolf is refered to by an annotation', async () => {
             const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwd})).body.lb4Token;
             const res = await client.get('/get-ram-list').set('Authorization', jwt).query(
                 {
@@ -66,7 +64,8 @@ describe('RamListController', () => {
             );
 
             // the chunk must be present
-            expect(res?.body?.dat?.chunk).to.containDeep([
+            console.log(res?.body?.inf?.appellation)
+            expect(res?.body?.inf?.appellation).to.containDeep([
                 chunk
             ])
             // the cell must not be present
@@ -74,10 +73,8 @@ describe('RamListController', () => {
                 cell
             ])
             // these statements must be present
-            expect(res?.body?.inf?.statement).to.containDeep([
-                chunkRefersToRudol,
-                textIsReproOfHabsEmp,
-            ]);
+            expect(res?.body?.inf?.statement).to.containDeep([annotationRefersToRudol,]);
+            expect(res?.body?.inf?.statement).to.containDeep([textIsReproOfHabsEmp,]);
             // these statements must not be present
             expect(res?.body?.inf?.statement).to.not.containDeep([
                 cellRefersToRudolf,
@@ -113,7 +110,7 @@ describe('RamListController', () => {
             ]);
             // these statements must not be present
             expect(res?.body?.inf?.statement).to.not.containDeep([
-                chunkRefersToRudol,
+                annotationRefersToRudol,
                 textIsReproOfHabsEmp
             ]);
 
@@ -143,7 +140,7 @@ describe('RamListController', () => {
             ]);
             // these statements must not be present
             expect(res?.body?.inf?.statement).to.not.containDeep([
-                chunkRefersToRudol,
+                annotationRefersToRudol,
                 textIsReproOfHabsEmp,
                 cellRefersToRudolf,
                 tableIsReproOfHabsEmp

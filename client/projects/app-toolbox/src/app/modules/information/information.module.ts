@@ -16,6 +16,7 @@ import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/comp
 import { ListModule } from 'projects/app-toolbox/src/app/shared/components/list/list.module';
 import { HighlightModule } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
+import { TabBaseModule } from '../../shared/components/tab-layout/tab-layout.module';
 import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
@@ -25,7 +26,7 @@ import { ContentTreeNodeLabelComponent } from './components/content-tree-node-la
 import { ContentTreeNodeOptionsComponent } from './components/content-tree-node-options/content-tree-node-options.component';
 import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
 import { ContentTreeComponent } from './components/content-tree/content-tree.component';
-import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
+// import { EntityDetailAPIActions } from './containers/entity-detail/api/entity-detail.actions';
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 import { InformationAPIActions } from './containers/entity-list/api/entity-list.actions';
 import { InformationAPIEpics } from './containers/entity-list/api/entity-list.epics';
@@ -59,7 +60,7 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     DetailTopBarModule,
     AnnotationModule,
     TileHeaderModule,
-
+    TabBaseModule,
     TreeModule
   ],
   declarations: [
@@ -74,7 +75,7 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
   providers: [
     InformationAPIActions,
     InformationAPIEpics,
-    EntityDetailAPIActions,
+    // EntityDetailAPIActions,
   ],
   exports: [
     InformationComponent,

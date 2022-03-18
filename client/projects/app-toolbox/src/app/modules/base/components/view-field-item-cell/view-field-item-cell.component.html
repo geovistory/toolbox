@@ -1,0 +1,40 @@
+<gv-view-field-item-container>
+  <span class="loc-left mat-typography">
+    <gv-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
+      [pkClass]="itemComponent.item.targetClass"
+      [classLabel]="field.targets[itemComponent.item.targetClass]?.targetClassLabel" [isFavorite]="ordNum===1">
+    </gv-class-info>
+
+    <div class="ellipsis">
+      {{itemComponent.item.targetLabel}} <span
+        class="mat-caption mat-text-secondary">[{{itemComponent.item.target.cell.fk_column}}:{{itemComponent.item.target.cell.fk_row}}]
+      </span>
+    </div>
+  </span>
+
+  <span class="loc-right" *ngIf="editMode.value$|async">
+    <mat-menu #appMenu="matMenu">
+
+      <ng-container *ngIf="itemComponent.item.target.langString">
+        <button mat-menu-item
+          (click)="itemComponent.openPopup(itemComponent.item.target.langString?.langString?.string)">
+          <mat-icon svgIcon="arrow-expand-all"></mat-icon>
+          <span>Open in popup</span>
+        </button>
+        <mat-divider></mat-divider>
+      </ng-container>
+
+      <div class="dropdown-header">Danger Zone</div>
+      <button mat-menu-item (click)="itemComponent. remove()">
+        <mat-icon color="warn">delete</mat-icon>
+        <span>Remove</span>
+      </button>
+
+    </mat-menu>
+
+    <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+
+  </span>
+</gv-view-field-item-container>
