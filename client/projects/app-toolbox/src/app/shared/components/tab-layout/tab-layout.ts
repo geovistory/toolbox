@@ -95,6 +95,10 @@ export class TabLayout {
     if (this.layoutMode === 'both') this.setLayoutMode('left-only')
     else if (this.layoutMode === 'right-only') this.setLayoutMode('both')
   }
+  onLeftBtnClick() {
+    if (this.layoutMode === 'both') this.setLayoutMode('right-only')
+    else if (this.layoutMode === 'left-only') this.setLayoutMode('both')
+  }
 
   /**
    * END

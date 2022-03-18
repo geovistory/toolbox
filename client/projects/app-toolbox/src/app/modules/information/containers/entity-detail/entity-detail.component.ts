@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService, SectionName } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
 import { EditModeService } from '../../../base/services/edit-mode.service';
@@ -45,7 +46,8 @@ export class EntityDetailComponent
     b: InformationBasicPipesService,
     truncatePipe: TruncatePipe,
     dataService: ReduxMainService,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    public tabLayout: TabLayoutService
   ) {
     super(
       p,
@@ -56,13 +58,14 @@ export class EntityDetailComponent
       b,
       truncatePipe,
       dataService,
-      editMode
+      editMode,
+      tabLayout
     )
   }
 
   ngOnInit() {
     this.initialize();
-    this.t.defaultSizeRight = 50;
+    this.tabLayout.t.defaultSizeRight = 50;
   }
 
 }

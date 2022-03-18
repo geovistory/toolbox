@@ -15,7 +15,7 @@ export class SysConfigValueMock {
         },
         {
           "profilesAvailableByOmProjects": [
-            48
+            48, 125
           ],
           "restrictedToGvProjects": [
             591,
@@ -24,7 +24,7 @@ export class SysConfigValueMock {
         }
       ],
       "requiredOntomeProfiles": [
-        5
+        5, 97
       ]
     },
     "classesDefault": {
@@ -160,14 +160,14 @@ export class SysConfigValueMock {
         }
       },
       "218": {
-        icon: IconType.source,
+        icon: IconType.section,
         belongsToCategory: {
           sources: {showInAddMenu: false}
-        }
+        },
       },
-      "220": {
+      "219": {
         icon: IconType.source,
-        docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
+        // docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-serially-produced-source',
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
@@ -175,18 +175,9 @@ export class SysConfigValueMock {
           }
         }
       },
-      "503": {
-        icon: IconType.section,
-        belongsToCategory: {
-          sources: {
-            showInAddMenu: true,
-            positionInAddMenu: 20
-          }
-        }
-      },
-      "219": {
+      "220": {
         icon: IconType.source,
-        docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-serially-produced-source',
+        // docUrl: 'https://docs.geovistory.com/geovistory-manual/sources/what-is-a-source-in-geovistory/types-of-sources#class-unique-source-object',
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
@@ -199,7 +190,7 @@ export class SysConfigValueMock {
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
-            positionInAddMenu: 40
+            positionInAddMenu: 50
           }
         }
       },
@@ -208,18 +199,25 @@ export class SysConfigValueMock {
         belongsToCategory: {
           sources: {
             showInAddMenu: true,
-            positionInAddMenu: 50
+            positionInAddMenu: 40
           }
         }
       },
       "502": {
-        icon: IconType.source,
-        belongsToCategory: {
-          sources: {
-            showInAddMenu: true,
-            positionInAddMenu: 60
+        "belongsToCategory": {
+          "sources": {
+            "positionInAddMenu": 20,
+            "showInAddMenu": true
           }
         }
+      },
+      "503": {
+        "belongsToCategory": {
+          "sources": {
+            "showInAddMenu": false
+          }
+        },
+        icon: IconType.section
       },
       "335": {
         icon: IconType.value,
@@ -427,6 +425,16 @@ export class SysConfigValueMock {
             showInAddMenu: true,
             positionInAddMenu: 1
           }
+        },
+        communityVisibilityRange: {
+          toolbox: [false, true],
+          dataApi: [false, true],
+          website: [false, true]
+        },
+        communityVisibilityDefault: {
+          toolbox: false,
+          dataApi: false,
+          website: false
         }
       },
       "868": {
@@ -442,6 +450,16 @@ export class SysConfigValueMock {
             showInAddMenu: true,
             positionInAddMenu: 3
           }
+        },
+        communityVisibilityRange: {
+          toolbox: [false, true],
+          dataApi: [false, true],
+          website: [false, true]
+        },
+        communityVisibilityDefault: {
+          toolbox: false,
+          dataApi: false,
+          website: false
         }
       },
       "899": {
@@ -454,6 +472,16 @@ export class SysConfigValueMock {
           digitals: {
             showInAddMenu: false,
           }
+        },
+        communityVisibilityRange: {
+          toolbox: [true],
+          dataApi: [true],
+          website: [true]
+        },
+        communityVisibilityDefault: {
+          toolbox: true,
+          dataApi: true,
+          website: true
         }
       },
       "900": {
@@ -466,15 +494,33 @@ export class SysConfigValueMock {
           digitals: {
             showInAddMenu: false,
           }
+        },
+        communityVisibilityRange: {
+          toolbox: [false, true],
+          dataApi: [false, true],
+          website: [false, true]
+        },
+        communityVisibilityDefault: {
+          toolbox: false,
+          dataApi: false,
+          website: false
         }
       },
-
-
       "934": {
         icon: IconType['persistent-item'],
         viewType: {nestedResource: []},
         belongsToCategory: {
           digitals: {showInAddMenu: false}
+        },
+        communityVisibilityRange: {
+          toolbox: [false, true],
+          dataApi: [false, true],
+          website: [false, true]
+        },
+        communityVisibilityDefault: {
+          toolbox: false,
+          dataApi: false,
+          website: false
         }
       },
       "933": {
@@ -482,6 +528,16 @@ export class SysConfigValueMock {
         viewType: {nestedResource: []},
         belongsToCategory: {
           digitals: {showInAddMenu: false}
+        },
+        communityVisibilityRange: {
+          toolbox: [false, true],
+          dataApi: [false, true],
+          website: [false, true]
+        },
+        communityVisibilityDefault: {
+          toolbox: false,
+          dataApi: false,
+          website: false
         }
       },
       "935": {
@@ -501,7 +557,7 @@ export class SysConfigValueMock {
     },
     "addProperty": [
       {
-        "comment": "all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40), Appellation for Language (365) and Annotation (932) and excluding  Person (21) and excluding value classes",
+        "comment": "add <has appellation> to all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40), Appellation for Language (365) and Annotation (932) and excluding  Person (21) and excluding value classes",
         "isOutgoing": false,
         "toSourceClass": {
           "whereSubclassOf": [2, 70],
@@ -808,10 +864,11 @@ export class SysConfigValueMock {
               "comment": "geov:P? has value version",
               "formSections": {
                 "basic": {
-                  "position": 0,
-                  hideRemoveBtn: true,
-                  "noFieldHeader": true, // hide the field header
-                  controlsOnInit: 1,
+                  hidden: true
+                  // "position": 0,
+                  // hideRemoveBtn: true,
+                  // "noFieldHeader": true, // hide the field header
+                  // controlsOnInit: 1,
                 },
                 "simpleForm": {
                   hidden: true
@@ -823,7 +880,7 @@ export class SysConfigValueMock {
                 }
               }
             },
-            1761: {
+            "1761": {
               "comment": "Text has short title",
               formSections: {
                 "simpleForm": {
@@ -841,13 +898,35 @@ export class SysConfigValueMock {
                 }
               }
             },
-            63: {
+            "63": {
               "comment": "Text has language",
               viewSections: {
                 "specific": {
                   "position": 2,
                   controlsOnInit: 1,
                 }
+              }
+            }
+          },
+          incomingProperties: {
+            "1762": {
+              comment: "is definition of",
+              viewSections: {
+                specific: {hidden: true},
+              },
+              formSections: {
+                basic: {hidden: true},
+                simpleForm: {hidden: true},
+              }
+            },
+            "1763": {
+              comment: "is comment about",
+              viewSections: {
+                specific: {hidden: true},
+              },
+              formSections: {
+                basic: {hidden: true},
+                simpleForm: {hidden: true},
               }
             }
           }
@@ -1149,6 +1228,14 @@ export class SysConfigValueMock {
             }
           }
         },
+        "1316": {
+          "comment": "Item > provides carrier to > Expression",
+          "viewSections": {
+            "linkedSources": {
+              "position": 1
+            }
+          }
+        },
         "1317": {
           "comment": "Expression > has as part > Expression Portion",
           "viewSections": {
@@ -1334,6 +1421,14 @@ export class SysConfigValueMock {
             }
           },
           "isHasTimeSpanShortCut": true
+        },
+        "1016": {
+          "comment": "Manifestation Singleton > is representative manifestation singleton for > Expression",
+          "viewSections": {
+            "linkedSources": {
+              "position": 1
+            }
+          }
         },
         "1499": {
           "comment": "has to be merged with",

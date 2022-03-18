@@ -837,6 +837,16 @@ gv-tab-handle.tab-box {
     height: 40px;
   }
 }
+
+.gv-tab-group-sm {
+  .mat-tab-label {
+    height: 40px;
+  }
+  mat-icon {
+    margin-right: 8px;
+  }
+}
+
 /***************************
 * Tile Header
 ****************************/
@@ -2332,7 +2342,6 @@ gv-qf-form-array {
 // because Source Sans Pro does not have 500
 $gv-typography: mat.define-typography-config(
   $font-family: $font-family-base,
-  $title: mat.define-typography-level(20px, 32px, 600),
   $body-2: mat.define-typography-level(14px, 24px, 600),
   $button: mat.define-typography-level(14px, 14px, 600),
 );
@@ -2574,6 +2583,10 @@ $mat-color-secondary-text: mat.get-color-from-palette(
 
 .mat-bg-warn {
   background-color: $mat-color-warn;
+}
+
+.mat-bg-white {
+  background-color: white;
 }
 
 .mat-bg-accent-A700 {

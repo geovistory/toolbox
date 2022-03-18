@@ -86,7 +86,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     QuillOpsToStrModule,
     // TruncateModule
     EntityLabelConfigModule,
-    ListModule
+    ListModule,
   ],
   declarations: [
     ProjectCreateComponent,

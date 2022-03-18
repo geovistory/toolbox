@@ -1,5 +1,6 @@
 import { CdkPortal } from '@angular/cdk/portal';
-import { Component, ContentChild, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ContentChild, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { getTabBodyKey, ProjectEditComponent, TabBody } from '../../containers/project-edit/project-edit.component';
@@ -13,6 +14,9 @@ import { PanelBodyDirective } from '../../directives/panel-body.directive';
       <ng-content> </ng-content>
     </ng-container>
   `,
+  providers: [
+    TabLayoutService
+  ]
 })
 export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   @Input() tab: TabBody<any>;
@@ -29,8 +33,15 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   @ContentChild(OnActivateTabDirective) child: OnActivateTabDirective;
 
   private host: PanelBodyDirective;
+  get tabUuid() {
+    return this.tab.path[2]
+  }
+  constructor(
+    private projectEditComponent: ProjectEditComponent,
+    public tabLayout: TabLayoutService,
+    protected ref: ChangeDetectorRef,
 
-  constructor(private projectEditComponent: ProjectEditComponent) {
+  ) {
 
   }
 
@@ -43,6 +54,8 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
     }
   }
   ngOnInit() {
+    this.tabLayout.create(this.tabUuid, this.ref, this.destroy$);
+
     const key = getTabBodyKey(this.tab)
     const tabBody$ = this.projectEditComponent.tabBodiesByKey$
       .pipe(

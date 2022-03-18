@@ -1,24 +1,22 @@
 <div class="gv-td-menu-container">
 
-  <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-toggler orange">
+  <!-- <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-toggler orange">
     <div
       style="height: 100%; display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px"
-      [ngClass]="{'mat-bg-edit-mode': !(readmode$|async)}">
+      [ngClass]="{'mat-bg-edit-mode': (editMode.value$|async)}">
 
-      <!-- Edit mode -->
-      <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary"
-        (click)="readmode$.next(!readmode$.value)">
-        {{(readmode$|async) ? 'Edit table' : 'Stop editing'}}
+      <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary" (click)="editMode.toggleValue()">
+        {{(editMode.value$|async) ? 'Stop editing' : 'Edit table'}}
       </button>
     </div>
-  </div>
+  </div> -->
 
   <div class="gv-td-menu-item mat-border-top orange"
     style="display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px">
 
     <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary center-vert"
       (click)="tableConfiguration()">
-      Edit columns
+      Manage columns
     </button>
 
   </div>

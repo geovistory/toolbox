@@ -49,6 +49,8 @@ export class ClassInfoComponent implements OnInit {
             return `gv:${prefix}-gv-temporal-entity`;
           case 'value':
             return `gv:${prefix}-gv-value`;
+          case 'expression':
+            return `gv:${prefix}-gv-expression`;
           default:
             return `gv:${prefix}-gv-persistent-item`;
         }

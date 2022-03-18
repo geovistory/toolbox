@@ -1,46 +1,28 @@
-<as-split class="gv-split-style" [ngClass]="{'gv-hide-split-gutter': t.layoutMode!=='both'}" [direction]="'horizontal'"
-  [gutterSize]="1" [useTransition]="t.useTransition" (dragEnd)="t.onResizeArea($event)">
+<gv-tab-layout class="gv-flex-fh">
 
-  <!-------------------------------------------------------------------
-       Left
-    -------------------------------------------------------------------->
-  <as-split-area [size]="t.splitSizeLeft" class="gv-flex-fh">
+  <gv-entity-card-header layout-top class="gv-flex-fh" (removed)="closeTab()" [showOntoInfo$]="showOntoInfo$"
+    [fkClass$]="fkClass$" [pkEntity]="pkEntity">
+  </gv-entity-card-header>
 
-    <gv-detail-top-bar height="5rem" [openRightAreaBtn]="t.layoutMode=='left-only'"
-      [closeLeftAreaBtn]="t.layoutMode=='both'" (closeLeft)="t.setLayoutMode('right-only')"
-      (openRight)="t.setLayoutMode('both');">
+  <div layout-left class="gv-flex-fh">
+    <div class="loc-white-spacer mat-bg-white"></div>
+    <mat-divider></mat-divider>
+    <gv-view-field-has-table-value class="gv-flex-fh" *ngIf="scope$|async" [scope]="scope$|async" [source]="source">
+    </gv-view-field-has-table-value>
+  </div>
 
-      <gv-entity-card-header (removed)="closeTab()" [showOntoInfo$]="showOntoInfo$" [fkClass$]="fkClass$"
-        [pkEntity]="pkEntity">
-      </gv-entity-card-header>
-    </gv-detail-top-bar>
-    <gv-detail-content>
+  <div layout-right class="gv-flex-fh">
 
-      <gv-view-field-has-table-value class="gv-flex-fh" *ngIf="scope$|async" [scope]="scope$|async" [source]="source">
-      </gv-view-field-has-table-value>
-    </gv-detail-content>
-
-
-  </as-split-area>
-  <!-------------------------------------------------------------------
-      Right
-    -------------------------------------------------------------------->
-  <as-split-area [size]="t.splitSizeRight" class="gv-flex-fh">
-
-    <gv-right-panel-btn (click)="t.onRightBtnClick()"> </gv-right-panel-btn>
-
-    <mat-tab-group mat-stretch-tabs class="loc-tabs-right">
+    <mat-tab-group [disablePagination]="true" mat-stretch-tabs class="gv-flex-fh gv-tab-group-sm mat-bg-white">
       <mat-tab>
         <ng-template mat-tab-label>
-          <div class="loc-tab">
-            <mat-icon class="example-tab-icon">view_list</mat-icon>
-            Fields
-          </div>
+          <mat-icon class="example-tab-icon">view_list</mat-icon>
+          Fields
         </ng-template>
         <gv-view-sections *ngIf="scope$|async" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
           [showOntoInfo$]="showOntoInfo$">
         </gv-view-sections>
       </mat-tab>
     </mat-tab-group>
-  </as-split-area>
-</as-split>
+  </div>
+</gv-tab-layout>

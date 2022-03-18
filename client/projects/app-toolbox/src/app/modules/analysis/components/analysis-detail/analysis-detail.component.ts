@@ -11,7 +11,7 @@ import { GvAnalysisService } from '../../services/analysis.service';
   selector: 'gv-analysis-detail',
   templateUrl: './analysis-detail.component.html',
   styleUrls: ['./analysis-detail.component.scss'],
-  providers: [TabLayoutService, GvAnalysisService]
+  providers: [GvAnalysisService]
 
 })
 export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
@@ -32,14 +32,14 @@ export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComp
   constructor(
     public ref: ChangeDetectorRef,
     public p: ActiveProjectService,
-    private ts: TabLayoutService,
+    public tabLayout: TabLayoutService,
     private a: GvAnalysisService<any, any>
   ) { }
 
   ngOnInit() {
     this.a.pkEntity = this.pkEntity;
     this.a.fkAnalysisType = this.fkAnalysisType;
-    this.t = this.ts.create(this.basePath[2], this.ref, this.destroy$);
+    this.t = this.tabLayout.t
   }
 
   ngOnDestroy() {

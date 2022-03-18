@@ -1,0 +1,33 @@
+<div class="loc-layout-top">
+  <ng-content select="[layout-top]"></ng-content>
+</div>
+<mat-divider></mat-divider>
+<as-split class="gv-split-style gv-flex-fh" [ngClass]="{'gv-hide-split-gutter': service.t.layoutMode!=='both'}"
+  [direction]="'horizontal'" [gutterSize]="1" [useTransition]="service.t.useTransition"
+  (dragEnd)="onSplitAreaDragEnd($event)">
+
+  <!-------------------------------------------------------------------
+       Left
+    -------------------------------------------------------------------->
+  <as-split-area [size]="service.t.splitSizeLeft" class="gv-flex-fh">
+
+    <div class="loc-btn-left mat-text-secondary">
+      <button mat-stroked-button (click)="service.t.onLeftBtnClick()">
+        <mat-icon aria-label="Move left">chevron_left</mat-icon>
+      </button>
+    </div>
+    <ng-content select="[layout-left]"></ng-content>
+  </as-split-area>
+
+  <!-------------------------------------------------------------------
+      Right
+    -------------------------------------------------------------------->
+  <as-split-area [size]="service.t.splitSizeRight" class="gv-flex-fh">
+    <div class="loc-btn-right mat-text-secondary">
+      <button mat-stroked-button (click)="service.t.onRightBtnClick()">
+        <mat-icon aria-label="Move right">chevron_right</mat-icon>
+      </button>
+    </div>
+    <ng-content select="[layout-right]"></ng-content>
+  </as-split-area>
+</as-split>

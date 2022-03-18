@@ -1,10 +1,8 @@
-import { Injectable, ChangeDetectorRef } from '@angular/core';
-import { TabLayout } from './tab-layout';
+import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { TabLayout } from './tab-layout';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class TabLayoutService {
 
   public t: TabLayout;

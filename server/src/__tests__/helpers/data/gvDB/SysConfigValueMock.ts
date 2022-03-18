@@ -160,7 +160,7 @@ export class SysConfigValueMock {
         }
       },
       "218": {
-        icon: IconType.section,
+        icon: IconType.expression,
         belongsToCategory: {
           sources: {showInAddMenu: false}
         },
@@ -880,7 +880,7 @@ export class SysConfigValueMock {
                 }
               }
             },
-            1761: {
+            "1761": {
               "comment": "Text has short title",
               formSections: {
                 "simpleForm": {
@@ -898,7 +898,7 @@ export class SysConfigValueMock {
                 }
               }
             },
-            63: {
+            "63": {
               "comment": "Text has language",
               viewSections: {
                 "specific": {
@@ -909,7 +909,8 @@ export class SysConfigValueMock {
             }
           },
           incomingProperties: {
-            1762: {
+            "1762": {
+              comment: "is definition of",
               viewSections: {
                 specific: {hidden: true},
               },
@@ -918,7 +919,8 @@ export class SysConfigValueMock {
                 simpleForm: {hidden: true},
               }
             },
-            1763: {
+            "1763": {
+              comment: "is comment about",
               viewSections: {
                 specific: {hidden: true},
               },

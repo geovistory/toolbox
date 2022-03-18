@@ -13,6 +13,7 @@ import { CommentMenuModule } from '../../shared/components/comment-menu/comment-
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
 import { InfoDialogModule } from '../../shared/components/info-dialog/info-dialog.module';
+import { TabBaseModule } from '../../shared/components/tab-layout/tab-layout.module';
 import { ValuePreviewModule } from '../../shared/components/value-preview/value-preview.module';
 import { CopyClipboardModule } from '../../shared/directives/copy-clipboard/copy-clipboard.module';
 import { BaseModule } from '../base/base.module';
@@ -53,6 +54,7 @@ import { ViewFieldHasTableValueComponent } from './components/view-field-has-tab
     CommentMenuModule,
     ClassDropdownModule,
     ValuePreviewModule,
+    TabBaseModule
   ],
   providers: [],
   declarations: [TextDetail2Component, TableEditorComponent, ViewFieldHasTableValueComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, FactoidPropertyMappingComponent, FactoidMappingHeaderComponent, FactoidMappingBodyComponent, FactoidMappingComponent, FactoidMappingsDialogComponent,],

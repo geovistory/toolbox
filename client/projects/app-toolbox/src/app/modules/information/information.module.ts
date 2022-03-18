@@ -16,6 +16,7 @@ import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/comp
 import { ListModule } from 'projects/app-toolbox/src/app/shared/components/list/list.module';
 import { HighlightModule } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
+import { TabBaseModule } from '../../shared/components/tab-layout/tab-layout.module';
 import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
@@ -59,7 +60,7 @@ import { PeItTimelineComponent } from './containers/pe-it-timeline/pe-it-timelin
     DetailTopBarModule,
     AnnotationModule,
     TileHeaderModule,
-
+    TabBaseModule,
     TreeModule
   ],
   declarations: [

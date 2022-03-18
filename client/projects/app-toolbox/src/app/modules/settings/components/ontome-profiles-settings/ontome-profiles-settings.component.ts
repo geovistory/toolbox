@@ -28,7 +28,7 @@ export interface ProfileItem {
   selector: 'gv-ontome-profiles-settings',
   templateUrl: './ontome-profiles-settings.component.html',
   styleUrls: ['./ontome-profiles-settings.component.scss'],
-  providers: [TabLayoutService, GvAnalysisService],
+  providers: [GvAnalysisService],
   animations: [
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
@@ -60,12 +60,12 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
   constructor(
     public ref: ChangeDetectorRef,
     public p: ActiveProjectService,
-    private ts: TabLayoutService,
+    public tabLayout: TabLayoutService,
     private dialog: MatDialog
   ) { }
 
   ngOnInit() {
-    this.t = this.ts.create(this.basePath[2], this.ref, this.destroy$);
+    this.t = this.tabLayout.t
     this.t.setTabTitle('Ontome Profiles')
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {

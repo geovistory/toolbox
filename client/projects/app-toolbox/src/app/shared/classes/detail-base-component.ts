@@ -1,15 +1,17 @@
-import { ChangeDetectorRef, Component, HostListener, Input, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, HostListener, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTabGroup } from '@angular/material/tabs';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { IOutputData } from 'angular-split/lib/interface';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService } from '../../core/active-project/active-project.service';
 import { EditModeService } from '../../modules/base/services/edit-mode.service';
 import { TabBody } from '../../modules/projects/containers/project-edit/project-edit.component';
 import { TabLayoutComponentInterface } from '../../modules/projects/directives/on-activate-tab.directive';
-import { TabLayout } from '../components/tab-layout/tab-layout';
+import { TabLayoutService } from '../components/tab-layout/tab-layout.service';
 import { TruncatePipe } from '../pipes/truncate/truncate.pipe';
 
 interface ConfigBase { pkEntity: number }
@@ -26,7 +28,6 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
   readmode$ = new BehaviorSubject(true);
 
   pkEntity: number;
-  t: TabLayout;
 
   title$: Observable<string>;
   classLabel$: Observable<string>;
@@ -37,6 +38,8 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
   preview$: Observable<WarEntityPreview>;
   scope$: Observable<GvFieldPageScope>;
   source: GvFieldSourceEntity;
+
+  @ViewChildren(MatTabGroup) matTabGroup: QueryList<MatTabGroup>
 
   @HostListener('document:keypress', ['$event']) async handleKeyboardEvent(event: KeyboardEvent) {
     if (!event.shiftKey) {
@@ -66,6 +69,10 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     }
   }
 
+  get tabUuid() {
+    return this.tab.path[2]
+  }
+
   constructor(
     protected p: ActiveProjectService,
     protected dialog: MatDialog,
@@ -75,26 +82,25 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     private b: InformationBasicPipesService,
     private truncatePipe: TruncatePipe,
     private dataService: ReduxMainService,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    public tabLayout: TabLayoutService
   ) { }
 
   protected initialize() {
     this.pkEntity = this.tab.data.pkEntity;
-    // this.localStore = this.ngRedux.configureSubStore(this.getBasePath(), entityDetailReducer);
-    this.t = new TabLayout(this.tab.path[2], this.ref, this.destroy$);
-    this.t.setTabLoading(true);
+    this.tabLayout.t.setTabLoading(true);
 
 
     this.scope$ = this.ap.pkProject$.pipe(first(), map(pkProject => ({ inProject: pkProject })));
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.dataService.loadInfResource(this.pkEntity, pkProject)
         .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
-          this.t.setTabLoading(false);
+          this.tabLayout.t.setTabLoading(false);
         });
 
     });
 
-    this.t.setLayoutMode('left-only');
+    this.tabLayout.t.setLayoutMode('left-only');
 
 
 
@@ -110,7 +116,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     );
     this.tabTitle$.pipe(takeUntil(this.destroy$))
       .subscribe((tabTitle) => {
-        this.t.setTabTitle(tabTitle);
+        this.tabLayout.t.setTabTitle(tabTitle);
       });
 
     this.tabTooltip$ = combineLatest(this.preview$, this.classLabel$).pipe(
@@ -120,7 +126,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     );
     this.tabTooltip$.pipe(takeUntil(this.destroy$))
       .subscribe((tabTooltip) => {
-        this.t.setTabTooltip(tabTooltip);
+        this.tabLayout.t.setTabTooltip(tabTooltip);
       });
 
     this.pkEntity$ = of(this.pkEntity);
@@ -129,6 +135,11 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
 
   closeTab() {
 
+  }
+
+  onSplitAreaDragEnd(e: IOutputData) {
+    this.tabLayout.t.onResizeArea(e)
+    this.matTabGroup.forEach(item => item.realignInkBar())
   }
 
   ngOnDestroy() {

@@ -6,6 +6,7 @@ import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { P_1864_HAS_VALUE_VERSION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { DetailBaseComponent } from 'projects/app-toolbox/src/app/shared/classes/detail-base-component';
+import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
@@ -22,7 +23,9 @@ export interface TextDetail2Config {
   styleUrls: ['./text-detail2.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [EditModeService]
+  providers: [
+    EditModeService,
+  ]
 })
 export class TextDetail2Component
   extends DetailBaseComponent<TextDetail2Config>
@@ -60,7 +63,8 @@ export class TextDetail2Component
     b: InformationBasicPipesService,
     truncatePipe: TruncatePipe,
     dataService: ReduxMainService,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    public tabLayout: TabLayoutService,
   ) {
     super(
       p,
@@ -71,13 +75,13 @@ export class TextDetail2Component
       b,
       truncatePipe,
       dataService,
-      editMode
+      editMode,
+      tabLayout
     )
   }
   ngOnInit(): void {
     this.initialize()
-    this.t.setLayoutMode('both')
-
+    this.tabLayout.t.setLayoutMode('both')
 
     this.hasValueVersionField$ = this.fkClass$.pipe(
       switchMap(pkClass => this.c.pipeFields(pkClass).pipe(

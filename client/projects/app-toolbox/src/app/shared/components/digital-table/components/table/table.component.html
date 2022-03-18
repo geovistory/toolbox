@@ -259,17 +259,9 @@
               <td *ngIf="headers[j]?.mapping" pResizableColumn colspan="1" class="mat-bg-grey-50"
                 [ngClass]="{'gv-white-space-nowrap': true}">
                 <gv-view-field-annotations-of-cell *ngIf="value.pkCell" [pkMappedClass]="headers[j].mapping.fkClass"
-                  [pkCell]="value.pkCell" [pkProject]="pkProject">
+                  [pkCell]="value.pkCell" [pkProject]="pkProject" [cellContent]="value.text">
                 </gv-view-field-annotations-of-cell>
 
-                <!--  TODO: values  -->
-                <!-- <gv-entity-matcher *ngIf="!isClassValueObjectType(headers[j].mapping.fkClass)"
-                  [pkClass]="headers[j].mapping.fkClass" [pkCell]="value.pkCell" [cellContent]="value.text">
-                </gv-entity-matcher>
-                <gv-value-matcher *ngIf="isClassValueObjectType(headers[j].mapping.fkClass)"
-                  [vot]="getVOT(headers[j].mapping.fkClass)" [pkClass]="headers[j].mapping.fkClass"
-                  [pkCell]="value.pkCell">
-                </gv-value-matcher> -->
               </td>
             </ng-container>
           </ng-container>

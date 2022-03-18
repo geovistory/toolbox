@@ -15,10 +15,12 @@ import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic
 import { ClassConfigDialogComponent, ClassConfigDialogData } from 'projects/app-toolbox/src/app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
 import { DetailContentComponent } from 'projects/app-toolbox/src/app/shared/components/detail-content/detail-content.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
+import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { HighlightPipe } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.pipe';
 import { equals, indexBy, keys, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
 import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 
@@ -84,7 +86,8 @@ export interface ClassItem {
     matExpansionAnimations.indicatorRotate,
   ],
 })
-export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions implements OnInit, OnDestroy, SubstoreComponent {
+export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
+  implements OnInit, OnDestroy, SubstoreComponent, TabLayoutComponentInterface {
   @HostBinding('class.gv-flex-fh') flexFh = true;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(DetailContentComponent, { static: true }) detailContentComponent: DetailContentComponent;
@@ -165,7 +168,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     public p: ActiveProjectService,
     public ref: ChangeDetectorRef,
     private dialog: MatDialog,
-    private c: ConfigurationPipesService
+    private c: ConfigurationPipesService,
+    public tabLayout: TabLayoutService,
   ) {
     super();
     // this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
@@ -182,7 +186,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions 
     this.localStore = this.ngRedux.configureSubStore(this.basePath, projectSettingsDataReducer);
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
-    this.t = new TabLayout(this.basePath[2], this.ref, this.destroy$)
+    this.t = this.tabLayout.t;
 
     this.p.pro$.dfh_profile_proj_rel.loadOfProject(this.p.state.pk_project);
 

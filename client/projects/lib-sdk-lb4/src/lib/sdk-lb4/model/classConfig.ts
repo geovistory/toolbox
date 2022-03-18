@@ -34,12 +34,13 @@ export interface ClassConfig {
     docUrl?: string;
 }
 export namespace ClassConfig {
-    export type IconEnum = 'text' | 'table' | 'source' | 'section' | 'persistent-item' | 'temporal-entity' | 'value' | 'story' | 'analysis' | 'settings';
+    export type IconEnum = 'text' | 'table' | 'source' | 'section' | 'expression' | 'persistent-item' | 'temporal-entity' | 'value' | 'story' | 'analysis' | 'settings';
     export const IconEnum = {
         Text: 'text' as IconEnum,
         Table: 'table' as IconEnum,
         Source: 'source' as IconEnum,
         Section: 'section' as IconEnum,
+        Expression: 'expression' as IconEnum,
         PersistentItem: 'persistent-item' as IconEnum,
         TemporalEntity: 'temporal-entity' as IconEnum,
         Value: 'value' as IconEnum,

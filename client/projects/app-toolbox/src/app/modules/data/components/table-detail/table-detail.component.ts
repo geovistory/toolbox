@@ -4,7 +4,7 @@ import { ActiveProjectPipesService, InformationBasicPipesService, InformationPip
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { DetailBaseComponent } from 'projects/app-toolbox/src/app/shared/classes/detail-base-component';
-import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
+import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { slideInOut } from '../../../information/shared/animations';
@@ -29,7 +29,6 @@ export class TableDetailComponent
   extends DetailBaseComponent<TableDetailConfig>
   implements OnInit {
 
-  t: TabLayout;
   @Input() tab: TabBody<any>;
 
   constructor(
@@ -41,7 +40,8 @@ export class TableDetailComponent
     b: InformationBasicPipesService,
     truncatePipe: TruncatePipe,
     dataService: ReduxMainService,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    public tabLayout: TabLayoutService
   ) {
     super(
       p,
@@ -52,13 +52,14 @@ export class TableDetailComponent
       b,
       truncatePipe,
       dataService,
-      editMode
+      editMode,
+      tabLayout
     )
   }
 
   ngOnInit() {
     this.initialize();
-    this.t.setLayoutMode('both')
+    this.tabLayout.t.setLayoutMode('both')
 
 
   }

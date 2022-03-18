@@ -1,43 +1,22 @@
-<gv-class-info *ngIf="classLabel$|async" class="card-header-icon" dnd-draggable [dragData]="preview$ | async"
-  [showOntoInfo$]="showOntoInfo$" shade [size]="60" [pkClass]="fkClass$|async" [classLabel]="classLabel$|async"
-  [isFavorite]="false" [shade]="'light'">
+<gv-class-info class="loc-icon" *ngIf="classLabel$|async" dnd-draggable [dragData]="preview$ | async"
+  [showOntoInfo$]="showOntoInfo$" shade [size]="24" [pkClass]="fkClass$|async" [classLabel]="classLabel$|async"
+  [isFavorite]="false" [shade]="'secondary'">
 </gv-class-info>
 
-<div class="card-header-texts mat-typography">
-  <div class="ellipsis">
-    <h2 class="card-header-entity-label gv-row-start loc-title">
-      <span [matTooltip]="'Entity ' + pkEntity" class="loc-ellipsis">
-        <ng-container *ngIf="(preview$|async)?.entity_type == 'teEn'">{{classLabel$ | async}} –</ng-container>
-        {{(preview$|async)?.entity_label}}
-      </span>
-      <span class="ml-1 mat-caption mat-text-secondary loc-pkEntity gv-col-center">ID: {{pkEntity}}</span>
-    </h2>
-    <div class="card-header-entity-label ellipsis">
-
-      <span class="mat-text-secondary">Class:</span>
-      <gv-onto-class-info class="mx-2" *ngIf="showOntoInfo$ | async" [pkClass]="fkClass$ | async">
-      </gv-onto-class-info>
-      <span> {{classLabel$ | async}}</span>
-      <span *ngIf="(preview$|async)?.fk_type" class="mat-text-secondary">, Type: </span>
-      <span *ngIf="(preview$|async)?.fk_type"> {{(preview$|async)?.type_label}} </span>
-    </div>
-  </div>
+<div class="loc-texts mat-typography">
+  <h2 class="loc-text-item" [matTooltip]="(classLabel$ | async) +' – '+ ((preview$|async)?.entity_label)">
+    <ng-container *ngIf="(preview$|async)?.entity_type == 'teEn'">{{classLabel$ | async}} –</ng-container>
+    {{(preview$|async)?.entity_label}}
+  </h2>
+  <span class="loc-text-item mat-caption mat-text-secondary" [matTooltip]="'Class: ' + (classLabel$ | async)">
+    {{classLabel$ | async}}</span>
+  <span class="loc-text-item mat-caption mat-text-secondary" [matTooltip]="'Type: ' + ((preview$|async)?.type_label)"
+    *ngIf="(preview$|async)?.fk_type">{{(preview$|async)?.type_label}}</span>
+  <span class="loc-text-item mat-caption mat-text-secondary loc-id" [matTooltip]="'id: ' + pkEntity">id
+    {{pkEntity}}</span>
 </div>
-<div class="card-header-button">
-  <!-- <div fxFlex fxLayout="row" fxLayoutAlign="end center"> -->
-  <gv-toggle-btn *ngIf="!readonly" class="loc-toolbar-item" [value$]="editMode.value$"
-    (change)="editMode.setValue($event)">
-    <a gv-toggle-off mat-icon-button color="primary" [matTooltip]="'Switch to read mode [Shift + E]'">
-      <mat-icon [svgIcon]="'eye'"></mat-icon>
-    </a>
-
-    <a gv-toggle-on mat-icon-button color="primary" [matTooltip]="'Switch to edit mode [Shift + E]'">
-      <mat-icon [svgIcon]="'pencil'"></mat-icon>
-    </a>
-  </gv-toggle-btn>
-
-
-  <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+<div class="loc-buttons">
+  <button mat-icon-button color="primary" [matMenuTriggerFor]="mainMenu">
     <mat-icon>more_vert</mat-icon>
   </button>
   <mat-menu #mainMenu="matMenu" xPosition="before">
@@ -49,7 +28,7 @@
       </mat-slide-toggle>
     </button>
 
-    <button *ngIf="!readonly" mat-menu-item (click)="$event.stopPropagation();editMode.toggleValue();">
+    <button *ngIf="!readonly" mat-menu-item (click)="editMode.toggleValue();$event.stopPropagation();">
       <mat-slide-toggle color="accent" [checked]="editMode.value$|async">
         Edit mode [Shift + E]
       </mat-slide-toggle>
@@ -77,6 +56,17 @@
     </button>
 
   </mat-menu>
-  <!-- </div> -->
+  <gv-toggle-btn *ngIf="!readonly" class="loc-toolbar-item" [value$]="editMode.value$"
+    (change)="editMode.setValue($event)">
+    <a gv-toggle-off mat-icon-button color="primary" style="margin: 0 32px 0 0px;"
+      [matTooltip]="'Switch to read mode [Shift + E]'">
+      <mat-icon [svgIcon]="'eye'"></mat-icon>
+    </a>
 
+    <a gv-toggle-on mat-flat-button color="primary"
+      style="height: 48px; padding-top: 4px; border-radius: 0; padding-right: 32px;"
+      [matTooltip]="'Switch to edit mode [Shift + E]'">
+      <mat-icon [svgIcon]="'pencil'"></mat-icon>
+    </a>
+  </gv-toggle-btn>
 </div>

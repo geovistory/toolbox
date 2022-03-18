@@ -29,7 +29,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
   @Input() pkProject: number;
   @Input() pkCell?: number;
   @Input() pkMappedClass: number;
-  @Input() cellContent: string; // the content of the cell (for auto search)
+  @Input() cellContent?: string; // the content of the cell (for auto search)
 
   showOntoInfo$: Observable<boolean>
 
@@ -190,7 +190,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
           hiddenProperty: { fkProperty: P_1875_ANNOTATED_ENTITY_ID },
           disableIfHasStatement: undefined,
           pkClass: this.pkMappedClass,
-          defaultSearch: this.cellContent
+          defaultSearch: this.cellContent ?? ''
         }
       }).afterClosed().toPromise()
   }

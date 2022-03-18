@@ -14,6 +14,7 @@ import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from 'projects/
 import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { EditModeService } from '../../../base/services/edit-mode.service';
 import { FactoidMappingsDialogComponent, FactoidMappingsDialogData } from '../factoids/factoid-mappings-dialog/factoid-mappings-dialog.component';
 import { TableConfigDialogComponent, TableConfigDialogData, TableConfigDialogResult } from '../table-config-dialog/table-config-dialog.component';
 import { TableDetailComponent } from '../table-detail/table-detail.component';
@@ -31,7 +32,6 @@ export class TableEditorComponent implements OnInit {
   destroy$ = new Subject<boolean>();
 
   @Input() pkEntity: number; // Primary key of the table digital to be viewed or edited
-  readmode$: BehaviorSubject<boolean>;
   filterOnRow: number; // the row on which to filter on
   showIds$ = new BehaviorSubject(false);
 
@@ -84,7 +84,8 @@ export class TableEditorComponent implements OnInit {
     private c: ConfigurationPipesService,
     private a: ActiveAccountService,
     private dialog: MatDialog,
-    @Optional() private tableDetailComponenent: TableDetailComponent
+    @Optional() private tableDetailComponenent: TableDetailComponent,
+    public editMode: EditModeService
   ) { }
 
   ngOnInit(): void {
@@ -277,7 +278,7 @@ export class TableEditorComponent implements OnInit {
 
 
   tableConfiguration() {
-    this.readmode$.next(true)
+    this.editMode.setValue(false)
     this.dialog.open<TableConfigDialogComponent,
       TableConfigDialogData, TableConfigDialogResult>(TableConfigDialogComponent, {
         height: 'calc(80% - 30px)',
@@ -294,7 +295,7 @@ export class TableEditorComponent implements OnInit {
       });
   }
   factoidMapping() {
-    this.readmode$.next(true)
+    this.editMode.setValue(false)
     this.dialog.open<FactoidMappingsDialogComponent, FactoidMappingsDialogData, Array<FactoidMapping>>(
       FactoidMappingsDialogComponent, {
       height: 'calc(100% - 30px)',
@@ -380,8 +381,8 @@ export class TableEditorComponent implements OnInit {
     this.newRowTemp = { position: -1, cells: [] };
 
     this.showIds$.next(!this.showIds$.value)
-    if (this.showIds$.value && !this.readmode$.value) {
-      this.readmode$.next(true)
+    if (this.showIds$.value && this.editMode.value$.value) {
+      this.editMode.setValue(false)
     }
   }
 

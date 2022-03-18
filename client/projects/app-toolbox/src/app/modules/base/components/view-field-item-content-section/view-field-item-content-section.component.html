@@ -28,8 +28,8 @@
         [pkEntity]="itemComponent.item.target.entity.resource.pk_entity" [dragEnabled]="false"
         [openTabOnClick]="!readonly" [truncateLabel]="'250'">
       </gv-entity-preview>
-      <div class="gv-flex-grow" (click)="showBody$.next(!showBody$.value)">
-
+      <div class="gv-flex-grow mat-caption mat-text-secondary ml-2" (click)="showBody$.next(!showBody$.value)">
+        <ng-container *ngIf="editMode.value$|async">{{classLabel}}</ng-container>
       </div>
     </span>
 
