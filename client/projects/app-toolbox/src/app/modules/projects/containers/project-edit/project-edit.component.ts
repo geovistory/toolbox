@@ -119,7 +119,7 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
 
     // DEV: For development of a component in a specific Tab uncomment and modify the following
     // this.p.addTableTab(100514)
-    setTimeout(() => { this.p.addEntityTab(737365, 220) }, 2000)
+    // setTimeout(() => { this.p.addEntityTab(737365, 220) }, 2000)
   }
 
   trackByFn(index, item) {
