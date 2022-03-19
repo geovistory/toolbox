@@ -16,7 +16,8 @@ FROM
   information.statement t1, information.lang_string t2
 WHERE
   fk_property = 1762
-  AND t1.fk_object_info = t2.pk_entity;
+  AND t1.fk_object_info = t2.pk_entity
+  AND t2.quill_doc IS NOT NULL;
 
 -- for each, create an information.resource of class (Definition)
 -- and store the pk_entity of the 'has-definition' statement in the metadata
