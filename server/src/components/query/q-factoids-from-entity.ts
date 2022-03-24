@@ -1,7 +1,7 @@
-import {FactoidEntity, FactoidStatement} from '../../controllers';
-import {Postgres1DataSource} from '../../datasources';
-import {P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID} from '../../ontome-ids';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
+import { FactoidEntity, FactoidStatement } from '../../controllers';
+import { Postgres1DataSource } from '../../datasources';
+import { P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../ontome-ids';
+import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
 
 class RetrievedLine {
     fkdigital: number;
@@ -74,7 +74,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             t3.is_outgoing as isOutgoing,
             coalesce(t5.numeric_value::text, t5.string_value) AS value,
             t5.fk_row as fkRow,
-            t8.fk_object_info as pkEntity,
+            t8.pkentity as pkEntity,
             t5.pk_cell as fkCell,
             t3.fk_default as fkDefault
         FROM tw1 as t1
@@ -156,7 +156,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             and n.fk_project = ${this.addParam(pkProject)}
         `
         this.getBuiltQuery();
-        const digColsFpms = await this.execute<Array<{pkdigital: number, pkcolumn: number, pkfpm: number, pkfm: number}>>();
+        const digColsFpms = await this.execute<Array<{ pkdigital: number, pkcolumn: number, pkfpm: number, pkfm: number }>>();
 
         const defaults = [];
         for (const digcol of digColsFpms) {
@@ -314,7 +314,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             `;
 
         this.getBuiltQuery()
-        return this.execute<Array<{length: string}>>();
+        return this.execute<Array<{ length: string }>>();
     }
 
     async getDefaultFactoidNumber(pkProject: string, pkEntity: string) {
@@ -383,7 +383,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         `;
 
         this.getBuiltQuery()
-        return this.execute<Array<{length: string}>>();
+        return this.execute<Array<{ length: string }>>();
     }
 
 
