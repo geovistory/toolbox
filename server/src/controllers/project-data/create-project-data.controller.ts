@@ -1,33 +1,49 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {authenticate} from '@loopback/authentication';
-import {authorize} from '@loopback/authorization';
-import {inject} from '@loopback/core';
-import {tags} from '@loopback/openapi-v3';
-import {repository} from '@loopback/repository';
-import {getModelSchemaRef, HttpErrors, param, post, requestBody} from '@loopback/rest';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {concat, isEmpty, mergeDeepWith} from 'ramda';
-import {PartialDeep} from 'type-fest';
-import {PartialObjectDeep} from 'type-fest/source/partial-deep';
-import {Roles} from '../../components/authorization';
-import {QEntityAddToProject} from '../../components/query/q-entity-add-to-project';
-import {CLASS_PK_MANIFESTATION_SINGLETON} from '../../config';
-import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
-import {InfLangString, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, ProInfoProjRel} from '../../models';
-import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
-import {InfData} from '../../models/inf-data';
-import {InfStatementObjectFks} from '../../models/statement/InfStatementObjectFks';
-import {InfStatementObjectValues} from '../../models/statement/InfStatementObjectValues';
-import {InfStatementSubjectFks} from '../../models/statement/InfStatementSubjectFks';
-import {InfStatementSubjectValues} from '../../models/statement/InfStatementSubjectValues';
-import {ReplaceStatementInFieldRequest} from '../../models/statement/replace-statement-in-field-request';
-import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-community-visibility-options';
-import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-project-visibility-options';
-import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from '../../repositories';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {VisibilityController} from '../backoffice/visibility.controller';
-import {OrdNumController} from './ord-num.controller';
 
+import {authenticate} from "@loopback/authentication";
+import {authorize} from "@loopback/authorization";
+import {inject} from "@loopback/core";
+import {getModelSchemaRef, param, post, requestBody, tags} from "@loopback/openapi-v3";
+import {model, property, repository} from "@loopback/repository";
+import {HttpErrors} from "@loopback/rest";
+import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import {concat, isEmpty} from "lodash";
+import {mergeDeepWith} from "ramda";
+import {PartialDeep} from "type-fest";
+import {PartialObjectDeep} from "type-fest/source/partial-deep";
+import {Roles} from "../../components/authorization";
+import {QEntityAddToProject} from "../../components/query/q-entity-add-to-project";
+import {CLASS_PK_MANIFESTATION_SINGLETON} from "../../config";
+import {Postgres1DataSource} from "../../datasources";
+import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementObjectFks, InfStatementObjectValues, InfStatementSubjectFks, InfStatementSubjectValues, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from "../../models";
+import {GvSchemaModifier} from "../../models/gv-schema-modifier.model";
+import {ReplaceStatementInFieldRequest} from "../../models/statement/replace-statement-in-field-request";
+import {CommunityVisibilityOptions} from "../../models/sys-config/sys-config-community-visibility-options";
+import {ProjectVisibilityOptions} from "../../models/sys-config/sys-config-project-visibility-options";
+import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from "../../repositories";
+import {SqlBuilderLb4Models} from "../../utils/sql-builders/sql-builder-lb4-models";
+import {VisibilityController} from "../backoffice/visibility.controller";
+import {OrdNumController} from "./ord-num.controller";
+
+@model()
+export class InfData {
+  @property()
+  resource?: InfResourceWithRelations;
+  @property()
+  statement?: InfStatementWithRelations;
+  @property()
+  appellation?: InfAppellation;
+  @property()
+  place?: InfPlace;
+  @property()
+  dimension?: InfDimension;
+  @property()
+  timePrimitive?: InfTimePrimitive;
+  @property()
+  language?: InfLanguage;
+  @property()
+  langString?: InfLangString;
+}
 
 @tags('project data')
 export class CreateProjectDataController {

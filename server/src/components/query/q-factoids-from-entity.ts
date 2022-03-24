@@ -64,40 +64,40 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                 AND t0.fk_project = ${this.addParam(pkProject)}
                 AND t0.is_in_project = TRUE
                 AND t7.fk_project = ${this.addParam(pkProject)}
-            )
-            -- the properties (factoid_property_mappings) of all the factoid mappings
-            SELECT
-                t2.fk_digital as fkDigital,
-                t1.fk_factoid_mapping as fkFactoidMapping,
-                t2.fk_class AS fkClass,
-                t3.fk_property AS fkProperty,
-                t3.is_outgoing as isOutgoing,
-                coalesce(t5.numeric_value::text, t5.string_value) AS value,
-                t5.fk_row as fkRow,
-                t8.pkEntity,
-                t5.pk_cell as fkCell,
-                t3.fk_default as fkDefault
-            FROM tw1 as t1
-            INNER JOIN data.factoid_mapping AS t2 ON (t2.pk_entity = t1.fk_factoid_mapping)
-            INNER JOIN data.factoid_property_mapping AS t3 ON (t2.pk_entity = t3.fk_factoid_mapping)
-            INNER JOIN tables.cell AS t5 ON (t1.fk_row = t5.fk_row AND t5.fk_column = t3.fk_column)
-            LEFT JOIN LATERAL (
-                    SELECT t8.fk_object_info as pkEntity
-                    FROM information.statement as t6
-                    INNER JOIN projects.info_proj_rel AS t7
-                        ON (t6.pk_entity = t7.fk_entity)
-                        AND t7.is_in_project = TRUE
-                        AND t7.fk_project = ${this.addParam(pkProject)}
-                    INNER JOIN information.statement as t8
-                        ON t8.fk_subject_info = t6.fk_subject_info
-                        AND t8.fk_property = ${this.addParam(this.propAnnotationToEntity)}
-                    INNER JOIN projects.info_proj_rel AS t9
-                            ON (t8.pk_entity = t9.fk_entity)
-                            AND t9.is_in_project = TRUE
-                            AND t9.fk_project = ${this.addParam(pkProject)}
-                    WHERE t6.fk_object_tables_cell = t5.pk_cell
-                    AND t6.fk_property = ${this.addParam(this.propAnnotationToCell)}
-            ) t8 ON true
+        )
+        -- the properties (factoid_property_mappings) of all the factoid mappings
+        SELECT
+            t2.fk_digital as fkDigital,
+            t1.fk_factoid_mapping as fkFactoidMapping,
+            t2.fk_class AS fkClass,
+            t3.fk_property AS fkProperty,
+            t3.is_outgoing as isOutgoing,
+            coalesce(t5.numeric_value::text, t5.string_value) AS value,
+            t5.fk_row as fkRow,
+            t8.fk_object_info as pkEntity,
+            t5.pk_cell as fkCell,
+            t3.fk_default as fkDefault
+        FROM tw1 as t1
+        INNER JOIN data.factoid_mapping AS t2 ON (t2.pk_entity = t1.fk_factoid_mapping)
+        INNER JOIN data.factoid_property_mapping AS t3 ON (t2.pk_entity = t3.fk_factoid_mapping)
+        INNER JOIN tables.cell AS t5 ON (t1.fk_row = t5.fk_row AND t5.fk_column = t3.fk_column)
+        LEFT JOIN LATERAL (
+            SELECT t8.fk_object_info as pkEntity
+            FROM information.statement as t6
+            INNER JOIN projects.info_proj_rel AS t7
+                ON (t6.pk_entity = t7.fk_entity)
+                AND t7.is_in_project = TRUE
+                AND t7.fk_project = ${this.addParam(pkProject)}
+            INNER JOIN information.statement as t8
+                ON t8.fk_subject_info = t6.fk_subject_info
+                AND t8.fk_property = ${this.addParam(this.propAnnotationToEntity)}
+            INNER JOIN projects.info_proj_rel AS t9
+                    ON (t8.pk_entity = t9.fk_entity)
+                    AND t9.is_in_project = TRUE
+                    AND t9.fk_project = ${this.addParam(pkProject)}
+            WHERE t6.fk_object_tables_cell = t5.pk_cell
+            AND t6.fk_property = ${this.addParam(this.propAnnotationToCell)}
+        ) t8 ON true
 
         -- Works for now because a cell can only be in one project.
         -- If in the future a cell can be in multiple projects, think of filtering the statements (t6) on the project
@@ -158,6 +158,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         this.getBuiltQuery();
         const digColsFpms = await this.execute<Array<{pkdigital: number, pkcolumn: number, pkfpm: number, pkfm: number}>>();
 
+        const defaults = [];
         for (const digcol of digColsFpms) {
             this.params = [];
             this.sql = `
@@ -259,13 +260,13 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             `
 
             this.getBuiltQuery();
-            const result2 = await this.execute<Array<RetrievedLine>>();
-            const localFactoidEntities2: Array<FactoidEntity> = [];
+            const result = await this.execute<Array<RetrievedLine>>();
+            const localFactoidEntities: Array<FactoidEntity> = [];
 
-            result2.forEach(line => {
+            result.forEach(line => {
                 // maybe it is already created ? if yes, take it, if not, create it
-                const existingIndex = localFactoidEntities2.findIndex(lfe => lfe.pkRow === parseInt(line.fkrow))
-                const localFactoidEntity = existingIndex == -1 ? new FactoidEntity(line.fkdigital, line.fkclass, parseInt(line.fkrow), line.fkfactoidmapping) : localFactoidEntities2[existingIndex];
+                const existingIndex = localFactoidEntities.findIndex(lfe => lfe.pkRow === parseInt(line.fkrow))
+                const localFactoidEntity = existingIndex == -1 ? new FactoidEntity(line.fkdigital, line.fkclass, parseInt(line.fkrow), line.fkfactoidmapping) : localFactoidEntities[existingIndex];
 
                 /* The following code could be refactored, but for the maintenance sake, we let it as it is */
 
@@ -282,16 +283,108 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                 else localFactoidEntity.bodyStatements.push(statement)
 
                 // we add it to the local list only if it is new
-                if (existingIndex == -1) localFactoidEntities2.push(localFactoidEntity)
+                if (existingIndex == -1) localFactoidEntities.push(localFactoidEntity)
             })
 
             // we add them to the global list. The distinction between local and global is made so that it does not wrap Factoid entities in case of the classes are the same for the same columns
-            factoidsEntities.push(...localFactoidEntities2)
+            factoidsEntities.push(...localFactoidEntities)
         }
 
         return factoidsEntities
     }
 
+    async getFactoidNumber(pkProject: string, pkEntity: string) {
+        this.params = [];
+        this.sql = `
+            SELECT
+                count(DISTINCT (t3.fk_factoid_mapping, t2.fk_row)) as length
+            FROM
+                information.statement AS t1
+            INNER JOIN projects.info_proj_rel AS t0 ON (t0.fk_entity = t1.pk_entity)
+            INNER JOIN tables.cell AS t2 ON (pk_cell = fk_subject_tables_cell)
+            INNER JOIN data.factoid_property_mapping AS t3 ON (t2.fk_column = t3.fk_column)
+            INNER JOIN data.digital as t4 ON (t4.pk_entity = t2.fk_digital)
+            INNER JOIN data.namespace as t5 ON (t5.pk_entity = t4.fk_namespace)
+            WHERE
+                fk_object_info = ${this.addParam(pkEntity)}
+                AND t1.fk_property = 1334
+                AND t0.fk_project = ${this.addParam(pkProject)}
+                AND t0.is_in_project = TRUE
+                AND t5.fk_project = ${this.addParam(pkProject)}
+            `;
+
+        this.getBuiltQuery()
+        return this.execute<Array<{length: string}>>();
+    }
+
+    async getDefaultFactoidNumber(pkProject: string, pkEntity: string) {
+        this.params = [];
+        this.sql = `
+
+            WITH tw1 AS (
+                -- all the cells that are in the columns of fpm that have the entity as default:
+                SELECT
+                    c.pk_cell,
+                    c.fk_row,
+                    c.fk_column,
+                    coalesce(c.numeric_value::text, c.string_value) AS value,
+                    fpm.pk_entity
+                FROM
+                    data.factoid_property_mapping fpm
+                    LEFT JOIN tables.cell c ON c.fk_column = fpm.fk_column
+                WHERE
+                    fpm.fk_default = ${this.addParam(pkEntity)}
+            ),
+            tw2 AS (
+                    SELECT tw1.*
+                    FROM tw1
+                    -- left join the matchings in the project:
+                    LEFT JOIN LATERAL (
+                        SELECT s.pk_entity
+                        FROM information.statement s
+                        INNER JOIN	projects.info_proj_rel ipr
+                            ON s.pk_entity = ipr.fk_entity
+                            AND ipr.is_in_project = TRUE
+                            AND ipr.fk_project = ${this.addParam(pkProject)}
+                        WHERE s.fk_subject_tables_cell = tw1.pk_cell
+                        AND s.fk_property = 1334
+                    ) as statements ON true
+
+                    -- exclude the ones that have a matching in the project:
+                    WHERE statements.pk_entity IS NULL
+            )
+            SELECT
+                count(DISTINCT (fpm.fk_factoid_mapping, tw2.fk_row)) as length
+            FROM
+                data.factoid_property_mapping fpm
+                LEFT JOIN tw2 ON tw2.fk_column = fpm.fk_column
+                -- we want the fm of these fpm:
+                LEFT JOIN data.factoid_mapping fm ON fm.pk_entity = fpm.fk_factoid_mapping
+                -- we look for the others fpm of these fm:
+                LEFT JOIN data.factoid_property_mapping fpm2 ON fpm2.fk_factoid_mapping = fm.pk_entity
+                -- and the cells they point (via column and row):
+                LEFT JOIN tables.cell c2 ON c2.fk_column = fpm2.fk_column
+                    AND c2.fk_row = tw2.fk_row
+                    -- if the cells has a mathcing, we need it:
+                LEFT JOIN (
+                    SELECT
+                        s.fk_object_info,
+                        fk_subject_tables_cell
+                    FROM
+                        information.statement s
+                        INNER JOIN projects.info_proj_rel ipr2 ON (ipr2.fk_entity = s.pk_entity
+                                AND ipr2.is_in_project = TRUE)
+                    WHERE
+                        s.fk_property = 1334) ss ON ss.fk_subject_tables_cell = c2.pk_cell
+            WHERE
+                fpm.fk_default = ${this.addParam(pkEntity)}
+
+
+        `;
+
+        this.getBuiltQuery()
+        return this.execute<Array<{length: string}>>();
+    }
 
 
     async getFactoidMappingAsDefaultValue(pkEntity: string, offset: number, size: number): Promise<Array<FactoidEntity>> {
@@ -321,6 +414,5 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             return factoidsEntities.sort((a, b) => a.pkClass - b.pkClass)
                 .slice(offset, offset + size);
         });
-
     }
 }
