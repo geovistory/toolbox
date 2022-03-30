@@ -41,30 +41,65 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         // fetch all the factoids that has the entity as the matched value in the table
         this.params = [];
         this.sql = `
-        WITH tw1 AS(
-            -- factoid mappings of that person
+        -- Statements: Entity is annotated by Annotation
+        create temp table is_annotated_by on commit drop as
+            select 
+                t0.fk_subject_info as pkentity_annotation,
+                t0.pk_entity as pkstatement_annotation
+            from 
+                information.statement t0,
+                projects.info_proj_rel t1 
+            where 
+                t0.fk_object_info = ${this.addParam(pkEntity)} 
+                and t0.fk_property = ${this.addParam(this.propAnnotationToEntity)}
+                and t1.fk_entity = t0.pk_entity
+                and t1.fk_project = ${this.addParam(pkProject)}
+                and t1.is_in_project = TRUE;
+        
+        -- Statements: Cell is spot of Annotation
+        create temp table is_spot_of on commit drop as
+            select 
+                t0.fk_object_tables_cell as pkcell
+            from 
+                information.statement t0,
+                is_annotated_by t1,
+                projects.info_proj_rel t2
+            where 
+                t1.pkentity_annotation = t0.fk_subject_info
+                and t0.fk_property = ${this.addParam(this.propAnnotationToCell)}
+                and t2.fk_entity = t0.pk_entity
+                and t2.fk_project = ${this.addParam(pkProject)}
+                and t2.is_in_project = TRUE;
+        
+        -- Cells
+        create temp table cells on commit drop as 
+            select 
+                t0.fk_row as fk_row,
+                t0.fk_column as fk_column,
+                t0.fk_digital as fk_digital
+            from 
+                tables.cell t0,
+                is_spot_of t1 
+            where t0.pk_cell = t1.pkcell;
+        
+        -- FPM
+        create temp table fpm on commit drop as
+            select distinct on (fk_factoid_mapping, fk_row)
+                t0.fk_factoid_mapping as fk_factoid_mapping,
+                t1.fk_row as fk_row,
+                t1.fk_column as fk_column
+            from 
+                data.factoid_property_mapping t0,
+                cells t1,
+                data.digital t2, 
+                data.namespace t3
+            where 
+                t0.fk_column = t1.fk_column
+                and t2.pk_entity = t1.fk_digital 
+                and t3.pk_entity = t2.fk_namespace;
 
-            SELECT DISTINCT ON (fk_factoid_mapping, fk_row)
-                t5.fk_factoid_mapping as fk_factoid_mapping,
-                t4.fk_row as fk_row,
-                t4.fk_column as fk_column
-            FROM
-                information.statement AS t1
-            INNER JOIN projects.info_proj_rel AS t0 ON (t0.fk_entity = t1.pk_entity)
-            INNER JOIN information.statement AS t2 ON t2.fk_subject_info = t1.fk_subject_info
-            INNER JOIN projects.info_proj_rel AS t3 ON (t3.fk_entity = t2.pk_entity)
-            INNER JOIN tables.cell AS t4 ON (pk_cell = t2.fk_object_tables_cell)
-            INNER JOIN data.factoid_property_mapping AS t5 ON (t4.fk_column = t5.fk_column)
-            INNER JOIN data.digital as t6 ON (t6.pk_entity = t4.fk_digital)
-            INNER JOIN data.namespace as t7 ON (t7.pk_entity = t6.fk_namespace)
-            WHERE
-                t1.fk_object_info = ${this.addParam(pkEntity)}
-                AND t1.fk_property = ${this.addParam(this.propAnnotationToEntity)}
-                AND t2.fk_property = ${this.addParam(this.propAnnotationToCell)}
-                AND t0.fk_project = ${this.addParam(pkProject)}
-                AND t0.is_in_project = TRUE
-                AND t7.fk_project = ${this.addParam(pkProject)}
-        )
+        WITH tw1 AS (select * from fpm)
+
         -- the properties (factoid_property_mappings) of all the factoid mappings
         SELECT
             t2.fk_digital as fkDigital,
@@ -86,15 +121,15 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             FROM information.statement as t6
             INNER JOIN projects.info_proj_rel AS t7
                 ON (t6.pk_entity = t7.fk_entity)
-                AND t7.is_in_project = TRUE
                 AND t7.fk_project = ${this.addParam(pkProject)}
+                AND t7.is_in_project = TRUE
             INNER JOIN information.statement as t8
                 ON t8.fk_subject_info = t6.fk_subject_info
                 AND t8.fk_property = ${this.addParam(this.propAnnotationToEntity)}
             INNER JOIN projects.info_proj_rel AS t9
                     ON (t8.pk_entity = t9.fk_entity)
-                    AND t9.is_in_project = TRUE
                     AND t9.fk_project = ${this.addParam(pkProject)}
+                    AND t9.is_in_project = TRUE
             WHERE t6.fk_object_tables_cell = t5.pk_cell
             AND t6.fk_property = ${this.addParam(this.propAnnotationToCell)}
         ) t8 ON true
@@ -247,11 +282,13 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
 
                     WHERE t1.fk_property = ${this.addParam(P_1874_AT_POSITION_ID)}
                     AND t2.fk_entity = t1.pk_entity
+                    and t2.fk_project = ${this.addParam(pkProject)}
                     AND t2.is_in_project = TRUE
 
                     AND t3.fk_property = ${this.addParam(P_1875_ANNOTATED_ENTITY_ID)}
                     AND t3.fk_subject_info = t1.fk_subject_info
                     AND t4.fk_entity = t3.pk_entity
+                    and t4.fk_project = ${this.addParam(pkProject)}
                     AND t4.is_in_project = TRUE
                 ) ss ON ss.fk_object_tables_cell = c2.pk_cell
             WHERE
