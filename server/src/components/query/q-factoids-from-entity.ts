@@ -41,8 +41,8 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         // fetch all the factoids that has the entity as the matched value in the table
         this.params = [];
         this.sql = `
-        -- Statements: Entity is annotated by Annotation
-        create temp table is_annotated_by on commit drop as
+        -- Get all the statement: Entity is annotated by Annotation
+        with is_annotated_by as (
             select 
                 t0.fk_subject_info as pkentity_annotation,
                 t0.pk_entity as pkstatement_annotation
@@ -50,14 +50,15 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                 information.statement t0,
                 projects.info_proj_rel t1 
             where 
-                t0.fk_object_info = ${this.addParam(pkEntity)} 
+                t0.fk_object_info = ${this.addParam(pkEntity)}  
                 and t0.fk_property = ${this.addParam(this.propAnnotationToEntity)}
                 and t1.fk_entity = t0.pk_entity
                 and t1.fk_project = ${this.addParam(pkProject)}
-                and t1.is_in_project = TRUE;
-        
-        -- Statements: Cell is spot of Annotation
-        create temp table is_spot_of on commit drop as
+                AND t1.is_in_project = true
+        ),
+
+        -- Get all the statement: Cell is spot of Annotation
+        is_spot_of as (
             select 
                 t0.fk_object_tables_cell as pkcell
             from 
@@ -66,13 +67,14 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                 projects.info_proj_rel t2
             where 
                 t1.pkentity_annotation = t0.fk_subject_info
-                and t0.fk_property = ${this.addParam(this.propAnnotationToCell)}
+                and t0.fk_property = ${this.addParam(this.propAnnotationToEntity)}
                 and t2.fk_entity = t0.pk_entity
                 and t2.fk_project = ${this.addParam(pkProject)}
-                and t2.is_in_project = TRUE;
-        
-        -- Cells
-        create temp table cells on commit drop as 
+                AND t2.is_in_project = true
+        ),
+            
+        -- Get the cells
+        cells as ( 
             select 
                 t0.fk_row as fk_row,
                 t0.fk_column as fk_column,
@@ -80,10 +82,11 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             from 
                 tables.cell t0,
                 is_spot_of t1 
-            where t0.pk_cell = t1.pkcell;
-        
-        -- FPM
-        create temp table fpm on commit drop as
+            where t0.pk_cell = t1.pkcell
+        ),	
+
+        -- Get the FPM
+        tw1 as (
             select distinct on (fk_factoid_mapping, fk_row)
                 t0.fk_factoid_mapping as fk_factoid_mapping,
                 t1.fk_row as fk_row,
@@ -96,11 +99,9 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             where 
                 t0.fk_column = t1.fk_column
                 and t2.pk_entity = t1.fk_digital 
-                and t3.pk_entity = t2.fk_namespace;
+                and t3.pk_entity = t2.fk_namespace
+        )
 
-        WITH tw1 AS (select * from fpm)
-
-        -- the properties (factoid_property_mappings) of all the factoid mappings
         SELECT
             t2.fk_digital as fkDigital,
             t1.fk_factoid_mapping as fkFactoidMapping,
@@ -121,19 +122,18 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             FROM information.statement as t6
             INNER JOIN projects.info_proj_rel AS t7
                 ON (t6.pk_entity = t7.fk_entity)
-                AND t7.fk_project = ${this.addParam(pkProject)}
                 AND t7.is_in_project = TRUE
+                AND t7.fk_project = ${this.addParam(pkProject)}
             INNER JOIN information.statement as t8
                 ON t8.fk_subject_info = t6.fk_subject_info
                 AND t8.fk_property = ${this.addParam(this.propAnnotationToEntity)}
             INNER JOIN projects.info_proj_rel AS t9
                     ON (t8.pk_entity = t9.fk_entity)
-                    AND t9.fk_project = ${this.addParam(pkProject)}
                     AND t9.is_in_project = TRUE
+                    AND t9.fk_project = ${this.addParam(pkProject)}
             WHERE t6.fk_object_tables_cell = t5.pk_cell
-            AND t6.fk_property = ${this.addParam(this.propAnnotationToCell)}
-        ) t8 ON true
-
+            AND t6.fk_property = ${this.addParam(this.propAnnotationToEntity)}
+        ) t8 ON true;
         -- Works for now because a cell can only be in one project.
         -- If in the future a cell can be in multiple projects, think of filtering the statements (t6) on the project
         `;
