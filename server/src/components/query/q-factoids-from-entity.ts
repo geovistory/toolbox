@@ -1,7 +1,7 @@
-import { FactoidEntity, FactoidStatement } from '../../controllers';
-import { Postgres1DataSource } from '../../datasources';
-import { P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../ontome-ids';
-import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
+import {FactoidEntity, FactoidStatement} from '../../controllers';
+import {Postgres1DataSource} from '../../datasources';
+import {P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID} from '../../ontome-ids';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 class RetrievedLine {
     fkdigital: number;
@@ -43,14 +43,14 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         this.sql = `
         -- Get all the statement: Entity is annotated by Annotation
         with is_annotated_by as (
-            select 
+            select
                 t0.fk_subject_info as pkentity_annotation,
                 t0.pk_entity as pkstatement_annotation
-            from 
+            from
                 information.statement t0,
-                projects.info_proj_rel t1 
-            where 
-                t0.fk_object_info = ${this.addParam(pkEntity)}  
+                projects.info_proj_rel t1
+            where
+                t0.fk_object_info = ${this.addParam(pkEntity)}
                 and t0.fk_property = ${this.addParam(this.propAnnotationToEntity)}
                 and t1.fk_entity = t0.pk_entity
                 and t1.fk_project = ${this.addParam(pkProject)}
@@ -59,31 +59,31 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
 
         -- Get all the statement: Cell is spot of Annotation
         is_spot_of as (
-            select 
+            select
                 t0.fk_object_tables_cell as pkcell
-            from 
+            from
                 information.statement t0,
                 is_annotated_by t1,
                 projects.info_proj_rel t2
-            where 
+            where
                 t1.pkentity_annotation = t0.fk_subject_info
-                and t0.fk_property = ${this.addParam(this.propAnnotationToEntity)}
+                and t0.fk_property = ${this.addParam(this.propAnnotationToCell)}
                 and t2.fk_entity = t0.pk_entity
                 and t2.fk_project = ${this.addParam(pkProject)}
                 AND t2.is_in_project = true
         ),
-            
+
         -- Get the cells
-        cells as ( 
-            select 
+        cells as (
+            select
                 t0.fk_row as fk_row,
                 t0.fk_column as fk_column,
                 t0.fk_digital as fk_digital
-            from 
+            from
                 tables.cell t0,
-                is_spot_of t1 
+                is_spot_of t1
             where t0.pk_cell = t1.pkcell
-        ),	
+        ),
 
         -- Get the FPM
         tw1 as (
@@ -91,14 +91,14 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                 t0.fk_factoid_mapping as fk_factoid_mapping,
                 t1.fk_row as fk_row,
                 t1.fk_column as fk_column
-            from 
+            from
                 data.factoid_property_mapping t0,
                 cells t1,
-                data.digital t2, 
+                data.digital t2,
                 data.namespace t3
-            where 
+            where
                 t0.fk_column = t1.fk_column
-                and t2.pk_entity = t1.fk_digital 
+                and t2.pk_entity = t1.fk_digital
                 and t3.pk_entity = t2.fk_namespace
         )
 
@@ -191,7 +191,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             and n.fk_project = ${this.addParam(pkProject)}
         `
         this.getBuiltQuery();
-        const digColsFpms = await this.execute<Array<{ pkdigital: number, pkcolumn: number, pkfpm: number, pkfm: number }>>();
+        const digColsFpms = await this.execute<Array<{pkdigital: number, pkcolumn: number, pkfpm: number, pkfm: number}>>();
 
         const defaults = [];
         for (const digcol of digColsFpms) {
@@ -351,7 +351,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
             `;
 
         this.getBuiltQuery()
-        return this.execute<Array<{ length: string }>>();
+        return this.execute<Array<{length: string}>>();
     }
 
     async getDefaultFactoidNumber(pkProject: string, pkEntity: string) {
@@ -420,7 +420,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         `;
 
         this.getBuiltQuery()
-        return this.execute<Array<{ length: string }>>();
+        return this.execute<Array<{length: string}>>();
     }
 
 
