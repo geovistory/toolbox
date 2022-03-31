@@ -1,4 +1,4 @@
-<ng-container *ngIf="isExpressionLike$|async">
+<ng-container *ngIf="(isExpressionLike$|async) && (editMode.value$|async)">
   <div class="mat-typography mat-bg-grey-100 gv-section-header">
     <h3 class="loc-left d-flex mat-text-secondary">
       Sections and digital reproductions

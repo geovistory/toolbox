@@ -635,11 +635,12 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
             // }
 
             // Add default controls to some properties according to the config
-            if (f.display.formSections?.[section.key]?.controlsOnInit) {
-              addItemsOnInit = f.display.formSections[section.key].controlsOnInit;
-            }
-
             const config = f.display.formSections?.[section.key]
+            if (config?.controlsOnInit) {
+              addItemsOnInit = config.controlsOnInit;
+            }
+            const required = config?.required > 0;
+
             const maxLength = f.targetMaxQuantity == -1 ? Number.POSITIVE_INFINITY : f.targetMaxQuantity;
             const minLength = f.identityDefiningForSource ? f.targetMinQuantity : 0;
 
@@ -657,7 +658,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
                 },
                 initValue: this.getInitValueForFieldNode(f, initVal),
                 placeholder: f.label,
-                required: this.ctrlRequired(f),
+                required: required ? true : this.ctrlRequired(f),
                 validators: [
                   (control: FormArray): { [key: string]: any } | null => {
                     const length = sum(
@@ -792,7 +793,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     const required = field.identityDefiningForSource;
     let maxLength = field.targetMaxQuantity === -1 ? Number.POSITIVE_INFINITY : field.targetMaxQuantity;
     const minLength = field.targetMinQuantity === -1 ? Number.POSITIVE_INFINITY : field.targetMinQuantity;
-    addOnInit = required ? minLength : addOnInit;
+    if (addOnInit === 0) addOnInit = required ? minLength : addOnInit;
 
     if (formControlType.typeItem) {
       maxLength = 1;

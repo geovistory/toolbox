@@ -1,6 +1,6 @@
 <!-- Header, if the expression is shown -->
 
-<ng-container *ngIf="isExpression&&!(hideTreeNodeAndFieldHeader$|async)">
+<ng-container *ngIf="isExpression&&!(hideTreeNodeAndFieldHeader$|async) && (editMode.value$|async)">
   <div class="mat-typography mat-bg-grey-100 gv-section-header">
     <h3 class="loc-header-left d-flex mat-text-secondary">
       Sections and digital reproductions
@@ -61,7 +61,7 @@
 </gv-view-field-item-container>
 
 <!-- Header, if the expression is hidden -->
-<ng-container *ngIf="hideTreeNodeAndFieldHeader$|async">
+<ng-container *ngIf="(hideTreeNodeAndFieldHeader$|async) && (editMode.value$|async)">
 
   <div class="mat-typography mat-bg-grey-100 gv-section-header">
     <h3 class="loc-header-left d-flex mat-text-secondary">

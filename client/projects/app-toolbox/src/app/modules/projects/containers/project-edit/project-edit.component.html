@@ -14,11 +14,6 @@
 
       <div class="gv-main-categories btn-group-vertical rounded-0 d-block">
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
-          [ngClass]="{active:(p.list$ | async)==='digitals'}" (click)="setList('digitals')">
-          <mat-icon [svgIcon]="'gv:outlined-gv-digitals'" class="gv-digitals-primary-color"></mat-icon>
-          <div>Digitals</div>
-        </button>
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='sources'}" (click)="setList('sources')">
           <div class="fa-2x gv-icon gv-icon-source gv-source-color"></div>
           <div>Sources</div>
@@ -28,17 +23,19 @@
           <div class="fa-2x gv-icon gv-icon-entity gv-entity-color"></div>
           <div>Entities</div>
         </button>
-
-
+        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+          [ngClass]="{active:(p.list$ | async)==='digitals'}" (click)="setList('digitals')">
+          <mat-icon [svgIcon]="'gv:outlined-gv-digitals'" class="gv-digitals-primary-color"></mat-icon>
+          <div>Digitals</div>
+        </button>
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='analysis'}" (click)="setList('analysis')">
           <div class="fa-2x gv-icon gv-icon-visual gv-visual-color"></div> Analysis
         </button>
-
-        <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
+        <!-- <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='stories'}" (click)="setList('stories')">
           <div class="fa-2x gv-icon gv-icon-story gv-story-color"></div> Stories
-        </button>
+        </button> -->
 
       </div>
 

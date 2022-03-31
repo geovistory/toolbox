@@ -24,7 +24,7 @@ export class ViewSectionComponent implements OnInit {
   @Input() section: SectionName;
   @Input() scope: GvFieldPageScope;
 
-  @Input() hideEmptySectionInReadmode = true;
+  // @Input() hideEmptySectionInReadmode = true;
   @Input() showEmptyFieldsOnInit: boolean;
 
   constructor(public itemCountService: ViewFieldItemCountSumService,

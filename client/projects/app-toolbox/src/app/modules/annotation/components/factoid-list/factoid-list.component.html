@@ -1,10 +1,10 @@
-<mat-grid-list [cols]="12" rowHeight="60px" class="gv-td-menu-item gv-td-paginator orange"
+<mat-grid-list [cols]="12" rowHeight="48px" class="gv-td-menu-item gv-td-paginator orange"
   style="flex:auto; align-items: center;">
 
   <!-- Paginator -->
   <mat-grid-tile [colspan]="11" [rowspan]="1">
-    <mat-paginator [length]="totalLength" [pageSize]="pageSize" [pageIndex]="pageIndex"
-      class="content gv-one-liner gv-fade-out-right" [pageSizeOptions]="[2, 5, 10, 20, 50]" [showFirstLastButtons]=true
+    <mat-paginator [length]="totalLength" [pageSize]="pageSize" [pageIndex]="pageIndex" [hidePageSize]="true"
+      class="content gv-one-liner gv-fade-out-right" [pageSizeOptions]="[2, 5, 10, 20, 50]" [showFirstLastButtons]=false
       (page)="onPageChange($event)">
     </mat-paginator>
   </mat-grid-tile>
@@ -222,9 +222,10 @@
     <mat-divider></mat-divider>
   </mat-grid-list>
 </ng-container>
-
-<div *ngIf="factoidsEntities.length == 0" style="margin-top: 10px;">
+<ng-container *ngIf="factoidsEntities.length == 0">
   <mat-divider style="width: 100%"></mat-divider>
-  <p class="my-2" style="margin-left: 20px;">No records found</p>
+  <div style="height: 48px; margin: 0 16px; display: flex; align-items: center;">
+    No records found
+  </div>
   <mat-divider style="width: 100%"></mat-divider>
-</div>
+</ng-container>

@@ -7,6 +7,7 @@ import { GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier, InfData, InfRe
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
 import { SeachExistingEntityMoreEvent } from '../search-existing-entity/search-existing-entity.component';
 import { SliderEnum } from '../slider/slider.component';
@@ -36,7 +37,9 @@ export interface CreateEntityEvent {
   selector: 'gv-add-entity-or-value-dialog.component',
   templateUrl: './add-entity-or-value-dialog.component.html',
   styleUrls: ['./add-entity-or-value-dialog.component.scss'],
-
+  providers: [
+    { provide: READ_ONLY, useValue: true }
+  ]
 })
 export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();
