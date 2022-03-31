@@ -132,7 +132,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
                     AND t9.is_in_project = TRUE
                     AND t9.fk_project = ${this.addParam(pkProject)}
             WHERE t6.fk_object_tables_cell = t5.pk_cell
-            AND t6.fk_property = ${this.addParam(this.propAnnotationToEntity)}
+            AND t6.fk_property = ${this.addParam(this.propAnnotationToCell)}
         ) t8 ON true;
         -- Works for now because a cell can only be in one project.
         -- If in the future a cell can be in multiple projects, think of filtering the statements (t6) on the project
