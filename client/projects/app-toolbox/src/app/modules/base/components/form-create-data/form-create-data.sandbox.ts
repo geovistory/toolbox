@@ -435,6 +435,27 @@ export default sandboxOf(FormCreateDataComponent, {
             </div>
         </div>`
   })
+  .add('Manifestation Product Type (new)', {
+    context: {
+      initState: IAppStateMock.stateProject1,
+      schemaObjects: initialSchemaObects
+    },
+    template: `
+      <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+      <div class="d-flex justify-content-center mt-5">
+          <div style="width:480px;height:500px" class="d-flex mr-5">
+              <gv-form-create-data [pkClass]="219" #c class="w-100" (searchString)="s=$event"></gv-form-create-data>
+          </div>
+          <div>
+              <p>searchString: {{s}}</p>
+              <p>Form.valid: {{c?.formFactory?.formGroup.valid | json}}</p>
+              <p>Form.touched: {{c?.formFactory?.formGroup.touched | json}}</p>
+              <p>Form.dirty: {{c?.formFactory?.formGroup.dirty | json}}</p>
+              <p>Form.value </p>
+              <pre>{{c?.formFactory?.formGroupFactory?.valueChanges$ | async | json }}</pre>
+          </div>
+      </div>`
+  })
   .add('Expression Portion (new)', {
     context: {
       initState: IAppStateMock.stateProject1,

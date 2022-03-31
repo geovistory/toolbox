@@ -65,7 +65,7 @@ export class EntityDetailComponent
 
   ngOnInit() {
     this.initialize();
-    this.tabLayout.t.defaultSizeRight = 50;
+    this.tabLayout.t.defaultSizeRight = 33;
   }
 
 }

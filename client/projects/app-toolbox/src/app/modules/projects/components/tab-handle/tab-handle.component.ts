@@ -52,6 +52,7 @@ export class TabHandleComponent implements OnInit, OnDestroy {
         return 'gv-digitals-primary-color'
 
       case ClassConfig.IconEnum.Source:
+      case ClassConfig.IconEnum.Expression:
       case ClassConfig.IconEnum.Section:
         return 'gv-sources-primary-color'
 

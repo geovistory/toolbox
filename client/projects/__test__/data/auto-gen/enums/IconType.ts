@@ -5,6 +5,7 @@ export enum IconType {
 
   'source' = 'source',
   'section' = 'section',
+  'expression' = 'expression',
 
   'persistent-item' = 'persistent-item',
   'temporal-entity' = 'temporal-entity',

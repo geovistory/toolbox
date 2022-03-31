@@ -1,5 +1,4 @@
-<ng-container
-  *ngIf="(s.fields$|async)?.length>0 && !(hideEmptySectionInReadmode&&(s.readmode$|async)&&(itemCountService.sum$|async)<1)">
+<ng-container *ngIf="(s.fields$|async)?.length>0 && (editMode.value$|async)">
   <gv-view-section-header [section]="s">
     <ng-content title select="[title]"></ng-content>
   </gv-view-section-header>

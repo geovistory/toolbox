@@ -19,15 +19,3 @@ h3 {
 .loc-toggle-btn {
   margin-left: 8px;
 }
-mat-button-toggle-group {
-  border: none !important;
-  border-radius: unset !important;
-}
-
-::ng-deep .mat-button-toggle {
-  border-left: none !important;
-}
-
-::ng-deep .mat-button-toggle:not(.mat-button-toggle-checked) {
-  background: none;
-}

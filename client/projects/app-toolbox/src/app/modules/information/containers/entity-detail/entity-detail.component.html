@@ -19,32 +19,30 @@
       <mat-tab *ngIf="tab.data.showContentTree">
         <ng-template mat-tab-label>
           <mat-icon [svgIcon]="'file-tree'"></mat-icon>
-          has content
+          Content
         </ng-template>
         <gv-content class="gv-flex-fh" *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source"
           [pkClass$]="fkClass$" [showOntoInfo$]="showOntoInfo$" [section]=linkedSources [showEmptyFieldsOnInit]="true">
         </gv-content>
       </mat-tab>
 
-      <mat-tab *ngIf="tab.data.showFactoids">
-        <ng-template mat-tab-label>
-          <mat-icon svgIcon="alpha-f-box-outline" class="gv-entities-primary-color"></mat-icon>
-          has factoids
-        </ng-template>
-        <gv-factoid-list [pkEntity]="pkEntity$|async"></gv-factoid-list>
-      </mat-tab>
-
-
       <mat-tab *ngIf="tab.data.showLinkedEntities">
         <ng-template mat-tab-label>
           <mat-icon [svgIcon]="'link'" [color]="'primary'"></mat-icon>
-          linked entities
+          Annotations
         </ng-template>
         <gv-view-section *ngIf="(scope$|async)" [scope]="scope$|async" [source]="source" [pkClass$]="fkClass$"
-          [showOntoInfo$]="showOntoInfo$" [section]=linkedEntities [showEmptyFieldsOnInit]="true"
-          [hideEmptySectionInReadmode]="false">
-          <span title>Linked entities</span>
+          [showOntoInfo$]="showOntoInfo$" [section]=linkedEntities [showEmptyFieldsOnInit]="true">
+          <span title>Annotations</span>
         </gv-view-section>
+      </mat-tab>
+
+      <mat-tab *ngIf="tab.data.showFactoids">
+        <ng-template mat-tab-label>
+          <mat-icon svgIcon="alpha-f-box-outline" class="gv-entities-primary-color"></mat-icon>
+          Factoids
+        </ng-template>
+        <gv-factoid-list [pkEntity]="pkEntity$|async"></gv-factoid-list>
       </mat-tab>
 
     </mat-tab-group>

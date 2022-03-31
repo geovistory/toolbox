@@ -160,7 +160,7 @@ export class SysConfigValueMock {
         }
       },
       "218": {
-        icon: IconType.section,
+        icon: IconType.expression,
         belongsToCategory: {
           sources: {showInAddMenu: false}
         },
@@ -204,6 +204,7 @@ export class SysConfigValueMock {
         }
       },
       "502": {
+        icon: IconType.source,
         "belongsToCategory": {
           "sources": {
             "positionInAddMenu": 20,
@@ -767,6 +768,10 @@ export class SysConfigValueMock {
                 "basic": {
                   "position": 1.5,
                   "controlsOnInit": 1
+                },
+                "simpleForm": {
+                  "position": 1.5,
+                  "controlsOnInit": 1
                 }
               },
               "viewSections": {
@@ -1222,6 +1227,14 @@ export class SysConfigValueMock {
         },
         "1216": {
           "comment": "Expression > has reproduction > Transcription / Table",
+          "viewSections": {
+            "linkedSources": {
+              "position": 1
+            }
+          }
+        },
+        "1305": {
+          "comment": "Expression > has server response > Expression",
           "viewSections": {
             "linkedSources": {
               "position": 1

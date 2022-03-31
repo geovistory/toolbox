@@ -842,7 +842,7 @@ gv-tab-handle.tab-box {
   .mat-tab-label {
     height: 40px;
   }
-  mat-icon {
+  mat-tab-label-content mat-icon {
     margin-right: 8px;
   }
 }
@@ -2248,7 +2248,7 @@ as-split.gv-split-style.gv-hide-split-gutter {
 }
 
 $gv-category-primary: (
-  digitals: #fd7e14,
+  digitals: #ee7f18,
   sources: #17a2b8,
   entities: #007bff,
   analysis: #e83e8c,
@@ -2257,7 +2257,7 @@ $gv-category-primary: (
 );
 
 $gv-category-secondary: (
-  digitals: #f7a865,
+  digitals: #f1af72,
   sources: #85d2de,
   entities: #7cb7f7,
   analysis: #e080ac,
@@ -2266,7 +2266,7 @@ $gv-category-secondary: (
 );
 
 $gv-category-light: (
-  digitals: #fddfc5,
+  digitals: #f8d0af,
   sources: #c3e5eb,
   entities: #b2d7ff,
   analysis: #e8b3cb,
@@ -2762,6 +2762,25 @@ a.mat-menu-item > mat-icon {
   @extend .border-success;
   @extend .rounded-circle;
 }
+
+@mixin mix-mat-button-toggle($app-theme) {
+  $primary: map-get($app-theme, primary);
+  $accent: map-get($app-theme, accent);
+
+  .mat-button-toggle {
+    background-color: unset;
+    color: mat.get-color-from-palette($primary);
+  }
+
+  .mat-button-toggle-checked,
+  .mat-button-toggle-checked.mat-button-toggle-appearance-standard {
+    background-color: mat.get-color-from-palette($primary);
+    color: mat.get-color-from-palette($primary, default-contrast);
+  }
+}
+
+// Include the mixin
+@include mix-mat-button-toggle($app-theme);
 
 /***************************
  * Highlighting

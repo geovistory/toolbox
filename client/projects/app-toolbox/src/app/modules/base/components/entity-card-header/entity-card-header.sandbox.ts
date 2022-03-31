@@ -16,6 +16,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../base.module';
+import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { EntityCardHeaderComponent } from './entity-card-header.component';
 
 /*****************************************************************************
@@ -60,30 +61,14 @@ export class ActiveProjectPipesServiceMock extends ActiveProjectPipesService {
 }
 
 
-
-/*****************************************************************************
- * Sandboxes
- *****************************************************************************/
-export default sandboxOf(EntityCardHeaderComponent, {
-  declareComponent: false,
-  imports: [
-    BaseModule,
-    FormsModule,
-    InitStateModule
-  ],
-  providers: [
-    { provide: ActiveProjectPipesService, useClass: ActiveProjectPipesServiceMock },
-  ]
-})
-  .add('View', {
-    context: {
-      initState: IAppStateMock.stateProject1,
-      schemaObjects: initialSchemaObects,
-      pkClass$: of(WarEntityPreviewMock.GEO_PLACE_ZURICH.fk_class),
-      pkEntity: WarEntityPreviewMock.GEO_PLACE_ZURICH.pk_entity,
-      pkProject: ProProjectMock.PROJECT_1.pk_entity
-    },
-    template: `
+export const eCHcontext = {
+  initState: IAppStateMock.stateProject1,
+  schemaObjects: initialSchemaObects,
+  pkClass$: of(WarEntityPreviewMock.GEO_PLACE_ZURICH.fk_class),
+  pkEntity: WarEntityPreviewMock.GEO_PLACE_ZURICH.pk_entity,
+  pkProject: ProProjectMock.PROJECT_1.pk_entity
+};
+export const eCHtemplate = `
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
         <div>
           <button (click)="showOntoInfo$.next(!showOntoInfo$.value)">toggle onto info</button>
@@ -123,5 +108,23 @@ export default sandboxOf(EntityCardHeaderComponent, {
               [pkProject]="pkProject"
               ></gv-entity-card-header>
           </div>
-        </div>`
+        </div>`;
+/*****************************************************************************
+ * Sandboxes
+ *****************************************************************************/
+export default sandboxOf(EntityCardHeaderComponent, {
+  declareComponent: false,
+  imports: [
+    BaseModule,
+    FormsModule,
+    InitStateModule
+  ],
+  providers: [
+    { provide: ActiveProjectPipesService, useClass: ActiveProjectPipesServiceMock },
+    { provide: READ_ONLY, useValue: false },
+  ]
+})
+  .add('Editable', {
+    context: eCHcontext,
+    template: eCHtemplate
   })
