@@ -1,13 +1,13 @@
 <!-- Header, if the expression is shown -->
 
-<ng-container *ngIf="isExpression&&!(hideTreeNodeAndFieldHeader$|async) && (editMode.value$|async)">
+<!-- <ng-container *ngIf="isExpression&&!(hideTreeNodeAndFieldHeader$|async) && (editMode.value$|async)">
   <div class="mat-typography mat-bg-grey-100 gv-section-header">
     <h3 class="loc-header-left d-flex mat-text-secondary">
       Sections and digital reproductions
     </h3>
   </div>
   <mat-divider></mat-divider>
-</ng-container>
+</ng-container> -->
 
 <gv-view-field-item-container [enableDropZoneEnd$]="enableDropZoneEnd$" [field]="field" [item]="itemComponent.item"
   [treeExtraPl]="0" [hidden]="hideTreeNodeAndFieldHeader$|async">
@@ -29,7 +29,9 @@
         [openTabOnClick]="!readonly" [truncateLabel]="'250'">
       </gv-entity-preview>
       <div class="gv-flex-grow mat-caption mat-text-secondary ml-2" (click)="showBody$.next(!showBody$.value)">
-        <ng-container *ngIf="editMode.value$|async">{{classLabel}}</ng-container>
+        {{classLabel}}
+        <!-- <ng-container *ngIf="editMode.value$|async">
+        </ng-container> -->
       </div>
     </span>
 
@@ -61,7 +63,7 @@
 </gv-view-field-item-container>
 
 <!-- Header, if the expression is hidden -->
-<ng-container *ngIf="(hideTreeNodeAndFieldHeader$|async) && (editMode.value$|async)">
+<!-- <ng-container *ngIf="(hideTreeNodeAndFieldHeader$|async) && (editMode.value$|async)">
 
   <div class="mat-typography mat-bg-grey-100 gv-section-header">
     <h3 class="loc-header-left d-flex mat-text-secondary">
@@ -75,14 +77,14 @@
   </div>
   <mat-divider></mat-divider>
   <div class="loc-hidden-info mat-caption mat-bg-grey-50" (click)="showTreeNodeAndFieldHeader()"> Hidden elements</div>
-</ng-container>
+</ng-container> -->
 
 
 
-<div class="loc-hidden-info mat-caption loc-border-dashed mat-bg-grey-50" (click)="hideTreeNodeAndFieldHeader()"
+<!-- <div class="loc-hidden-info mat-caption loc-border-dashed mat-bg-grey-50" (click)="hideTreeNodeAndFieldHeader()"
   *ngIf="isExpression && !(hideTreeNodeAndFieldHeader$|async)">
   Hide elements above this line
-</div>
+</div> -->
 
 
 <!-- ADD A DROPLIST FOR EACH FIELD BODY HERE, WHEN BODY HIDDEN AND DRAG ENABLED -->

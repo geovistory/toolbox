@@ -627,6 +627,50 @@ export class SysConfigValueMock {
         }
       },
       {
+        "comment": "Manifestation Singleton is about all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40) and Annotation (932) and Digital (455) and excluding value classes",
+        "isOutgoing": false,
+        "wherePkProperty": 1889,
+        "whereFkDomain": 220,
+        "toSourceClass": {
+          "whereSubclassOf": [2, 70],
+          "whereNotValueObjectType": true,
+          "whereNotSubclassOf": [40, 455, 932],
+        }
+      },
+      {
+        "comment": "Manifestation Product Type is about all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40) and Annotation (932) and Digital (455) and excluding value classes",
+        "isOutgoing": false,
+        "wherePkProperty": 1889,
+        "whereFkDomain": 219,
+        "toSourceClass": {
+          "whereSubclassOf": [2, 70],
+          "whereNotValueObjectType": true,
+          "whereNotSubclassOf": [40, 455, 932],
+        }
+      },
+      {
+        "comment": "Item is about all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40) and Annotation (932) and Digital (455) and excluding value classes",
+        "isOutgoing": false,
+        "wherePkProperty": 1889,
+        "whereFkDomain": 221,
+        "toSourceClass": {
+          "whereSubclassOf": [2, 70],
+          "whereNotValueObjectType": true,
+          "whereNotSubclassOf": [40, 455, 932],
+        }
+      },
+      {
+        "comment": "Web Request is about all subclasses of PeIt (70), TeEn (2) excluding subclasses of Appellation (40) and Annotation (932) and Digital (455) and excluding value classes",
+        "isOutgoing": false,
+        "wherePkProperty": 1889,
+        "whereFkDomain": 502,
+        "toSourceClass": {
+          "whereSubclassOf": [2, 70],
+          "whereNotValueObjectType": true,
+          "whereNotSubclassOf": [40, 455, 932],
+        }
+      },
+      {
         "comment": "add <Ongoing throughout> to all teEn",
         "isOutgoing": true,
         "toSourceClass": {"whereBasicTypeIn": [9]},
@@ -792,7 +836,6 @@ export class SysConfigValueMock {
                 },
                 "simpleForm": {
                   "position": 1.5,
-                  "controlsOnInit": 1
                 }
               },
               "viewSections": {
@@ -1334,7 +1377,20 @@ export class SysConfigValueMock {
               "position": 1
             }
           }
-        }
+        },
+        "1889": {
+          "comment": "Entity is topic of Source",
+          "formSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          },
+          "viewSections": {
+            "linkedEntities": {
+              "position": 4
+            }
+          }
+        },
       },
       "outgoingProperties": {
         "72": {
@@ -1614,7 +1670,20 @@ export class SysConfigValueMock {
               "position": 3
             }
           }
-        }
+        },
+        "1889": {
+          "comment": "Source is about Entity",
+          "formSections": {
+            "specific": {
+              "hidden": true // hide it from the fields
+            }
+          },
+          "viewSections": {
+            "linkedEntities": {
+              "position": 4
+            }
+          }
+        },
       },
       "hasTypeSubproperties": {
         "comment": "all subproperties of has type (dfh.api_property.is_has_type_subproperty=true)",

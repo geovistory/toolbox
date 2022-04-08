@@ -2,7 +2,60 @@
 
 <mat-dialog-content>
 
-  <button mat-button *ngFor="let item of (options$ | async)" (click)="select(item.pkClass)"> {{item.label}} </button>
+  <!-- <button mat-button *ngFor="let item of (options$ | async)" (click)="select(item.pkClass)"> {{item.label}} </button> -->
+  <table mat-table [dataSource]="(options$ | async)" class="mat-elevation-z0 w-100">
+
+    <!-- Class Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>
+        Class
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <gv-class-info [showOntoInfo$]="data.showOntoInfo$" [pkClass]="item.pkClass" [isFavorite]="false"
+          [classLabel]="item.label" class="mr-2"></gv-class-info>
+        {{item.label}}
+      </td>
+    </ng-container>
+
+    <!-- Help Column -->
+    <ng-container matColumnDef="help">
+      <th mat-header-cell *matHeaderCellDef>
+        Help
+      </th>
+      <td mat-cell *matCellDef="let item">
+
+        <button mat-button [matMenuTriggerFor]="helpMenu">
+          info
+        </button>
+        <mat-menu #helpMenu="matMenu">
+          <a *ngIf="item.docUrl" mat-menu-item [href]="item.docUrl" target="_blank">Show help
+            <mat-icon> launch</mat-icon>
+          </a>
+          <a mat-menu-item [href]="ontomeUrl+'/class/'+item.pkClass" target="_blank">Show class documentation in OntoME
+            <mat-icon> launch</mat-icon>
+          </a>
+        </mat-menu>
+
+      </td>
+
+
+    </ng-container>
+
+    <!-- Action Column -->
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef>
+        Action
+      </th>
+      <td mat-cell *matCellDef="let item">
+        <button mat-flat-button color="primary" (click)="select(item.pkClass)"> Select </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['name','help','action']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['name','help','action'];"></tr>
+  </table>
+
+
 
 </mat-dialog-content>
 

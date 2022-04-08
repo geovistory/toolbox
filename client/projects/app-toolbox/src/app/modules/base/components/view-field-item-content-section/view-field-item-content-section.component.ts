@@ -77,9 +77,9 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
     this.sectionScope = this.itemComponent.scope
 
     this.isExpression = this.itemComponent.item.targetClass === C_218_EXPRESSION_ID
-    if (this.isExpression) this.hideTreeNodeAndFieldHeader()
+    // if (this.isExpression) this.hideTreeNodeAndFieldHeader()
+    if (this.isExpression) this.showBody$.next(true);
 
-    // if (this.showEmptyFieldsOnInit) this.showEmptyFields$.next(this.showEmptyFieldsOnInit)
     this.fields$ = this.c.pipeSection(this.itemComponent.item.targetClass, DisplayType.view, this.sectionSection)
     this.addButtons$ = this.fields$.pipe(pipeAddButtons)
 
@@ -90,8 +90,6 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
     this.cachedIndentation = this.nodeService.indentation$.value;
     this.nodeService.indentation$.next(0)
     this.hideTreeNodeAndFieldHeader$.next(true)
-    // this.fieldComponent.showHeader$.next(false)
-    // this.fieldComponent.bodyComponent.showBody$.next(true)
     this.showBody$.next(true)
 
   }
@@ -99,7 +97,6 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
   showTreeNodeAndFieldHeader() {
     this.nodeService.indentation$.next(this.cachedIndentation);
     this.hideTreeNodeAndFieldHeader$.next(false)
-    // this.fieldComponent.showHeader$.next(true)
   }
 
   openAddStatementDialog(item: AddButton) {

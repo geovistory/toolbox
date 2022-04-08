@@ -134,11 +134,15 @@ export class ViewFieldComponent implements OnInit {
 
       const data: ChooseClassDialogData = {
         pkClasses: targetClasses.map(t => t.targetClass),
-        title: 'Choose a class'
+        title: 'Choose a class',
+        showOntoInfo$: this.showOntoInfo$
       }
       targetClass = await this.dialog.open<ChooseClassDialogComponent, ChooseClassDialogData, ChooseClassDialogReturn>(
         ChooseClassDialogComponent,
-        { data }
+        {
+          data,
+          width: '500px'
+        }
       ).afterClosed().pipe(first()).toPromise()
     }
     // Only one target class!
