@@ -5,6 +5,7 @@ import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
+import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { BaseModalsService } from '../../services/base-modals.service';
@@ -42,6 +43,7 @@ export class ViewFieldItemComponent implements OnInit {
     private p: ActiveProjectService,
     private baseModals: BaseModalsService,
     private dialog: MatDialog,
+    private truncatePipe: TruncatePipe,
     @Optional() private fieldDropService: ViewFieldDropListService,
     @Optional() @Inject(VIEW_FIELD_ITEM_TYPE) private itemTypeOverride: ViewFieldItemTypeFn,
     @Optional() private fieldBody: ViewFieldBodyComponent,
@@ -156,11 +158,32 @@ export class ViewFieldItemComponent implements OnInit {
       return await this.displayNotRemovableWarning(pkProject);
     }
 
+    const sourceLabel = await this.getSourceEntityLabel()
+    const fieldLabel = this.getFieldLabel()
+    const targetLabel = await this.getTargetEntityLabel()
+    const pkStatement = this.item.statement.pk_entity
+
     if (this.field.identityDefiningForTarget) {
-      this.removeEntity(pkProject)
+      const pkEntity = this.item.target.entity.resource.pk_entity
+      this.p.openRemoveStatementAndEntityDialog(
+        sourceLabel,
+        fieldLabel,
+        targetLabel,
+        pkStatement,
+        pkEntity
+      )
+      // this.removeEntity(pkProject)
     }
     else {
-      this.removeStatement(pkProject);
+      const targetIsLiteral = !this.item.target.entity
+      this.p.openRemoveStatementDialog(
+        sourceLabel,
+        fieldLabel,
+        targetLabel,
+        pkStatement,
+        targetIsLiteral
+      )
+      // this.removeStatement(pkProject);
     }
 
   }
@@ -179,19 +202,52 @@ export class ViewFieldItemComponent implements OnInit {
     return false;
   }
 
-  private removeStatement(pkProject: number) {
-    const statement = this.item.statement;
-    this.dataService.removeInfEntitiesFromProject([statement.pk_entity], pkProject);
+  // private removeStatement(pkProject: number) {
+  //   const statement = this.item.statement;
+  //   this.dataService.removeInfEntitiesFromProject([statement.pk_entity], pkProject);
+  // }
+
+  // private async removeEntity(pkProject: number) {
+  //   const classLabel = this.field.targets[this.item.targetClass].targetClassLabel
+  //   const entityLabel = this.item.targetLabel
+  //   const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['7']);
+  //   const title = [trucatedClassLabel, entityLabel].filter(i => !!i).join(' - ')
+
+  //   // remove the entity, if confirmed
+  //   const confirmed = await this.p.openRemoveEntityDialog(title, this.item.target.entity.resource.pk_entity)
+  //   // remove the statement
+  //   if (confirmed) this.dataService.removeInfEntitiesFromProject([this.item.statement.pk_entity], pkProject)
+
+  // }
+
+  async getSourceEntityLabel() {
+    const classLabel = this.field.sourceClassLabel
+    const ep = await this.ap.streamEntityPreview(this.fieldBody.source.fkInfo).pipe(first()).toPromise()
+    return this.getEntityLabel(classLabel, ep.entity_label)
+  }
+  async getTargetEntityLabel() {
+    const classLabel = this.field.targets[this.item.targetClass].targetClassLabel
+    let entityLabel: string
+    if (this.item.target.entity) {
+      const ep = await this.ap.streamEntityPreview(this.item.target.entity.resource.pk_entity).pipe(first()).toPromise()
+      entityLabel = ep.entity_label
+    }
+    else {
+      entityLabel = this.item.targetLabel
+    }
+    return this.getEntityLabel(classLabel, entityLabel)
   }
 
-  private removeEntity(pkProject: number) {
-    // remove the related temporal entity
-    this.p.removeEntityFromProject(this.item.target.entity.resource.pk_entity, () => {
-      // remove the statement
-      this.dataService.removeInfEntitiesFromProject([this.item.statement.pk_entity], pkProject)
-    })
-
+  getEntityLabel(classLabel: string, entityLabel: string) {
+    const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['15']);
+    const trucatedEntityLabel = this.truncatePipe.transform(entityLabel, ['15']);
+    return [trucatedClassLabel, trucatedEntityLabel].filter(i => !!i).join(' – ')
   }
+
+  getFieldLabel() {
+    return this.field.label;
+  }
+
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

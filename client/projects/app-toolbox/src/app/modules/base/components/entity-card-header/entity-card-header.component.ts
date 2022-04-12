@@ -5,7 +5,7 @@ import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { first, map, switchMap } from 'rxjs/operators';
+import { first, switchMap } from 'rxjs/operators';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
@@ -74,19 +74,12 @@ export class EntityCardHeaderComponent implements OnInit {
   toggleOntoInfo() {
     this.showOntoInfo$.next(!this.showOntoInfo$.value)
   }
-  openRemoveDialog() {
-    combineLatest([this.preview$, this.classLabel$]).pipe(
-      map(([preview, classLabel]) => {
-        const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['7']);
-        return [trucatedClassLabel, preview.entity_label].filter(i => !!i).join(' - ')
-      })
-    )
-      .pipe(first())
-      .subscribe(tabTitle => {
-        this.p.openRemoveEntityDialog(tabTitle, this.pkEntity)
-          .pipe(first()).subscribe(() => {
-            this.removed.emit()
-          })
-      })
+  async openRemoveDialog() {
+    const preview = await this.preview$.pipe(first()).toPromise()
+    const classLabel = await this.classLabel$.pipe(first()).toPromise()
+    const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['7']);
+    const tabTitle = [trucatedClassLabel, preview.entity_label].filter(i => !!i).join(' - ')
+    const confirmed = await this.p.openRemoveEntityDialog(tabTitle, this.pkEntity)
+    if (confirmed) this.removed.emit()
   }
 }

@@ -134,7 +134,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
   }
 
   closeTab() {
-
+    this.p.closeTab(this.tab.panelIndex, this.tab.tabIndex)
   }
 
   onSplitAreaDragEnd(e: IOutputData) {

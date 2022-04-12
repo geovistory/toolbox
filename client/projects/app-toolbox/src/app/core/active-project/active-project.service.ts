@@ -406,8 +406,11 @@ export class ActiveProjectService {
    * Opens dialog to get confirmation before removing
    * entity from project. If user confirms, the dialog
    * removes entity and closes
+   *
+   * @param entityLabel the label of the entity to remove
+   * @param pkEntity the pkEntity of the entity to remove
    */
-  openRemoveEntityDialog(entityLabel: string, pkEntity: number) {
+  async openRemoveEntityDialog(entityLabel: string, pkEntity: number): Promise<boolean> {
     const s = new Subject<void>();
 
     const data: ConfirmDialogData = {
@@ -418,20 +421,125 @@ export class ActiveProjectService {
       paragraphs: ['Are you sure?'],
 
     }
-    this.pkProject$.pipe(first()).subscribe(pkProject => {
-      const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+    const pkProject = await this.pkProject$.pipe(first()).toPromise()
 
-      dialog.afterClosed().pipe(first()).subscribe(confirmed => {
-        if (confirmed) {
-          this.dataService.removeEntityFromProject(pkProject, pkEntity)
-            .pipe(first(success => !!success)).subscribe(() => {
-              s.next()
-            })
-        }
-      })
-    })
+    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+    const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
 
-    return s;
+    if (confirmed) {
+      await this.dataService.removeEntityFromProject(pkProject, pkEntity)
+        .pipe(first(success => !!success)).toPromise()
+    }
+
+    return confirmed;
+  }
+
+  /**
+   * Opens dialog to get confirmation before removing
+   * entity from project. If user confirms, the dialog
+   * removes entity and the statement and closes
+   *
+   * @param sourceLabel the label of the source entity of the statement
+   * @param fieldLabel the field label
+   * @param targetLabel the label of the target entity of the statement
+   * @param pkStatement the pk of the statement
+   * @param pkEntity the pk of the entity
+   * @returns
+   */
+  async openRemoveStatementAndEntityDialog(
+    sourceLabel: string,
+    fieldLabel: string,
+    targetLabel: string,
+    pkStatement: number,
+    pkEntity: number,
+  ): Promise<boolean> {
+
+    const data: ConfirmDialogData = {
+      noBtnText: 'Cancel',
+      yesBtnText: 'Remove',
+      yesBtnColor: 'warn',
+      title: 'Remove relation and entity',
+      paragraphs: [
+        `This action will remove from your project:`,
+        `the relation: ${sourceLabel} > ${fieldLabel} > ${targetLabel}`,
+        `the entity: ${targetLabel}`,
+        ``,
+        'Are you sure?'
+      ],
+
+    }
+    const pkProject = await this.pkProject$.pipe(first()).toPromise()
+
+    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+    const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
+
+    if (confirmed) {
+      await this.dataService.removeEntityFromProject(pkProject, pkEntity)
+        .pipe(first(success => !!success)).toPromise()
+
+      await this.dataService.removeInfEntitiesFromProject([pkStatement], pkProject)
+        .pipe(first(success => !!success)).toPromise()
+
+    }
+
+    return confirmed;
+  }
+
+
+  /**
+   * Opens dialog to get confirmation before removing
+   * entity from project. If user confirms, the dialog
+   * removes the statement and closes
+   *
+   * @param sourceLabel the label of the source entity of the statement
+   * @param fieldLabel the field label
+   * @param targetLabel the label of the target entity of the statement
+   * @param pkStatement the pk of the statement
+   * @param targetIsLiteral if true, target is literal and the dialog text is shorter
+   * @returns
+   */
+  async openRemoveStatementDialog(
+    sourceLabel: string,
+    fieldLabel: string,
+    targetLabel: string,
+    pkStatement: number,
+    targetIsLiteral: boolean
+  ): Promise<boolean> {
+
+    let paragraphs = [
+      `This action will remove this relation from your project:`,
+      `${sourceLabel} > ${fieldLabel} > ${targetLabel}`,
+
+    ]
+    if (!targetIsLiteral) {
+      paragraphs = [
+        ...paragraphs,
+        `The related entity will remain in your project: ${targetLabel}`
+      ]
+    }
+    paragraphs = [
+      ...paragraphs,
+      ``,
+      'Are you sure?'
+    ]
+    const data: ConfirmDialogData = {
+      noBtnText: 'Cancel',
+      yesBtnText: 'Remove',
+      yesBtnColor: 'warn',
+      title: 'Remove relation',
+      paragraphs
+    }
+    const pkProject = await this.pkProject$.pipe(first()).toPromise()
+
+    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+    const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
+
+    if (confirmed) {
+      await this.dataService.removeInfEntitiesFromProject([pkStatement], pkProject)
+        .pipe(first(success => !!success)).toPromise()
+    }
+
+    return confirmed;
   }
 
 }

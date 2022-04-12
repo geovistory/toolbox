@@ -5,6 +5,7 @@
   <p *ngFor="let p of data.paragraphs">{{p}}</p>
 </div>
 <div mat-dialog-actions>
-  <button *ngIf="!data.hideNoButton" mat-button [color]="data.noBtnColor" (click)="onNoClick()">{{data.noBtnText}}</button>
-  <button mat-button [color]="data.yesBtnColor" (click)="onYesClick()" cdkFocusInitial>{{data.yesBtnText}}</button>
+  <button *ngIf="!data.hideNoButton" mat-button [color]="data.noBtnColor" (click)="onNoClick()"
+    cdkFocusInitial>{{data.noBtnText}}</button>
+  <button mat-button [color]="data.yesBtnColor" (click)="onYesClick()">{{data.yesBtnText}}</button>
 </div>
