@@ -74,6 +74,7 @@ export class FindDataModelController {
       SELECT fk_profile
       FROM projects.dfh_profile_proj_rel
       WHERE fk_project = ${q.addParam(pkProject)}
+      AND enabled = true
       UNION
       SELECT DISTINCT fk_profile
       FROM unnest(ARRAY[${q.addParams(sysConfig.ontome?.requiredOntomeProfiles ?? [])}]::int[]) as fk_profile
