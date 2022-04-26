@@ -143,7 +143,7 @@ describe('SubfieldPageController', () => {
       expect(res.body).to.containDeep(GvPaginationObjectMock.shipVoyageAtSomeTimeWithin);
     });
 
-    it('should return field page for personHasAppeTeEn (targetType: temporalEntity)', async () => {
+    it('should return field page for personHasAppeTeEn (targetType: nestedResource)', async () => {
       await SubfieldHelper.personHasAppeTeEn()
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)
@@ -152,7 +152,7 @@ describe('SubfieldPageController', () => {
       expect(res.body).to.containDeep(GvPaginationObjectMock.personHasAppeTeEn);
     });
 
-    it('should return field pages for personHasTwoAppeTeEn (targetType: temporalEntity)', async () => {
+    it('should return field pages for personHasTwoAppeTeEn (targetType: nestedResource)', async () => {
       await SubfieldHelper.personHasTwoAppeTeEn()
       const res = await client.post('/subfield-page/load-subfield-page')
         .set('Authorization', lb4Token)

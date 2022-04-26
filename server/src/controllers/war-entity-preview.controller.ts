@@ -379,6 +379,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
 
     const q = new SqlBuilderLb4Models(this.dataSource)
 
+    const isNumber = !isNaN(parseInt(req.searchString))
 
     q.sql = `
       WITH tw1 AS (
@@ -393,9 +394,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
           to_tsquery(${tsSearchString === '' ? "''" : tsSearchString}) q
           WHERE 1=1
           ${tsSearchString
-        ? `AND (ts_vector @@ q OR pk_entity::text = ${q.addParam(
-          req.searchString
-        )})`
+        ? `AND (ts_vector @@ q ${isNumber ? `OR pk_entity::text = ${q.addParam(req.searchString)}` : ''})`
         : ''
       }
           ${req.projectId

@@ -1,6 +1,8 @@
-import { AuthenticateFn, AuthenticationBindings, AUTHENTICATION_STRATEGY_NOT_FOUND, USER_PROFILE_NOT_FOUND } from '@loopback/authentication';
-import { inject } from '@loopback/context';
-import { FindRoute, InvokeMethod, InvokeMiddleware, ParseParams, Reject, RequestContext, RestBindings, Send, SequenceHandler } from '@loopback/rest';
+import {AuthenticateFn, AuthenticationBindings, AUTHENTICATION_STRATEGY_NOT_FOUND, USER_PROFILE_NOT_FOUND} from '@loopback/authentication';
+import {inject} from '@loopback/context';
+import {FindRoute, InvokeMethod, InvokeMiddleware, ParseParams, Reject, RequestContext, RestBindings, Send, SequenceHandler} from '@loopback/rest';
+import {performance} from 'perf_hooks';
+import {logToFile} from './utils/helpers';
 
 const SequenceActions = RestBindings.SequenceActions;
 
@@ -10,7 +12,7 @@ export class GvSequence implements SequenceHandler {
    * Optional invoker for registered middleware in a chain.
    * To be injected via SequenceActions.INVOKE_MIDDLEWARE.
    */
-  @inject(SequenceActions.INVOKE_MIDDLEWARE, { optional: true })
+  @inject(SequenceActions.INVOKE_MIDDLEWARE, {optional: true})
   protected invokeMiddleware: InvokeMiddleware = () => false;
 
   constructor(
@@ -23,8 +25,11 @@ export class GvSequence implements SequenceHandler {
   ) { }
 
   async handle(context: RequestContext) {
+
+    const t0 = performance.now()
+
     try {
-      const { request, response } = context;
+      const {request, response} = context;
       log(context)
       const finished = await this.invokeMiddleware(context);
       if (finished) return;
@@ -39,11 +44,35 @@ export class GvSequence implements SequenceHandler {
         err.code === AUTHENTICATION_STRATEGY_NOT_FOUND ||
         err.code === USER_PROFILE_NOT_FOUND
       ) {
-        Object.assign(err, { statusCode: 401 /* Unauthorized */ });
+        Object.assign(err, {statusCode: 401 /* Unauthorized */});
       }
 
       this.reject(context, err);
       console.error(err)
+    }
+    this.slowResponseLogging(t0, context);
+
+  }
+
+  /**
+   * Logs slow responses
+   * @param t0
+   * @param context
+   */
+  private slowResponseLogging(t0: number, context: RequestContext) {
+    const t1 = performance.now();
+    const time = t1 - t0;
+
+    if (time > 500) {
+
+      console.warn(`WARN Slow response time: ${time}ms, Route: ${context?.request?.path}`);
+
+      const pathEscaped = context?.request?.path.replace(/\/+/g, '-');
+      const txt = `${context.request.originalUrl}
+      Body:
+      ${JSON.stringify(context.request.body, null, 2)}
+      `;
+      logToFile(txt, `slow-${pathEscaped}`);
     }
   }
 }
@@ -52,7 +81,7 @@ export class GvSequence implements SequenceHandler {
 
 function log(ctx: RequestContext) {
 
-  const { request } = ctx;
+  const {request} = ctx;
   try {
 
     if (process.env.NO_LOGS === 'true') return;

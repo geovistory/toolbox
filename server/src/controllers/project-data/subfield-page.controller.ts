@@ -2,24 +2,18 @@ import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {getModelSchemaRef, post, requestBody} from '@loopback/rest';
-import objectHash from 'object-hash';
-import {concat, mergeDeepWith, values} from 'ramda';
+import {concat, mergeDeepWith} from 'ramda';
 import {Roles} from '../../components/authorization/keys';
-import {QFieldPage3} from '../../components/query/q-field-page-3';
+import {fieldPageReqsToSqlArray} from '../../components/query/fieldpage/fieldPageReqsToSqlArray';
 import {registerType} from '../../components/spec-enhancer/model.spec.enhancer';
 import {Postgres1DataSource} from '../../datasources';
 import {GvFieldId, GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvSubentitFieldPageReq} from '../../models';
-import {TrueEnum} from '../../models/enums/TrueEnum';
+import {GvSubfieldPageInfo} from '../../models/field-response/GvSubfieldPageInfo';
 import {GvFieldSourceEntity} from '../../models/field/gv-field-source-entity';
-interface ReqsBySource {
-  reqs: GvFieldPageReq[];
-  source: GvFieldSourceEntity;
-}
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
+
 
 export class SubfieldPageController {
-  mergeReqsBySourceInSql = true
-  mergeReqsByTargetInSql = false
-  joinNestedInSql = false
 
   constructor(
     @inject('datasources.postgres1')
@@ -57,203 +51,57 @@ export class SubfieldPageController {
     ) reqs: GvFieldPageReq[],
   ): Promise<GvPaginationObject> {
 
+    const pages = await this.queryPagesRecursive(reqs);
 
-    // const t0 = performance.now()
-    const result = this.mergeReqsBySourceInSql ?
-      await this.queryPages(reqs) :
-      await this.loadPages(reqs);
+    return mergePaginationObjects(pages)
 
-    // const t1 = performance.now()
-    // console.log('Call to loadSubfieldPages took ms ', t1 - t0)
-    return result;
   }
 
 
-  private async loadPages(reqs: GvFieldPageReq[]) {
-    // const results: GvPaginationObject[] = [];
-    // for (const req of reqs) {
-    //   results.push((await this.loadPage(req)));
-    // }
-    const results = await Promise.all(reqs.map(r => this.loadPage(r)))
+  private async queryPagesRecursive(reqs: GvFieldPageReq[], paginationObjects: GvPaginationObject[] = []): Promise<GvPaginationObject[]> {
 
-    const result: GvPaginationObject = mergePaginationObjects(results);
+    // create request groups
+    const sqls = fieldPageReqsToSqlArray(reqs);
 
-    if (this.joinNestedInSql) return result
+    if (sqls.length < 1) return []
 
-    const nestedReqs = nestedRequestsFromPaginationObject(result)
-    const nestedResults = await Promise.all(nestedReqs.map(r => this.loadPage(r)))
-    return mergePaginationObjects([result, ...nestedResults]);
-  }
+    // execute each group
+    const pagesInGroup: GvPaginationObject = {subfieldPages: []}
+    for (const sql of sqls) {
+      const q = new SqlBuilderLb4Models(this.datasource);
+      q.sql = sql;
+      const resultingPages = await q.execute<GvSubfieldPageInfo[]>();
+      pagesInGroup.subfieldPages.push(...resultingPages);
+    }
+    paginationObjects.push(pagesInGroup)
 
-
-
-  async queryPages(reqs: GvFieldPageReq[]): Promise<GvPaginationObject> {
-    // let t0 = performance.now()
-    const result: GvPaginationObject = await this.queryFields(reqs);
-    // let t1 = performance.now()
-    // console.log('A Call to queryFields took ms ', t1 - t0)
-
-    if (this.joinNestedInSql) return result
-
-    // t0 = performance.now()
-
-    const nestedReqs = nestedRequestsFromPaginationObject(result)
-    // t1 = performance.now()
-    // console.log('A Call to nestedRequestsFromPaginationObject took ms ', t1 - t0)
-
-    // t0 = performance.now()
-    const nestedResult = await this.queryNestedFields(nestedReqs)
-    // t1 = performance.now()
-    // console.log('A Call to queryNestedFields took ms ', t1 - t0)
-
-    // t0 = performance.now()
-    const merged = mergePaginationObjects([result, nestedResult]);
-    // t1 = performance.now()
-    // console.log('A Call to mergePaginationObjects took ms ', t1 - t0)
-    return merged
-  }
-
-
-  private async queryFields(reqs: GvFieldPageReq[]) {
-    this.replaceHasTimeSpanWithSixProps(reqs)
-
-    const rs = groupReqsBySource(reqs);
-
-    if (this.mergeReqsByTargetInSql) {
-      const grouped = groupReqsByField(rs)
-
-      const results = await Promise.all(
-        grouped.map(r => new QFieldPage3(this.datasource, this.joinNestedInSql).queryFields(r.reqs, r.sources))
-      );
-      const result: GvPaginationObject = mergePaginationObjects(results);
-      return result;
+    if (paginationObjects.length > 5) {
+      // max levels of nesting reached
+      return paginationObjects
     }
 
-    const results = await Promise.all(
-      rs.map(r => new QFieldPage3(this.datasource, this.joinNestedInSql).queryFields(r.reqs, [r.source]))
-    );
-    const result: GvPaginationObject = mergePaginationObjects(results);
-    return result;
-  }
-  private async queryNestedFields(reqs: GvFieldPageReq[]) {
+    // extract nested requests of last object
+    const lastObject = paginationObjects[paginationObjects.length - 1]
+    const nestedReqs = nestedRequestsFromPaginationObject(lastObject)
+    if (nestedReqs.length) {
+      // nested requests -> query them
 
-    // let t0 = performance.now()
-    const rs = groupReqsBySource(reqs);
-    // logToFile(JSON.stringify(rs, null, 2), 'by-source')
-    // let t1 = performance.now()
-    // console.log('   Call to groupReqsBySource took ms ', t1 - t0)
+      const nestedPaginationObjects = await this.queryPagesRecursive(nestedReqs, paginationObjects)
+      return nestedPaginationObjects
 
+    } else {
+      // no nested requests -> return the objects
 
-    // t0 = performance.now()
-    const grouped = groupReqsByField(rs)
-    // t1 = performance.now()
-    // console.log('   Call to groupReqsByField took ms ', t1 - t0)
-
-    // t0 = performance.now()
-
-    const results = await Promise.all(
-      grouped.map(r => new QFieldPage3(this.datasource, this.joinNestedInSql).queryFields(r.reqs, r.sources))
-    );
-    // t1 = performance.now()
-    // console.log('   Call to queryFields took ms ', t1 - t0)
-
-    // t0 = performance.now()
-
-    const result: GvPaginationObject = mergePaginationObjects(results);
-    // t1 = performance.now()
-    // console.log('   Call to mergePaginationObjects took ms ', t1 - t0)
-
-    return result;
-  }
-
-
-
-  replaceHasTimeSpanWithSixProps(reqs: GvFieldPageReq[]) {
-    const index = reqs.findIndex((req) => req.page.property.fkProperty === 4 && req.page.isOutgoing === true)
-    if (index > -1) {
-      const hasTimeSpanReq = reqs[index]
-      const sixReqs = this.createTimeSpanFieldRequests(hasTimeSpanReq)
-      reqs.splice(index, 1, ...sixReqs)
+      return paginationObjects
     }
-  }
-
-  private async loadPage(req: GvFieldPageReq): Promise<GvPaginationObject> {
-
-    // if (equals(req.targets, {50: {timeSpan: TrueEnum.true}})) {
-    //   const requests = this.createTimeSpanFieldRequests(req)
-    //   return this.loadPages(requests)
-    // }
-    const res = await new QFieldPage3(this.datasource, this.joinNestedInSql).query(req);
-    const requests: GvFieldPageReq[] = nestedRequestsFromPaginationObject(res);
-
-
-    const subPages = await this.loadPages(requests)
-    return mergeDeepWith(concat, res, subPages);
 
   }
 
-
-
-  private createTimeSpanFieldRequests(req: GvFieldPageReq): GvFieldPageReq[] {
-    return [71, 72, 150, 151, 152, 153].map(timeSpanProperty => {
-      const request: GvFieldPageReq = {
-        ...req,
-        page: {
-          ...req.page,
-          property: {fkProperty: timeSpanProperty},
-        },
-        targets: {335: {timePrimitive: TrueEnum.true}}
-      };
-      return request;
-    });
-  }
 
 }
 
 registerType(GvFieldId)
 
-
-
-function groupReqsBySource(reqs: GvFieldPageReq[]): ReqsBySource[] {
-  const reqsBySource: {[uid: string]: {reqs: GvFieldPageReq[]; source: GvFieldSourceEntity;};} = {};
-
-  for (const r of reqs) {
-    const sourceUid = JSON.stringify(r.page.source);
-    const rNoSource: GvFieldPageReq = {
-      ...r,
-      page: {...r.page, source: {}}
-    }
-    if (reqsBySource[sourceUid]) {
-      reqsBySource[sourceUid].reqs.push(rNoSource);
-    } else {
-      reqsBySource[sourceUid] = {
-        reqs: [rNoSource],
-        source: r.page.source
-      };
-    }
-  }
-  const rs = values(reqsBySource);
-  return rs;
-}
-
-function groupReqsByField(reqs: ReqsBySource[]) {
-  const byReqs: {[uid: string]: {reqs: GvFieldPageReq[]; sources: GvFieldSourceEntity[];};} = {};
-
-  for (const r of reqs) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const hash = objectHash(r.reqs)
-    if (byReqs[hash]) {
-      byReqs[hash].sources.push(r.source);
-    } else {
-      byReqs[hash] = {
-        reqs: r.reqs,
-        sources: [r.source]
-      };
-    }
-  }
-  const rs = values(byReqs);
-  return rs;
-}
 
 function mergePaginationObjects(results: GvPaginationObject[]) {
   let result: GvPaginationObject = {subfieldPages: []};
@@ -262,6 +110,13 @@ function mergePaginationObjects(results: GvPaginationObject[]) {
   }
   return result;
 }
+
+/**
+ * Extracts nested requests from pagination object and returns
+ * an array of GvFieldPageReq, with the correct scope
+ * @param res
+ * @returns
+ */
 function nestedRequestsFromPaginationObject(res: GvPaginationObject): GvFieldPageReq[] {
   const requests: GvFieldPageReq[] = [];
   for (const subfieldPageInfo of res.subfieldPages) {
@@ -296,21 +151,16 @@ export function nestedRequestsFromNestedResource(
   parentScope: GvFieldPageScope,
 ): GvFieldPageReq[] {
 
-  /**
-   * generate the scope of the subpages
-   */
+  // generate the scope of the subpages
   let scope: GvFieldPageScope;
   if (parentScope.notInProject)
     scope = {inRepo: true};
   else
     scope = parentScope;
 
-  // const promises$ = []
   const results = []
   for (const subReq of subReqs) {
-    /**
-     * convert GvLoadSubentitySubfieldPageReq to GvLoadSubfieldPageReq
-     */
+    // convert GvLoadSubentitySubfieldPageReq to GvLoadSubfieldPageReq
     const page: GvFieldPage = {
       ...subReq.page,
       scope,
@@ -327,5 +177,4 @@ export function nestedRequestsFromNestedResource(
   }
   return results;
 
-  // return Promise.all(promises$)
 }

@@ -14,7 +14,7 @@
     <ng-container *ngIf="statementWT.target.entity; else cell">
       <gv-entity-preview [dragEnabled]="false" [openTabOnClick]="!readonly"
         [pkEntity]="statementWT.target.entity.resource.pk_entity"
-        [matTooltip]="statementWT.target.entity.entityPreview.entity_label">
+        [matTooltip]="statementWT.target.entity?.entityPreview?.entity_label">
       </gv-entity-preview>
     </ng-container>
     <ng-template #cell>

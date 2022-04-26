@@ -7,9 +7,9 @@ export const maleIsGenderOf: GvFieldPageReq[] = [{
   "page": {
     "source": {"fkInfo": 739340},
     "property": {"fkProperty": 1429},
-    "limit": 0,
+    "limit": 10,
     "offset": 0,
     "isOutgoing": false,
-    "scope": {"notInProject": 591}
+    "scope": {"inProject": 591}
   }
 }]

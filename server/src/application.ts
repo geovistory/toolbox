@@ -20,6 +20,7 @@ import {GvSequence} from './sequence';
 import {AccountService} from './services/account.service';
 import {EmailService} from './services/email.service';
 import {PasswordResetTokenService} from './services/password-reset-token.service';
+import {setupPostgresFunctions} from './startup/setupPostgresFunctions';
 import {NodeENV} from './utils/code.utils';
 import {getGvPgUrlForLoopback} from './utils/databaseUrl';
 
@@ -88,6 +89,16 @@ export class GeovistoryApplication extends BootMixin(
     //TODO: is 2nd param needed?
     this.dataSource(Postgres1DataSource, 'datasources.postgres1');
 
+    this.onInit(() => {
+      this.setupPostgresFunctions()
+        .then(() => {
+          console.log('Successfully setup postgres functions')
+        })
+        .catch(err => {
+          console.error('Cannot setup postgres functions.', err);
+          process.exit(1);
+        });
+    })
   }
 
 
@@ -98,6 +109,12 @@ export class GeovistoryApplication extends BootMixin(
     this.setupJWTComponent();
     this.setupAuthorizationComponent();
     this.setupSpecEnhancerComponent()
+
+  }
+
+  async setupPostgresFunctions() {
+    const c: Postgres1DataSource = await this.get('datasources.postgres1')
+    await setupPostgresFunctions(c);
   }
 
   // Register Loopback 3 app as a component
@@ -156,7 +173,8 @@ export class GeovistoryApplication extends BootMixin(
   }
 
 
-  /**
+
+  /**Ctsc
     * Setup static files to serve default homepage
     *
     * this.static is called if no other route was found by
@@ -185,5 +203,6 @@ export class GeovistoryApplication extends BootMixin(
   }
 
 }
+
 
 
