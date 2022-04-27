@@ -90,14 +90,25 @@
   text-align: center;
   color: white;
 }
-.gv-select-text {
-  font-size: 24px;
-  font-weight: 600;
-  line-height: 1.2;
+.gv-select-text-box {
   display: flex;
   align-items: center;
   justify-content: space-around;
   color: white;
+  flex-direction: column;
+  margin: 0;
+}
+.gv-select-text-lead {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+.gv-select-text-hint {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .gv-drop-zone-filled {

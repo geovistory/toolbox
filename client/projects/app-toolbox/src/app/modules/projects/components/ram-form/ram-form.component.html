@@ -27,9 +27,10 @@
         <p>Drag Source or Section here</p>
       </div>
     </div>
-    <div class="gv-ram-box gv-select-text" *ngIf="!(p.ramSource$ | async) && (p.ramBoxLeft$|async)=='select-text'">
-      <div class="gv-ram-box-text gv-fade-out-bottom">
-        <p>Select a Text</p>
+    <div class="gv-ram-box" *ngIf="!(p.ramSource$ | async) && (p.ramBoxLeft$|async)=='select-text'">
+      <div class="gv-select-text-box gv-fade-out-bottom">
+        <p class="gv-select-text-lead">Select a Text</p>
+        <p class="gv-select-text-hint">Open a Text (e.g. in Digitals) and select the words to annotate.</p>
       </div>
     </div>
     <div [hidden]="!(p.ramSource$ | async)" class="gv-ram-box gv-drop-zone-filled">
