@@ -75,11 +75,15 @@ export class SqlGvFieldPageOutgoingNotInProject extends SqlBuilderLb4Models {
             AND t2.is_in_project = TRUE
             AND t2.fk_project = _project_id
           )
-          --------------------------------------------------------------------------
-          -- paginate according to the requested limit / offset
-          --------------------------------------------------------------------------
-        ORDER BY
-          t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- THE FOLLOWING ORDER BY CLAUSE IS DISABLED FOR PERFORMANCE REASONS
+        -- ORDER BY
+        --   t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- paginate according to the requested limit / offset
+        --------------------------------------------------------------------------
         LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
         OFFSET _offset) AS stmt;
     END

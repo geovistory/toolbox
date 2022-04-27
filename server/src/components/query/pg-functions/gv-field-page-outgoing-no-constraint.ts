@@ -50,11 +50,15 @@ export class SqlGvFieldPageOutgoingNoConstraint extends SqlBuilderLb4Models {
           AND t1.fk_subject_tables_cell = _fk_subject_tables_cell
           AND t1.fk_subject_tables_row = _fk_subject_tables_row
           AND t1.fk_property = _fk_property
-          --------------------------------------------------------------------------
-          -- paginate according to the requested limit / offset
-          --------------------------------------------------------------------------
-        ORDER BY
-          t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- THE FOLLOWING ORDER BY CLAUSE IS DISABLED FOR PERFORMANCE REASONS
+        -- ORDER BY
+        --   t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- paginate according to the requested limit / offset
+        --------------------------------------------------------------------------
         LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
         OFFSET _offset) AS stmt;
     END
