@@ -61,7 +61,7 @@ export class SqlGvFieldPageIncomingInProject extends SqlBuilderLb4Models {
           -- order the statements according to order number of target
           --------------------------------------------------------------------------
         ORDER BY
-          t2.ord_num_of_domain ASC NULLS LAST, t1.pk_entity ASC
+          t2.ord_num_of_domain ASC NULLS LAST, t1.pk_entity DESC
           --------------------------------------------------------------------------
           -- paginate according to the requested limit / offset
           --------------------------------------------------------------------------
