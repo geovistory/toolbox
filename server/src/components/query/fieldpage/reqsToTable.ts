@@ -20,7 +20,7 @@ function reqToRow(req: GvFieldPageReq): string {
     strings.push(`${p.source.fkInfo ?? 0} source_info_id`);
     strings.push(`${p.source.fkData ?? 0} source_data_id`);
     strings.push(`${p.source.fkTablesCell ?? 0}::bigint source_tables_cell_id`);
-    strings.push(`${p.source.fkTablesCell ?? 0}::bigint source_tables_row_id`);
+    strings.push(`${p.source.fkTablesRow ?? 0}::bigint source_tables_row_id`);
     strings.push(`${p.limit} "limit"`);
     strings.push(`${p.offset} "offset"`);
     strings.push(`'${JSON.stringify(req)}'::json "req"`);
