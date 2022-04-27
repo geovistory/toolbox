@@ -26,7 +26,7 @@ export class SqlGvFieldPageIncomingInProject extends SqlBuilderLb4Models {
         now() "validFor",
         CASE WHEN _limit=0 THEN
           '[]'::json ELSE
-          COALESCE(json_agg(stmt.obj ORDER BY row_number asc), '[]'::json)
+          COALESCE(json_agg(stmt.obj ORDER BY ord_num_of_domain ASC NULLS LAST, pk_entity DESC), '[]'::json)
           END
           AS "paginatedStatements",
         COALESCE(max(full_count), 0)::int "count",
@@ -36,9 +36,10 @@ export class SqlGvFieldPageIncomingInProject extends SqlBuilderLb4Models {
         -- PAGINATED SELECT
         --------------------------------------------------------------------------
         SELECT
-          json_strip_nulls (json_build_object('projRel', gv_to_jsonb (t2), 'isOutgoing', false, 'ordNum', t2.ord_num_of_range, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
+          json_strip_nulls (json_build_object('projRel', gv_to_jsonb (t2), 'isOutgoing', false, 'ordNum', t2.ord_num_of_domain, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
           count(*) OVER () AS full_count,
-          ROW_NUMBER() OVER()
+          t2.ord_num_of_domain,
+          t1.pk_entity
         FROM
           information.v_statement t1,
           projects.v_info_proj_rel t2,
