@@ -9,18 +9,6 @@ import {Warehouse} from '../../Warehouse';
 import {PEntityId, pEntityKeyDefs} from '../entity/PEntityService';
 import {buildIncomingEdges, buildOutgoingEdges, EntityFields} from './edge.commons';
 
-interface Noun {
-    table: string;
-    fkInfo: number;
-    value: {
-        appellation: string | null;
-        language: string | null;
-        lang_string: string | null;
-    };
-}
-
-
-
 @Injectable()
 export class PEdgeService extends PrimaryDataService<PEntityId, EntityFields>{
 

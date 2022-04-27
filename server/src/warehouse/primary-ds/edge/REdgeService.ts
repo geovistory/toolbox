@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { forwardRef, Inject, Injectable } from 'injection-js';
-import { PrimaryDataService } from '../../base/classes/PrimaryDataService';
-import { Warehouse } from '../../Warehouse';
-import { REntityId, rEntityKeyDefs } from '../entity/REntityService';
-import { EntityFields } from "./edge.commons";
+import {forwardRef, Inject, Injectable} from 'injection-js';
+import {sum} from 'lodash';
+import {PoolClient} from 'pg';
+import {Logger} from '../../base/classes/Logger';
+import {PgDataReplicator} from '../../base/classes/PgDataReplicator';
+import {PrimaryDataService} from '../../base/classes/PrimaryDataService';
+import {Warehouse} from '../../Warehouse';
+import {REntityId, rEntityKeyDefs} from '../entity/REntityService';
+import {EntityFields} from "./edge.commons";
 
 
 @Injectable()
@@ -23,45 +27,102 @@ export class REdgeService extends PrimaryDataService<REntityId, EntityFields>{
     )
   }
 
-  getUpdatesSql(tmsp: Date) {
-    return updateSql
-  }
-  getDeletesSql(tmsp: Date) { return '' };
 
+  getUpdatesSql(tmsp: Date) {return ''}
+  getDeletesSql(tmsp: Date) {return ''};
+
+  async manageUpdatesSince(pool1: PoolClient, pool2: PoolClient, date: Date = new Date(0)) {
+
+    const t2 = Logger.start(this.constructor.name, `Execute update query  ...`, 2);
+
+    const tmpTable = `${this.constructor.name}_update_tmp`
+
+    const stats = await new PgDataReplicator<{count: number}>(
+      {client: pool1, table: tmpTable},
+      {client: pool2, table: this.index.schemaTable},
+      [this.index.keyCols, 'val'],
+      (insertClause, fromClause) => `
+              WITH tw1 AS (
+                  ${insertClause}
+                  ${fromClause}
+                  ON CONFLICT (${this.index.keyCols}) DO UPDATE
+                  SET val = EXCLUDED.val
+                  WHERE  ${this.index.schemaTable}.val <> EXCLUDED.val
+                  RETURNING *
+              )
+              SELECT count(*)::int FROM tw1
+          `
+    ).replicateBatch(
+      date,
+      countSql,
+      updateBatchSql,
+    )
+    const upserted = sum(stats.map(s => s.rows?.[0].count))
+
+    Logger.itTook(this.constructor.name, t2, `to update Primary Data Service with ${upserted} new lines`, 2);
+
+    if (this.updateReplications.length > 0) {
+      const replicationRequest = this.updateReplications.map(repl => {
+        return new PgDataReplicator<{count: number}>(
+          {client: pool1, table: tmpTable},
+          {client: pool1, table: repl.targetTable},
+          [this.index.keyCols, 'val'],
+          repl.sqlFn
+        ).replicateTable()
+      })
+      await Promise.all(replicationRequest)
+    }
+
+    return upserted
+
+  }
 
 }
 
+const twIds = `
+    WITH tw AS (
+      -- select affected entities
+      SELECT
+        DISTINCT t2.fk_subject_info pk_entity
+      FROM
+        projects.info_proj_rel t1
+        JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
+        JOIN information.resource t3 ON t2.fk_subject_info = t3.pk_entity
+      WHERE
+        t1.tmsp_last_modification >= $1
+      UNION
+      SELECT
+        DISTINCT t2.fk_object_info pk_entity
+      FROM
+        projects.info_proj_rel t1
+        JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
+        JOIN information.resource t3 ON t2.fk_object_info = t3.pk_entity
+      WHERE
+        t1.tmsp_last_modification >= $1
+      UNION
+      SELECT
+        DISTINCT t2.pk_entity
+      FROM
+        projects.info_proj_rel t1
+        JOIN information.resource t2 ON t1.fk_entity = t2.pk_entity
+      WHERE
+        t1.tmsp_last_modification >= $1
+      )
+`
 
-const updateSql = `
-WITH tw0 AS (
-  -- select affected entities
-  SELECT
-    DISTINCT t2.fk_subject_info pk_entity
-  FROM
-    projects.info_proj_rel t1
-    JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
-    JOIN information.resource t3 ON t2.fk_subject_info = t3.pk_entity
-  WHERE
-    t1.tmsp_last_modification >= $1
-  UNION
-  SELECT
-    DISTINCT t2.fk_object_info pk_entity
-  FROM
-    projects.info_proj_rel t1
-    JOIN information. "statement" t2 ON t1.fk_entity = t2.pk_entity
-    JOIN information.resource t3 ON t2.fk_object_info = t3.pk_entity
-  WHERE
-    t1.tmsp_last_modification >= $1
-  UNION
-  SELECT
-    DISTINCT t2.pk_entity
-  FROM
-    projects.info_proj_rel t1
-    JOIN information.resource t2 ON t1.fk_entity = t2.pk_entity
-  WHERE
-    t1.tmsp_last_modification >= $1
-  ),
+const countSql = `
+    ${twIds}
+    select count(*):: integer
+    from tw
+`
 
+const updateBatchSql = (limit: number, offset: number) => `
+ ${twIds},
+tw0 AS (
+    SELECT pk_entity
+    FROM tw
+    LIMIT ${limit} OFFSET ${offset}
+),
 tw1 AS (
   SELECT
   t2.pk_entity as pk_statement,
