@@ -26,7 +26,7 @@ export class SqlGvFieldPageOutgoingInRepo extends SqlBuilderLb4Models {
         now() "validFor",
         CASE WHEN _limit=0 THEN
           '[]'::json ELSE
-          COALESCE(json_agg(stmt.obj), '[]'::json)
+          COALESCE(json_agg(stmt.obj ORDER BY row_number asc), '[]'::json)
           END
           AS "paginatedStatements",
         COALESCE(max(full_count), 0)::int "count",
@@ -37,7 +37,8 @@ export class SqlGvFieldPageOutgoingInRepo extends SqlBuilderLb4Models {
         --------------------------------------------------------------------------
         SELECT
           json_strip_nulls (json_build_object('isOutgoing', true, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
-          count(*) OVER () AS full_count
+          count(*) OVER () AS full_count,
+          ROW_NUMBER() OVER()
         FROM
           information.v_statement t1,
           gv_get_statement_target (0, t1.fk_object_info, t1.fk_object_data, t1.fk_object_tables_cell, t1.fk_object_tables_row) t3
