@@ -74,7 +74,7 @@
     "@types/pkg-dir": "^2.0.1",
     "ajv": "^8.6.3",
     "archiver": "^5.0.0",
-    "async": "^3.2.0",
+    "async": "^3.2.2",
     "aws-sdk": "^2.747.0",
     "bcryptjs": "^2.4.3",
     "cli-color": "^1.2.0",
