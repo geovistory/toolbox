@@ -6,7 +6,7 @@ import {createInfPlace} from '../atomic/inf-place.helper';
 import {createInfResource} from '../atomic/inf-resource.helper';
 import {createInfStatement} from '../atomic/inf-statement.helper';
 import {createInfTimePrimitive} from '../atomic/inf-time-primitive.helper';
-import {createProInfoProjRel} from '../atomic/pro-info-proj-rel.helper';
+import {addInfosToProject, createProInfoProjRel} from '../atomic/pro-info-proj-rel.helper';
 import {createWarEntityPreview} from '../atomic/war-entity-preview.helper';
 import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
 import {InfDimensionMock} from '../data/gvDB/InfDimensionMock';
@@ -17,6 +17,7 @@ import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../data/gvDB/InfStatementMock';
 import {InfTimePrimitiveMock} from '../data/gvDB/InfTimePrimitiveMock';
 import {ProInfoProjRelMock} from '../data/gvDB/ProInfoProjRelMock';
+import {ProProjectMock} from '../data/gvDB/ProProjectMock';
 import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
 import {addAccountToProject, createAccountVerified} from '../generic/account.helper';
 import {createProject1} from './project.helper';
@@ -139,6 +140,21 @@ export namespace SubfieldHelper {
     await createInfAppellation(InfAppellationMock.VALUE_VERSION_2)
     await createProInfoProjRel(ProInfoProjRelMock.PROJ_1_STMT_DEFINITION_1_HAS_VALUE_VERSION_2)
   }
+
+  // Data to test subfield-page-query for Section->has repro->Text
+  export async function hasReproduction() {
+    const toAdd: number[] = []
+    toAdd.push((await createInfResource(InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1)).pk_entity ?? -1)
+
+    toAdd.push((await createInfResource(InfResourceMock.HIDDEN_TRANSCRIPTION_CHAPTER_1)).pk_entity ?? -1)
+    toAdd.push((await createInfStatement(InfStatementMock.HIDDEN_TRANSCRIPTION_IS_REPRO_OF_CHAPTER_1)).pk_entity ?? -1)
+
+    toAdd.push((await createInfResource(InfResourceMock.TRANSCRIPTION_RODOLF_FOO)).pk_entity ?? -1)
+    toAdd.push((await createInfStatement(InfStatementMock.SHARED_TRANSCRIPTION_IS_REPRO_OF_CHAPTER_1)).pk_entity ?? -1)
+
+    await addInfosToProject(ProProjectMock.PROJECT_1.pk_entity, toAdd)
+  }
+
 
   export async function makeProject1() {
     const accountId = await createAccountVerified('gaetan.muck@kleiolab.ch', 'testtest1');

@@ -58,10 +58,12 @@ export class ViewFieldItemComponent implements OnInit {
       const override = this.itemTypeOverride(field, item)
       if (override) return override
     }
-    if (field.targets[item.targetClass]?.viewType?.entityPreview || field.targets[item.targetClass]?.viewType?.typeItem) {
-      return 'preview'
+    if (item.target.entity) {
+      if (field.targets[item.targetClass]?.viewType?.entityPreview || field.targets[item.targetClass]?.viewType?.typeItem) {
+        return 'preview'
+      }
+      return 'nested'
     }
-    if (item.target.entity) return 'nested'
     if (item.target.timePrimitive) return 'timePrimitive'
     if (item.target.cell) return 'cell'
     return 'value'

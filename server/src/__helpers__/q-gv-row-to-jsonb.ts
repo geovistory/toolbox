@@ -1,4 +1,4 @@
-import {SqlGvRowToJsonbFunction} from '../components/query/pg-functions/q-gv-row-to-jsonb-function'
+import {SqlGvRowToJsonbFunction} from '../components/query/pg-functions/gv-row-to-jsonb-fn'
 import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, WarEntityPreview} from '../models'
 import {Postgres1DataSource} from './Postgres1DataSource'
 

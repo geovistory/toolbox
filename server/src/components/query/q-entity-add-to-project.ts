@@ -4,7 +4,7 @@ import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.mod
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
-export class QEntityAddToProject extends SqlBuilderLb4Models {
+export class QRelateIdsToProject extends SqlBuilderLb4Models {
 
   constructor(
     dataSource: Postgres1DataSource
@@ -13,85 +13,18 @@ export class QEntityAddToProject extends SqlBuilderLb4Models {
   }
 
   /**
-   * Adds an entity (persitent or temporal) to the project.
-   * It inserts or updates the info_proj_rel.is_in_project for the following records
-   * - The entity itself
-   * - The outgoing statements
-   * - The text properties (TODO remove, once text properties are replaced by lang_string )
-   * - the namings and their outgoing statements and text properties
-   *
+   * add info project relations between given project and entities
    * @param fkProject project
-   * @param pkEntity the temporal entity to add to the project
+   * @param pkEntities information.pk_entity array
    * @param accountId the account of the user performing the action
    */
-  query(fkProject: number, pkEntity: number, accountId: number): Promise<GvPositiveSchemaObject> {
+  query(fkProject: number, pkEntities: number[], accountId: number): Promise<GvPositiveSchemaObject> {
 
 
     this.sql = `
-      -- select items to add to project
-      WITH RECURSIVE tw1 (pk, pk_related) AS (
-
-      -- the entity itself
-      SELECT ${this.addParam(pkEntity)}, null::int
-
-      UNION ALL
-      -- the outgoing statements
-      SELECT t1.pk_entity, null::int
-      FROM information.get_outgoing_statements_to_add(${this.addParam(pkEntity)},  ${this.addParam(fkProject)}) t1
-
-      UNION ALL
-      -- the ingoing statements of property 'has appellation'
-      SELECT t1.pk_entity, t1.fk_subject_info
-      FROM information.v_statement t1
-      WHERE t1.fk_object_info = ${this.addParam(pkEntity)}
-      AND t1.fk_property = 1111
-      AND t1.is_in_project_count > 0
-
-      UNION ALL
-      -- the text properties
-      SELECT t2.pk_entity, null::int
-      FROM information.text_property t2
-      WHERE t2.fk_concerned_entity = ${this.addParam(pkEntity)}
-
-      UNION ALL
-      SELECT * FROM (
-        WITH tw AS (
-          -- Workaround of error: recursive reference to query "tw1" must not appear more than once
-          -- Filter the pk_related pointing to a PeIt or TeEn
-            SELECT *
-          FROM tw1
-          LEFT JOIN information.resource t2
-            ON tw1.pk_related = t2.pk_entity
-          WHERE tw1.pk_related IS NOT NULL
-          AND t2.pk_entity IS NOT NULL
-        )
-
-        -- the entity itself
-        SELECT pk_related, null::int
-        FROM tw
-
-        UNION ALL
-
-        -- the outgoing statements (not in already selected statements)
-        SELECT t1.pk_entity, null::int
-        FROM tw
-        CROSS JOIN LATERAL
-          (
-            SELECT *
-            FROM information.get_outgoing_statements_to_add(tw.pk_related,  ${this.addParam(fkProject)})
-          ) t1
-        WHERE t1.pk_entity NOT IN (tw.pk)
-
-        UNION ALL
-
-        -- the ingoing statements of property 'has appellation'
-        SELECT t1.pk_entity, t1.fk_subject_info
-        FROM information.v_statement t1,	tw
-        WHERE tw.pk_related = t1.fk_object_info
-        AND t1.fk_property = 1111
-        AND t1.is_in_project_count > 0
-      )t
-
+    WITH tw1 AS (
+      SELECT DISTINCT pk
+      FROM unnest(ARRAY[${this.addParams(pkEntities)}]::int[]) as pk
     ),
     -- insert the info_proj_rels
     tw2 AS (

@@ -24,6 +24,12 @@ export class ViewFieldItemPreviewComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const errors: string[] = []
+
+    if (!this.itemComponent.field) errors.push('field is required.');
+    if (!this.itemComponent.item) errors.push('item is required.');
+    if (errors.length) throw new Error(errors.join('\n'));
+
     this.resource = this.itemComponent.item.target.entity.resource
     this.ordNum = this.itemComponent.item.ordNum
     this.field = this.itemComponent.field

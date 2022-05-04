@@ -28,8 +28,7 @@
       <mat-icon>tab</mat-icon>
       Open {{preview?.entity_label | truncate:['10']}} in new Tab
     </button>
-    <button *ngIf="preview?.fk_project === null && preview?.entity_type == 'peIt'" mat-menu-item
-      (click)="addAndOpenInNewTab()">
+    <button *ngIf="preview?.fk_project === null" mat-menu-item (click)="addAndOpenInNewTab()">
       <mat-icon color="primary">add</mat-icon>
       Add to project and open
     </button>

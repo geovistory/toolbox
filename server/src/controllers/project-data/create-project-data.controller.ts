@@ -12,7 +12,6 @@ import {mergeDeepWith} from "ramda";
 import {PartialDeep} from "type-fest";
 import {PartialObjectDeep} from "type-fest/source/partial-deep";
 import {Roles} from "../../components/authorization";
-import {QEntityAddToProject} from "../../components/query/q-entity-add-to-project";
 import {CLASS_PK_MANIFESTATION_SINGLETON} from "../../config";
 import {Postgres1DataSource} from "../../datasources";
 import {InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementObjectFks, InfStatementObjectValues, InfStatementSubjectFks, InfStatementSubjectValues, InfStatementWithRelations, InfTimePrimitive, ProInfoProjRel} from "../../models";
@@ -23,6 +22,7 @@ import {ProjectVisibilityOptions} from "../../models/sys-config/sys-config-proje
 import {DatChunkRepository, InfAppellationRepository, InfDimensionRepository, InfLangStringRepository, InfLanguageRepository, InfPlaceRepository, InfResourceRepository, InfStatementRepository, InfTimePrimitiveRepository, ProInfoProjRelRepository} from "../../repositories";
 import {SqlBuilderLb4Models} from "../../utils/sql-builders/sql-builder-lb4-models";
 import {VisibilityController} from "../backoffice/visibility.controller";
+import {AddOrRemoveEntityController} from './add-or-remove-entity.controller';
 import {OrdNumController} from "./ord-num.controller";
 
 @model()
@@ -55,6 +55,8 @@ export class CreateProjectDataController {
     public visibilityController: VisibilityController,
     @inject('controllers.OrdNumController')
     public ordNumController: OrdNumController,
+    @inject('controllers.AddOrRemoveEntityController')
+    public addOrRemoveEntityController: AddOrRemoveEntityController,
     @repository(InfResourceRepository)
     public infResourceRepository: InfResourceRepository,
     @repository(InfStatementRepository)
@@ -310,8 +312,7 @@ export class CreateProjectDataController {
       returnedResource = await this.findResourceAndUpsertProjectRel(resource, project);
       // add the entity with the additionnal statements
       if (returnedResource.entity_version_project_rels?.[0].is_in_project !== false) {
-        const q = new QEntityAddToProject(this.datasource)
-        await q.query(project, resource.pk_entity, parseInt(this.user[securityId]),)
+        await this.addOrRemoveEntityController.addEntityToProject(project, resource.pk_entity)
       }
     } else {
       // create the resource and its project relations

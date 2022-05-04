@@ -1,5 +1,5 @@
 import {InfResource} from '../../../../models';
-import {C_785_TEXT_ID, C_898_TABLE_ID, C_899_DEFINITION_ID, C_933_ANNOTATION_IN_TEXT_ID, C_934_ANNOTATION_IN_TABLE_ID} from '../../../../ontome-ids';
+import {C_365_APPELLATION_IN_A_LANGUAGE_ID, C_785_TEXT_ID, C_898_TABLE_ID, C_899_DEFINITION_ID, C_933_ANNOTATION_IN_TEXT_ID, C_934_ANNOTATION_IN_TABLE_ID} from '../../../../ontome-ids';
 import {DfhApiClassMock} from './DfhApiClassMock';
 import {OmitEntity} from './local-model.helpers';
 
@@ -118,7 +118,7 @@ export class InfResourceMock {
 
   static readonly NAMING_1: OmitEntity<InfResource> = ({
     pk_entity: 4001,
-    fk_class: DfhApiClassMock.EN_365_NAMING.dfh_pk_class,
+    fk_class: C_365_APPELLATION_IN_A_LANGUAGE_ID,
     community_visibility: {toolbox: true, dataApi: true, website: true}
   })
 
@@ -294,5 +294,10 @@ export class InfResourceMock {
     pk_entity: 4031,
     fk_class: C_934_ANNOTATION_IN_TABLE_ID,
     community_visibility: {toolbox: true, dataApi: true, website: true}
+  })
+  static readonly HIDDEN_TRANSCRIPTION_CHAPTER_1: OmitEntity<InfResource> = ({
+    pk_entity: 4032,
+    fk_class: C_785_TEXT_ID,
+    community_visibility: {toolbox: false, dataApi: false, website: false}
   })
 }

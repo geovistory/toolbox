@@ -51,6 +51,12 @@ export class SqlGvFieldPageOutgoingNotInProject extends SqlBuilderLb4Models {
           AND t1.fk_subject_tables_row = _fk_subject_tables_row
           AND t1.fk_property = _fk_property
           AND t1.is_in_project_count > 0
+
+          --------------------------------------------------------------------------
+          -- EXCLUDE STATEMENTS REFERENCING HIDDEN ENTITY
+          --------------------------------------------------------------------------
+          AND (t3.target_obj->'entity'->'resource'->'community_visibility'->>'toolbox')::boolean IS DISTINCT FROM false
+
           AND t1.pk_entity NOT IN (
             --------------------------------------------------------------------------
             -- EXCLUDE STATEMENTS OF PROJECT

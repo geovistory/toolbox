@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Optional } from '@angular/core';
-import { InfResource } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { InfResource, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
@@ -21,12 +22,17 @@ export class ViewFieldItemClassInfoComponent implements OnInit {
   @Input() shade = 'secondary'
 
   tooltip: string
+  preview$: Observable<WarEntityPreview>
+
   constructor(
     public itemComponent: ViewFieldItemComponent,
+    private ap: ActiveProjectPipesService,
     @Optional() @Inject(READ_ONLY) public readonly: boolean
   ) { }
 
   ngOnInit(): void {
+    // lazy load the preview, if only pkEntity given
+    this.preview$ = this.ap.streamEntityPreview(this.resource.pk_entity)
 
     this.tooltip = `${this.classLabel}`
   }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import {InfStatement} from '../../../../models';
-import {P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_1879_HAS_VALUE_ID} from '../../../../ontome-ids';
+import {P_1216_IS_REPRODUCTION_OF_ID, P_1762_HAS_DEFINITION_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_1879_HAS_VALUE_ID} from '../../../../ontome-ids';
 import {DatDigitalMock} from './DatDigitalMock';
 import {DfhApiPropertyMock} from './DfhApiPropertyMock';
 import {InfAppellationMock} from './InfAppellationMock';
@@ -517,6 +517,25 @@ export class InfStatementMock {
     fk_subject_info: InfResourceMock.ANNOTATION_ANGELA.pk_entity,
     fk_property: P_1872_IS_ANNOTATED_IN_ID,
     fk_object_info: InfResourceMock.TABLE_1.pk_entity,
+  })
+  static readonly PERSON_1_HAS_DEFINITION: OmitEntity<InfStatement> = ({
+    pk_entity: 3071,
+    fk_subject_info: InfResourceMock.PERSON_1.pk_entity,
+    fk_property: P_1762_HAS_DEFINITION_ID,
+    fk_object_info: InfResourceMock.DEFINITION_1.pk_entity,
+  })
+
+  static readonly HIDDEN_TRANSCRIPTION_IS_REPRO_OF_CHAPTER_1: OmitEntity<InfStatement> = ({
+    pk_entity: 3072,
+    fk_subject_info: InfResourceMock.HIDDEN_TRANSCRIPTION_CHAPTER_1.pk_entity,
+    fk_property: P_1216_IS_REPRODUCTION_OF_ID,
+    fk_object_info: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1.pk_entity,
+  })
+  static readonly SHARED_TRANSCRIPTION_IS_REPRO_OF_CHAPTER_1: OmitEntity<InfStatement> = ({
+    pk_entity: 3073,
+    fk_subject_info: InfResourceMock.TRANSCRIPTION_RODOLF_FOO.pk_entity,
+    fk_property: P_1216_IS_REPRODUCTION_OF_ID,
+    fk_object_info: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1.pk_entity,
   })
 
 }

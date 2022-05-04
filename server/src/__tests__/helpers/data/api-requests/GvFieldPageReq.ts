@@ -1,6 +1,6 @@
 import {GvFieldPageReq, GvFieldPageScope} from '../../../../models'
 import {TrueEnum} from '../../../../models/enums/TrueEnum'
-import {C_219_MANIFESTATION_PRODUCT_TYPE_ID, C_220_MANIFESTATION_SINGLETON_ID, C_339_STRING_ID, C_456_CHUNK_ID, C_503_EXPRESSION_PORTION_ID, C_785_TEXT_ID, C_899_DEFINITION_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1016_IS_REPRESENTATIVE_MANIFESTATION_SINGLETON_FOR_ID, P_1216_IS_REPRODUCTION_OF_ID, P_1317_IS_PART_OF_ID, P_1762_HAS_DEFINITION_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_979_CARRIERS_PROVIDED_BY_ID} from '../../../../ontome-ids'
+import {C_219_MANIFESTATION_PRODUCT_TYPE_ID, C_220_MANIFESTATION_SINGLETON_ID, C_339_STRING_ID, C_456_CHUNK_ID, C_503_EXPRESSION_PORTION_ID, C_785_TEXT_ID, C_899_DEFINITION_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1016_IS_REPRESENTATIVE_MANIFESTATION_SINGLETON_FOR_ID, P_1111_IS_APPELLATION_FOR_LANGUAGE_OF_ID, P_1216_IS_REPRODUCTION_OF_ID, P_1317_IS_PART_OF_ID, P_1762_HAS_DEFINITION_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_979_CARRIERS_PROVIDED_BY_ID} from '../../../../ontome-ids'
 import {DfhApiClassMock} from '../gvDB/DfhApiClassMock'
 import {DfhApiPropertyMock} from '../gvDB/DfhApiPropertyMock'
 import {InfResourceMock} from '../gvDB/InfResourceMock'
@@ -15,7 +15,7 @@ export namespace GvFieldPageReqMock {
     pkProject: ProProjectMock.PROJECT_1.pk_entity,
     page: {
       source: {fkInfo: InfStatementMock.NAME_1_TO_PERSON.fk_object_info},
-      property: {fkProperty: InfStatementMock.NAME_1_TO_PERSON.fk_property},
+      property: {fkProperty: P_1111_IS_APPELLATION_FOR_LANGUAGE_OF_ID},
       isOutgoing: false,
 
       scope: {inProject: ProProjectMock.PROJECT_1.pk_entity},
@@ -190,8 +190,26 @@ export namespace GvFieldPageReqMock {
       limit: 1,
       offset: 0
     }
+
   }
 
+
+  export const hasReproductionNotInProject: GvFieldPageReq = {
+    pkProject: ProProjectMock.PROJECT_1.pk_entity,
+    targets: {
+      [C_785_TEXT_ID]: {
+        appellation: TrueEnum.true
+      }
+    },
+    page: {
+      source: {fkInfo: InfResourceMock.EXPRESSION_PORTION_HABS_EMP_CHAPTER_1.pk_entity},
+      property: {fkProperty: P_1216_IS_REPRODUCTION_OF_ID},
+      isOutgoing: false,
+      scope: {notInProject: 1234},
+      limit: 7,
+      offset: 0
+    }
+  }
 
   // export const statementOfStatementHasExactReference: GvFieldPageReq = {
   //   pkProject: ProProjectMock.PROJECT_1.pk_entity,

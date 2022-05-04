@@ -3,6 +3,7 @@ import {GvPaginationObject} from '../../../../models';
 import {GeovistoryServer} from '../../../../server';
 import {GvFieldPageReqMock, modifiedScope} from '../../../helpers/data/api-requests/GvFieldPageReq';
 import {GvPaginationObjectMock} from '../../../helpers/data/api-responses/GvPaginationObjectMock';
+import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {SubfieldHelper} from '../../../helpers/graphs/subfield-page.helper';
 import {setupApplication} from '../../../helpers/gv-server-helpers';
@@ -163,31 +164,20 @@ describe('SubfieldPageController', () => {
       expect((res.body as GvPaginationObject).subfieldPages[0].count)
         .to.equal(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[0].count)
 
-      expect((res.body as GvPaginationObject).subfieldPages[0].req)
-        .to.deepEqual(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[0].req)
-
-      expect((res.body as GvPaginationObject).subfieldPages[0].paginatedStatements)
-        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[0].paginatedStatements)
-
-      expect((res.body as GvPaginationObject).subfieldPages[0])
-        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[0])
-
-      expect((res.body as GvPaginationObject).subfieldPages[1])
-        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[1])
-
-      expect((res.body as GvPaginationObject).subfieldPages[2].count)
-        .to.equal(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[2].count)
-
-      expect((res.body as GvPaginationObject).subfieldPages[2].req)
-        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[2].req)
-
-      expect((res.body as GvPaginationObject).subfieldPages[2].paginatedStatements)
-        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[2].paginatedStatements)
-
-      expect((res.body as GvPaginationObject).subfieldPages[2])
-        .to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages[2])
-
-      expect(res.body).to.containDeep(GvPaginationObjectMock.personHasTwoAppeTeEn);
+      for (const fkSource of [
+        InfResourceMock.PERSON_1.pk_entity,
+        InfResourceMock.NAMING_1.pk_entity,
+        InfResourceMock.NAMING_2.pk_entity
+      ]) {
+        const result = (res.body as GvPaginationObject).subfieldPages
+          .find(s => s.req.page.source.fkInfo === fkSource)
+        const expected = GvPaginationObjectMock.personHasTwoAppeTeEn.subfieldPages
+          .find(s => s.req.page.source.fkInfo === fkSource)
+        expect(result?.count).to.deepEqual(expected?.count)
+        expect(result?.req).to.containDeep(expected?.req)
+        expect(result?.paginatedStatements).to.containDeep(expected?.paginatedStatements)
+        expect(result).to.containDeep(expected)
+      }
     });
 
     it('should return field page with a timestamp', async () => {
@@ -198,6 +188,24 @@ describe('SubfieldPageController', () => {
         .expect(200);
       const d = res.body.subfieldPages[0].validFor?.toString() as string
       expect(new Date(d) > new Date('1999-01-01')).to.be.true();
+    });
+
+
+    it('should not return statement pointing to entity with disabled toolbox-commnity-visibility', async () => {
+      await SubfieldHelper.hasReproduction()
+      const res: {body: GvPaginationObject} = await client.post('/subfield-page/load-subfield-page')
+        .set('Authorization', lb4Token)
+        .send([GvFieldPageReqMock.hasReproductionNotInProject])
+        .expect(200);
+      expect((res.body as GvPaginationObject).subfieldPages[0].count).to.equal(1)
+      expect(
+        (res.body as GvPaginationObject)
+          .subfieldPages[0]
+          .paginatedStatements[0]
+          .target.entity?.resource.community_visibility.toolbox
+      ).to.equal(true)
+
+
     });
 
     // it('should return field page for propertyOfProperty (targetType: languageString)', async () => {

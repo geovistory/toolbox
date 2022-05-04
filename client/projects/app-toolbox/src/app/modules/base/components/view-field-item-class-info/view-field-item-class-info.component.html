@@ -1,10 +1,12 @@
 <!-- MENU FOR CLASS INFO -->
 <mat-menu #classInfoMenu="matMenu">
-  <button mat-menu-item *ngIf="isInProject" (click)="itemComponent.openInNewTabFromEntity(resource)">
+  <button mat-menu-item [disabled]="(preview$|async)?.fk_project === null"
+    (click)="itemComponent.openInNewTabFromEntity(resource)">
     <mat-icon>tab</mat-icon>
     Open {{classLabel}} in new Tab
   </button>
-  <button mat-menu-item *ngIf="!isInProject" (click)="itemComponent.addAndOpenInNewTabFromEntity(resource)">
+  <button mat-menu-item *ngIf="(preview$|async)?.fk_project === null"
+    (click)="itemComponent.addAndOpenInNewTabFromEntity(resource)">
     <mat-icon>add</mat-icon>
     Add {{classLabel}} to project and open
   </button>
@@ -13,7 +15,12 @@
 <!-- CLASS INFO -->
 
 <span class="loc-class-info">
-  <span [matMenuTriggerFor]="readonly?null:classInfoMenu">
+  <span *ngIf="readonly">
+    <gv-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="resource.fk_class" [classLabel]="classLabel"
+      [isFavorite]="isFavorite">
+    </gv-class-info>
+  </span>
+  <span *ngIf="!readonly" [matMenuTriggerFor]="classInfoMenu">
     <gv-class-info [showOntoInfo$]="showOntoInfo$" [pkClass]="resource.fk_class" [classLabel]="classLabel"
       [isFavorite]="isFavorite">
     </gv-class-info>
