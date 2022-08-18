@@ -22,6 +22,12 @@ jobs:
         run: |
           git fetch origin
           git reset --hard origin/master
+      
+      - name: Print bash version number
+        run: bash --version
+
+      - name: Print git version number
+        run: git --version
 
       - name: Create warehouse compatibility list
         run: bash deployment/create-warehouse-compat-list.sh
