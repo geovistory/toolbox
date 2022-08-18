@@ -30,14 +30,15 @@ rm -f $output
 # loop over old commits as long as no changes to current commit detected
 # first iteration is over the current commit, so that the list starts with current commit
 while [ $i -le 1000 ]; do
-   
   commit=$(git rev-parse --short @~$i)
   echo "i: $i, currentCommit: $currentCommit, commit: $commit, path: $path"
-  git diff --quiet $currentCommit $commit -- $path
+  diff=$(git diff $currentCommit $commit -- $path)
 
-  if [ $? -eq 0 ]; then
+  # if [ $? -eq 0 ]; then
+  if [ -z "$diff" ]; then
     # No modifications found in directory $path between $currentCommit and $commit.
     # Adding commit to list of commits where warehouse is compatible with current comit
+    echo "found no diff to $commit"
     echo $commit >>$output
   else
     # Modifications found in directory $path between $currentCommit and $commit
