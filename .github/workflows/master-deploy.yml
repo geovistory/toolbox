@@ -45,7 +45,7 @@ jobs:
         run: bash deployment/create-warehouse-compat-list.sh
 
       - name: print compat list
-        run: nano server/warehouse-compat-list.txt
+        run: cat server/warehouse-compat-list.txt
         
     #  - name: Push changes on master-deploy
     #    run: |
