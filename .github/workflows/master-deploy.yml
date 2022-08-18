@@ -35,31 +35,31 @@ jobs:
       - name: print compat list
         run: cat server/warehouse-compat-list.txt
 
-     # - name: Install npm dependencies for client
-     #   run: |
-     #     cd client
-     #     npm install --production=false
-     #     cd ..
-#
-     # - name: Install npm dependencies for server
-     #   run: |
-     #     cd server
-     #     npm install --production=false
-     #     cd ..
-#
-     # - name: Build client
-     #   run: |
-     #     cd client
-     #     npm run build:all
-     #     cd ..
-     #   
-     # - name: Push changes on master-deploy
-     #   run: |
-     #     git config --global user.email "action@github.com"
-     #     git config --global user.name "GitHub Action"
-     #     git add .
-     #     git add --force ./client/dist/*
-     #     git commit -m "dist folder"
-     #     git push --force origin master-deploy
-#
-#
+      - name: Install npm dependencies for client
+        run: |
+          cd client
+          npm install --production=false
+          cd ..
+     
+      - name: Install npm dependencies for server
+        run: |
+          cd server
+          npm install --production=false
+          cd ..
+     
+      - name: Build client
+        run: |
+          cd client
+          npm run build:all
+          cd ..
+        
+      - name: Push changes on master-deploy
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add .
+          git add --force ./client/dist/*
+          git commit -m "dist folder"
+          git push --force origin master-deploy
+ 
+     
