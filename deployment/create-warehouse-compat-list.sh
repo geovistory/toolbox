@@ -7,7 +7,7 @@
 # was unchanged compared to current commit.
 
 # exit when any command fails
-set -e
+# set -e
 
 # assign variables
 path=server/src/warehouse
