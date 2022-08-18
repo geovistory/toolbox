@@ -6,6 +6,9 @@
 # backwards in history in order to list commits where warehouse
 # was unchanged compared to current commit.
 
+# exit when any command fails
+set -e
+
 # assign variables
 path=server/src/warehouse
 output=server/warehouse-compat-list.txt
