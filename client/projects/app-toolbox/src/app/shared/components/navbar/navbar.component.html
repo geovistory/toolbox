@@ -1,39 +1,42 @@
 <mat-toolbar class="mat-typography">
-    <mat-toolbar-row class="bg-gray-200">
-        <div class="gv-nv-logo">
-            <a href="http://www.geovistory.org" class="gv-logo gv-icon gv-icon-geovistory-logo text-primary"></a>
-        </div>
-        <div class="mat-body">
-            <ng-content></ng-content>
-        </div>
-        <span class="gv-nv-spacer"></span>
+  <mat-toolbar-row class="bg-gray-200">
+    <div class="gv-nv-logo">
+      <a href="http://www.geovistory.org" target="_blank"
+        class="gv-logo gv-icon gv-icon-geovistory-logo text-primary"></a>
+    </div>
+    <div class="mat-body">
+      <ng-content></ng-content>
+    </div>
+    <span class="gv-nv-spacer"></span>
 
-        <button class="gv-nv-item gv-nv-feedback-btn" mat-flat-button color="accent" (click)="openFeedbackDialog()">Help</button>
+    <button class="gv-nv-item gv-nv-feedback-btn" mat-flat-button color="accent"
+      (click)="openFeedbackDialog()">Help</button>
 
-        <div *ngIf="!account" class="gv-nv-item">
-            <button mat-button routerLink="/login" [color]="router.isActive('/login',false) ? 'primary': null">Login</button>
-        </div>
-        <div *ngIf="!account" class="gv-nv-item">
-            <button mat-button routerLink="/registration" [color]="router.isActive('/registration', false) ? 'primary': null">Register</button>
-        </div>
-        <div *ngIf="account" class="gv-nv-item">
-            <button mat-icon-button [matMenuTriggerFor]="menu">
+    <div *ngIf="!account" class="gv-nv-item">
+      <button mat-button routerLink="/login" [color]="router.isActive('/login',false) ? 'primary': null">Login</button>
+    </div>
+    <div *ngIf="!account" class="gv-nv-item">
+      <button mat-button routerLink="/registration"
+        [color]="router.isActive('/registration', false) ? 'primary': null">Register</button>
+    </div>
+    <div *ngIf="account" class="gv-nv-item">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon svgIcon="account-circle" color="primary"></mat-icon>
       </button>
-            <mat-menu #menu="matMenu">
-                <a class="gv-nv-dropdown-item">
-                    <i id="userIconBig" class="fa fa-user-circle text-gray-300" aria-hidden="true"></i>
-                    <div>{{account.username}}</div>
-                    <h6 class="dropdown-header">{{account.email}}</h6>
-                </a>
-                <mat-divider></mat-divider>
-                <button mat-menu-item (click)="logout()">
+      <mat-menu #menu="matMenu">
+        <a class="gv-nv-dropdown-item">
+          <i id="userIconBig" class="fa fa-user-circle text-gray-300" aria-hidden="true"></i>
+          <div>{{account.username}}</div>
+          <h6 class="dropdown-header">{{account.email}}</h6>
+        </a>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
           <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
         </button>
-            </mat-menu>
-        </div>
+      </mat-menu>
+    </div>
 
-    </mat-toolbar-row>
+  </mat-toolbar-row>
 
 </mat-toolbar>
 <mat-divider></mat-divider>
