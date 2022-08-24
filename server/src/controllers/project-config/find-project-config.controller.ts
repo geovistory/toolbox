@@ -8,6 +8,7 @@ import {uniq} from 'ramda';
 import {Roles} from '../../components/authorization';
 import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
+import {logAsyncPerformance} from '../../decorators/logAsyncPerformance.decorator';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
 import {DatNamespaceRepository, InfLanguageRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository} from '../../repositories';
 import {SysSystemRelevantClassRepository} from '../../repositories/sys-system-relevant-class.repository';
@@ -65,12 +66,12 @@ export class FindProjectConfigController {
   })
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('getAllConfigsOfProject')
   async getAllConfigsOfProject(
     @param.query.number('pkProject') pkProject: number
   ): Promise<GvSchemaModifier> {
 
     let schemaModifier: GvSchemaModifier = {negative: {}, positive: {}}
-
 
     const schemaModifiers = await Promise.all([
       this.dataModelController.dfhProfilesOfProject(pkProject),

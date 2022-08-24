@@ -1,14 +1,15 @@
+import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3';
 import {get, param} from '@loopback/rest';
 import {Roles} from '../../components/authorization';
-import {QResource} from '../../components/query/q-resource';
-import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
-import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
-import {QTypesOfProject} from '../../components/query/q-types-of-project';
-import {authenticate} from '@loopback/authentication';
 import {QChunksOfDigital} from '../../components/query/q-chunks-of-digital';
+import {QResource} from '../../components/query/q-resource';
+import {QTypesOfProject} from '../../components/query/q-types-of-project';
+import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
+import {logAsyncPerformance} from '../../decorators/logAsyncPerformance.decorator';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 
 @tags('project data')
 export class FindProjectDataController {
@@ -37,8 +38,8 @@ export class FindProjectDataController {
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   async getResource(
-    @param.query.number('pkProject', {required:true}) pkProject: number,
-    @param.query.number('pkEntity', {required:true}) pkEntity: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkEntity', {required: true}) pkEntity: number,
   ): Promise<GvPositiveSchemaObject> {
     return new QResource(this.datasource).query(pkProject, pkEntity)
   }
@@ -59,8 +60,9 @@ export class FindProjectDataController {
   })
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('getTypesOfProject')
   async getTypesOfProject(
-    @param.query.number('pkProject', {required:true}) pkProject: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
 
   ): Promise<GvPositiveSchemaObject> {
 
@@ -87,8 +89,8 @@ export class FindProjectDataController {
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
   async getChunksOfDigital(
-    @param.query.number('pkProject', {required:true}) pkProject: number,
-    @param.query.number('pkDigital', {required:true}) pkDigital: number,
+    @param.query.number('pkProject', {required: true}) pkProject: number,
+    @param.query.number('pkDigital', {required: true}) pkDigital: number,
 
   ): Promise<GvPositiveSchemaObject> {
 

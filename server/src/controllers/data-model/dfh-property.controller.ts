@@ -8,6 +8,7 @@ import {indexBy} from 'ramda';
 import {SysConfigController} from '..';
 import {Roles} from '../../components/authorization/keys';
 import {Postgres1DataSource} from '../../datasources';
+import {logAsyncPerformance} from '../../decorators/logAsyncPerformance.decorator';
 import {DfhProperty} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
@@ -45,6 +46,7 @@ export class DfhPropertyController {
   })
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('DfhPropertyController.ofProject()')
   async ofProject(
     @param.query.number('pkProject') pkProject: number
   ): Promise<GvSchemaModifier> {

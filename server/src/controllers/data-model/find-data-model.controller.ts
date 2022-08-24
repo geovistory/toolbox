@@ -7,6 +7,7 @@ import {Roles} from '../../components/authorization';
 import {QDfhLabelsOfProject} from '../../components/query/q-dfh-labels-of-project';
 import {QDfhProfilesOfProject} from '../../components/query/q-dfh-profiles-of-project';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
+import {logAsyncPerformance} from '../../decorators/logAsyncPerformance.decorator';
 import {DfhClass} from '../../models';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
@@ -38,6 +39,7 @@ export class FindDataModelController {
   })
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('dfhProfilesOfProject')
   async dfhProfilesOfProject(
     @param.query.number('pkProject') pkProject: number
   ): Promise<GvSchemaModifier> {
@@ -64,6 +66,7 @@ export class FindDataModelController {
   })
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('dfhClassesOfProject')
   async dfhClassesOfProject(
     @param.query.number('pkProject') pkProject: number): Promise<GvSchemaModifier> {
     const sysConfig = await this.sysConfigController.getSystemConfig()
@@ -111,6 +114,7 @@ export class FindDataModelController {
   })
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('dfhLabelsOfProject')
   async dfhLabelsOfProject(
     @param.query.number('pkProject') pkProject: number
   ): Promise<GvSchemaModifier> {

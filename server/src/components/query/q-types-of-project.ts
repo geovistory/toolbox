@@ -1,7 +1,7 @@
 import {Postgres1DataSource} from '../../datasources';
-import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {InfResource, ProInfoProjRel} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
 export class QTypesOfProject extends SqlBuilderLb4Models {
@@ -26,19 +26,19 @@ export class QTypesOfProject extends SqlBuilderLb4Models {
     this.sql = `
       WITH
       tw1 AS (
-        SELECT
+        SELECT DISTINCT ON(t1.pk_entity)
           ${this.createSelect('t1', InfResource.definition)},
           ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
           information.resource t1
         CROSS JOIN
           projects.info_proj_rel t2,
-          data_for_history.v_class  t3
+          data_for_history.api_class t3
         WHERE t1.pk_entity = t2.fk_entity
         AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fkProject)}
-        AND t1.fk_class = t3.pk_class
-        AND t3.basic_type = 30
+        AND t1.fk_class = t3.dfh_pk_class
+        AND t3.dfh_basic_type = 30
       ),
       ------------------------------------
       --- group parts by model
