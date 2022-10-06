@@ -51,6 +51,9 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     if (!this.tab.active) {
       return;
     }
+    if ((event.target as HTMLElement)?.getAttribute('class') === 'ql-editor') {
+      return;
+    }
     if (this.dialog.openDialogs.length > 0) {
       return;
     }
