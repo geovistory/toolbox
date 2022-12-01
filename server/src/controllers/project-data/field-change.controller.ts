@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import {inject} from '@loopback/core';
-import {repository} from '@loopback/repository';
-import {Subscription} from 'rxjs';
-import {Socket} from 'socket.io';
-import {ws} from '../../decorators/websocket.decorator';
-import {WarFieldChangeAddToStream, WarFieldChangeId} from '../../models/war-field-change-id.model';
-import {WarFieldChange} from '../../models/war-field-change.model';
-import {Streams} from '../../realtime/streams/streams';
-import {WebsocketControllerBase} from '../../realtime/websockets/websocker-controller-base';
-import {WarFieldChangeRepository} from '../../repositories/war-field-change.repository';
+import { inject } from '@loopback/core';
+import { repository } from '@loopback/repository';
+import { Subscription } from 'rxjs';
+import { Socket } from 'socket.io';
+import { ws } from '../../decorators/websocket.decorator';
+import { WarFieldChangeAddToStream, WarFieldChangeId } from '../../models/war-field-change-id.model';
+import { WarFieldChange } from '../../models/war-field-change.model';
+import { Streams } from '../../realtime/streams/streams';
+import { WebsocketControllerBase } from '../../realtime/websockets/websocker-controller-base';
+import { WarFieldChangeRepository } from '../../repositories/war-field-change.repository';
 
 export const IO_FIELD_CHANGE = 'FieldChange'
 
@@ -25,7 +25,7 @@ export class FieldChangeController extends WebsocketControllerBase {
   logs = false
 
   // for caching notifications, to avoid emitting the same modification timestamp more than once
-  emittedNotifications: {[key: string]: true} = {}
+  emittedNotifications: { [key: string]: true } = {}
 
 
   constructor(
@@ -93,12 +93,17 @@ export class FieldChangeController extends WebsocketControllerBase {
 
       // create where filters for each fieldId
       const ors = data.fieldIds.map(field => {
-        const {fk_project, fk_property, fk_property_of_property, fk_source_info, is_outgoing} = field;
-        return {fk_project, fk_property, fk_property_of_property, fk_source_info, is_outgoing}
+        const { fk_project, fk_property, fk_property_of_property, fk_source_info, is_outgoing } = field;
+        return { fk_project, fk_property, fk_property_of_property, fk_source_info, is_outgoing }
       })
 
+      if (ors.length > 1000 && !process.env.DISABLE_ORS_LOG) {
+        console.log('>> More than 1000 OR\'s, for socked id: ' + this.socket.id)
+        console.log(JSON.stringify(ors, null, 2))
+      }
+
       // find the field changes
-      const fieldChanges = await this.warFieldChangeRepository.find({where: {or: ors}})
+      const fieldChanges = await this.warFieldChangeRepository.find({ where: { or: ors } })
 
       // emit them
       fieldChanges.forEach(i => this.emitFieldChange(i))
