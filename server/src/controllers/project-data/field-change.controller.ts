@@ -91,11 +91,34 @@ export class FieldChangeController extends WebsocketControllerBase {
     if (data.fieldIds.length) {
       this.handleExtendStream(data)
 
+      const uniq = new Map<string, boolean>();
       // create where filters for each fieldId
-      const ors = data.fieldIds.map(field => {
-        const { fk_project, fk_property, fk_property_of_property, fk_source_info, is_outgoing } = field;
-        return { fk_project, fk_property, fk_property_of_property, fk_source_info, is_outgoing }
-      })
+      const ors: {
+        fk_project: number;
+        fk_property: number;
+        fk_property_of_property: number;
+        fk_source_info: number;
+        fk_source_tables_cell: number;
+        is_outgoing: boolean;
+      }[] = []
+      data.fieldIds
+        // validation
+        .forEach(field => {
+          if (field.fk_project === undefined) return false;
+          if (field.is_outgoing === undefined) return false;
+          if (field.fk_property === undefined && field.fk_property_of_property === undefined) return false;
+          if (field.fk_property !== undefined && field.fk_property_of_property !== undefined) return false;
+          if (field.fk_source_info === undefined && field.fk_source_tables_cell === undefined) return false;
+          if (field.fk_source_info !== undefined && field.fk_source_tables_cell !== undefined) return false;
+
+          const { fk_project, fk_property, fk_property_of_property, fk_source_info, fk_source_tables_cell, is_outgoing } = field;
+          const string = fk_project + '_' + fk_property + '_' + fk_property_of_property + '_' + fk_source_info + '_' + fk_source_tables_cell + '_' + is_outgoing;
+          if (!uniq.has(string)) {
+            uniq.set(string, true)
+            ors.push({ fk_project, fk_property, fk_property_of_property, fk_source_info, fk_source_tables_cell, is_outgoing })
+          }
+        })
+
 
       if (ors.length > 1000 && !process.env.DISABLE_ORS_LOG) {
         console.log('>> More than 1000 OR\'s, for socked id: ' + this.socket.id)
@@ -130,7 +153,7 @@ export class FieldChangeController extends WebsocketControllerBase {
   * It does not query / emit the previews
   *
   * @param data
- */
+  */
   @ws.subscribe(`${IO_FIELD_CHANGE}::removeFromStream`)
   handleRemoveFromStream(data: WarFieldChangeAddToStream) {
     const ids = data.fieldIds.map(i => fieldChangeToStringId(i))
