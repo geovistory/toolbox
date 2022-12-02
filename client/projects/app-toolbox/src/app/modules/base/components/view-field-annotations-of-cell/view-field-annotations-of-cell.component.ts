@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
@@ -23,7 +23,7 @@ export interface ViewFieldAnnotationOfCellItemData {
   styleUrls: ['./view-field-annotations-of-cell.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ViewFieldAnnotationsOfCellComponent implements OnInit {
+export class ViewFieldAnnotationsOfCellComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
   @Input() pkProject: number;
@@ -226,5 +226,8 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit {
       .toPromise()
   }
 
-
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
+  }
 }
