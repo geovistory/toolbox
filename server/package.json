@@ -96,7 +96,6 @@
     "loopback-boot": "^2.6.5",
     "loopback-component-explorer": "^4.0.0",
     "loopback-connector-postgresql": "^2.8.0",
-    "loopback-postgres-find-complex": "git+https://github.com/kleiolab/findComplex.git#bug-fixes",
     "loopback-setup-remote-methods-mixin": "^1.2.1",
     "ms": "^2.1.2",
     "nodemailer": "^6.4.10",
