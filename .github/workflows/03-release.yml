@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      incrementType:
+        description: "Type of increment (see: semver.org)"
+        required: true
+        default: 'patch' 
+        type: choice
+        options:
+        - major
+        - minor
+        - patch 
+        
+jobs:
+  release:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_GITHUB_CHANNEL_WEBHOOK }}
+          title: "Release website: Starting"
+          description: "Release website with proper semver and deploy on staging."
+          color: 0xffed2b
+          username: GitHub Actions
+
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+          
+      - name: Git Identity
+        run: |
+          git config --global user.name 'geovbot'
+          git config --global user.email 'github.bot@geovistory.org'
+          git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.13.2'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Create version number
+        id: npm_version
+        run: |
+          npm version ${{ github.event.inputs.incrementType }} --no-git-tag-version
+          echo ::set-output name=tag::$(cat ./package.json | jq -r '.version')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
+     
+      - name: Echo tag created by npm
+        run: echo your tag is '${{steps.npm_version.outputs.tag}}'
+        
+      - name: Update Lock file
+        run: 'npm i --package-lock-only'
+
+      - uses: EndBug/add-and-commit@v5
+        with:
+          message: 'chore(): update release version'
+          tag: v${{steps.npm_version.outputs.tag}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker Build & Push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/geovistory/website:${{steps.npm_version.outputs.tag}}
+      
+      - name: Invoke workflow in public-chart to make a staging release
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: update-docker-image-tag
+          repo: geovistory/public-chart
+          ref: stag
+          token: ${{ secrets.GEOVBOT_PAT_REPO }}
+          inputs: |
+            {
+              "service": "website",
+              "tag": "${{steps.npm_version.outputs.tag}}",
+              "environment": "stag"
+            }
+            
+      - name: Send Discord Notification
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_GITHUB_CHANNEL_WEBHOOK }}
+          title: "Release website (on stag): Done"
+          description: ""
+          color: 0x0000ff
+          username: GitHub Actions
