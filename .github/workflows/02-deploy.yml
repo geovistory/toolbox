@@ -1,0 +1,57 @@
+name: Deploy
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "Deploy to Environment"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - stag
+
+jobs:
+  inform-public-charts:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Validate tag
+        run: |
+          echo "No tag specified. Choose a tag from workflow dispatch UI."
+          exit 1
+        if: ${{ github.ref_type != 'tag' }}
+
+      - name: Deploy only on staging if up to date with main branch
+        run: bash .scripts/main-not-ahead-of.sh --branch ${GITHUB_REF/refs\/tags\//}
+        if: ${{ github.event.inputs.env == 'stag' }}
+
+      - name: Get the tag
+        id: get_version
+        run: echo ::set-output name=tag::${GITHUB_REF/refs\/tags\/v/}
+
+      - name: Echo tag
+        run: echo ${{steps.get_version.outputs.tag}}
+
+      - name: Echo env
+        run: echo {{github.event.inputs.env}}
+
+      - name: Invoke workflow in public-chart to make a dev release
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: update-docker-image-tag
+          repo: geovistory/public-chart
+          ref: ${{github.event.inputs.env}}
+          token: ${{ secrets.GEOVBOT_PAT_REPO }}
+          inputs: |
+            {
+              "service": "toolbox",
+              "tag": "${{steps.get_version.outputs.tag}}",
+              "environment": "${{github.event.inputs.env}}"
+            }
