@@ -77,3 +77,6 @@ dev/
 dev.js
 
 openapi.json
+
+# certificate
+ca-certificate.crt
