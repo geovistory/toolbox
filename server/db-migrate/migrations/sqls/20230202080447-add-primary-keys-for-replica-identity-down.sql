@@ -88,9 +88,6 @@ ALTER TABLE IF EXISTS "information"."dimension"
 ALTER TABLE IF EXISTS "information"."lang_string"
   DROP CONSTRAINT IF EXISTS lang_string_pkey;
 
-ALTER TABLE IF EXISTS "information"."number"
-  DROP CONSTRAINT IF EXISTS number_pkey;
-
 ALTER TABLE IF EXISTS "information"."persistent_item_backup"
   DROP CONSTRAINT IF EXISTS persistent_item_backup_pkey;
 
