@@ -58,20 +58,11 @@ ALTER TABLE IF EXISTS "data_for_history"."api_property"
 ALTER TABLE IF EXISTS "data_for_history"."associates_system_type_deprecated"
   DROP CONSTRAINT IF EXISTS associates_system_type_deprecated_pkey;
 
-ALTER TABLE IF EXISTS "data_for_history"."associates_system_type_vt_deprecated"
-  DROP CONSTRAINT IF EXISTS associates_system_type_vt_deprecated_pkey;
-
 ALTER TABLE IF EXISTS "data_for_history"."class_profile_view_deprecated"
   DROP CONSTRAINT IF EXISTS class_profile_view_deprecated_pkey;
 
-ALTER TABLE IF EXISTS "data_for_history"."class_profile_view_vt_deprecated"
-  DROP CONSTRAINT IF EXISTS class_profile_view_vt_deprecated_pkey;
-
 ALTER TABLE IF EXISTS "data_for_history"."label_deprecated"
   DROP CONSTRAINT IF EXISTS label_deprecated_pkey;
-
-ALTER TABLE IF EXISTS "data_for_history"."label_vt_deprecated"
-  DROP CONSTRAINT IF EXISTS label_vt_deprecated_pkey;
 
 ALTER TABLE IF EXISTS "data_for_history"."property_of_property"
   DROP CONSTRAINT IF EXISTS property_of_property_pkey;
@@ -79,20 +70,11 @@ ALTER TABLE IF EXISTS "data_for_history"."property_of_property"
 ALTER TABLE IF EXISTS "data_for_history"."property_profile_view_deprecated"
   DROP CONSTRAINT IF EXISTS property_profile_view_deprecated_pkey;
 
-ALTER TABLE IF EXISTS "data_for_history"."property_profile_view_vt_deprecated"
-  DROP CONSTRAINT IF EXISTS property_profile_view_vt_deprecated_pkey;
-
 ALTER TABLE IF EXISTS "data_for_history"."system_type_deprecated"
   DROP CONSTRAINT IF EXISTS system_type_deprecated_pkey;
 
-ALTER TABLE IF EXISTS "data_for_history"."system_type_vt_deprecated"
-  DROP CONSTRAINT IF EXISTS system_type_vt_deprecated_pkey;
-
 ALTER TABLE IF EXISTS "data_for_history"."text_property_deprecated"
   DROP CONSTRAINT IF EXISTS text_property_deprecated_pkey;
-
-ALTER TABLE IF EXISTS "data_for_history"."text_property_vt_deprecated"
-  DROP CONSTRAINT IF EXISTS text_property_vt_deprecated_pkey;
 
 ALTER TABLE IF EXISTS "information"."_backup_entity_association"
   DROP CONSTRAINT IF EXISTS _backup_entity_association_pkey;
@@ -112,9 +94,6 @@ ALTER TABLE IF EXISTS "information"."number"
 ALTER TABLE IF EXISTS "information"."persistent_item_backup"
   DROP CONSTRAINT IF EXISTS persistent_item_backup_pkey;
 
-ALTER TABLE IF EXISTS "information"."persistent_item_vt_backup"
-  DROP CONSTRAINT IF EXISTS persistent_item_vt_backup_pkey;
-
 ALTER TABLE IF EXISTS "information"."place"
   DROP CONSTRAINT IF EXISTS place_pkey;
 
@@ -126,9 +105,6 @@ ALTER TABLE IF EXISTS "information"."statement"
 
 ALTER TABLE IF EXISTS "information"."temporal_entity_backup"
   DROP CONSTRAINT IF EXISTS temporal_entity_backup_pkey;
-
-ALTER TABLE IF EXISTS "information"."temporal_entity_vt_backup"
-  DROP CONSTRAINT IF EXISTS temporal_entity_vt_backup_pkey;
 
 ALTER TABLE IF EXISTS "information"."text_property"
   DROP CONSTRAINT IF EXISTS text_property_pkey;
@@ -177,9 +153,6 @@ ALTER TABLE IF EXISTS "projects"."visual"
 
 ALTER TABLE IF EXISTS "system"."analysis_type_deprecated"
   DROP CONSTRAINT IF EXISTS analysis_type_deprecated_pkey;
-
-ALTER TABLE IF EXISTS "system"."analysis_type_vt_deprecated"
-  DROP CONSTRAINT IF EXISTS analysis_type_vt_deprecated_pkey;
 
 ALTER TABLE IF EXISTS "system"."app_context"
   DROP CONSTRAINT IF EXISTS app_context_pkey;

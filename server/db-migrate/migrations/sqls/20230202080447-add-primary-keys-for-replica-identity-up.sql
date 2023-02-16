@@ -80,19 +80,10 @@ ALTER TABLE "data_for_history"."api_property"
 ALTER TABLE "data_for_history"."associates_system_type_deprecated"
   ADD PRIMARY KEY (pk_entity);
 
-ALTER TABLE "data_for_history"."associates_system_type_vt_deprecated"
-  ADD PRIMARY KEY (pk_entity);
-
 ALTER TABLE "data_for_history"."class_profile_view_deprecated"
   ADD PRIMARY KEY (pk_entity);
 
-ALTER TABLE "data_for_history"."class_profile_view_vt_deprecated"
-  ADD PRIMARY KEY (pk_entity);
-
 ALTER TABLE "data_for_history"."label_deprecated"
-  ADD PRIMARY KEY (pk_entity);
-
-ALTER TABLE "data_for_history"."label_vt_deprecated"
   ADD PRIMARY KEY (pk_entity);
 
 ALTER TABLE "data_for_history"."property_of_property"
@@ -101,19 +92,10 @@ ALTER TABLE "data_for_history"."property_of_property"
 ALTER TABLE "data_for_history"."property_profile_view_deprecated"
   ADD PRIMARY KEY (pk_entity);
 
-ALTER TABLE "data_for_history"."property_profile_view_vt_deprecated"
-  ADD PRIMARY KEY (pk_entity);
-
 ALTER TABLE "data_for_history"."system_type_deprecated"
   ADD PRIMARY KEY (pk_entity);
 
-ALTER TABLE "data_for_history"."system_type_vt_deprecated"
-  ADD PRIMARY KEY (pk_entity);
-
 ALTER TABLE "data_for_history"."text_property_deprecated"
-  ADD PRIMARY KEY (pk_entity);
-
-ALTER TABLE "data_for_history"."text_property_vt_deprecated"
   ADD PRIMARY KEY (pk_entity);
 
 ALTER TABLE "information"."_backup_entity_association"
@@ -134,9 +116,6 @@ ALTER TABLE "information"."number"
 ALTER TABLE "information"."persistent_item_backup"
   ADD PRIMARY KEY (pk_entity);
 
-ALTER TABLE "information"."persistent_item_vt_backup"
-  ADD PRIMARY KEY (pk_entity);
-
 ALTER TABLE "information"."place"
   ADD PRIMARY KEY (pk_entity);
 
@@ -147,9 +126,6 @@ ALTER TABLE "information"."statement"
   ADD PRIMARY KEY (pk_entity);
 
 ALTER TABLE "information"."temporal_entity_backup"
-  ADD PRIMARY KEY (pk_entity);
-
-ALTER TABLE "information"."temporal_entity_vt_backup"
   ADD PRIMARY KEY (pk_entity);
 
 ALTER TABLE "information"."text_property"
@@ -198,9 +174,6 @@ ALTER TABLE "projects"."visual"
   ADD PRIMARY KEY (pk_entity);
 
 ALTER TABLE "system"."analysis_type_deprecated"
-  ADD PRIMARY KEY (pk_entity);
-
-ALTER TABLE "system"."analysis_type_vt_deprecated"
   ADD PRIMARY KEY (pk_entity);
 
 ALTER TABLE "system"."app_context"
