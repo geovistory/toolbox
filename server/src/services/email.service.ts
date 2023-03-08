@@ -1,12 +1,12 @@
 
 const user = 'info@geovistory.org';
 const pass = 'jagen731!murre';
-import {createTransport} from 'nodemailer';
-import {UrlBuilder} from '../utils/url-builder';
+import { createTransport } from 'nodemailer';
+import { UrlBuilder } from '../utils/url-builder';
 
 export class EmailService {
 
-  constructor() {}
+  constructor() { }
 
   transporter = createTransport({
     host: 'asmtp.mail.hostpoint.ch',
@@ -27,7 +27,7 @@ export class EmailService {
     verificationToken: string
   ) {
 
-    const url = new UrlBuilder().getBaseUrl();
+    const url = new UrlBuilder().getServerUrl();
     const link = `${url}/verify-email?accountId=${accountId}&verificationToken=${verificationToken}&redirectOnSuccess=${url}/email-verified`
 
     // send mail with defined transport object
@@ -47,7 +47,7 @@ export class EmailService {
     passwordResetToken: string
   ) {
 
-    const url = new UrlBuilder().getBaseUrl();
+    const url = new UrlBuilder().getClientUrl();
     const link = `${url}/reset-password?access_token=${passwordResetToken}`
 
     // send mail with defined transport object
