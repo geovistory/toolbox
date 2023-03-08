@@ -1,8 +1,8 @@
 
 const user = 'info@geovistory.org';
 const pass = 'jagen731!murre';
-import { createTransport } from 'nodemailer';
-import { UrlBuilder } from '../utils/url-builder';
+import {createTransport} from 'nodemailer';
+import {UrlBuilder} from '../utils/url-builder';
 
 export class EmailService {
 
@@ -27,8 +27,9 @@ export class EmailService {
     verificationToken: string
   ) {
 
-    const url = new UrlBuilder().getServerUrl();
-    const link = `${url}/verify-email?accountId=${accountId}&verificationToken=${verificationToken}&redirectOnSuccess=${url}/email-verified`
+    const serverUrl = new UrlBuilder().getServerUrl();
+    const clientUrl = new UrlBuilder().getClientUrl();
+    const link = `${serverUrl}/verify-email?accountId=${accountId}&verificationToken=${verificationToken}&redirectOnSuccess=${clientUrl}/email-verified`
 
     // send mail with defined transport object
     return this.transporter.sendMail({
