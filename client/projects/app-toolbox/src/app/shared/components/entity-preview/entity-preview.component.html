@@ -21,17 +21,24 @@
   </div>
 </ng-template>
 
-<div *ngIf="openTabOnClick" dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview" class="d-flex"
+<div *ngIf="openTabOnClick || isUrl" dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview" class="d-flex"
   [matMenuTriggerFor]="appMenu">
   <mat-menu #appMenu="matMenu">
     <button [disabled]="preview?.fk_project === null" mat-menu-item (click)="openInNewTab()">
       <mat-icon>tab</mat-icon>
-      Open {{preview?.entity_label | truncate:['10']}} in new Tab
+      Open {{preview?.entity_label | truncate:['10']}} in new Geovistory Tab
     </button>
     <button *ngIf="preview?.fk_project === null" mat-menu-item (click)="addAndOpenInNewTab()">
       <mat-icon color="primary">add</mat-icon>
       Add to project and open
     </button>
+
+    <a *ngIf="isUrl" [disabled]="preview?.fk_project === null" mat-menu-item href="{{preview?.entity_label}}"
+      target="_blank">
+      <mat-icon style="margin-bottom: 0;">open_in_new</mat-icon>
+      Open URL in new Browser Tab
+    </a>
+
   </mat-menu>
   <ng-container [ngTemplateOutlet]="inner"></ng-container>
   <ng-content></ng-content>
