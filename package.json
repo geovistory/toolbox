@@ -5,15 +5,10 @@
   "scripts": {
     "docker": "node ./server/scripts/docker.js",
     "loopack-build:watch": "cd server && npm run build:watch",
-    "install": "cd ./server && npm i --production=false",
     "heroku-postbuild": "bash heroku-postbuild.sh"
   },
   "private": true,
   "main": "index.js",
-  "engines": {
-    "node": "12.8.1",
-    "npm": "6.10.2"
-  },
   "cacheDirectories": [
     "server/node_modules",
     "client/node_modules"
