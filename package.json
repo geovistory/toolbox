@@ -1,7 +1,7 @@
 {
   "name": "geovistory-root",
   "description": "package.json for DevOps scripts",
-  "version": "0.0.1-pr-272.0",
+  "version": "0.0.1-pr-272.2",
   "scripts": {
     "docker": "node ./server/scripts/docker.js",
     "loopack-build:watch": "cd server && npm run build:watch",
