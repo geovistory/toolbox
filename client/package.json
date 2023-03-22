@@ -63,6 +63,7 @@
     "flux-standard-action": "~2.0.1",
     "font-awesome": "^4.7.0",
     "geodesy": "^1.1.1",
+    "get-urls": "^11.0.0",
     "heatmap.js": "^2.0.5",
     "json-string-mapper": "^1.0.0",
     "jsoneditor": "^9.5.6",

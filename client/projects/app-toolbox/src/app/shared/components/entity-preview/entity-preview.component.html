@@ -21,7 +21,7 @@
   </div>
 </ng-template>
 
-<div *ngIf="openTabOnClick || isUrl" dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview" class="d-flex"
+<div *ngIf="openTabOnClick" dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview" class="d-flex"
   [matMenuTriggerFor]="appMenu">
   <mat-menu #appMenu="matMenu">
     <button [disabled]="preview?.fk_project === null" mat-menu-item (click)="openInNewTab()">
@@ -33,10 +33,9 @@
       Add to project and open
     </button>
 
-    <a *ngIf="isUrl" [disabled]="preview?.fk_project === null" mat-menu-item href="{{preview?.entity_label}}"
-      target="_blank">
+    <a *ngFor="let url of urls" mat-menu-item href="{{url}}" target="_blank">
       <mat-icon style="margin-bottom: 0;">open_in_new</mat-icon>
-      Open URL in new Browser Tab
+      Open {{url}} in new Browser Tab
     </a>
 
   </mat-menu>
