@@ -2,8 +2,12 @@
   "name": "geovistory-client",
   "version": "0.0.0",
   "license": "MIT",
+  "engines": {
+    "node": "14"
+  },
   "scripts": {
     "ng": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng",
+    "preserve": "node ./scripts/check-version.js",
     "serve": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng serve",
     "start": "ng serve",
     "build:libs": "sh ./scripts/ng-build-libs.sh",
@@ -59,6 +63,7 @@
     "flux-standard-action": "~2.0.1",
     "font-awesome": "^4.7.0",
     "geodesy": "^1.1.1",
+    "get-urls": "^11.0.0",
     "heatmap.js": "^2.0.5",
     "json-string-mapper": "^1.0.0",
     "jsoneditor": "^9.5.6",

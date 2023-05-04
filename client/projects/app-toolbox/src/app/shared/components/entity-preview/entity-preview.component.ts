@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import getUrls from 'get-urls';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -12,6 +13,8 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class EntityPreviewComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
+
+  urls: Array<String> = [];
 
   @Input() preview: WarEntityPreview
   @Input() pkEntity: number
@@ -35,6 +38,7 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
         .pipe(takeUntil(this.destroy$))
         .subscribe(preview => {
           this.preview = preview
+          this.urls = [...getUrls(preview.entity_label)]
           this.ref.detectChanges()
         })
     }

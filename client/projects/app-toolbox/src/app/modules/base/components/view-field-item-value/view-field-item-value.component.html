@@ -5,7 +5,17 @@
       [classLabel]="field.targets[itemComponent.item.targetClass]?.targetClassLabel" [isFavorite]="ordNum===1">
     </gv-class-info>
 
-    <div class="ellipsis">
+    <div class="ellipsis" [matMenuTriggerFor]="appMenu" *ngIf="urls.length != 0">
+      <mat-menu #appMenu="matMenu">
+        <a *ngFor="let url of urls" mat-menu-item href="{{url}}" target="_blank">
+          <mat-icon style="margin-bottom: 0;">open_in_new</mat-icon>
+          Open {{url}} in new Browser Tab
+        </a>
+      </mat-menu>
+      {{itemComponent.item.targetLabel}}
+    </div>
+
+    <div class="ellipsis" *ngIf="urls.length == 0">
       {{itemComponent.item.targetLabel}}
     </div>
   </span>

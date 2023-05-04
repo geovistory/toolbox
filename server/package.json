@@ -1,6 +1,9 @@
 {
   "name": "geovistory",
   "version": "1.0.0",
+  "engines": {
+    "node": "12.8"
+  },
   "description": "Geovistory – Platform for Digital History",
   "keywords": [
     "loopback-application",
@@ -32,6 +35,7 @@
     "build:sdk-windows": "build-ngx-sdk.sh",
     "build:lb3-sdk": "./node_modules/.bin/lb-sdk lb3app/server/server ../client/projects/lib-sdk-lb3/src/lib/sdk -d ng2web -l angular2",
     "start:warehouse": "node ./scripts/start-warehouse.js",
+    "prestart:webserver": "node ./scripts/check-version.js",
     "start:webserver": "node ./scripts/start-webserver.js",
     "test:all": "node ./scripts/test.js",
     "db:cm": "node ./scripts/db-migrate-create.js",
