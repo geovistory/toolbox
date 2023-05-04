@@ -6,7 +6,7 @@ import {UrlBuilder} from '../utils/url-builder';
 
 export class EmailService {
 
-  constructor() {}
+  constructor() { }
 
   transporter = createTransport({
     host: 'asmtp.mail.hostpoint.ch',
@@ -27,8 +27,9 @@ export class EmailService {
     verificationToken: string
   ) {
 
-    const url = new UrlBuilder().getBaseUrl();
-    const link = `${url}/verify-email?accountId=${accountId}&verificationToken=${verificationToken}&redirectOnSuccess=${url}/email-verified`
+    const serverUrl = new UrlBuilder().getServerUrl();
+    const clientUrl = new UrlBuilder().getClientUrl();
+    const link = `${serverUrl}/verify-email?accountId=${accountId}&verificationToken=${verificationToken}&redirectOnSuccess=${clientUrl}/email-verified`
 
     // send mail with defined transport object
     return this.transporter.sendMail({
@@ -47,7 +48,7 @@ export class EmailService {
     passwordResetToken: string
   ) {
 
-    const url = new UrlBuilder().getBaseUrl();
+    const url = new UrlBuilder().getClientUrl();
     const link = `${url}/reset-password?access_token=${passwordResetToken}`
 
     // send mail with defined transport object

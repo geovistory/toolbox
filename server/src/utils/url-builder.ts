@@ -1,65 +1,28 @@
 export class UrlBuilder {
   /**
-  * gets the base Url of the app server.
+  * gets the URL of the api server.
   *
   * e.g.:
-  * - https://www.geovistory.com
-  * - https://geovistory-review-pr-76.herokuapp.com
+  * - https://toolbox.geovistory.org/api
+  * - http://localhost:3000
   *
   * @return {type}  base url of the webserver
   */
-  getBaseUrl() {
-    return this.getProtocol() + '://' + this.getHost() + ':' + this.getPort();
+  getServerUrl() {
+    return process.env.SERVER_URL ?? 'http://localhost:3000';
   }
 
   /**
-  * get the protocol of api server ('http' or 'https').
-  *
-  * @return {String} protocol of api server
-  */
-  getProtocol() {
-    if (this.hostingIsRemote()) {
-      return 'https';
-    } else return 'http';
-  }
-
-  /**
-  * get the host of api server.
+  * gets the URL of the client webserver.
   *
   * e.g.:
-  * - www.geovistory.com
-  * - geovistory-review-pr-76.herokuapp.com
+  * - https://toolbox.geovistory.org/
+  * - http://localhost:4200
   *
-  * @return {String} host of api server
+  * @return {type}  base url of the webserver
   */
-  getHost() {
-    if (this.hostingIsRemote()) {
-      if (process.env.DOMAIN_NAME) return process.env.DOMAIN_NAME;
-      else return process.env.HEROKU_APP_NAME + '.herokuapp.com';
-    } else return '0.0.0.0';
+  getClientUrl() {
+    return process.env.CLIENT_URL ?? 'http://localhost:4200';
   }
 
-  /**
-  * get the port of api server.
-  *
-  * e.g.:
-  * - 443
-  * - 3000
-  *
-  * @return {String}  port of api server
-  */
-  getPort() {
-    if (this.hostingIsRemote()) {
-      return '443';
-    }
-    return '3000';
-  }
-
-  hostingIsRemote() {
-    const environment = process.env.DB_ENV;
-    if(!environment) return false;
-
-    if (['review', 'staging', 'production'].includes(environment)) return true;
-    else return false;
-  }
 }

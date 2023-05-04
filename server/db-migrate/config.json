@@ -13,6 +13,8 @@
     "url": {
       "ENV": "DB_MIGRATE_URL"
     },
-    "ssl": true
+    "ssl": {
+      "rejectUnauthorized": false
+    }
   }
 }

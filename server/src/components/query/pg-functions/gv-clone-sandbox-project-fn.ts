@@ -1,4 +1,4 @@
-import {SqlBuilderLb4Models} from '../../../utils/sql-builders/sql-builder-lb4-models';
+import { SqlBuilderLb4Models } from '../../../utils/sql-builders/sql-builder-lb4-models';
 
 
 /**
@@ -152,7 +152,7 @@ export class SqlGvCloneSandboxProject extends SqlBuilderLb4Models {
         * Clone all entity_previews from sandbox project
         * so that warehouse for this project is ready instantly
         */
-        INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type, class_label, entity_label, time_span, fk_type, type_label, full_text, ts_vector, first_second, last_second, tmsp_last_modification)
+        INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type, class_label, entity_label, time_span, fk_type, type_label, full_text, ts_vector, first_second, last_second, tmsp_last_modification, entity_id, parent_classes, ancestor_classes, project_id, type_id)
         SELECT
           pk_entity,
           pk_new_project AS fk_project,
@@ -168,12 +168,18 @@ export class SqlGvCloneSandboxProject extends SqlBuilderLb4Models {
           ts_vector,
           first_second,
           last_second,
-          tmsp_last_modification
+          tmsp_last_modification,
+          entity_id,
+          parent_classes,
+          ancestor_classes,
+          project_id,
+          type_id
         FROM
           war.entity_preview
         WHERE
           fk_project = pk_sandbox_project
-        ON CONFLICT ON CONSTRAINT war_entity_preview_unique
+        ON CONFLICT (entity_id,
+          project_id)
           DO NOTHING;
 
         /*

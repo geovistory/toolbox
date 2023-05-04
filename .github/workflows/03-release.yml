@@ -6,13 +6,13 @@ on:
       incrementType:
         description: "Type of increment (see: semver.org)"
         required: true
-        default: 'patch' 
+        default: "patch"
         type: choice
         options:
-        - major
-        - minor
-        - patch 
-        
+          - major
+          - minor
+          - patch
+
 jobs:
   release:
     # The type of runner that the job will run on
@@ -25,8 +25,8 @@ jobs:
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_GITHUB_CHANNEL_WEBHOOK }}
-          title: "Release website: Starting"
-          description: "Release website with proper semver and deploy on staging."
+          title: "Release toolbox: Starting"
+          description: "Release toolbox (client + server) with proper semver and deploy on staging."
           color: 0xffed2b
           username: GitHub Actions
 
@@ -34,7 +34,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.head_ref }}
-          
+
       - name: Git Identity
         run: |
           git config --global user.name 'geovbot'
@@ -42,11 +42,11 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - uses: actions/setup-node@v2
         with:
-          node-version: '16.13.2'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "16.13.2"
+          registry-url: "https://registry.npmjs.org"
 
       - name: Create version number
         id: npm_version
@@ -54,21 +54,21 @@ jobs:
           npm version ${{ github.event.inputs.incrementType }} --no-git-tag-version
           echo ::set-output name=tag::$(cat ./package.json | jq -r '.version')
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}        
-     
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Echo tag created by npm
         run: echo your tag is '${{steps.npm_version.outputs.tag}}'
-        
+
       - name: Update Lock file
-        run: 'npm i --package-lock-only'
+        run: "npm i --package-lock-only"
 
       - uses: EndBug/add-and-commit@v5
         with:
-          message: 'chore(): update release version'
+          message: "chore(): update release version"
           tag: v${{steps.npm_version.outputs.tag}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
@@ -88,7 +88,7 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/geovistory/website:${{steps.npm_version.outputs.tag}}
-      
+
       - name: Invoke workflow in public-chart to make a staging release
         uses: benc-uk/workflow-dispatch@v1
         with:
@@ -98,17 +98,17 @@ jobs:
           token: ${{ secrets.GEOVBOT_PAT_REPO }}
           inputs: |
             {
-              "service": "website",
+              "service": "toolbox",
               "tag": "${{steps.npm_version.outputs.tag}}",
               "environment": "stag"
             }
-            
+
       - name: Send Discord Notification
         uses: sarisia/actions-status-discord@v1
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_GITHUB_CHANNEL_WEBHOOK }}
-          title: "Release website (on stag): Done"
+          title: "Release toolbox (on stag): Done"
           description: ""
           color: 0x0000ff
           username: GitHub Actions
