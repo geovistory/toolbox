@@ -60,6 +60,8 @@ import { FormGroupComponent } from './components/form-group/form-group.component
 import { FormSectionHeaderComponent } from './components/form-section-header/form-section-header.component';
 import { HbfPanelComponent } from './components/hbf-panel/hbf-panel.component';
 import { SearchExistingEntityComponent } from './components/search-existing-entity/search-existing-entity.component';
+import { SelectPlatformVocabItemDialogComponent } from './components/select-platform-vocab-item-dialog/select-platform-vocab-item-dialog.component';
+import { SelectTypeDialogComponent } from './components/select-type-dialog/select-type-dialog.component';
 import { SliderComponent } from './components/slider/slider.component';
 import { TypeItemComponent } from './components/type-item/type-item.component';
 import { ViewFieldAnnotationItemComponent } from './components/view-field-annotation-item/view-field-annotation-item.component';
@@ -77,6 +79,8 @@ import { ViewFieldItemContentSectionComponent } from './components/view-field-it
 import { ViewFieldItemEntityMenuComponent } from './components/view-field-item-entity-menu/view-field-item-entity-menu.component';
 import { ViewFieldItemLayoutComponent } from './components/view-field-item-layout/view-field-item-layout.component';
 import { ViewFieldItemNestedComponent } from './components/view-field-item-nested/view-field-item-nested.component';
+import { ViewFieldItemPreviewHasTypeComponent } from './components/view-field-item-preview-has-type/view-field-item-preview-has-type.component';
+import { ViewFieldItemPreviewPlatformVocabularyComponent } from './components/view-field-item-preview-platform-vocabulary/view-field-item-preview-platform-vocabulary.component';
 import { ViewFieldItemPreviewComponent } from './components/view-field-item-preview/view-field-item-preview.component';
 import { ViewFieldItemTimePrimitiveComponent } from './components/view-field-item-time-primitive/view-field-item-time-primitive.component';
 import { ViewFieldItemValueVersionComponent } from './components/view-field-item-value-version/view-field-item-value-version.component';
@@ -162,6 +166,8 @@ const components = [
   ViewFieldItemComponent,
   ViewFieldItemClassInfoComponent,
   ViewFieldItemPreviewComponent,
+  ViewFieldItemPreviewPlatformVocabularyComponent,
+  ViewFieldItemPreviewHasTypeComponent,
   ViewFieldItemNestedComponent,
   ViewFieldItemEntityMenuComponent,
   ViewFieldItemTimePrimitiveComponent,
@@ -184,7 +190,9 @@ const components = [
   ViewFieldAnnotationItemComponent,
   ViewFieldAnnotationsOfCellComponent,
   ViewFieldAnnotationsOfCellItemComponent,
-  GvDndSortListDirective
+  GvDndSortListDirective,
+  SelectPlatformVocabItemDialogComponent,
+  SelectTypeDialogComponent
 ]
 
 const baseModules = [

@@ -346,46 +346,6 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
           return of([n])
         }
 
-        // if (!isValue) { // if it is not a value
-        //   rootArray = {
-        //     ...data,
-        //     section: true
-        //   }
-
-        //   mapValue = (items?: InfData[]): InfData => {
-        //     if (items?.[0]?.resource) {
-        //       // merge the resources produced by each section
-        //       const outgoing_statements: InfStatementWithRelations[] = []
-        //       const incoming_statements: InfStatementWithRelations[] = []
-        //       items.forEach(i => {
-        //         outgoing_statements.push(...i.resource?.outgoing_statements ?? [])
-        //         incoming_statements.push(...i.resource?.incoming_statements ?? [])
-        //       })
-        //       return { resource: { ...items[0].resource, outgoing_statements, incoming_statements } }
-
-        //     } else if (items?.[0]?.statement) return items[0]
-        //     else return {}
-        //   }
-        // } else { // if it is a value
-        //   rootArray = {
-        //     ...data,
-        //     value: {
-        //       config: isValue,
-        //       initVal
-        //     }
-        //   }
-
-        //   mapValue = (items?: InfData[]): InfData => items[0]
-        // }
-
-        // const n: LocalNodeConfig = {
-        //   array: {
-        //     placeholder: '',
-        //     data: { rootArray: rootArray },
-        //     mapValue: mapValue
-        //   }
-        // }
-        // return [n]
       })
     )
 
@@ -799,9 +759,6 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
       maxLength = 1;
       addOnInit = 1;
     }
-    // if (formControlType.entity && !field.identityDefiningForTarget) {
-    //   formControlType = { entityPreview: 'true' };
-    // }
 
     return {
       array: {
@@ -867,48 +824,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     initStmts: InfStatementWithRelations[] = [{}]
   ): Observable<LocalNodeConfig[]> {
 
-    // // Time Span Control
-    // if (formCtrlType.timeSpan) {
-    //   // create init value
-    //   const initValue: CtrlTimeSpanModel = {}
-    //   for (let i = 0; i < initStmts.length; i++) {
-    //     const element = initStmts[i];
-    //     const infTp = element.object_time_primitive
-    //     if (infTp) {
-    //       const tpWithCal: TimePrimitiveWithCal = {
-    //         calendar: infTp.calendar,
-    //         duration: infTp.duration,
-    //         julianDay: infTp.julian_day,
-    //       }
-    //       initValue[element.fk_property] = tpWithCal
-    //     }
-    //   }
-    //   // get the control
-    //   return of([this.timeSpanCtrl(
-    //     this.ctrlRequired(field),
-    //     field.label,
-    //     targetClass,
-    //     field.targets[targetClass].targetClassLabel,
-    //     initValue,
-    //     (val) => {
-    //       if (!val) return null;
-    //       const v = val as CtrlTimeSpanDialogResult;
-    //       const value: InfStatementWithRelations[] = Object.keys(v).map(key => {
-    //         const timePrim: TimePrimitiveWithCal = v[key]
-    //         const statement: InfStatementWithRelations = {
-    //           fk_property: parseInt(key, 10),
-    //           object_time_primitive: {
-    //             calendar: timePrim.calendar,
-    //             julian_day: timePrim.julianDay,
-    //             duration: timePrim.duration,
-    //             fk_class: DfhConfig.CLASS_PK_TIME_PRIMITIVE,
-    //           }
-    //         }
-    //         return statement
-    //       });
-    //       return value;
-    //     })])
-    // }
+
 
     // Place Control
     if (formCtrlType.place) {

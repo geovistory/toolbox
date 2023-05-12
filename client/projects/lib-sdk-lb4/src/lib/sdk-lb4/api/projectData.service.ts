@@ -661,6 +661,78 @@ export class ProjectDataService {
     }
 
     /**
+     * @param vocabProject 
+     * @param parentOrAncestorClass 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public findProjectDataControllerGetPlatformVocabularyInstances(vocabProject: number, parentOrAncestorClass: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvPositiveSchemaObject>;
+    public findProjectDataControllerGetPlatformVocabularyInstances(vocabProject: number, parentOrAncestorClass: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvPositiveSchemaObject>>;
+    public findProjectDataControllerGetPlatformVocabularyInstances(vocabProject: number, parentOrAncestorClass: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvPositiveSchemaObject>>;
+    public findProjectDataControllerGetPlatformVocabularyInstances(vocabProject: number, parentOrAncestorClass: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+        if (vocabProject === null || vocabProject === undefined) {
+            throw new Error('Required parameter vocabProject was null or undefined when calling findProjectDataControllerGetPlatformVocabularyInstances.');
+        }
+        if (parentOrAncestorClass === null || parentOrAncestorClass === undefined) {
+            throw new Error('Required parameter parentOrAncestorClass was null or undefined when calling findProjectDataControllerGetPlatformVocabularyInstances.');
+        }
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (vocabProject !== undefined && vocabProject !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>vocabProject, 'vocabProject');
+        }
+        if (parentOrAncestorClass !== undefined && parentOrAncestorClass !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>parentOrAncestorClass, 'parentOrAncestorClass');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.get<GvPositiveSchemaObject>(`${this.configuration.basePath}/project-data/get-platform-vocabulary-instances`,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * @param pkProject 
      * @param pkEntity 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.

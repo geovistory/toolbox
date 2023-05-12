@@ -10,7 +10,7 @@
     Select and add items from the list below or create a new item.
   </span>
   <gv-view-field-body [source]="data.source" [field]="fieldWithOneTarget" [showBodyOnInit]="true" [scope]="scope$|async"
-    [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" (close)="onClose()" (next)="onNext()">
+    [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" (close)="onClose($event)" (next)="onNext()">
   </gv-view-field-body>
 </ng-container>
 
@@ -121,7 +121,7 @@
             <span *ngIf="(selectedInProject$ | async)">Select</span>
             <span *ngIf="!(selectedInProject$ | async)">Add to project and select</span>
           </button>
-          <button mat-button type="button" class="ml-2 mr-2" (click)="onClose()">Cancel</button>
+          <button mat-button type="button" class="ml-2 mr-2" (click)="onClose(false)">Cancel</button>
         </ng-container>
       </gv-hbf-panel>
     </ng-container>

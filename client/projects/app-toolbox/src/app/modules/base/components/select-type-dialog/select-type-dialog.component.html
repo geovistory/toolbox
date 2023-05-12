@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Select</h2>
+<div mat-dialog-content>
+  <mat-action-list class="loc-list">
+    <button *ngFor="let option of options$|async" mat-list-item (click)="upsertSelected(option.id)">
+      {{option.label}}
+    </button>
+
+  </mat-action-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="false" cdkFocusInitial>Cancel</button>
+  <button mat-button (click)="openAdvancedDialog()">Advanced dialog...</button>
+</div>
+
+<div class="loc-spinner" *ngIf="loading$|async">
+  <mat-spinner [diameter]="20"></mat-spinner>
+</div>

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -14,7 +13,16 @@ import { EditTextDialogComponent, EditTextDialogData } from '../edit-text-dialog
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { VIEW_FIELD_ITEM_TYPE } from './VIEW_FIELD_ITEM_TYPE';
 export type ViewFieldItemTypeFn = (field: Field, stmtWT: StatementWithTarget) => ViewFieldItemType | undefined
-export type ViewFieldItemType = 'preview' | 'nested' | 'timePrimitive' | 'value' | 'valueVersion' | 'cell' | 'content-tree';
+export type ViewFieldItemType =
+  'preview' // a normal entity, that can be in the project or not
+  | 'preview-platform-vocabulary' // a platform vocabulary entity, that is never in the project (and thus readonly)
+  | 'preview-has-type' // the target of a has type field with adapted ui to select amongst types available in project
+  | 'nested'
+  | 'timePrimitive'
+  | 'value'
+  | 'valueVersion'
+  | 'cell'
+  | 'content-tree';
 
 @Component({
   selector: 'gv-view-field-item',
@@ -39,14 +47,13 @@ export class ViewFieldItemComponent implements OnInit {
   itemType: ViewFieldItemType
   constructor(
     private ap: ActiveProjectPipesService,
-    private dataService: ReduxMainService,
     private p: ActiveProjectService,
     private baseModals: BaseModalsService,
     private dialog: MatDialog,
     private truncatePipe: TruncatePipe,
     @Optional() private fieldDropService: ViewFieldDropListService,
     @Optional() @Inject(VIEW_FIELD_ITEM_TYPE) private itemTypeOverride: ViewFieldItemTypeFn,
-    @Optional() private fieldBody: ViewFieldBodyComponent,
+    @Optional() public fieldBody: ViewFieldBodyComponent,
 
   ) { }
 
@@ -60,6 +67,11 @@ export class ViewFieldItemComponent implements OnInit {
     }
     if (item.target.entity) {
       if (field.targets[item.targetClass]?.viewType?.entityPreview || field.targets[item.targetClass]?.viewType?.typeItem) {
+
+        if (this.p.getIsPlatformVocabClass(item.targetClass)) return 'preview-platform-vocabulary'
+
+        if (field.isHasTypeField) return 'preview-has-type'
+
         return 'preview'
       }
       return 'nested'

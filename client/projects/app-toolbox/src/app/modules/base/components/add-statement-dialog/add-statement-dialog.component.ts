@@ -303,13 +303,13 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     this.next$.next(true);
   }
 
-  onClose() {
-    this.dialogRef.close()
+  onClose(e: boolean) {
+    this.dialogRef.close(e)
   }
 
   onSaved() {
     this.triggerPageReloads(this.pkProject, this.data.source.fkInfo, this.data.field)
-    this.onClose()
+    this.dialogRef.close(true)
   }
 
 

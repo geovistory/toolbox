@@ -166,6 +166,7 @@ export * from './sysConfigFieldsOfSourceSuperClass';
 export * from './sysConfigFormCtrlType';
 export * from './sysConfigOntomeProfiles';
 export * from './sysConfigOptionalProfiles';
+export * from './sysConfigPlatformVocabulary';
 export * from './sysConfigSpecialFields';
 export * from './sysConfigValue';
 export * from './sysConfigValueObjectType';

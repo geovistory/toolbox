@@ -63,6 +63,7 @@ export interface DfhClassEnriched {
   belongsToCategory: SysConfigClassCategoryBelonging;
   dfhClass: DfhClass;
   classConfig: ClassConfig;
+  restrictedToOtherProjects?: boolean; // in case of a platform vocabulary class managed by another project
   projectRel?: ProDfhClassProjRel;
 }
 
@@ -143,6 +144,11 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
         // console.log('aaa is it crazy?') // freezing bug log
 
+
+
+        const platformVocabularyClasses = sysConfig.platformVocabularies ?
+          sysConfig.platformVocabularies.map(c => c.parentOrAncestorClassId) : [];
+
         const isEnabled = (prop: DfhProperty): boolean => enabledProfiles.some(
           (enabled) => prop.profiles.map(p => p.fk_profile).includes(enabled)
         );
@@ -150,10 +156,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const inP = ingoingProps.filter((prop) => isEnabled(prop))
 
         return combineLatest([
-          this.pipePropertiesToSubfields(outP, true, enabledProfiles, noNesting),
+          this.pipePropertiesToSubfields(outP, true, enabledProfiles, platformVocabularyClasses, noNesting),
           // freezing bug log
           // .pipe(tap(x => console.log('aaa   pipePropertiesToSubfields out'))),
-          this.pipePropertiesToSubfields(inP, false, enabledProfiles, noNesting),
+          this.pipePropertiesToSubfields(inP, false, enabledProfiles, platformVocabularyClasses, noNesting),
           // freezing bug log
           // .pipe(tap(x => console.log('aaa   pipePropertiesToSubfields in'))),
           this.pipeFieldConfigs(pkClass),
@@ -382,11 +388,12 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     properties: DfhProperty[],
     isOutgoing: boolean,
     enabledProfiles: number[],
+    platformVocabularyClasses: number[],
     noNesting = false
   ): Observable<Subfield[]> {
     const obs$ = combineLatestOrEmpty(
       properties.map(p => {
-        return this.pipeSubfield(isOutgoing, p, enabledProfiles, noNesting);
+        return this.pipeSubfield(isOutgoing, p, enabledProfiles, platformVocabularyClasses, noNesting);
       })
     )
     return this.cache('pipePropertiesToSubfields', obs$, ...arguments)
@@ -400,6 +407,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     isOutgoing: boolean,
     p: DfhProperty,
     enabledProfiles: number[],
+    platformVocabularyClasses: number[],
     noNesting = false
   ): Observable<Subfield> {
     const o = isOutgoing;
@@ -553,18 +561,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     ) => new BehaviorSubject({ viewType: v, formControlType: f })
     const classId = klass.pk_class
     const basicType = klass.basic_type
-    const sysConfOfProp = isOutgoing ? s.specialFields.outgoingProperties : s.specialFields.incomingProperties;
-    const isTimeSpanShortCutField = sysConfOfProp?.[pkProperty]?.isHasTimeSpanShortCut ?? false;
-
-    // /**
-    //  * Particular Case 1: the field is time span field
-    //  */
-    // if (isTimeSpanShortCutField) {
-    //   return res({ timeSpan: 'true' }, { timeSpan: 'true' })
-    // }
 
     /**
-     * Particular Case 2: the field is has type field
+     * Particular Case: the field is has type field
      */
     if (basicType === 30 && targetMaxQuantity == 1 && classId !== DfhConfig.CLASS_PK_LANGUAGE) {
       return res({ typeItem: 'true' }, { typeItem: 'true' })
@@ -1011,6 +1010,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         this.s.sys$.config$.main$.pipe(filter(x => !!x))
       ])
         .pipe(map(([dfhClasses, classProjRels, sysConfig]) => {
+          const platformVocabConfigs = sysConfig?.platformVocabularies || [];
           return dfhClasses.map(dfhClass => {
             const belongsToCategory = getClassCategoryBelonging(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
             const icon = getClassIconType(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
@@ -1018,14 +1018,27 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             const classConfig = getClassConfig(sysConfig, dfhClass.pk_class, dfhClass.basic_type)
             const projectRel = classProjRels?.[pkProject + '_' + dfhClass.pk_class]
 
-            return {
+            var superclasses = dfhClass.ancestor_classes.concat(dfhClass.parent_classes);
+            const restrictedToProjects: number[] = []
+            for (const c of platformVocabConfigs || []) {
+              if (superclasses.includes(c.parentOrAncestorClassId)) {
+                restrictedToProjects.push(c.projectId)
+              }
+            }
+            let restrictedToOtherProjects = false;
+            if (restrictedToProjects.length > 0 && !restrictedToProjects.includes(pkProject)) {
+              restrictedToOtherProjects = true
+            }
+            const classEnriched: DfhClassEnriched = {
               icon,
               detailPage,
               belongsToCategory,
               classConfig,
               dfhClass,
-              projectRel
+              projectRel,
+              restrictedToOtherProjects
             }
+            return classEnriched;
           })
         }))
     }))
@@ -1070,7 +1083,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   * of all type classes that are enabled by at least one of the activated profiles
   * of thte given project
   */
-  pipeTypeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
+  pipeTypeClassesEnabledByProjectProfiles(): Observable<DfhClassEnriched[]> {
     const obs$ = this.pipeClassesOfProject().pipe(
       map(items => items
         .filter(item => item.dfhClass.basic_type === 30 &&
@@ -1079,7 +1092,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             DfhConfig.CLASS_PK_MANIFESTATION_PRODUCT_TYPE
           ].includes(item.dfhClass.pk_class)
         )
-        .map(item => item.dfhClass)
       )
     )
 
@@ -1186,7 +1198,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       .pipe(
         map(items => {
           return items
-            .filter(item => item.belongsToCategory?.[enabledIn]?.showInAddMenu)
+            .filter(item => item.belongsToCategory?.[enabledIn]?.showInAddMenu && !item.restrictedToOtherProjects)
             .filter(item => {
               if (enabledIn === 'entities') {
                 return item.projectRel?.enabled_in_entities

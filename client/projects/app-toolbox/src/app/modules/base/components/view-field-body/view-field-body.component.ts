@@ -62,7 +62,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   selection: SelectionModel<number>;
   selected: { [pk_stmt: number]: StatementWithTarget } = {}
   allowMultiSelect: boolean
-  @Output() close = new EventEmitter()
+  @Output() close = new EventEmitter<boolean>()
   @Output() next = new EventEmitter()
   adding$ = new BehaviorSubject(false)
   // dropZoneAccepts$ = new BehaviorSubject(false)
@@ -275,7 +275,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
             ).subscribe(() => {
 
               // done!
-              this.close.emit()
+              this.close.emit(true)
             })
 
         })

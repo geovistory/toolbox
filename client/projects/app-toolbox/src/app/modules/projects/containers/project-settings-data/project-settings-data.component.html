@@ -40,13 +40,15 @@
 
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
 
-        <mat-checkbox *ngIf="element?.belongsToCategory?.entities  && element.showInAddMenu"
+        <mat-checkbox
+          *ngIf="element?.belongsToCategory?.entities  && element.showInAddMenu && !element.restrictedToOtherProjects"
           (click)="$event.stopPropagation()"
           (change)="element.enabled_in_entities ? disableClass(element) : enableClass(element)"
           [checked]="element.enabled_in_entities" [hidden]="p.changingClassProjRel[element.pkClass]">
         </mat-checkbox>
-        <mat-checkbox *ngIf="!(element?.belongsToCategory?.entities) && element.showInAddMenu" [disabled]="true"
-          [checked]="true">
+        <mat-checkbox
+          *ngIf="!(element?.belongsToCategory?.entities) && element.showInAddMenu && !element.restrictedToOtherProjects"
+          [disabled]="true" [checked]="true">
         </mat-checkbox>
         <mat-spinner *ngIf="p.changingClassProjRel[element.pkClass]" [diameter]="20" color="accent"></mat-spinner>
       </td>

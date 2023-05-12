@@ -6,6 +6,12 @@ import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.mod
 
 export class SysConfigValueMock {
   static readonly SYS_CONFIC_VALID: SysConfigValue = {
+    "platformVocabularies": [
+      {
+        "projectId": 1332984,
+        "parentOrAncestorClassId": 1209
+      }
+    ],
     "ontome": {
       "optionalOntomeProfiles": [
         {

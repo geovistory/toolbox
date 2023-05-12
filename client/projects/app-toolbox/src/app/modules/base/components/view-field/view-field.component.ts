@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field, InformationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfActions } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
@@ -7,11 +7,10 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
-import { fieldToFieldId, isValueObjectSubfield } from '../../base.helpers';
+import { fieldToFieldId } from '../../base.helpers';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldAddHooksService } from '../../services/view-field-add-hooks.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
-import { AddStatementDialogComponent, AddStatementDialogData } from '../add-statement-dialog/add-statement-dialog.component';
 import { ChooseClassDialogComponent, ChooseClassDialogData, ChooseClassDialogReturn } from '../choose-class-dialog/choose-class-dialog.component';
 import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
@@ -102,19 +101,15 @@ export class ViewFieldComponent implements OnInit {
     /**
      * Pipe data from redux store
      */
-    if (this.field.isSpecialField !== 'has-type') {
+    this.showAddButton$ = combineLatest(this.itemsCount$, this.readmode$)
+      .pipe(map(([n, r]) => {
+        if (r) return false;
 
-
-      this.showAddButton$ = combineLatest(this.itemsCount$, this.readmode$)
-        .pipe(map(([n, r]) => {
-          if (r) return false;
-
-          if (this.field.targetMaxQuantity === -1) return true;
-          if (this.field.targetMaxQuantity <= n) return false
-          if (this.field.isSpecialField === 'time-span' && 1 <= n) return false
-          return true;
-        }))
-    }
+        if (this.field.targetMaxQuantity === -1) return true;
+        if (this.field.targetMaxQuantity <= n) return false
+        if (this.field.isSpecialField === 'time-span' && 1 <= n) return false
+        return true;
+      }))
 
   }
 
@@ -122,7 +117,7 @@ export class ViewFieldComponent implements OnInit {
     if (this.field.isSpecialField === 'time-span') {
       return;
     }
-    let hook = this.addHooks.beforeChoosingClass(this)
+    let hook = await this.addHooks.beforeChoosingClass(this)
     if (hook) return hook();
 
     const targetClasses = getFormTargetClasses(this.field)
@@ -150,32 +145,10 @@ export class ViewFieldComponent implements OnInit {
       targetClass = targetClasses[0].targetClass;
     }
 
-    hook = this.addHooks.afterChoosingClass(this, targetClass)
-    if (hook) return hook();
-
-    if (targetClass) this.openAddStatementDialog(this.field, targetClass);
+    const dataModified = await this.addHooks.afterChoosingClass(this, targetClass)
+    if (dataModified) this.bodyComponent.showBody$.next(true);
   }
 
-  private openAddStatementDialog(field: Field, targetClass: number) {
-    const targetTyp = field.targets[targetClass]
-    const isValue = isValueObjectSubfield(targetTyp.viewType);
-    const showAddList = (!isValue && !field.identityDefiningForTarget)
-    const data: AddStatementDialogData = {
-      field: field,
-      targetClass,
-      showAddList,
-      source: this.source,
-      hiddenProperty: this.field.property
-    };
-    const config: MatDialogConfig = {
-      height: 'calc(100% - 30px)',
-      width: !showAddList ? '500px' : '980px',
-      maxWidth: '100%',
-      data,
-      panelClass: 'gv-no-padding',
-    }
-    this.dialog.open(AddStatementDialogComponent, config);
-  }
 
   ngOnDestroy() {
     this.destroy$.next(true);

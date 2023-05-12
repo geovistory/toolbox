@@ -2,20 +2,19 @@
 <gv-view-field-header [hidden]="!(showHeader$|async)" class="mat-bg-grey-50" [body]=b [itemsCount$]=itemsCount$
   [showAddButton$]=showAddButton$ [showOntoInfo$]=showOntoInfo$ [ontoInfoUrl]=field.ontoInfoUrl
   [ontoInfoLabel]=field.ontoInfoLabel [fieldLabel]=field.label [required]="(field.identityDefiningForSource)"
-  [disableToggle]="field.isSpecialField==='has-type'" [hideItemsCount]="field.isSpecialField==='has-type'"
   [removedFromProfiles]=field.allSubfieldsRemovedFromAllProfiles [itemsMax]="field.targetMaxQuantity"
-  [targetClassLabels]=targetClassLabels [showTargetClassLabels]="field.isSpecialField!=='has-type'"
-  [displayMode]="nodeService.displayMode" [indentation$]="nodeService.indentation$" (add)="addClick()">
+  [targetClassLabels]=targetClassLabels [displayMode]="nodeService.displayMode"
+  [indentation$]="nodeService.indentation$" (add)="addClick()">
 
-  <gv-type-item hastype *ngIf="field.isSpecialField==='has-type'" class="ml-3 mat-body mat-text-secondary"
+  <!-- <gv-type-item hastype *ngIf="field.isSpecialField==='has-type'" class="ml-3 mat-body mat-text-secondary"
     [pkEntity]="source.fkInfo" [pkProperty]="field.property.fkProperty" [pkTypedClass]="field.sourceClass"
     [pkTypeClass]="field.targetClasses[0]" [isOutgoing]="field.isOutgoing">
-  </gv-type-item>
+  </gv-type-item> -->
 
 </gv-view-field-header>
 <mat-divider [hidden]="!(showHeader$|async)"></mat-divider>
 
 <!-- Body -->
-<gv-view-field-body [showBodyOnInit]="showBodyOnInit" [hidden]="field.isSpecialField" #b [source]="source"
-  [field]="field" [scope]="scope" [showOntoInfo$]="showOntoInfo$">
+<gv-view-field-body [showBodyOnInit]="showBodyOnInit" #b [source]="source" [field]="field" [scope]="scope"
+  [showOntoInfo$]="showOntoInfo$">
 </gv-view-field-body>

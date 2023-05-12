@@ -542,4 +542,18 @@ export class ActiveProjectService {
     return confirmed;
   }
 
+
+
+  /**
+   * Determines wether a class is a platform vocabulary class.
+   * @param chosenClass the target class chosen by the user
+   * @returns true, if this class is a platform vocabulary class, else false
+   */
+  public getIsPlatformVocabClass(chosenClass: number) {
+    var platformVocabularies = this.ngRedux.getState()?.sys?.config?.by_main?.['main']?.platformVocabularies;
+    var platformVocabClasses = platformVocabularies.map(pv => pv.parentOrAncestorClassId);
+    var dfhClass = this.ngRedux.getState()?.dfh?.klass?.by_pk_class?.[chosenClass];
+    var superClasses = dfhClass.ancestor_classes.concat(dfhClass.parent_classes);
+    return superClasses.some((superClass) => platformVocabClasses.includes(superClass));
+  }
 }

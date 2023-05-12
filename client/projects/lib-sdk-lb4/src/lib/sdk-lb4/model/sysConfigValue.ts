@@ -12,6 +12,7 @@
 import { ClassConfig } from './classConfig';
 import { SysConfigOntomeProfiles } from './sysConfigOntomeProfiles';
 import { SysConfigAddProperty } from './sysConfigAddProperty';
+import { SysConfigPlatformVocabulary } from './sysConfigPlatformVocabulary';
 import { SysConfigSpecialFields } from './sysConfigSpecialFields';
 
 
@@ -25,5 +26,6 @@ export interface SysConfigValue {
     specialFields: SysConfigSpecialFields;
     addProperty?: Array<SysConfigAddProperty>;
     ontome?: SysConfigOntomeProfiles;
+    platformVocabularies?: Array<SysConfigPlatformVocabulary>;
 }
 

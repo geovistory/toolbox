@@ -1,0 +1,26 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  .mat-dialog-content {
+    padding: 0;
+  }
+}
+
+.loc-spinner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -24px;
+  right: -24px;
+  display: flex;
+  background: white;
+  mat-spinner {
+    margin: auto;
+  }
+}
+
+::ng-deep gv-select-platform-vocab-item-dialog .mat-list-item-content {
+  padding: 0 24px !important;
+}
