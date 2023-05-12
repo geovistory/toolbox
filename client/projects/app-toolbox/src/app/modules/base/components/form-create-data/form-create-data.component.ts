@@ -14,6 +14,7 @@ import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/c
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
+import { C_53_TYPE_ID, C_54_LANGUAGE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
 import { TrueEnum } from 'projects/__test__/data/auto-gen/enums/TrueEnum';
 import { equals, flatten, groupBy, sum, values } from 'ramda';
@@ -49,13 +50,19 @@ export interface FormArrayData {
   gvFieldItem?: {
     field: Field
     targetClass: number
-    targetType: SysConfigFormCtrlType
+    targetType: FormControlType
   }
 
   // gets called when removed
   removeHook?: (x: FormArrayData) => any
 }
 
+
+interface FormControlType extends SysConfigFormCtrlType {
+  typeItem?: boolean,
+  platformVocabItem?: boolean,
+  timeSpan?: 'true'
+}
 
 
 
@@ -75,9 +82,8 @@ interface FormGroupData {
     initVal: InfValueObject
   }
 }
-export interface ControlType extends SysConfigFormCtrlType { timeSpan?: 'true' }
 export interface FormControlData {
-  controlType: ControlType
+  controlType: FormControlType
   field?: Field
   targetClass: number
   targetClassLabel: string
@@ -739,7 +745,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     addOnInit = 0,
   ): LocalNodeConfig {
 
-    const formControlType = field.targets[targetClass].formControlType;
+    let formControlType: FormControlType = field.targets[targetClass].formControlType;
     const stringPartId = this.searchStringPartId++;
 
     const removeHook = (data: FormArrayData) => {
@@ -755,9 +761,19 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     const minLength = field.targetMinQuantity === -1 ? Number.POSITIVE_INFINITY : field.targetMinQuantity;
     if (addOnInit === 0) addOnInit = required ? minLength : addOnInit;
 
-    if (formControlType.typeItem) {
-      maxLength = 1;
-      addOnInit = 1;
+    // further distinguish different form controls for creation of entities
+    if (formControlType.entity) {
+
+      if (this.ap.getIsPlatformVocabClass(targetClass)) {
+        formControlType = { platformVocabItem: true }
+        maxLength = 1;
+        addOnInit = 1;
+      }
+      else if (this.ap.getIsSubclassOf(targetClass, C_53_TYPE_ID) && targetClass !== C_54_LANGUAGE_ID) {
+        formControlType = { typeItem: true }
+        maxLength = 1;
+        addOnInit = 1;
+      }
     }
 
     return {
@@ -818,7 +834,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   }
 
   private getLeafControl(
-    formCtrlType: SysConfigFormCtrlType,
+    formCtrlType: FormControlType,
     targetClass: number,
     field: Field,
     initStmts: InfStatementWithRelations[] = [{}]
@@ -943,6 +959,10 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
 
     // Type Control
     else if (formCtrlType.typeItem) return this.typeCtrl(targetClass, field, initStmts)
+
+
+    // Platform Vocab Item Control
+    else if (formCtrlType.platformVocabItem) return this.platformVocabItemCtrl(targetClass, field, initStmts)
 
     // Time Primitive Control
     else if (formCtrlType.timePrimitive) {
@@ -1201,7 +1221,50 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
           required: this.ctrlRequired(field),
           data: {
             appearance: this.appearance,
-            controlType: { typeItem: 'true' },
+            controlType: { typeItem: true },
+            field,
+            targetClass,
+            targetClassLabel
+          },
+          mapValue: (val: number) => {
+            if (!val) return null;
+
+            let value: InfStatementWithRelations = {
+              fk_property: field.property.fkProperty,
+            };
+
+            if (field.isOutgoing) {
+              value = { ...value, fk_object_info: val }
+            } else {
+              value = { ...value, fk_subject_info: val }
+            }
+
+            return value;
+          }
+        }
+      }
+    });
+    return of(controlConfigs);
+  }
+
+  private platformVocabItemCtrl(
+    targetClass: number,
+    field: Field,
+    initItems: InfStatementWithRelations[] = [{}],
+  ): Observable<LocalNodeConfig[]> {
+    const targetClassLabel = field.targets[targetClass].targetClassLabel
+    const controlConfigs: LocalNodeConfig[] = initItems.map((initVal: InfStatement) => {
+      const initValue = !initVal ?
+        undefined : field.isOutgoing ?
+          initVal.fk_object_info : initVal.fk_subject_info;
+      return {
+        control: {
+          initValue,
+          placeholder: field.label,
+          required: this.ctrlRequired(field),
+          data: {
+            appearance: this.appearance,
+            controlType: { platformVocabItem: true },
             field,
             targetClass,
             targetClassLabel
@@ -1401,6 +1464,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
       })
     )
   }
+
 
 
   private timePrimitiveCtrl(

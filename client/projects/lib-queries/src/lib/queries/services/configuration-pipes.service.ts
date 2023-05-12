@@ -562,13 +562,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     const classId = klass.pk_class
     const basicType = klass.basic_type
 
-    /**
-     * Particular Case: the field is has type field
-     */
-    if (basicType === 30 && targetMaxQuantity == 1 && classId !== DfhConfig.CLASS_PK_LANGUAGE) {
-      return res({ typeItem: 'true' }, { typeItem: 'true' })
-    }
-
     /*
     * get form control type (for display on create form)
     */

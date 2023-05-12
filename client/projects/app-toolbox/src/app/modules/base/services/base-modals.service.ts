@@ -98,7 +98,7 @@ export class BaseModalsService {
     return this.dialog.open<SelectTypeDialogComponent, SelectTypeDialogData, boolean>(SelectTypeDialogComponent, { data })
   }
 
-  openAddStatementDialogFromField(source: GvFieldSourceEntity, field: Field, targetClass: number) {
+  openAddStatementDialogFromField(source: GvFieldSourceEntity, field: Field, targetClass: number, toBeReplaced?: StatementWithTarget) {
     const targetTyp = field.targets[targetClass]
     const isValue = isValueObjectSubfield(targetTyp.viewType);
     const showAddList = (!isValue && !field.identityDefiningForTarget)
@@ -107,7 +107,8 @@ export class BaseModalsService {
       targetClass,
       showAddList,
       source: source,
-      hiddenProperty: field.property
+      hiddenProperty: field.property,
+      toBeReplaced
     };
     const config: MatDialogConfig<AddStatementDialogData> = {
       height: 'calc(100% - 30px)',

@@ -41,8 +41,8 @@ export class GvFieldTargetViewType {
   @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
   entityPreview?: TrueEnum;
 
-  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  typeItem?: TrueEnum;
+  // @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
+  // typeItem?: TrueEnum;
 
   @property.array(GvSubentitFieldPageReq)
   nestedResource?: GvSubentitFieldPageReq[];

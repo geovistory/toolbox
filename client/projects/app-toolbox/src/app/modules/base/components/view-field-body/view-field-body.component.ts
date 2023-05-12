@@ -279,24 +279,9 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
             })
 
         })
-
-
     })
 
   }
-
-  // dragStarted() {
-  //   this.viewFieldDropListService.connectedToDropLists$.value.forEach(item => {
-  //     item.data.dropZoneAccepts$.next(true)
-  //   })
-  // }
-  // dragEnded() {
-  //   this.viewFieldDropListService.connectedToDropLists$.value.forEach(item => {
-  //     item.data.dropZoneAccepts$.next(false)
-  //   })
-  // }
-  // dragReleased() {
-  // }
 
   onDragStart(item: TreeItem) {
     this.dndGlobal.isDragging$.next(item)

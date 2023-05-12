@@ -162,4 +162,30 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
       });
     }
   }
+
+
+  /**
+   * Determines wether a class is a platform vocabulary class.
+   * @param classId the class id
+   * @returns true, if this class is a platform vocabulary class, else false
+   */
+  public getIsPlatformVocabClass(classId: number) {
+    var platformVocabularies = this.ngRedux.getState()?.sys?.config?.by_main?.['main']?.platformVocabularies;
+    var platformVocabClasses = platformVocabularies.map(pv => pv.parentOrAncestorClassId);
+    var dfhClass = this.ngRedux.getState()?.dfh?.klass?.by_pk_class?.[classId];
+    var superClasses = dfhClass.ancestor_classes.concat(dfhClass.parent_classes);
+    return superClasses.some((superClass) => platformVocabClasses.includes(superClass));
+  }
+
+  /**
+ * Determines wether a class (classId) is subclass of super class (superClassId).
+ * @param classId class you want to know if it is a subclass
+ * @param superClassId class you want to know if it is a parent or ancestor of classId
+ * @returns true, if this class is a subclass of super class, else false
+ */
+  public getIsSubclassOf(classId: number, superClassId: number) {
+    var dfhClass = this.ngRedux.getState()?.dfh?.klass?.by_pk_class?.[classId];
+    var superClasses = dfhClass.ancestor_classes.concat(dfhClass.parent_classes);
+    return superClasses.includes(superClassId);
+  }
 }

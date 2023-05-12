@@ -5,7 +5,7 @@ import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, InfStatementWithRelations, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { fieldToWarFieldChangeId } from '../../base.helpers';
 import { EditModeService } from '../../services/edit-mode.service';
@@ -41,6 +41,7 @@ export class SelectPlatformVocabItemDialogComponent implements OnInit, OnDestroy
   destroy$ = new Subject<boolean>();
   loading$ = new BehaviorSubject(false);
   options$: Observable<Option[]>
+  filter$ = new BehaviorSubject<string>('')
 
   constructor(
     private dataService: ReduxMainService,
@@ -52,7 +53,7 @@ export class SelectPlatformVocabItemDialogComponent implements OnInit, OnDestroy
   ) { }
 
   ngOnInit() {
-    this.options$ = this.schema.inf$.resource$.by_fk_class_key$(this.data.targetClass, false).pipe(
+    const allOptions$ = this.schema.inf$.resource$.by_fk_class_key$(this.data.targetClass, false).pipe(
       switchMap(r => combineLatestOrEmpty(
         values(r).map(resource => this.ap.streamEntityPreview(resource.pk_entity, false, 0).pipe(
           map<WarEntityPreview, Option>(preview => ({
@@ -63,6 +64,12 @@ export class SelectPlatformVocabItemDialogComponent implements OnInit, OnDestroy
       ).pipe(
         sortAbc(node => node.label)
       )),
+    )
+    this.options$ = combineLatest([allOptions$, this.filter$]).pipe(
+      map(([allOptions, filter]) => {
+        if (filter.length === 0) return allOptions
+        return allOptions.filter(option => option.label.toLowerCase().includes(filter.toLowerCase()))
+      }),
     )
   }
 
@@ -124,7 +131,9 @@ export class SelectPlatformVocabItemDialogComponent implements OnInit, OnDestroy
     const fieldId: WarFieldChangeId = fieldToWarFieldChangeId(pkProject, { fkInfo }, field.property, field.isOutgoing);
     this.paginationService.reloadPagesOfField(fieldId);
   }
-
+  onFilter(e: KeyboardEvent) {
+    this.filter$.next((<HTMLInputElement>e.target).value)
+  }
   ngOnDestroy() {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

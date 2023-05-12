@@ -470,7 +470,7 @@ export class ActiveProjectService {
     }
     const pkProject = await this.pkProject$.pipe(first()).toPromise()
 
-    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+    const dialog = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, { data })
     const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
 
     if (confirmed) {
@@ -531,7 +531,10 @@ export class ActiveProjectService {
     }
     const pkProject = await this.pkProject$.pipe(first()).toPromise()
 
-    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+    const dialog = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+      ConfirmDialogComponent,
+      { data }
+    )
     const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
 
     if (confirmed) {
@@ -544,16 +547,4 @@ export class ActiveProjectService {
 
 
 
-  /**
-   * Determines wether a class is a platform vocabulary class.
-   * @param chosenClass the target class chosen by the user
-   * @returns true, if this class is a platform vocabulary class, else false
-   */
-  public getIsPlatformVocabClass(chosenClass: number) {
-    var platformVocabularies = this.ngRedux.getState()?.sys?.config?.by_main?.['main']?.platformVocabularies;
-    var platformVocabClasses = platformVocabularies.map(pv => pv.parentOrAncestorClassId);
-    var dfhClass = this.ngRedux.getState()?.dfh?.klass?.by_pk_class?.[chosenClass];
-    var superClasses = dfhClass.ancestor_classes.concat(dfhClass.parent_classes);
-    return superClasses.some((superClass) => platformVocabClasses.includes(superClass));
-  }
 }

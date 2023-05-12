@@ -31,6 +31,7 @@ import { CtrlAppellationComponent } from './components/ctrl-appellation/ctrl-app
 import { CtrlEntityDialogComponent } from './components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityComponent } from './components/ctrl-entity/ctrl-entity.component';
 import { CtrlLanguageComponent } from './components/ctrl-language/ctrl-language.component';
+import { CtrlPlatformVocabItemComponent } from './components/ctrl-platform-vocab-item/ctrl-platform-vocab-item.component';
 import { CtrlTextPropertyComponent } from './components/ctrl-text-property/ctrl-text-property.component';
 import { CtrlTimePrimitiveComponent } from './components/ctrl-time-primitive/ctrl-time-primitive.component';
 import { CtrlTimeSpanDialogComponent } from './components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
@@ -123,6 +124,7 @@ const components = [
   CtrlTimeSpanDialogComponent,
   CtrlTimePrimitiveComponent,
   CtrlTypeComponent,
+  CtrlPlatformVocabItemComponent,
   FormCreateDataComponent,
   FormGroupComponent,
   FormArrayComponent,

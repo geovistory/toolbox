@@ -105,7 +105,7 @@ export const req: GvFieldPageReq = {
         {
           "targets": {
             "636": {
-              "typeItem": TrueEnum.true
+              "entityPreview": TrueEnum.true
             }
           },
           "page": {

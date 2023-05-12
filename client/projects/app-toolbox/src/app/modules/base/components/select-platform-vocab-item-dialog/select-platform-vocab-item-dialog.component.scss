@@ -24,3 +24,32 @@
 ::ng-deep gv-select-platform-vocab-item-dialog .mat-list-item-content {
   padding: 0 24px !important;
 }
+
+.loc-list {
+  padding: 0 !important;
+}
+
+.loc-filter {
+  margin: -24px -24px 0 -24px;
+  font-size: inherit;
+  box-shadow: none;
+  border-radius: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.loc-filter input {
+  padding: 24px 24px 16px 24px;
+}
+
+.loc-filter-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  border: 0;
+  color: gray;
+  background-color: unset;
+  width: 100%;
+}

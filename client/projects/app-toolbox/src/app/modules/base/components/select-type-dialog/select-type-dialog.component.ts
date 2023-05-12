@@ -5,7 +5,7 @@ import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, InfStatementWithRelations, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { fieldToWarFieldChangeId } from '../../base.helpers';
 import { BaseModalsService } from '../../services/base-modals.service';
@@ -42,6 +42,7 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
   loading$ = new BehaviorSubject(false);
   options$: Observable<Option[]>
+  filter$ = new BehaviorSubject<string>('')
 
   constructor(
     private dataService: ReduxMainService,
@@ -54,7 +55,7 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.options$ = this.schema.inf$.resource$.by_fk_class_key$(this.data.targetClass).pipe(
+    const allOptions$ = this.schema.inf$.resource$.by_fk_class_key$(this.data.targetClass).pipe(
       switchMap(r => combineLatestOrEmpty(
         values(r).map(resource => this.ap.streamEntityPreview(resource.pk_entity).pipe(
           map<WarEntityPreview, Option>(preview => ({
@@ -65,6 +66,13 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
       ).pipe(
         sortAbc(node => node.label)
       )),
+    )
+
+    this.options$ = combineLatest([allOptions$, this.filter$]).pipe(
+      map(([allOptions, filter]) => {
+        if (filter.length === 0) return allOptions
+        return allOptions.filter(option => option.label.toLowerCase().includes(filter.toLowerCase()))
+      }),
     )
   }
 
@@ -83,16 +91,10 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
     // create the statement to add
     const newStmt = this.prepareNewStatement(targetEntity);
 
-    // delete old statement
-    if (this.data?.originalStatement?.statement?.pk_entity) {
-      // we need to await this, because, if the user saves without modifying the
-      // form, the upsert function below will use the existing statement and add
-      // it again to the project. For this reason, remove must be done before upsert
-      await this.dataService.removeEntityFromProject(
-        pkProject,
-        this.data.originalStatement.statement.pk_entity
-      ).pipe(first()).toPromise()
+    // remove original statement, if provided
+    await this.removeOriginalStatement()
 
+    if (this.data?.originalStatement?.statement?.pk_entity) {
       // add the ord-num to the new statement, to keep its position
       newStmt.entity_version_project_rels = this.data.field.isOutgoing ?
         [{ ord_num_of_range: this.data.originalStatement.ordNum }] :
@@ -103,7 +105,7 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
     await this.dataService.upsertInfStatementsWithRelations(pkProject, [newStmt])
       .pipe(first()).toPromise();
 
-    this.triggerPageReloads(pkProject, this.data.source.fkInfo, this.data.field)
+    this.triggerPageReloads(this.data.source.fkInfo, this.data.field)
     this.dialogRef.close(true)
   }
 
@@ -122,14 +124,40 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
     return r;
   }
 
-  private triggerPageReloads(pkProject: number, fkInfo: number, field: Field) {
+  private async triggerPageReloads(fkInfo: number, field: Field) {
+    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise()
     const fieldId: WarFieldChangeId = fieldToWarFieldChangeId(pkProject, { fkInfo }, field.property, field.isOutgoing);
     this.paginationService.reloadPagesOfField(fieldId);
   }
 
   async openAdvancedDialog() {
-    const dataModified = await this.dialogs.openAddStatementDialogFromField(this.data.source, this.data.field, this.data.targetClass).afterClosed().toPromise();
+    this.loading$.next(true)
+
+    const dataModified = await this.dialogs.openAddStatementDialogFromField(
+      this.data.source,
+      this.data.field,
+      this.data.targetClass,
+      this.data.originalStatement
+    ).afterClosed().toPromise();
+
+    await this.removeOriginalStatement();
+
+    this.triggerPageReloads(this.data.source.fkInfo, this.data.field)
     this.dialogRef.close(dataModified)
+  }
+
+  private async removeOriginalStatement() {
+    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
+    if (this.data?.originalStatement?.statement?.pk_entity) {
+      await this.dataService.removeEntityFromProject(
+        pkProject,
+        this.data.originalStatement.statement.pk_entity
+      ).pipe(first()).toPromise();
+    }
+  }
+
+  onFilter(e: KeyboardEvent) {
+    this.filter$.next((<HTMLInputElement>e.target).value)
   }
   ngOnDestroy() {
     this.destroy$.next(true);

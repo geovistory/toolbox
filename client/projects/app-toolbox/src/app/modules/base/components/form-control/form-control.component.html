@@ -60,11 +60,22 @@
 </mat-form-field>
 
 <mat-form-field *ngIf="config?.data.controlType.typeItem" class="w-100" [appearance]="config.data.appearance">
-  <gv-ctrl-type placeholder="Choose type..." [formControl]="formControlFactory.control" [autoopen]="false"
-    [pkTypedClass]="config?.data?.field.sourceClass" [pkTypeClass]="config?.data?.targetClass"
+  <gv-ctrl-type [placeholder]="config?.data?.targetClassLabel +'...'" [formControl]="formControlFactory.control"
+    [autoopen]="false" [pkTypedClass]="config?.data?.field.sourceClass" [pkTypeClass]="config?.data?.targetClass"
     [required]="config?.required">
   </gv-ctrl-type>
   <mat-error *ngIf="formControlFactory.control.hasError('required')">
     Please select a type
+  </mat-error>
+</mat-form-field>
+
+
+<mat-form-field *ngIf="config?.data.controlType.platformVocabItem" class="w-100" [appearance]="config.data.appearance">
+  <gv-ctrl-platform-vocab-item [placeholder]="config?.data?.targetClassLabel +'...'"
+    [formControl]="formControlFactory.control" [autoopen]="false" [pkTypedClass]="config?.data?.field.sourceClass"
+    [pkTypeClass]="config?.data?.targetClass" [required]="config?.required">
+  </gv-ctrl-platform-vocab-item>
+  <mat-error *ngIf="formControlFactory.control.hasError('required')">
+    Please select an option
   </mat-error>
 </mat-form-field>

@@ -58,7 +58,7 @@ export class ViewFieldAddHooksService {
     /**
      * Hook for selecting an item from a platform vocabulary
      */
-    if (this.p.getIsPlatformVocabClass(chosenClass)) {
+    if (this.pp.getIsPlatformVocabClass(chosenClass)) {
       return this.dialogs.openSelectPlatformVocabItem(source, field, chosenClass).afterClosed().toPromise()
     }
 
