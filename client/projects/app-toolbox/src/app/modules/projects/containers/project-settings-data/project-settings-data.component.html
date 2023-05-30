@@ -116,7 +116,8 @@
       <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="subclassOfType"> Types
       </th>
       <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
-        <button mat-button color="primary" *ngIf="element.subclassOfType" (click)="openControlledVocab(element)"> Open
+        <button mat-button color="primary" *ngIf="element.subclassOfType && !element.restrictedToOtherProjects"
+          (click)="openControlledVocab(element)"> Open
           Controlled Vocabulary </button>
       </td>
     </ng-container>
