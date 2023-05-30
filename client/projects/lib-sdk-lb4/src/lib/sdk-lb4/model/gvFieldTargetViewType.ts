@@ -26,7 +26,6 @@ export interface GvFieldTargetViewType {
     dimension?: DimensionValueObjectType;
     cell?: GvFieldTargetViewType.CellEnum;
     entityPreview?: GvFieldTargetViewType.EntityPreviewEnum;
-    typeItem?: GvFieldTargetViewType.TypeItemEnum;
     nestedResource?: Array<GvSubentitFieldPageReq>;
     subReqsRecursiveTargets?: Array<GvSubentityFieldPage>;
 }
@@ -58,10 +57,6 @@ export namespace GvFieldTargetViewType {
     export type EntityPreviewEnum = 'true';
     export const EntityPreviewEnum = {
         True: 'true' as EntityPreviewEnum
-    };
-    export type TypeItemEnum = 'true';
-    export const TypeItemEnum = {
-        True: 'true' as TypeItemEnum
     };
 }
 

@@ -470,7 +470,7 @@ export class ActiveProjectService {
     }
     const pkProject = await this.pkProject$.pipe(first()).toPromise()
 
-    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+    const dialog = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, { data })
     const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
 
     if (confirmed) {
@@ -531,7 +531,10 @@ export class ActiveProjectService {
     }
     const pkProject = await this.pkProject$.pipe(first()).toPromise()
 
-    const dialog = this.dialog.open(ConfirmDialogComponent, { data })
+    const dialog = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
+      ConfirmDialogComponent,
+      { data }
+    )
     const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
 
     if (confirmed) {
@@ -541,5 +544,7 @@ export class ActiveProjectService {
 
     return confirmed;
   }
+
+
 
 }

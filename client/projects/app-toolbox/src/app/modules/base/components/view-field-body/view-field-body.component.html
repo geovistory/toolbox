@@ -46,7 +46,7 @@
           <button [disabled]="targetIsUnique" type="submit" mat-flat-button color="primary" class="mr-2"
             (click)="next.emit()">Create new</button>
         </div>
-        <button type="button" mat-button (click)="close.emit()">Cancel</button>
+        <button type="button" mat-button (click)="close.emit(false)">Cancel</button>
       </div>
 
 

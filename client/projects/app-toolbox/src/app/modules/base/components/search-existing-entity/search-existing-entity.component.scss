@@ -1,23 +1,23 @@
 // overwright mat-list-item height, in order to have nice entity list
-::ng-deep .mat-list-item {
-    height: auto !important;
+::ng-deep gv-search-existing-entity .mat-list-item {
+  height: auto !important;
 }
 // overwright mat-list-item-content padding, in order to have nice entity list
-::ng-deep .mat-list-item-content {
-    padding: 0 !important;
+::ng-deep gv-search-existing-entity .mat-list-item-content {
+  padding: 0 !important;
 }
 
 // overwrite paginator height, in prder to be centered with other element
 // here this paginator plays the role of a footer for the slide
-::ng-deep .mat-paginator-container {
-    min-height: 42px !important;
+::ng-deep gv-search-existing-entity .mat-paginator-container {
+  min-height: 42px !important;
 }
 
 .w-160 {
-    width: 160px
+  width: 160px;
 }
 
 .grow-mr-24 {
-    flex-grow: 1;
-    margin-right: 24px;
+  flex-grow: 1;
+  margin-right: 24px;
 }

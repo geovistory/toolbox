@@ -214,6 +214,7 @@ model/sysConfigFieldsOfSourceSuperClass.ts
 model/sysConfigFormCtrlType.ts
 model/sysConfigOntomeProfiles.ts
 model/sysConfigOptionalProfiles.ts
+model/sysConfigPlatformVocabulary.ts
 model/sysConfigSpecialFields.ts
 model/sysConfigValue.ts
 model/sysConfigValueObjectType.ts

@@ -54,9 +54,9 @@ export class SysConfigFormCtrlType {
   @property({type: DimensionValueObjectType, })
   dimension?: DimensionValueObjectType;
 
-  // form element to pick type
-  @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
-  typeItem?: TrueEnum;
+  // // form element to pick type
+  // @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})
+  // typeItem?: TrueEnum;
 
   // // form element to create time span
   // @property({type: 'string', jsonSchema: {enum: Object.values(TrueEnum)}})

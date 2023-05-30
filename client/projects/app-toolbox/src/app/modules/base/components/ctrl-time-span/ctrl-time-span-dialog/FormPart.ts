@@ -248,7 +248,6 @@ export class FormPart {
     else if (
       this.fieldTarget.viewType.nestedResource
       || this.fieldTarget.viewType.entityPreview
-      || this.fieldTarget.viewType.typeItem
     ) {
       if (!val) return null;
 

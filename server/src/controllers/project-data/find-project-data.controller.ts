@@ -5,6 +5,7 @@ import {tags} from '@loopback/openapi-v3';
 import {get, param} from '@loopback/rest';
 import {Roles} from '../../components/authorization';
 import {QChunksOfDigital} from '../../components/query/q-chunks-of-digital';
+import {QPlatformVocabularyInstances} from '../../components/query/q-platform-vocabulary-instances';
 import {QResource} from '../../components/query/q-resource';
 import {QTypesOfProject} from '../../components/query/q-types-of-project';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
@@ -67,6 +68,30 @@ export class FindProjectDataController {
   ): Promise<GvPositiveSchemaObject> {
 
     return new QTypesOfProject(this.datasource).query(pkProject)
+  }
+
+
+  @get('project-data/get-platform-vocabulary-instances', {
+    responses: {
+      '200': {
+        description: 'The resource and its project relation',
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvPositiveSchemaObject
+            }
+          }
+        }
+      },
+    },
+  })
+  @logAsyncPerformance('getPlatformVocabularyInstances')
+  async getPlatformVocabularyInstances(
+    @param.query.number('vocabProject', {required: true}) vocabProject: number,
+    @param.query.number('parentOrAncestorClass', {required: true}) parentOrAncestorClass: number,
+  ): Promise<GvPositiveSchemaObject> {
+
+    return new QPlatformVocabularyInstances(this.datasource).query(vocabProject, parentOrAncestorClass)
   }
 
 

@@ -167,6 +167,16 @@ export class FindProjectConfigController {
       positive: schemaOb
     })
 
+    // add all platform vocabularies
+    if (sysConfig.platformVocabularies)
+      for (const pv of sysConfig.platformVocabularies) {
+        const platformVocabularies = await this.findProjectDataController
+          .getPlatformVocabularyInstances(pv.projectId, pv.parentOrAncestorClassId)
+        schemaModifier = mergeSchemaModifier(schemaModifier, {
+          positive: platformVocabularies
+        })
+      }
+
     return schemaModifier
   }
 

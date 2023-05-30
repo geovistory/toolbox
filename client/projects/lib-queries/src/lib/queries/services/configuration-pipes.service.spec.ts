@@ -670,13 +670,10 @@ describe('ConfigurationPipeService', () => {
       // using pipe
       const q$ = service.pipeTypeClassesEnabledByProjectProfiles()
 
-      // testing pipe
-      const expectedSequence = [12, 4, 5]
-
       q$.pipe(first(), toArray())
         .subscribe(
           actualSequence => {
-            expect(actualSequence[0]).toEqual([transformDfhApiClassToDfhClass(DfhApiClassMock.EN_364_GEO_PLACE_TYPE)])
+            expect(actualSequence[0][0].dfhClass).toEqual(transformDfhApiClassToDfhClass(DfhApiClassMock.EN_364_GEO_PLACE_TYPE))
           },
           null,
           done);

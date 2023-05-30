@@ -1,0 +1,56 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  .mat-dialog-content {
+    padding: 0;
+  }
+}
+
+.loc-spinner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -24px;
+  right: -24px;
+  display: flex;
+  background: white;
+
+  mat-spinner {
+    margin: auto;
+  }
+}
+
+::ng-deep gv-select-type-dialog .mat-list-item-content {
+  padding: 0 24px !important;
+}
+
+.loc-list {
+  padding: 0 !important;
+}
+
+.loc-filter {
+  margin: -24px -24px 0 -24px;
+  font-size: inherit;
+  box-shadow: none;
+  border-radius: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.loc-filter input {
+  padding: 24px 24px 16px 24px;
+}
+
+.loc-filter-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  border: 0;
+  color: gray;
+  background-color: unset;
+  width: 100%;
+}

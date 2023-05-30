@@ -47,6 +47,7 @@ export interface ClassItem {
   subclassOfType?: boolean; // true if subclass of E55 Type
   identifier_in_namespace: string;
 
+  restrictedToOtherProjects: boolean
   belongsToCategory: SysConfigClassCategoryBelonging;
   showInAddMenu: boolean
   categoryLabel: string
@@ -214,7 +215,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
               .pipe(
                 map(([label, projRel]) => {
 
-                  const typeClassMap = indexBy((c) => c.pk_class.toString(), typeClasses)
+                  const typeClassMap = indexBy((c) => c.dfhClass.pk_class.toString(), typeClasses)
 
                   const {
                     pk_class,
@@ -249,7 +250,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
                     identifier_in_namespace,
 
                     scopeNote: '', // TODO
-
+                    restrictedToOtherProjects: typeClassMap[pk_class]?.restrictedToOtherProjects,
                     label,
                     projRel,
                     belongsToCategory,

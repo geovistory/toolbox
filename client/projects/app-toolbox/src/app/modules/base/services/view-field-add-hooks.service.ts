@@ -9,6 +9,7 @@ import { ActiveProjectService } from '../../../core/active-project/active-projec
 import { C_933_ANNOTATION_IN_TEXT_ID, C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../ontome-ids';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ViewFieldComponent } from '../components/view-field/view-field.component';
+import { BaseModalsService } from './base-modals.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,15 +20,17 @@ export class ViewFieldAddHooksService {
     private p: ActiveProjectService,
     private pp: ActiveProjectPipesService,
     public dataApi: ReduxMainService,
-    public dialog: MatDialog
+    private dialog: MatDialog,
+    private dialogs: BaseModalsService
   ) { }
-  public beforeChoosingClass(viewFieldComponent: ViewFieldComponent): () => void | void {
+  public async beforeChoosingClass(viewFieldComponent: ViewFieldComponent): Promise<() => void | void> {
     // add hooks here, that should be applied before class is chosen
     return;
   }
 
-  public afterChoosingClass(viewFieldComponent: ViewFieldComponent, chosenClass: number): () => void | void {
+  public async afterChoosingClass(viewFieldComponent: ViewFieldComponent, chosenClass: number): Promise<boolean | void> {
     const field = viewFieldComponent.field;
+    const source = viewFieldComponent.source;
     // add hooks here, that should be applied after class is chosen
 
     /**
@@ -38,7 +41,7 @@ export class ViewFieldAddHooksService {
       field.isOutgoing === false &&
       chosenClass === C_933_ANNOTATION_IN_TEXT_ID
     ) {
-      return () => this.onAnnotateEntityInText(viewFieldComponent.source)
+      return this.onAnnotateEntityInText(viewFieldComponent.source)
     }
 
     /**
@@ -49,11 +52,28 @@ export class ViewFieldAddHooksService {
       field.isOutgoing === false &&
       chosenClass === C_934_ANNOTATION_IN_TABLE_ID
     ) {
-      return () => this.onAnnotateEntityInTable()
+      return this.onAnnotateEntityInTable()
     }
 
-    return;
+    /**
+     * Hook for selecting an item from a platform vocabulary
+     */
+    if (this.pp.getIsPlatformVocabClass(chosenClass)) {
+      return this.dialogs.openSelectPlatformVocabItem(source, field, chosenClass).afterClosed().toPromise()
+    }
+
+
+    /**
+     * Hook for has type field
+     */
+    if (field.isSpecialField == 'has-type') {
+      return this.dialogs.openAddHasType(source, field, chosenClass).afterClosed().toPromise()
+    }
+
+    return this.dialogs.openAddStatementDialogFromField(source, field, chosenClass).afterClosed().toPromise()
+
   }
+
 
 
   private onAnnotateEntityInTable() {
@@ -116,6 +136,7 @@ export class ViewFieldAddHooksService {
       .pipe(first())
       .toPromise()
   }
+
 
 
 }

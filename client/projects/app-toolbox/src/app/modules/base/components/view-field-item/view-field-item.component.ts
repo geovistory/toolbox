@@ -1,20 +1,31 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
-import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { C_53_TYPE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { fieldToWarFieldChangeId } from '../../base.helpers';
 import { BaseModalsService } from '../../services/base-modals.service';
+import { PaginationService } from '../../services/pagination.service';
 import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
 import { EditTextDialogComponent, EditTextDialogData } from '../edit-text-dialog/edit-text-dialog.component';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { VIEW_FIELD_ITEM_TYPE } from './VIEW_FIELD_ITEM_TYPE';
 export type ViewFieldItemTypeFn = (field: Field, stmtWT: StatementWithTarget) => ViewFieldItemType | undefined
-export type ViewFieldItemType = 'preview' | 'nested' | 'timePrimitive' | 'value' | 'valueVersion' | 'cell' | 'content-tree';
+export type ViewFieldItemType =
+  'preview' // a normal entity, that can be in the project or not
+  | 'preview-platform-vocabulary' // a platform vocabulary entity, that is never in the project (and thus readonly)
+  | 'preview-has-type' // the target of a has type field with adapted ui to select amongst types available in project
+  | 'nested'
+  | 'timePrimitive'
+  | 'value'
+  | 'valueVersion'
+  | 'cell'
+  | 'content-tree';
 
 @Component({
   selector: 'gv-view-field-item',
@@ -39,14 +50,14 @@ export class ViewFieldItemComponent implements OnInit {
   itemType: ViewFieldItemType
   constructor(
     private ap: ActiveProjectPipesService,
-    private dataService: ReduxMainService,
     private p: ActiveProjectService,
     private baseModals: BaseModalsService,
     private dialog: MatDialog,
     private truncatePipe: TruncatePipe,
+    private paginationService: PaginationService,
     @Optional() private fieldDropService: ViewFieldDropListService,
     @Optional() @Inject(VIEW_FIELD_ITEM_TYPE) private itemTypeOverride: ViewFieldItemTypeFn,
-    @Optional() private fieldBody: ViewFieldBodyComponent,
+    @Optional() public fieldBody: ViewFieldBodyComponent,
 
   ) { }
 
@@ -59,7 +70,12 @@ export class ViewFieldItemComponent implements OnInit {
       if (override) return override
     }
     if (item.target.entity) {
-      if (field.targets[item.targetClass]?.viewType?.entityPreview || field.targets[item.targetClass]?.viewType?.typeItem) {
+      if (field.targets[item.targetClass]?.viewType?.entityPreview) {
+
+        if (this.ap.getIsPlatformVocabClass(item.targetClass)) return 'preview-platform-vocabulary'
+
+        if (this.ap.getIsSubclassOf(item.targetClass, C_53_TYPE_ID)) return 'preview-has-type'
+
         return 'preview'
       }
       return 'nested'
@@ -153,11 +169,12 @@ export class ViewFieldItemComponent implements OnInit {
     )
   }
 
+
   async remove() {
     const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
 
     if (this.field.identityDefiningForSource) {
-      return await this.displayNotRemovableWarning(pkProject);
+      return await this.displayNotRemovableWarning();
     }
 
     const sourceLabel = await this.getSourceEntityLabel()
@@ -165,33 +182,41 @@ export class ViewFieldItemComponent implements OnInit {
     const targetLabel = await this.getTargetEntityLabel()
     const pkStatement = this.item.statement.pk_entity
 
+    let reloadNeeded = false;
+
     if (this.field.identityDefiningForTarget) {
       const pkEntity = this.item.target.entity.resource.pk_entity
-      this.p.openRemoveStatementAndEntityDialog(
+      reloadNeeded = await this.p.openRemoveStatementAndEntityDialog(
         sourceLabel,
         fieldLabel,
         targetLabel,
         pkStatement,
         pkEntity
       )
-      // this.removeEntity(pkProject)
     }
     else {
       const targetIsLiteral = !this.item.target.entity
-      this.p.openRemoveStatementDialog(
+      reloadNeeded = await this.p.openRemoveStatementDialog(
         sourceLabel,
         fieldLabel,
         targetLabel,
         pkStatement,
         targetIsLiteral
       )
-      // this.removeStatement(pkProject);
     }
+
+    if (reloadNeeded) this.triggerPageReloads(pkProject, this.fieldBody.source.fkInfo, this.field)
 
   }
 
+  private triggerPageReloads(pkProject: number, fkInfo: number, field: Field) {
+    const fieldId: WarFieldChangeId = fieldToWarFieldChangeId(pkProject, { fkInfo }, field.property, field.isOutgoing);
+    this.paginationService.reloadPagesOfField(fieldId);
+  }
 
-  private async displayNotRemovableWarning(pkProject: number) {
+
+  async displayNotRemovableWarning() {
+    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
     const pkEntity = this?.fieldBody?.source?.fkInfo;
     if (pkEntity) {
       const ep = await this.ap.streamEntityPreview(pkEntity, true, pkProject).pipe(first()).toPromise();
@@ -204,23 +229,6 @@ export class ViewFieldItemComponent implements OnInit {
     return false;
   }
 
-  // private removeStatement(pkProject: number) {
-  //   const statement = this.item.statement;
-  //   this.dataService.removeInfEntitiesFromProject([statement.pk_entity], pkProject);
-  // }
-
-  // private async removeEntity(pkProject: number) {
-  //   const classLabel = this.field.targets[this.item.targetClass].targetClassLabel
-  //   const entityLabel = this.item.targetLabel
-  //   const trucatedClassLabel = this.truncatePipe.transform(classLabel, ['7']);
-  //   const title = [trucatedClassLabel, entityLabel].filter(i => !!i).join(' - ')
-
-  //   // remove the entity, if confirmed
-  //   const confirmed = await this.p.openRemoveEntityDialog(title, this.item.target.entity.resource.pk_entity)
-  //   // remove the statement
-  //   if (confirmed) this.dataService.removeInfEntitiesFromProject([this.item.statement.pk_entity], pkProject)
-
-  // }
 
   async getSourceEntityLabel() {
     const classLabel = this.field.sourceClassLabel

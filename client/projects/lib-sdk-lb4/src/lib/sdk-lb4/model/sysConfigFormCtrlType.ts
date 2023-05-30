@@ -26,7 +26,6 @@ export interface SysConfigFormCtrlType {
     langString?: SysConfigFormCtrlType.LangStringEnum;
     textWithLang?: SysConfigFormCtrlType.TextWithLangEnum;
     dimension?: DimensionValueObjectType;
-    typeItem?: SysConfigFormCtrlType.TypeItemEnum;
 }
 export namespace SysConfigFormCtrlType {
     export type EntityEnum = 'true';
@@ -65,10 +64,6 @@ export namespace SysConfigFormCtrlType {
     export type TextWithLangEnum = 'true';
     export const TextWithLangEnum = {
         True: 'true' as TextWithLangEnum
-    };
-    export type TypeItemEnum = 'true';
-    export const TypeItemEnum = {
-        True: 'true' as TypeItemEnum
     };
 }
 

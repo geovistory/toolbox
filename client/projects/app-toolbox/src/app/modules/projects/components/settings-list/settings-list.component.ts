@@ -27,10 +27,11 @@ export class SettingsListComponent implements OnInit {
 
     this.typeClasses$ = this.c.pipeTypeClassesEnabledByProjectProfiles().pipe(
       switchMap(klasses => combineLatestOrEmpty(klasses
-        .map(klass => this.c.pipeClassLabel(klass.pk_class).pipe(
+        .filter(klass => !klass.restrictedToOtherProjects)
+        .map(klass => this.c.pipeClassLabel(klass.dfhClass.pk_class).pipe(
           map(label => ({
             label,
-            pkClass: klass.pk_class
+            pkClass: klass.dfhClass.pk_class
           }))
         ))))
     )
