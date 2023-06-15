@@ -18,6 +18,9 @@ export class SearchExistingRelatedStatement {
 
 export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
 
+  // the maximum amount of entities you can paginate to
+  private maxLimit = 100;
+
   constructor(
     dataSource: Postgres1DataSource
   ) {
@@ -48,6 +51,8 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       whereEntityType = `AND entity_type = ${this.addParam(entityType)}`;
     }
 
+    const searchId = parseInt(searchString, 10);
+
     const repo = () => `
     -- repo versions (if we dont only want project versions)
     select *
@@ -58,8 +63,8 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
     ${tsSearchString ? `
     AND (
       t1.ts_vector @@ t0.q
-      OR
-      t1.pk_entity::text = ${this.addParam(searchString)}
+      ${searchId > 0 ? `OR t1.pk_entity = ${this.addParam(searchString)}` : ''}
+
     )
     ` : ''}
     ${whereEntityType}
@@ -75,8 +80,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       ${tsSearchString ? `
       AND (
         t1.ts_vector @@ t0.q
-        OR
-        t1.pk_entity::text = ${this.addParam(searchString)}
+        ${searchId > 0 ? `OR t1.pk_entity = ${this.addParam(searchString)}` : ''}
       )
       ` : ''}
       ${whereEntityType}
@@ -84,26 +88,20 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
   `
     const outOfProj = () => `
     -- Out of project versions (if we only want out of project version)
-      select *
+      select t1.*
       from
         tw0 t0,
         war.entity_preview t1
-      where t1.pk_entity in (
-
-      select pk_entity
-      from war.entity_preview t1
-      where t1.fk_project is null
-      except
-      select pk_entity
-      from war.entity_preview t2
-      where t2.fk_project = ${this.addParam(pkProject)}
-      )
-      and fk_project is null
+        LEFT JOIN projects.info_proj_rel t2
+          ON t1.pk_entity=t2.fk_entity
+          AND t2.fk_project=${this.addParam(pkProject)}
+          AND t2.is_in_project=true
+      where t2.pk_entity is null --not in project
+      and t1.fk_project is null --in community
       ${tsSearchString ? `
       AND (
         t1.ts_vector @@ t0.q
-        OR
-        t1.pk_entity::text = ${this.addParam(searchString)}
+        ${searchId > 0 ? `OR t1.pk_entity = ${this.addParam(searchString)}` : ''}
       )
       ` : ''}
       ${pkClasses?.length ? `AND t1.fk_class IN (${this.addParams(pkClasses)})` : ''}
@@ -124,6 +122,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       ),
       te1 AS (
         ${froms.join(' UNION ALL ')}
+        LIMIT ${this.addParam(this.maxLimit)}
       ),
       te2 AS (
 
