@@ -24,21 +24,38 @@ export class QTypesOfProject extends SqlBuilderLb4Models {
   */
   query(fkProject: number): Promise<GvPositiveSchemaObject> {
     this.sql = `
-      WITH
+      -- select types of project
+      WITH tw0 AS (
+        SELECT
+          pk_entity
+        FROM
+          war.entity_preview
+        WHERE
+          fk_project =  ${this.addParam(fkProject)}
+          AND parent_classes @> '53'::jsonb
+        UNION
+        SELECT
+          pk_entity
+        FROM
+          war.entity_preview
+        WHERE
+          fk_project =  ${this.addParam(fkProject)}
+          AND ancestor_classes @> '53'::jsonb
+      ),
+      -- join resource and info_proj_rel
       tw1 AS (
-        SELECT DISTINCT ON(t1.pk_entity)
+        SELECT
           ${this.createSelect('t1', InfResource.definition)},
           ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
-          information.resource t1
-        CROSS JOIN
+          information.resource t1,
           projects.info_proj_rel t2,
-          data_for_history.api_class t3
-        WHERE t1.pk_entity = t2.fk_entity
-        AND t2.is_in_project = true
+		      tw0
+        WHERE tw0.pk_entity = t2.fk_entity
+        AND tw0.pk_entity = t1.pk_entity
+   	 	  AND t2.is_in_project = true
         AND t2.fk_project = ${this.addParam(fkProject)}
-        AND t1.fk_class = t3.dfh_pk_class
-        AND t3.dfh_basic_type = 30
+
       ),
       ------------------------------------
       --- group parts by model
@@ -78,6 +95,7 @@ export class QTypesOfProject extends SqlBuilderLb4Models {
       resource
       LEFT JOIN info_proj_rel ON true;
     `;
+    this.getBuiltQuery('q-types-of-project')
     return this.executeAndReturnFirstData<GvPositiveSchemaObject>();
 
   }
