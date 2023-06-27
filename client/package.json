@@ -12,10 +12,10 @@
     "start": "ng serve",
     "build:libs": "sh ./scripts/ng-build-libs.sh",
     "build:all": "sh ./scripts/ng-build-all.sh",
-    "build:stats": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --stats-json",
+    "build:app-stats": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build app-toolbox --prod --sourceMap=true",
     "build:app-toolbox": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build --prod",
     "build:gv-icons": "bash ./scripts/generate-icons",
-    "analyze": "webpack-bundle-analyzer dist/stats-es2015.json",
+    "analyze": "source-map-explorer dist/app-toolbox/main-es5.6e393afe66be49b9043e.js",
     "pretest": "node ../server/scripts/build-mock.js",
     "test": "ng test",
     "test:lib-queries": "ng test lib-queries",
@@ -123,10 +123,10 @@
     "rxjs-marbles": "^6.0.1",
     "rxjs-spy": "^7.5.1",
     "rxjs-tslint-rules": "^4.28.0",
+    "source-map-explorer": "^2.5.3",
     "ts-node": "~3.0.4",
     "tslint": "~6.1.0",
     "typescript": "~4.2.4",
-    "typings-quill-delta": "0.0.2",
-    "webpack-bundle-analyzer": "^4.4.0"
+    "typings-quill-delta": "0.0.2"
   }
 }
