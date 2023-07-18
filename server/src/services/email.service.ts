@@ -1,23 +1,21 @@
 
-const user = 'info@geovistory.org';
-const pass = 'jagen731!murre';
-import {createTransport} from 'nodemailer';
-import {UrlBuilder} from '../utils/url-builder';
+import { createTransport } from 'nodemailer';
+import { UrlBuilder } from '../utils/url-builder';
 
 export class EmailService {
 
   constructor() { }
 
   transporter = createTransport({
-    host: 'asmtp.mail.hostpoint.ch',
-    port: 465,
+    host: process.env.GEOV_EMAIL_HOST,
+    port: parseInt(process.env.GEOV_EMAIL_PORT ?? ''),
     tls: {
       rejectUnauthorized: false,
     },
     secure: true,
     auth: {
-      user,
-      pass,
+      user: process.env.GEOV_EMAIL_ADDRESS,
+      pass: process.env.GEOV_EMAIL_PASSWORD,
     },
   });
 
