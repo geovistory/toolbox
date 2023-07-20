@@ -1,4 +1,0 @@
-# documentation: https://elements.heroku.com/buildpacks/heroku/heroku-buildpack-apt
-
-# you can list packages
-# pgloader
