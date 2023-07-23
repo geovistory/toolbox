@@ -3,9 +3,10 @@
   "description": "package.json for DevOps scripts",
   "version": "0.2.3",
   "scripts": {
-    "docker": "node ./server/scripts/docker.js",
-    "loopack-build:watch": "cd server && npm run build:watch",
-    "heroku-postbuild": "bash heroku-postbuild.sh"
+    "******************* development ***************": "",
+    "dev:build": "mkdir -p pg_logs && docker-compose -f docker-compose.yaml --project-name geov_dev up --build -d",
+    "dev:up": "mkdir -p pg_logs && docker-compose -f docker-compose.yaml --project-name geov_dev up -d",
+    "dev:down": "docker-compose -f docker-compose.yaml --project-name geov_dev down"
   },
   "private": true,
   "main": "index.js",
