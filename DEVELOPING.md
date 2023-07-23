@@ -18,7 +18,7 @@ Donwload the stack:
 git clone https://github.com/geovistory/dev-stack.git
 ```
 
-Change in the directory:
+Change the directory:
 
 ```bash
 cd dev-stack
@@ -31,3 +31,12 @@ bash scripts/build
 ```
 
 See more on https://github.com/geovistory/dev-stack.
+
+## Develop toolbox client
+
+To develop the toolbox client, we need to set two env vars:
+
+- API_URL: The URL of the toolbox server api
+- ASSETS_URL: The URL of the server hosting the front-end assets
+
+When

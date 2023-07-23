@@ -7,7 +7,7 @@
   },
   "scripts": {
     "ng": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng",
-    "preserve": "node ./scripts/check-version.js",
+    "preserve": "node ./scripts/preserve.js",
     "serve": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng serve",
     "start": "ng serve",
     "build:libs": "sh ./scripts/ng-build-libs.sh",
