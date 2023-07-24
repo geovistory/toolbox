@@ -16,13 +16,6 @@ This is a monorepo for server and client of the toolbox.
 Developing the toolbox server and client requires external components.
 These are packed into a docker-compose file in the GitHub repo geovistory/dev-stack.
 
-Requirements:
-
-- Docker (and docker-compose) installed.
-- 10 GB RAM for docker
-- 4 CPUs for docker
-- 100 GB disk space for docker
-
 Donwload the stack:
 
 ```bash
