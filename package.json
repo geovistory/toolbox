@@ -1,16 +1,7 @@
 {
-  "name": "geovistory-root",
-  "description": "package.json for DevOps scripts",
-  "version": "0.2.3",
-  "scripts": {
-    "docker": "node ./server/scripts/docker.js",
-    "loopack-build:watch": "cd server && npm run build:watch",
-    "heroku-postbuild": "bash heroku-postbuild.sh"
-  },
-  "private": true,
-  "main": "index.js",
-  "cacheDirectories": [
-    "server/node_modules",
-    "client/node_modules"
-  ]
+    "name": "geovistory-root",
+    "description": "root package.json of the monorepo",
+    "version": "0.2.4-pr-295.1",
+    "scripts": {},
+    "private": true
 }

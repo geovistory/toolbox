@@ -1,1 +1,0 @@
-./server/node_modules/.bin/forever ./server/dist/warehouse.js

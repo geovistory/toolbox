@@ -1,8 +1,12 @@
-report.*json
-documentation
+# environment
+.env
+/projects/app-toolbox/src/assets/env.js
 
 # Dependency directories
 node_modules/
 
+# Auto generated
 src/__tests__/helpers/data/auto-gen/*
 dist/
+report.*json
+documentation
