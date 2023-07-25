@@ -18,7 +18,6 @@ import { QueriesModule } from '../queries/queries.module';
 import { TimelineModule } from '../timeline/timeline.module';
 import { AnalysisDetailComponent } from './components/analysis-detail/analysis-detail.component';
 import { AnalysisLayoutComponent } from './components/analysis-layout/analysis-layout.component';
-import { AnalysisListComponent } from './components/analysis-list/analysis-list.component';
 import { DialogCreateComponent } from './components/dialog-create/dialog-create.component';
 import { MapAndTimeContEditComponent } from './map-and-time-cont/map-and-time-cont-edit/map-and-time-cont-edit.component';
 import { MapAndTimeContFormArrayComponent } from './map-and-time-cont/map-and-time-cont-form-array/map-and-time-cont-form-array.component';
@@ -40,7 +39,6 @@ import { TimeChartContFormComponent } from './time-chart-cont/time-chart-cont-fo
 
 
 const components = [
-  AnalysisListComponent,
   AnalysisDetailComponent,
   AnalysisLayoutComponent,
   TimeChartContEditComponent,

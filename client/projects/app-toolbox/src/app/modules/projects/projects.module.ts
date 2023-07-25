@@ -25,13 +25,11 @@ import { BaseModule } from '../base/base.module';
 import { ClassConfigModule } from '../class-config/class-config.module';
 import { DataModule } from '../data/data.module';
 import { InformationModule } from '../information/information.module';
+import { LeftDrawerModule } from '../left-drawer/left-drawer.module';
 import { QueriesModule } from '../queries/queries.module';
 import { SettingsModule } from '../settings/settings.module';
-import { SourcesModule } from '../sources';
 import { ProjectsActions } from './api/projects.actions';
-import { DigitalsListComponent } from './components/digitals-list/digitals-list.component';
 import { RamFormComponent } from './components/ram-form/ram-form.component';
-import { SettingsListComponent } from './components/settings-list/settings-list.component';
 import { TabBodyComponent } from './components/tab-body/tab-body.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
 import { ProjectCreateComponent } from './containers/project-create/project-create.component';
@@ -53,14 +51,13 @@ import { ProjectsRoutingModule } from './projects-routing.module';
   imports: [
     CommonModule,
     BaseModule,
-    SourcesModule,
+    LeftDrawerModule,
     QueriesModule,
     DataModule,
     InformationModule,
     NavbarModule,
     ProjectsRoutingModule,
     FormsModule,
-    // ReactiveFormsModule,
     NgbModule,
     ProxyRouteModule,
     KeysModule,
@@ -81,10 +78,8 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     SettingsModule,
     OntoInfoModule,
     ClassConfigModule, // TODO: REMOVE
-    // MaterialModule,
     DndModule,
     QuillOpsToStrModule,
-    // TruncateModule
     EntityLabelConfigModule,
     ListModule,
   ],
@@ -100,14 +95,11 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     TabBodyComponent,
     PanelBodyDirective,
     TabHandleComponent,
-    SettingsListComponent,
     OnActivateTabDirective,
-    DigitalsListComponent,
   ],
 
   providers: [
     ProjectsActions,
-    // ProjectSettingsDataAPIEpics,
     ProjectSettingsDataAPIActions,
   ]
 })

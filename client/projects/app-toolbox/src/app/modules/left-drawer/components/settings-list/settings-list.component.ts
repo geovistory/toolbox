@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -10,7 +10,7 @@ import { delay, map, switchMap } from 'rxjs/operators';
   templateUrl: './settings-list.component.html',
   styleUrls: ['./settings-list.component.scss']
 })
-export class SettingsListComponent implements OnInit {
+export class SettingsListComponent {
 
   @HostBinding('class.h-100') h = true;
   @HostBinding('class.gv-flex-fh') flexFh = true;
@@ -38,13 +38,7 @@ export class SettingsListComponent implements OnInit {
 
   }
 
-  ngOnInit() {
-
-
-  }
-
   ngAfterViewInit() {
-
     this.categories$ = this.typeClasses$.pipe(
       delay(0),
       map(typeClass => {

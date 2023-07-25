@@ -1,22 +1,8 @@
 <gv-list-drawer-header>
   <div title>Project Settings</div>
 </gv-list-drawer-header>
-<!-- <mat-action-list>
-  <h3 mat-subheader>General</h3>
-  <button mat-list-item (click)="openClassesSettings()"> Project Profile </button>
-  <mat-divider></mat-divider>
-  <h3 mat-subheader>Data Settings</h3>
-  <button mat-list-item (click)="openClassesSettings()"> Classes </button>
-  <button mat-list-item (click)="undo()"> Controlled Vocabularies </button>
-  <mat-divider></mat-divider>
-  <h3 mat-subheader>Team</h3>
-  <button mat-list-item (click)="undo()"> Collaborators </button>
-</mat-action-list>
- -->
 <div class="gv-fh gv-scroll-y-auto">
-
   <mat-accordion class="gv-sidenav-accordion" [multi]="true">
-
     <mat-expansion-panel *ngFor="let category of categories$ | async">
       <mat-expansion-panel-header collapsedHeight="48px" expandedHeight="48px">
         <mat-panel-title>
@@ -27,8 +13,5 @@
         <button mat-list-item (click)="onClick(item.onClickFnName, item.param)"> {{item.label}} </button>
       </mat-action-list>
     </mat-expansion-panel>
-
-
   </mat-accordion>
-
 </div>

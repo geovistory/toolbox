@@ -17,7 +17,7 @@ export class DigitalsListComponent implements OnInit {
     )
   );
   constructor(
-    public c: ConfigurationPipesService,
+    private c: ConfigurationPipesService,
     public p: ActiveProjectService,
   ) { }
 
