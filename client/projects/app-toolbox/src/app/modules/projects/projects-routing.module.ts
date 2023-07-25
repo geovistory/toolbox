@@ -2,14 +2,14 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { EntityCardWrapperComponent } from '../base/components/entity-card-wrapper/entity-card-wrapper.component';
 import { InformationModule } from '../information/information.module';
-import { SourcesModule } from '../sources';
+import { LeftDrawerModule } from '../left-drawer/left-drawer.module';
 import { ProjectCreateComponent } from './containers/project-create/project-create.component';
 import { ProjectEditComponent } from './containers/project-edit/project-edit.component';
 import { ProjectListComponent } from './containers/project-list/project-list.component';
 
 export function getInformation2Module() { return InformationModule };
 
-export function getSourcesModule() { return SourcesModule };
+export function getSourcesModule() { return LeftDrawerModule };
 
 const routes: Routes = [
   {

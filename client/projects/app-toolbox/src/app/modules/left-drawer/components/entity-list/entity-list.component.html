@@ -1,0 +1,16 @@
+<div class="gv-flex-fh">
+
+  <gv-list-drawer-header>
+
+    <div title>Your Entities</div>
+
+    <gv-add-entity-menu buttons enabledIn="entities" (select)="startCreate()">
+    </gv-add-entity-menu>
+
+  </gv-list-drawer-header>
+
+  <gv-entities-tabs></gv-entities-tabs>
+  <mat-divider></mat-divider>
+  <gv-list class="gv-flex-fh" (onOpen)="openEntity($event)">
+  </gv-list>
+</div>

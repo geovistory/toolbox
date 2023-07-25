@@ -1,0 +1,45 @@
+<!-- Search input -->
+<div class="mx-3 mt-3 mb-2 d-flex">
+
+  <div class="input-group ">
+
+    <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
+      placeholder="Search …" [(ngModel)]="searchString" (keydown)="searchKeydown($event)" autofocus>
+
+    <span class="input-group-append">
+      <button class="btn btn-primary" type="button" (click)="searchStringChange()">
+        <i class="fa fa-search"></i>
+      </button>
+    </span>
+  </div>
+
+  <ng-content select="[addBtn]"></ng-content>
+
+</div>
+
+
+<!-- Results count -->
+<div class="mx-3 mb-3 px-3 text-muted font-sm" *ngIf="!(loading$ | async)">
+  <span *ngIf="collectionSize > limit">
+    {{hitsFrom}}-{{hitsTo}} of
+  </span>
+  {{collectionSize | number}} {{(collectionSize == 1 ? 'result' : 'results')}}
+</div>
+
+<!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
+
+<!-- Results -->
+<div class="d-flex gv-fh mx-0 py-1 px-3 border-light gv-scroll-y-auto" *ngIf="!(loading$ | async)">
+  <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [hit]="hit" (onOpenEntityPreview)=onOpen.emit($event)>
+  </gv-entity-search-hit>
+</div>
+
+<div class="d-flex " *ngIf="error$|async">
+  Error when loading items.
+</div>
+
+<!-- Pagination -->
+<div class="mx-3 my-2" *ngIf="!(loading$ | async)">
+  <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="3" [collectionSize]="collectionSize"
+    [(page)]="page" [pageSize]="limit" (pageChange)="pageChange()" aria-label="Default pagination"></ngb-pagination>
+</div>

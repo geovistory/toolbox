@@ -8,7 +8,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
 import { DndModule } from 'ng2-dnd';
 import { LanguageSearchTypeaheadModule, NavbarModule, ProxyRouteModule } from 'projects/app-toolbox/src/app/shared';
-import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/components/list-drawer-header/list-drawer-header.module';
 import { ReadMoreModule } from 'projects/app-toolbox/src/app/shared/components/read-more/read-more.module';
 import { EntityLabelConfigModule } from 'projects/app-toolbox/src/app/shared/modules/entity-label-config/entity-label-config.module';
 import { AnalysisIconModule } from 'projects/app-toolbox/src/app/shared/pipes/analysis-icon/analysis-icon.module';
@@ -18,20 +17,17 @@ import { QuillOpsToStrModule } from 'projects/app-toolbox/src/app/shared/pipes/q
 import { ConfirmDialogModule } from '../../shared/components/confirm-dialog/confirm-dialog.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
-import { ListModule } from '../../shared/components/list/list.module';
 import { OntoInfoModule } from '../../shared/components/onto-info/onto-info.module';
 import { AnalysisModule } from '../analysis/analysis.module';
 import { BaseModule } from '../base/base.module';
 import { ClassConfigModule } from '../class-config/class-config.module';
 import { DataModule } from '../data/data.module';
 import { InformationModule } from '../information/information.module';
+import { LeftDrawerModule } from '../left-drawer/left-drawer.module';
 import { QueriesModule } from '../queries/queries.module';
 import { SettingsModule } from '../settings/settings.module';
-import { SourcesModule } from '../sources';
 import { ProjectsActions } from './api/projects.actions';
-import { DigitalsListComponent } from './components/digitals-list/digitals-list.component';
 import { RamFormComponent } from './components/ram-form/ram-form.component';
-import { SettingsListComponent } from './components/settings-list/settings-list.component';
 import { TabBodyComponent } from './components/tab-body/tab-body.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
 import { ProjectCreateComponent } from './containers/project-create/project-create.component';
@@ -53,14 +49,13 @@ import { ProjectsRoutingModule } from './projects-routing.module';
   imports: [
     CommonModule,
     BaseModule,
-    SourcesModule,
+    LeftDrawerModule,
     QueriesModule,
     DataModule,
     InformationModule,
     NavbarModule,
     ProjectsRoutingModule,
     FormsModule,
-    // ReactiveFormsModule,
     NgbModule,
     ProxyRouteModule,
     KeysModule,
@@ -70,7 +65,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     AnalysisModule,
     PortalModule,
     AngularSplitModule,
-    ListDrawerHeaderModule,
     DetailTopBarModule,
     DetailContentModule,
     ConfirmDialogModule,
@@ -81,12 +75,9 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     SettingsModule,
     OntoInfoModule,
     ClassConfigModule, // TODO: REMOVE
-    // MaterialModule,
     DndModule,
     QuillOpsToStrModule,
-    // TruncateModule
     EntityLabelConfigModule,
-    ListModule,
   ],
   declarations: [
     ProjectCreateComponent,
@@ -100,14 +91,11 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     TabBodyComponent,
     PanelBodyDirective,
     TabHandleComponent,
-    SettingsListComponent,
     OnActivateTabDirective,
-    DigitalsListComponent,
   ],
 
   providers: [
     ProjectsActions,
-    // ProjectSettingsDataAPIEpics,
     ProjectSettingsDataAPIActions,
   ]
 })

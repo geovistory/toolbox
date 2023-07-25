@@ -17,7 +17,6 @@ import { DetailContentModule } from 'projects/app-toolbox/src/app/shared/compone
 import { DetailTopBarModule } from 'projects/app-toolbox/src/app/shared/components/detail-top-bar/detail-top-bar.module';
 import { EntityPreviewModule } from 'projects/app-toolbox/src/app/shared/components/entity-preview/entity-preview.module';
 import { ErrorDialogModule } from 'projects/app-toolbox/src/app/shared/components/error-dialog/error-dialog.module';
-import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/components/list-drawer-header/list-drawer-header.module';
 import { KeysModule } from 'projects/app-toolbox/src/app/shared/pipes/keys.module';
 import { GvHelperComponentsModule } from '../../shared/components/gv-helper-components/gv-helper-components.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
@@ -72,7 +71,6 @@ const components = [
   imports: [
     CommonModule,
     ChecklistControlModule,
-    ListDrawerHeaderModule,
     TableModule,
     AngularSplitModule,
     DetailTopBarModule,

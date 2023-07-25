@@ -1,0 +1,17 @@
+<gv-list-drawer-header>
+  <div title>Project Settings</div>
+</gv-list-drawer-header>
+<div class="gv-fh gv-scroll-y-auto">
+  <mat-accordion class="gv-sidenav-accordion" [multi]="true">
+    <mat-expansion-panel *ngFor="let category of categories$ | async">
+      <mat-expansion-panel-header collapsedHeight="48px" expandedHeight="48px">
+        <mat-panel-title>
+          {{category.title}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+      <mat-action-list *ngFor="let item of category.items">
+        <button mat-list-item (click)="onClick(item.onClickFnName, item.param)"> {{item.label}} </button>
+      </mat-action-list>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

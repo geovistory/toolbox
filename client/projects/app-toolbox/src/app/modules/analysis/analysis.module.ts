@@ -10,7 +10,6 @@ import { ConfirmDialogModule } from 'projects/app-toolbox/src/app/shared/compone
 import { DetailContentModule } from 'projects/app-toolbox/src/app/shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from 'projects/app-toolbox/src/app/shared/components/detail-top-bar/detail-top-bar.module';
 import { ErrorDialogModule } from 'projects/app-toolbox/src/app/shared/components/error-dialog/error-dialog.module';
-import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/components/list-drawer-header/list-drawer-header.module';
 import { AnalysisIconModule } from 'projects/app-toolbox/src/app/shared/pipes/analysis-icon/analysis-icon.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { MapModule } from '../map/map.module';
@@ -18,7 +17,6 @@ import { QueriesModule } from '../queries/queries.module';
 import { TimelineModule } from '../timeline/timeline.module';
 import { AnalysisDetailComponent } from './components/analysis-detail/analysis-detail.component';
 import { AnalysisLayoutComponent } from './components/analysis-layout/analysis-layout.component';
-import { AnalysisListComponent } from './components/analysis-list/analysis-list.component';
 import { DialogCreateComponent } from './components/dialog-create/dialog-create.component';
 import { MapAndTimeContEditComponent } from './map-and-time-cont/map-and-time-cont-edit/map-and-time-cont-edit.component';
 import { MapAndTimeContFormArrayComponent } from './map-and-time-cont/map-and-time-cont-form-array/map-and-time-cont-form-array.component';
@@ -40,7 +38,6 @@ import { TimeChartContFormComponent } from './time-chart-cont/time-chart-cont-fo
 
 
 const components = [
-  AnalysisListComponent,
   AnalysisDetailComponent,
   AnalysisLayoutComponent,
   TimeChartContEditComponent,
@@ -73,7 +70,6 @@ const components = [
   ],
   imports: [
     CommonModule,
-    ListDrawerHeaderModule,
     DetailTopBarModule,
     DetailContentModule,
     ErrorDialogModule,

@@ -95,7 +95,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   public pipeProfilesEnabledByProject(): Observable<number[]> {
     return combineLatest([
       this.a.pkProject$,
-      this.s.sys$.config$.main$
+      this.s.sys$.config$.main$.pipe(filter(x => !!x))
     ]).pipe(
       switchMap(([pkProject, sysConfig]) => this.s.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
         .key(pkProject + '_true').pipe(
@@ -103,7 +103,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
             .filter(rel => rel.enabled)
             .map(rel => rel.fk_profile)
           ),
-          map(enabled => [...enabled, ...sysConfig.ontome.requiredOntomeProfiles]),
+          map(enabled => [...enabled, ...(sysConfig?.ontome?.requiredOntomeProfiles ?? [])]),
         )),
       shareReplay()
     )
