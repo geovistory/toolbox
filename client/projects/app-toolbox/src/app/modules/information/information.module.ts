@@ -11,8 +11,6 @@ import { TreeModule } from 'primeng/tree';
 import { TimelineModule } from 'projects/app-toolbox/src/app/modules/timeline/timeline.module';
 import { ControlMessagesModule, FilterByKeyModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { DetailTopBarModule } from 'projects/app-toolbox/src/app/shared/components/detail-top-bar/detail-top-bar.module';
-import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/components/list-drawer-header/list-drawer-header.module';
-import { ListModule } from 'projects/app-toolbox/src/app/shared/components/list/list.module';
 import { HighlightModule } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { TabBaseModule } from '../../shared/components/tab-layout/tab-layout.module';
@@ -32,7 +30,6 @@ import { EntityDetailComponent } from './containers/entity-detail/entity-detail.
   imports: [
     CommonModule,
     BaseModule,
-    ListModule,
     FlexLayoutModule,
     FormsModule,
     AngularSplitModule,
@@ -50,7 +47,6 @@ import { EntityDetailComponent } from './containers/entity-detail/entity-detail.
     DateTimeModule,
     DragDropModule,
     CdkTreeModule,
-    ListDrawerHeaderModule,
     DetailTopBarModule,
     AnnotationModule,
     TileHeaderModule,

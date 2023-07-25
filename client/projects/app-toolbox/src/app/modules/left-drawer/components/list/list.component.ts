@@ -1,11 +1,12 @@
 import { NgRedux } from '@angular-redux/store';
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
 import { IAppState } from '@kleiolab/lib-redux';
 import { EntitySearchHit, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { WarEntityPreview } from 'projects/lib-sdk-lb4/src/public-api';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
+import { ListService } from '../../services/list.service';
 
 
 @Component({
@@ -18,10 +19,8 @@ export class ListComponent implements OnInit, OnDestroy {
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  @Input() showTeEnPeItFilter: boolean;
 
-  // the classes for which this list can search
-  @Input() pkAllowedClasses$: Observable<number[]>;
+
   pkAllowedClasses: number[];
 
   // emits pk_entity of click
@@ -45,41 +44,33 @@ export class ListComponent implements OnInit, OnDestroy {
   selectingEntities$: Observable<boolean>;
   projectId: number;
 
-  // Entity type (TeEn/PeIt) Filter
-  typeOptions = [
-    { value: 'peIt', label: '<i class="gv-icon gv-icon-persistent-entity"></i> Persistent' },
-    { value: 'teEn', label: '<i class="fa fa-star-o"></i> Temporal' },
-    { value: undefined, label: '<i class="gv-icon gv-icon-entity"></i> All' },
-  ]
-  selectedType: { value: any, label: string } = this.typeOptions[0];
+  entityType: 'teEn' | 'peIt' | undefined;
 
   constructor(
     private ap: ActiveProjectPipesService,
     private entityPreviewApi: WarEntityPreviewControllerService,
-    public ngRedux: NgRedux<IAppState>
+    public ngRedux: NgRedux<IAppState>,
+    private listService: ListService
   ) {
 
     // listen to selecting entities for annotation
     this.selectingEntities$ = ngRedux.select<boolean>(['sources', 'edit', 'annotationPanel', 'edit', 'selectingEntities']);
 
-
   }
 
   ngOnInit() {
-    // this.localStore = this.ngRedux.configureSubStore(this.basePath, listReducer);
-    // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     combineLatest([
       this.ap.pkProject$,
-      this.pkAllowedClasses$
+      this.listService.pkAllowedClasses$,
+      this.listService.entityType$
     ]).pipe(
-      first((d) => (d.filter((i) => (!i)).length === 0)),
       takeUntil(this.destroy$)
     )
-      .subscribe(d => {
-        this.projectId = d[0];
-        this.pkAllowedClasses = d[1];
-        // init the search
+      .subscribe(([projectId, pkAllowedClasses, entityType]) => {
+        this.projectId = projectId;
+        this.pkAllowedClasses = pkAllowedClasses;
+        this.entityType = entityType
         this.searchProject();
       });
 
@@ -105,7 +96,7 @@ export class ListComponent implements OnInit, OnDestroy {
       projectId: this.projectId,
       searchString: this.searchString,
       pkClasses: this.pkAllowedClasses,
-      entityType: this.selectedType.value,
+      entityType: this.entityType,
       limit: this.limit,
       page: this.page
     }).pipe(
@@ -150,15 +141,5 @@ export class ListComponent implements OnInit, OnDestroy {
     }
   };
 
-
-  /**
-   * Called when user changes to see only teEn / peIt or all classes
-   */
-  entityTypeChange(type) {
-    if (this.selectedType !== type) {
-      this.selectedType = type;
-      this.searchProject();
-    }
-  }
 
 }

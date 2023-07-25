@@ -1,14 +1,3 @@
-<!-- Search filter tabs -->
-<ul *ngIf="showTeEnPeItFilter" class="nav gv-search-filter">
-
-  <li *ngFor="let type of typeOptions" class="nav-item" (click)="entityTypeChange(type)">
-    <button class="btn btn-sm btn-link nav-link" [ngClass]="{'font-weight-bold': selectedType === type}"
-      [innerHtml]="type.label"></button>
-  </li>
-
-</ul>
-<mat-divider *ngIf="showTeEnPeItFilter"></mat-divider>
-
 <!-- Search input -->
 <div class="mx-3 mt-3 mb-2 d-flex">
 

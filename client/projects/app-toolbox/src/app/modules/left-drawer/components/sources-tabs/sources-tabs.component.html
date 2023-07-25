@@ -1,0 +1,6 @@
+<ul class="nav gv-search-filter">
+  <li *ngFor="let type of typeOptions" class="nav-item" (click)="optionChange(type)">
+    <button class="btn btn-sm btn-link nav-link"
+      [ngClass]="{'font-weight-bold': (selectedType$|async)?.value === type.value}" [innerHtml]="type.label"></button>
+  </li>
+</ul>

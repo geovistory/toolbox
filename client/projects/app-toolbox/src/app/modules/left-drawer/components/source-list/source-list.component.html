@@ -5,7 +5,8 @@
     <gv-add-entity-menu buttons enabledIn="sources" (select)="startCreate()">
     </gv-add-entity-menu>
   </gv-list-drawer-header>
-
-  <gv-list class="gv-flex-fh" (onOpen)="openEntity($event)" [pkAllowedClasses$]="pkClassesOfAddBtn$"> </gv-list>
+  <gv-sources-tabs></gv-sources-tabs>
+  <mat-divider></mat-divider>
+  <gv-list class="gv-flex-fh" (onOpen)="openEntity($event)"> </gv-list>
 
 </div>

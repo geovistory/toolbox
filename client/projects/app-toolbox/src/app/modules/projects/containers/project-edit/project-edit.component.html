@@ -61,14 +61,7 @@
         <gv-source-list [hidden]="(p.list$ | async) !== 'sources'"></gv-source-list>
         <gv-entity-list [hidden]="(p.list$ | async) !== 'entities'"></gv-entity-list>
         <gv-analysis-list *ngIf="(p.list$ | async) === 'analysis'" class="h-100 gv-flex-fh"></gv-analysis-list>
-        <div *ngIf="(p.list$ | async) === 'stories'">
-          <gv-list-drawer-header>
-            <div title>Your Stories</div>
-          </gv-list-drawer-header>
-          <div class="ml-3">Coming soon.</div>
-        </div>
         <gv-settings-list [hidden]="(p.list$ | async) !== 'settings'"></gv-settings-list>
-
       </mat-drawer>
 
       <!-- Container for Tabs … -->

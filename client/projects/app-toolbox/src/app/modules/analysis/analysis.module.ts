@@ -10,7 +10,6 @@ import { ConfirmDialogModule } from 'projects/app-toolbox/src/app/shared/compone
 import { DetailContentModule } from 'projects/app-toolbox/src/app/shared/components/detail-content/detail-content.module';
 import { DetailTopBarModule } from 'projects/app-toolbox/src/app/shared/components/detail-top-bar/detail-top-bar.module';
 import { ErrorDialogModule } from 'projects/app-toolbox/src/app/shared/components/error-dialog/error-dialog.module';
-import { ListDrawerHeaderModule } from 'projects/app-toolbox/src/app/shared/components/list-drawer-header/list-drawer-header.module';
 import { AnalysisIconModule } from 'projects/app-toolbox/src/app/shared/pipes/analysis-icon/analysis-icon.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { MapModule } from '../map/map.module';
@@ -71,7 +70,6 @@ const components = [
   ],
   imports: [
     CommonModule,
-    ListDrawerHeaderModule,
     DetailTopBarModule,
     DetailContentModule,
     ErrorDialogModule,

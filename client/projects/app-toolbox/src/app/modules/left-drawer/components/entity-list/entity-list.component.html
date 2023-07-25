@@ -9,8 +9,8 @@
 
   </gv-list-drawer-header>
 
-
-  <gv-list class="gv-flex-fh" [showTeEnPeItFilter]="true" (onOpen)="openEntity($event)"
-    [pkAllowedClasses$]="pkAllowedClasses$">
+  <gv-entities-tabs></gv-entities-tabs>
+  <mat-divider></mat-divider>
+  <gv-list class="gv-flex-fh" (onOpen)="openEntity($event)">
   </gv-list>
 </div>

@@ -4,11 +4,15 @@ import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ListService } from '../../services/list.service';
 
 @Component({
   selector: 'gv-entity-list',
   templateUrl: './entity-list.component.html',
-  styleUrls: ['./entity-list.component.css']
+  styleUrls: ['./entity-list.component.css'],
+  providers: [
+    ListService
+  ]
 })
 export class EntityListComponent implements OnDestroy {
 
@@ -17,18 +21,21 @@ export class EntityListComponent implements OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
-  pkAllowedClasses$ = this.c.pipeClassesOfProject().pipe(
-    map(items => items
-      .filter(item => item.belongsToCategory?.entities?.showInAddMenu)
-      .filter(item => item.projectRel?.enabled_in_entities)
-      .map(item => item.dfhClass.pk_class)
-    )
-  );
 
   constructor(
     public p: ActiveProjectService,
     private c: ConfigurationPipesService,
+    listService: ListService
   ) {
+    // set peIt as initial value
+    listService.entityType$.next('peIt')
+    listService.pkAllowedClasses$ = this.c.pipeClassesOfProject().pipe(
+      map(items => items
+        .filter(item => item.belongsToCategory?.entities?.showInAddMenu)
+        .filter(item => item.projectRel?.enabled_in_entities)
+        .map(item => item.dfhClass.pk_class)
+      )
+    );
   }
 
 

@@ -1,15 +1,17 @@
 import { Component, HostBinding, OnDestroy } from '@angular/core';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { ListService } from '../../services/list.service';
 
 
 @Component({
   selector: 'gv-source-list',
   templateUrl: './source-list.component.html',
-  styleUrls: ['./source-list.component.scss']
+  styleUrls: ['./source-list.component.scss'],
+  providers: [
+    ListService
+  ]
 })
 export class SourceListComponent implements OnDestroy {
 
@@ -18,18 +20,9 @@ export class SourceListComponent implements OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
-  pkClassesOfAddBtn$: Observable<number[]>
-
   constructor(
     public p: ActiveProjectService,
-    private c: ConfigurationPipesService,
   ) {
-    this.pkClassesOfAddBtn$ = this.c.pipeClassesOfProject().pipe(
-      map(items => items
-        .filter(item => item.belongsToCategory?.sources?.showInAddMenu)
-        .map(item => item.dfhClass.pk_class)
-      )
-    );
   }
 
   openEntity(preview: WarEntityPreview) {
