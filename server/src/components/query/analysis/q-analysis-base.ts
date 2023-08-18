@@ -313,7 +313,7 @@ export abstract class QAnalysisBase extends SqlBuilderLb4Models {
 
 
   createEntityWhere(filter: QueryNode, tableAlias: string, fkProject: number) {
-    const whereProject = `${tableAlias}.fk_project = ${this.addParam(
+    const whereProject = `${tableAlias}.project_id = ${this.addParam(
       fkProject
     )}`;
 

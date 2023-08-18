@@ -40,6 +40,6 @@
 
 <!-- Pagination -->
 <div class="mx-3 my-2" *ngIf="!(loading$ | async)">
-  <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="3" [collectionSize]="collectionSize"
+  <ngb-pagination class="mb-0" *ngIf="collectionSize > limit" [maxSize]="1" [collectionSize]="collectionSize"
     [(page)]="page" [pageSize]="limit" (pageChange)="pageChange()" aria-label="Default pagination"></ngb-pagination>
 </div>

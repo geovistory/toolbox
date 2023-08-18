@@ -322,8 +322,8 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     // add to the WS stream and fetch repo and project version
     this.ap.streamEntityPreview(d.pkEntity)
 
-    this.selectedInProject$ = this.warSelector.entity_preview$.by_project__pk_entity$.key(this.pkProject + '_' + d.pkEntity).pipe(
-      map(item => !!item?.fk_project),
+    this.selectedInProject$ = this.warSelector.entity_preview$.by_project_id__pk_entity$.key(this.pkProject + '_' + d.pkEntity).pipe(
+      map(item => item?.project_id !== 0),
       startWith(false)
     )
 

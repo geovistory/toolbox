@@ -1,6 +1,7 @@
 require('./__dotenv');
 const prompts = require('prompts');
 const path = require('path');
+const fs = require('fs');
 const helpers = require('./__helpers');
 const chooseGvAndWhDB = require('./__chooseGvAndWhDb');
 
@@ -9,10 +10,9 @@ process.env.NO_LOGS = 'true';
 
 // assign defaults
 process.env.DATABASE_URL = process.env.GV_DB_FOR_SEEDING;
-process.env.WH_DATABASE_URL = process.env.WH_DB_FOR_SEEDING;
 let mochaGrep = process.env.MOCHA_GREP;
 let mochaTimeout = process.env.MOCHA_TIMEOUT;
-let mochaFolder = process.env.MOCHA_FOLDER;
+let mochaFolder = process.env.MOCHA_FOLDER || '**';
 
 async function getUserInputs() {
   // confirm defaults
@@ -84,9 +84,6 @@ async function confirmSettings() {
   return prompts({
     type: 'confirm',
     message: `Run tests with these settings?
-    WH database:       ${helpers.createDbUrlPreview(
-      process.env.WH_DATABASE_URL,
-    )} (from env.WH_DB_FOR_SEEDING)
     GV database:       ${helpers.createDbUrlPreview(
       process.env.DATABASE_URL,
     )} (from env.GV_DB_FOR_SEEDING)
@@ -103,23 +100,15 @@ function validateSettings() {
     console.log('No geovistory database url specified');
     process.exit();
   }
-
-  if (!process.env.WH_DATABASE_URL) {
-    console.log('No warehouse database url specified');
-    process.exit();
-  }
 }
 
 async function start() {
-
   await getUserInputs();
   const cmd = createCommand();
   console.log(`
   Running tests on geovistory db: ${helpers.createDbUrlPreview(
     process.env.DATABASE_URL,
-  )} and warehouse db: ${helpers.createDbUrlPreview(
-    process.env.WH_DATABASE_URL,
-  )}  with this command:`);
+  )} with this command:`);
   console.log(cmd);
 
   return require('./__execShell').fromScript(cmd);
@@ -130,17 +119,22 @@ start().catch(err => console.error(err));
 const createCommand = () => {
   const mocha = path.join(__dirname, '../node_modules/.bin/mocha');
   const dist = path.join(__dirname, '../dist');
-  const report = path.join(
-    __dirname,
-    `../dev/mocha-test-${new Date().toISOString()}`,
-  );
+  const tests = path.join(__dirname, `../tests`);
+  // Check if the tests directory exists
+  if (!fs.existsSync(tests)) {
+    // Create the directory
+    fs.mkdirSync(tests);
+    console.log(`Directory '${tests}' created successfully.`);
+  }
+
+  const report = path.join(tests, `mocha-test-${new Date().toISOString()}`);
   const cmd = `${mocha}\
   --trace-warnings\
   --timeout ${mochaTimeout}\
   --no-colors\
   --exit\
   ${mochaGrep ? `--grep "${mochaGrep}"` : ''}\
-  '${dist}/__tests__/${process.env.MOCHA_FOLDER}/*.js'\
+  '${dist}/__tests__/${mochaFolder}/*.js'\
   2>&1 | tee ${report}
   `;
 

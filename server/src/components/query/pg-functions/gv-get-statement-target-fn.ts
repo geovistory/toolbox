@@ -131,7 +131,7 @@ export class SqlGvGetStatementTarget extends SqlBuilderLb4Models {
             war.entity_preview t4
           WHERE
             t4.pk_entity = t3.fk_measurement_unit
-            AND t4.project = 0
+            AND project_id = 0
           UNION
           --project version
           SELECT
@@ -140,7 +140,7 @@ export class SqlGvGetStatementTarget extends SqlBuilderLb4Models {
             war.entity_preview t4
           WHERE
             t4.pk_entity = t3.fk_measurement_unit
-            AND t4.project = _project_id) e) entity_preview ON TRUE
+            AND project_id = _project_id) e) entity_preview ON TRUE
       WHERE
         t3.pk_entity = _info_id;
         IF FOUND THEN
@@ -167,7 +167,7 @@ export class SqlGvGetStatementTarget extends SqlBuilderLb4Models {
             war.entity_preview t4
           WHERE
             t4.pk_entity = _info_id
-            AND t4.project = 0
+            AND project_id = 0
           UNION
           --project version
           SELECT
@@ -176,7 +176,7 @@ export class SqlGvGetStatementTarget extends SqlBuilderLb4Models {
             war.entity_preview t4
           WHERE
             t4.pk_entity = _info_id
-            AND t4.project = _project_id) e) entity_preview ON TRUE
+            AND project_id = _project_id) e) entity_preview ON TRUE
       WHERE
         t3.pk_entity = _info_id;
         IF FOUND THEN

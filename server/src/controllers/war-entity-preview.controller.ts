@@ -2,11 +2,13 @@ import {inject, Subscription} from '@loopback/core';
 import {Fields} from '@loopback/filter';
 import {model, property, repository} from '@loopback/repository';
 import {HttpErrors, post, requestBody} from '@loopback/rest';
+import {groupBy} from 'ramda';
 import {Socket} from 'socket.io';
 import {QWarEntityPreviewSearchExisiting, SearchExistingRelatedStatement} from '../components/query/q-war-search-existing';
 import {Postgres1DataSource} from '../datasources';
 import {ws} from '../decorators/websocket.decorator';
 import {WarEntityPreview, WarEntityPreviewWithFulltext, WarEntityPreviewWithRelations} from '../models';
+import {WarEntityPreviewId} from '../models/entity-preview/WarEntityPreviewId';
 import {Streams} from '../realtime/streams/streams';
 import {AddToStreamMsg, WebsocketControllerBase} from '../realtime/websockets/websocker-controller-base';
 import {WarEntityPreviewRepository} from '../repositories';
@@ -21,8 +23,7 @@ import {EntitySearchHit} from './EntitySearchHit';
 const includeFieldsForStream: Fields<WarEntityPreviewWithFulltext> = {
   key: true,
   pk_entity: true,
-  fk_project: true,
-  project: true,
+  project_id: true,
   fk_class: true,
   class_label: true,
   entity_label: true,
@@ -30,7 +31,6 @@ const includeFieldsForStream: Fields<WarEntityPreviewWithFulltext> = {
   type_label: true,
   fk_type: true,
 }
-
 
 
 
@@ -124,24 +124,9 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     if (this.cache.currentProjectPk) {
       const ids = Object.keys(this.cache.streamedIds).map(pk => pk);
       if (ids?.length) {
-        // const pkProject = parseInt(this.cache.currentProjectPk, 10)
-
         // Query entities modified and needed by current cache in project version
         const items = await this.findModifiedSinceTmsp(ids, tmsp);
-        // const projectItemsIdx = indexBy((i) => i?.pk_entity?.toString() ?? '', items)
-
-        // Query entities modified and needed by current cache in repo version
-        // const repoItems = await this.findRepoModifiedSinceTmsp(pkProject, ids, tmsp);
-
-
         result.push(...items)
-
-        // for (const repoItem of repoItems) {
-        //   if (repoItem.pk_entity && !projectItemsIdx[repoItem.pk_entity.toString()]) {
-        //     result.push(repoItem)
-        //   }
-        // }
-
       }
 
     }
@@ -232,109 +217,77 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   }
 
   /**
-   * Queries entity previews that are in the array of entityPks and belong to given project.
-   * Set pkProject to null to query repo version.
+   * Queries entity previews that are in the array of keys
    *
-   * @param pkProject if null, repo version is queried, if number, project version is queried
-   * @param ids array of pk_entity of the entity prieviews to query
+   * @param keys array of keys in the form of {project_id}_{pk_entity}
    */
-  private async findByKey(ids: string[]) {
-    return this.warEntityPreviewRepository.find({
-      fields: includeFieldsForStream,
-      where: {
-        and: [
-          {key: {inq: ids}},
-        ]
-      }
-    });
+  private async findByKey(keys: string[]) {
+    // parse the keys into {project_id, pk_entity]
+    const grouped = this.groupByProject(keys);
+
+    const res: WarEntityPreviewWithFulltext[] = []
+    // query the entity previews for each project_id
+    for (const key in grouped) {
+      const projectId = parseInt(key);
+      const pkEntities = grouped[key].map(item => item.pk_entity);
+      const found = await this.warEntityPreviewRepository.find({
+        fields: includeFieldsForStream,
+        where: {
+          and: [
+            {project_id: projectId},
+            {pk_entity: {inq: pkEntities}}
+          ]
+        }
+      });
+      // merge the results
+      res.push(...found)
+    }
+
+    return res;
   }
 
   /**
-   * Queries project entity previews that are in the array of entityPks and
-   * that belong to chached project and that are modified at the same time or
-   * after tsmpLastModification.
+   * Queries project entity previews that are in the array of keys and
+   * that are modified at the same time as tsmpLastModification.
    *
    * @param tsmpLastModification
-   * @param ids
+   * @param keys array of keys in the form of {project_id}_{pk_entity}
    */
-  private async findModifiedSinceTmsp(ids: string[], tsmpLastModification: string) {
-    return this.warEntityPreviewRepository.find({
-      fields: includeFieldsForStream,
-      where: {
-        and: [
-          {tmsp_last_modification: {eq: tsmpLastModification}},
-          {key: {inq: ids}}
-        ]
-      }
-    });
+  private async findModifiedSinceTmsp(keys: string[], tsmpLastModification: string) {
+    // parse the keys into {project_id, pk_entity]
+    const grouped = this.groupByProject(keys);
+
+    const res: WarEntityPreviewWithFulltext[] = []
+    // query the entity previews for each project_id
+    for (const key in grouped) {
+      const projectId = parseInt(key);
+      const pkEntities = grouped[key].map(item => item.pk_entity);
+      const found = await this.warEntityPreviewRepository.find({
+        fields: includeFieldsForStream,
+        where: {
+          and: [
+            {tmsp_last_modification: {eq: tsmpLastModification}},
+            {project_id: projectId},
+            {pk_entity: {inq: pkEntities}}
+          ]
+        }
+      });
+      // merge the results
+      res.push(...found)
+    }
+
+    return res;
   }
 
-  // /**
-  // * Queries repo entity previews that are in the array of entityPks and
-  // * and that are modified at the same time or after tsmpLastModification
-  // * that are not available as project version.
-  // *
-  // * @param tsmpLastModification
-  // * @param entityPks
-  // */
-  // private async findRepoModifiedSinceTmsp(pkProject: number, entityPks: number[], tsmpLastModification: string) {
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   const params: any[] = []
-  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   const addParam = (val: any) => {
-  //     params.push(val)
-  //     return '$' + params.length
-  //   }
-  //   const sql = `WITH tw0 AS (
-  //     Select pk_entity
-  //     FROM war.entity_preview
-  //     WHERE project = 0
-  //     AND tmsp_last_modification >= ${addParam(tsmpLastModification)}
-  //     AND pk_entity IN (${entityPks.map(pk => addParam(pk))})
-  //     EXCEPT
-  //     Select pk_entity
-  //     FROM war.entity_preview
-  //     WHERE project = ${addParam(pkProject)}
-  //   )
-  //   SELECT ${keys(includeFieldsForStream).map(k => 't1.' + k).join(', ')}
-  //   FROM war.entity_preview t1,
-  //   tw0 t2
-  //   WHERE t1.pk_entity = t2.pk_entity
-  //   AND t1.project = 0`
-  //   return this.warEntityPreviewRepository.dataSource.execute(sql, params);
-  // }
-
-
-
-
-  // private async completeProjectWithRepoPreviews(projectItems: WarEntityPreviewWithRelations[], requestedPks: number[]): Promise<WarEntityPreviewWithRelations[]> {
-  //   const result: WarEntityPreviewWithRelations[] = [...projectItems]
-
-
-  //   // find pks of requestedPks not present in projectItems
-  //   const notInProject = _.difference(
-  //     requestedPks.map((item) => item),
-  //     projectItems.map((item) => item?.pk_entity)
-  //   ).filter(x => typeof x === 'number') as number[];
-
-  //   // query repo versions
-  //   if (notInProject.length) {
-  //     const repoItems = await this.findByProjectAndEntityPks(null, notInProject);
-  //     // add repo versions to result
-  //     result.push(...repoItems)
-  //   }
-
-  //   return result;
-  // }
-
-
-
-
-
-
-
-
-
+  private groupByProject(keys: string[]) {
+    const parsed: WarEntityPreviewId[] = keys.map(k => {
+      const s = k.split('_');
+      return {project_id: parseInt(s[0]), pk_entity: parseInt(s[1])};
+    });
+    // group the keys by project_id
+    const grouped = groupBy((item) => item.project_id.toString(), parsed);
+    return grouped;
+  }
 
   // emit entity preview
   emitPreview(entityPreview: WarEntityPreviewWithRelations) {
@@ -398,8 +351,8 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
         : ''
       }
           ${req.projectId
-        ? `AND fk_project = ${q.addParam(req.projectId)}`
-        : `AND fk_project IS NULL`
+        ? `AND project_id = ${q.addParam(req.projectId)}`
+        : `AND project_id = 0`
       }
           ${req.entityType ? `AND entity_type = ${q.addParam(req.entityType)}` : ''}
           ${req.pkClasses?.length
@@ -491,12 +444,12 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
       SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
       FROM war.entity_preview
       WHERE pk_entity IN (${q.addParams(pkEntities)})
-      AND fk_project = ${q.addParam(pkProject)}
+      AND project_id = ${q.addParam(pkProject)}
       UNION
       SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
       FROM war.entity_preview
       WHERE pk_entity IN (${q.addParams(pkEntities)})
-      AND fk_project IS NULL
+      AND project_id = 0
     ),
     tw2 AS (
       SELECT DISTINCT ON (pk_entity) *

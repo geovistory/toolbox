@@ -1,10 +1,10 @@
-import { Postgres1DataSource } from '../../datasources';
-import { DatDigital } from '../../models/dat-digital.model';
-import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
-import { InfStatement } from '../../models/inf-statement.model';
-import { ProInfoProjRel } from '../../models/pro-info-proj-rel.model';
-import { WarEntityPreview } from '../../models/war-entity-preview.model';
-import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
+import {Postgres1DataSource} from '../../datasources';
+import {DatDigital} from '../../models/dat-digital.model';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
+import {InfStatement} from '../../models/inf-statement.model';
+import {ProInfoProjRel} from '../../models/pro-info-proj-rel.model';
+import {WarEntityPreview} from '../../models/war-entity-preview.model';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 export class QContentTree extends SqlBuilderLb4Models {
 
@@ -66,7 +66,7 @@ export class QContentTree extends SqlBuilderLb4Models {
         AND t2.fk_project = ${this.addParam(fkProject)}
         ORDER BY
           t1.pk_entity,
-          CASE WHEN(t1.fk_project = ${this.addParam(fkProject)}) THEN 0
+          CASE WHEN(t1.project_id = ${this.addParam(fkProject)}) THEN 0
           ELSE 1
           END
       ),

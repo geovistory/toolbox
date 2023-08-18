@@ -83,21 +83,6 @@ export class ViewFieldComponent implements OnInit {
       .filter(c => !c.removedFromAllProfiles)
       .map(c => c.targetClassLabel)
 
-    // const limit = temporalEntityListDefaultLimit
-    // const offset = temporalEntityListDefaultPageIndex
-    // /**
-    //  * Trigger loading from REST API
-    //  */
-    // this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-    //   this.field.listDefinitions.forEach(l => {
-    //     if (l.listType.temporalEntity) {
-    //       this.pag.temporalEntity.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
-    //     }
-    //     else if (l.listType.entityPreview) {
-    //       this.pag.statements.addPageLoader(pkProject, l, this.pkEntity, limit, offset, this.destroy$)
-    //     }
-    //   })
-
     /**
      * Pipe data from redux store
      */

@@ -23,25 +23,9 @@ async function chooseDb() {
         },
       ],
     },
-    {
-      type: 'select',
-      name: 'whDbUrl',
-      message: 'What database should be used as WH_DATABASE_URL?',
-      choices: [
-        {title: 'WH_DB_REVIEW_COPY', value: process.env.WH_DB_REVIEW_COPY},
-        {title: 'WH_DB_PROD_COPY', value: process.env.WH_DB_PROD_COPY},
-        {title: 'WH_DB_FOR_SEEDING', value: process.env.WH_DB_FOR_SEEDING},
-        {
-          title: 'WH_DB_SCHEMA_TEMPLATE',
-          value: process.env.WH_DB_SCHEMA_TEMPLATE,
-        },
-      ],
-    }
   ]);
 
   if (!response.gvDbUrl) process.exit();
-  if (!response.whDbUrl) process.exit();
   process.env.DATABASE_URL = response.gvDbUrl;
-  process.env.WH_DATABASE_URL = response.whDbUrl;
 }
 module.exports = chooseDb;

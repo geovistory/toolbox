@@ -169,8 +169,7 @@ export class CtrlEntityComponent implements OnDestroy,
               class_label: label,
               entity_type: type,
               pk_entity: undefined,
-              fk_project: undefined,
-              project: undefined,
+              project_id: undefined,
             }
             return e
           })

@@ -27,11 +27,11 @@
 
     <!-- Open the entity in new Geovistory tab: (add to project) + open it -->
     <ng-container *ngIf="openTabOnClick">
-      <button [disabled]="preview?.fk_project === null" mat-menu-item (click)="openInNewTab()">
+      <button [disabled]="preview?.project_id === 0" mat-menu-item (click)="openInNewTab()">
         <mat-icon>tab</mat-icon>
         Open {{preview?.entity_label | truncate:['10']}} in new Geovistory Tab
       </button>
-      <button *ngIf="preview?.fk_project === null" mat-menu-item (click)="addAndOpenInNewTab()">
+      <button *ngIf="preview?.project_id === 0" mat-menu-item (click)="addAndOpenInNewTab()">
         <mat-icon color="primary">add</mat-icon>
         Add to project and open
       </button>

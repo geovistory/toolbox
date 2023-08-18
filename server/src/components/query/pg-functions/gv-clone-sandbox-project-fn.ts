@@ -1,4 +1,4 @@
-import { SqlBuilderLb4Models } from '../../../utils/sql-builders/sql-builder-lb4-models';
+import {SqlBuilderLb4Models} from '../../../utils/sql-builders/sql-builder-lb4-models';
 
 
 /**
@@ -172,12 +172,12 @@ export class SqlGvCloneSandboxProject extends SqlBuilderLb4Models {
           entity_id,
           parent_classes,
           ancestor_classes,
-          project_id,
+          pk_new_project AS project_id,
           type_id
         FROM
           war.entity_preview
         WHERE
-          fk_project = pk_sandbox_project
+          project_id = pk_sandbox_project
         ON CONFLICT (entity_id,
           project_id)
           DO NOTHING;
