@@ -9,10 +9,6 @@ import {Granularity} from './enums/Granularity';
  *
  * acls, methods, mixins
  */
-export interface WarEntityPreviewId {
-  pk_entity: number,
-  fk_project?: number | null
-}
 @model()
 class TimePrimitiveWithCal {
   @property({required: true})
@@ -79,14 +75,9 @@ export class WarEntityPreview extends Entity {
 
   @property({
     type: 'number',
-  })
-  fk_project?: number | null;
-
-  @property({
-    type: 'number',
     required: true
   })
-  project?: number;
+  project_id?: number;
 
   @property({
     type: 'number',

@@ -208,16 +208,6 @@ export class QAnalysisTable extends QAnalysisBase {
       ) AS "${column.id}"`);
     }
     else if (column.defaultType === 'entity_preview') {
-
-      // column.colNames = [
-      //   'pk_entity',
-      //   'entity_type',
-      //   'entity_label',
-      //   'class_label',
-      //   'type_label',
-      //   'time_span',
-      //   'fk_project'
-      // ];
       this.selects.push(`
       jsonb_build_object(
         'entity', ${this.createBuildObject(leftTableAlias, WarEntityPreview.definition)}

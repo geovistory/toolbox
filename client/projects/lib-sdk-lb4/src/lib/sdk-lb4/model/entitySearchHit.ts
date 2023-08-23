@@ -16,8 +16,7 @@ import { WarEntityPreviewTimeSpan } from './warEntityPreviewTimeSpan';
 export interface EntitySearchHit { 
     key?: string;
     pk_entity?: number;
-    fk_project?: number;
-    project: number;
+    project_id: number;
     fk_class: number;
     class_label?: string;
     entity_label?: string;

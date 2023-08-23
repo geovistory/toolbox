@@ -73,8 +73,10 @@ leveldb
 test_leveldb
 
 # development files and scripts
-dev/
 dev.js
+
+# test reports
+tests/
 
 openapi.json
 

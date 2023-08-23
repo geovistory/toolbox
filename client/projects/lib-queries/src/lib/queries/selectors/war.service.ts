@@ -28,7 +28,7 @@ class Selector {
 }
 
 class WarEntityPreviewSelector extends Selector {
-  public by_project__pk_entity$ = this.selector<WarEntityPreview>('by_project__pk_entity')
+  public by_project_id__pk_entity$ = this.selector<WarEntityPreview>('by_project_id__pk_entity')
 
   constructor(
     public ngRedux: NgRedux<IAppState>,

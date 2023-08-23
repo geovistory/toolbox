@@ -45,7 +45,7 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
       this.pkProject$.pipe(first())
         .subscribe((pkProject) => {
           const pks = Object.keys({
-            ...this.ngRedux.getState().war.entity_preview.by_project__pk_entity,
+            ...this.ngRedux.getState().war.entity_preview.by_project_id__pk_entity,
             ...this.requestedEntityPreviews
           });
           if (pks.length) {
@@ -117,7 +117,7 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
 
     let hasBeenRequested = false;
     keys.forEach(k => {
-      if (state.war?.entity_preview?.by_project__pk_entity?.[k]) return hasBeenRequested = true;
+      if (state.war?.entity_preview?.by_project_id__pk_entity?.[k]) return hasBeenRequested = true;
       if (this.requestedEntityPreviews?.[k]) return hasBeenRequested = true;
     })
 
@@ -131,8 +131,8 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
 
     if (wantsProjectVersion) {
       return combineLatest([
-        this.warSelector.entity_preview$.by_project__pk_entity$.key(projectKey),
-        this.warSelector.entity_preview$.by_project__pk_entity$.key(repoKey),
+        this.warSelector.entity_preview$.by_project_id__pk_entity$.key(projectKey),
+        this.warSelector.entity_preview$.by_project_id__pk_entity$.key(repoKey),
       ])
         .pipe(
           map(([projectVersion, repoVersion]) => projectVersion ?? repoVersion),
@@ -140,7 +140,7 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
           filter(prev => (!!prev))
         )
     } else {
-      return this.warSelector.entity_preview$.by_project__pk_entity$.key(repoKey)
+      return this.warSelector.entity_preview$.by_project_id__pk_entity$.key(repoKey)
         .pipe(
           distinctUntilChanged<WarEntityPreview>(equals),
           filter(prev => (!!prev))
@@ -158,7 +158,7 @@ export class ActiveProjectPipesService extends PipeCache<ActiveProjectPipesServi
     if (object && object.war && object.war.entity_preview && object.war.entity_preview.length) {
       this.entityPreviewSocket.emit('extendStream', {
         pkProject,
-        pks: object.war.entity_preview.map(p => p.project + '_' + p.pk_entity)
+        pks: object.war.entity_preview.map(p => p.project_id + '_' + p.pk_entity)
       });
     }
   }
