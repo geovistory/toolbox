@@ -119,11 +119,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     // console.log('pipeFields(' + pkClass + ',' + noNesting + ')');
 
     const obs$ = combineLatest([
-      // pipe source class
-      this.s.dfh$.class$.by_pk_class$.key(pkClass),
-      // freezing bug log
-      // .pipe(tap(x => console.log('aaa this.s.dfh$.class$.by_pk_class$$'))),
-      // pipe outgoing properties
       this.s.dfh$.property$.by_has_domain$.key(pkClass).pipe(map(indexed => values(indexed))),
       // freezing bug log
       // .pipe(tap(x => console.log('aaa this.s.dfh$.property$.by_has_domain$$'))),
@@ -140,11 +135,9 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       // freezing bug log
       // .pipe(tap(x => console.log('aaa pipeProfilesEnabledByProject$'))),
     ]).pipe(
-      switchMap(([sourceKlass, outgoingProps, ingoingProps, sysConfig, enabledProfiles]) => {
+      switchMap(([outgoingProps, ingoingProps, sysConfig, enabledProfiles]) => {
 
         // console.log('aaa is it crazy?') // freezing bug log
-
-
 
         const platformVocabularyClasses = sysConfig.platformVocabularies ?
           sysConfig.platformVocabularies.map(c => c.parentOrAncestorClassId) : [];
@@ -152,8 +145,14 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
         const isEnabled = (prop: DfhProperty): boolean => enabledProfiles.some(
           (enabled) => prop.profiles.map(p => p.fk_profile).includes(enabled)
         );
-        const outP = outgoingProps.filter((prop) => isEnabled(prop))
-        const inP = ingoingProps.filter((prop) => isEnabled(prop))
+
+        const removedFromAllProfilesLast = (a: DfhProperty, b: DfhProperty) => {
+          // if this property is not removed from all profiles, return a negative number to sort it first
+          return a.profiles?.some(p => !p?.removed_from_api) ? -1 : 1;
+        }
+
+        const outP = outgoingProps.filter((prop) => isEnabled(prop)).sort(removedFromAllProfilesLast)
+        const inP = ingoingProps.filter((prop) => isEnabled(prop)).sort(removedFromAllProfilesLast)
 
         return combineLatest([
           this.pipePropertiesToSubfields(outP, true, enabledProfiles, platformVocabularyClasses, noNesting),
