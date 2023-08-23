@@ -1,6 +1,6 @@
 -- 1
 -- Add partitioning to the table war.entity_preview_template
-DROP TABLE IF EXISTS war.entity_preview_template;
+DROP TABLE IF EXISTS war.entity_preview_template CASCADE;
 
 CREATE TABLE IF NOT EXISTS war.entity_preview_template(
   pk_entity integer NOT NULL,
