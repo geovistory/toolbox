@@ -85,14 +85,11 @@ export class ReduxModule {
 
       // Middleware
       [
-        // createLogger(),
         epicMiddleware,
         dynamicMiddlewares,
       ],
       // Enhancers
       devTools.isEnabled()
-        // && process.env.DB_ENV != 'production'
-        // && process.env.DB_ENV != 'staging'
         ? [devTools.enhancer({ trace: true })] : []
     );
 
@@ -100,12 +97,5 @@ export class ReduxModule {
     epicMiddleware.run(rootEpics.getRootEpic());
 
 
-    // // Enable syncing of Angular router state with our Redux store.
-    // if (ngReduxRouter) {
-    //     ngReduxRouter.initialize();
-    // }
-
-    // Enable syncing of Angular form state with our Redux store.
-    // provideReduxForms(ngRedux);
   }
 }

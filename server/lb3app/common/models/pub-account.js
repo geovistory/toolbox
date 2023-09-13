@@ -171,24 +171,6 @@ module.exports = function (PubAccount) {
     );
   });
 
-  PubAccount.getRoles = function (id, cb) {
-    var sql_stmt = `
-  SELECT role.id, role.name
-  FROM role
-  JOIN rolemapping ON role.id = rolemapping.roleid
-  WHERE rolemapping.principaltype = 'USER'
-  AND rolemapping.principalid = $1::text
-  `;
-    var params = [id];
-
-    const connector = PubAccount.dataSource.connector;
-    connector.execute(sql_stmt, params, (err, resultObjects) => {
-      cb(err, resultObjects);
-    });
-
-    return cb.promise;
-  };
-
   PubAccount.withRolesAndProjects = function (cb) {
     var sql_stmt = `
   SELECT
@@ -534,20 +516,20 @@ module.exports = function (PubAccount) {
       return fn.promise;
     }
 
-    this.relations.accessTokens.modelTo.destroyById(tokenId, function (
-      err,
-      info
-    ) {
-      if (err) {
-        fn(err);
-      } else if ('count' in info && info.count === 0) {
-        err = new Error(g.f('Could not find {{accessToken}}'));
-        err.statusCode = 401;
-        fn(err);
-      } else {
-        fn();
+    this.relations.accessTokens.modelTo.destroyById(
+      tokenId,
+      function (err, info) {
+        if (err) {
+          fn(err);
+        } else if ('count' in info && info.count === 0) {
+          err = new Error(g.f('Could not find {{accessToken}}'));
+          err.statusCode = 401;
+          fn(err);
+        } else {
+          fn();
+        }
       }
-    });
+    );
     return fn.promise;
   };
 
@@ -557,20 +539,20 @@ module.exports = function (PubAccount) {
 
     const AccessToken = ctx.Model.relations.accessTokens.modelTo;
     const pkName = ctx.Model.definition.idName() || 'id';
-    ctx.Model.find({ where: ctx.where, fields: [pkName] }, function (
-      err,
-      list
-    ) {
-      if (err) return next(err);
+    ctx.Model.find(
+      { where: ctx.where, fields: [pkName] },
+      function (err, list) {
+        if (err) return next(err);
 
-      const ids = list.map(function (u) {
-        return u[pkName];
-      });
-      ctx.where = {};
-      ctx.where[pkName] = { inq: ids };
+        const ids = list.map(function (u) {
+          return u[pkName];
+        });
+        ctx.where = {};
+        ctx.where[pkName] = { inq: ids };
 
-      AccessToken.destroyAll({ userId: { inq: ids } }, next);
-    });
+        AccessToken.destroyAll({ userId: { inq: ids } }, next);
+      }
+    );
   });
 
   /**
@@ -1710,108 +1692,111 @@ module.exports = function (PubAccount) {
     next();
   });
 
-  PubAccount.observe('before save', function rejectInsecurePasswordChange(
-    ctx,
-    next
-  ) {
-    const PubAccountModel = ctx.Model;
-    if (!PubAccountModel.settings.rejectPasswordChangesViaPatchOrReplace) {
-      // In legacy password flow, any DAO method can change the password
-      return next();
-    }
-
-    if (ctx.isNewInstance) {
-      // The password can be always set when creating a new PubAccount instance
-      return next();
-    }
-    const data = ctx.data || ctx.instance;
-    const isPasswordChange = 'password' in data;
-
-    // This is the option set by `setPassword()` API
-    // when calling `this.patchAttritubes()` to change user's password
-    if (ctx.options.setPassword) {
-      // Verify that only the password is changed and nothing more or less.
-      if (Object.keys(data).length > 1 || !isPasswordChange) {
-        // This is a programmer's error, use the default status code 500
-        return next(
-          new Error(
-            'Invalid use of "options.setPassword". Only "password" can be ' +
-              'changed when using this option.'
-          )
-        );
+  PubAccount.observe(
+    'before save',
+    function rejectInsecurePasswordChange(ctx, next) {
+      const PubAccountModel = ctx.Model;
+      if (!PubAccountModel.settings.rejectPasswordChangesViaPatchOrReplace) {
+        // In legacy password flow, any DAO method can change the password
+        return next();
       }
 
-      return next();
-    }
+      if (ctx.isNewInstance) {
+        // The password can be always set when creating a new PubAccount instance
+        return next();
+      }
+      const data = ctx.data || ctx.instance;
+      const isPasswordChange = 'password' in data;
 
-    if (!isPasswordChange) {
-      return next();
-    }
-
-    const err = new Error(
-      'Changing user password via patch/replace API is not allowed. ' +
-        'Use changePassword() or setPassword() instead.'
-    );
-    err.statusCode = 401;
-    err.code = 'PASSWORD_CHANGE_NOT_ALLOWED';
-    next(err);
-  });
-
-  PubAccount.observe('before save', function prepareForTokenInvalidation(
-    ctx,
-    next
-  ) {
-    if (ctx.isNewInstance) return next();
-    if (!ctx.where && !ctx.instance) return next();
-
-    const pkName = ctx.Model.definition.idName() || 'id';
-    let where = ctx.where;
-    if (!where) {
-      where = {};
-      where[pkName] = ctx.instance[pkName];
-    }
-
-    ctx.Model.find({ where: where }, ctx.options, function (
-      err,
-      userInstances
-    ) {
-      if (err) return next(err);
-      ctx.hookState.originalPubAccountData = userInstances.map(function (u) {
-        const user = {};
-        user[pkName] = u[pkName];
-        user.email = u.email;
-        user.password = u.password;
-        return user;
-      });
-      let emailChanged;
-      if (ctx.instance) {
-        // Check if map does not return an empty array
-        // Fix server crashes when try to PUT a non existent id
-        if (ctx.hookState.originalPubAccountData.length > 0) {
-          emailChanged =
-            ctx.instance.email !==
-            ctx.hookState.originalPubAccountData[0].email;
-        } else {
-          emailChanged = true;
+      // This is the option set by `setPassword()` API
+      // when calling `this.patchAttritubes()` to change user's password
+      if (ctx.options.setPassword) {
+        // Verify that only the password is changed and nothing more or less.
+        if (Object.keys(data).length > 1 || !isPasswordChange) {
+          // This is a programmer's error, use the default status code 500
+          return next(
+            new Error(
+              'Invalid use of "options.setPassword". Only "password" can be ' +
+                'changed when using this option.'
+            )
+          );
         }
 
-        if (emailChanged && ctx.Model.settings.emailVerificationRequired) {
-          ctx.instance.emailVerified = false;
-        }
-      } else if (ctx.data.email) {
-        emailChanged = ctx.hookState.originalPubAccountData.some(function (
-          data
-        ) {
-          return data.email != ctx.data.email;
-        });
-        if (emailChanged && ctx.Model.settings.emailVerificationRequired) {
-          ctx.data.emailVerified = false;
-        }
+        return next();
       }
 
-      next();
-    });
-  });
+      if (!isPasswordChange) {
+        return next();
+      }
+
+      const err = new Error(
+        'Changing user password via patch/replace API is not allowed. ' +
+          'Use changePassword() or setPassword() instead.'
+      );
+      err.statusCode = 401;
+      err.code = 'PASSWORD_CHANGE_NOT_ALLOWED';
+      next(err);
+    }
+  );
+
+  PubAccount.observe(
+    'before save',
+    function prepareForTokenInvalidation(ctx, next) {
+      if (ctx.isNewInstance) return next();
+      if (!ctx.where && !ctx.instance) return next();
+
+      const pkName = ctx.Model.definition.idName() || 'id';
+      let where = ctx.where;
+      if (!where) {
+        where = {};
+        where[pkName] = ctx.instance[pkName];
+      }
+
+      ctx.Model.find(
+        { where: where },
+        ctx.options,
+        function (err, userInstances) {
+          if (err) return next(err);
+          ctx.hookState.originalPubAccountData = userInstances.map(function (
+            u
+          ) {
+            const user = {};
+            user[pkName] = u[pkName];
+            user.email = u.email;
+            user.password = u.password;
+            return user;
+          });
+          let emailChanged;
+          if (ctx.instance) {
+            // Check if map does not return an empty array
+            // Fix server crashes when try to PUT a non existent id
+            if (ctx.hookState.originalPubAccountData.length > 0) {
+              emailChanged =
+                ctx.instance.email !==
+                ctx.hookState.originalPubAccountData[0].email;
+            } else {
+              emailChanged = true;
+            }
+
+            if (emailChanged && ctx.Model.settings.emailVerificationRequired) {
+              ctx.instance.emailVerified = false;
+            }
+          } else if (ctx.data.email) {
+            emailChanged = ctx.hookState.originalPubAccountData.some(function (
+              data
+            ) {
+              return data.email != ctx.data.email;
+            });
+            if (emailChanged && ctx.Model.settings.emailVerificationRequired) {
+              ctx.data.emailVerified = false;
+            }
+          }
+
+          next();
+        }
+      );
+    }
+  );
 
   PubAccount.observe('after save', function invalidateOtherTokens(ctx, next) {
     if (!ctx.instance && !ctx.data) return next();

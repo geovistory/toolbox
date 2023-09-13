@@ -176,6 +176,7 @@ model/profileDeactivationReport.ts
 model/projectPongRequest.ts
 model/projectVisibilityOptions.ts
 model/pubAccount.ts
+model/pubRole.ts
 model/queryDefinition.ts
 model/queryFilter.ts
 model/queryFilterData.ts

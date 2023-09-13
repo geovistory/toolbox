@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {authenticate} from '@loopback/authentication';
 import {inject} from '@loopback/core';
-import {tags} from '@loopback/openapi-v3';
+import {param, tags} from '@loopback/openapi-v3';
 import {repository} from '@loopback/repository';
 import {get} from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import {PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__DESCRIPTION, PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__LABEL} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
+import {PubRole} from '../../models/pub-role.model';
 import {ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository} from '../../repositories';
 
 @tags('account data')
@@ -67,6 +68,40 @@ export class FindAccountDataController {
       }
     }
   }
+
+  @get('account-data/get-roles-of-account', {
+    responses: {
+      '200': {
+        description: 'The roles of the account',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array',
+              items: {
+                'x-ts-type': PubRole
+              }
+            }
+          }
+        }
+      },
+    },
+  })
+  @authenticate('basic')
+  async getRoles(
+    @param.query.number('accountId') accountId: number
+  ) {
+    const sql = `
+      SELECT role.id, role.name
+      FROM role
+      JOIN rolemapping ON role.id = rolemapping.roleid
+      WHERE rolemapping.principaltype = 'USER'
+      AND rolemapping.principalid = $1::text
+    `;
+    const params = [accountId];
+    const res: PubRole[] = await this.datasource.execute(sql, params)
+    return res;
+  };
+
 
 
 

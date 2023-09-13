@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { PubAccount } from '@kleiolab/lib-sdk-lb4';
+import { PubAccount, PubRole } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
-import { AccountRole, IAccount } from '../models/account.model';
+import { IAccount } from '../models/account.model';
 
 export interface AccountActionMeta {
   accountId?: number;
-  accountRoles?: AccountRole[];
+  accountRoles?: PubRole[];
   account?: PubAccount;
 };
 export type AccountAction = FluxStandardAction<IAccount, AccountActionMeta>;
@@ -68,7 +68,7 @@ export class AccountActions {
     };
   }
 
-  loadRolesSucceeded(accountRoles: AccountRole[]): AccountAction {
+  loadRolesSucceeded(accountRoles: PubRole[]): AccountAction {
     return {
       type: AccountActions.LOAD_ROLES_SUCCEEDED,
       payload: null,
@@ -76,7 +76,7 @@ export class AccountActions {
     };
   }
 
-  loadRolesFailed(accountRoles: AccountRole[]): AccountAction {
+  loadRolesFailed(accountRoles: PubRole[]): AccountAction {
     return {
       type: AccountActions.LOAD_ROLES_FAILED,
       payload: null,

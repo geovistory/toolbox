@@ -128,6 +128,7 @@ export * from './profileDeactivationReport';
 export * from './projectPongRequest';
 export * from './projectVisibilityOptions';
 export * from './pubAccount';
+export * from './pubRole';
 export * from './queryDefinition';
 export * from './queryFilter';
 export * from './queryFilterData';
