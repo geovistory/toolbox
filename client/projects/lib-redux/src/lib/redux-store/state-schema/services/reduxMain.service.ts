@@ -95,7 +95,7 @@ export class ReduxMainService {
   }
 
   loadProjectsOfAccount(): Observable<GvPositiveSchemaObject> {
-    const call$ = this.accountDataApi.findAccountDataControllerGetProjetcsOfAccount()
+    const call$ = this.accountDataApi.accountDataControllerGetProjetcsOfAccount()
     return this.schemaActions.loadGvSchemaObject(call$)
   }
 

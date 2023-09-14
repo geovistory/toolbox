@@ -80,9 +80,7 @@
       "principalType": "ROLE",
       "principalId": "system_admin",
       "permission": "ALLOW",
-      "property": [
-        "withRolesAndProjects"
-      ]
+      "property": []
     }
   ],
   "methods": {}

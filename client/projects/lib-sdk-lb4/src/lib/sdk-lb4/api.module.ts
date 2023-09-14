@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { AccountService } from './api/account.service';
 import { AccountDataService } from './api/accountData.service';
 import { AnalysisService } from './api/analysis.service';
+import { BackofficeService } from './api/backoffice.service';
 import { CommunityVisibilityService } from './api/communityVisibility.service';
 import { ContentTreeService } from './api/contentTree.service';
 import { DatChunkService } from './api/datChunk.service';

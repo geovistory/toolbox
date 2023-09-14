@@ -1,3 +1,4 @@
+export * from './accountInfo';
 export * from './activationReportItem';
 export * from './allowedCommunityVisibility';
 export * from './analysisDefinition';
@@ -128,6 +129,7 @@ export * from './profileDeactivationReport';
 export * from './projectPongRequest';
 export * from './projectVisibilityOptions';
 export * from './pubAccount';
+export * from './pubAccountProjectRel';
 export * from './pubRole';
 export * from './queryDefinition';
 export * from './queryFilter';

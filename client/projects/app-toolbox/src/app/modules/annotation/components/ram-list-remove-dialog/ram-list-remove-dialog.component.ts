@@ -4,7 +4,7 @@ import { DfhConfig } from '@kleiolab/lib-config';
 import { Field } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { InfStatement } from '@kleiolab/lib-sdk-lb3';
-import { GvFieldPageScope } from '@kleiolab/lib-sdk-lb4/public-api';
+import { GvFieldPageScope } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';

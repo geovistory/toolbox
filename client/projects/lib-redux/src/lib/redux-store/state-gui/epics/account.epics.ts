@@ -30,7 +30,7 @@ export class AccountEpics {
   private loadRoles(): Epic {
     return (action$, store) => action$.pipe(
       ofType(AccountActions.LOAD_ROLES),
-      mergeMap((action: AccountAction) => this.accountDataApi.findAccountDataControllerGetRoles(action.meta.accountId).pipe(
+      mergeMap((action: AccountAction) => this.accountDataApi.accountDataControllerGetRoles(action.meta.accountId).pipe(
         first(),
         mergeMap(data => of(
           this.actions.loadRolesSucceeded(data),
