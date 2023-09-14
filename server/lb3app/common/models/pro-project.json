@@ -20,6 +20,11 @@
       "id": true,
       "type": "number",
       "generated": true
+    },
+    "tmsp_last_modification": {
+      "id": false,
+      "type": "string",
+      "generated": true
     }
   },
   "validations": [],

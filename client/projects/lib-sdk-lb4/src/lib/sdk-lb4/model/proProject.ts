@@ -13,6 +13,7 @@
 
 export interface ProProject { 
     pk_entity?: number;
+    tmsp_last_modification?: string;
     fk_language?: number;
 }
 

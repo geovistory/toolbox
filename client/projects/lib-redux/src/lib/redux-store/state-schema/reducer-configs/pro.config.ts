@@ -5,8 +5,8 @@ import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 export const proRoot = 'pro';
 
 
-export const textPropertyByFksKey = (d: Partial<ProTextProperty>) => `${d.fk_project || null}_${d.fk_system_type || null}_${d.fk_language || null}_${d.fk_dfh_class || null}_${d.fk_dfh_property || null}_${d.fk_dfh_property_domain || null}_${d.fk_dfh_property_range || null}`
-export const textPropertyByFksWithoutLang = (d: Partial<ProTextProperty>): string => `${d.fk_project || null}_${d.fk_system_type || null}_${d.fk_dfh_class || null}_${d.fk_dfh_property || null}_${d.fk_dfh_property_domain || null}_${d.fk_dfh_property_range || null}`;
+export const textPropertyByFksKey = (d: Partial<ProTextProperty>) => `${d.fk_project || null}_${d.fk_system_type || null}_${d.fk_language || null}_${d.fk_dfh_class || null}_${d.fk_dfh_property || null}_${d.fk_dfh_property_domain || null}_${d.fk_dfh_property_range || null}_${d.fk_pro_project || null}`
+export const textPropertyByFksWithoutLang = (d: Partial<ProTextProperty>): string => `${d.fk_project || null}_${d.fk_system_type || null}_${d.fk_dfh_class || null}_${d.fk_dfh_property || null}_${d.fk_dfh_property_domain || null}_${d.fk_dfh_property_range || null}_${d.fk_pro_project || null}`;
 export const proClassFieldConfgByProjectAndClassKey = (d: Partial<ProClassFieldConfig>): string => {
   const fk_class = d.fk_range_class || d.fk_domain_class || d.fk_class_for_class_field;
   return `${d.fk_project || null}_${fk_class || null}`;

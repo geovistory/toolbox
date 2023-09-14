@@ -304,8 +304,8 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe
-      const viewType: GvFieldTargetViewType = { typeItem: 'true' }
-      const formControlType: SysConfigFormCtrlType = { typeItem: 'true' }
+      const viewType: GvFieldTargetViewType = { entityPreview: 'true' }
+      const formControlType: SysConfigFormCtrlType = { entity: 'true' }
       const expectedSequence = [{ viewType, formControlType }]
 
       q$.pipe(first(), toArray())
@@ -959,7 +959,8 @@ describe('ConfigurationPipeService', () => {
       service.pipePropertiesToSubfields(
         [property],
         true, // is outgoing
-        [5] // enabled profile
+        [5], // enabled profile
+        [] // platform vocabulary classes
       ).pipe(first())
         .subscribe(
           result => {

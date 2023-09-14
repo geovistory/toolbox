@@ -73,10 +73,7 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": [
-        "listProjects",
-        "getRoles"
-      ]
+      "property": []
     },
     {
       "accessType": "EXECUTE",

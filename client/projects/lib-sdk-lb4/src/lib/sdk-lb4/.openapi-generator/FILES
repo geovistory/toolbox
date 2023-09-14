@@ -189,7 +189,6 @@ model/relatedProfile.ts
 model/replaceStatementInFieldRequest.ts
 model/resetPasswordRequest.ts
 model/responseWithMsg.ts
-model/role.ts
 model/satementTarget.ts
 model/searchExistingRelatedStatement.ts
 model/searchExistingRelatedStatementFilter.ts

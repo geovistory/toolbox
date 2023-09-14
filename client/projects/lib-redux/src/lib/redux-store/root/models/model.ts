@@ -3,7 +3,6 @@ import { IAccount } from '../../state-gui/models/account.model';
 import { ProjectDetail } from '../../state-gui/models/active-project.models';
 import { Information } from '../../state-gui/models/entity-list.models';
 import { LoadingBar } from '../../state-gui/models/loading-bar.models';
-import { IProjectList } from '../../state-gui/models/projects.model';
 import { SourceList } from '../../state-gui/models/source-list.models';
 import { Dat } from '../../state-schema/models/dat.models';
 import { Dfh } from '../../state-schema/models/dfh.models';
@@ -53,7 +52,6 @@ export interface IAppState {
   account?: IAccount,
   // backoffice?: Backoffice,
   loadingBar?: LoadingBar,
-  projects?: IProjectList
   sys?: Sys
   dfh?: Dfh
   inf?: Inf

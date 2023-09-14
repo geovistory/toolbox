@@ -141,7 +141,6 @@ export * from './relatedProfile';
 export * from './replaceStatementInFieldRequest';
 export * from './resetPasswordRequest';
 export * from './responseWithMsg';
-export * from './role';
 export * from './satementTarget';
 export * from './searchExistingRelatedStatement';
 export * from './searchExistingRelatedStatementFilter';

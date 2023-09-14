@@ -1,9 +1,9 @@
-import { Entity, model, property } from '@loopback/repository';
+import {Entity, model, property} from '@loopback/repository';
 
 @model({
   settings: {
     strict: true,
-    postgresql: { schema: 'projects', table: 'project' },
+    postgresql: {schema: 'projects', table: 'project'},
     validateUpsert: true,
     idInjection: false
   }
@@ -27,6 +27,10 @@ export class ProProject extends Entity {
   })
   fk_cloned_from_project?: number;
 
+  @property({
+    type: 'string',
+  })
+  tmsp_last_modification?: string;
   // Define well-known properties here
 
   // Indexer property to allow additional data

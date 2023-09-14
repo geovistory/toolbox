@@ -7,7 +7,6 @@ import { accountRootReducer } from '../state-gui/reducers/account.reducers';
 import { activeProjectReducer } from '../state-gui/reducers/active-project.reducer';
 import { informationReducer } from '../state-gui/reducers/entity-list.reducer';
 import { loadingBarReducer } from '../state-gui/reducers/loading-bar.reducer';
-import { createProjectsReducer } from '../state-gui/reducers/projects.reducers';
 import { sourceListReducer } from '../state-gui/reducers/source-list.reducer';
 import { createDatReducer } from '../state-schema/reducers/dat.reducer';
 import { createDfhReducer } from '../state-schema/reducers/dfh.reducer';
@@ -94,7 +93,6 @@ export const rootReducer = composeReducers(
     information: informationReducer,
     sources: sourceListReducer,
     sandboxState: sandboxStateReducer,
-    projects: createProjectsReducer(),
     sys: createSysReducer(),
     dfh: createDfhReducer(),
     inf: createInfReducer(),

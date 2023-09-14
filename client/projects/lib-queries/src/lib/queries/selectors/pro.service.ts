@@ -100,9 +100,6 @@ class ProClassFieldConfigSelector extends Selector {
 class ProTextPropertySelector extends Selector {
   public by_fks$ = this.selector<ProTextProperty>('by_fks')
   public by_fks_without_lang$ = this.selector<ByPk<ProTextProperty>>('by_fks_without_lang')
-  // public fk_project__fk_dfh_property__fk_dfh_property_domain__fk_system_type__fk_language$ = this.selector<ByPk<ProTextProperty>>('fk_project__fk_dfh_property__fk_dfh_property_domain__fk_system_type__fk_language')
-  // public fk_project__fk_dfh_property__fk_dfh_property_range__fk_system_type__fk_language$ = this.selector<ByPk<ProTextProperty>>('fk_project__fk_dfh_property__fk_dfh_property_range__fk_system_type__fk_language')
-
   constructor(
     public ngRedux: NgRedux<IAppState>,
     public configs: ReducerConfigCollection,

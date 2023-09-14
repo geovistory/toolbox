@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import {authenticate} from '@loopback/authentication';
-import {inject} from '@loopback/core';
-import {param, tags} from '@loopback/openapi-v3';
-import {repository} from '@loopback/repository';
-import {get} from '@loopback/rest';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__DESCRIPTION, PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__LABEL} from '../../config';
-import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
-import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
-import {PubRole} from '../../models/pub-role.model';
-import {ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository} from '../../repositories';
+import { authenticate } from '@loopback/authentication';
+import { inject } from '@loopback/core';
+import { param, tags } from '@loopback/openapi-v3';
+import { repository } from '@loopback/repository';
+import { get } from '@loopback/rest';
+import { SecurityBindings, securityId, UserProfile } from '@loopback/security';
+import { PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__DESCRIPTION, PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__LABEL } from '../../config';
+import { Postgres1DataSource } from '../../datasources/postgres1.datasource';
+import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
+import { PubRole } from '../../models/pub-role.model';
+import { InfLanguageRepository, ProProjectRepository, ProTextPropertyRepository, PubAccountProjectRelRepository } from '../../repositories';
 
 @tags('account data')
 export class FindAccountDataController {
@@ -22,7 +22,9 @@ export class FindAccountDataController {
     public proProjectRepo: ProProjectRepository,
     @repository(ProTextPropertyRepository)
     public proTextPropertyRepo: ProTextPropertyRepository,
-    @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
+    @repository(InfLanguageRepository)
+    public infLanguageRepo: InfLanguageRepository,
+    @inject(SecurityBindings.USER, { optional: true }) public user: UserProfile,
 
   ) { }
 
@@ -47,11 +49,11 @@ export class FindAccountDataController {
     const accountId = this.user[securityId];
 
 
-    const accountProjectRels = await this.accountProjectRepo.find({where: {account_id: parseInt(accountId)}})
-    const projects = await this.proProjectRepo.find({where: {pk_entity: {inq: accountProjectRels.map(r => r.fk_project)}}})
+    const accountProjectRels = await this.accountProjectRepo.find({ where: { account_id: parseInt(accountId) } })
+    const projects = await this.proProjectRepo.find({ where: { pk_entity: { inq: accountProjectRels.map(r => r.fk_project) } } })
     const textProperties = await this.proTextPropertyRepo.find({
       where: {
-        fk_pro_project: {inq: projects.map(p => p.pk_entity)},
+        fk_pro_project: { inq: projects.map(p => p.pk_entity) },
         fk_system_type: {
           inq: [
             PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__LABEL,
@@ -60,8 +62,13 @@ export class FindAccountDataController {
         }
       }
     })
+    const languages = await this.infLanguageRepo.find({ where: { pk_entity: { inq: projects.map(r => r.fk_language) } } })
+
 
     return {
+      inf: {
+        language: languages
+      },
       pro: {
         project: projects,
         text_property: textProperties

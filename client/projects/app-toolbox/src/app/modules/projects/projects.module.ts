@@ -41,6 +41,7 @@ import { TypesComponent } from './containers/types/types.component';
 import { OnActivateTabDirective } from './directives/on-activate-tab.directive';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
+import { ProjectCardComponent } from './components/project-card/project-card.component';
 
 
 
@@ -92,6 +93,7 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     PanelBodyDirective,
     TabHandleComponent,
     OnActivateTabDirective,
+    ProjectCardComponent,
   ],
 
   providers: [
