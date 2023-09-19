@@ -81,9 +81,7 @@
       "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
-      "property": [
-        "getBasics"
-      ]
+      "property": []
     }
   ],
   "methods": {

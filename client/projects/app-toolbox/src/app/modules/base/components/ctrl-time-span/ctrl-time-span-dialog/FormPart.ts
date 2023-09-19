@@ -55,7 +55,6 @@ export class FormPart {
     public resultTemplate,
     public mergeDef: MergeDef,
     public required = true,
-    public defaultLanguage: InfLanguage
   ) {
     this.fieldTarget = values(this.field.targets)[0]
 
@@ -74,31 +73,6 @@ export class FormPart {
         })
       }
 
-      // // Q: is this list a statement list ??
-      // else {
-      //   // Q: This is a list that connects one statement per item
-      //   const initList = this.initVal.initField
-      //   const initProperty = initList.property.fkProperty;
-
-      //   // we neet to flip source and target, when the list type is a temporal entity
-      //   const initTarget = this.initValTarget.listType.temporalEntity ? this.field.sourceClass : this.initValTarget.targetClass;
-      //   const initSource = this.initValTarget.listType.temporalEntity ? this.initValTarget.targetClass : this.field.sourceClass;
-
-      //   if (
-      //     this.field.property.fkProperty === initProperty
-      //     && this.field.sourceClass === initSource
-      //     && this.fieldTarget.targetClass === initTarget
-      //   ) {
-      //     // Yes. It is matching a field, add a form item where the initial value is set (fixed)
-      //     this.items.push({
-      //       fixed: true,
-      //       required: this.isRequired(this.field),
-      //       classSelect: false,
-      //       formControlDef: this.addFormControlDef(this.field, this.initVal.initStatement.value)
-      //     })
-      //   }
-
-      // }
     }
 
     // Q: has there been added an item?
@@ -110,11 +84,10 @@ export class FormPart {
   public addItem() {
 
     if (this.field.targetClasses.length === 1) {
-      const initVal = this.fieldTarget.viewType.language ? this.defaultLanguage : null;
       this.items.push({
         classSelect: false,
         required: this.isRequired(this.field),
-        formControlDef: this.addFormControlDef(this.field, initVal)
+        formControlDef: this.addFormControlDef(this.field, null)
       });
     }
     else {

@@ -26,8 +26,8 @@ export class ProjectCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.projectLanugageLabel$ = this.p.getProjectLanguageLabel(this.project);
-    this.projectLabel$ = this.p.getProjectLabel(this.project);
-    this.projectDescription$ = this.p.getProjectDescription(this.project);
+    this.projectLabel$ = this.p.getProjectLabel(this.project.pk_entity);
+    this.projectDescription$ = this.p.getProjectDescription(this.project.pk_entity);
   }
 
 }

@@ -38,19 +38,19 @@ export class ActiveAccountPipes extends PipeCache<ActiveAccountPipes> {
       )
   }
 
-  getProjectLabel(proProject: ProProject): Observable<String> {
+  getProjectLabel(projectId: number): Observable<String> {
     return this.s.pro$.text_property$.by_fks_without_lang$.key(textPropertyByFksWithoutLang({
-      fk_project: proProject.pk_entity,
-      fk_pro_project: proProject.pk_entity,
+      fk_project: projectId,
+      fk_pro_project: projectId,
       fk_system_type: SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL,
     })).pipe(
       map(l => values(l)?.[0]?.string)
     )
   }
-  getProjectDescription(proProject: ProProject): Observable<String> {
+  getProjectDescription(projectId: number): Observable<String> {
     return this.s.pro$.text_property$.by_fks_without_lang$.key(textPropertyByFksWithoutLang({
-      fk_project: proProject.pk_entity,
-      fk_pro_project: proProject.pk_entity,
+      fk_project: projectId,
+      fk_pro_project: projectId,
       fk_system_type: SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION,
     })).pipe(
       map(l => values(l)?.[0]?.string)

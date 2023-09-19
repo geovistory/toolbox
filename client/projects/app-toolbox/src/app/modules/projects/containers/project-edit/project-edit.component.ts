@@ -1,12 +1,13 @@
 
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { ListType, PanelTab } from '@kleiolab/lib-redux';
 import { SDKStorage } from '@kleiolab/lib-sdk-lb3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BasicService } from 'projects/app-toolbox/src/app/core/basic/basic.service';
+import { ActiveAccountPipes } from 'projects/lib-queries/src/lib/queries/services/active-account-pipes.service';
 import { indexBy } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -29,7 +30,7 @@ export const getTabBodyKey = <M>(b: TabBody<M>) => b.path.join('');
   styleUrls: ['./project-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProjectEditComponent implements OnDestroy, AfterViewInit {
+export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @HostBinding('class.gv-full') full = true;
   @HostBinding('class.gv-flex-fh') flexFh = true;
@@ -47,22 +48,25 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
   tabDragging = false;
   panelBodies$ = new BehaviorSubject<PanelBodyDirective[]>([]);
 
+  projectId: number;
+  projectLabel$: Observable<String>;
 
   constructor(
     public p: ActiveProjectService,
+    private a: ActiveAccountPipes,
     private activatedRoute: ActivatedRoute,
     private sdkStorage: SDKStorage,
-    private basic: BasicService, // this initiates the question if geolocalization is allowed
+    basic: BasicService, // this initiates the question if geolocalization is allowed
   ) {
 
-    const id = this.activatedRoute.snapshot.params['pkActiveProject'];
+    this.projectId = parseInt(this.activatedRoute.snapshot.params['pkActiveProject']);
     const storagePrefix = 'Geovistory-Panels-Project-';
 
     // Get last panel state of this project from local storage and put it to store
-    const x = this.sdkStorage.get(storagePrefix + id) || [];
+    const x = this.sdkStorage.get(storagePrefix + this.projectId) || [];
     setTimeout(() => {
       if (typeof x.panels !== 'object' || typeof x.uiIdSerial !== 'number' || typeof x.panelSerial !== 'number' || typeof x.focusedPanel !== 'number') {
-        this.sdkStorage.remove(storagePrefix + id)
+        this.sdkStorage.remove(storagePrefix + this.projectId)
       } else {
 
         // TODO uncomment the following line in order to activate restoring of tabs from last session.
@@ -75,11 +79,11 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
       this.p.panels$, this.p.uiIdSerial$, this.p.panelSerial$, this.p.focusedPanel$
     ).pipe(takeUntil(this.beforeDestroy$)).subscribe(([panels, uiIdSerial, panelSerial, focusedPanel]) => {
       // Set the panels in local storage
-      this.sdkStorage.set(storagePrefix + id, { panels, uiIdSerial, panelSerial, focusedPanel })
+      this.sdkStorage.set(storagePrefix + this.projectId, { panels, uiIdSerial, panelSerial, focusedPanel })
     })
 
-    this.p.initProject(id);
-    this.p.initProjectConfigData(id);
+    this.p.initProject(this.projectId);
+    this.p.initProjectConfigData(this.projectId);
 
     this.allTabs$ = this.p.panels$.pipe(map(panels => {
       let allTabs: TabBody<any>[] = []
@@ -104,6 +108,9 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
 
 
   }
+  ngOnInit(): void {
+    this.projectLabel$ = this.a.getProjectLabel(this.projectId)
+  }
 
   ngAfterViewInit() {
     this.panelBodies.changes.pipe(takeUntil(this.destroy$))
@@ -115,15 +122,10 @@ export class ProjectEditComponent implements OnDestroy, AfterViewInit {
     this.list._closedStream.pipe(takeUntil(this.destroy$)).subscribe(e => {
       this.p.setListType('')
     })
-
-
-    // DEV: For development of a component in a specific Tab uncomment and modify the following
-    // this.p.addTableTab(100514)
-    // setTimeout(() => { this.p.addEntityTab(737365, 220) }, 2000)
   }
 
   trackByFn(index, item) {
-    return index; // or item.id
+    return index;
   }
 
   trackByPath(index, item: TabBody<any>) {

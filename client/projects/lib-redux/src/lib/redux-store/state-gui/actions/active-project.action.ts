@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { DatChunk, ProDfhClassProjRel, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ListType, Panel, PanelTab, ProjectDetail, ProjectPreview } from '../models/active-project.models';
+import { ListType, Panel, PanelTab, ProjectDetail } from '../models/active-project.models';
 
 export interface ActiveProjectMeta {
 
-  projectPreview?: ProjectPreview;
 
   pk_project?: number;
   pk_entity?: number;
@@ -59,50 +58,15 @@ export class ActiveProjectActions {
   /************************************************************************************
    * CRM and Config (metadata, crm)
   ************************************************************************************/
-  static LOAD_PROJECT_BASICS = 'ActiveProject::LOAD_PROJECT_BASICS';
-  static LOAD_PROJECT_BASICS_FAILED = 'ActiveProject::LOAD_PROJECT_BASICS_FAILED';
   static LOAD_PROJECT_BASICS_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_BASICS_SUCCEEDED';
-  // static LOAD_PROJECT_CONFIG = 'ActiveProject::LOAD_PROJECT_CONFIG';
-  // static LOAD_PROJECT_CONFIG_SUCCEEDED = 'ActiveProject::LOAD_PROJECT_CONFIG_SUCCEEDED';
 
-
-  loadProjectBasics(pk_project: number): ActiveProjectAction {
-    return {
-      type: ActiveProjectActions.LOAD_PROJECT_BASICS,
-      payload: null,
-      meta: {
-        pk_project
-      }
-    }
-  }
-
-  loadProjectBasiscsSucceded(projectPreview: ProjectPreview): ActiveProjectAction {
+  loadProjectBasiscsSucceded(pk_project: number): ActiveProjectAction {
     return {
       type: ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED,
       payload: null,
-      meta: { projectPreview },
+      meta: { pk_project },
     }
   }
-
-  // loadProjectConfig(pk_project: number): ActiveProjectAction {
-  //   return {
-  //     type: ActiveProjectActions.LOAD_PROJECT_CONFIG,
-  //     payload: null,
-  //     meta: {
-  //       pk_project
-  //     },
-  //   }
-  // }
-
-  // loadProjectConfigSucceeded(): ActiveProjectAction {
-  //   return {
-  //     type: ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED,
-  //     payload: {
-  //       // crm
-  //     },
-  //     meta: null,
-  //   }
-  // }
 
   /************************************************************************************
    * Layout -- Tabs

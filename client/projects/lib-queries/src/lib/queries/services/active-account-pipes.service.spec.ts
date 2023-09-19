@@ -62,8 +62,7 @@ describe('ActiveAccountPipes', () => {
 
         }
       })
-      const project: ProProject = { fk_language: 1, pk_entity: 1 };
-      const q = await service.getProjectLabel(project).pipe(first()).toPromise();
+      const q = await service.getProjectLabel(1).pipe(first()).toPromise();
       expect(q).toEqual('Project 1')
       done();
     });
@@ -81,8 +80,7 @@ describe('ActiveAccountPipes', () => {
           }
         }
       })
-      const project: ProProject = { fk_language: 1, pk_entity: 1 };
-      const q = await service.getProjectDescription(project).pipe(first()).toPromise();
+      const q = await service.getProjectDescription(1).pipe(first()).toPromise();
       expect(q).toEqual('Project 1 Description')
       done();
     });

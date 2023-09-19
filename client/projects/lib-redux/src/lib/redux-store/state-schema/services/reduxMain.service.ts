@@ -125,6 +125,13 @@ export class ReduxMainService {
     return this.schemaActions.loadGvSchemaModifier(call$)
   }
 
+  loadProjectBasics(pkProject: number): Observable<GvSchemaModifier> {
+    const call$ = this.projectConfigApi.findProjectConfigControllerGetBasics(
+      pkProject,
+    )
+    return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
   loadProjectConfiguration(pkProject: number): Observable<GvSchemaModifier> {
     const call$ = this.projectConfigApi.findProjectConfigControllerGetAllConfigsOfProject(
       pkProject,

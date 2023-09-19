@@ -10,6 +10,7 @@ import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
 import {logAsyncPerformance} from '../../decorators/logAsyncPerformance.decorator';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
+import {InfLanguage} from '../../models/inf-language.model';
 import {DatNamespaceRepository, InfLanguageRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository, ProProjectRepository, ProTextPropertyRepository} from '../../repositories';
 import {SysSystemRelevantClassRepository} from '../../repositories/sys-system-relevant-class.repository';
 import {mergeSchemaModifier} from '../../utils/helpers';
@@ -182,5 +183,63 @@ export class FindProjectConfigController {
 
 
 
+  @get('project-config/get-basics', {
+    responses: {
+      '200': {
+        description: "Get label and description of the project.",
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvSchemaModifier
+            }
+          }
+        }
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('getBasics')
+  async getBasics(
+    @param.query.number('pkProject') pkProject: number
+  ): Promise<GvSchemaModifier> {
+
+    // find default language of project
+    const project = await this.proProjectRepo.findById(pkProject)
+    if (!project) throw new HttpErrors.NotFound(`Project with id ${pkProject} not found.`);
+
+    // add descriptions and labels about the project...
+    const textproperties = await this.proTextPropertyRepo.find({
+      where: {
+        and: [
+          {fk_project: pkProject}, // ...of project, and
+          {fk_pro_project: pkProject}, // ...of default config project...
+          {fk_system_type: {inq: [639, 638]}} // label and description
+        ]
+      }
+    });
+
+    // add all languages needed by the textproperties and the project
+    const pkLangs = uniq(
+      [
+        ...textproperties.map(t => t.fk_language).filter(fkLanguage => !!fkLanguage),
+        project.fk_language
+      ])
+    let languages: InfLanguage[] = []
+    if (pkLangs.length) {
+      languages = await this.infLanguageRepo.find({where: {pk_entity: {inq: pkLangs}}});
+    }
+
+    return {
+      negative: {},
+      positive: {
+        pro: {
+          project: [project],
+          text_property: textproperties
+        },
+        inf: {language: languages}
+      }
+    }
+  }
 }
 

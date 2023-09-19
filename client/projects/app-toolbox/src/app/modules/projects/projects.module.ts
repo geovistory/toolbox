@@ -26,7 +26,7 @@ import { InformationModule } from '../information/information.module';
 import { LeftDrawerModule } from '../left-drawer/left-drawer.module';
 import { QueriesModule } from '../queries/queries.module';
 import { SettingsModule } from '../settings/settings.module';
-import { ProjectsActions } from './api/projects.actions';
+import { ProjectCardComponent } from './components/project-card/project-card.component';
 import { RamFormComponent } from './components/ram-form/ram-form.component';
 import { TabBodyComponent } from './components/tab-body/tab-body.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
@@ -41,7 +41,6 @@ import { TypesComponent } from './containers/types/types.component';
 import { OnActivateTabDirective } from './directives/on-activate-tab.directive';
 import { PanelBodyDirective } from './directives/panel-body.directive';
 import { ProjectsRoutingModule } from './projects-routing.module';
-import { ProjectCardComponent } from './components/project-card/project-card.component';
 
 
 
@@ -97,7 +96,6 @@ import { ProjectCardComponent } from './components/project-card/project-card.com
   ],
 
   providers: [
-    ProjectsActions,
     ProjectSettingsDataAPIActions,
   ]
 })
