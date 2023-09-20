@@ -1,14 +1,15 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
 import {model, property, repository} from '@loopback/repository';
-import {get, param, post, requestBody, del, HttpErrors} from '@loopback/rest';
-import {Roles} from '../../components/authorization/keys';
-import {ProEntityLabelConfig} from '../../models';
-import {ProEntityLabelConfigRepository} from '../../repositories/pro-entity-label-config.repository';
+import {del, get, getModelSchemaRef, HttpErrors, param, post, requestBody} from '@loopback/rest';
 import {omit} from 'ramda';
+import {Roles} from '../../components/authorization/keys';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../config';
+import {ProClassFieldConfig, ProEntityLabelConfig} from '../../models';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
+import {ProClassFieldConfigRepository} from '../../repositories';
+import {ProEntityLabelConfigRepository} from '../../repositories/pro-entity-label-config.repository';
 
 
 @model()
@@ -26,7 +27,9 @@ export class CreateProjectConfigController {
   constructor(
     @repository(ProEntityLabelConfigRepository)
     public proEntityLabelConfigRepo: ProEntityLabelConfigRepository,
-  ) {}
+    @repository(ProClassFieldConfigRepository)
+    public proClassFieldConfigRepo: ProClassFieldConfigRepository,
+  ) { }
 
 
 
@@ -134,6 +137,48 @@ export class CreateProjectConfigController {
     }
   }
 
+
+
+
+
+  @post('/upsert-class-field-configs', {
+    description: 'Insert or update class field configurations.',
+    responses: {
+      '200': {
+        description: 'POST success',
+        content: {'application/json': {schema: {'x-ts-type': GvPositiveSchemaObject}}},
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async upsertClassFieldConfigs(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: getModelSchemaRef(ProClassFieldConfig),
+          }
+        }
+      },
+    }) proClassFieldConfigs: ProClassFieldConfig[]
+  ): Promise<GvPositiveSchemaObject> {
+    const promises = proClassFieldConfigs.map(async (item) => {
+      item.fk_project = pkProject;
+      if (item.pk_entity) {
+        await this.proClassFieldConfigRepo.updateById(item.pk_entity, item);
+        const updated = await this.proClassFieldConfigRepo.findById(item.pk_entity);
+        return updated
+      }
+      else {
+        return this.proClassFieldConfigRepo.create(item)
+      }
+    });
+    const resultingItems = await Promise.all(promises);
+    return {pro: {class_field_config: resultingItems}}
+  }
 
 
 }

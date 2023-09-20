@@ -1,8 +1,8 @@
-import {Entity, model, property, hasOne} from '@loopback/repository';
+import {Entity, model, property} from '@loopback/repository';
 import {ProEntity} from '.';
 import {DfhProperty} from './dfh-property.model';
-import {SysClassField} from './sys-class-field.model';
 import {ProProject} from './pro-project.model';
+import {SysClassField} from './sys-class-field.model';
 
 @model({
   settings: {

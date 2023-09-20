@@ -36,7 +36,6 @@ import { RamListService } from './api/ramList.service';
 import { SubfieldPageControllerService } from './api/subfieldPageController.service';
 import { SysClassFieldService } from './api/sysClassField.service';
 import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.service';
-import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.service';
 import { SystemConfigurationService } from './api/systemConfiguration.service';
 import { SystemTypesService } from './api/systemTypes.service';
 import { TableService } from './api/table.service';

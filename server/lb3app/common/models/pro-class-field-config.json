@@ -85,11 +85,7 @@
       "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
-      "property": [
-        "ofProject",
-        "bulkUpsert",
-        "bulkDelete"
-      ]
+      "property": []
     }
   ],
   "methods": {

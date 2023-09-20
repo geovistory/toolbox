@@ -1,7 +1,7 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
+import { ProAnalysis, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { filter } from 'rxjs/operators';
@@ -105,33 +105,6 @@ export class ProDfhProfileProjRelActionFactory extends SchemaActionsFactory<ProD
 
 }
 
-export class ProClassFieldConfigActionFactory extends SchemaActionsFactory<ProClassFieldConfig> {
-
-  // Suffixes of load action types
-  static readonly OF_PROJECT = 'OF_PROJECT';
-
-  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux, proRoot, 'class_field_config') }
-
-  loadOfProject(pkProject: number) {
-    const addPending = U.uuid()
-    const action: FluxStandardAction<Payload, LoadActionMeta> = {
-      type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProClassFieldConfigActionFactory.OF_PROJECT,
-      meta: {
-        addPending,
-        pk: pkProject
-      },
-      payload: null,
-    };
-    this.ngRedux.dispatch(action)
-    return {
-      pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-      resolved$: this.ngRedux.select<SucceedActionMeta<ProClassFieldConfig>>(['resolved', addPending]).pipe(filter(x => !!x)),
-      key: addPending
-    };
-  }
-
-
-}
 
 export class ProTextPropertyActionFactory extends SchemaActionsFactory<ProTextProperty> {
 
@@ -196,7 +169,6 @@ export class ProActions {
   text_property = new ProTextPropertyActionFactory(this.ngRedux)
   dfh_class_proj_rel = new ProDfhClassProjRelActionFactory(this.ngRedux)
   dfh_profile_proj_rel = new ProDfhProfileProjRelActionFactory(this.ngRedux)
-  class_field_config = new ProClassFieldConfigActionFactory(this.ngRedux)
   analysis = new ProAnalysisActionFactory(this.ngRedux)
   table_config = new SchemaActionsFactory(this.ngRedux, proRoot, 'table_config');
 
