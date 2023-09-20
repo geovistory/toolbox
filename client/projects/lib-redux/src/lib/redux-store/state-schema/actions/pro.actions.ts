@@ -193,9 +193,6 @@ export class ProAnalysisActionFactory extends SchemaActionsFactory<ProAnalysis> 
   providedIn: 'root'
 })
 export class ProActions {
-  // project = new ProProjectActionFactory(this.ngRedux).createActions()
-  project = new SchemaActionsFactory(this.ngRedux, proRoot, 'project')
-  info_proj_rel = new ProInfoProjRelActionFactory(this.ngRedux)
   text_property = new ProTextPropertyActionFactory(this.ngRedux)
   dfh_class_proj_rel = new ProDfhClassProjRelActionFactory(this.ngRedux)
   dfh_profile_proj_rel = new ProDfhProfileProjRelActionFactory(this.ngRedux)

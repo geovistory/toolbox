@@ -1,13 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ProClassFieldConfigApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProInfoProjRelApi, ProProjectApi, ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
-import { AnalysisService, GvPositiveSchemaObject, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
+import { ProClassFieldConfigApi, ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
+import { AnalysisService, GvPositiveSchemaObject, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { DatActions } from '../actions/dat.actions';
-import { InfActions } from '../actions/inf.actions';
-import { MarkStatementAsFavoriteActionMeta, ProActions, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProInfoProjRelActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
-import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProInfoProjRelSlice, ProTextPropertySlice } from '../models/pro.models';
+import { ProActions, ProClassFieldConfigActionFactory, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
+import { ProAnalysisSlice, ProClassFieldConfigSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProTextPropertySlice } from '../models/pro.models';
 import { proRoot } from '../reducer-configs/pro.config';
 import { SchemaService } from '../services/schema.service';
 import { LoadActionMeta, ModifyActionMeta } from '../_helpers/schema-actions-factory';
@@ -21,25 +19,17 @@ import { SchemaEpicsFactory } from '../_helpers/schema-epics-factory';
 export class ProEpics {
   constructor(
     public notification: NotificationsAPIActions,
-    public infActions: InfActions,
-    public proActions: ProActions,
-    public datActions: DatActions,
-    public projectApi: ProProjectApi,
-    public infoProjRelApi: ProInfoProjRelApi,
-    public classProjRelApi: ProDfhClassProjRelApi,
-    public profileProjRelApi: ProDfhProfileProjRelApi,
-    public classFieldConfApi: ProClassFieldConfigApi,
-    public textPropertyApi: ProTextPropertyApi,
-    public analysisApi: AnalysisService,
+    private proActions: ProActions,
+    private classProjRelApi: ProDfhClassProjRelApi,
+    private profileProjRelApi: ProDfhProfileProjRelApi,
+    private classFieldConfApi: ProClassFieldConfigApi,
+    private textPropertyApi: ProTextPropertyApi,
+    private analysisApi: AnalysisService,
     private schemaObjectService: SchemaService
   ) { }
 
   public createEpics(): Epic {
-    // const proProjectEpicsFactory = new SchemaEpicsFactory<ProProjectSlice, ProProject>
-    //   (proRoot, 'project', this.proActions.project, this.notification);
 
-    const proInfoProjRelEpicsFactory = new SchemaEpicsFactory<ProInfoProjRelSlice, ProInfoProjRel>
-      (proRoot, 'info_proj_rel', this.proActions.info_proj_rel, this.notification);
 
     const proDfhClassProjRelEpicsFactory = new SchemaEpicsFactory<ProDfhClassProjRelSlice, ProDfhClassProjRel>
       (proRoot, 'dfh_class_proj_rel', this.proActions.dfh_class_proj_rel, this.notification);
@@ -61,30 +51,7 @@ export class ProEpics {
     return combineEpics(
 
 
-      /**
-       * ProInfoProjRel
-       */
-      proInfoProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProInfoProjRel>>((meta) => this.infoProjRelApi
-        .bulkUpdateEprAttributes(meta.pk, meta.items),
-        (results, pk) => {
-          const o: GvPositiveSchemaObject = { pro: { info_proj_rel: results } }
-          this.schemaObjectService.storeSchemaObject(o, pk)
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.info_proj_rel.flatten(results);
-          // storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        }
-      ),
-      proInfoProjRelEpicsFactory.createLoadEpic<MarkStatementAsFavoriteActionMeta>((meta) => this.infoProjRelApi
-        .markStatementAsFavorite(meta.pk, meta.pkStatement, meta.isOutgoing),
-        ProInfoProjRelActionFactory.MARK_ROLE_AS_FAVORITE,
-        (results, pk) => {
-          const o: GvPositiveSchemaObject = { pro: { info_proj_rel: results } }
-          this.schemaObjectService.storeSchemaObjectGv(o, pk)
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.info_proj_rel.flatten(results);
-          // storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-        }
-      ),
+
       /**
        * ProClassFieldConfig
        */
@@ -94,9 +61,6 @@ export class ProEpics {
         (results, pk) => {
           const o: GvPositiveSchemaObject = { pro: { class_field_config: results } }
           this.schemaObjectService.storeSchemaObjectGv(o, pk)
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.pro_class_field_config.flatten(results);
-          // storeFlattened(flattener.getFlattened());
         }
       ),
       proClassFieldConfigEpicsFactory.createUpsertEpic<ModifyActionMeta<ProClassFieldConfig>>((meta) => this.classFieldConfApi
@@ -104,9 +68,6 @@ export class ProEpics {
         (results, pk) => {
           const o: GvPositiveSchemaObject = { pro: { class_field_config: results } }
           this.schemaObjectService.storeSchemaObjectGv(o, pk)
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.pro_class_field_config.flatten(results);
-          // storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
       /**
@@ -118,9 +79,6 @@ export class ProEpics {
         (results, pk) => {
           const o: GvPositiveSchemaObject = { pro: { dfh_class_proj_rel: results } }
           this.schemaObjectService.storeSchemaObjectGv(o, pk)
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.pro_dfh_class_proj_rel.flatten(results);
-          // storeFlattened(flattener.getFlattened());
         }
       ),
       proDfhClassProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProDfhClassProjRel>>((meta) => this.classProjRelApi
@@ -128,9 +86,6 @@ export class ProEpics {
         (results, pk) => {
           const o: GvPositiveSchemaObject = { pro: { dfh_class_proj_rel: results } }
           this.schemaObjectService.storeSchemaObjectGv(o, pk)
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.pro_dfh_class_proj_rel.flatten(results);
-          // storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
       /**
@@ -142,9 +97,6 @@ export class ProEpics {
         (results, pk) => {
           const o: GvPositiveSchemaObject = { pro: { dfh_profile_proj_rel: results } }
           this.schemaObjectService.storeSchemaObjectGv(o, pk)
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.pro_dfh_profile_proj_rel.flatten(results);
-          // storeFlattened(flattener.getFlattened());
         }
       ),
       proDfhProfileProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProDfhProfileProjRel>>((meta) => this.profileProjRelApi
@@ -152,9 +104,6 @@ export class ProEpics {
         (results, pk) => {
           const o: GvPositiveSchemaObject = { pro: { dfh_profile_proj_rel: results } }
           this.schemaObjectService.storeSchemaObjectGv(o, pk)
-          // const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-          // flattener.pro_dfh_profile_proj_rel.flatten(results);
-          // storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
         }
       ),
       /**
@@ -179,41 +128,10 @@ export class ProEpics {
       /**
       * ProAnalysis
       */
-      // proAnalysisEpicsFactory.createLoadEpic<LoadByPkANsVersionActionMeta>(
-      //   (meta) => this.analysisApi.analysisControllerGetVersion(meta.pk, meta.pkEntity, meta.version).pipe(map(x => [x])),
-      //   ProAnalysisActionFactory.BY_PK_AND_VERSION,
-      //   (results) => {
-      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-      //     flattener.analysis.flatten(results);
-      //     storeFlattened(flattener.getFlattened());
-      //   }
-      // ),
-      // proAnalysisEpicsFactory.createUpsertEpic<ModifyActionMeta<ProAnalysis>>(
-      //   (meta) => this.analysisApi.analysisControllerBulkUpsert(meta.pk, meta.items),
-      //   (results, pk) => {
-      //     const flattener = new Flattener(this.infActions, this.datActions, this.proActions);
-      //     flattener.analysis.flatten(results);
-      //     storeFlattened(flattener.getFlattened(), pk, 'UPSERT');
-      //   }
-      // ),
+
       proAnalysisEpicsFactory.createDeleteEpic(
         (meta) => this.analysisApi.analysisControllerBulkDelete(meta.pk, meta.items.map(item => item.pk_entity)),
       ),
     )
   }
-  // private storeSchemaObject(schemas: SchemaObject, pkProject) {
-  //   if (schemas && Object.keys(schemas).length > 0) {
-  //     Object.keys(schemas).forEach(schema => {
-  //       let actions;
-  //       if (schema === 'inf') actions = this.infActions;
-  //       else if (schema === 'pro') actions = this.proActions;
-  //       if (actions) {
-  //         Object.keys(schemas[schema]).forEach(model => {
-  //           actions[model].loadSucceeded(schemas[schema][model], undefined, pkProject);
-  //         });
-  //       }
-  //     });
-  //   }
-  // }
-
 }

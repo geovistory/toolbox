@@ -74,12 +74,7 @@
       "principalType": "ROLE",
       "principalId": "project_member",
       "permission": "ALLOW",
-      "property": [
-        "patchOrCreate",
-        "updateEprAttributes",
-        "bulkUpdateEprAttributes",
-        "markStatementAsFavorite"
-      ]
+      "property": []
     }
   ],
   "methods": {

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { GvSchemaActions } from '../actions/schema.actions';
 
@@ -21,7 +20,6 @@ export class ReduxMainService {
     protected accountDataApi: AccountDataService,
     protected contentTree: ContentTreeService,
     protected pag: SubfieldPageControllerService,
-    protected proInfoProjRelApi: ProInfoProjRelApi
   ) { }
 
   /**
@@ -158,4 +156,10 @@ export class ReduxMainService {
     const call$ = this.projectDataApi.addOrRemoveEntityControllerRemoveEntityFromProject(pkProject, pkEntity)
     return this.schemaActions.loadGvSchemaObject(call$)
   }
+
+  upsertInfoProjectRelations(pkProject: number, infoProjectRelations: Partial<ProInfoProjRel>[]): Observable<GvSchemaModifier> {
+    const call$ = this.projectDataApi.createProjectDataControllerUpsertInfoProjectRelations(pkProject, infoProjectRelations)
+    return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
 }
