@@ -48,7 +48,6 @@
       "permission": "ALLOW",
       "property": [
         "create",
-        "ofProject",
         "bulkUpsert"
       ]
     }

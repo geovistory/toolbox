@@ -52,29 +52,7 @@ export class ProInfoProjRelActionFactory extends SchemaActionsFactory<ProInfoPro
 
 export class ProDfhClassProjRelActionFactory extends SchemaActionsFactory<ProDfhClassProjRel> {
 
-  // Suffixes of load action types
-  static readonly OF_PROJECT = 'OF_PROJECT';
-
   constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux, proRoot, 'dfh_class_proj_rel') }
-
-  loadOfProject(pkProject: number) {
-    const addPending = U.uuid()
-    const action: FluxStandardAction<Payload, LoadActionMeta> = {
-      type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProDfhClassProjRelActionFactory.OF_PROJECT,
-      meta: {
-        addPending,
-        pk: pkProject
-      },
-      payload: null,
-    };
-    this.ngRedux.dispatch(action)
-    return {
-      pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-      resolved$: this.ngRedux.select<SucceedActionMeta<ProDfhClassProjRel>>(['resolved', addPending]).pipe(filter(x => !!x)),
-      key: addPending
-    };
-  }
-
 
 }
 

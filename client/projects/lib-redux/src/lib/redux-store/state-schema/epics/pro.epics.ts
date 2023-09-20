@@ -4,7 +4,7 @@ import { AnalysisService, GvPositiveSchemaObject, ProAnalysis, ProDfhClassProjRe
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { ProActions, ProDfhClassProjRelActionFactory, ProDfhProfileProjRelActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
+import { ProActions, ProDfhProfileProjRelActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
 import { ProAnalysisSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProTextPropertySlice } from '../models/pro.models';
 import { proRoot } from '../reducer-configs/pro.config';
 import { SchemaService } from '../services/schema.service';
@@ -50,14 +50,7 @@ export class ProEpics {
       /**
        * ProProDfhClassProjRel
        */
-      proDfhClassProjRelEpicsFactory.createLoadEpic<LoadActionMeta>(
-        (meta) => this.classProjRelApi.ofProject(meta.pk),
-        ProDfhClassProjRelActionFactory.OF_PROJECT,
-        (results, pk) => {
-          const o: GvPositiveSchemaObject = { pro: { dfh_class_proj_rel: results } }
-          this.schemaObjectService.storeSchemaObjectGv(o, pk)
-        }
-      ),
+
       proDfhClassProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProDfhClassProjRel>>((meta) => this.classProjRelApi
         .bulkUpsert(meta.pk, meta.items),
         (results, pk) => {

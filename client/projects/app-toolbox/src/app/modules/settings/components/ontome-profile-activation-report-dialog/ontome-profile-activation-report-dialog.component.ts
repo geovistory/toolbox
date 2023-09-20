@@ -46,7 +46,7 @@ export class OntomeProfileActivationReportDialogComponent implements OnInit, OnD
           this.dataService.loadDfhPropertiesOfProject(this.data.pkProject);
           this.dataService.loadDfhClassesOfProject(this.data.pkProject);
           this.dataService.loadDfhLabelsOfProject(this.data.pkProject);
-          this.p.pro$.dfh_class_proj_rel.loadOfProject(this.data.pkProject);
+          this.dataService.loadProjectClassRelations(this.data.pkProject);
           this.p.pro$.dfh_profile_proj_rel.loadOfProject(this.data.pkProject);
         },
         error => {
