@@ -7,7 +7,6 @@ import { MainComponent } from './components/main/main.component';
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 import { SysConfigComponent } from './components/sys-config/sys-config.component';
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
-import { WarehouseComponent } from './components/warehouse/warehouse.component';
 
 
 const routes: Routes = [
@@ -30,10 +29,6 @@ const routes: Routes = [
       {
         path: 'accounts',
         component: AccountListComponent
-      },
-      {
-        path: 'warehouse',
-        component: WarehouseComponent
       },
       {
         path: 'community-visibility',

@@ -16,8 +16,6 @@ import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 import { SysConfigComponent } from './components/sys-config/sys-config.component';
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
-import { WarehouseComponent } from './components/warehouse/warehouse.component';
-
 
 
 @NgModule({
@@ -42,7 +40,6 @@ import { WarehouseComponent } from './components/warehouse/warehouse.component';
     SystemTypeListComponent,
     LandingPageComponent,
     AccountListComponent,
-    WarehouseComponent,
     CommunityVisibilityComponent,
     SysConfigComponent,
   ]
