@@ -1,7 +1,7 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ProAnalysis, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
+import { ProAnalysis, ProDfhProfileProjRel, ProInfoProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { filter } from 'rxjs/operators';
@@ -47,13 +47,6 @@ export class ProInfoProjRelActionFactory extends SchemaActionsFactory<ProInfoPro
       key: addPending
     };
   }
-}
-
-
-export class ProDfhClassProjRelActionFactory extends SchemaActionsFactory<ProDfhClassProjRel> {
-
-  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux, proRoot, 'dfh_class_proj_rel') }
-
 }
 
 
@@ -145,7 +138,6 @@ export class ProAnalysisActionFactory extends SchemaActionsFactory<ProAnalysis> 
 })
 export class ProActions {
   text_property = new ProTextPropertyActionFactory(this.ngRedux)
-  dfh_class_proj_rel = new ProDfhClassProjRelActionFactory(this.ngRedux)
   dfh_profile_proj_rel = new ProDfhProfileProjRelActionFactory(this.ngRedux)
   analysis = new ProAnalysisActionFactory(this.ngRedux)
   table_config = new SchemaActionsFactory(this.ngRedux, proRoot, 'table_config');

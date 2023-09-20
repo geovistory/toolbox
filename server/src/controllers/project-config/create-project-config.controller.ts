@@ -6,9 +6,9 @@ import {del, get, getModelSchemaRef, HttpErrors, param, post, requestBody} from 
 import {omit} from 'ramda';
 import {Roles} from '../../components/authorization/keys';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../config';
-import {ProClassFieldConfig, ProEntityLabelConfig} from '../../models';
+import {ProClassFieldConfig, ProDfhClassProjRel, ProEntityLabelConfig} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
-import {ProClassFieldConfigRepository} from '../../repositories';
+import {ProClassFieldConfigRepository, ProDfhClassProjRelRepository} from '../../repositories';
 import {ProEntityLabelConfigRepository} from '../../repositories/pro-entity-label-config.repository';
 
 
@@ -29,6 +29,8 @@ export class CreateProjectConfigController {
     public proEntityLabelConfigRepo: ProEntityLabelConfigRepository,
     @repository(ProClassFieldConfigRepository)
     public proClassFieldConfigRepo: ProClassFieldConfigRepository,
+    @repository(ProDfhClassProjRelRepository)
+    public proDfhClassProjRelRepo: ProDfhClassProjRelRepository,
   ) { }
 
 
@@ -179,6 +181,47 @@ export class CreateProjectConfigController {
     const resultingItems = await Promise.all(promises);
     return {pro: {class_field_config: resultingItems}}
   }
+
+  @post('/upsert-poject-class-relations', {
+    description: 'Insert or update project class relations.',
+    responses: {
+      '200': {
+        description: 'POST success',
+        content: {'application/json': {schema: {'x-ts-type': GvPositiveSchemaObject}}},
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async upsertProjectClassRelations(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: getModelSchemaRef(ProDfhClassProjRel),
+          }
+        }
+      },
+    }) proDfhClassProjRel: ProDfhClassProjRel[]
+  ): Promise<GvPositiveSchemaObject> {
+    const promises = proDfhClassProjRel.map(async (item) => {
+      item.fk_project = pkProject;
+      // find by project and class
+      const existing = await this.proDfhClassProjRelRepo.findOne({where: {fk_class: item.fk_class, fk_project: item.fk_project}})
+      if (existing) {
+        await this.proDfhClassProjRelRepo.updateById(existing.pk_entity, item);
+        return this.proDfhClassProjRelRepo.findById(existing.pk_entity);
+      }
+      else {
+        return this.proDfhClassProjRelRepo.create(item)
+      }
+    });
+    const resultingItems = await Promise.all(promises);
+    return {pro: {dfh_class_proj_rel: resultingItems}}
+  }
+
 
 
 }

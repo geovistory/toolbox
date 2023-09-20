@@ -47,8 +47,7 @@
       "principalId": "project_member",
       "permission": "ALLOW",
       "property": [
-        "create",
-        "bulkUpsert"
+        "create"
       ]
     }
   ],

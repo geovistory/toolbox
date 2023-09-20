@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ProDfhClassProjRelApi, ProDfhProfileProjRelApi, ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
-import { AnalysisService, GvPositiveSchemaObject, ProAnalysis, ProDfhClassProjRel, ProDfhProfileProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
+import { ProDfhProfileProjRelApi, ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
+import { AnalysisService, GvPositiveSchemaObject, ProAnalysis, ProDfhProfileProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { ProActions, ProDfhProfileProjRelActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
-import { ProAnalysisSlice, ProDfhClassProjRelSlice, ProDfhProfileProjRelSlice, ProTextPropertySlice } from '../models/pro.models';
+import { ProAnalysisSlice, ProDfhProfileProjRelSlice, ProTextPropertySlice } from '../models/pro.models';
 import { proRoot } from '../reducer-configs/pro.config';
 import { SchemaService } from '../services/schema.service';
 import { LoadActionMeta, ModifyActionMeta } from '../_helpers/schema-actions-factory';
@@ -20,7 +20,6 @@ export class ProEpics {
   constructor(
     public notification: NotificationsAPIActions,
     private proActions: ProActions,
-    private classProjRelApi: ProDfhClassProjRelApi,
     private profileProjRelApi: ProDfhProfileProjRelApi,
     private textPropertyApi: ProTextPropertyApi,
     private analysisApi: AnalysisService,
@@ -29,9 +28,6 @@ export class ProEpics {
 
   public createEpics(): Epic {
 
-
-    const proDfhClassProjRelEpicsFactory = new SchemaEpicsFactory<ProDfhClassProjRelSlice, ProDfhClassProjRel>
-      (proRoot, 'dfh_class_proj_rel', this.proActions.dfh_class_proj_rel, this.notification);
 
     const proDfhProfileProjRelEpicsFactory = new SchemaEpicsFactory<ProDfhProfileProjRelSlice, ProDfhProfileProjRel>
       (proRoot, 'dfh_profile_proj_rel', this.proActions.dfh_profile_proj_rel, this.notification);
@@ -46,18 +42,6 @@ export class ProEpics {
 
     return combineEpics(
 
-
-      /**
-       * ProProDfhClassProjRel
-       */
-
-      proDfhClassProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProDfhClassProjRel>>((meta) => this.classProjRelApi
-        .bulkUpsert(meta.pk, meta.items),
-        (results, pk) => {
-          const o: GvPositiveSchemaObject = { pro: { dfh_class_proj_rel: results } }
-          this.schemaObjectService.storeSchemaObjectGv(o, pk)
-        }
-      ),
       /**
       * ProDfhProfileProjRel
       */

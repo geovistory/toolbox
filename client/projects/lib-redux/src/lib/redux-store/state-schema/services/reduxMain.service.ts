@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProClassFieldConfig, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { GvSchemaActions } from '../actions/schema.actions';
 
@@ -172,5 +172,9 @@ export class ReduxMainService {
     return this.schemaActions.loadGvSchemaObject(call$)
   }
 
+  upsertProjectClassRelations(pkProject: number, proDfhClassProjRel: ProDfhClassProjRel[]): Observable<GvPositiveSchemaObject> {
+    const call$ = this.projectConfigApi.createProjectConfigControllerUpsertProjectClassRelations(pkProject, proDfhClassProjRel)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
 
 }
