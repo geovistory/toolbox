@@ -39,17 +39,13 @@
       "principalType": "ROLE",
       "principalId": "system_admin",
       "permission": "ALLOW",
-      "property": [
-        "bulkReplaceOrCreate"
-      ]
+      "property": []
     },
     {
       "principalType": "ROLE",
       "principalId": "$everyone",
       "permission": "ALLOW",
-      "property": [
-        "find"
-      ]
+      "property": []
     }
   ],
   "methods": {
