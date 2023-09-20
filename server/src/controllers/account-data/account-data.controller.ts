@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {authenticate} from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {param, tags} from '@loopback/openapi-v3';

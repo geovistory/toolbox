@@ -38,8 +38,8 @@ api/subfieldPageController.service.ts
 api/sysClassField.service.ts
 api/sysClassHasTypeProperty.service.ts
 api/sysSystemRelevantClass.service.ts
-api/sysSystemType.service.ts
 api/systemConfiguration.service.ts
+api/systemTypes.service.ts
 api/table.service.ts
 api/warEntityPreviewController.service.ts
 configuration.ts

@@ -17,7 +17,6 @@ import { HttpClient, HttpHeaders, HttpParams,
 import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
-import { ProProject } from '../model/models';
 import { ProTextProperty } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -165,75 +164,6 @@ export class ProProjectService {
 
         return this.httpClient.post<Array<boolean>>(`${this.configuration.basePath}/lb3-api/ProProjects/create-with-label-and-description`,
             null,
-            {
-                params: queryParameters,
-                responseType: <any>responseType,
-                withCredentials: this.configuration.withCredentials,
-                headers: headers,
-                observe: observe,
-                reportProgress: reportProgress
-            }
-        );
-    }
-
-    /**
-     * Get basic information about the project (language, name)
-     * @param pkProject Pk of project
-     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-     * @param reportProgress flag to report request and response progress.
-     */
-    public proProjectGetBasics(pkProject: number, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<ProProject>>;
-    public proProjectGetBasics(pkProject: number, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<ProProject>>>;
-    public proProjectGetBasics(pkProject: number, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<ProProject>>>;
-    public proProjectGetBasics(pkProject: number, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
-        if (pkProject === null || pkProject === undefined) {
-            throw new Error('Required parameter pkProject was null or undefined when calling proProjectGetBasics.');
-        }
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (pkProject !== undefined && pkProject !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>pkProject, 'pkProject');
-        }
-
-        let headers = this.defaultHeaders;
-
-        let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
-        // authentication (jwt) required
-        credential = this.configuration.lookupCredential('jwt');
-        if (credential) {
-            headers = headers.set('Authorization', 'Bearer ' + credential);
-        }
-
-        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
-        if (httpHeaderAcceptSelected === undefined) {
-            // to determine the Accept header
-            const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
-            ];
-            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
-        }
-        if (httpHeaderAcceptSelected !== undefined) {
-            headers = headers.set('Accept', httpHeaderAcceptSelected);
-        }
-
-
-        let responseType: 'text' | 'json' = 'json';
-        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
-            responseType = 'text';
-        }
-
-        return this.httpClient.get<Array<ProProject>>(`${this.configuration.basePath}/lb3-api/ProProjects/get-basics`,
             {
                 params: queryParameters,
                 responseType: <any>responseType,

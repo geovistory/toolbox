@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AccountInfo, BackofficeService } from '@kleiolab/lib-sdk-lb4';
-import { KeysPipe } from 'projects/app-toolbox/src/app/shared/pipes/keys.pipe';
 import { Observable } from 'rxjs';
 
 
@@ -8,7 +7,6 @@ import { Observable } from 'rxjs';
   selector: 'gv-account-list',
   templateUrl: './account-list.component.html',
   styleUrls: ['./account-list.component.css'],
-  providers: [KeysPipe]
 })
 export class AccountListComponent implements OnInit {
 

@@ -37,8 +37,8 @@ import { SubfieldPageControllerService } from './api/subfieldPageController.serv
 import { SysClassFieldService } from './api/sysClassField.service';
 import { SysClassHasTypePropertyService } from './api/sysClassHasTypeProperty.service';
 import { SysSystemRelevantClassService } from './api/sysSystemRelevantClass.service';
-import { SysSystemTypeService } from './api/sysSystemType.service';
 import { SystemConfigurationService } from './api/systemConfiguration.service';
+import { SystemTypesService } from './api/systemTypes.service';
 import { TableService } from './api/table.service';
 import { WarEntityPreviewControllerService } from './api/warEntityPreviewController.service';
 

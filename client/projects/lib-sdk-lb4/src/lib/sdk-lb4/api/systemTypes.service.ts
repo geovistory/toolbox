@@ -27,7 +27,7 @@ import { Configuration }                                     from '../configurat
 @Injectable({
   providedIn: 'root'
 })
-export class SysSystemTypeService {
+export class SystemTypesService {
 
     protected basePath = 'http://0.0.0.0:3000';
     public defaultHeaders = new HttpHeaders();
@@ -85,21 +85,13 @@ export class SysSystemTypeService {
     }
 
     /**
-     * Find all instances of the model matched by filter from the data source.
-     * @param filter Filter defining fields, where, include, order, offset, and limit - must be a JSON-encoded string (&#x60;{\&quot;where\&quot;:{\&quot;something\&quot;:\&quot;value\&quot;}}&#x60;).  See https://loopback.io/doc/en/lb3/Querying-data.html#using-stringified-json-in-rest-queries for more details.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public sysSystemTypeFind(filter?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<Array<SysSystemType>>;
-    public sysSystemTypeFind(filter?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpResponse<Array<SysSystemType>>>;
-    public sysSystemTypeFind(filter?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<HttpEvent<Array<SysSystemType>>>;
-    public sysSystemTypeFind(filter?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json' | 'application/xml' | 'text/xml' | 'application/javascript' | 'text/javascript'}): Observable<any> {
-
-        let queryParameters = new HttpParams({encoder: this.encoder});
-        if (filter !== undefined && filter !== null) {
-          queryParameters = this.addToHttpParams(queryParameters,
-            <any>filter, 'filter');
-        }
+    public sysTypeControllerGetSystemTypes(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<Array<SysSystemType>>;
+    public sysTypeControllerGetSystemTypes(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<Array<SysSystemType>>>;
+    public sysTypeControllerGetSystemTypes(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<Array<SysSystemType>>>;
+    public sysTypeControllerGetSystemTypes(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let headers = this.defaultHeaders;
 
@@ -120,11 +112,7 @@ export class SysSystemTypeService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
-                'application/json',
-                'application/xml',
-                'text/xml',
-                'application/javascript',
-                'text/javascript'
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -138,9 +126,8 @@ export class SysSystemTypeService {
             responseType = 'text';
         }
 
-        return this.httpClient.get<Array<SysSystemType>>(`${this.configuration.basePath}/lb3-api/SysSystemTypes`,
+        return this.httpClient.get<Array<SysSystemType>>(`${this.configuration.basePath}/get-system-types`,
             {
-                params: queryParameters,
                 responseType: <any>responseType,
                 withCredentials: this.configuration.withCredentials,
                 headers: headers,

@@ -15,8 +15,6 @@ import { NamespaceListAPIActions } from './components/namespace-list/api/namespa
 import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace-list.epics';
 import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 import { SysConfigComponent } from './components/sys-config/sys-config.component';
-import { SystemTypeListAPIActions } from './components/system-type-list/api/system-type-list.actions';
-import { SystemTypeListAPIEpics } from './components/system-type-list/api/system-type-list.epics';
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
 import { WarehouseComponent } from './components/warehouse/warehouse.component';
 
@@ -37,8 +35,6 @@ import { WarehouseComponent } from './components/warehouse/warehouse.component';
   providers: [
     NamespaceListAPIActions,
     NamespaceListAPIEpics,
-    SystemTypeListAPIActions,
-    SystemTypeListAPIEpics,
   ],
   declarations: [
     MainComponent,
