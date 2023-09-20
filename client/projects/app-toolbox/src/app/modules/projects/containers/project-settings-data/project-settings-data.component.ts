@@ -188,8 +188,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.t = this.tabLayout.t;
-
-    this.p.pro$.dfh_profile_proj_rel.loadOfProject(this.p.state.pk_project);
+    this.dataApi.loadProjectProfileRelations(this.p.state.pk_project);
 
     const classesEnabledByProfiles$ = this.c.pipeClassesEnabledByProjectProfiles()
 

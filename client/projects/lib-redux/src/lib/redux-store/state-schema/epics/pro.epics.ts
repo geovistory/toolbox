@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ProDfhProfileProjRelApi, ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
-import { AnalysisService, GvPositiveSchemaObject, ProAnalysis, ProDfhProfileProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
+import { ProTextPropertyApi } from '@kleiolab/lib-sdk-lb3';
+import { AnalysisService, ProAnalysis, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { combineEpics, Epic } from 'redux-observable-es6-compat';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { ProActions, ProDfhProfileProjRelActionFactory, ProTextPropertyActionFactory } from '../actions/pro.actions';
-import { ProAnalysisSlice, ProDfhProfileProjRelSlice, ProTextPropertySlice } from '../models/pro.models';
+import { ProActions, ProTextPropertyActionFactory } from '../actions/pro.actions';
+import { ProAnalysisSlice, ProTextPropertySlice } from '../models/pro.models';
 import { proRoot } from '../reducer-configs/pro.config';
 import { SchemaService } from '../services/schema.service';
 import { LoadActionMeta, ModifyActionMeta } from '../_helpers/schema-actions-factory';
@@ -20,7 +20,6 @@ export class ProEpics {
   constructor(
     public notification: NotificationsAPIActions,
     private proActions: ProActions,
-    private profileProjRelApi: ProDfhProfileProjRelApi,
     private textPropertyApi: ProTextPropertyApi,
     private analysisApi: AnalysisService,
     private schemaObjectService: SchemaService
@@ -28,9 +27,6 @@ export class ProEpics {
 
   public createEpics(): Epic {
 
-
-    const proDfhProfileProjRelEpicsFactory = new SchemaEpicsFactory<ProDfhProfileProjRelSlice, ProDfhProfileProjRel>
-      (proRoot, 'dfh_profile_proj_rel', this.proActions.dfh_profile_proj_rel, this.notification);
 
     const proTextPropertyEpicsFactory = new SchemaEpicsFactory<ProTextPropertySlice, ProTextProperty>
       (proRoot, 'text_property', this.proActions.text_property, this.notification);
@@ -42,24 +38,6 @@ export class ProEpics {
 
     return combineEpics(
 
-      /**
-      * ProDfhProfileProjRel
-      */
-      proDfhProfileProjRelEpicsFactory.createLoadEpic<LoadActionMeta>(
-        (meta) => this.profileProjRelApi.ofProject(meta.pk),
-        ProDfhProfileProjRelActionFactory.OF_PROJECT,
-        (results, pk) => {
-          const o: GvPositiveSchemaObject = { pro: { dfh_profile_proj_rel: results } }
-          this.schemaObjectService.storeSchemaObjectGv(o, pk)
-        }
-      ),
-      proDfhProfileProjRelEpicsFactory.createUpsertEpic<ModifyActionMeta<ProDfhProfileProjRel>>((meta) => this.profileProjRelApi
-        .bulkUpsert(meta.pk, meta.items),
-        (results, pk) => {
-          const o: GvPositiveSchemaObject = { pro: { dfh_profile_proj_rel: results } }
-          this.schemaObjectService.storeSchemaObjectGv(o, pk)
-        }
-      ),
       /**
       * ProTextProperty
       */

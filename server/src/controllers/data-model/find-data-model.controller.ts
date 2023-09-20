@@ -12,7 +12,7 @@ import {logAsyncPerformance} from '../../decorators/logAsyncPerformance.decorato
 import {DfhClass} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
-import {ProDfhClassProjRelRepository} from '../../repositories';
+import {ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository} from '../../repositories';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {SysConfigController} from '../backoffice/sys-config.controller';
 
@@ -25,6 +25,8 @@ export class FindDataModelController {
     public sysConfigController: SysConfigController,
     @repository(ProDfhClassProjRelRepository)
     public proDfhClassProjRelRepo: ProDfhClassProjRelRepository,
+    @repository(ProDfhProfileProjRelRepository)
+    public proDfhProfileProjRelRepo: ProDfhProfileProjRelRepository,
   ) { }
 
 
@@ -155,6 +157,33 @@ export class FindDataModelController {
     const items = await this.proDfhClassProjRelRepo.find({where: {'fk_project': pkProject}})
 
     return {pro: {dfh_class_proj_rel: items}}
+  }
+
+
+  @get('data-model/profile-project-relations/of-project', {
+    responses: {
+      '200': {
+        description: "Get profile project relations of the project.",
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvPositiveSchemaObject
+            }
+          }
+        }
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('profileProjectRelations')
+  async profileProjectRelations(
+    @param.query.number('pkProject') pkProject: number
+  ): Promise<GvPositiveSchemaObject> {
+
+    const items = await this.proDfhProfileProjRelRepo.find({where: {'fk_project': pkProject}})
+
+    return {pro: {dfh_profile_proj_rel: items}}
   }
 
 

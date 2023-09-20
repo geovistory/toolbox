@@ -177,4 +177,8 @@ export class ReduxMainService {
     return this.schemaActions.loadGvSchemaObject(call$)
   }
 
+  loadProjectProfileRelations(pkProject: number): Observable<GvPositiveSchemaObject> {
+    const call$ = this.dataModelApi.findDataModelControllerProfileProjectRelations(pkProject)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
 }

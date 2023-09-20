@@ -1,7 +1,7 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ProAnalysis, ProDfhProfileProjRel, ProInfoProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
+import { ProAnalysis, ProInfoProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { filter } from 'rxjs/operators';
@@ -47,33 +47,6 @@ export class ProInfoProjRelActionFactory extends SchemaActionsFactory<ProInfoPro
       key: addPending
     };
   }
-}
-
-
-export class ProDfhProfileProjRelActionFactory extends SchemaActionsFactory<ProDfhProfileProjRel> {
-  // Suffixes of load action types
-  static readonly OF_PROJECT = 'OF_PROJECT';
-
-  constructor(public ngRedux: NgRedux<IAppState>) { super(ngRedux, proRoot, 'dfh_profile_proj_rel') }
-
-  loadOfProject(pkProject: number) {
-    const addPending = U.uuid()
-    const action: FluxStandardAction<Payload, LoadActionMeta> = {
-      type: this.actionPrefix + '.' + this.modelName + '::LOAD' + '::' + ProDfhProfileProjRelActionFactory.OF_PROJECT,
-      meta: {
-        addPending,
-        pk: pkProject
-      },
-      payload: null,
-    };
-    this.ngRedux.dispatch(action)
-    return {
-      pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-      resolved$: this.ngRedux.select<SucceedActionMeta<ProDfhProfileProjRel>>(['resolved', addPending]).pipe(filter(x => !!x)),
-      key: addPending
-    };
-  }
-
 }
 
 
@@ -138,7 +111,6 @@ export class ProAnalysisActionFactory extends SchemaActionsFactory<ProAnalysis> 
 })
 export class ProActions {
   text_property = new ProTextPropertyActionFactory(this.ngRedux)
-  dfh_profile_proj_rel = new ProDfhProfileProjRelActionFactory(this.ngRedux)
   analysis = new ProAnalysisActionFactory(this.ngRedux)
   table_config = new SchemaActionsFactory(this.ngRedux, proRoot, 'table_config');
 

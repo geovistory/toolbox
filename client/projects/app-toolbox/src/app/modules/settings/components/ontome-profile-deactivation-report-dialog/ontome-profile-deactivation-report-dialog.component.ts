@@ -42,7 +42,7 @@ export class OntomeProfileDeactivationReportDialogComponent implements OnInit, O
           this.deactivated = true
 
           this.dataService.loadProjectClassRelations(this.data.pkProject);
-          this.p.pro$.dfh_profile_proj_rel.loadOfProject(this.data.pkProject);
+          this.dataService.loadProjectProfileRelations(this.data.pkProject);
         },
         error => {
           this.deactivating = false
