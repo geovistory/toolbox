@@ -72,10 +72,7 @@
       "principalType": "ROLE",
       "principalId": "$authenticated",
       "permission": "ALLOW",
-      "property": [
-        "createWithLabelAndDescription",
-        "ofAccount"
-      ]
+      "property": []
     },
     {
       "principalType": "ROLE",

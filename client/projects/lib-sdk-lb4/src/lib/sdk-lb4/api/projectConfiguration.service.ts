@@ -91,6 +91,83 @@ export class ProjectConfigurationService {
     }
 
     /**
+     * Create a project.
+     * @param accountId 
+     * @param pkLanguage 
+     * @param label 
+     * @param description 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public createProjectConfigControllerCreateProject(accountId?: number, pkLanguage?: number, label?: string, description?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
+    public createProjectConfigControllerCreateProject(accountId?: number, pkLanguage?: number, label?: string, description?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
+    public createProjectConfigControllerCreateProject(accountId?: number, pkLanguage?: number, label?: string, description?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
+    public createProjectConfigControllerCreateProject(accountId?: number, pkLanguage?: number, label?: string, description?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+
+        let queryParameters = new HttpParams({encoder: this.encoder});
+        if (accountId !== undefined && accountId !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>accountId, 'accountId');
+        }
+        if (pkLanguage !== undefined && pkLanguage !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>pkLanguage, 'pkLanguage');
+        }
+        if (label !== undefined && label !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>label, 'label');
+        }
+        if (description !== undefined && description !== null) {
+          queryParameters = this.addToHttpParams(queryParameters,
+            <any>description, 'description');
+        }
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (accesstoken) required
+        credential = this.configuration.lookupCredential('accesstoken');
+        if (credential) {
+            headers = headers.set('authorization', credential);
+        }
+
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<any>(`${this.configuration.basePath}/project/create`,
+            null,
+            {
+                params: queryParameters,
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * Delete entity label config by class and project.
      * @param pkProject 
      * @param fkClass 

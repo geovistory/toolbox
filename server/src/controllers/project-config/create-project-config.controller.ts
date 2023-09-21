@@ -1,11 +1,14 @@
 import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
+import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
 import {model, property, repository} from '@loopback/repository';
 import {del, get, getModelSchemaRef, HttpErrors, param, post, requestBody} from '@loopback/rest';
 import {omit} from 'ramda';
 import {Roles} from '../../components/authorization/keys';
+import {QCreateProject} from '../../components/query/q-create-project';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../config';
+import {Postgres1DataSource} from '../../datasources';
 import {ProClassFieldConfig, ProDfhClassProjRel, ProEntityLabelConfig, ProTextProperty} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
@@ -26,6 +29,7 @@ export class GetEntityLabelConfigResponse {
 @tags('project configuration')
 export class CreateProjectConfigController {
   constructor(
+    @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
     @repository(ProEntityLabelConfigRepository)
     public proEntityLabelConfigRepo: ProEntityLabelConfigRepository,
     @repository(ProTextPropertyRepository)
@@ -37,6 +41,7 @@ export class CreateProjectConfigController {
     @repository(InfLanguageRepository)
     public infLanguageRepository: InfLanguageRepository,
   ) { }
+
 
 
 
@@ -76,6 +81,24 @@ export class CreateProjectConfigController {
       defaultConfig: def ?? undefined
     }
 
+  }
+
+  @post('/project/create', {
+    description: 'Create a project.',
+    responses: {
+      '200': {
+        description: 'POST success'
+      },
+    },
+  })
+  @authenticate('basic')
+  async createProject(
+    @param.query.number('accountId') accountId: number,
+    @param.query.number('pkLanguage') pkLanguage: number,
+    @param.query.string('label') label: string,
+    @param.query.string('description') description: string
+  ): Promise<void> {
+    return new QCreateProject(this.dataSource).query(accountId, pkLanguage, label, description);
   }
 
 

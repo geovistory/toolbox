@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBarActions } from '@kleiolab/lib-redux';
-import { InfLanguage, InfLanguageApi, LoopBackAuth, LoopBackConfig, ProProjectApi } from '@kleiolab/lib-sdk-lb3';
-import { environment } from 'projects/app-toolbox/src/environments/environment';
+import { InfLanguage, InfLanguageApi, LoopBackAuth } from '@kleiolab/lib-sdk-lb3';
+import { ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 
 class ProjectLabelDescription {
-  'label': String;
+  'label': string;
   'language': InfLanguage;
-  'text_property': String;
+  'text_property': string;
 }
 
 @Component({
@@ -32,13 +32,11 @@ export class ProjectCreateComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private projectApi: ProProjectApi,
+    private projectApi: ProjectConfigurationService,
     private languageApi: InfLanguageApi,
     private authService: LoopBackAuth,
     private loadingBarActions: LoadingBarActions,
   ) {
-    LoopBackConfig.setBaseURL(environment.apiUrl);
-    LoopBackConfig.setApiVersion(environment.apiVersion);
 
   }
 
@@ -70,7 +68,7 @@ export class ProjectCreateComponent implements OnInit {
 
     this.errorMessages = {};
 
-    this.projectApi.createWithLabelAndDescription(
+    this.projectApi.createProjectConfigControllerCreateProject(
       this.authService.getCurrentUserId(),
       this.model.language.pk_entity,
       this.model.label,
@@ -84,7 +82,6 @@ export class ProjectCreateComponent implements OnInit {
           this.loadingBarActions.removeJob()
         },
         error => {
-
           // TODO: Alert
           this.errorMessages = error.error.details.messages;
           this.createBtnDisabled = false;
