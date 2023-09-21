@@ -10,9 +10,11 @@
  * Do not edit the class manually.
  */
 import { FkProjectFkEntity } from './fkProjectFkEntity';
+import { ProTextProperty } from './proTextProperty';
 
 
 export interface ProNegativeObject { 
     info_proj_rel?: Array<FkProjectFkEntity>;
+    text_property?: Array<ProTextProperty>;
 }
 

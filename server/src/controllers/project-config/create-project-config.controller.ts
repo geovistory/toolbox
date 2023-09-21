@@ -6,9 +6,10 @@ import {del, get, getModelSchemaRef, HttpErrors, param, post, requestBody} from 
 import {omit} from 'ramda';
 import {Roles} from '../../components/authorization/keys';
 import {PK_DEFAULT_CONFIG_PROJECT} from '../../config';
-import {ProClassFieldConfig, ProDfhClassProjRel, ProEntityLabelConfig} from '../../models';
+import {ProClassFieldConfig, ProDfhClassProjRel, ProEntityLabelConfig, ProTextProperty} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
-import {ProClassFieldConfigRepository, ProDfhClassProjRelRepository} from '../../repositories';
+import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
+import {InfLanguageRepository, ProClassFieldConfigRepository, ProDfhClassProjRelRepository, ProTextPropertyRepository} from '../../repositories';
 import {ProEntityLabelConfigRepository} from '../../repositories/pro-entity-label-config.repository';
 
 
@@ -27,10 +28,14 @@ export class CreateProjectConfigController {
   constructor(
     @repository(ProEntityLabelConfigRepository)
     public proEntityLabelConfigRepo: ProEntityLabelConfigRepository,
+    @repository(ProTextPropertyRepository)
+    public proTextPropertyRepo: ProTextPropertyRepository,
     @repository(ProClassFieldConfigRepository)
     public proClassFieldConfigRepo: ProClassFieldConfigRepository,
     @repository(ProDfhClassProjRelRepository)
     public proDfhClassProjRelRepo: ProDfhClassProjRelRepository,
+    @repository(InfLanguageRepository)
+    public infLanguageRepository: InfLanguageRepository,
   ) { }
 
 
@@ -222,6 +227,105 @@ export class CreateProjectConfigController {
     return {pro: {dfh_class_proj_rel: resultingItems}}
   }
 
+
+
+
+
+  @post('/upsert-text-properties', {
+    description: 'Insert or update the text properties.',
+    responses: {
+      '200': {
+        description: 'POST success',
+        content: {'application/json': {schema: {'x-ts-type': GvPositiveSchemaObject}}},
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async postTextProperties(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: getModelSchemaRef(ProTextProperty),
+          }
+        }
+      },
+    }) items: ProTextProperty[],
+  ): Promise<GvPositiveSchemaObject> {
+
+    items.forEach(item => {
+      if (item.fk_project !== pkProject)
+        throw new HttpErrors.Forbidden('Array contained a item with an fk_project different from given pkProject')
+    });
+
+
+    const updatedPromised = items.map(async (item) => {
+
+      if (item.pk_entity) {
+        await this.proTextPropertyRepo.updateById(item.pk_entity, item)
+        return this.proTextPropertyRepo.findById(item.pk_entity)
+      }
+      else {
+        return this.proTextPropertyRepo.create(item)
+      }
+    })
+    const textProps = await Promise.all(updatedPromised);
+    const languages = await this.infLanguageRepository.find({where: {pk_entity: {inq: textProps.map(t => t.fk_language)}}})
+
+    return {
+      pro: {
+        text_property: textProps
+      },
+      inf: {
+        language: languages
+      }
+    }
+  }
+
+
+  @post('/delete-text-properties', {
+    description: 'Delete text properties.',
+    responses: {
+      '204': {
+        description: 'DELETE success',
+        content: {'application/json': {schema: {'x-ts-type': GvSchemaModifier}}},
+      },
+
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  async deleteTextProperties(
+    @param.query.number('pkProject') pkProject: number,
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: getModelSchemaRef(ProTextProperty),
+          }
+        }
+      },
+    }) items: ProTextProperty[],
+  ): Promise<GvSchemaModifier> {
+
+    items.forEach(item => {
+      if (item.fk_project !== pkProject)
+        throw new HttpErrors.Forbidden(
+          'Array contained a item with an fk_project different from given pkProject'
+        );
+      if (!item.pk_entity)
+        throw new HttpErrors.Forbidden('Array contained a item without pk_entity');
+    });
+
+    await this.proTextPropertyRepo.deleteAll({pk_entity: {inq: items.map(i => i.pk_entity)}});
+
+    return {negative: {pro: {text_property: items}}, positive: {}}
+
+  }
 
 
 }

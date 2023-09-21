@@ -1,15 +1,14 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { InfActions, ProActions, textPropertyByFksWithoutLang } from '@kleiolab/lib-redux';
+import { InfActions, ReduxMainService, textPropertyByFksWithoutLang } from '@kleiolab/lib-redux';
 import { InfLanguage, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { either, is, isEmpty, isNil, map as rmap, pipe, reject, when } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
-
 interface Row {
 
   textProperty: ProTextProperty
@@ -53,10 +52,9 @@ export class PropertyLabelTableComponent implements OnInit, OnDestroy {
   })
 
   constructor(
-    private c: ConfigurationPipesService,
     private p: ActiveProjectService,
+    private dataService: ReduxMainService,
     private fb: FormBuilder,
-    private pro: ProActions,
     private inf: InfActions
   ) { }
 
@@ -104,7 +102,6 @@ export class PropertyLabelTableComponent implements OnInit, OnDestroy {
                   language,
                   label: textProp.string,
                   languageLabel: language.notes,
-                  // type: textProp.fk_system_type === 180 || textProp.fk_system_type === 182 ? 'singular' : 'plural'
                 }
 
                 return row
@@ -137,9 +134,13 @@ export class PropertyLabelTableComponent implements OnInit, OnDestroy {
     this.creating$.next(true)
   }
   delete(r: Row) {
+    const clean = o => pipe(
+      reject(either(isNil, isEmpty)),
+      rmap(when(is(Object), clean))
+    )(o)
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-
-      this.pro.text_property.delete([r.textProperty as any], pkProject)
+      const item = clean(r.textProperty)
+      this.dataService.deleteProjectTextProperties(pkProject, [item])
     })
   }
   edit(r: Row) {
@@ -164,9 +165,9 @@ export class PropertyLabelTableComponent implements OnInit, OnDestroy {
           ...editing,
           fk_dfh_class: this.fkClass,
           fk_dfh_property: this.fkProperty,
-          fk_dfh_property_domain: this.fkPropertyDomain,
-          fk_dfh_property_range: this.fkPropertyRange,
-          pk_entity: (pkProject == fk_project) ? pk_entity : null,
+          fk_dfh_property_domain: this.fkPropertyDomain ?? undefined,
+          fk_dfh_property_range: this.fkPropertyRange ?? undefined,
+          pk_entity: (pkProject == fk_project) ? pk_entity : undefined,
           fk_project: pkProject,
           string: this.labelCtrl.value,
           fk_language: language.pk_entity,
@@ -177,11 +178,12 @@ export class PropertyLabelTableComponent implements OnInit, OnDestroy {
         // make sure the language is in store
         this.inf.language.loadSucceeded([language], null, pkProject)
 
-        this.pro.text_property.upsert([model], pkProject).resolved$.pipe(first(x => !!x)).subscribe(res => {
-          this.saving$.next(null)
-          this.editing$.next(null)
-          this.cancel()
-        })
+        this.dataService.upsertProjectTextProperties(pkProject, [model])
+          .pipe(first(x => !!x)).subscribe(res => {
+            this.saving$.next(null)
+            this.editing$.next(null)
+            this.cancel()
+          })
       })
     } else {
       this.form.markAllAsTouched()

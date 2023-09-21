@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, ProTextProperty, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { GvSchemaActions } from '../actions/schema.actions';
 
@@ -180,5 +180,15 @@ export class ReduxMainService {
   loadProjectProfileRelations(pkProject: number): Observable<GvPositiveSchemaObject> {
     const call$ = this.dataModelApi.findDataModelControllerProfileProjectRelations(pkProject)
     return this.schemaActions.loadGvSchemaObject(call$)
+  }
+
+  upsertProjectTextProperties(pkProject: number, proTextProperties: ProTextProperty[]): Observable<GvPositiveSchemaObject> {
+    const call$ = this.projectConfigApi.createProjectConfigControllerPostTextProperties(pkProject, proTextProperties)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+
+  deleteProjectTextProperties(pkProject: number, proTextProperties: ProTextProperty[]): Observable<GvSchemaModifier> {
+    const call$ = this.projectConfigApi.createProjectConfigControllerDeleteTextProperties(pkProject, proTextProperties)
+    return this.schemaActions.loadGvSchemaModifier(call$)
   }
 }

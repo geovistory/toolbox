@@ -1,4 +1,5 @@
-import { Entity, model, property } from '@loopback/repository';
+import {Entity, model, property} from '@loopback/repository';
+import {ProTextProperty} from './pro-text-property.model';
 
 @model()
 export class PkEntity {
@@ -11,7 +12,7 @@ export class PkEntityVersion {
 }
 
 @model()
-export class FkProjectFkEntity extends Entity{
+export class FkProjectFkEntity extends Entity {
   @property() fk_project: number
   @property() fk_entity: number
 }
@@ -49,6 +50,7 @@ class InfNegativeObject {
 @model()
 class ProNegativeObject {
   @property.array(FkProjectFkEntity) info_proj_rel?: FkProjectFkEntity[]
+  @property.array(ProTextProperty) text_property?: Partial<ProTextProperty>[];
 }
 
 
