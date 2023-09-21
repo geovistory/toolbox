@@ -23,7 +23,6 @@ import { InfPlaceService } from './api/infPlace.service';
 import { LanguagesService } from './api/languages.service';
 import { OntoMeControllerService } from './api/ontoMeController.service';
 import { PingControllerService } from './api/pingController.service';
-import { ProClassFieldConfigService } from './api/proClassFieldConfig.service';
 import { ProDfhClassProjRelService } from './api/proDfhClassProjRel.service';
 import { ProInfoProjRelService } from './api/proInfoProjRel.service';
 import { ProjectConfigurationService } from './api/projectConfiguration.service';

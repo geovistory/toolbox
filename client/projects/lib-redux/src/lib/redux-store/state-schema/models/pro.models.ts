@@ -1,5 +1,4 @@
-import { ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { ProAnalysis, ProTableConfig } from '@kleiolab/lib-sdk-lb4';
+import { ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProInfoProjRel, ProProject, ProTableConfig, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { ByPk } from '../../root/models/model';
 
 export interface ProProjectSlice {

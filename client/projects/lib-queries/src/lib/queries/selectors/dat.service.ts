@@ -1,8 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ByPk, datDefinitions, datRoot, IAppState, ReducerConfigCollection } from '@kleiolab/lib-redux';
-import { DatChunk, DatColumn, DatDigital, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { DatClassColumnMapping } from '@kleiolab/lib-sdk-lb4';
+import { DatChunk, DatClassColumnMapping, DatColumn, DatDigital, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { latestVersion } from '@kleiolab/lib-utils';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -17,14 +16,8 @@ class Selector {
   selector<M>(indexKey: string): { all$: Observable<ByPk<M>>, key: (x) => Observable<M> } {
 
     const all$ = this.ngRedux.select<ByPk<M>>([datRoot, this.model, indexKey])
-    // .pipe(
-    //   distinctUntilChanged<M>(equals)
-    // )
 
     const key = (x): Observable<M> => this.ngRedux.select<M>([datRoot, this.model, indexKey, x])
-    // .pipe(
-    //   distinctUntilChanged<M>(equals)
-    // )
 
     return { all$, key }
   }

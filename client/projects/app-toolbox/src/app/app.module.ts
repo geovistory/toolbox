@@ -11,14 +11,12 @@ import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReduxQueriesModule } from '@kleiolab/lib-queries';
 import { ReduxModule } from '@kleiolab/lib-redux';
-import { LoopBackConfig, SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsConfig, SocketsModule, SOCKETS_CONFIG } from '@kleiolab/lib-sockets';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularCesiumModule } from 'angular-cesium';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
-// import { MccColorPickerModule } from 'material-community-components';
 import { DndModule } from 'ng2-dnd';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
@@ -81,7 +79,6 @@ registerLocaleData(localeDeCh);
     ElasticInputModule.forRoot(),
     DndModule.forRoot(),
     AngularSplitModule.forRoot(),
-    // MccColorPickerModule.forRoot({}),
     CookiesModule.forRoot(),
 
 
@@ -90,7 +87,6 @@ registerLocaleData(localeDeCh);
     SocketIoModule.forRoot(socketIoConfig),
 
     // @kleiolab/lib-* modules
-    SdkLb3Module, // .forRoot(),
     SdkLb4Module,
     ReduxModule, // .forRoot(),
     ReduxQueriesModule,
@@ -136,7 +132,5 @@ export class AppModule {
   constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
     matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.assetsUrl + '/assets/mdi/mdi.svg'));
     matIconRegistry.addSvgIconSetInNamespace('gv', domSanitizer.bypassSecurityTrustResourceUrl(environment.assetsUrl + '/assets/gv-icons.svg'));
-    LoopBackConfig.setBaseURL(environment.apiUrl);
-    LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 }

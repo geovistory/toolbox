@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { DfhConfig } from "@kleiolab/lib-config";
-import { InfDimension } from '@kleiolab/lib-sdk-lb3';
+import { InfDimension } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';

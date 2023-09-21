@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { DatChunk, ProDfhClassProjRel, ProInfoProjRel } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ListType, Panel, PanelTab, ProjectDetail } from '../models/active-project.models';
 
@@ -12,20 +11,6 @@ export interface ActiveProjectMeta {
   pk_classes?: number[]
   // pk_ui_context?: number;
   entity_version?: number;
-
-
-  chunk?: DatChunk
-  // teEnGraphs?: InfResource[]
-  // peItGraphs?: InfResource[]
-  // types?: TypePeIt[]
-
-  // CRM and Config
-  projRel?: ProDfhClassProjRel;
-  dfh_pk_class?: number;
-  // hasTypeProperties?: HasTypePropertyReadable[]
-
-  // Information
-  infProjRel?: ProInfoProjRel;
 
   // layout
   panels?: Panel[];

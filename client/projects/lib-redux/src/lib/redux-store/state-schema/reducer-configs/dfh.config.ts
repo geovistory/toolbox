@@ -1,5 +1,4 @@
-import { DfhLabel, DfhProfile } from '@kleiolab/lib-sdk-lb3';
-import { DfhClass, DfhProperty } from '@kleiolab/lib-sdk-lb4';
+import { DfhClass, DfhLabel, DfhProfile, DfhProperty } from '@kleiolab/lib-sdk-lb4';
 import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 
 

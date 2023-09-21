@@ -10,7 +10,6 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReduxQueriesModule } from '@kleiolab/lib-queries';
 import { ReduxModule } from '@kleiolab/lib-redux';
-import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsModule } from '@kleiolab/lib-sockets';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -85,7 +84,6 @@ platformBrowserDynamic().bootstrapModule(PlaygroundModule
       SocketIoModule.forRoot({ url: '' }),
 
       // @kleiolab/lib-* modules
-      SdkLb3Module, // .forRoot(),
       SdkLb4Module,
       ReduxModule, // .forRoot(),
       ReduxQueriesModule,

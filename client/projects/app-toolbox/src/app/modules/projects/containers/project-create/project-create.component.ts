@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBarActions } from '@kleiolab/lib-redux';
-import { InfLanguage, LoopBackAuth } from '@kleiolab/lib-sdk-lb3';
-import { LanguagesService, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
+import { InfLanguage, LanguagesService, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
+import { GvAuthService } from 'projects/app-toolbox/src/app/core/auth/auth.service';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
@@ -34,7 +34,7 @@ export class ProjectCreateComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private projectApi: ProjectConfigurationService,
     private languageApi: LanguagesService,
-    private authService: LoopBackAuth,
+    private authService: GvAuthService,
     private loadingBarActions: LoadingBarActions,
   ) {
 

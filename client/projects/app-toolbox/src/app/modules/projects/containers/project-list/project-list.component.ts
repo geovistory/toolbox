@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { AccountService, ProProject } from '@kleiolab/lib-sdk-lb4';
-import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { ActiveAccountPipes } from 'projects/lib-queries/src/lib/queries/services/active-account-pipes.service';
 import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
 import { Observable } from 'rxjs';
@@ -26,8 +24,6 @@ export class ProjectListComponent implements OnInit {
     private accountService: AccountService,
     accountPipes: ActiveAccountPipes
   ) {
-    LoopBackConfig.setBaseURL(environment.apiUrl);
-    LoopBackConfig.setApiVersion(environment.apiVersion);
     this.projects$ = accountPipes.getProjectsLatestFirst();
   }
 

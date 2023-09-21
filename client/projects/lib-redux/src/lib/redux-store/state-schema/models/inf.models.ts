@@ -1,5 +1,4 @@
-import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfTimePrimitive } from '@kleiolab/lib-sdk-lb3';
-import { InfResource, InfStatement, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
+import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { ByPk } from '../../root/models/model';
 
 interface PaginationInfo {

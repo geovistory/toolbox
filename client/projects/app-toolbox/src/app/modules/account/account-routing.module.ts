@@ -10,7 +10,6 @@ import { RequestPasswordResetComponent } from './components/request-password-res
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { AccountEmailComponent } from './pages/account-email/account-email.component';
 import { AccountPasswordComponent } from './pages/account-password/account-password.component';
-import { AccountProfileComponent } from './pages/account-profile/account-profile.component';
 import { AccountComponent } from './pages/account/account.component';
 
 
@@ -61,12 +60,7 @@ const routes: Routes = [
         path: 'email',
         component: AccountEmailComponent
       },
-      {
-        path: 'profile',
-        component: AccountProfileComponent
-      }
     ]
-
   },
 ];
 

@@ -2,8 +2,7 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
+import { InfLanguage, QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil, tap } from 'rxjs/operators';
 

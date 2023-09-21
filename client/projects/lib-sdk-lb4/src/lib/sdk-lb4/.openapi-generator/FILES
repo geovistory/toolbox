@@ -24,7 +24,6 @@ api/infPlace.service.ts
 api/languages.service.ts
 api/ontoMeController.service.ts
 api/pingController.service.ts
-api/proClassFieldConfig.service.ts
 api/proDfhClassProjRel.service.ts
 api/proInfoProjRel.service.ts
 api/projectConfiguration.service.ts

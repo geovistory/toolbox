@@ -153,46 +153,6 @@
         }
       }
     },
-    "lib-sdk-lb3": {
-      "projectType": "library",
-      "root": "projects/lib-sdk-lb3",
-      "sourceRoot": "projects/lib-sdk-lb3/src",
-      "prefix": "gv",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-angular:ng-packagr",
-          "options": {
-            "tsConfig": "projects/lib-sdk-lb3/tsconfig.lib.json",
-            "project": "projects/lib-sdk-lb3/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/lib-sdk-lb3/tsconfig.lib.prod.json"
-            }
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/lib-sdk-lb3/src/test.ts",
-            "tsConfig": "projects/lib-sdk-lb3/tsconfig.spec.json",
-            "karmaConfig": "projects/lib-sdk-lb3/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/lib-sdk-lb3/tsconfig.lib.json",
-              "projects/lib-sdk-lb3/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
     "lib-sdk-lb4": {
       "projectType": "library",
       "root": "projects/lib-sdk-lb4",

@@ -18,7 +18,6 @@
     "dataSource": "postgres1",
     "public": true
   },
-
   "SysClassFieldPropertyRel": {
     "dataSource": "postgres1",
     "public": true
@@ -137,10 +136,6 @@
     "public": true
   },
   "SysAppContext": {
-    "dataSource": "postgres1",
-    "public": true
-  },
-  "ProClassFieldConfig": {
     "dataSource": "postgres1",
     "public": true
   },

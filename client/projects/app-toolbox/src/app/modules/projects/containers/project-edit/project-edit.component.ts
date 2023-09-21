@@ -4,12 +4,11 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestr
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { ListType, PanelTab } from '@kleiolab/lib-redux';
-import { SDKStorage } from '@kleiolab/lib-sdk-lb3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BasicService } from 'projects/app-toolbox/src/app/core/basic/basic.service';
 import { ActiveAccountPipes } from 'projects/lib-queries/src/lib/queries/services/active-account-pipes.service';
 import { indexBy } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
 
@@ -55,32 +54,31 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
     public p: ActiveProjectService,
     private a: ActiveAccountPipes,
     private activatedRoute: ActivatedRoute,
-    private sdkStorage: SDKStorage,
     basic: BasicService, // this initiates the question if geolocalization is allowed
   ) {
 
     this.projectId = parseInt(this.activatedRoute.snapshot.params['pkActiveProject']);
     const storagePrefix = 'Geovistory-Panels-Project-';
 
-    // Get last panel state of this project from local storage and put it to store
-    const x = this.sdkStorage.get(storagePrefix + this.projectId) || [];
-    setTimeout(() => {
-      if (typeof x.panels !== 'object' || typeof x.uiIdSerial !== 'number' || typeof x.panelSerial !== 'number' || typeof x.focusedPanel !== 'number') {
-        this.sdkStorage.remove(storagePrefix + this.projectId)
-      } else {
+    // // Get last panel state of this project from local storage and put it to store
+    // const x = this.sdkStorage.get(storagePrefix + this.projectId) || [];
+    // setTimeout(() => {
+    //   if (typeof x.panels !== 'object' || typeof x.uiIdSerial !== 'number' || typeof x.panelSerial !== 'number' || typeof x.focusedPanel !== 'number') {
+    //     this.sdkStorage.remove(storagePrefix + this.projectId)
+    //   } else {
 
-        // TODO uncomment the following line in order to activate restoring of tabs from last session.
-        // this.p.setPanels(x.panels, x.uiIdSerial, x.panelSerial, x.focusedPanel)
-      }
-    })
+    //     // TODO uncomment the following line in order to activate restoring of tabs from last session.
+    //     // this.p.setPanels(x.panels, x.uiIdSerial, x.panelSerial, x.focusedPanel)
+    //   }
+    // })
 
-    // Subscribe to the panels until just before the project edit is destroyed
-    combineLatest(
-      this.p.panels$, this.p.uiIdSerial$, this.p.panelSerial$, this.p.focusedPanel$
-    ).pipe(takeUntil(this.beforeDestroy$)).subscribe(([panels, uiIdSerial, panelSerial, focusedPanel]) => {
-      // Set the panels in local storage
-      this.sdkStorage.set(storagePrefix + this.projectId, { panels, uiIdSerial, panelSerial, focusedPanel })
-    })
+    // // Subscribe to the panels until just before the project edit is destroyed
+    // combineLatest(
+    //   this.p.panels$, this.p.uiIdSerial$, this.p.panelSerial$, this.p.focusedPanel$
+    // ).pipe(takeUntil(this.beforeDestroy$)).subscribe(([panels, uiIdSerial, panelSerial, focusedPanel]) => {
+    //   // Set the panels in local storage
+    //   this.sdkStorage.set(storagePrefix + this.projectId, { panels, uiIdSerial, panelSerial, focusedPanel })
+    // })
 
     this.p.initProject(this.projectId);
     this.p.initProjectConfigData(this.projectId);

@@ -1,5 +1,4 @@
-import { ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
-import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
+import { ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProDfhProfileProjRel, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 
 export const proRoot = 'pro';
