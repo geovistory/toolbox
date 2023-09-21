@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ByPk, DatActions, datDefinitions, datRoot, IAppState, ReducerConfigCollection } from '@kleiolab/lib-redux';
+import { ByPk, datDefinitions, datRoot, IAppState, ReducerConfigCollection } from '@kleiolab/lib-redux';
 import { DatChunk, DatColumn, DatDigital, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb3';
 import { DatClassColumnMapping } from '@kleiolab/lib-sdk-lb4';
 import { latestVersion } from '@kleiolab/lib-utils';
@@ -103,7 +103,7 @@ class DatTextPropertySelections extends Selector {
 @Injectable({
   providedIn: 'root'
 })
-export class DatSelector extends DatActions {
+export class DatSelector {
 
   digital$ = new DatDigitalSelections(this.ngRedux, datDefinitions, 'digital');
   namespace$ = new DatNamespaceSelections(this.ngRedux, datDefinitions, 'namespace');
@@ -113,7 +113,6 @@ export class DatSelector extends DatActions {
   text_property$ = new DatTextPropertySelections(this.ngRedux, datDefinitions, 'text_property');
 
   constructor(public ngRedux: NgRedux<IAppState>) {
-    super(ngRedux)
   }
 
 }

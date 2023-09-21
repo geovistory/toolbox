@@ -1,6 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ProProjectApi } from '@kleiolab/lib-sdk-lb3';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
@@ -8,9 +7,6 @@ import { Observable } from 'rxjs';
 import { map, mapTo, mergeMap } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
 import { ActiveProjectAction, ActiveProjectActions } from '../../state-gui/actions/active-project.action';
-import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
-import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { SchemaService } from '../../state-schema/services/schema.service';
 
 
 @Injectable({
@@ -18,12 +14,8 @@ import { SchemaService } from '../../state-schema/services/schema.service';
 })
 export class ActiveProjectEpics {
   constructor(
-    private projectApi: ProProjectApi,
     private actions: ActiveProjectActions,
-    private notificationActions: NotificationsAPIActions,
-    private loadingBarActions: LoadingBarActions,
     private ngRedux: NgRedux<IAppState>,
-    private schemaObj: SchemaService
   ) { }
 
   public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {

@@ -7,11 +7,10 @@ import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 
-export class ProjectLabelDescription {
+class ProjectLabelDescription {
   'label': String;
   'language': InfLanguage;
   'text_property': String;
-  test: any; // TODO REMOVE
 }
 
 @Component({

@@ -11,9 +11,6 @@ import { AccountListComponent } from './components/account-list/account-list.com
 import { CommunityVisibilityComponent } from './components/community-visibility/community-visibility.component';
 import { LandingPageComponent } from './components/landing-page/landing-page.component';
 import { MainComponent } from './components/main/main.component';
-import { NamespaceListAPIActions } from './components/namespace-list/api/namespace-list.actions';
-import { NamespaceListAPIEpics } from './components/namespace-list/api/namespace-list.epics';
-import { NamespaceListComponent } from './components/namespace-list/namespace-list.component';
 import { SysConfigComponent } from './components/sys-config/sys-config.component';
 import { SystemTypeListComponent } from './components/system-type-list/system-type-list.component';
 
@@ -31,12 +28,9 @@ import { SystemTypeListComponent } from './components/system-type-list/system-ty
     MaterialModule,
   ],
   providers: [
-    NamespaceListAPIActions,
-    NamespaceListAPIEpics,
   ],
   declarations: [
     MainComponent,
-    NamespaceListComponent,
     SystemTypeListComponent,
     LandingPageComponent,
     AccountListComponent,
