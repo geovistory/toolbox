@@ -12,6 +12,7 @@
 
 
 export interface ProTextProperty { 
+    pk_entity?: number;
     string: string;
     fk_system_type: number;
     fk_language: number;
@@ -21,9 +22,5 @@ export interface ProTextProperty {
     fk_dfh_property_domain?: number;
     fk_dfh_property_range?: number;
     fk_pro_project?: number;
-    pk_entity?: number;
-    entity_version?: number;
-    tmsp_creation?: string;
-    tmsp_last_modification?: string;
 }
 

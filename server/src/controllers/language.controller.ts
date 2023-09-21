@@ -1,10 +1,12 @@
 
 
 import {inject} from '@loopback/core';
-import {tags} from '@loopback/openapi-v3';
+import {post, requestBody, tags} from '@loopback/openapi-v3';
+import {Filter, repository} from '@loopback/repository';
 import {get, param} from '@loopback/rest';
 import {Postgres1DataSource} from '../datasources/postgres1.datasource';
 import {InfLanguage} from '../models';
+import {InfLanguageRepository} from '../repositories';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
 
 @tags('languages')
@@ -12,7 +14,8 @@ export class FindLanguagesController {
   constructor(
     @inject('datasources.postgres1')
     public datasource: Postgres1DataSource,
-
+    @repository(InfLanguageRepository)
+    public infLanguageRepository: InfLanguageRepository,
   ) { }
 
   @get('languages/search-by-name', {
@@ -68,5 +71,31 @@ export class FindLanguagesController {
     })
     return langs
   }
+
+
+
+  @post('languages/find', {
+    responses: {
+      '200': {
+        description: 'Find languages by filter.',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array',
+              items: {
+                'x-ts-type': InfLanguage
+              }
+            }
+          }
+        }
+      },
+    },
+  })
+  async find(
+    @requestBody() filter: Filter<InfLanguage>,
+  ): Promise<InfLanguage[]> {
+    return this.infLanguageRepository.find(filter)
+  }
+
 
 }

@@ -26,7 +26,6 @@ import { PingControllerService } from './api/pingController.service';
 import { ProClassFieldConfigService } from './api/proClassFieldConfig.service';
 import { ProDfhClassProjRelService } from './api/proDfhClassProjRel.service';
 import { ProInfoProjRelService } from './api/proInfoProjRel.service';
-import { ProProjectService } from './api/proProject.service';
 import { ProjectConfigurationService } from './api/projectConfiguration.service';
 import { ProjectDataService } from './api/projectData.service';
 import { PubAccountService } from './api/pubAccount.service';

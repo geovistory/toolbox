@@ -27,7 +27,6 @@ api/pingController.service.ts
 api/proClassFieldConfig.service.ts
 api/proDfhClassProjRel.service.ts
 api/proInfoProjRel.service.ts
-api/proProject.service.ts
 api/projectConfiguration.service.ts
 api/projectData.service.ts
 api/pubAccount.service.ts

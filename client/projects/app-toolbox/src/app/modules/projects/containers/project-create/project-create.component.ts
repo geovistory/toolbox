@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBarActions } from '@kleiolab/lib-redux';
-import { InfLanguage, InfLanguageApi, LoopBackAuth } from '@kleiolab/lib-sdk-lb3';
-import { ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
+import { InfLanguage, LoopBackAuth } from '@kleiolab/lib-sdk-lb3';
+import { LanguagesService, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
@@ -33,7 +33,7 @@ export class ProjectCreateComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private projectApi: ProjectConfigurationService,
-    private languageApi: InfLanguageApi,
+    private languageApi: LanguagesService,
     private authService: LoopBackAuth,
     private loadingBarActions: LoadingBarActions,
   ) {
@@ -43,7 +43,8 @@ export class ProjectCreateComponent implements OnInit {
   ngOnInit() {
     this.loadingBarActions.addJob()
     const userLang = navigator.language.split('-')[0].split('_')[0];
-    this.languageApi.find({ 'where': { 'iso6391': userLang } })
+
+    this.languageApi.findLanguagesControllerFind({ 'where': { 'iso6391': userLang } })
       .pipe(first())
       .subscribe(
         (data: any) => {
