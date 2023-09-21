@@ -26,6 +26,7 @@ import { AnalysisTableResponse } from '../model/models';
 import { AnalysisTimeChartRequest } from '../model/models';
 import { AnalysisTimeChartResponse } from '../model/models';
 import { GvPositiveSchemaObject } from '../model/models';
+import { GvSchemaModifier } from '../model/models';
 import { ProAnalysis } from '../model/models';
 
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -94,15 +95,16 @@ export class AnalysisService {
     }
 
     /**
+     * Delete analyses.
      * @param pkProject 
      * @param requestBody 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public analysisControllerBulkDelete(pkProject?: number, requestBody?: Array<number>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<any>;
-    public analysisControllerBulkDelete(pkProject?: number, requestBody?: Array<number>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpResponse<any>>;
-    public analysisControllerBulkDelete(pkProject?: number, requestBody?: Array<number>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined}): Observable<HttpEvent<any>>;
-    public analysisControllerBulkDelete(pkProject?: number, requestBody?: Array<number>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined}): Observable<any> {
+    public analysisControllerBulkDelete(pkProject?: number, requestBody?: Array<number>, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<GvSchemaModifier>;
+    public analysisControllerBulkDelete(pkProject?: number, requestBody?: Array<number>, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<GvSchemaModifier>>;
+    public analysisControllerBulkDelete(pkProject?: number, requestBody?: Array<number>, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<GvSchemaModifier>>;
+    public analysisControllerBulkDelete(pkProject?: number, requestBody?: Array<number>, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
 
         let queryParameters = new HttpParams({encoder: this.encoder});
         if (pkProject !== undefined && pkProject !== null) {
@@ -129,6 +131,7 @@ export class AnalysisService {
         if (httpHeaderAcceptSelected === undefined) {
             // to determine the Accept header
             const httpHeaderAccepts: string[] = [
+                'application/json'
             ];
             httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
         }
@@ -151,7 +154,7 @@ export class AnalysisService {
             responseType = 'text';
         }
 
-        return this.httpClient.put<any>(`${this.configuration.basePath}/analysis/bulk-delete`,
+        return this.httpClient.put<GvSchemaModifier>(`${this.configuration.basePath}/analysis/bulk-delete`,
             requestBody,
             {
                 params: queryParameters,

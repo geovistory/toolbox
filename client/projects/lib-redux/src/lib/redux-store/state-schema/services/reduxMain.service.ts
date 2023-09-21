@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, ProTextProperty, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, AnalysisService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, ProTextProperty, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { GvSchemaActions } from '../actions/schema.actions';
 
@@ -16,6 +16,7 @@ export class ReduxMainService {
     protected schemaActions: GvSchemaActions,
     protected projectDataApi: ProjectDataService,
     protected projectConfigApi: ProjectConfigurationService,
+    protected analysisApi: AnalysisService,
     protected dataModelApi: DataModelService,
     protected accountDataApi: AccountDataService,
     protected contentTree: ContentTreeService,
@@ -190,5 +191,15 @@ export class ReduxMainService {
   deleteProjectTextProperties(pkProject: number, proTextProperties: ProTextProperty[]): Observable<GvSchemaModifier> {
     const call$ = this.projectConfigApi.createProjectConfigControllerDeleteTextProperties(pkProject, proTextProperties)
     return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
+  deleteProjectAnalisis(pkProject: number, pkEntities: number[]): Observable<GvSchemaModifier> {
+    const call$ = this.analysisApi.analysisControllerBulkDelete(pkProject, pkEntities)
+    return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
+  upsertProjectAnalisis(pkProject: number, proAnalysis: ProAnalysis[]): Observable<GvPositiveSchemaObject> {
+    const call$ = this.analysisApi.analysisControllerBulkUpsert(pkProject, proAnalysis)
+    return this.schemaActions.loadGvSchemaObject(call$)
   }
 }

@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import {ProAnalysis} from './pro-analysis.model';
 import {ProTextProperty} from './pro-text-property.model';
 
 @model()
@@ -51,6 +52,7 @@ class InfNegativeObject {
 class ProNegativeObject {
   @property.array(FkProjectFkEntity) info_proj_rel?: FkProjectFkEntity[]
   @property.array(ProTextProperty) text_property?: Partial<ProTextProperty>[];
+  @property.array(ProAnalysis) analysis?: Partial<ProAnalysis>[];
 }
 
 

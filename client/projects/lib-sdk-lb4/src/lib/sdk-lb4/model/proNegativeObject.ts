@@ -9,6 +9,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ProAnalysis } from './proAnalysis';
 import { FkProjectFkEntity } from './fkProjectFkEntity';
 import { ProTextProperty } from './proTextProperty';
 
@@ -16,5 +17,6 @@ import { ProTextProperty } from './proTextProperty';
 export interface ProNegativeObject { 
     info_proj_rel?: Array<FkProjectFkEntity>;
     text_property?: Array<ProTextProperty>;
+    analysis?: Array<ProAnalysis>;
 }
 

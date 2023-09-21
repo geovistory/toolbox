@@ -2,7 +2,7 @@ import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
-import {Count, repository} from '@loopback/repository';
+import {repository} from '@loopback/repository';
 import {get, HttpErrors, param, post, put, requestBody} from '@loopback/rest';
 import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
 import * as json2csv from 'json2csv';
@@ -20,6 +20,7 @@ import {AnalysisTableRequest} from '../models/analysis/analysis-table-request.mo
 import {AnalysisTimeChartRequest} from '../models/analysis/analysis-time-chart-request.model';
 import {AnalysisTimeChartResponse, ChartLine} from '../models/analysis/analysis-time-chart-response.model';
 import {GvPositiveSchemaObject} from '../models/gv-positive-schema-object.model';
+import {GvSchemaModifier} from '../models/gv-schema-modifier.model';
 import {ProAnalysisRepository} from '../repositories';
 import {SqlBuilderLb4Models} from '../utils/sql-builders/sql-builder-lb4-models';
 import {SysConfigController} from './backoffice/sys-config.controller';
@@ -305,7 +306,16 @@ export class AnalysisController {
 
   @authenticate('basic')
   @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
-  @put('analysis/bulk-delete',)
+  @put('analysis/bulk-delete', {
+    description: 'Delete analyses.',
+    responses: {
+      '204': {
+        description: 'DELETE success',
+        content: {'application/json': {schema: {'x-ts-type': GvSchemaModifier}}},
+      },
+
+    },
+  })
   async bulkDelete(
     @param.query.number('pkProject') pkProject: number,
     @requestBody({
@@ -320,13 +330,19 @@ export class AnalysisController {
         }
       },
     }) pkEntities: number[],
-  ): Promise<Count> {
-    return this.proAnalysisRepo.deleteAll({
+  ): Promise<GvSchemaModifier> {
+    const analyses = await this.proAnalysisRepo.find({
+      where: {
+        pk_entity: {inq: pkEntities},
+        fk_project: {eq: pkProject}
+      }
+    });
+    await this.proAnalysisRepo.deleteAll({
       pk_entity: {inq: pkEntities},
       fk_project: {eq: pkProject}
     });
 
-    // Todo: return GvNegativeSchemaObject instead
+    return {negative: {pro: {analysis: analyses}}, positive: {}}
   }
 
 
