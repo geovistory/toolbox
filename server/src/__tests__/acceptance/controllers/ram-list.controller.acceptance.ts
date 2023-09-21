@@ -1,5 +1,5 @@
 import {Client, expect} from '@loopback/testlab';
-import {GeovistoryServer} from '../../../server';
+import {GeovistoryApplication} from '../../../application';
 import {InfAppellationMock} from '../../helpers/data/gvDB/InfAppellationMock';
 import {InfResourceMock} from '../../helpers/data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../../helpers/data/gvDB/InfStatementMock';
@@ -13,7 +13,7 @@ import {cleanDb} from '../../helpers/meta/clean-db.helper';
 
 
 describe('RamListController', () => {
-    let server: GeovistoryServer;
+    let server: GeovistoryApplication;
     let client: Client;
 
     before(async () => {({server, client} = await setupApplication());});

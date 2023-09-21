@@ -1,7 +1,7 @@
 import {Client, expect} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../../../application';
 import {LoginResponse} from '../../../../controllers/account.controller';
 import {GvPositiveSchemaObject} from '../../../../models/gv-positive-schema-object.model';
-import {GeovistoryServer} from '../../../../server';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {createProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
@@ -18,7 +18,7 @@ import {createModel} from '../../../helpers/meta/model.helper';
 
 
 describe('FindProjectDataController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let client: Client;
   let accountInProject: number;
   const emailGaetan = 'gaetan.muck@kleiolab.ch';

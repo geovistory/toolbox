@@ -2,7 +2,7 @@ import {ReferenceObject, SchemaObject, SchemasObject} from '@loopback/rest';
 import {Client, createRestAppClient, givenHttpServerConfig} from '@loopback/testlab';
 import Ajv, {ErrorObject, ValidateFunction} from 'ajv';
 import {path} from 'ramda';
-import {GeovistoryServer} from '../../server';
+import {GeovistoryApplication} from '../../application';
 import {testdb} from './testdb';
 const toJsonSchema = require('@openapi-contrib/openapi-schema-to-json-schema');
 
@@ -15,7 +15,7 @@ export async function setupApplication(): Promise<AppWithClient> {
     // port: +process.env.PORT,
   });
 
-  const server = new GeovistoryServer({
+  const server = new GeovistoryApplication({
     rest: restConfig,
   });
 
@@ -28,7 +28,7 @@ export async function setupApplication(): Promise<AppWithClient> {
 }
 
 export interface AppWithClient {
-  server: GeovistoryServer;
+  server: GeovistoryApplication;
   client: Client;
 }
 
@@ -43,11 +43,11 @@ export function pgNotify(channel: string, value: string) {
  * Validate the value against the given loopback model.
  * @param value value/object to validate
  * @param tsType the model, e.g. ProAnalysis (must be part of OpenApiSpec/decorated with @model())
- * @param server GeovistoryServer from which the OpenApiSpec will be extracted by this function
+ * @param server GeovistoryApplication from which the OpenApiSpec will be extracted by this function
  */
-export async function validateAgainstSchema<M>(value: M, tsType: Function, server: GeovistoryServer) {
+export async function validateAgainstSchema<M>(value: M, tsType: Function, server: GeovistoryApplication) {
   const referenceObect: ReferenceObject = {$ref: '#/components/schemas/' + tsType.name}
-  const globalSchemas = await server.lbApp.restServer.getApiSpec()
+  const globalSchemas = await server.restServer.getApiSpec()
   try {
     await validateValueAgainstSchema(value, referenceObect, globalSchemas.components?.schemas)
   } catch (error) {

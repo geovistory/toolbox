@@ -1,15 +1,9 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-// Copyright IBM Corp. 2018. All Rights Reserved.
-// Node module: @loopback/example-shopping
-// This file is licensed under the MIT License.
-// License text available at https://opensource.org/licenses/MIT
-
 import {expect} from '@loopback/testlab';
 import io from 'socket.io-client';
+import {GeovistoryApplication} from '../../../../application';
 import {IO_FIELD_CHANGE} from '../../../../controllers/project-data/field-change.controller';
 import {WarFieldChangeAddToStream} from '../../../../models/war-field-change-id.model';
 import {WarFieldChange} from '../../../../models/war-field-change.model';
-import {GeovistoryServer} from '../../../../server';
 import {createWarFieldChange} from '../../../helpers/atomic/war-field-change.helper';
 import {WarFieldChangeMock} from '../../../helpers/data/gvDB/WarFieldChangeMock';
 import {setupApplication} from '../../../helpers/gv-server-helpers';
@@ -18,7 +12,7 @@ import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 const pEvent = require('p-event');
 
 describe('WarFieldChangeController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let socket: SocketIOClient.Socket
 
   before('setupApplication', async () => {
@@ -67,6 +61,7 @@ describe('WarFieldChangeController', () => {
     }
     socket.emit(`${IO_FIELD_CHANGE}::extendStream`, fieldsToAdd);
     setTimeout(() => {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       createWarFieldChange(WarFieldChangeMock.FIELD_1)
     }, 300)
     const msg: WarFieldChange = await pEvent(socket, 'fieldChange');

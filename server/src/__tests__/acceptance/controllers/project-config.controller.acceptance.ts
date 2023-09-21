@@ -1,32 +1,31 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { Client, expect } from '@loopback/testlab';
-import { clone } from 'ramda';
-import { LoginResponse } from '../../../controllers/account.controller';
-import { GetEntityLabelConfigResponse } from '../../../controllers/project-config/create-project-config.controller';
-import { ProEntityLabelConfig } from '../../../models';
-import { GeovistoryServer } from '../../../server';
-import { createProEntityLabelConfig } from '../../helpers/atomic/pro-entity-label-config.helper';
-import { linkAccountToProject } from '../../helpers/atomic/pub-account_project_rel.helper';
-import { DfhApiClassMock } from '../../helpers/data/gvDB/DfhApiClassMock';
-import { ProEntityLabelConfigMock } from '../../helpers/data/gvDB/ProEntityLabelConfigMock';
-import { ProProjectMock } from '../../helpers/data/gvDB/ProProjectMock';
-import { createAccountVerified } from '../../helpers/generic/account.helper';
-import { createProject1 } from '../../helpers/graphs/project.helper';
-import { setupApplication } from '../../helpers/gv-server-helpers';
-import { cleanDb } from '../../helpers/meta/clean-db.helper';
-import { createModel } from '../../helpers/meta/model.helper';
+import {Client, expect} from '@loopback/testlab';
+import {clone} from 'ramda';
+import {GeovistoryApplication} from '../../../application';
+import {LoginResponse} from '../../../controllers/account.controller';
+import {GetEntityLabelConfigResponse} from '../../../controllers/project-config/create-project-config.controller';
+import {ProEntityLabelConfig} from '../../../models';
+import {createProEntityLabelConfig} from '../../helpers/atomic/pro-entity-label-config.helper';
+import {linkAccountToProject} from '../../helpers/atomic/pub-account_project_rel.helper';
+import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
+import {ProEntityLabelConfigMock} from '../../helpers/data/gvDB/ProEntityLabelConfigMock';
+import {ProProjectMock} from '../../helpers/data/gvDB/ProProjectMock';
+import {createAccountVerified} from '../../helpers/generic/account.helper';
+import {createProject1} from '../../helpers/graphs/project.helper';
+import {setupApplication} from '../../helpers/gv-server-helpers';
+import {cleanDb} from '../../helpers/meta/clean-db.helper';
+import {createModel} from '../../helpers/meta/model.helper';
 
 
 describe('ProjectConfigController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let client: Client;
   let accountInProject: number;
   const emailGaetan = 'gaetan.muck@kleiolab.ch';
   const emailJonas = 'jonas.schneider@kleiolab.ch';
   const pwd = 'testtest1';
 
-  before(async () => { ({ server, client } = await setupApplication()); });
-  after(async () => { await server.stop(); });
+  before(async () => {({server, client} = await setupApplication());});
+  after(async () => {await server.stop();});
 
   beforeEach(async () => {
     await cleanDb();
@@ -41,11 +40,11 @@ describe('ProjectConfigController', () => {
   describe('GET /entity-label-config', () => {
 
     it('should respond with default entity label config for given project and class', async () => {
-      const loginRes = await client.post('/login').send({ email: emailGaetan, password: pwd });
+      const loginRes = await client.post('/login').send({email: emailGaetan, password: pwd});
       const loginResponse: LoginResponse = loginRes.body;
 
       await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
-      const res: { body: GetEntityLabelConfigResponse } = await client
+      const res: {body: GetEntityLabelConfigResponse} = await client
         .get('/entity-label-config')
         .set('Authorization', loginResponse.lb4Token)
         .query({
@@ -57,12 +56,12 @@ describe('ProjectConfigController', () => {
     })
 
     it('should respond with default and custom entity label config for given project and class', async () => {
-      const loginRes = await client.post('/login').send({ email: "gaetan.muck@kleiolab.ch", password: pwd });
+      const loginRes = await client.post('/login').send({email: "gaetan.muck@kleiolab.ch", password: pwd});
       const loginResponse: LoginResponse = loginRes.body;
 
       await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
       await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_1);
-      const res: { body: GetEntityLabelConfigResponse } = await client
+      const res: {body: GetEntityLabelConfigResponse} = await client
         .get('/entity-label-config')
         .set('Authorization', loginResponse.lb4Token)
         .query({
@@ -74,7 +73,7 @@ describe('ProjectConfigController', () => {
     })
 
     it('should reject if not project member', async () => {
-      const loginRes = await client.post('/login').send({ email: emailJonas, password: pwd });
+      const loginRes = await client.post('/login').send({email: emailJonas, password: pwd});
       const loginResponse: LoginResponse = loginRes.body;
       await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_DEFAULT);
       await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_1);
@@ -87,7 +86,7 @@ describe('ProjectConfigController', () => {
           fkClass: DfhApiClassMock.EN_633_UNION.dfh_pk_class
         })
       expect(res.body).to.have.property('error');
-      expect(res.body.error).to.containEql({ statusCode: 403 });
+      expect(res.body.error).to.containEql({statusCode: 403});
     })
 
     it('should reject if not logged in', async () => {
@@ -98,7 +97,7 @@ describe('ProjectConfigController', () => {
           fkClass: DfhApiClassMock.EN_633_UNION.dfh_pk_class
         })
       expect(res.body).to.have.property('error');
-      expect(res.body.error).to.containEql({ statusCode: 401 });
+      expect(res.body.error).to.containEql({statusCode: 401});
     })
 
   });
@@ -106,10 +105,10 @@ describe('ProjectConfigController', () => {
   describe('POST /entity-label-config', () => {
 
     it('should create entity label config', async () => {
-      const loginRes = await client.post('/login').send({ email: emailGaetan, password: pwd });
+      const loginRes = await client.post('/login').send({email: emailGaetan, password: pwd});
       const loginResponse: LoginResponse = loginRes.body;
 
-      const res: { body: ProEntityLabelConfig } = await client
+      const res: {body: ProEntityLabelConfig} = await client
         .post('/entity-label-config')
         .set('Authorization', loginResponse.lb4Token)
         .send(ProEntityLabelConfigMock.C633_UNION_PROJECT_1)
@@ -117,17 +116,17 @@ describe('ProjectConfigController', () => {
     })
 
     it('should update entity label config', async () => {
-      const loginRes = await client.post('/login').send({ email: emailGaetan, password: pwd });
+      const loginRes = await client.post('/login').send({email: emailGaetan, password: pwd});
       const loginResponse: LoginResponse = loginRes.body;
 
-      let res: { body: ProEntityLabelConfig } = await client
+      let res: {body: ProEntityLabelConfig} = await client
         .post('/entity-label-config')
         .set('Authorization', loginResponse.lb4Token)
         .send(ProEntityLabelConfigMock.C633_UNION_PROJECT_1)
       expect(res.body?.config?.labelParts?.length).to.equal(2)
 
       const modified = clone(ProEntityLabelConfigMock.C633_UNION_PROJECT_1)
-      if(modified?.config) modified.config.labelParts = modified.config.labelParts?.splice(1, 1)
+      if (modified?.config) modified.config.labelParts = modified.config.labelParts?.splice(1, 1)
       res = await client
         .post('/entity-label-config')
         .set('Authorization', loginResponse.lb4Token)
@@ -136,14 +135,14 @@ describe('ProjectConfigController', () => {
     })
 
     it('should reject if not project member', async () => {
-      const loginRes = await client.post('/login').send({ email: emailJonas, password: pwd });
+      const loginRes = await client.post('/login').send({email: emailJonas, password: pwd});
       const loginResponse: LoginResponse = loginRes.body;
       const res = await client
         .post('/entity-label-config')
         .set('Authorization', loginResponse.lb4Token)
         .send(ProEntityLabelConfigMock.C633_UNION_PROJECT_1)
       expect(res.body).to.have.property('error');
-      expect(res.body.error).to.containEql({ statusCode: 403 });
+      expect(res.body.error).to.containEql({statusCode: 403});
     })
 
     it('should reject if not logged in', async () => {
@@ -151,7 +150,7 @@ describe('ProjectConfigController', () => {
         .post('/entity-label-config')
         .send(ProEntityLabelConfigMock.C633_UNION_PROJECT_1)
       expect(res.body).to.have.property('error');
-      expect(res.body.error).to.containEql({ statusCode: 401 });
+      expect(res.body.error).to.containEql({statusCode: 401});
     })
 
   });
@@ -159,7 +158,7 @@ describe('ProjectConfigController', () => {
   describe('DEL /entity-label-config', () => {
 
     it('should delete entity label config', async () => {
-      const loginRes = await client.post('/login').send({ email: emailGaetan, password: pwd });
+      const loginRes = await client.post('/login').send({email: emailGaetan, password: pwd});
       const loginResponse: LoginResponse = loginRes.body;
       await createProEntityLabelConfig(ProEntityLabelConfigMock.C633_UNION_PROJECT_1);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -174,7 +173,7 @@ describe('ProjectConfigController', () => {
     })
 
     it('should reject delete entity label config with not found', async () => {
-      const loginRes = await client.post('/login').send({ email: emailGaetan, password: pwd });
+      const loginRes = await client.post('/login').send({email: emailGaetan, password: pwd});
       const loginResponse: LoginResponse = loginRes.body;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res = await client
@@ -188,7 +187,7 @@ describe('ProjectConfigController', () => {
     })
 
     it('should reject if not project member', async () => {
-      const loginRes = await client.post('/login').send({ email: emailJonas, password: pwd });
+      const loginRes = await client.post('/login').send({email: emailJonas, password: pwd});
       const loginResponse: LoginResponse = loginRes.body;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const res: any = await client
@@ -199,7 +198,7 @@ describe('ProjectConfigController', () => {
           fkClass: DfhApiClassMock.EN_633_UNION.dfh_pk_class
         })
       expect(res.body).to.have.property('error');
-      expect(res.body.error).to.containEql({ statusCode: 403 });
+      expect(res.body.error).to.containEql({statusCode: 403});
     })
 
     it('should reject if not logged in', async () => {
@@ -210,7 +209,7 @@ describe('ProjectConfigController', () => {
           fkClass: DfhApiClassMock.EN_633_UNION.dfh_pk_class
         })
       expect(res.body).to.have.property('error');
-      expect(res.body.error).to.containEql({ statusCode: 401 });
+      expect(res.body.error).to.containEql({statusCode: 401});
     })
 
   });

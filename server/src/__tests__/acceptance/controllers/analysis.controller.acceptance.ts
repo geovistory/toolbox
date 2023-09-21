@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
 import {clone, omit} from 'ramda';
-import {ColDefDefaultType, QueryPathSegmentType, TableExportFileType, AnalysisDefinition} from '../../../models';
+import {GeovistoryApplication} from '../../../application';
+import {AnalysisDefinition, ColDefDefaultType, QueryPathSegmentType, TableExportFileType} from '../../../models';
 import {AnalysisMapResponse} from '../../../models/analysis/analysis-map-response.model';
 import {AnalysisTableExportResponse} from '../../../models/analysis/analysis-table-export-response.model';
 import {AnalysisTableRequest} from '../../../models/analysis/analysis-table-request.model';
@@ -9,7 +9,6 @@ import {AnalysisTableCell, AnalysisTableResponse} from '../../../models/analysis
 import {AnalysisTimeChartRequest} from '../../../models/analysis/analysis-time-chart-request.model';
 import {AnalysisTimeChartResponse} from '../../../models/analysis/analysis-time-chart-response.model';
 import {GvPositiveSchemaObject} from '../../../models/gv-positive-schema-object.model';
-import {GeovistoryServer} from '../../../server';
 import {createProAnalysis, createProAnalysisRepo} from '../../helpers/atomic/pro-analysis.helper';
 import {DfhApiClassMock} from '../../helpers/data/gvDB/DfhApiClassMock';
 import {DfhApiPropertyMock} from '../../helpers/data/gvDB/DfhApiPropertyMock';
@@ -21,7 +20,7 @@ import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-h
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
 
 describe('AnaylsisController', () => {
-    let server: GeovistoryServer;
+    let server: GeovistoryApplication;
     let client: Client;
     let pkProject: number
     let lb4Token: string;
@@ -49,6 +48,7 @@ describe('AnaylsisController', () => {
 
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.TABLE_GEO_PLACES;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const corruptAnalysisDefinition: any = clone(queryGeoPlaces.analysis_definition);
             delete corruptAnalysisDefinition?.queryDefinition?.filter;
             const req: AnalysisTableRequest = {
@@ -259,7 +259,8 @@ describe('AnaylsisController', () => {
 
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.TABLE_GEO_PLACES;
-            const corruptAnalysisDefinition: any = clone(queryGeoPlaces.analysis_definition);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const corruptAnalysisDefinition: any = clone(queryGeoPlaces.analysis_definition) as unknown;
             delete corruptAnalysisDefinition?.queryDefinition?.filter;
             const req = {
                 fkProject: pkProject,
@@ -291,6 +292,7 @@ describe('AnaylsisController', () => {
 
         it('should reject the request because inputs are wrong', async () => {
             const queryGeoPlaces = ProAnalysisMock.MAP_GEO_PLACES;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const corruptAnalysisDefinition: any = clone(queryGeoPlaces.analysis_definition);
             delete corruptAnalysisDefinition?.queryDefinition?.filter;
             const req = {
@@ -324,6 +326,7 @@ describe('AnaylsisController', () => {
 
         it('should reject the request because inputs are wrong', async () => {
             const proAnalysis = ProAnalysisMock.TIME_BIRTHS;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const corruptAnalysisDefinition: any = clone(proAnalysis.analysis_definition);
             delete corruptAnalysisDefinition?.lines?.[0]?.queryDefinition.filter;
             const req: AnalysisTimeChartRequest = {

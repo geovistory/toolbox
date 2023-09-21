@@ -1,8 +1,8 @@
 import {Client, expect} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../../../application';
 import {LoginResponse} from '../../../../controllers/account.controller';
 import {VisibilityReport} from '../../../../controllers/backoffice/community-visibility.controller';
 import {CommunityVisibilityOptions} from '../../../../models/sys-config/sys-config-community-visibility-options';
-import {GeovistoryServer} from '../../../../server';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
@@ -19,7 +19,7 @@ import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 
 
 describe('CommunityVisibilityController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let client: Client;
   let accountInProject: number;
   const emailGaetan = 'gaetan.muck@kleiolab.ch';

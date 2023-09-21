@@ -1,11 +1,11 @@
 import {expect} from '@loopback/testlab';
 import pEvent from 'p-event';
 import io from 'socket.io-client';
-import {GeovistoryServer} from '../../../server';
-import {setupApplication, pgNotify} from '../../helpers/gv-server-helpers';
+import {GeovistoryApplication} from '../../../application';
+import {pgNotify, setupApplication} from '../../helpers/gv-server-helpers';
 
 describe('SysStatusController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
 
   before('setupApplication', async () => {
     ({server} = await setupApplication());

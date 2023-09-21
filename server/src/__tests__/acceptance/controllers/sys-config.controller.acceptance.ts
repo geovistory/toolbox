@@ -1,11 +1,11 @@
 import {Client, expect} from '@loopback/testlab';
-import {GeovistoryServer} from '../../../server';
-import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-helpers';
+import {GeovistoryApplication} from '../../../application';
 import {SysConfigValue} from "../../../models/sys-config/sys-config-value.model";
 import {SysConfigValueMock} from '../../helpers/data/gvDB/SysConfigValueMock';
+import {setupApplication, validateAgainstSchema} from '../../helpers/gv-server-helpers';
 
 describe('SysConfigController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let client: Client;
 
   before('setupApplication', async () => {
@@ -45,7 +45,7 @@ describe('SysConfigController', () => {
         .expect(422);
     });
     it('should validate the config schema (no api involved)', async () => {
-       await validateAgainstSchema(SysConfigValueMock.SYS_CONFIC_VALID, SysConfigValue, server)
+      await validateAgainstSchema(SysConfigValueMock.SYS_CONFIC_VALID, SysConfigValue, server)
     })
     it('should return 200', async () => {
       await client
