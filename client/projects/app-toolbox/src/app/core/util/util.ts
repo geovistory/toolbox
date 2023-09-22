@@ -2,7 +2,6 @@
 import { FormArray, FormGroup } from '@angular/forms';
 import { ByPk } from '@kleiolab/lib-redux';
 import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
-import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
 
 export interface LabelGeneratorSettings {
   // maximum number of data unit children that are taken into account for the label generator
@@ -72,12 +71,6 @@ export class Utils {
     if (quillDoc && quillDoc.ops && quillDoc.ops.length) return quillDoc.ops.map(op => op.insert).join('');
     else return '';
   }
-
-  static acNotificationFromPacket = (packet, actionType: ActionType): AcNotification => ({
-    id: packet.id,
-    entity: new AcEntity(packet),
-    actionType
-  })
 
   static CesiumJulianDateFromJulianSecond = (julianSeconds: number): CesiumJulianDate => {
     if (!julianSeconds) return;

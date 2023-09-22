@@ -13,7 +13,6 @@ import { ReduxModule } from '@kleiolab/lib-redux';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsModule } from '@kleiolab/lib-sockets';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AngularCesiumModule } from 'angular-cesium';
 import { PlaygroundModule } from 'angular-playground';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
@@ -68,11 +67,9 @@ platformBrowserDynamic().bootstrapModule(PlaygroundModule
       NgReduxRouterModule,
       NgReduxModule,
       NgbModule,
-      AngularCesiumModule.forRoot(),
       ElasticInputModule.forRoot(),
       DndModule.forRoot(),
       AngularSplitModule.forRoot(),
-      // MccColorPickerModule.forRoot({}),
       CookiesModule.forRoot(),
 
       // only needed in playground

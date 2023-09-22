@@ -1,4 +1,3 @@
-import { NgReduxRouterModule } from '@angular-redux/router';
 import { NgReduxModule } from '@angular-redux/store';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
@@ -14,7 +13,6 @@ import { ReduxModule } from '@kleiolab/lib-redux';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsConfig, SocketsModule, SOCKETS_CONFIG } from '@kleiolab/lib-sockets';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AngularCesiumModule } from 'angular-cesium';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
 import { DndModule } from 'ng2-dnd';
@@ -72,10 +70,8 @@ registerLocaleData(localeDeCh);
 
 
     // other thid party modules
-    NgReduxRouterModule,
     NgReduxModule,
     NgbModule,
-    AngularCesiumModule.forRoot(),
     ElasticInputModule.forRoot(),
     DndModule.forRoot(),
     AngularSplitModule.forRoot(),
