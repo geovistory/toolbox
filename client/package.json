@@ -31,7 +31,7 @@
     "@angular-redux/store": "^10.0.0",
     "@angular/animations": "^12.2.13",
     "@angular/cdk": "^12.2.13",
-    "@angular/cli": "^12.2.13",
+    "@angular/cli": "^13.3.11",
     "@angular/common": "^12.2.13",
     "@angular/compiler": "^12.2.13",
     "@angular/compiler-cli": "^12.2.13",
