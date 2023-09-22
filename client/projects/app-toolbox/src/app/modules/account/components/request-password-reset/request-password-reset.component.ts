@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
 import { LoadingBarActions } from '@kleiolab/lib-redux';
-import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { AccountService } from '@kleiolab/lib-sdk-lb4';
-import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { first } from 'rxjs/operators';
 
 
@@ -23,10 +21,7 @@ export class RequestPasswordResetComponent {
   constructor(
     private accountApi: AccountService,
     private loadingBarActions: LoadingBarActions,
-  ) {
-    LoopBackConfig.setBaseURL(environment.apiUrl);
-    LoopBackConfig.setApiVersion(environment.apiVersion);
-  }
+  ) { }
 
   request() {
     this.startLoading();

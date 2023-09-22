@@ -1,13 +1,10 @@
 /* tslint:disable */
 declare var Object: any;
 import { Inject, Injectable } from '@angular/core';
-import { LoopBackAuth, SDKToken } from '@kleiolab/lib-sdk-lb3';
+import { Configuration, PubAccount } from "@kleiolab/lib-sdk-lb4";
 import { GvInternalStorage } from '../cookies/cookies.module';
-import { Configuration } from "@kleiolab/lib-sdk-lb4";
-import { PubAccount } from "@kleiolab/lib-sdk-lb4";
 
 export class GvAuthToken {
-  lb3 = new SDKToken()
   lb4Token = ''
   lb4ExpiresInMs: number;
   user: PubAccount = null;
@@ -44,16 +41,10 @@ export class GvAuthService {
    **/
   constructor(
     @Inject(GvInternalStorage) protected storage: GvInternalStorage,
-
-    // TODO: remove when lb3 completely migrated
-    @Inject(LoopBackAuth) protected lb3AuthService: LoopBackAuth,
   ) {
     this.gvAuthToken.lb4Token = this.load('lb4Token');
     this.gvAuthToken.lb4ExpiresInMs = this.load('lb4ExpiresInMs');
     this.gvAuthToken.user = this.loadUser();
-
-    // TODO: remove when lb3 completely migrated
-    this.gvAuthToken.lb3 = this.lb3AuthService.getToken();
   }
 
 
@@ -82,7 +73,7 @@ export class GvAuthService {
    * @method getCurrentUserId
    * @return {any}
    * @description
-   * This method will return the current user id, it can be number or string.
+   * This method will return the current user id, it can be number.
    **/
   public getCurrentUserId(): number | undefined {
     return this.gvAuthToken.user ? this.gvAuthToken.user.id : undefined;
@@ -110,9 +101,6 @@ export class GvAuthService {
     this.persist('lb4ExpiresInMs', this.gvAuthToken.lb4ExpiresInMs, expires);
     this.persist('user', this.gvAuthToken.user, expires);
     this.persist('rememberMe', this.gvAuthToken.rememberMe, expires);
-
-    this.lb3AuthService.setToken(this.gvAuthToken.lb3)
-
     return true;
   };
   /**
@@ -132,10 +120,6 @@ export class GvAuthService {
    * This method will clear cookies or the local storage.
    **/
   public clear(): void {
-
-    // TODO: remove when lb3 completely migrated
-    this.lb3AuthService.clear()
-
     Object.keys(this.gvAuthToken).forEach((prop: string) => this.storage.remove(`${this.prefix}${prop}`));
     this.gvAuthToken = new GvAuthToken();
   }

@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingBarActions } from '@kleiolab/lib-redux';
-import { ErrorHandler, LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { AccountService, ResetPasswordRequest } from '@kleiolab/lib-sdk-lb4';
-import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
@@ -31,13 +29,10 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(
     protected http: HttpClient,
-    @Optional() @Inject(ErrorHandler) protected errorHandler: ErrorHandler,
     private route: ActivatedRoute,
     private accountApi: AccountService,
     private loadingBarActions: LoadingBarActions,
   ) {
-    LoopBackConfig.setBaseURL(environment.apiUrl);
-    LoopBackConfig.setApiVersion(environment.apiVersion);
   }
 
 

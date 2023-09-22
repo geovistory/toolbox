@@ -1,17 +1,10 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { AccountActions, IAppState } from '@kleiolab/lib-redux';
-import { LoopBackConfig, PubAccountApi, SDKToken } from '@kleiolab/lib-sdk-lb3';
-import { AccountService, LoginRequest, LoginResponse, PubAccount } from '@kleiolab/lib-sdk-lb4';
-import { AccountRole } from 'projects/app-toolbox/src/app/modules/account/account.model';
+import { AccountService, LoginRequest, LoginResponse, PubAccount, PubRole } from '@kleiolab/lib-sdk-lb4';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 import { GvAuthService, GvAuthToken } from '../auth/auth.service';
-
-
-
-
 
 
 @Injectable()
@@ -26,10 +19,7 @@ export class ActiveAccountService {
     private accountActions: AccountActions,
     private ngRedux: NgRedux<IAppState>,
     private lb4AccountApi: AccountService,
-    private lb3AccountApi: PubAccountApi,
   ) {
-    LoopBackConfig.setBaseURL(environment.apiUrl);
-    LoopBackConfig.setApiVersion(environment.apiVersion);
 
     this.updateAccount()
   }
@@ -59,9 +49,9 @@ export class ActiveAccountService {
     )
   }
 
-  loadAccountRoles(): Observable<AccountRole[]> {
+  loadAccountRoles(): Observable<PubRole[]> {
     this.ngRedux.dispatch(this.accountActions.loadRoles(this.authService.getCurrentUserData().id))
-    return this.ngRedux.select<AccountRole[]>(['account', 'roles'])
+    return this.ngRedux.select<PubRole[]>(['account', 'roles'])
   }
 
 
@@ -73,18 +63,8 @@ export class ActiveAccountService {
       .subscribe(
         result => {
 
-          const lb3: SDKToken = {
-            id: result.lb3Token,
-            created: result.lb3Created,
-            rememberMe: true,
-            scopes: [],
-            ttl: result.lb3Ttl,
-            user: result.user,
-            userId: result.user.id
-          }
 
           const gvAuthToken: GvAuthToken = {
-            lb3,
             lb4Token: result.lb4Token,
             lb4ExpiresInMs: result.lb4ExpiresInMs,
             rememberMe: true,
@@ -106,26 +86,9 @@ export class ActiveAccountService {
     return s$
   }
 
-  logout(): Observable<void> {
-    const s$ = new Subject<void>()
-    this.lb3AccountApi.logout()
-      .subscribe(
-        data => {
-          this.authService.clear();
-          this.updateAccount();
-          this.ngRedux.dispatch(this.accountActions.accountUpdated(this.authService.getCurrentUserData()));
-          s$.next()
-        },
-        error => {
-          // TODO: Error handling Alert
-          console.log(error);
-          s$.error(error)
-        }
-      );
-
-    return s$;
+  logout() {
+    this.authService.clear();
+    this.updateAccount();
+    this.ngRedux.dispatch(this.accountActions.accountUpdated(this.authService.getCurrentUserData()));
   }
-
-
-
 }

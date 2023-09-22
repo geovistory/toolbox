@@ -1,7 +1,6 @@
 import { AfterViewChecked, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb3/models';
-import { ColumnNames, TableConfig, TableConfigCol } from '@kleiolab/lib-sdk-lb4';
+import { ColumnNames, InfLanguage, TableConfig, TableConfigCol } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { clone, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';

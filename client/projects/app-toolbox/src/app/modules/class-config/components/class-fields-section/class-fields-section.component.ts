@@ -2,6 +2,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
@@ -12,17 +13,6 @@ import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-conf
 interface FieldConfig extends Field {
   propertyField?: {
     identityDefiningForSource: boolean,
-    // labelTable: {
-    //   fkProperty: number,
-    //   fkDomainClass: number,
-    //   fkRangeClass: number
-    // },
-    // classTable: {
-    //   displayedColumns: string[],
-    //   rows: {
-    //     label: string,
-    //   }[]
-    // },
     targetClasses: {
       label: string,
       pkClass: number
@@ -51,6 +41,7 @@ export class ClassFieldsSectionComponent implements OnInit, OnDestroy {
   constructor(
     private c: ConfigurationPipesService,
     private p: ActiveProjectService,
+    private dataApi: ReduxMainService,
     private dialog: MatDialog
   ) { }
 
@@ -133,10 +124,9 @@ export class ClassFieldsSectionComponent implements OnInit, OnDestroy {
         return item;
       }) as ProClassFieldConfig[]
 
-      this.p.pro$.class_field_config.upsert(reordered, this.fkProject).resolved$
+      this.dataApi.upsertClassFieldConfig(this.fkProject, reordered)
         .pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(() => {
           this.reordering = false
-
         })
     })
   }

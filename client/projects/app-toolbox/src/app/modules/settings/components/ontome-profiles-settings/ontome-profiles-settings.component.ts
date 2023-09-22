@@ -2,6 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SysConfig } from '@kleiolab/lib-config';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { DfhProfile } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
@@ -61,6 +62,7 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
     public ref: ChangeDetectorRef,
     public p: ActiveProjectService,
     public tabLayout: TabLayoutService,
+    private dataService: ReduxMainService,
     private dialog: MatDialog
   ) { }
 
@@ -70,7 +72,7 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
 
     this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.pkProject = pkProject;
-      this.p.pro$.dfh_profile_proj_rel.loadOfProject(pkProject)
+      this.dataService.loadProjectProfileRelations(pkProject);
     })
 
     this.dataSource$ = combineLatest([

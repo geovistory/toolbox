@@ -1,6 +1,6 @@
 import {Client, expect} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../../../application';
 import {GvPaginationObject} from '../../../../models';
-import {GeovistoryServer} from '../../../../server';
 import {GvFieldPageReqMock, modifiedScope} from '../../../helpers/data/api-requests/GvFieldPageReq';
 import {GvPaginationObjectMock} from '../../../helpers/data/api-responses/GvPaginationObjectMock';
 import {InfResourceMock} from '../../../helpers/data/gvDB/InfResourceMock';
@@ -11,7 +11,7 @@ import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 
 
 describe('SubfieldPageController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let client: Client;
   let pkProject: number;
   let lb4Token: string;

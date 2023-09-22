@@ -3,12 +3,11 @@ import {
   BindingScope, Component,
   config,
   ContextTags,
-  ProviderMap,
-  createBindingFromClass
+
+  createBindingFromClass, ProviderMap
 } from '@loopback/core';
 import {JWTBindings, JWTService} from '../jwt';
 import {SecuritySpecEnhancer} from './security.spec.enhancer';
-import {Lb3SecuritySpecEnhancer} from '../../utils/lb3-security.spec.enhancer';
 
 
 export type ExpiresIn = string;
@@ -35,8 +34,6 @@ export class JWTComponent implements Component {
       Binding.bind(JWTBindings.TOKEN_EXPIRES_IN).to(conf.expiresIn),
       Binding.bind(JWTBindings.TOKEN_SERVICE).toClass(JWTService).inScope(BindingScope.SINGLETON),
       createBindingFromClass(SecuritySpecEnhancer),
-      createBindingFromClass(Lb3SecuritySpecEnhancer)
-
     ];
   }
 }

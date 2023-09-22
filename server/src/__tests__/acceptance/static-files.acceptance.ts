@@ -1,15 +1,15 @@
-import { Client } from '@loopback/testlab';
-import { GeovistoryServer } from '../../server';
-import { setupApplication } from '../helpers/gv-server-helpers';
-import { cleanDb } from '../helpers/meta/clean-db.helper';
+import {Client} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../application';
+import {setupApplication} from '../helpers/gv-server-helpers';
+import {cleanDb} from '../helpers/meta/clean-db.helper';
 
 
 describe('Static Files', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let client: Client;
 
   before('setupApplication', async () => {
-    ({ server, client } = await setupApplication());
+    ({server, client} = await setupApplication());
   });
 
   after(async () => {
@@ -23,7 +23,6 @@ describe('Static Files', () => {
       .get('/')
       .expect(200)
       .expect('Content-Type', /text\/html/)
-    // .expect(/<title>Geovistory/);
   });
 
   it('exposes api explorer', async () => {

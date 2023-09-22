@@ -14,5 +14,7 @@
 export interface ProProject { 
     pk_entity?: number;
     fk_language?: number;
+    fk_cloned_from_project?: number;
+    tmsp_last_modification?: string;
 }
 

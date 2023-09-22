@@ -81,7 +81,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     private dataApi: ReduxMainService,
     public viewFieldDropListService: ViewFieldDropListService,
     @Optional() private itemCountService: ViewFieldItemCountSumService,
-    public editMode: EditModeService
+    public editMode: EditModeService,
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
     this.offset$ = combineLatest([this.limit$, this.pageIndex$]).pipe(
@@ -268,12 +268,11 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
         .subscribe(pending => {
 
           // add the statements pointing to these entities to project
-          this.p.pro$.info_proj_rel.upsert(projRels, pkProject).resolved$
+          this.dataApi.upsertInfoProjectRelations(pkProject, projRels)
             .pipe(
-              first(res => !!res),
+              first(),
               takeUntil(this.destroy$)
             ).subscribe(() => {
-
               // done!
               this.close.emit(true)
             })

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ProInfoProjRelApi } from '@kleiolab/lib-sdk-lb3';
-import { AccountDataService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProjectConfigurationService, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, AnalysisService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, ProTextProperty, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { GvSchemaActions } from '../actions/schema.actions';
 
@@ -17,11 +16,11 @@ export class ReduxMainService {
     protected schemaActions: GvSchemaActions,
     protected projectDataApi: ProjectDataService,
     protected projectConfigApi: ProjectConfigurationService,
+    protected analysisApi: AnalysisService,
     protected dataModelApi: DataModelService,
     protected accountDataApi: AccountDataService,
     protected contentTree: ContentTreeService,
     protected pag: SubfieldPageControllerService,
-    protected proInfoProjRelApi: ProInfoProjRelApi
   ) { }
 
   /**
@@ -95,7 +94,7 @@ export class ReduxMainService {
   }
 
   loadProjectsOfAccount(): Observable<GvPositiveSchemaObject> {
-    const call$ = this.accountDataApi.findAccountDataControllerGetProjetcsOfAccount()
+    const call$ = this.accountDataApi.accountDataControllerGetProjetcsOfAccount()
     return this.schemaActions.loadGvSchemaObject(call$)
   }
 
@@ -125,6 +124,13 @@ export class ReduxMainService {
     return this.schemaActions.loadGvSchemaModifier(call$)
   }
 
+  loadProjectBasics(pkProject: number): Observable<GvSchemaModifier> {
+    const call$ = this.projectConfigApi.findProjectConfigControllerGetBasics(
+      pkProject,
+    )
+    return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
   loadProjectConfiguration(pkProject: number): Observable<GvSchemaModifier> {
     const call$ = this.projectConfigApi.findProjectConfigControllerGetAllConfigsOfProject(
       pkProject,
@@ -149,6 +155,51 @@ export class ReduxMainService {
   }
   removeEntityFromProject(pkProject: number, pkEntity: number): Observable<GvPositiveSchemaObject> {
     const call$ = this.projectDataApi.addOrRemoveEntityControllerRemoveEntityFromProject(pkProject, pkEntity)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+
+  upsertInfoProjectRelations(pkProject: number, infoProjectRelations: Partial<ProInfoProjRel>[]): Observable<GvSchemaModifier> {
+    const call$ = this.projectDataApi.createProjectDataControllerUpsertInfoProjectRelations(pkProject, infoProjectRelations)
+    return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
+  upsertClassFieldConfig(pkProject: number, proClassFieldConfigs: Partial<ProClassFieldConfig>[]): Observable<GvPositiveSchemaObject> {
+    const call$ = this.projectConfigApi.createProjectConfigControllerUpsertClassFieldConfigs(pkProject, proClassFieldConfigs)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+
+  loadProjectClassRelations(pkProject: number): Observable<GvPositiveSchemaObject> {
+    const call$ = this.dataModelApi.findDataModelControllerClassProjectRelations(pkProject)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+
+  upsertProjectClassRelations(pkProject: number, proDfhClassProjRel: ProDfhClassProjRel[]): Observable<GvPositiveSchemaObject> {
+    const call$ = this.projectConfigApi.createProjectConfigControllerUpsertProjectClassRelations(pkProject, proDfhClassProjRel)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+
+  loadProjectProfileRelations(pkProject: number): Observable<GvPositiveSchemaObject> {
+    const call$ = this.dataModelApi.findDataModelControllerProfileProjectRelations(pkProject)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+
+  upsertProjectTextProperties(pkProject: number, proTextProperties: ProTextProperty[]): Observable<GvPositiveSchemaObject> {
+    const call$ = this.projectConfigApi.createProjectConfigControllerPostTextProperties(pkProject, proTextProperties)
+    return this.schemaActions.loadGvSchemaObject(call$)
+  }
+
+  deleteProjectTextProperties(pkProject: number, proTextProperties: ProTextProperty[]): Observable<GvSchemaModifier> {
+    const call$ = this.projectConfigApi.createProjectConfigControllerDeleteTextProperties(pkProject, proTextProperties)
+    return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
+  deleteProjectAnalisis(pkProject: number, pkEntities: number[]): Observable<GvSchemaModifier> {
+    const call$ = this.analysisApi.analysisControllerBulkDelete(pkProject, pkEntities)
+    return this.schemaActions.loadGvSchemaModifier(call$)
+  }
+
+  upsertProjectAnalisis(pkProject: number, proAnalysis: ProAnalysis[]): Observable<GvPositiveSchemaObject> {
+    const call$ = this.analysisApi.analysisControllerBulkUpsert(pkProject, proAnalysis)
     return this.schemaActions.loadGvSchemaObject(call$)
   }
 }

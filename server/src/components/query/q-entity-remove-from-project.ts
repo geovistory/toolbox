@@ -13,12 +13,11 @@ export class QEntityRemoveFromProject extends SqlBuilderLb4Models {
   }
 
   /**
-   * Adds an entity (persitent or temporal) to the project.
-   * It inserts or updates the info_proj_rel.is_in_project for the following records
+   * Removes an entity (persitent or temporal) from the project.
+   * It updates the info_proj_rel.is_in_project for the following records
    * - The entity itself
    * - The outgoing statements
-   * - The text properties (TODO remove, once text properties are replaced by lang_string )
-   * - the namings and their outgoing statements and text properties
+   * - the namings and their outgoing statements
    *
    * @param fkProject project
    * @param pkEntity the temporal entity to add to the project
@@ -51,16 +50,6 @@ export class QEntityRemoveFromProject extends SqlBuilderLb4Models {
         projects.info_proj_rel t2
       WHERE t1.fk_object_info = ${this.addParam(pkEntity)}
       AND t1.fk_property = 1111
-      AND t1.pk_entity = t2.fk_entity
-      AND t2.fk_project = ${this.addParam(fkProject)}
-      AND t2.is_in_project = true
-
-      UNION ALL
-      -- the text properties
-      SELECT t1.pk_entity, null::int
-      FROM information.text_property t1,
-        projects.info_proj_rel t2
-      WHERE t1.fk_concerned_entity = ${this.addParam(pkEntity)}
       AND t1.pk_entity = t2.fk_entity
       AND t2.fk_project = ${this.addParam(fkProject)}
       AND t2.is_in_project = true

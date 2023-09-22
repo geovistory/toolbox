@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { SchemaObjectApi } from '@kleiolab/lib-sdk-lb3';
 import { GvNegativeSchemaObject, GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable, Subject } from 'rxjs';
@@ -7,12 +6,9 @@ import { SchemaActionsFactory, SucceedActionMeta } from '../../public-api';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { DatActions } from '../actions/dat.actions';
-import { DfhActions } from '../actions/dfh.actions';
 import { InfActions } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
 import { GvSchemaActions } from '../actions/schema.actions';
-import { SysActions } from '../actions/sys.actions';
-import { TabActions } from '../actions/tab.actions';
 import { WarActions } from '../actions/war.actions';
 
 @Injectable({
@@ -26,16 +22,12 @@ export class SchemaService {
   schemaObjectStored$ = new Subject<GvPositiveSchemaObject>()
 
   constructor(
-    public api: SchemaObjectApi,
-    public infActions: InfActions,
-    public proActions: ProActions,
-    public datActions: DatActions,
-    public warActions: WarActions,
-    public tabActions: TabActions,
-    public dfhActions: DfhActions,
-    public sysActions: SysActions,
-    public schemaActions: GvSchemaActions,
-    public notifications: NotificationsAPIActions,
+    private infActions: InfActions,
+    private proActions: ProActions,
+    private datActions: DatActions,
+    private warActions: WarActions,
+    private schemaActions: GvSchemaActions,
+    private notifications: NotificationsAPIActions,
   ) { }
 
 

@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
 import { IAppState, PanelTab } from '@kleiolab/lib-redux';
-import { ProProject } from '@kleiolab/lib-sdk-lb3';
-import { ProjectDataService, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ProjectDataService, ProProject, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
-import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
@@ -50,7 +48,6 @@ const tab: PanelTab<EntityDetailConfig> = {
 const initState: IAppState = {
   activeProject: {
     pk_project: ProProjectMock.PROJECT_1.pk_entity,
-    default_language: InfLanguageMock.GERMAN,
     panels: [
       {
         id: 0,

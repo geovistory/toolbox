@@ -19,5 +19,6 @@ export interface ProClassFieldConfig {
     fk_domain_class?: number;
     fk_range_class?: number;
     ord_num?: number;
+    fk_class_for_class_field?: number;
 }
 

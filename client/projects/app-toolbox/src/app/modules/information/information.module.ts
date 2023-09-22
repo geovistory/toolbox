@@ -19,10 +19,6 @@ import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.mod
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { AnnotationModule } from '../annotation/annotation.module';
 import { BaseModule } from '../base/base.module';
-import { ContentTreeNodeLabelComponent } from './components/content-tree-node-label/content-tree-node-label.component';
-import { ContentTreeNodeOptionsComponent } from './components/content-tree-node-options/content-tree-node-options.component';
-import { ContentTreeNodeTypeComponent } from './components/content-tree-node-type/content-tree-node-type.component';
-import { ContentTreeComponent } from './components/content-tree/content-tree.component';
 import { EntityDetailComponent } from './containers/entity-detail/entity-detail.component';
 
 
@@ -55,14 +51,9 @@ import { EntityDetailComponent } from './containers/entity-detail/entity-detail.
   ],
   declarations: [
     EntityDetailComponent,
-    ContentTreeComponent,
-    ContentTreeNodeLabelComponent,
-    ContentTreeNodeTypeComponent,
-    ContentTreeNodeOptionsComponent,
   ],
   exports: [
     EntityDetailComponent,
-    ContentTreeComponent
   ]
 })
 export class InformationModule { }

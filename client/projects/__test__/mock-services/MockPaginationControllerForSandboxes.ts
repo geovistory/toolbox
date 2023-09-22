@@ -93,9 +93,6 @@ export class MockPaginationControllerForSandboxes {
     else if (values(gvLoadSubfieldPageReq.targets)[0].entityPreview) {
       return this.generateDataForEntity(gvLoadSubfieldPageReq);
     }
-    else if (values(gvLoadSubfieldPageReq.targets)[0].typeItem) {
-      return this.generateDataForEntity(gvLoadSubfieldPageReq);
-    }
     else if (values(gvLoadSubfieldPageReq.targets)[0].timePrimitive) {
       return this.generateDataForTimePrimitive(gvLoadSubfieldPageReq);
     }
@@ -435,8 +432,7 @@ export class MockPaginationControllerForSandboxes {
         resource: resource,
         entityPreview: {
           ...resource,
-          project: ProProjectMock.PROJECT_1.pk_entity,
-          fk_project: ProProjectMock.PROJECT_1.pk_entity,
+          project_id: ProProjectMock.PROJECT_1.pk_entity,
           entity_label: 'Label of entity ' + resource.pk_entity
         }
       }

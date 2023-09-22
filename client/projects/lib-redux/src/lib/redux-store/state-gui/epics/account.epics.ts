@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PubAccountApi } from '@kleiolab/lib-sdk-lb3';
+import { AccountDataService } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
 import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
 import { of } from 'rxjs';
@@ -17,7 +17,7 @@ export class AccountEpics {
   constructor(
     private actions: AccountActions,
     private loadingBarActions: LoadingBarActions,
-    private accountApi: PubAccountApi,
+    private accountDataApi: AccountDataService,
     private notificationActions: NotificationsAPIActions,
   ) { }
 
@@ -30,7 +30,7 @@ export class AccountEpics {
   private loadRoles(): Epic {
     return (action$, store) => action$.pipe(
       ofType(AccountActions.LOAD_ROLES),
-      mergeMap((action: AccountAction) => this.accountApi.getRoles(action.meta.accountId).pipe(
+      mergeMap((action: AccountAction) => this.accountDataApi.accountDataControllerGetRoles(action.meta.accountId).pipe(
         first(),
         mergeMap(data => of(
           this.actions.loadRolesSucceeded(data),

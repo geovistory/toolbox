@@ -1,5 +1,4 @@
-import { ProDfhClassProjRel, SysAppContextInterface, SysClassFieldInterface } from '@kleiolab/lib-sdk-lb3';
-import { ClassConfig as LbClassConfig, InfAppellation, InfLanguage } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig as LbClassConfig, InfAppellation } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { EntityDetail } from './active-project/entity-detail';
 import { ProjectSettingsData } from './active-project/project-settings-data.models';
@@ -7,12 +6,6 @@ import { TabBase } from './active-project/tab-layout.models';
 import { Types } from './active-project/types.models';
 
 
-export interface ProjectPreview {
-  label?: string,
-  description?: string,
-  default_language?: InfLanguage,
-  pk_project?: number
-}
 
 export interface EntityByPk<T> {
   [pk_entity: number]: T
@@ -26,19 +19,6 @@ export interface VersionEntity<T> {
 export interface EntityVersionsByPk<T> {
   [pk_entity: number]: VersionEntity<T>
 }
-
-// export interface PropertyList { [pk_entity: string]: DfhProperty; }
-// export interface TypePeIt extends InfResource { fk_typed_class: number; } // TODO remove if replaced by TypePreview
-// export interface TypesByClass { [dfh_pk_class: string]: TypePeIt[]; }
-// export interface TypesByPk { [pk_entity: string]: TypePeIt; }
-
-// export interface TypePreview extends WarEntityPreview { fk_typed_class: number; }
-// export interface TypePreviewsByClass { [dfh_pk_class: string]: TypePreview[]; }
-// export interface TypePreviewList { [pk_entity: string]: TypePreview[]; }
-// export interface ComQueryByPk { [key: string]: ProQuery }
-
-// export interface HasTypePropertyList { [dfh_pk_property: number]: HasTypePropertyReadable }
-
 
 export interface Panel {
   id: number;
@@ -108,8 +88,9 @@ export interface RamSource {
   };
 }
 
-export interface ProjectDetail extends ProjectPreview {
+export interface ProjectDetail {
 
+  pk_project?: number;
   /******************************************************************
    * CRM and Project Config
    */
@@ -147,17 +128,8 @@ export interface ProjectDetail extends ProjectPreview {
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   peItDetails?: { [uiId: string]: EntityDetail }
 
-  // // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  // teEnDetails?: { [uiId: string]: TeEntDetail }
-
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   analysisDetails?: { [uiId: string]: any }
-
-  // // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  // queryDetails?: { [uiId: string]: QueryDetail }
-
-  // // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  // visualDetails?: { [uiId: string]: VisualDetail }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
   classesSettings?: { [uiId: string]: ProjectSettingsData }
@@ -171,8 +143,6 @@ export interface ProjectDetail extends ProjectPreview {
   // /******************************************************************
   //  * Layout – Modals
   //  */
-
-  // addModal?: CreateOrAddEntity;
 
 
   /******************************************************************
@@ -213,7 +183,6 @@ export interface ClassConfig {
   profileLabels: string;
   profilePks: number[];
 
-  projRel?: ProDfhClassProjRel;
   isInProject?: boolean; // reflects the enabled / disabled state from data settings of the project
   changingProjRel: boolean;
 
@@ -225,28 +194,10 @@ export interface ClassConfig {
 
   dfh_identifier_in_namespace: string;
 
-  // propertyFields?: PropertyFieldList;
-  uiContexts?: {
-    [pk: number]: UiContext
-  }
-
   required_by_sources?: boolean
   required_by_entities?: boolean
   required_by_basics?: boolean
   excluded_from_entities?: boolean
 }
 
-export interface UiContext extends SysAppContextInterface {
-  uiElements?: UiElement[]
-}
 
-// short version of ComUiContextConfig
-export interface UiElement {
-  fk_property?: number,
-  property_is_outgoing?: boolean,
-  propertyFieldKey?: string, // TODO: merge the propertyFieldKey and propSetKey to fieldKey
-  propSetKey?: string,
-  fk_class_field?: number,
-  class_field?: SysClassFieldInterface
-  ord_num: number
-}

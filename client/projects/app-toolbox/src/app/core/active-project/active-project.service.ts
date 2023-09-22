@@ -3,16 +3,14 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, DatSelector, DfhClassEnriched, DfhSelector, InfSelector, ProSelector, ShouldPauseService, SysSelector, TabSelector } from '@kleiolab/lib-queries';
-import { ActiveProjectActions, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, ReduxMainService, SchemaService } from '@kleiolab/lib-redux';
-import { DatNamespace, InfLanguage, LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
-import { ClassConfig, GvPositiveSchemaObject, ProProject } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectActions, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, ReduxMainService } from '@kleiolab/lib-redux';
+import { ClassConfig, DatNamespace, GvPositiveSchemaObject, InfLanguage, ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 import { TableDetailConfig } from '../../modules/data/components/table-detail/table-detail.component';
 import { TextDetail2Config } from '../../modules/data/components/text-detail2/text-detail2.component';
 import { EntityDetailConfig } from '../../modules/information/containers/entity-detail/entity-detail.component';
@@ -86,13 +84,9 @@ export class ActiveProjectService {
     public sys$: SysSelector,
     public inf: InfActions,
     public shouldPause: ShouldPauseService,
-    private s: SchemaService,
     private c: ConfigurationPipesService,
     private dataService: ReduxMainService
   ) {
-    LoopBackConfig.setBaseURL(environment.apiUrl);
-    LoopBackConfig.setApiVersion(environment.apiVersion);
-
     this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
     this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(
       filter(p => p !== undefined),
@@ -101,7 +95,7 @@ export class ActiveProjectService {
       })
     );
     this.initializingProject$ = ngRedux.select<boolean>(['activeProject', 'initializingProject']);
-    this.defaultLanguage$ = ngRedux.select<InfLanguage>(['activeProject', 'default_language']);
+    this.defaultLanguage$ = ap.pipeActiveDefaultLanguage();
     this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
     this.uiIdSerial$ = ngRedux.select<number>(['activeProject', 'uiIdSerial']);
     this.panelSerial$ = ngRedux.select<number>(['activeProject', 'panelSerial']);
@@ -152,7 +146,9 @@ export class ActiveProjectService {
   initProject(id) {
     const state = this.ngRedux.getState();
     if (!state.activeProject || state.activeProject.pk_project != id) {
-      this.ngRedux.dispatch(this.actions.loadProjectBasics(id))
+      this.dataService.loadProjectBasics(id).pipe(first()).subscribe(
+        () => { this.ngRedux.dispatch(this.actions.loadProjectBasiscsSucceded(id)) }
+      )
     }
   }
 
@@ -167,7 +163,6 @@ export class ActiveProjectService {
     const state = this.ngRedux.getState();
     if (!state.activeProject || state.activeProject.pk_project != id || !state.activeProject.configDataInitialized) {
       this.dataService.loadProjectConfiguration(id)
-      // this.ngRedux.dispatch(this.actions.loadProjectConfig(id))
     }
   }
 

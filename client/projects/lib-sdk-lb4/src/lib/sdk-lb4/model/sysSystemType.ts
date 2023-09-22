@@ -12,12 +12,12 @@
 
 
 export interface SysSystemType { 
+    pk_entity?: number;
     notes?: string;
     definition?: string;
     st_schema_name?: string;
     st_table_name?: string;
     st_column_name?: string;
     st_group?: string;
-    pk_entity?: number;
 }
 

@@ -1,7 +1,7 @@
 import {expect} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../../../application';
 import {getCommunityVisibilityDefault, getProjectVisibilityDefault, VisibilityController} from '../../../../controllers/backoffice/visibility.controller';
 import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
-import {GeovistoryServer} from '../../../../server';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
@@ -14,7 +14,7 @@ import {setupApplication} from '../../../helpers/gv-server-helpers';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 
 describe('VisibilityController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let accountInProject: number;
   const emailGaetan = 'gaetan.muck@kleiolab.ch';
   const emailJonas = 'jonas.schneider@kleiolab.ch';
@@ -38,7 +38,7 @@ describe('VisibilityController', () => {
     });
     it('should find basicType of class', async () => {
       await createDfhApiClass(DfhApiClassMock.EN_21_PERSON)
-      const createProjectDataController: VisibilityController = await server.lbApp.get('controllers.VisibilityController')
+      const createProjectDataController: VisibilityController = await server.get('controllers.VisibilityController')
       const lookup = await createProjectDataController.getClassLookup()
       expect(lookup[21].basic_type).to.equal(8)
     })

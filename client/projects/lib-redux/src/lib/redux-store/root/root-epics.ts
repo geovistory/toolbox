@@ -7,10 +7,6 @@ import { AccountEpics } from '../state-gui/epics/account.epics';
 import { ActiveProjectEpics } from '../state-gui/epics/active-project.epics';
 import { NotificationsAPIEpics } from '../state-gui/epics/notifications.epics';
 import { ActionResolverEpics } from '../state-schema/epics/action-resolver.epics';
-import { DatEpics } from '../state-schema/epics/dat.epics';
-import { DfhEpics } from '../state-schema/epics/dfh.epics';
-import { InfEpics } from '../state-schema/epics/inf.epics';
-import { ProEpics } from '../state-schema/epics/pro.epics';
 import { SchemaEpics } from '../state-schema/epics/schema.epics';
 import { SysEpics } from '../state-schema/epics/sys.epics';
 import { IAppState } from './models/model';
@@ -29,10 +25,6 @@ export class RootEpics {
     private activeProjectEpics: ActiveProjectEpics,
     private accountEpics: AccountEpics,
     private sysEpics: SysEpics,
-    private dfhEpics: DfhEpics,
-    private infEpics: InfEpics,
-    private datEpics: DatEpics,
-    private proEpics: ProEpics,
     private schemaObjectEpics: SchemaEpics,
     private actionResolver: ActionResolverEpics
   ) {
@@ -42,12 +34,8 @@ export class RootEpics {
       this.activeProjectEpics.createEpics(),
       this.accountEpics.createEpics(),
       this.sysEpics.createEpics(),
-      this.dfhEpics.createEpics(),
-      this.infEpics.createEpics(),
-      this.datEpics.createEpics(),
-      this.proEpics.createEpics(),
       this.schemaObjectEpics.createEpics(),
-      // important: this needs to be the last epic in
+      // important: this needs to be the last epic
       this.actionResolver.createEpics()
     ));
 

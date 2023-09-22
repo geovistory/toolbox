@@ -1,17 +1,12 @@
-/**
- * This section is starting the express server as described here
- * https://github.com/strongloop/loopback-next/tree/master/examples/lb3-application#tutorial
- */
-import {GeovistoryServer} from './server';
+import {ApplicationConfig} from '@loopback/core';
+import {GeovistoryApplication} from './application';
 import {getGvDatabaseUrl} from './utils/databaseUrl';
 
 
 const PORT = +(process.env.PORT ?? 3000);
 const HOST = process.env.HOST ?? '0.0.0.0'
 
-console.log(`Starting server at: ${HOST}:${PORT}`);
-// Run the application
-const config = {
+const config: ApplicationConfig = {
   rest: {
     port: PORT,
     host: HOST,
@@ -25,29 +20,21 @@ const config = {
       // useful when used with OpenAPI-to-GraphQL to locate your application
       setServersFromRequest: true,
     },
-
-    // Added for mounting Lb3 in Lb4 setup
-    // https://github.com/strongloop/loopback-next/tree/master/examples/lb3-application#tutorial
-    listenOnStart: false,
   },
   websocket: {
     port: PORT,
   },
 };
 
-export async function main() {
+
+export const main = async () => {
   console.log(`Starting server using database: ${getGvDatabaseUrl()?.split('@')?.[1]}`)
-
-  const server = new GeovistoryServer(config);
-  await server.boot();
-  await server.start();
-
-  // setInterval(() => {
-  //   console.log('ram used: ', Math.round(process.memoryUsage().heapUsed / 1024 / 1024 * 100) / 100)
-  // }, 500)
-
-  console.log(`Server is running at ${server.url}`);
+  const app = new GeovistoryApplication(config);
+  await app.boot();
+  await app.start();
+  return app;
 }
+
 
 if (require.main === module) {
   main().catch(err => {
@@ -56,23 +43,3 @@ if (require.main === module) {
   });
 }
 
-
-/**
- * The commented section is the default Lb4 Setup
- */
-// import {GeovistoryApplication} from './application';
-// import {ApplicationConfig} from '@loopback/core';
-
-// export {GeovistoryApplication};
-
-// export async function main(options: ApplicationConfig = {}) {
-//   const app = new GeovistoryApplication(options);
-//   await app.boot();
-//   await app.start();
-
-//   const url = app.restServer.url;
-//   console.log(`Server is running at ${url}`);
-//   console.log(`Try ${url}/ping`);
-
-//   return app;
-// }

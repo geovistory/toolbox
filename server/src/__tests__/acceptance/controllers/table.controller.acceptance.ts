@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../../application';
 import {GetTablePageOptions, SortDirection} from '../../../components/query/q-table-page';
 import {DatTextProperty, TableConfig} from '../../../models';
 import {GvPositiveSchemaObject} from '../../../models/gv-positive-schema-object.model';
-import {GeovistoryServer} from '../../../server';
 import {createDatNamespace} from '../../helpers/atomic/dat-namespace.helper';
 import {DatClassColumnMappingMock} from '../../helpers/data/gvDB/DatClassColumnMappingMock';
 import {DatColumnMock} from '../../helpers/data/gvDB/DatColumnMock';
@@ -25,7 +24,7 @@ const qs = require('querystring');
 
 
 describe('TableController', () => {
-    let server: GeovistoryServer;
+    let server: GeovistoryApplication;
     let client: Client;
 
     before(async () => {({server, client} = await setupApplication());});

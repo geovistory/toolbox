@@ -5,7 +5,6 @@ import { ProjectDetail } from '../models/active-project.models';
 
 
 const INITIAL_STATE: ProjectDetail = {
-  label: '',
   list: '',
   uiIdSerial: 0,
   panelSerial: 0,
@@ -21,23 +20,9 @@ export const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, actio
     case ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED:
       state = {
         ...state,
-        ...action.meta.projectPreview
+        pk_project: action.meta.pk_project
       };
       break;
-    // case ActiveProjectActions.LOAD_PROJECT_CONFIG:
-    //   state = {
-    //     ...state,
-    //     loadingConfigData: true
-    //   }
-    //   break;
-    // case ActiveProjectActions.LOAD_PROJECT_CONFIG_SUCCEEDED:
-    //   state = {
-    //     ...state,
-    //     // crm: action.payload.crm,
-    //     configDataInitialized: true,
-    //     loadingConfigData: false
-    //   }
-    //   break;
 
     /************************************************************************************
      * Layout -- Tabs

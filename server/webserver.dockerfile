@@ -15,9 +15,6 @@ RUN npm ci
 COPY tsconfig.json /app
 COPY src /app/src
 
-# Copy javiscript (no compilation needed)
-COPY lb3app /app/lb3app
-
 # Copy migration files
 COPY db-migrate /app/db-migrate
 

@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBarActions } from '@kleiolab/lib-redux';
-import { InfLanguage, InfLanguageApi, LoopBackAuth, LoopBackConfig, ProProjectApi } from '@kleiolab/lib-sdk-lb3';
-import { environment } from 'projects/app-toolbox/src/environments/environment';
+import { InfLanguage, LanguagesService, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
+import { GvAuthService } from 'projects/app-toolbox/src/app/core/auth/auth.service';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 
 
-export class ProjectLabelDescription {
-  'label': String;
+class ProjectLabelDescription {
+  'label': string;
   'language': InfLanguage;
-  'text_property': String;
-  test: any; // TODO REMOVE
+  'text_property': string;
 }
 
 @Component({
@@ -33,20 +32,19 @@ export class ProjectCreateComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private projectApi: ProProjectApi,
-    private languageApi: InfLanguageApi,
-    private authService: LoopBackAuth,
+    private projectApi: ProjectConfigurationService,
+    private languageApi: LanguagesService,
+    private authService: GvAuthService,
     private loadingBarActions: LoadingBarActions,
   ) {
-    LoopBackConfig.setBaseURL(environment.apiUrl);
-    LoopBackConfig.setApiVersion(environment.apiVersion);
 
   }
 
   ngOnInit() {
     this.loadingBarActions.addJob()
     const userLang = navigator.language.split('-')[0].split('_')[0];
-    this.languageApi.find({ 'where': { 'iso6391': userLang } })
+
+    this.languageApi.findLanguagesControllerFind({ 'where': { 'iso6391': userLang } })
       .pipe(first())
       .subscribe(
         (data: any) => {
@@ -71,7 +69,7 @@ export class ProjectCreateComponent implements OnInit {
 
     this.errorMessages = {};
 
-    this.projectApi.createWithLabelAndDescription(
+    this.projectApi.createProjectConfigControllerCreateProject(
       this.authService.getCurrentUserId(),
       this.model.language.pk_entity,
       this.model.label,
@@ -85,7 +83,6 @@ export class ProjectCreateComponent implements OnInit {
           this.loadingBarActions.removeJob()
         },
         error => {
-
           // TODO: Alert
           this.errorMessages = error.error.details.messages;
           this.createBtnDisabled = false;

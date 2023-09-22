@@ -276,11 +276,10 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe
-      const shortTitleConfig = GvSchemaObjectMock.sysConfig.sys.config[0].classes[DfhApiClassMock.EN_785_TEXT.dfh_pk_class];
-      const expectedSequence = [{
-        viewType: shortTitleConfig.valueObjectType,
-        formControlType: shortTitleConfig.formControlType
-      }]
+      // testing pipe
+      const viewType: GvFieldTargetViewType = { entityPreview: 'true' }
+      const formControlType: SysConfigFormCtrlType = { entity: 'true' }
+      const expectedSequence = [{ viewType, formControlType }]
 
       q$.pipe(first(), toArray())
         .subscribe({
@@ -304,8 +303,8 @@ describe('ConfigurationPipeService', () => {
       )
 
       // testing pipe
-      const viewType: GvFieldTargetViewType = { typeItem: 'true' }
-      const formControlType: SysConfigFormCtrlType = { typeItem: 'true' }
+      const viewType: GvFieldTargetViewType = { entityPreview: 'true' }
+      const formControlType: SysConfigFormCtrlType = { entity: 'true' }
       const expectedSequence = [{ viewType, formControlType }]
 
       q$.pipe(first(), toArray())
@@ -824,8 +823,7 @@ describe('ConfigurationPipeService', () => {
       service.pipeSection(21, DisplayType.form, SectionName.metadata).pipe(first())
         .subscribe(
           result => {
-            // console.log(result)
-            expect(result.length).toEqual(0);
+            expect(result.length).toEqual(1);
           },
           null,
           done
@@ -931,7 +929,7 @@ describe('ConfigurationPipeService', () => {
         .subscribe(
           result => {
             // console.log(result)
-            expect(result.length).toEqual(3);
+            expect(result.length).toEqual(5);
           },
           null,
           done
@@ -959,7 +957,8 @@ describe('ConfigurationPipeService', () => {
       service.pipePropertiesToSubfields(
         [property],
         true, // is outgoing
-        [5] // enabled profile
+        [5], // enabled profile
+        [] // platform vocabulary classes
       ).pipe(first())
         .subscribe(
           result => {

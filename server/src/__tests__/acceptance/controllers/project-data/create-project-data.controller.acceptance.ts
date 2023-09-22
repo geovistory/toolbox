@@ -1,5 +1,6 @@
 import {DataObject} from '@loopback/repository/dist/common-types';
 import {Client, expect} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../../../application';
 import {CLASS_PK_EXPRESSION, CLASS_PK_ITEM, CLASS_PK_MANIFESTATION_PRODUCT_TYPE, CLASS_PK_MANIFESTATION_SINGLETON, CLASS_PK_WEB_REQUEST, PROPERTY_PK_P4_IS_SERVER_RESPONSE_TO_REQUEST, PROPERTY_PK_P5_HAS_CARRIER_PROVIDED_BY, PROPERTY_PK_R42_IS_REP_MANIFESTATION_SINGLETON_FOR, PROPERTY_PK_R4_CARRIERS_PROVIDED_BY} from '../../../../config';
 import {LoginResponse} from '../../../../controllers/account.controller';
 import {InfAppellation, InfDimension, InfLangString, InfPlace, InfResource, InfResourceWithRelations, InfStatementWithRelations, InfTimePrimitive} from '../../../../models';
@@ -7,7 +8,6 @@ import {CalendarType} from '../../../../models/enums/CalendarType';
 import {Granularity} from '../../../../models/enums/Granularity';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
 import {ProjectVisibilityOptions} from '../../../../models/sys-config/sys-config-project-visibility-options';
-import {GeovistoryServer} from '../../../../server';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
@@ -23,7 +23,7 @@ import {setupApplication} from '../../../helpers/gv-server-helpers';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 
 describe('CreateProjectDataController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let client: Client;
   let accountInProject: number;
   const emailGaetan = 'gaetan.muck@kleiolab.ch';

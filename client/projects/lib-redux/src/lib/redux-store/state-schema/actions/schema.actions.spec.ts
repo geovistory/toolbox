@@ -1,6 +1,5 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { SdkLb3Module } from '@kleiolab/lib-sdk-lb3';
 import { GvPositiveSchemaObject, SdkLb4Module, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvFieldPageReq';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
@@ -23,7 +22,6 @@ describe('GvSchemaActions', () => {
     TestBed.configureTestingModule({
       imports: [
         ReduxModule,
-        SdkLb3Module.forRoot(), // lib-sdk-lb3
         SdkLb4Module
       ],
       providers: [

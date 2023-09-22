@@ -6,8 +6,8 @@
 
 import {expect} from '@loopback/testlab';
 import io from 'socket.io-client';
+import {GeovistoryApplication} from '../../../application';
 import {WarEntityPreviewWithFulltext} from "../../../models/war-entity-preview-with-full-text.model";
-import {GeovistoryServer} from '../../../server';
 import {createWarEntityPreview, updateWarEntityPreview} from '../../helpers/atomic/war-entity-preview.helper';
 import {setupApplication} from '../../helpers/gv-server-helpers';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
@@ -15,7 +15,7 @@ import {cleanDb} from '../../helpers/meta/clean-db.helper';
 const pEvent = require('p-event');
 
 describe('WarEntityPreviewController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   before('setupApplication', async () => {
     ({server} = await setupApplication());
   });

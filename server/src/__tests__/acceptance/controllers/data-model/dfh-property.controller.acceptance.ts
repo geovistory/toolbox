@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';

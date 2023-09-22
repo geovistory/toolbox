@@ -1,11 +1,10 @@
 import {AuthenticationComponent, registerAuthenticationStrategy} from '@loopback/authentication';
 import {AuthorizationBindings, AuthorizationComponent, AuthorizationDecision, AuthorizationOptions} from '@loopback/authorization';
 import {BootMixin} from '@loopback/boot';
-import {Lb3AppBooterComponent} from '@loopback/booter-lb3app';
 import {ApplicationConfig} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
-import {RestExplorerBindings, RestExplorerComponent, RestExplorerConfig} from '@loopback/rest-explorer';
+import {RestApplication, RestBindings, RestServer} from '@loopback/rest';
+import {RestExplorerComponent} from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {AuthorizationPolicyComponent} from './components/authorization';
@@ -13,9 +12,15 @@ import {JWTBindings, JWTComponent, JWTComponentConfig} from './components/jwt';
 import {BasicAuthenticationStrategy} from './components/jwt/basic-authentication.strategy';
 import {DefaultFactory, InvokeFactory, LOGGER_LEVEL, LoggingBindings, LoggingComponent, LoggingComponentConfig} from './components/logger';
 import {SpecEnhancerComponent} from './components/spec-enhancer/spec-enhancer.component';
+import {SysStatusController} from './controllers';
+import {ImportTableController} from './controllers/import-table.controller';
+import {FieldChangeController} from './controllers/project-data/field-change.controller';
+import {WarEntityPreviewController} from './controllers/war-entity-preview.controller';
 import {Postgres1DataSource} from './datasources/postgres1.datasource';
 import {log} from './middleware/log.middleware';
+import {PostgresNotificationsManager} from './realtime/db-listeners/postgres-notifications-manager';
 import {Streams} from './realtime/streams/streams';
+import {WebSocketServer} from './realtime/websockets/websocket.server';
 import {GvSequence} from './sequence';
 import {AccountService} from './services/account.service';
 import {EmailService} from './services/email.service';
@@ -30,6 +35,9 @@ export class GeovistoryApplication extends BootMixin(
 ) {
 
   streams = new Streams()
+  wsServer: WebSocketServer;
+  pgNotifManager: PostgresNotificationsManager;
+  url?: string;
 
   constructor(options: ApplicationConfig = {}) {
     super(options);
@@ -39,6 +47,9 @@ export class GeovistoryApplication extends BootMixin(
     this.bind('APP_EMAIL_SERVICE').toClass(EmailService)
     this.bind('APP_ACCOUNT_SERVICE').toClass(AccountService)
     this.bind('APP_PASSWORD_RESET_TOKEN_SERVICE').toClass(PasswordResetTokenService)
+
+    // Increase body size for table imports
+    this.bind(RestBindings.REQUEST_BODY_PARSER_OPTIONS).to({limit: '500mb'})
 
     // make the streams injectable
     this.bind('streams').to(this.streams)
@@ -62,12 +73,6 @@ export class GeovistoryApplication extends BootMixin(
         dirs: ['controllers'],
         extensions: ['.controller.js'],
         nested: true,
-      },
-
-      // Added for mounting Lb3 in Lb4 setup
-      // https://github.com/strongloop/loopback-next/tree/master/examples/lb3-application#tutorial
-      lb3app: {
-        mode: 'fullApp'
       }
     };
 
@@ -99,13 +104,45 @@ export class GeovistoryApplication extends BootMixin(
           process.exit(1);
         });
     })
+
+    this.onStart(async () => {
+
+      this.url = this.restServer.url;
+      // Websocket server
+      if (this.restServer.httpServer?.server)
+        await this.wsServer.start(this.restServer.httpServer.server);
+      else {
+        console.error('Cannot start webserver');
+        process.exit(1);
+      }
+
+      // Postgres Notification Manager
+      return this.pgNotifManager.start()
+    })
+
+    this.onStop(async () => {
+      // Websocket server
+      await this.wsServer.stop();
+
+      // Postgres Notification Manager
+      return this.pgNotifManager.stop()
+    })
   }
 
+  start = async () => {
+    await super.start();
+
+    if (!this.options?.disableConsoleLog) {
+      const rest = await this.getServer(RestServer);
+      console.log(
+        `REST server running at ${rest.url}`,
+      );
+    }
+  }
 
   private setupComponents() {
     this.setupRestExplorerComponent();
-    this.setupLoopback3Component();
-    // this.setupLoggingComponent();
+    this.setupWebsocketsComponent();
     this.setupJWTComponent();
     this.setupAuthorizationComponent();
     this.setupSpecEnhancerComponent()
@@ -117,20 +154,10 @@ export class GeovistoryApplication extends BootMixin(
     await setupPostgresFunctions(c);
   }
 
-  // Register Loopback 3 app as a component
   private setupRestExplorerComponent() {
-    // TODO:
-    // - Migrate Lb3 to Lb4 and remove the following line
-    // - run: npm uninstall --save @loopback/booter-lb3app
-    this.configure<RestExplorerConfig>(RestExplorerBindings.COMPONENT).to({
-      path: '/explorer',
-    });
     this.component(RestExplorerComponent);
   }
 
-  private setupLoopback3Component() {
-    this.component(Lb3AppBooterComponent);
-  }
   private setupSpecEnhancerComponent() {
     this.component(SpecEnhancerComponent);
   }
@@ -140,7 +167,6 @@ export class GeovistoryApplication extends BootMixin(
       options: {
         path: process.env.LOG_PATH ?? path.join(__dirname, '../../logs'),
         level: process.env.LOG_LEVEL ?? LOGGER_LEVEL.INFO,
-        // eslint-disable-next-line @typescript-eslint/camelcase
         stack_trace: process.env.NODE_ENV === NodeENV.DEVELOPMENT
       },
       invoke: [InvokeFactory.createConsole],
@@ -160,8 +186,6 @@ export class GeovistoryApplication extends BootMixin(
     this.component(JWTComponent);
   }
 
-
-
   private setupAuthorizationComponent() {
     this.configure<AuthorizationOptions>(AuthorizationBindings.COMPONENT)
       .to({
@@ -172,9 +196,67 @@ export class GeovistoryApplication extends BootMixin(
     this.component(AuthorizationPolicyComponent);
   }
 
+  private setupWebsocketsComponent() {
+    // Create ws server
+    this.wsServer = new WebSocketServer(this);
+    this.bind('servers.websocket.server1').to(this.wsServer);
+
+    this.wsServer.use((socket, next) => {
+      this.log('Global middleware - socket:', socket.id);
+      next();
+    });
+
+    // Add a ws route to WarEntityPreviewController
+    const ns = this.wsServer.route(WarEntityPreviewController, /^\/WarEntityPreview/);
+    ns.use((socket, next) => {
+      this.log(
+        'Middleware for namespace %s - socket: %s',
+        socket.nsp.name,
+        socket.id,
+      );
+      next();
+    });
+
+    // Add a ws route to ImportTableController
+    const ns2 = this.wsServer.route(ImportTableController, /^\/ImportTable/);
+    ns2.use((socket, next) => {
+      this.log(
+        'Middleware for namespace %s - socket: %s',
+        socket.nsp.name,
+        socket.id,
+      );
+      next();
+    })
+
+    // Add a ws route to SystemStatusController
+    this.wsServer.route(SysStatusController, /^\/SysStatus/)
+      .use((socket, next) => {
+        this.log(
+          'Middleware for namespace %s - socket: %s',
+          socket.nsp.name,
+          socket.id,
+        );
+        next();
+      });
+
+    // Add a ws route to FieldChangeController
+    this.wsServer.route(FieldChangeController, /^\/FieldChange/)
+      .use((socket, next) => {
+        this.log(
+          'Middleware for namespace %s - socket: %s',
+          socket.nsp.name,
+          socket.id,
+        );
+        next();
+      });
 
 
-  /**Ctsc
+    // Create the Postgres Notification Manager
+    this.pgNotifManager = new PostgresNotificationsManager(this);
+
+  }
+
+  /**
     * Setup static files to serve default homepage
     *
     * this.static is called if no other route was found by
@@ -202,6 +284,11 @@ export class GeovistoryApplication extends BootMixin(
     this.static(/\/login.*/, path.join(__dirname, '../../client/dist/app-toolbox'));
   }
 
+
+  private log(msg: string, ...params: string[]) {
+    if (process.env.NO_LOGS === 'true') return;
+    console.log(msg, ...params)
+  }
 }
 
 

@@ -32,12 +32,6 @@
       "dom"
     ],
     "paths": {
-      "@kleiolab/lib-sdk-lb3/*": [
-        "dist/lib-sdk-lb3/*"
-      ],
-      "@kleiolab/lib-sdk-lb3": [
-        "dist/lib-sdk-lb3"
-      ],
       "@kleiolab/lib-sdk-lb4/*": [
         "dist/lib-sdk-lb4/*"
       ],

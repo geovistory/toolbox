@@ -2,7 +2,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
     <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
-    <li class="breadcrumb-item">{{(p.activeProject$|async)?.label}}</li>
+    <li class="breadcrumb-item">{{(projectLabel$|async)}}</li>
   </ol>
 </gv-navbar>
 <mat-drawer-container class="gv-flex-fh">
@@ -74,7 +74,7 @@
               Your Project
             </div>
             <div class="mat-display-3 mb-4 text-gray-400">
-              {{(p.activeProject$|async)?.label}}
+              {{(projectLabel$|async)}}
             </div>
             <div class="text-gray-400 helper-text">
               Find your Entities and Sources to the left.

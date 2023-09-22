@@ -41,9 +41,6 @@ export class LoginResponse {
   @property() user: PubAccount;
   @property() lb4Token: string;
   @property() lb4ExpiresInMs: number;
-  @property() lb3Token: string;
-  @property() lb3Ttl: number;
-  @property() lb3Created: string;
 }
 
 @model()
@@ -113,14 +110,7 @@ export class AccountController {
   })
   async login(
     @requestBody() credentials: LoginRequest,
-    @inject('lb3-models.PubAccount') lb3PubAccount: {
-      login: (credentials: LoginRequest) => Promise<{
-        id: string,
-        ttl: number,
-        created: string,
-        userId: number
-      }>
-    }
+
   ): Promise<LoginResponse> {
 
     // ensure the user exists, and the password is correct
@@ -135,19 +125,12 @@ export class AccountController {
     // create a JSON Web Token based on the user profile
     const lb4 = await this.jwtService.generateTokenWithExpire(userProfile);
 
-    // login the old loopback 3 way
-    const lb3 = await lb3PubAccount.login(credentials)
-
     const account2 = account.toJSON() as PubAccount
     return {
       user: account2,
 
       lb4Token: lb4.token,
       lb4ExpiresInMs: lb4.expiresInMs,
-
-      lb3Token: lb3.id,
-      lb3Ttl: lb3.ttl,
-      lb3Created: lb3.created,
     };
   }
 

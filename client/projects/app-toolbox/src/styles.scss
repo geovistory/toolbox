@@ -517,8 +517,6 @@ $gv-color-selected: #00ffff;
 
 // full height and display flex
 .gv-flex-fh {
-  // @extend .gv-fh;
-  // @extend .d-flex;
   flex-direction: column;
   -webkit-flex-direction: column;
 
@@ -532,7 +530,6 @@ $gv-color-selected: #00ffff;
   overflow: hidden;
 }
 
-//
 .gv-f-1-0-auto {
   flex: 1 0 auto;
 }

@@ -6,6 +6,7 @@ api/account.service.ts
 api/accountData.service.ts
 api/analysis.service.ts
 api/api.ts
+api/backoffice.service.ts
 api/communityVisibility.service.ts
 api/contentTree.service.ts
 api/datChunk.service.ts
@@ -23,12 +24,8 @@ api/infPlace.service.ts
 api/languages.service.ts
 api/ontoMeController.service.ts
 api/pingController.service.ts
-api/proClassFieldConfig.service.ts
 api/proDfhClassProjRel.service.ts
-api/proDfhProfileProjRel.service.ts
 api/proInfoProjRel.service.ts
-api/proProject.service.ts
-api/proTextProperty.service.ts
 api/projectConfiguration.service.ts
 api/projectData.service.ts
 api/pubAccount.service.ts
@@ -36,15 +33,15 @@ api/ramList.service.ts
 api/subfieldPageController.service.ts
 api/sysClassField.service.ts
 api/sysClassHasTypeProperty.service.ts
-api/sysSystemRelevantClass.service.ts
-api/sysSystemType.service.ts
 api/systemConfiguration.service.ts
+api/systemTypes.service.ts
 api/table.service.ts
 api/warEntityPreviewController.service.ts
 configuration.ts
 encoder.ts
 git_push.sh
 index.ts
+model/accountInfo.ts
 model/activationReportItem.ts
 model/allowedCommunityVisibility.ts
 model/analysisDefinition.ts
@@ -176,6 +173,8 @@ model/profileDeactivationReport.ts
 model/projectPongRequest.ts
 model/projectVisibilityOptions.ts
 model/pubAccount.ts
+model/pubAccountProjectRel.ts
+model/pubRole.ts
 model/queryDefinition.ts
 model/queryFilter.ts
 model/queryFilterData.ts
@@ -188,7 +187,6 @@ model/relatedProfile.ts
 model/replaceStatementInFieldRequest.ts
 model/resetPasswordRequest.ts
 model/responseWithMsg.ts
-model/role.ts
 model/satementTarget.ts
 model/searchExistingRelatedStatement.ts
 model/searchExistingRelatedStatementFilter.ts

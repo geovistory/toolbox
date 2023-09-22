@@ -17,5 +17,6 @@ export interface PubAccount {
     username?: string;
     email: string;
     emailVerified?: boolean;
+    verificationToken?: string;
 }
 

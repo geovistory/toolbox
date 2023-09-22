@@ -12,11 +12,11 @@
 
 
 export interface SysSystemRelevantClass { 
+    pk_entity?: number;
     fk_class?: number;
     required_by_entities?: boolean;
     required_by_sources?: boolean;
     required_by_basics?: boolean;
     excluded_from_entities?: boolean;
-    pk_entity?: number;
 }
 

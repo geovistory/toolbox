@@ -14,7 +14,6 @@ import { RequestPasswordResetComponent } from './components/request-password-res
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { AccountEmailComponent } from './pages/account-email/account-email.component';
 import { AccountPasswordComponent } from './pages/account-password/account-password.component';
-import { AccountProfileComponent } from './pages/account-profile/account-profile.component';
 import { AccountComponent } from './pages/account/account.component';
 
 
@@ -38,7 +37,6 @@ import { AccountComponent } from './pages/account/account.component';
     RequestPasswordResetComponent,
     ResetPasswordComponent,
     AccountComponent,
-    AccountProfileComponent,
     AccountEmailComponent,
     AccountPasswordComponent,
     AccessDeniedComponent,

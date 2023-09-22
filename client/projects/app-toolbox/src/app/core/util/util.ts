@@ -1,8 +1,6 @@
 // TODO DELETE UNUSED
 import { FormArray, FormGroup } from '@angular/forms';
-import { SysConfig } from '@kleiolab/lib-config';
-import { ByPk, ProjectPreview } from '@kleiolab/lib-redux';
-import { ProProject, ProTextProperty } from '@kleiolab/lib-sdk-lb3';
+import { ByPk } from '@kleiolab/lib-redux';
 import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { AcEntity, AcNotification, ActionType } from 'angular-cesium';
 
@@ -88,22 +86,6 @@ export class Utils {
     const dayNumber = Math.floor(julianSeconds / secondsOfFullDay);
     const secondsOfDay = julianSeconds % secondsOfFullDay;
     return new Cesium.JulianDate(dayNumber, secondsOfDay)
-  }
-
-  /**
-   * Transform ProProject to ProjectPreview
-   */
-  static proProjectToProjectPreview(project: ProProject): ProjectPreview {
-    return {
-      label: Utils.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL),
-      description: Utils.firstProTextPropStringOfType(project.text_properties, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION),
-      default_language: project.default_language,
-      pk_project: project.pk_entity
-    }
-  }
-
-  static firstProTextPropStringOfType(textProperties: ProTextProperty[], fkSystemType): string {
-    return (textProperties.find(t => t.fk_system_type === fkSystemType) || { string: '' }).string
   }
 
   /**

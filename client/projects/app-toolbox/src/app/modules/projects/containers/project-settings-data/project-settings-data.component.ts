@@ -7,7 +7,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { EntityType, IAppState, ProjectSettingsData, RootEpics } from '@kleiolab/lib-redux';
+import { EntityType, IAppState, ProjectSettingsData, ReduxMainService, RootEpics } from '@kleiolab/lib-redux';
 import { ProDfhClassProjRel, SysConfigClassCategoryBelonging, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -163,7 +163,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
 
   constructor(
     protected rootEpics: RootEpics,
-    // private epics: ProjectSettingsDataAPIEpics,
+    private dataApi: ReduxMainService,
     protected ngRedux: NgRedux<IAppState>,
     private highilghtPipe: HighlightPipe,
     public p: ActiveProjectService,
@@ -188,8 +188,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
     // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.t = this.tabLayout.t;
-
-    this.p.pro$.dfh_profile_proj_rel.loadOfProject(this.p.state.pk_project);
+    this.dataApi.loadProjectProfileRelations(this.p.state.pk_project);
 
     const classesEnabledByProfiles$ = this.c.pipeClassesEnabledByProjectProfiles()
 
@@ -463,9 +462,8 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
       fk_project: this.p.state.pk_project,
       enabled_in_entities: enabledInEntities
     }
-
-    this.p.pro$.dfh_class_proj_rel.upsert([projRel], this.p.state.pk_project)
-      .resolved$.pipe(takeUntil(this.destroy$)).subscribe(resolved => {
+    this.dataApi.upsertProjectClassRelations(this.p.state.pk_project, [projRel])
+      .pipe(takeUntil(this.destroy$)).subscribe(resolved => {
         if (resolved) this.p.changingClassProjRel[classItem.pkClass] = false;
       })
   }

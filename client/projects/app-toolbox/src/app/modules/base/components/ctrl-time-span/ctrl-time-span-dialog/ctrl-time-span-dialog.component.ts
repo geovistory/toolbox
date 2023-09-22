@@ -176,7 +176,6 @@ export class CtrlTimeSpanDialogComponent implements OnInit, OnDestroy {
             resultTemplate,
             mergeDef,
             false,
-            this.p.state.default_language
           ).this$
         }));
       }));

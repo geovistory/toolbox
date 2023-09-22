@@ -1,8 +1,8 @@
 import {expect} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../../../application';
 import {AddOrRemoveEntityController} from '../../../../controllers/project-data/add-or-remove-entity.controller';
 import {InfResource} from '../../../../models/inf-resource.model';
 import {C_868_PERSON_APPELLATION_IN_A_LANGUAGE_ID} from '../../../../ontome-ids';
-import {GeovistoryServer} from '../../../../server';
 import {createInfAppellation} from '../../../helpers/atomic/inf-appellation.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {createInfStatement} from '../../../helpers/atomic/inf-statement.helper';
@@ -27,13 +27,13 @@ const PERSON_NAMING_1: OmitEntity<InfResource> = {
 }
 
 describe('AddOrRemoveEntityController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let controller: AddOrRemoveEntityController
   let pkProject: number;
 
   before(async () => {
     ({server} = await setupApplication());
-    controller = await server.lbApp.get<AddOrRemoveEntityController>('controllers.AddOrRemoveEntityController')
+    controller = await server.get<AddOrRemoveEntityController>('controllers.AddOrRemoveEntityController')
 
 
   })

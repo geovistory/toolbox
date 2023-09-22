@@ -1,6 +1,6 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { InfLangString } from '@kleiolab/lib-sdk-lb3';
+import { InfLangString } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { C_784_SHORT_TITLE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';

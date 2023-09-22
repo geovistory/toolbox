@@ -30,6 +30,8 @@
           <h6 class="dropdown-header">{{account.email}}</h6>
         </a>
         <mat-divider></mat-divider>
+        <div mat-menu-item class="mat-text-secondary">v{{toolboxVersion}}</div>
+        <mat-divider></mat-divider>
         <button mat-menu-item (click)="logout()">
           <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
         </button>

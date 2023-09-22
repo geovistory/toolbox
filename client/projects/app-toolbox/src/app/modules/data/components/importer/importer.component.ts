@@ -1,8 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { InfLanguage } from '@kleiolab/lib-sdk-lb3';
-import { ImportTable, ImportTableControllerService, ImportTableResponse, TColFilter } from '@kleiolab/lib-sdk-lb4';
+import { ImportTable, ImportTableControllerService, ImportTableResponse, InfLanguage, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';

@@ -2,6 +2,7 @@ import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3';
+import {repository} from '@loopback/repository';
 import {get, param} from '@loopback/rest';
 import {Roles} from '../../components/authorization';
 import {QDfhLabelsOfProject} from '../../components/query/q-dfh-labels-of-project';
@@ -9,7 +10,9 @@ import {QDfhProfilesOfProject} from '../../components/query/q-dfh-profiles-of-pr
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
 import {logAsyncPerformance} from '../../decorators/logAsyncPerformance.decorator';
 import {DfhClass} from '../../models';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
+import {ProDfhClassProjRelRepository, ProDfhProfileProjRelRepository} from '../../repositories';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 import {SysConfigController} from '../backoffice/sys-config.controller';
 
@@ -20,6 +23,10 @@ export class FindDataModelController {
     public datasource: Postgres1DataSource,
     @inject('controllers.SysConfigController')
     public sysConfigController: SysConfigController,
+    @repository(ProDfhClassProjRelRepository)
+    public proDfhClassProjRelRepo: ProDfhClassProjRelRepository,
+    @repository(ProDfhProfileProjRelRepository)
+    public proDfhProfileProjRelRepo: ProDfhProfileProjRelRepository,
   ) { }
 
 
@@ -122,6 +129,61 @@ export class FindDataModelController {
 
     const labels = await new QDfhLabelsOfProject(this.datasource).query(pkProject, sysConfig.ontome?.requiredOntomeProfiles ?? [])
     return {positive: {dfh: {label: labels}}, negative: {}}
+  }
+
+
+
+  @get('data-model/class-project-relations/of-project', {
+    responses: {
+      '200': {
+        description: "Get class project relations of the project.",
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvPositiveSchemaObject
+            }
+          }
+        }
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('classProjectRelations')
+  async classProjectRelations(
+    @param.query.number('pkProject') pkProject: number
+  ): Promise<GvPositiveSchemaObject> {
+
+    const items = await this.proDfhClassProjRelRepo.find({where: {'fk_project': pkProject}})
+
+    return {pro: {dfh_class_proj_rel: items}}
+  }
+
+
+  @get('data-model/profile-project-relations/of-project', {
+    responses: {
+      '200': {
+        description: "Get profile project relations of the project.",
+        content: {
+          'application/json': {
+            schema: {
+              'x-ts-type': GvPositiveSchemaObject
+            }
+          }
+        }
+      },
+    },
+  })
+  @authenticate('basic')
+  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @logAsyncPerformance('profileProjectRelations')
+  async profileProjectRelations(
+    @param.query.number('pkProject') pkProject: number
+  ): Promise<GvPositiveSchemaObject> {
+
+    const items = await this.proDfhProfileProjRelRepo.find({where: {'fk_project': pkProject}})
+
+    return {pro: {dfh_profile_proj_rel: items}}
   }
 
 

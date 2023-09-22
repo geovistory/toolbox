@@ -1,9 +1,8 @@
 import { NgRedux } from '@angular-redux/store';
-import { ByPk, IAppState, ReducerConfigCollection, SysActions, SysConfigSlice, sysDefinitions, SysRelevantClassSlice, sysRoot } from '@kleiolab/lib-redux';
-import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb3';
-import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
-import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { ByPk, IAppState, ReducerConfigCollection, SysActions, SysConfigSlice, sysDefinitions, SysRelevantClassSlice, sysRoot } from '@kleiolab/lib-redux';
+import { SysConfigValue, SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb4';
+import { Observable } from 'rxjs';
 
 class Selector<Slice> {
 

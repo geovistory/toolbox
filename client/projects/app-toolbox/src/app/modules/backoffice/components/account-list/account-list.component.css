@@ -1,0 +1,13 @@
+:host {
+  position: absolute;
+  bottom: 0;
+  top: 60px;
+  left: 0;
+  right: 0;
+  padding: 1rem;
+  overflow: auto;
+}
+
+table {
+  width: 100%;
+}

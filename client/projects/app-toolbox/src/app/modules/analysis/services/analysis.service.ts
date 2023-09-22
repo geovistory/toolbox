@@ -1,7 +1,7 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AnalysisTabData, IAppState, NotificationsAPIActions, SchemaService } from '@kleiolab/lib-redux';
+import { AnalysisTabData, IAppState, NotificationsAPIActions, ReduxMainService } from '@kleiolab/lib-redux';
 import { AnalysisService as LbAnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -25,8 +25,8 @@ export class GvAnalysisService<I, O> {
     public analysisApi: LbAnalysisService,
     private dialog: MatDialog,
     private p: ActiveProjectService,
-    private s: SchemaService,
     private not: NotificationsAPIActions,
+    private dataService: ReduxMainService,
     private ngRedux: NgRedux<IAppState>
   ) { }
 
@@ -334,7 +334,7 @@ export class GvAnalysisService<I, O> {
 
 
   private upsert(proAnalysis: ProAnalysis, pkProject: number) {
-    return this.s.storeGv(this.analysisApi.analysisControllerBulkUpsert(pkProject, [proAnalysis]), pkProject);
+    return this.dataService.upsertProjectAnalisis(pkProject, [proAnalysis])
   }
 
   /**
@@ -360,8 +360,8 @@ export class GvAnalysisService<I, O> {
           .pipe(first())
           .subscribe(proAnalysis => {
             this.saving = true;
-            this.p.pro$.analysis.delete([proAnalysis], proAnalysis.fk_project)
-              .resolved$.pipe(first(x => !!x)).subscribe((deleted) => {
+            this.dataService.deleteProjectAnalisis(proAnalysis.fk_project, [proAnalysis.pk_entity])
+              .pipe(first(x => !!x)).subscribe((deleted) => {
                 this.saving = false;
                 this.ngRedux.dispatch(this.not.addToast({
                   type: 'success',

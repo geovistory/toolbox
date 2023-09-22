@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../../../application';
 import {LoginResponse} from '../../../../controllers/account.controller';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
-import {GeovistoryServer} from '../../../../server';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createDfhApiProfile} from '../../../helpers/atomic/dfh-api-profile.helper';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
@@ -23,7 +22,7 @@ import {createTypes} from '../../../helpers/meta/model.helper';
 
 
 describe('FindDataModelController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let client: Client;
   let accountInProject: number;
   const emailGaetan = 'gaetan.muck@kleiolab.ch';

@@ -1,22 +1,20 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {Client, expect} from '@loopback/testlab';
+import {GeovistoryApplication} from '../../../../application';
 import {LoginResponse} from '../../../../controllers/account.controller';
 import {GvPositiveSchemaObject} from '../../../../models/gv-positive-schema-object.model';
-import {GeovistoryServer} from '../../../../server';
 import {createProProject} from '../../../helpers/atomic/pro-project.helper';
 import {createProTextProperty} from '../../../helpers/atomic/pro-text-property.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
 import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../../../helpers/data/gvDB/ProTextPropertyMock';
 import {createAccountVerified} from '../../../helpers/generic/account.helper';
-import {createSandBoxProject} from '../../../helpers/graphs/project.helper';
 import {setupApplication} from '../../../helpers/gv-server-helpers';
 import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 import {createLanguages, createTypes} from '../../../helpers/meta/model.helper';
 
 
 describe('FindAccountDataController', () => {
-  let server: GeovistoryServer;
+  let server: GeovistoryApplication;
   let client: Client;
   let accountInProject: number;
   const emailGaetan = 'gaetan.muck@kleiolab.ch';

@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingBarActions } from '@kleiolab/lib-redux';
-import { LoopBackConfig } from '@kleiolab/lib-sdk-lb3';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
-import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { first } from 'rxjs/operators';
 
 
@@ -28,10 +26,7 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private loadingBarActions: LoadingBarActions,
-  ) {
-    LoopBackConfig.setBaseURL(environment.apiUrl);
-    LoopBackConfig.setApiVersion(environment.apiVersion);
-  }
+  ) { }
 
   ngOnInit() {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/user-dashboard';
