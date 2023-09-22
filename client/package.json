@@ -45,7 +45,7 @@
     "@angular/platform-server": "^12.2.13",
     "@angular/router": "^12.2.13",
     "@mdi/angular-material": "^4.7.95",
-    "@ng-bootstrap/ng-bootstrap": "^9.1.1",
+    "@ng-bootstrap/ng-bootstrap": "^12.1.2",
     "@types/geodesy": "^1.2.2",
     "@types/jsoneditor": "^8.6.1",
     "angular-cesium": "0.0.71",
