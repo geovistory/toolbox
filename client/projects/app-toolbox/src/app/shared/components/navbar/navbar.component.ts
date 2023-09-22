@@ -20,6 +20,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   account: PubAccount;
 
   subscription: Subscription;
+  toolboxVersion = window['toolboxVersion'];
 
   constructor(
     private activeAccountService: ActiveAccountService,

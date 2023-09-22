@@ -1,6 +1,7 @@
 # environment
 .env
 /projects/app-toolbox/src/assets/env.js
+/projects/app-toolbox/src/assets/version.js
 
 # Dependency directories
 node_modules/
