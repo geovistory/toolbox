@@ -48,7 +48,7 @@
     "@ng-bootstrap/ng-bootstrap": "^12.1.2",
     "@types/geodesy": "^1.2.2",
     "@types/jsoneditor": "^8.6.1",
-    "angular-cesium": "0.0.71",
+    "angular-cesium": "0.0.74",
     "angular-split": "^3.0.2",
     "angular2-elastic-input": "^1.4.2",
     "bootstrap": "4.3.1",
