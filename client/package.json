@@ -28,8 +28,6 @@
   },
   "private": true,
   "dependencies": {
-    "@angular-redux/form": "^10.0.0",
-    "@angular-redux/router": "^10.0.0",
     "@angular-redux/store": "^10.0.0",
     "@angular/animations": "^12.2.13",
     "@angular/cdk": "^12.2.13",

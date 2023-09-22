@@ -1,8 +1,8 @@
-import { composeReducers } from '@angular-redux/form';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
 import { equals, indexBy, keys, omit, values } from 'ramda';
 import { combineReducers, Reducer } from 'redux';
+import { composeReducers } from '../../lib/composeReducers';
 import { LoadPageMeta, LoadPageSucceededMeta } from './schema-actions-factory';
 import { subfieldIdToString } from './subfieldIdToString';
 

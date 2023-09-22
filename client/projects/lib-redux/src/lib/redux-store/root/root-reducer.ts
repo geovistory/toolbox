@@ -1,8 +1,7 @@
-import { composeReducers, defaultFormReducer } from '@angular-redux/form';
-import { routerReducer } from '@angular-redux/router';
 import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
 import { combineReducers } from 'redux';
+import { composeReducers } from '../lib/composeReducers';
 import { accountRootReducer } from '../state-gui/reducers/account.reducers';
 import { activeProjectReducer } from '../state-gui/reducers/active-project.reducer';
 import { informationReducer } from '../state-gui/reducers/entity-list.reducer';
@@ -83,13 +82,11 @@ export const setAppState = (state = {}, action) => {
 }
 
 export const rootReducer = composeReducers(
-  defaultFormReducer(),
   schemaModifierReducer,
   combineReducers({
     account: accountRootReducer,
     loadingBar: loadingBarReducer,
     activeProject: activeProjectReducer,
-    routes: routerReducer,
     information: informationReducer,
     sources: sourceListReducer,
     sandboxState: sandboxStateReducer,
