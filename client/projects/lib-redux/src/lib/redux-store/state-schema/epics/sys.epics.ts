@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SysConfigValue, SystemConfigurationService } from '@kleiolab/lib-sdk-lb4';
-import { combineEpics, Epic } from 'redux-observable-es6-compat';
+import { combineEpics, Epic } from 'redux-observable';
 import { map } from 'rxjs/operators';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { SysActions } from '../actions/sys.actions';

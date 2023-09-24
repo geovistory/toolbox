@@ -233,10 +233,10 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
         if (!targetIsFix) {
           this.p.ramOnSaveCallback = () => this.saveAnnotationCallback()
           this.p.ramBoxLeft$.next('select-text');
-          this.p.ramProperty$.next(); // todo: check if this can be empty
-          this.p.ramTarget$.next();
+          this.p.ramProperty$.next(undefined); // todo: check if this can be empty
+          this.p.ramTarget$.next(undefined);
           this.p.ramTitle$.next(`Create an annotation`);
-          this.p.ramTitlePart2$.next();
+          this.p.ramTitlePart2$.next(undefined);
           this.p.ramBoxCenter$.next(true);
           this.p.ramBoxRight$.next(true);
         }

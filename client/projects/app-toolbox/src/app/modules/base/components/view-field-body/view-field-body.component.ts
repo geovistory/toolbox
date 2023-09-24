@@ -133,7 +133,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
       distinctUntilChanged(equals),
       // Loading from rest api (using service that avoids reloads of the same page)
       tap(([limit, offset, pkProject]) => {
-        nextPage$.next();
+        nextPage$.next(undefined);
 
         let fields = [this.field]
         if (this.field.isSpecialField === 'time-span') {

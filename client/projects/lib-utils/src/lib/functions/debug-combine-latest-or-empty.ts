@@ -14,7 +14,7 @@ export function debugCombineLatestOrEmpty<I>(obs: Observable<I>[], wait = 500) {
   const until$ = new Subject()
   const report = []
   setTimeout(() => {
-    until$.next()
+    until$.next(undefined)
     console.log('> Report')
     console.log(`  ${report.map((item, i) => `${i} ${item}`).join('\n')}`)
   }, wait)

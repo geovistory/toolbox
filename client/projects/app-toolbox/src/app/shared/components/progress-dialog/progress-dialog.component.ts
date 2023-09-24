@@ -1,7 +1,7 @@
-import { Component, OnInit, Inject, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { takeUntil, auditTime } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { auditTime, takeUntil } from 'rxjs/operators';
 
 export type ProgressMode = 'determinate' | 'indeterminate' | 'buffer' | 'query';
 export interface ProgressDialogData {
@@ -46,7 +46,7 @@ export class ProgressDialogComponent implements OnInit, OnDestroy {
     })
   }
   ngOnDestroy() {
-    this.destroy$.next()
+    this.destroy$.next(true)
     this.destroy$.unsubscribe()
   }
 

@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DndModule } from 'ng2-dnd';
+import { DndModule } from '@suez/ngx-dnd';
 import { DndModule as NgxDndModule } from 'ngx-drag-drop';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';

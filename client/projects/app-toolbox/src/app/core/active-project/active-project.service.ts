@@ -247,12 +247,12 @@ export class ActiveProjectService {
 
   ramReset() {
     this.ramOpen$.next(false);
-    this.ramSource$.next();
-    this.ramTarget$.next();
-    this.ramProperty$.next()
-    this.ramTitle$.next()
-    this.ramTitlePart2$.next()
-    this.ramBoxLeft$.next()
+    this.ramSource$.next(undefined);
+    this.ramTarget$.next(undefined);
+    this.ramProperty$.next(undefined)
+    this.ramTitle$.next(undefined)
+    this.ramTitlePart2$.next(undefined)
+    this.ramBoxLeft$.next(undefined)
     this.ramBoxCenter$.next(false)
     this.ramBoxRight$.next(false)
     this.ramTargetIsFix$.next(false)

@@ -2,7 +2,6 @@ import { NgRedux } from '@angular-redux/store';
 import { GvFieldPage, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ActionsObservable } from 'redux-observable-es6-compat';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
@@ -24,7 +23,7 @@ export interface LoadPageSucceededMeta { statements: StatementWithTarget[], coun
 export interface ActionResultObservable<Model> { pending$: Observable<boolean>, resolved$: Observable<SucceedActionMeta<Model>>, key: string }
 
 type Payload = null
-export type FluxActionObservable<Payload, Meta> = ActionsObservable<FluxStandardAction<Payload, Meta>>
+export type FluxActionObservable<Payload, Meta> = Observable<FluxStandardAction<Payload, Meta>>
 
 
 /**
@@ -166,8 +165,7 @@ export class SchemaActionsFactory<Model> {
     this.ngRedux.dispatch(action)
   }
 
-  loadPageSucceededAction(statements: StatementWithTarget[], count: number, page: GvFieldPage, pk?: number):
-    FluxStandardAction<Payload, LoadPageSucceededMeta> {
+  loadPageSucceededAction(statements: StatementWithTarget[], count: number, page: GvFieldPage, pk?: number) {
     return {
       type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
       meta: { page, statements, count, pk },

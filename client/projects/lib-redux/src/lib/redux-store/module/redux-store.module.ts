@@ -6,12 +6,10 @@ import { DevToolsExtension, NgRedux, NgReduxModule } from '@angular-redux/store'
 import { Inject, InjectionToken, NgModule, Optional, SkipSelf } from '@angular/core';
 import { Configuration, ConfigurationParameters, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { equals } from 'ramda';
-import dynamicMiddlewares from 'redux-dynamic-middlewares';
-import { createEpicMiddleware } from 'redux-observable-es6-compat';
+import { createEpicMiddleware } from 'redux-observable';
 import { IAppState } from '../root/models/model';
 import { RootEpics } from '../root/root-epics';
 import { rootReducer } from '../root/root-reducer';
-
 
 
 /**
@@ -83,7 +81,6 @@ export class ReduxModule {
       // Middleware
       [
         epicMiddleware,
-        dynamicMiddlewares,
       ],
       // Enhancers
       devTools.isEnabled()

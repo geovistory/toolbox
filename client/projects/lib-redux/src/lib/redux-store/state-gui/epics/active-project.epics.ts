@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
+import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { map, mapTo, mergeMap } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';

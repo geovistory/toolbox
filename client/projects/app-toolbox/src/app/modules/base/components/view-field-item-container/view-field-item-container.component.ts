@@ -108,11 +108,11 @@ export class ViewFieldItemContainerComponent implements OnInit, OnDestroy {
     this.dragover$.next(position)
   }
   onDropZoneLeave() {
-    this.dragover$.next()
+    this.dragover$.next(undefined)
   }
 
   onDrop(event: DndDropEvent, position: DndDropPosition) {
-    this.dragover$.next()
+    this.dragover$.next(undefined)
 
     const droppedData = getDragDataFromEvent(event)
 

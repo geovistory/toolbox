@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AccountDataService } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
-import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
+import { combineEpics, Epic, ofType } from 'redux-observable';
 import { of } from 'rxjs';
 import { catchError, first, mergeMap, startWith } from 'rxjs/operators';
 import { AccountAction, AccountActions } from '../actions/account.actions';

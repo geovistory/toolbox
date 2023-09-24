@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
-import { DndModule } from 'ng2-dnd';
+import { DndModule } from '@suez/ngx-dnd';
 import { TableModule } from 'primeng/table';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { KeysModule } from '../../shared/pipes/keys.module';

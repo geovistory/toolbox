@@ -7,14 +7,13 @@ import { BaseModule } from '../../../modules/base/base.module';
 import { NumberDialogComponent } from './number-dialog.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    BaseModule,
-    MaterialModule
-  ],
-  declarations: [NumberDialogComponent],
-  entryComponents: [NumberDialogComponent]
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule,
+        BaseModule,
+        MaterialModule
+    ],
+    declarations: [NumberDialogComponent]
 })
 export class NumberDialogModule { }

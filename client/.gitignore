@@ -11,3 +11,6 @@ src/__tests__/helpers/data/auto-gen/*
 dist/
 report.*json
 documentation
+
+# caches
+/.angular/cache

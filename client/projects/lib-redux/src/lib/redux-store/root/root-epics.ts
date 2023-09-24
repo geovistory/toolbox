@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Action } from 'redux';
-import { ActionsObservable, combineEpics, Epic, StateObservable } from 'redux-observable-es6-compat';
+import { combineEpics, Epic, StateObservable } from 'redux-observable';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { AccountEpics } from '../state-gui/epics/account.epics';
@@ -40,7 +40,7 @@ export class RootEpics {
     ));
 
     this.rootEpic = (
-      action$: ActionsObservable<Action>,
+      action$: Observable<Action>,
       state$: StateObservable<IAppState>,
       dependencies = undefined
     ): Observable<Action> => {

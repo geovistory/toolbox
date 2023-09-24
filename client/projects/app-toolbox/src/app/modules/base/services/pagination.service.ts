@@ -212,7 +212,7 @@ export class PaginationService {
     fieldChangeId: string;
     isUpToDateUntil?: Date; // the date, for which the loaded page data is valid (this is a date returned by the backend)
   }, pageIdString: string, pkProject: number) {
-    loader.until$.next();
+    loader.until$.next(undefined);
     // remove the page from the fieldChangeListener
     const fcListener = this.fieldChangeListeners.get(loader.fieldChangeId);
     const pageIds = fcListener.pageIds.filter(pageId => pageId !== pageIdString);

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { DndModule } from 'ng2-dnd';
+import { DndModule } from '@suez/ngx-dnd';
 import { TableModule } from 'primeng/table';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { TileHeaderModule } from 'projects/app-toolbox/src/app/shared/components/tile-header/tile-header.module';

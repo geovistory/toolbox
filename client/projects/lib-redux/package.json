@@ -11,7 +11,7 @@
     "@kleiolab/lib-utils": "0.0.1",
     "@kleiolab/lib-sdk-lb4": "0.0.1",
     "redux": "4.0.1",
-    "redux-observable-es6-compat": "^1.2.1",
+    "redux-observable": "^1.2.1",
     "flux-standard-action": "~2.0.1",
     "rxjs": "^6.5.4",
     "ramda": "0.25.0"

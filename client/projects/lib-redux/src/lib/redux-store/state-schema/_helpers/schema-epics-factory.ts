@@ -1,6 +1,6 @@
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
-import { ofType } from 'redux-observable-es6-compat';
+import { ofType } from 'redux-observable';
 import { Observable, Subscriber } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';

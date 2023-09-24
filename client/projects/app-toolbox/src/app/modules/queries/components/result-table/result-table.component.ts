@@ -40,7 +40,7 @@ interface PageLoadRes {
   styleUrls: ['./result-table.component.scss']
 })
 export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
-  destroy$ = new Subject();
+  destroy$ = new Subject<boolean>();
   @Input() definition$: Observable<QueryDefinition>;
   @ViewChild('table') table: Table;
   displayedColumns$: Observable<string[]>;
@@ -262,7 +262,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   ngOnDestroy() {
-    this.destroy$.next()
+    this.destroy$.next(true)
     this.destroy$.unsubscribe()
   }
 }

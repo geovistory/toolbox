@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FluxStandardAction } from 'flux-standard-action';
-import { combineEpics, Epic, ofType } from 'redux-observable-es6-compat';
+import { combineEpics, Epic, ofType } from 'redux-observable';
 import { Observable, ReplaySubject } from 'rxjs';
 import { filter, switchMap } from 'rxjs/operators';
 import { NotificationsAPIAction, NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';

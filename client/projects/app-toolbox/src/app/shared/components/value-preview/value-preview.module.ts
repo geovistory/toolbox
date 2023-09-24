@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { DndModule } from 'ng2-dnd';
+import { DndModule } from '@suez/ngx-dnd';
 import { TruncateModule } from '../../pipes/truncate/truncate.module';
 import { ValuePreviewComponent } from './value-preview.component';
 

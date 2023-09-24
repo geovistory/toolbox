@@ -7,14 +7,13 @@ import { BaseModule } from '../../../modules/base/base.module';
 import { InfoDialogComponent } from './info-dialog.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    BaseModule,
-    MaterialModule
-  ],
-  declarations: [InfoDialogComponent],
-  entryComponents: [InfoDialogComponent]
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule,
+        BaseModule,
+        MaterialModule
+    ],
+    declarations: [InfoDialogComponent]
 })
 export class InfoDialogModule { }
