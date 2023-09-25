@@ -7,8 +7,8 @@
 * Bootstrap variables are customized in ./assets/scss/bootstrap-variables.scss
 */
 
-@use "~@angular/material" as mat;
-@use "~@angular/material/core/theming/palette" as mat-palettes;
+@use "node_modules/@angular/material" as mat;
+@use "node_modules/@angular/material/core/theming/palette" as mat-palettes;
 @import "./assets/scss/bootstrap";
 $font-size-xs: 0.68rem;
 label {
