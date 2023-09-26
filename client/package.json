@@ -45,7 +45,7 @@
     "@angular/platform-server": "^14.3.0",
     "@angular/router": "^14.3.0",
     "@mdi/angular-material": "^4.7.95",
-    "@ng-bootstrap/ng-bootstrap": "^12.1.2",
+    "@ng-bootstrap/ng-bootstrap": "^14.2.0",
     "@popperjs/core": "^2.11.8",
     "@suez/ngx-dnd": "^13.0.3",
     "@types/geodesy": "^1.2.2",
