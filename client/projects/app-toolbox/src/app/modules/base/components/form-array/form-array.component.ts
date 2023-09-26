@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { Field } from '@kleiolab/lib-queries';
 import { FormArrayChild, ParentFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
@@ -23,7 +23,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   @Input() formArrayFactory: LocalFormArrayFactory
   parent: ParentFactory<FormControlData, FormArrayData, FormChildData>;
   data: FormArrayData
-  control: FormArray
+  control: UntypedFormArray
 
 
   get targetClasssesLength() {
@@ -57,7 +57,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   }
 
   get length() {
-    return sum(this.formArrayFactory.control.controls.map((ctrl: FormArray) => ctrl.controls ? ctrl.controls.length : 0))
+    return sum(this.formArrayFactory.control.controls.map((ctrl: UntypedFormArray) => ctrl.controls ? ctrl.controls.length : 0))
   }
 
   get parentMinLength() {
@@ -67,7 +67,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   get parentLength() {
     const formArray = this.parent?.arrayFactory?.control;
     if (formArray?.controls?.length > 0) {
-      return sum(formArray.controls.map((ctrl: FormArray) => ctrl.controls ? ctrl.controls.length : 0))
+      return sum(formArray.controls.map((ctrl: UntypedFormArray) => ctrl.controls ? ctrl.controls.length : 0))
     }
     return 0;
   }

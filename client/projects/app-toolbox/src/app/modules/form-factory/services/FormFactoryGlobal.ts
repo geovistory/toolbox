@@ -1,5 +1,5 @@
 import { Injector } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { UntypedFormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { FormGroupFactory } from '../core/form-group-factory';
 import { FormFactoryConfig } from './FormFactoryConfig';
@@ -8,7 +8,7 @@ import { FormFactoryConfig } from './FormFactoryConfig';
  * all Children Factories
  */
 export interface FormFactoryGlobal<G, A, C, Ch> extends FormFactoryConfig<G, A, C, Ch> {
-    fb: FormBuilder;
+    fb: UntypedFormBuilder;
     root?: FormGroupFactory;
     destroy$: Observable<boolean>;
     _injector: Injector;

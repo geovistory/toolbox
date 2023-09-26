@@ -6,7 +6,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { merge, Observable } from 'rxjs';
@@ -24,8 +24,8 @@ export class CoreTableFilterComponent implements AfterViewInit {
   @ViewChild(MatInput) input: MatInput;
   @ViewChild(MatMenuTrigger, { static: true }) menu: MatMenuTrigger;
 
-  filter = new FormControl();
-  operation = new FormControl();
+  filter = new UntypedFormControl();
+  operation = new UntypedFormControl();
   operations: any[];
 
   @HostBinding('class.has-value')

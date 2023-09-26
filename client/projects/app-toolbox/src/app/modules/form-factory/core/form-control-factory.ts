@@ -1,4 +1,4 @@
-import { FormControl, Validators } from '@angular/forms';
+import { UntypedFormControl, Validators } from '@angular/forms';
 import { merge, of, ReplaySubject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { FormControlConfig } from '../services/FormControlConfig';
@@ -11,7 +11,7 @@ import { AbstractControlFactory, FactoryType, StatusChange } from './form-factor
 export class FormControlFactory<C> extends AbstractControlFactory {
   factoryType: FactoryType = 'control';
 
-  public control: FormControl
+  public control: UntypedFormControl
 
   // can be used by the component that gets created using this factory to expose
   // its child component(s) to the factory
@@ -25,7 +25,7 @@ export class FormControlFactory<C> extends AbstractControlFactory {
   ) {
     super()
     const validators = config.required ? [Validators.required, ...(config.validators || [])] : config.validators
-    this.control = new FormControl(config.initValue || null, validators)
+    this.control = new UntypedFormControl(config.initValue || null, validators)
     merge(of(this.control.value), this.control.valueChanges).pipe(
       map(item => this.config.mapValue(item)),
       takeUntil(this.globalConfig.destroy$)

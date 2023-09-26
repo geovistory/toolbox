@@ -1,6 +1,6 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { MatInput } from '@angular/material/input';
 import { MatFormFieldControl } from '@angular/material/form-field';
@@ -84,7 +84,7 @@ export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, M
   private _disabled = false;
 
 
-  formControl = new FormControl(null);
+  formControl = new UntypedFormControl(null);
   searchTerm$ = new BehaviorSubject<string>('');
   searching = false;
   searchFailed = false

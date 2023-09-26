@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { FieldSection } from '../form-create-data/form-create-data.component';
 
 @Component({
@@ -10,7 +10,7 @@ import { FieldSection } from '../form-create-data/form-create-data.component';
 export class FormSectionHeaderComponent implements OnInit {
 
   @Input() section: FieldSection
-  @Input() control: FormArray
+  @Input() control: UntypedFormArray
   constructor() { }
 
   ngOnInit(): void {

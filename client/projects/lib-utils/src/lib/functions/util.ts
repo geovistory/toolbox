@@ -1,4 +1,4 @@
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 
 
@@ -77,12 +77,12 @@ export class U {
 
 
 
-  static recursiveMarkAsTouched = (f: FormArray | FormGroup) => {
+  static recursiveMarkAsTouched = (f: UntypedFormArray | UntypedFormGroup) => {
 
     if (f.controls) {
       if (Array.isArray(f.controls)) {
         // in this case it is a formArray
-        f.controls.forEach((c: FormArray) => {
+        f.controls.forEach((c: UntypedFormArray) => {
           c.markAsTouched()
           if (c.controls) U.recursiveMarkAsTouched(c)
         })
@@ -90,7 +90,7 @@ export class U {
       else {
         // in this case it is a formGroup
         if (f.controls['childControl']) {
-          const c = f.controls['childControl'] as FormArray;
+          const c = f.controls['childControl'] as UntypedFormArray;
           c.markAsTouched()
           if (c.controls) U.recursiveMarkAsTouched(c)
 

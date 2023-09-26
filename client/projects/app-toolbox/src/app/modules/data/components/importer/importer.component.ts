@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ImportTable, ImportTableControllerService, ImportTableResponse, InfLanguage, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
@@ -77,11 +77,11 @@ export class ImporterComponent implements OnInit, OnDestroy {
   pkProject: number;
 
   // formControls
-  tableNameCtrl = new FormControl('', [Validators.required]);
-  namespaceCtrl = new FormControl('', [Validators.required]);
-  languageCtrl = new FormControl('', [Validators.required]);
+  tableNameCtrl = new UntypedFormControl('', [Validators.required]);
+  namespaceCtrl = new UntypedFormControl('', [Validators.required]);
+  languageCtrl = new UntypedFormControl('', [Validators.required]);
 
-  tableForm = new FormGroup({
+  tableForm = new UntypedFormGroup({
     tableNameCtrl: this.tableNameCtrl,
     namespaceCtrl: this.namespaceCtrl,
     languageCtrl: this.languageCtrl,

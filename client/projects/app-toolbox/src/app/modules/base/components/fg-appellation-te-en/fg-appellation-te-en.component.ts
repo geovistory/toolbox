@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
@@ -41,9 +41,9 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
   formFactory: FormFactory;
 
   ctrls: {
-    text: FormControl,
-    lang: FormControl,
-    type: FormControl,
+    text: UntypedFormControl,
+    lang: UntypedFormControl,
+    type: UntypedFormControl,
   }
   placeholders: {
     text: string,

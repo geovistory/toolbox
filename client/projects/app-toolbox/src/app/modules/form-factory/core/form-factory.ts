@@ -1,7 +1,7 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { FormGroupFactory } from './form-group-factory';
 export class FormFactory {
-  constructor(public formGroup: FormGroup, public formGroupFactory: FormGroupFactory) { }
+  constructor(public formGroup: UntypedFormGroup, public formGroupFactory: FormGroupFactory) { }
   markAllAsTouched() {
     this.formGroupFactory.markAllAsTouched();
   }

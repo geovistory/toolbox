@@ -1,6 +1,6 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
-import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { InfLanguage, QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -104,7 +104,7 @@ export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccesso
   quillDoc: QuillDoc
   fkEntity: number
 
-  langCtrl = new FormControl()
+  langCtrl = new UntypedFormControl()
   onChange = (_: any) => { };
   onTouched = () => { };
 

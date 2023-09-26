@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActiveProjectPipesService, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
 import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, InfStatement, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
@@ -28,7 +28,7 @@ export class TypeItemComponent implements OnInit {
   pkType$: Observable<number | undefined>
   typeLabel$: Observable<string>
 
-  formGroup: FormGroup;
+  formGroup: UntypedFormGroup;
   editing: boolean;
   loading: boolean;
   assigningValue: boolean
@@ -37,11 +37,11 @@ export class TypeItemComponent implements OnInit {
     private ap: ActiveProjectPipesService,
     private inf: InfActions,
     private i: InformationPipesService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private pag: PaginationService
   ) {
     this.formGroup = this.fb.group({
-      'typeCtrl': new FormControl()
+      'typeCtrl': new UntypedFormControl()
     })
     this.formGroup.get('typeCtrl').valueChanges.pipe(
       takeUntil(this.destroy$)

@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { FormControlConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormControlConfig';
 import { QfFormControlData, QfFormControlFactory } from '../query-filter/query-filter.component';
 
@@ -12,7 +12,7 @@ export class QfFormControlComponent implements OnInit {
 
   @Input() formControlFactory: QfFormControlFactory;
   config: FormControlConfig<QfFormControlData>
-  rootFormGroup: FormGroup;
+  rootFormGroup: UntypedFormGroup;
 
   constructor() { }
 

@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { LabelPart, LabelPartField, ProEntityLabelConfig, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
@@ -25,8 +25,8 @@ interface FieldId { fkProperty: number, isOutgoing: boolean }
 })
 export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
-  labelParts = new FormArray([], [Validators.required]);
-  form: FormGroup;
+  labelParts = new UntypedFormArray([], [Validators.required]);
+  form: UntypedFormGroup;
   loading = false;
   defaultConfig: ProEntityLabelConfig;
   editing = false;
@@ -51,7 +51,7 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
     if (!data.fkClass) console.error('You must provide a fkClass.')
     if (!data.fkProject) console.error('You must provide a fkProject.')
 
-    this.form = new FormGroup({
+    this.form = new UntypedFormGroup({
       'labelParts': this.labelParts
     })
 
@@ -141,11 +141,11 @@ export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
       fieldId = fieldIdToString({ fkProperty: field.fkProperty, isOutgoing: field.isOutgoing })
       nrOfStmts = field.nrOfStatementsInLabel
     }
-    return new FormGroup({
-      'fieldId': new FormControl(fieldId, [
+    return new UntypedFormGroup({
+      'fieldId': new UntypedFormControl(fieldId, [
         Validators.required
       ]),
-      'nrOfStmts': new FormControl(nrOfStmts, [
+      'nrOfStmts': new UntypedFormControl(nrOfStmts, [
         Validators.required,
         Validators.min(1),
         Validators.max(5)

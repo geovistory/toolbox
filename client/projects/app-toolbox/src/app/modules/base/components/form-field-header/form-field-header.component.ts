@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { Field, FieldTargetClass } from '@kleiolab/lib-queries';
 import { equals, values } from 'ramda';
 import { first } from 'rxjs/operators';
@@ -22,7 +22,7 @@ export class FormFieldHeaderComponent implements OnInit {
 
   @Input() formArrayFactory: LocalFormArrayFactory;
   @Input() formField: FormField;
-  @Input() control: FormArray;
+  @Input() control: UntypedFormArray;
   @Input() length: number;
   @Input() maxLength: number;
 

@@ -1,4 +1,4 @@
-import { FormGroup } from '@angular/forms';
+import { UntypedFormGroup } from '@angular/forms';
 import { asyncScheduler, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { FormArrayConfig } from '../services/FormArrayConfig';
@@ -16,7 +16,7 @@ import { AbstractControlFactory, FactoryType } from './form-factory.models';
  */
 export class FormGroupFactory extends AbstractControlFactory {
   factoryType: FactoryType = 'group';
-  control: FormGroup
+  control: UntypedFormGroup
   child?: FormArrayFactory<any, any, any>;
 
   config: FormGroupConfig<any>

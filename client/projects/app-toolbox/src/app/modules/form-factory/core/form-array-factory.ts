@@ -1,5 +1,5 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { FormArray, FormGroup } from '@angular/forms';
+import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject, combineLatest, merge, Observable, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { FormArrayConfig } from '../services/FormArrayConfig';
@@ -25,7 +25,7 @@ export interface ParentFactory<C, A, Ch> {
 export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
 
   factoryType: FactoryType = 'array';
-  control: FormArray
+  control: UntypedFormArray
   children: FormArrayChild<C, A, Ch>[] = []
 
   childConfigs: FormNodeConfig<any, any, any, any>[] = []
@@ -193,7 +193,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
     else if (f.childFactory) {
       const count = 0;
       f.childFactory.control$.pipe(takeUntil(this.globalConfig.destroy$))
-        .subscribe((portalControl: FormGroup) => {
+        .subscribe((portalControl: UntypedFormGroup) => {
           count === 0 ?
             this.control.insert(i, portalControl) :
             this.control.setControl(i, portalControl)

@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { InfActions, ReduxMainService, textPropertyByFksWithoutLang } from '@kleiolab/lib-redux';
 import { InfLanguage, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
@@ -42,10 +42,10 @@ export class PropertyLabelTableComponent implements OnInit, OnDestroy {
   dataSource = new MatTableDataSource<Row>()
   displayedColumns = ['label', 'language', 'actions'];
 
-  labelCtrl = new FormControl('', [Validators.required])
-  languageCtrl = new FormControl(null, [Validators.required])
+  labelCtrl = new UntypedFormControl('', [Validators.required])
+  languageCtrl = new UntypedFormControl(null, [Validators.required])
   // typeCtrl = new FormControl('singular', [Validators.required])
-  form: FormGroup = this.fb.group({
+  form: UntypedFormGroup = this.fb.group({
     labelCtrl: this.labelCtrl,
     langugageCtrl: this.languageCtrl,
     // typeCtrl: this.typeCtrl
@@ -54,7 +54,7 @@ export class PropertyLabelTableComponent implements OnInit, OnDestroy {
   constructor(
     private p: ActiveProjectService,
     private dataService: ReduxMainService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private inf: InfActions
   ) { }
 

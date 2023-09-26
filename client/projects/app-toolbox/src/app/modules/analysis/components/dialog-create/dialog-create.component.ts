@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export interface DialogCreateData {
   title: string
@@ -20,14 +20,14 @@ export interface DialogCreateResult {
 })
 export class DialogCreateComponent {
 
-  formGroup: FormGroup
+  formGroup: UntypedFormGroup
   constructor(public dialogRef: MatDialogRef<DialogCreateComponent, DialogCreateResult>,
     @Inject(MAT_DIALOG_DATA) public data: DialogCreateData) {
     const name = data ? data.name : null;
     const description = data ? data.description : null;
-    this.formGroup = new FormGroup({
-      name: new FormControl(name, Validators.required),
-      description: new FormControl(description)
+    this.formGroup = new UntypedFormGroup({
+      name: new UntypedFormControl(name, Validators.required),
+      description: new UntypedFormControl(description)
     })
   }
 

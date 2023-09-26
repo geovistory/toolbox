@@ -1,6 +1,6 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormControl, FormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, UntypedFormControl, UntypedFormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { PropertyOption, PropertySelectModel } from '@kleiolab/lib-queries';
 import { QueryFilter } from '@kleiolab/lib-sdk-lb4';
@@ -158,7 +158,7 @@ export class PropertySelectComponent extends PropertySelectMatControl implements
 
   @Input() options$: Observable<PropertyOption[]>;
 
-  @Input() rootFormGroup: FormGroup;
+  @Input() rootFormGroup: UntypedFormGroup;
 
   @Input()
   get value(): PropertySelectModel | null {
@@ -185,7 +185,7 @@ export class PropertySelectComponent extends PropertySelectMatControl implements
   @Output() selectionChanged = new EventEmitter<PropertyOption[]>();
   @Output() modelChanged = new EventEmitter<QueryFilter>();
 
-  control = new FormControl();
+  control = new UntypedFormControl();
 
   keys$ = new BehaviorSubject<string[]>([])
 

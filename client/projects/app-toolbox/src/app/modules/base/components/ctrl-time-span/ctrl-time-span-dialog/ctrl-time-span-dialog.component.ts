@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
@@ -32,7 +32,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit, OnDestroy {
   helpMode$ = new BehaviorSubject<ExTimeHelpMode>('hidden');
   mode$ = new BehaviorSubject<ExTimeModalMode>('one-date')
 
-  formGroup: FormGroup;
+  formGroup: UntypedFormGroup;
   fieldDefinitions$: Observable<ByPk<Field>>
 
   formDef$ = new BehaviorSubject<TimeSpanFormDef>(null)
@@ -52,7 +52,7 @@ export class CtrlTimeSpanDialogComponent implements OnInit, OnDestroy {
   constructor(public dialogRef: MatDialogRef<CtrlTimeSpanDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: CtrlTimeSpanDialogData,
     protected validationService: ValidationService,
-    protected fb: FormBuilder,
+    protected fb: UntypedFormBuilder,
     private c: ConfigurationPipesService,
     private p: ActiveProjectService
   ) {

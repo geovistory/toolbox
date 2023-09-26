@@ -1,6 +1,6 @@
 import { CdkPortalOutlet, ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { ComponentRef, InjectionToken } from '@angular/core';
-import { AbstractControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, first, switchMap, takeUntil } from 'rxjs/operators';
 import { FormChildFactoryConfig } from '../services/FormChildFactoryConfig';
@@ -16,7 +16,7 @@ export const CONTAINER_DATA = new InjectionToken<{}>('CONTAINER_DATA');
 export class FormChildFactory<Ch> extends AbstractControlFactory {
   factoryType: FactoryType = 'childFactory';
 
-  public control: FormGroup
+  public control: UntypedFormGroup
   public control$ = new Subject<AbstractControl>()
   public portal: ComponentPortal<ComponentRef<any>>
   private validators: ValidatorFn[]

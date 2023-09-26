@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, WarSelector } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfResource, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
@@ -144,7 +144,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
       const value: InfData = this.createEntity.formFactory.formGroupFactory.valueChanges$.value
       this.dialogRef.close(value)
     } else {
-      const f = this.createEntity.formFactory.formGroup.controls.childControl as FormArray;
+      const f = this.createEntity.formFactory.formGroup.controls.childControl as UntypedFormArray;
       U.recursiveMarkAsTouched(f)
     }
   }

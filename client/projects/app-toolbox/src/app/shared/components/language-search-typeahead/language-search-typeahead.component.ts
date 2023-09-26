@@ -1,5 +1,5 @@
 import { Component, EventEmitter, forwardRef, Input, OnInit, Output } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { InfLanguage, LanguagesService } from '@kleiolab/lib-sdk-lb4';
 import { Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, merge, switchMap, tap } from 'rxjs/operators';
@@ -35,17 +35,17 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
 
   searchTerm$ = new Subject<string>();
 
-  formGroup: FormGroup;
+  formGroup: UntypedFormGroup;
 
-  formControl: FormControl;
+  formControl: UntypedFormControl;
 
   onChangeRegistered = false;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private languageApi: LanguagesService
   ) {
-    function validateLanguage(c: FormControl) {
+    function validateLanguage(c: UntypedFormControl) {
 
       // if no lang or just a string
       if (!c.value || typeof c.value === 'string') {
@@ -63,7 +63,7 @@ export class LanguageSearchTypeaheadComponent implements OnInit, ControlValueAcc
 
     }
 
-    this.formControl = new FormControl(
+    this.formControl = new UntypedFormControl(
       this.language,
       [
         validateLanguage

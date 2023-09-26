@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatRadioChange } from '@angular/material/radio';
 import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
@@ -47,8 +47,8 @@ export class ColMappingComponent implements OnInit, OnDestroy {
   pkStatements: Array<number> = []
 
   // form controls
-  selectedClassCtrl = new FormControl('', [Validators.required]);
-  form = new FormGroup({ selectedClassCtrl: this.selectedClassCtrl });
+  selectedClassCtrl = new UntypedFormControl('', [Validators.required]);
+  form = new UntypedFormGroup({ selectedClassCtrl: this.selectedClassCtrl });
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { colLabel: string, pkColumn: number, mapping: ColumnMapping, pkCells: Array<number> },

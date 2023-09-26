@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
@@ -29,7 +29,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
 
   showExactReference$: Observable<boolean>
 
-  referenceCtrl = new FormControl()
+  referenceCtrl = new UntypedFormControl()
 
   ramFormValue$: Observable<InfStatement | undefined>;
 

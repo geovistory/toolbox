@@ -1,6 +1,6 @@
 import { ValidationService } from './validation.service';
 import { Directive, Input, NgModule, forwardRef, Attribute } from '@angular/core';
-import { NG_VALIDATORS, Validator, FormGroup, AbstractControl } from '@angular/forms';
+import { NG_VALIDATORS, Validator, UntypedFormGroup, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 
@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   providers: [{ provide: NG_VALIDATORS, useExisting: AppellationValidatorDirective, multi: true }]
 })
 export class AppellationValidatorDirective implements Validator {
-  @Input() validAppellation: { [key: string]: FormGroup }
+  @Input() validAppellation: { [key: string]: UntypedFormGroup }
 
   validate(control: AbstractControl): { [key: string]: any } | null {
     return ValidationService.appellationValidator()(control);
@@ -21,7 +21,7 @@ export class AppellationValidatorDirective implements Validator {
   providers: [{ provide: NG_VALIDATORS, useExisting: NoInvalidChildrenDirective, multi: true }]
 })
 export class NoInvalidChildrenDirective implements Validator {
-  @Input() gvNoInvalidChildren: { [key: string]: FormGroup }
+  @Input() gvNoInvalidChildren: { [key: string]: UntypedFormGroup }
   validate(control: AbstractControl): { [key: string]: any } | null {
     return ValidationService.noInvalidChildrenValidator(this.gvNoInvalidChildren)(control);
   }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractControl, UntypedFormGroup, ValidatorFn } from '@angular/forms';
 import { TimePrimitive } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
 import { isValidQuillDoc } from '../quill-doc-validation/validate-quill-doc';
@@ -108,7 +108,7 @@ export class ValidationService {
   * @param {string} byField  Name of field that requires other fields
   */
   requiredBy(requiredFields: string[], byField: string): Function {
-    return (formGroup: FormGroup): void => {
+    return (formGroup: UntypedFormGroup): void => {
 
       // field that requires other fields
       const f = formGroup.controls[byField];
@@ -147,7 +147,7 @@ export class ValidationService {
   * @param {string} secondLabel Laebel for the second field value
   */
   cantBeginBeforeBegin(first: string, firstLabel: string, second: string, secondLabel: string): Function {
-    return (formGroup: FormGroup): void => {
+    return (formGroup: UntypedFormGroup): void => {
 
       const firstField = formGroup.controls[first];
       const secondField = formGroup.controls[second];
@@ -195,7 +195,7 @@ export class ValidationService {
   * @param {string} secondLabel Laebel for the second field value
   */
   cantEndBeforeEnd(first: string, firstLabel: string, second: string, secondLabel: string): Function {
-    return (formGroup: FormGroup): void => {
+    return (formGroup: UntypedFormGroup): void => {
 
       const firstField = formGroup.controls[first];
       const secondField = formGroup.controls[second];
@@ -243,7 +243,7 @@ export class ValidationService {
   * @param {string} secondLabel Laebel for the second field value
   */
   mustBeginBeforeEnd(first: string, firstLabel: string, second: string, secondLabel: string): Function {
-    return (formGroup: FormGroup): void => {
+    return (formGroup: UntypedFormGroup): void => {
 
       const firstField = formGroup.controls[first];
       const secondField = formGroup.controls[second];

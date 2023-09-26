@@ -1,5 +1,5 @@
 
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { CtrlTimeSpanDialogResult, Field, FieldTargetClass } from '@kleiolab/lib-queries';
 import { InfAppellation, InfLangString, InfLanguage, InfPlace, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
@@ -47,7 +47,7 @@ export class FormPart {
    * @param mergeDef TODO: this is probably on the wrong level, belongs to the parent instead
    */
   constructor(
-    public formGroup: FormGroup,
+    public formGroup: UntypedFormGroup,
     public title: string,
     public field: Field,
     public targetClass: number,
@@ -128,7 +128,7 @@ export class FormPart {
     const formControlName = U.uuid();
 
     const validators = this.isRequired(field) ? [Validators.required] : []
-    const formControl = new FormControl(initialValue, validators);
+    const formControl = new UntypedFormControl(initialValue, validators);
     this.formGroup.addControl(formControlName, formControl);
     setTimeout(() => {
       formControl.setValue(initialValue)

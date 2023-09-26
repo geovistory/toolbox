@@ -1,6 +1,6 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
-import { ControlValueAccessor, FormBuilder, FormGroup, NgControl, Validators } from '@angular/forms';
+import { ControlValueAccessor, UntypedFormBuilder, UntypedFormGroup, NgControl, Validators } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
@@ -64,7 +64,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   timeInputsVisible = false;
   calendarGivenByWriteValue: boolean
 
-  form: FormGroup;
+  form: UntypedFormGroup;
 
   get empty() {
     return this.model ? false : true;
@@ -147,7 +147,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private validationService: ValidationService,
   ) {
     if (this.ngControl != null) {
@@ -333,7 +333,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   */
   validateForm(component: CtrlTimePrimitiveComponent): Function {
 
-    return (fg: FormGroup): void => {
+    return (fg: UntypedFormGroup): void => {
 
       // get fields
       const yearField = fg.controls['year'];

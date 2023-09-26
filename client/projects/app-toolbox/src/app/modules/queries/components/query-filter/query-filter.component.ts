@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
-import { ControlValueAccessor, FormArray, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, UntypedFormArray, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from "@kleiolab/lib-queries";
 import { QueryFilter, QueryFilterData } from "@kleiolab/lib-sdk-lb4";
 import { U } from "@kleiolab/lib-utils";
@@ -392,7 +392,7 @@ export class QueryFilterComponent implements OnInit, OnDestroy, AfterViewInit, C
   }
 
   markAllAsTouched() {
-    const f = this.formFactory.formGroup.controls.childControl as FormArray;
+    const f = this.formFactory.formGroup.controls.childControl as UntypedFormArray;
     U.recursiveMarkAsTouched(f)
   }
 

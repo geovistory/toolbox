@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatementWithRelations, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
@@ -37,9 +37,9 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
   @ViewChild('langString') langString: FgLangStringComponent;
   @ViewChild('dimension') dimension: FgDimensionComponent;
   dimension_label?: string;
-  appellation = new FormControl('');
-  timeprimitive = new FormControl('');
-  language = new FormControl('');
+  appellation = new UntypedFormControl('');
+  timeprimitive = new UntypedFormControl('');
+  language = new UntypedFormControl('');
 
   initValPlace$: Observable<InfPlace>
   initValDimension$: Observable<InfDimension>

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormArray } from '@angular/forms';
+import { UntypedFormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, SysSelector, TableName } from '@kleiolab/lib-queries';
@@ -626,15 +626,15 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
                 placeholder: f.label,
                 required: required ? true : this.ctrlRequired(f),
                 validators: [
-                  (control: FormArray): { [key: string]: any } | null => {
+                  (control: UntypedFormArray): { [key: string]: any } | null => {
                     const length = sum(
-                      control.controls.map((ctrl: FormArray) => ctrl.controls
+                      control.controls.map((ctrl: UntypedFormArray) => ctrl.controls
                         .filter(c => c.status === 'VALID').length))
                     return length >= minLength
                       ? null : { 'minLength': { value: control.value, minLength } }
                   },
-                  (control: FormArray): { [key: string]: any } | null => {
-                    const length = sum(control.controls.map((ctrl: FormArray) => ctrl.controls.length))
+                  (control: UntypedFormArray): { [key: string]: any } | null => {
+                    const length = sum(control.controls.map((ctrl: UntypedFormArray) => ctrl.controls.length))
                     return length <= maxLength
                       ? null : { 'maxLength': { value: control.value, maxLength } }
                   }
@@ -1101,7 +1101,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   checkValidation(): boolean {
     this.submitted = true
     if (!this.formFactory.formGroup.valid) {
-      const f = this.formFactory.formGroup.controls.childControl as FormArray;
+      const f = this.formFactory.formGroup.controls.childControl as UntypedFormArray;
       U.recursiveMarkAsTouched(f)
     }
 

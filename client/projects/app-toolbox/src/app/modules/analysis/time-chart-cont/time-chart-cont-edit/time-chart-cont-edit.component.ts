@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { AnalysisTimeChartRequest, AnalysisTimeChartResponse } from '@kleiolab/lib-sdk-lb4';
@@ -23,7 +23,7 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
   teEnClasses$: Observable<number[]>
   // initVal$ = new Subject<FilterDefinition>()
-  queryFilter = new FormControl()
+  queryFilter = new UntypedFormControl()
   @ViewChild('c') formComponent: TimeChartContFormComponent
   // filter$ = new BehaviorSubject<FilterDefinition>(null);
 

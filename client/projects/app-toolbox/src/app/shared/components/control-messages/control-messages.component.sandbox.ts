@@ -1,8 +1,8 @@
 import { sandboxOf } from 'angular-playground';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { ControlMessagesComponent } from './control-messages.component';
 
-let minError = new FormControl();
+let minError = new UntypedFormControl();
 minError.setErrors({min:{min:12}})
 minError.markAsTouched();
 

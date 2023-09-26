@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { InfAppellationWithRelations, InfLanguage, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
@@ -43,8 +43,8 @@ export class FgTextWithLangComponent implements OnInit, OnDestroy, AfterViewInit
   formFactory: FormFactory;
 
   ctrls: {
-    text: FormControl,
-    lang: FormControl,
+    text: UntypedFormControl,
+    lang: UntypedFormControl,
   }
   placeholders: {
     text: string,
