@@ -70,7 +70,7 @@
     "lodash": "^4.17.15",
     "lodash.get": "^4.4.2",
     "ngx-auto-unsubscribe": "^2.4.1",
-    "ngx-drag-drop": "^13.0.0",
+    "ngx-drag-drop": "^15.1.0",
     "ngx-file-drop": "^13.0.0",
     "ngx-socket-io": "^4.3.0",
     "primeng": "^14.2.3",
