@@ -7,7 +7,6 @@ import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '
 import { equals, flatten, uniq, values } from 'ramda';
 import { combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-import { spyTag } from '../decorators/method-decorators';
 import { AddMenuClassOrTypeItem } from '../models/AddMenuClassOrTypeItem';
 import { ClassAndTypeNode } from '../models/ClassAndTypeNode';
 import { ClassAndTypeSelectModel } from '../models/ClassAndTypeSelectModel';
@@ -182,7 +181,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
 
   }
 
-  @spyTag
+  // @spyTag
   // @cache({ refCount: false })
   pipeClassesAndTypesOfClasses(classes: number[]) {
     const obs$ = this.c.pipeTypeAndTypedClassesOfTypedClasses(classes).pipe(

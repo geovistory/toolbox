@@ -13,7 +13,6 @@ import { ReduxModule } from '@kleiolab/lib-redux';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsConfig, SocketsModule, SOCKETS_CONFIG } from '@kleiolab/lib-sockets';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { DndModule } from '@suez/ngx-dnd';
 import { AngularSplitModule } from 'angular-split';
 import { ElasticInputModule } from 'angular2-elastic-input';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
@@ -73,7 +72,6 @@ registerLocaleData(localeDeCh);
     NgReduxModule,
     NgbModule,
     ElasticInputModule.forRoot(),
-    DndModule.forRoot(),
     AngularSplitModule.forRoot(),
     CookiesModule.forRoot(),
 

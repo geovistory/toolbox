@@ -1,4 +1,3 @@
-import { tag } from 'rxjs-spy/operators';
 import { shareReplay } from 'rxjs/operators';
 
 export interface CacheOptions {
@@ -40,17 +39,3 @@ export const cache = (options?: CacheOptions) => (target, propertyKey: string, d
   };
   return descriptor;
 }
-
-
-export function spyTag(target, propertyKey, descriptor) {
-  const originalFunction = descriptor.value;
-  descriptor.value = function (...request) {
-    const boundOriginalFunction = originalFunction.bind(this)
-    return boundOriginalFunction(...request).pipe(
-      tag(`${target.constructor.name}::${propertyKey}::${request.join(':')}`)
-    )
-  };
-  return descriptor;
-}
-
-

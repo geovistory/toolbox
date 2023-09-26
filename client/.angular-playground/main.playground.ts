@@ -15,7 +15,6 @@ import { SocketsModule } from '@kleiolab/lib-sockets';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PlaygroundModule } from 'angular-playground';
 import { AngularSplitModule } from 'angular-split';
-import { ElasticInputModule } from 'angular2-elastic-input';
 import { buildModuleUrl, Ion } from 'cesium';
 import { SocketIoModule } from 'ngx-socket-io';
 import { BasicModule } from '../projects/app-toolbox/src/app/core/basic/basic.module';
@@ -66,7 +65,6 @@ platformBrowserDynamic().bootstrapModule(PlaygroundModule
       NgReduxRouterModule,
       NgReduxModule,
       NgbModule,
-      ElasticInputModule.forRoot(),
       AngularSplitModule.forRoot(),
       CookiesModule.forRoot(),
 
