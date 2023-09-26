@@ -1,9 +1,11 @@
 import {Constructor, Context} from '@loopback/context';
 import * as http from 'http';
-import {Server, ServerOptions, Socket} from 'socket.io';
+import {Server, Socket} from 'socket.io';
+import {SysStatusController, WarEntityPreviewController} from '../../controllers';
+import {ImportTableController} from '../../controllers/import-table.controller';
+import {FieldChangeController} from '../../controllers/project-data/field-change.controller';
 import {getWebSocketMetadata} from '../../decorators/websocket.decorator';
 import {WebSocketControllerFactory} from './websocket-controller-factory';
-import SocketIOServer = require('socket.io');
 
 const debug = require('debug')('loopback:websocket');
 
@@ -21,11 +23,20 @@ export class WebSocketServer extends Context {
 
   constructor(
     private ctx: Context,
-    // public readonly httpServer: HttpServer,
-    private options: ServerOptions = {},
+    server: http.Server,
   ) {
     super();
-    this.io = SocketIOServer(options);
+    this.io = new Server(server, {
+      cors: {
+        origin: "http://localhost:4200"
+      }
+    });
+    this.setupRoutes();
+    server.on("close", () => {
+      this.stop()
+        .then(() => this.log("Closed Socket Server"))
+        .catch((e) => this.log(e))
+    })
   }
 
   /**
@@ -68,29 +79,54 @@ export class WebSocketServer extends Context {
         socket,
       );
     });
+    nsp.use((socket, next) => {
+      this.log(
+        'Middleware for namespace %s - socket: %s',
+        socket.nsp.name,
+        socket.id,
+      );
+      next();
+    });
     return nsp;
   }
 
   /**
-   * Start the websocket server
+   * Setup routes
    */
-  async start(server: http.Server) {
-    // await this.httpServer.start();
-    // FIXME: Access HttpServer.server
-    // const server = (this.httpServer as any).server;
-    this.io.attach(server, this.options);
+  private setupRoutes() {
+    this.use((socket, next) => {
+      this.log('Global middleware - socket:', socket.id);
+      next();
+    });
+
+    // Add a ws route to WarEntityPreviewController
+    this.route(WarEntityPreviewController, /^\/WarEntityPreview/)
+
+    // Add a ws route to ImportTableController
+    this.route(ImportTableController, /^\/ImportTable/)
+
+    // Add a ws route to SystemStatusController
+    this.route(SysStatusController, /^\/SysStatus/)
+
+    // Add a ws route to FieldChangeController
+    this.route(FieldChangeController, /^\/FieldChange/)
+
   }
 
   /**
    * Stop the websocket server
    */
-  async stop() {
+  private async stop() {
     const close = new Promise<void>((resolve, reject) => {
       this.io.close(() => {
         resolve();
       });
     });
     await close;
-    // await this.httpServer.stop();
+  }
+
+  private log(msg: string, ...params: string[]) {
+    if (process.env.NO_LOGS === 'true') return;
+    console.log(msg, ...params)
   }
 }

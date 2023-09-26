@@ -2806,6 +2806,10 @@ a.mat-menu-item > mat-icon {
   .p-datatable {
     background: mat.get-color-from-palette($background, "card");
 
+    .p-datatable-table {
+      border-collapse: separate;
+    }
+
     .p-datatable-thead {
       tr {
         height: 56px;
@@ -2842,7 +2846,7 @@ a.mat-menu-item > mat-icon {
     .p-datatable-tfoot > tr > td {
       color: mat.get-color-from-palette($foreground, secondary-text);
       padding: 0;
-      border-top-width: 1px;
+      border-top-width: 0.5px;
       border-top-style: solid;
       border-top-color: mat.get-color-from-palette($foreground, divider);
     }
@@ -2855,11 +2859,21 @@ a.mat-menu-item > mat-icon {
   td,
   .p-datatable-scrollable-header-box {
     padding: 0;
-    border-bottom-width: 1px;
+    border-bottom-width: 0.5px;
     border-bottom-style: solid;
     border-bottom-color: mat.get-color-from-palette($foreground, divider);
   }
-
+  .p-datatable-gridlines .p-datatable-tbody > tr > td,
+  .p-datatable-gridlines .p-datatable-thead > tr > th {
+    border-width: 0.5px;
+    border-style: solid;
+  }
+  .p-datatable-gridlines .p-datatable-tbody > tr > td {
+    border-color: mat.get-color-from-palette($foreground, divider);
+  }
+  .p-datatable-gridlines .p-datatable-thead > tr > th {
+    border-color: #d9dadc;
+  }
   .p-datatable-dragpoint-bottom {
     border-bottom-width: 3px;
     border-bottom-style: solid;

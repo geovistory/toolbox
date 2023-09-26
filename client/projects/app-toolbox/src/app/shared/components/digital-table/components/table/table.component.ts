@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GetTablePageOptions, SysConfigValue, SysConfigValueObjectType, TabCell, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -66,7 +66,7 @@ export interface TableColFilter {
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class TableComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   // mandatory inputs
@@ -161,27 +161,27 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewChecked {
   }
 
 
-  ngAfterViewChecked(): void {
-    if (!this.target) {
-      const pTableContainer = document.getElementById('scrollAccess') as HTMLElement;
-      if (!pTableContainer) return;
-      this.target = pTableContainer.getElementsByClassName('p-datatable-scrollable-body')[0];
+  // ngAfterViewChecked(): void {
+  //   if (!this.target) {
+  //     const pTableContainer = document.getElementById('scrollAccess') as HTMLElement;
+  //     if (!pTableContainer) return;
+  //     this.target = pTableContainer.getElementsByClassName('p-datatable-scrollable-body')[0];
 
-      let timeout;
-      this.target.addEventListener('scroll', () => {
-        this.scrolling = true;
-        window.clearTimeout(timeout);
-        timeout = setTimeout(() => {
-          this.scrollTop = this.target.scrollTop;
-          this.scrollLeft = this.target.scrollLeft;
-          this.scrolling = false;
-        }, 66);
-      });
-    } else if (!this.scrolling) {
-      this.target.scrollTop = this.scrollTop;
-      this.target.scrollLeft = this.scrollLeft;
-    }
-  }
+  //     let timeout;
+  //     this.target.addEventListener('scroll', () => {
+  //       this.scrolling = true;
+  //       window.clearTimeout(timeout);
+  //       timeout = setTimeout(() => {
+  //         this.scrollTop = this.target.scrollTop;
+  //         this.scrollLeft = this.target.scrollLeft;
+  //         this.scrolling = false;
+  //       }, 66);
+  //     });
+  //   } else if (!this.scrolling) {
+  //     this.target.scrollTop = this.scrollTop;
+  //     this.target.scrollLeft = this.scrollLeft;
+  //   }
+  // }
 
   ngOnDestroy() {
     this.destroy$.next(true);

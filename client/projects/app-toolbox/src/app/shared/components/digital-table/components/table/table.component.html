@@ -7,9 +7,8 @@
 
   <!-- TABLE -->
   <span id="scrollAccess" style="width: 100%; height: 100%">
-    <p-table [value]="table" [scrollable]="true" [resizableColumns]="true" columnResizeMode="expand"
-      class="gv-p-datatable-full-height gv-p-datatable-border-cells"
-      [ngClass]="{'mat-border-edit-mode': !(readmode$|async)}">
+    <p-table [value]="table" [scrollable]="true" scrollHeight="flex" [resizableColumns]="true" columnResizeMode="expand"
+      class="p-datatable-gridlines" [ngClass]="{'mat-border-edit-mode': !(readmode$|async)}">
 
       <!-- Header params for prime-ng -->
       <ng-template pTemplate="colgroup">
@@ -28,8 +27,10 @@
         <tr>
           <ng-container *ngFor="let col of headers; let i = index">
             <ng-container *ngIf="!col.mapping">
-              <th class="gv-pointer gv-td-col-header" [ngClass]="{'mat-bg-grey-100': i==0 && origin !='importer'}"
-                colspan="1">
+              <th class="gv-pointer gv-td-col-header" [ngClass]="{
+                'mat-bg-grey-100': i==0 && origin !='importer',
+                'mat-bg-white': i>0
+              }" colspan="1">
                 <!-- Column title-->
                 <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column" (click)="sort(i)"
@@ -59,7 +60,7 @@
             </ng-container>
 
             <ng-container *ngIf="col.mapping">
-              <th class="gv-pointer gv-td-col-header" colspan="2">
+              <th class="mat-bg-white gv-pointer gv-td-col-header" colspan="2">
                 <!-- Column title-->
                 <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column" (click)="sort(i)"
@@ -91,12 +92,15 @@
         <tr *ngIf="isThereMappings$ | async">
           <ng-container *ngFor="let col of headers; let i = index">
             <ng-container *ngIf="!col.mapping">
-              <th [ngClass]="{'mat-bg-grey-100': i==0}" class="text-center mat-caption" pResizableColumn colspan="1">
+              <th [ngClass]="{
+            'mat-bg-grey-100': i==0,
+            'mat-bg-white': i>0
+          }" class="text-center mat-caption" pResizableColumn colspan="1">
               </th>
             </ng-container>
 
             <ng-container *ngIf="col.mapping">
-              <th class="text-center mat-caption" pResizableColumn colspan="1">
+              <th class="text-center mat-caption mat-bg-white" pResizableColumn colspan="1">
                 text
               </th>
               <th class="text-center mat-caption mat-bg-grey-50" pResizableColumn colspan="1">
@@ -114,8 +118,8 @@
         <!-- FILTERING ROW-->
         <tr class="table-row-filter" *ngIf="filteringEnabled">
           <ng-container *ngFor="let col of headers; let i = index">
-            <th [attr.colSpan]="col.mapping ? 2 : 1" [ngClass]="{'mat-bg-grey-100': i==0}">
-              <div class="mat-elevation-z3 gv-td-filter-box p-1" *ngIf="i != 0">
+            <th [attr.colSpan]="col.mapping ? 2 : 1" [ngClass]="{'mat-bg-grey-100': i==0, 'mat-bg-white': i>0}">
+              <div class="gv-td-filter-box p-1" *ngIf="i != 0">
                 <gv-col-filter-text *ngIf="col.type=='string'" (filterChange)="filter(i, $event)">
                 </gv-col-filter-text>
                 <gv-col-filter-numeric *ngIf="col.type=='number'" (filterChange)="filter(i, $event)">
@@ -125,11 +129,10 @@
           </ng-container>
         </tr>
 
-
         <!-- NEW TEMPROW for creating a new one -->
         <tr *ngIf="origin !='importer' && newRow.position >= 0">
           <ng-container *ngFor="let value of newRow.cells; let j = index">
-            <td *ngIf="j != 0">
+            <td class="mat-bg-white" *ngIf="j != 0">
               <div style="display: flex; justify-content: center;">
                 <mat-form-field appearance="outline" style="width: 95%; margin-bottom: -1.25em">
                   <input matInput type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text"
@@ -137,7 +140,7 @@
                 </mat-form-field>
               </div>
             </td>
-            <td *ngIf="j == 0">
+            <td class="mat-bg-white" *ngIf="j == 0">
               <div style="display: flex; justify-content: center; min-height: 40px;">
                 New row at position {{value.text}}
               </div>
@@ -155,7 +158,6 @@
             <td *ngIf="doesColumnHasMapping(value.pkColumn)" class="mat-bg-grey-100"></td>
           </ng-container>
         </tr>
-
       </ng-template>
 
       <!-- BODY -->

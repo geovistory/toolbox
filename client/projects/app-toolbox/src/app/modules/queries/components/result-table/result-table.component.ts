@@ -106,7 +106,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
       let count = 0
       if (res && count === 0) {
         setTimeout(() => {
-          this.table.scrollableViewChild.virtualScrollBody.checkViewportSize()
+          // this.table.scrollableViewChild.virtualScrollBody.checkViewportSize()
         }, 100)
         count++;
       }
