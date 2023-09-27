@@ -1,6 +1,6 @@
 
 
-import {PK_PROJECT_OF_TEMPLATE_PROJECT, PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__DESCRIPTION, PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__LABEL} from '../../config';
+import {PK_PROJECT_OF_TEMPLATE_PROJECT, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_DESCRIPTION, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_LABEL} from '../../config';
 import {Postgres1DataSource} from '../../datasources';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
@@ -30,7 +30,7 @@ export class QCreateProject extends SqlBuilderLb4Models {
           pk_entity,
           pk_entity,
           ${this.addParam(description)},
-          ${this.addParam(PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__DESCRIPTION)},
+          ${this.addParam(PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_DESCRIPTION)},
           ${this.addParam(pkLanguage)}
         FROM insert_project
       )`;
@@ -50,7 +50,7 @@ export class QCreateProject extends SqlBuilderLb4Models {
         pk_entity,
         pk_entity,
         ${this.addParam(label)},
-        ${this.addParam(PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__LABEL)},
+        ${this.addParam(PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_LABEL)},
         ${this.addParam(pkLanguage)}
       FROM insert_project
       ON CONFLICT DO NOTHING

@@ -31,30 +31,45 @@ export class ActiveAccountPipes extends PipeCache<ActiveAccountPipes> {
       }))
     )
   }
-  getProjectLanguageLabel(proProject: ProProject): Observable<String> {
+  getProjectLanguageLabel(proProject: ProProject): Observable<string> {
     return this.s.inf$.language$.by_pk_entity$.key(proProject.fk_language)
       .pipe(
         map(l => l.notes)
       )
   }
 
-  getProjectLabel(projectId: number): Observable<String> {
-    return this.s.pro$.text_property$.by_fks_without_lang$.key(textPropertyByFksWithoutLang({
-      fk_project: projectId,
-      fk_pro_project: projectId,
-      fk_system_type: SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL,
-    })).pipe(
-      map(l => values(l)?.[0]?.string)
-    )
-  }
-  getProjectDescription(projectId: number): Observable<String> {
-    return this.s.pro$.text_property$.by_fks_without_lang$.key(textPropertyByFksWithoutLang({
-      fk_project: projectId,
-      fk_pro_project: projectId,
-      fk_system_type: SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION,
-    })).pipe(
-      map(l => values(l)?.[0]?.string)
-    )
+  getProjectLabel(projectId: number): Observable<string> {
+    return this.getTextPropAboutProject(projectId, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL)
   }
 
+  getProjectDescription(projectId: number): Observable<string> {
+    return this.getTextPropAboutProject(projectId, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION)
+  }
+
+
+  getProjectBtn1Label(projectId: number): Observable<string> {
+    return this.getTextPropAboutProject(projectId, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__BTN_1_LABEL)
+  }
+
+  getProjectBtn2Label(projectId: number): Observable<string> {
+    return this.getTextPropAboutProject(projectId, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__BTN_2_LABEL)
+  }
+
+  getProjectBtn1Url(projectId: number): Observable<string> {
+    return this.getTextPropAboutProject(projectId, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__BTN_1_URL)
+  }
+
+  getProjectBtn2Url(projectId: number): Observable<string> {
+    return this.getTextPropAboutProject(projectId, SysConfig.PK_SYSTEM_TYPE__TEXT_PROPERTY__BTN_2_URL)
+  }
+
+  private getTextPropAboutProject(projectId: number, fkSystemType: number): Observable<string> {
+    return this.s.pro$.text_property$.by_fks_without_lang$.key(textPropertyByFksWithoutLang({
+      fk_project: projectId,
+      fk_pro_project: projectId,
+      fk_system_type: fkSystemType
+    })).pipe(
+      map(l => values(l)?.[0]?.string)
+    );
+  }
 }

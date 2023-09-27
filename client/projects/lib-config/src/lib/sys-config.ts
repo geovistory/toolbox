@@ -51,6 +51,11 @@ export class SysConfig {
   static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DEFINITION = 179;
   static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__LABEL = 639;
   static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__DESCRIPTION = 638;
+  static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__BTN_1_LABEL = 3509;
+  static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__BTN_1_URL = 3510;
+  static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__BTN_2_LABEL = 3511;
+  static readonly PK_SYSTEM_TYPE__TEXT_PROPERTY__BTN_2_URL = 3512;
+
   static readonly PK_SYSTEM_TYPE__LABEL_FOR_DFH_CLASS = 184;
 
   static readonly PK_SYSTEM_TYPE__LABEL_FOR_DATA = 3295;

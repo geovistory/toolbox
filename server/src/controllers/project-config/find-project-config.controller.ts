@@ -6,7 +6,7 @@ import {repository} from '@loopback/repository';
 import {get, HttpErrors, param} from '@loopback/rest';
 import {uniq} from 'ramda';
 import {Roles} from '../../components/authorization';
-import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH} from '../../config';
+import {PK_DEFAULT_CONFIG_PROJECT, PK_ENGLISH, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_LABEL, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_URL, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_LABEL, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_URL, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_DESCRIPTION, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_LABEL} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
 import {logAsyncPerformance} from '../../decorators/logAsyncPerformance.decorator';
 import {GvSchemaModifier} from '../../models/gv-schema-modifier.model';
@@ -213,8 +213,19 @@ export class FindProjectConfigController {
       where: {
         and: [
           {fk_project: pkProject}, // ...of project, and
-          {fk_pro_project: pkProject}, // ...of default config project...
-          {fk_system_type: {inq: [639, 638]}} // label and description
+          {fk_pro_project: pkProject}, // ...about project...
+          {
+            fk_system_type: {
+              inq: [
+                PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_LABEL,
+                PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_DESCRIPTION,
+                PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_LABEL,
+                PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_URL,
+                PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_LABEL,
+                PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_URL,
+              ]
+            }
+          }
         ]
       }
     });

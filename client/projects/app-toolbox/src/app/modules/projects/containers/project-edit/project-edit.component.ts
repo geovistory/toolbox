@@ -50,6 +50,11 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
   projectId: number;
   projectLabel$: Observable<String>;
 
+  btn1Label$: Observable<string>
+  btn1Url$: Observable<string>
+  btn2Label$: Observable<string>
+  btn2Url$: Observable<string>
+
   constructor(
     public p: ActiveProjectService,
     private a: ActiveAccountPipes,
@@ -58,7 +63,12 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
   ) {
 
     this.projectId = parseInt(this.activatedRoute.snapshot.params['pkActiveProject']);
-    const storagePrefix = 'Geovistory-Panels-Project-';
+    this.btn1Label$ = this.a.getProjectBtn1Label(this.projectId);
+    this.btn1Url$ = this.a.getProjectBtn1Url(this.projectId);
+    this.btn2Label$ = this.a.getProjectBtn2Label(this.projectId);
+    this.btn2Url$ = this.a.getProjectBtn2Url(this.projectId);
+
+    // const storagePrefix = 'Geovistory-Panels-Project-';
 
     // // Get last panel state of this project from local storage and put it to store
     // const x = this.sdkStorage.get(storagePrefix + this.projectId) || [];
