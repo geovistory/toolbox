@@ -8,12 +8,11 @@ import { DateTimeModule } from '@kleiolab/lib-utils';
 import { AngularSplitModule } from 'angular-split';
 import { TreeModule } from 'primeng/tree';
 import { TimelineModule } from 'projects/app-toolbox/src/app/modules/timeline/timeline.module';
-import { ControlMessagesModule, FilterByKeyModule, LanguageSearchTypeaheadModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
+import { ControlMessagesModule, FilterByKeyModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { DetailTopBarModule } from 'projects/app-toolbox/src/app/shared/components/detail-top-bar/detail-top-bar.module';
 import { HighlightModule } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
 import { TabBaseModule } from '../../shared/components/tab-layout/tab-layout.module';
-import { TileHeaderModule } from '../../shared/components/tile-header/tile-header.module';
 import { AutofocusModule } from '../../shared/directives/autofocus/autofocus.module';
 import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
 import { AnnotationModule } from '../annotation/annotation.module';
@@ -30,7 +29,6 @@ import { EntityDetailComponent } from './containers/entity-detail/entity-detail.
     AngularSplitModule,
     DetailContentModule,
     DetailTopBarModule,
-    LanguageSearchTypeaheadModule,
     ControlMessagesModule,
     PassiveLinkModule,
     AutofocusModule,
@@ -43,7 +41,6 @@ import { EntityDetailComponent } from './containers/entity-detail/entity-detail.
     CdkTreeModule,
     DetailTopBarModule,
     AnnotationModule,
-    TileHeaderModule,
     TabBaseModule,
     TreeModule
   ],

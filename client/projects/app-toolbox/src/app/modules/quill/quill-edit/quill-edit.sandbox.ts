@@ -1,13 +1,12 @@
+import { ChangeDetectorRef } from '@angular/core';
 import { sandboxOf } from 'angular-playground';
+import { isValidQuillDoc } from 'projects/app-toolbox/src/app/core/quill-doc-validation/validate-quill-doc';
 import { DomChangeModule } from 'projects/app-toolbox/src/app/shared';
+import { ConfirmDialogModule } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.module';
 import { BehaviorSubject } from 'rxjs';
 import { QuillModule } from '..';
-import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
-import { QuillEditComponent, IndexedCharids } from './quill-edit.component';
-import { textBüchel, _33095characters, wikiRats } from './quill-edit.sandbox.mock';
-import { ChangeDetectorRef } from '@angular/core';
-import { ConfirmDialogModule } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.module';
-import { isValidQuillDoc } from 'projects/app-toolbox/src/app/core/quill-doc-validation/validate-quill-doc';
+import { IndexedCharids, QuillEditComponent } from './quill-edit.component';
+import { textBüchel, wikiRats, _33095characters } from './quill-edit.sandbox.mock';
 
 
 
@@ -707,54 +706,6 @@ export default sandboxOf(QuillEditComponent, {
         </div>
         `
   })
-  .add('Quill-Edit | Input-Like ', {
-    context: {
-      blurCount: 0,
-      quillDoc: {
-        latestId: 0,
-        ops: []
-      } as QuillDoc
-    },
-    template: `
-        <div class="container">
-            <div class="row">
-                <div class="col-6">
-                    <gv-quill-edit [inputLike]="true" [quillDoc]="quillDoc" [editorConfig]="editorConfig" class="gv-outer-form-control"
-                    (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"></gv-quill-edit>
-                    <p>Some normal input element with .form-control:</p>
-                    <input class="form-control" type="text" />
-                </div>
-                <div class="col-6 font-sm" style="height:500px;">
-                    <strong>
-                    Latest Token Id: {{quillDoc.latestId}}
-                    </strong>
-                    <br>
-
-                    <strong>
-                    HTML:
-                    </strong>
-                    <br>
-                    <pre>
-                    {{html}}
-                    </pre>
-
-                    <strong>
-                    Blur Count: {{blurCount}}
-                    </strong>
-                    <br>
-
-                    <strong>
-                    JSON:
-                    </strong>
-
-                    <pre>
-                    {{quillDoc | json:2}}
-                    </pre>
-                </div>
-            </div>
-        </div>
-        `
-  })
   .add('Quill-Edit | Textarea-Like ', {
     context: {
       blurCount: 0,
@@ -764,7 +715,7 @@ export default sandboxOf(QuillEditComponent, {
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [textareaLike]="true" [editorConfig]="editorConfig" class="gv-outer-form-control"
+                    <gv-quill-edit [textareaLike]="true" [editorConfig]="editorConfig"
                     (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"></gv-quill-edit>
                     <p>Some normal textarea element with .form-control:</p>
                     <textarea class="form-control" type="text"></textarea>
@@ -812,7 +763,7 @@ export default sandboxOf(QuillEditComponent, {
         <div class="container">
             <div class="row">
                 <div class="col-6">
-                    <gv-quill-edit [matInputLike]="true" [editorConfig]="editorConfig" class="gv-outer-form-control"
+                    <gv-quill-edit [matInputLike]="true" [editorConfig]="editorConfig"
                     (quillDocChange)="quillDoc=$event" (htmlChange)="html=$event" (blur)="(blurCount = blurCount + 1)"></gv-quill-edit>
                     <p>Some normal textarea element with .form-control:</p>
                     <textarea class="form-control" type="text"></textarea>

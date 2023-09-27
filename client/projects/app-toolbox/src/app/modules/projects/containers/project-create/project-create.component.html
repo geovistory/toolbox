@@ -35,9 +35,8 @@
 
         <div class="form-group">
           <label for="typeahead-http">Project's default language</label>
+          <gv-ctrl-language [(ngModel)]="model.language"></gv-ctrl-language>
 
-          <gv-language-search-typeahead name="language" [(ngModel)]="model.language" #languageSearch="ngModel">
-          </gv-language-search-typeahead>
 
           <!-- <input id="typeahead-http" type="text" class="form-control"  name="language"
           [class.is-invalid]="searchFailed" [(ngModel)]="model.language" #languageSearch="ngModel"

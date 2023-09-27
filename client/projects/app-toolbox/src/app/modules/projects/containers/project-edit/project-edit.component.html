@@ -15,12 +15,12 @@
       <div class="gv-main-categories btn-group-vertical rounded-0 d-block">
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='sources'}" (click)="setList('sources')">
-          <div class="fa-2x gv-icon gv-icon-source gv-source-color"></div>
+          <div class="fa-2x gv-icon gv-icon-source gv-sources-primary-color"></div>
           <div>Sources</div>
         </button>
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='entities'}" (click)="setList('entities')">
-          <div class="fa-2x gv-icon gv-icon-entity gv-entity-color"></div>
+          <div class="fa-2x gv-icon gv-icon-entity gv-entities-primary-color"></div>
           <div>Entities</div>
         </button>
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
@@ -30,20 +30,15 @@
         </button>
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='analysis'}" (click)="setList('analysis')">
-          <div class="fa-2x gv-icon gv-icon-visual gv-visual-color"></div> Analysis
+          <div class="fa-2x gv-icon gv-icon-visual gv-analysis-primary-color"></div> Analysis
         </button>
-        <!-- <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
-          [ngClass]="{active:(p.list$ | async)==='stories'}" (click)="setList('stories')">
-          <div class="fa-2x gv-icon gv-icon-story gv-story-color"></div> Stories
-        </button> -->
-
       </div>
 
 
       <div class="btn-group-vertical rounded-0 d-block mt-auto">
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='settings'}" (click)="setList('settings')">
-          <div class="fa fa-2x fa-cogs text-secondary"></div> Settings
+          <div class="fa fa-2x fa-cogs mat-text-secondary"></div> Settings
         </button>
       </div>
     </div>
@@ -70,13 +65,13 @@
 
           <div *ngIf="(p.panels$ | async)?.length === 0"
             class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
-            <div class="mat-display-1 mb-3 text-gray-400">
+            <div class="mat-display-1 mb-3 mat-text-secondary">
               Your Project
             </div>
-            <div class="mat-display-3 mb-4 text-gray-400">
+            <div class="mat-display-3 mb-4 mat-text-secondary">
               {{(projectLabel$|async)}}
             </div>
-            <div class="text-gray-400 helper-text">
+            <div class="mat-text-secondary helper-text">
               Find your Entities and Sources to the left.
             </div>
 
@@ -103,7 +98,7 @@
                 <!-- <button (click)="p.addTab()">Split</button> -->
               </div>
 
-              <div class="panel-body gv-flex-fh position-relative bg-gray-100">
+              <div class="panel-body gv-flex-fh position-relative mat-bg-gray-100">
                 <div gvPanelBody [gvPanelId]="panel.id">
                   <!-- Tab body will be placed dynamically via Cdk Portal -->
                 </div>

@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { DndModule } from '@suez/ngx-dnd';
 import { TableModule } from 'primeng/table';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
-import { TileHeaderModule } from 'projects/app-toolbox/src/app/shared/components/tile-header/tile-header.module';
 import { EntityPreviewModule } from '../../shared/components/entity-preview/entity-preview.module';
 import { ValuePreviewModule } from '../../shared/components/value-preview/value-preview.module';
 import { BaseModule } from '../base/base.module';
@@ -16,7 +15,6 @@ import { RamListRemoveDialogComponent } from './components/ram-list-remove-dialo
   imports: [
     CommonModule,
     BaseModule,
-    TileHeaderModule,
     DndModule,
     TableModule,
     MaterialModule,

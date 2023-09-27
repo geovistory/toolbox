@@ -6,7 +6,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DndModule } from '@suez/ngx-dnd';
 import { AngularSplitModule } from 'angular-split';
-import { LanguageSearchTypeaheadModule, NavbarModule, ProxyRouteModule } from 'projects/app-toolbox/src/app/shared';
+import { NavbarModule, ProxyRouteModule } from 'projects/app-toolbox/src/app/shared';
 import { ReadMoreModule } from 'projects/app-toolbox/src/app/shared/components/read-more/read-more.module';
 import { EntityLabelConfigModule } from 'projects/app-toolbox/src/app/shared/modules/entity-label-config/entity-label-config.module';
 import { AnalysisIconModule } from 'projects/app-toolbox/src/app/shared/pipes/analysis-icon/analysis-icon.module';
@@ -66,13 +66,11 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     DetailTopBarModule,
     DetailContentModule,
     ConfirmDialogModule,
-    LanguageSearchTypeaheadModule,
     ClassConfigModule,
     HttpClientModule,
     AnalysisIconModule,
     SettingsModule,
     OntoInfoModule,
-    ClassConfigModule, // TODO: REMOVE
     DndModule,
     QuillOpsToStrModule,
     EntityLabelConfigModule,

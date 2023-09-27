@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
-import { LanguageSearchTypeaheadModule, PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
+import { PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { OntoInfoModule } from 'projects/app-toolbox/src/app/shared/components/onto-info/onto-info.module';
 import { TruncateModule } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.module';
 import { BaseModule } from '../base/base.module';
@@ -22,7 +22,6 @@ import { PropertyLabelTableComponent } from './components/property-label-table/p
     CommonModule,
     ReactiveFormsModule,
     BaseModule,
-    LanguageSearchTypeaheadModule,
     TruncateModule,
     PassiveLinkModule,
     OntoInfoModule,

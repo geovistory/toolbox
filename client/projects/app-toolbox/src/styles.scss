@@ -1,26 +1,185 @@
 /* You can add global styles to this file, and also import other style files */
 
+@use "sass:map";
 @use "node_modules/@angular/material" as mat;
 @use "node_modules/@angular/material/core/theming/palette" as mat-palettes;
+
+$font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
+  Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+  "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+
+/************************************************************************************
+** INCLUDE MATERIAL THEME
+************************************************************************************/
+
+// Define a custom typography config that overrides the font-family as well as the
+// `title` and `body-2` and `button` levels to have a wheight of 600 instead of 500
+// because Source Sans Pro does not have 500
+$gv-typography: mat.define-typography-config(
+  $font-family: $font-family,
+  $body-2: mat.define-typography-level(14px, 24px, 600),
+  $button: mat.define-typography-level(14px, 14px, 600),
+);
+
+// Custom color Palette for primary colors (flex-starting with $purple)
+$gv-mat-purple: (
+  50: #f2e7f5,
+  100: #dfc3e8,
+  200: #ca9cda,
+  300: #b576cb,
+  400: #a55abf,
+  500: #9643b3,
+  600: #893eac,
+  700: #7638a2,
+  800: #663399,
+  900: #482a87,
+  A100: #ea80fc,
+  A200: #e040fb,
+  A400: #d500f9,
+  A700: #aa00ff,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: white,
+    A400: white,
+    A700: white,
+  ),
+);
+$gv-mat-teal: (
+  50: #dff6ed,
+  100: #b1e8d1,
+  200: #7ad8b4,
+  300: #20c996,
+  400: #00bd80,
+  500: #00b06a,
+  600: #00a15f,
+  700: #008f52,
+  800: #007d45,
+  900: #005d2f,
+  A100: #a7ffeb,
+  A200: #64ffda,
+  A400: #1de9b6,
+  A700: #00bfa5,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: rgba(black, 0.87),
+    A400: rgba(black, 0.87),
+    A700: rgba(black, 0.87),
+  ),
+);
+$white: #ffffff;
+$gv-grey-palette: (
+  50: #f7f8fb,
+  100: #eeeff6,
+  200: #e5e9f0,
+  300: #d4dade,
+  400: #b7c2c8,
+  500: #9aaab1,
+  600: #68747b,
+  700: #4e5d65,
+  800: #374348,
+  900: #21282b,
+  A100: #eeeff6,
+  A200: #e5e9f0,
+  A400: #b7c2c8,
+  A700: #4e5d65,
+  contrast: (
+    50: mat-palettes.$dark-primary-text,
+    100: mat-palettes.$dark-primary-text,
+    200: mat-palettes.$dark-primary-text,
+    300: mat-palettes.$dark-primary-text,
+    400: mat-palettes.$dark-primary-text,
+    500: mat-palettes.$light-primary-text,
+    600: mat-palettes.$light-primary-text,
+    700: mat-palettes.$light-primary-text,
+    800: mat-palettes.$light-primary-text,
+    900: mat-palettes.$light-primary-text,
+    A100: mat-palettes.$dark-primary-text,
+    A200: mat-palettes.$dark-primary-text,
+    A400: mat-palettes.$light-primary-text,
+    A700: mat-palettes.$light-primary-text,
+  ),
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$app-primary: mat.define-palette($gv-mat-purple);
+$app-accent: mat.define-palette($gv-mat-teal, A200, A100, A400);
+// The warn palette is optional (defaults to red).
+$app-warn: mat.define-palette(mat.$red-palette);
+// Create the theme object (a Sass map containing all of the palettes).
+$app-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $app-primary,
+      accent: $app-accent,
+      warn: $app-warn,
+    ),
+    typography: $gv-typography,
+  )
+);
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($app-theme);
+
+/** Utils **/
+.d-flex {
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+.border {
+  border: 1px solid map.get($gv-grey-palette, 100) !important;
+}
+.border-bottom {
+  border-bottom: 1px solid map.get($gv-grey-palette, 100) !important;
+}
+.border-danger {
+  border-color: 1px solid map.get(mat.$red-palette, 700) !important;
+}
+.rounded-circle {
+  border-radius: 50% !important;
+}
+.border-success {
+  border-color: map.get($gv-mat-teal, 300) !important;
+}
+
+/*************** Other ******************/
+
 $font-size-xs: 0.68rem;
 label {
   margin-bottom: 0;
 }
 .form-group label {
-  margin-bottom: $label-margin-bottom;
+  margin-bottom: 1rem;
 }
 
-/**
-* Ngx easy table
-* Docs: https://ngx-easy-table.eu/#/styles
-*/
-
-@import "./assets/scss/ngx-easy-table";
 /**
 * Components
 * Styles for one angular component or multiple angular components with
 * the same visual design (e.g. naming and additional info).
 */
+$font-size-sm: 0.75rem;
 .gv-search-hit {
   margin-bottom: 1.5rem;
   .gv-search-hit-is-in-project {
@@ -55,39 +214,12 @@ gv-project-list {
   }
 }
 
-// Project List
-// @import "./assets/scss/components/_project_list";
-// Project Dashboard
-// @import "./assets/scss/components/_project_dashboard";
-// List of Names or Additional Infos
-// @import "./assets/scss/components/_name_info_list";
-// Name / Additional Info
-// @import "./assets/scss/components/_name_info";
-// Name Part / Property Alternative
-// @import "./assets/scss/components/_namepart_infoproperty";
-// Name Parts View
-// @import "./assets/scss/components/_name_parts_view";
-// Name Version
-// @import "./assets/scss/components/_name_version";
-// Editor
-// @import "./assets/scss/components/_edit";
-// Project Entities
-// @import "./assets/scss/components/_project_entities";
-// Search hit
-// @import "./assets/scss/components/_search_hit";
-// Entity Add Modal
-// @import "./assets/scss/components/_entity_add_modal";
-// Entity Add Modal
-// @import "./assets/scss/components/_version_modal";
-// Entity Add Modal
-// @import "./assets/scss/components/_appellation_label_editor";
-
 /**
 * Generic stuff
 */
 
 body {
-  background-color: $gray-100;
+  background-color: map.get($gv-grey-palette, 100);
 }
 
 .container {
@@ -125,10 +257,6 @@ button:focus {
   -ms-transform: rotate(270deg);
   -o-transform: rotate(270deg);
   transform: rotate(270deg);
-}
-
-.form-control {
-  @extend .form-control; // overflow: hidden;
 }
 
 .gv-full {
@@ -172,176 +300,32 @@ button:focus {
   flex-direction: row;
 }
 
-.gv-ellipsis {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-td.gv-ellipsis {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  max-width: 0;
-}
-// generate .bg-gray-* classes
-@each $color, $value in $grays {
-  @include bg-variant(".bg-gray-#{$color}", $value);
-}
-
-// generate btn-gray-* classes
-@each $color, $value in $grays {
-  .btn-gray-#{$color} {
-    @include button-variant($value, $value);
-  }
-}
-
-// generate btn-outline-gray-* classes
-@each $color, $value in $grays {
-  .btn-outline-gray-#{$color} {
-    @include button-outline-variant($value);
-  }
-}
-
-// generate border-gray-* classes
-@each $color, $value in $grays {
-  .border-gray-#{$color} {
-    border-color: $value !important;
-  }
-}
-
-// generate btn-outline-gray-* classes
-@each $color, $value in $grays {
-  .btn-outline-gray-#{$color} {
-    @include button-outline-variant($value);
-  }
-}
-
-// generate text-gray-* classes
-@each $color, $value in $grays {
-  @include text-emphasis-variant(".text-gray-#{$color}", $value);
-}
-
-// generate .border-right* classes
-@each $color, $value in $theme-colors {
-  .border-right-#{$color} {
-    border-right-color: $value !important;
-  }
-}
-
-// generate .border-left* classes
-@each $color, $value in $theme-colors {
-  .border-left-#{$color} {
-    border-left-color: $value !important;
-  }
-}
-
-// generate .text-* classes for all colors
-@each $color, $value in $colors {
-  .text-#{$color} {
-    color: $value !important;
-  }
-}
-
-.gv-cover-panel {
-  pointer-events: none;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.8);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-/**
-* card-body padding minus button padding
-*/
-
-// btn
-.btn-r {
-  padding-right: ($card-spacer-x - $btn-padding-x);
-}
-
-.btn-l {
-  padding-left: ($card-spacer-x - $btn-padding-x);
-}
-
-.btn-x {
-  padding-right: ($card-spacer-x - $btn-padding-x);
-  padding-left: ($card-spacer-x - $btn-padding-x);
-}
-
-.btn-t {
-  padding-top: ($card-spacer-y - $btn-padding-y);
-}
-
-.btn-b {
-  padding-bottom: ($card-spacer-y - $btn-padding-y);
-}
-
-.btn-y {
-  padding-left: ($card-spacer-y - $btn-padding-y);
-  padding-right: ($card-spacer-y - $btn-padding-y);
-}
-
 /**
 * Button link gray
 */
 
 // Make a button look and behave like a link
 .btn-link-gray {
-  font-weight: $font-weight-normal;
-  color: $gray-500;
+  font-weight: 400;
+  color: map.get($gv-grey-palette, 500);
   background-color: transparent;
 
-  @include hover {
-    color: $gray-800;
+  &:hover {
+    color: map.get($gv-grey-palette, 800);
     background-color: transparent;
     border-color: transparent;
   }
 
   &:focus,
   &.focus {
-    text-decoration: $link-hover-decoration;
+    text-decoration: map.get($gv-grey-palette, 900);
     border-color: transparent;
     box-shadow: none;
   }
 
   &:disabled,
   &.disabled {
-    color: $gray-300;
-    pointer-events: none;
-  }
-
-  // No need for an active state here
-}
-
-/**
-* Button link gray
-*/
-
-// Make a button look and behave like a link
-.btn-link-white {
-  font-weight: $font-weight-normal;
-  color: $white;
-  background-color: transparent;
-
-  @include hover {
-    color: $gray-800;
-    background-color: transparent;
-    border-color: transparent;
-  }
-
-  &:focus,
-  &.focus {
-    text-decoration: $link-hover-decoration;
-    border-color: transparent;
-    box-shadow: none;
-  }
-
-  &:disabled,
-  &.disabled {
-    color: $gray-300;
+    color: map.get($gv-grey-palette, 300);
     pointer-events: none;
   }
 
@@ -352,58 +336,12 @@ td.gv-ellipsis {
 * Headings
 */
 
-// h1,
-// h2,
-// h3,
-// h4,
-// h5,
-// h6,
-// .h1,
-// .h2,
-// .h3,
-// .h4,
-// .h5,
-// .h6 {
-//   // font-weight: $font-weight-light;
-//   color: $gray-700;
-
-//   small,
-//   .small {
-//     // font-weight: $font-weight-light;
-//   }
-// }
-
-// h4,
-// h5,
-// .h4,
-// .h5 {
-//   color: $gray-800;
-// }
-
-// h6,
-// .h6 {
-//   color: $gray-700;
-// }
-
 // Custom Variables
 $gv-color-highlighted: #ffce00;
 $gv-color-selected: #00ffff;
 
-// Custom Stuff
-.font-normal {
-  font-size: $font-size-base;
-}
-
-.font-lg {
-  font-size: $font-size-lg;
-}
-
 .font-sm {
   font-size: $font-size-sm;
-}
-
-.font-xs {
-  font-size: ($font-size-base * 0.68);
 }
 
 .gv-highlight {
@@ -422,57 +360,6 @@ $gv-color-selected: #00ffff;
   overflow: hidden;
 }
 
-.gv-table-scroll-y {
-  @extend .gv-flex-fh;
-  @extend .gv-scroll-y-auto;
-
-  tr {
-    @extend .d-flex;
-
-    td,
-    th {
-      flex-basis: 100%;
-    }
-  }
-
-  tbody {
-    @extend .gv-scroll-y-auto;
-  }
-}
-
-.dropdown-toggle.no-caret::after {
-  display: none;
-}
-
-.rounded-bottom-0 {
-  border-bottom-right-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
-}
-
-.rounded-top-0 {
-  border-top-right-radius: 0 !important;
-  border-top-left-radius: 0 !important;
-}
-
-.gv-dropdown-secondary {
-  .dropdown-menu {
-    margin: 0;
-    border-top-right-radius: 0;
-    background-color: theme-color("secondary");
-
-    .dropdown-item {
-      color: $white;
-    }
-
-    .dropdown-item:focus,
-    .dropdown-item:hover {
-      color: $white;
-      text-decoration: none;
-      background-color: darken(theme-color("secondary"), 10%);
-    }
-  }
-}
-
 .gv-pointer {
   cursor: pointer;
 }
@@ -480,20 +367,8 @@ $gv-color-selected: #00ffff;
   cursor: move;
 }
 
-.gv-w-max-500 {
-  max-width: 500px;
-}
-
 .gv-grow-1 {
   flex-grow: 1;
-}
-
-.gv-grow-2 {
-  flex-grow: 2;
-}
-
-.gv-grow-5 {
-  flex-grow: 5;
 }
 
 .gv-flex-shrink-0 {
@@ -502,7 +377,7 @@ $gv-color-selected: #00ffff;
 
 // full height
 .gv-fh {
-  @extend .flex-column;
+  flex-direction: column;
   @extend .gv-grow-1;
   flex-basis: 0%;
 }
@@ -539,154 +414,6 @@ $gv-color-selected: #00ffff;
   height: 100vh;
 }
 
-// assigns fullheight to children elements of first nesting level
-.gv-flex-fh-second-child > :nth-child(2) {
-  @extend .gv-flex-fh;
-}
-
-.gv-search-hits-count {
-  font-size: $font-size-sm;
-  color: $text-muted;
-  display: inline-block;
-}
-
-.gv-ul-sm {
-  color: theme-color("secondary");
-  font-size: $font-size-sm;
-  margin: 0;
-  padding: 0;
-}
-
-.gv-li-inline {
-  display: inline-block;
-  margin-right: 0.4rem;
-}
-
-.gv-li-inline::before {
-  content: "•";
-  margin-right: 0.4rem;
-}
-
-.gv-li-inline:first-of-type::before {
-  content: none;
-}
-
-.gv-li-inline:last-of-type {
-  margin-right: 0;
-}
-
-.fa-caret-right {
-  margin-right: 0.2rem;
-}
-
-gv-property {
-  display: block;
-}
-
-.gv-card-spacer-l {
-  padding-left: $card-spacer-x;
-}
-
-.gv-card-spacer-r {
-  padding-right: $card-spacer-x;
-}
-
-.gv-card-spacer-b {
-  padding-bottom: $card-spacer-x;
-}
-
-.gv-card-spacer-t {
-  padding-top: $card-spacer-x;
-}
-
-.gv-card-spacer-y {
-  padding-top: $card-spacer-y;
-  padding-bottom: $card-spacer-y;
-}
-
-.gv-card-spacer-x {
-  padding-left: $card-spacer-x;
-  padding-right: $card-spacer-x;
-}
-
-.gv-btn-spacer {
-  display: inline-block;
-  font-weight: $btn-font-weight;
-  white-space: nowrap;
-  vertical-align: middle;
-  user-select: none;
-  border: $btn-border-width solid transparent;
-  @include button-size(
-    $btn-padding-y,
-    $btn-padding-x,
-    $font-size-base,
-    $btn-line-height,
-    $btn-border-radius
-  );
-}
-
-.gv-btn-spacer-sm {
-  display: inline-block;
-  font-weight: $btn-font-weight;
-  white-space: nowrap;
-  vertical-align: middle;
-  user-select: none;
-  border: $btn-border-width solid transparent;
-  @include button-size(
-    $btn-padding-y-sm,
-    $btn-padding-x-sm,
-    $font-size-sm,
-    $btn-line-height-sm,
-    $btn-border-radius-sm
-  );
-}
-
-.gv-btn-spacer-lg {
-  display: inline-block;
-  font-weight: $btn-font-weight;
-  white-space: nowrap;
-  vertical-align: middle;
-  user-select: none;
-  border: $btn-border-width solid transparent;
-  @include button-size(
-    $btn-padding-y-lg,
-    $btn-padding-x-lg,
-    $font-size-lg,
-    $btn-line-height-lg,
-    $btn-border-radius-lg
-  );
-}
-
-.gv-border-selected {
-  @extend .border;
-  border-color: $gv-color-selected !important;
-}
-
-.gv-border-highlighted {
-  @extend .border;
-  border-color: $gv-color-highlighted !important;
-}
-
-.gv-shadow-outer-1 {
-  box-shadow: 0 0 0 1px rgba(89, 105, 129, 0.1),
-    0 1px 3px 0 rgba(89, 105, 129, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-}
-
-// Loading Bar
-.slim-loading-bar-progress {
-  margin: 0;
-  padding: 0;
-  z-index: 99998;
-  background-color: theme-color("info") !important;
-  color: theme-color("info") !important;
-  box-shadow: 0 0 10px 0;
-  height: 2px;
-  opacity: 0;
-  -webkit-transition: all 0.5s ease-in-out;
-  transition: all 0.5s ease-in-out;
-  position: absolute;
-}
-
 #global-loading-bar {
   position: absolute;
   z-index: 1;
@@ -708,23 +435,7 @@ gv-property {
 #userDashboard {
   #userImage {
     font-size: 6rem;
-    color: $gray-200;
-  }
-}
-
-// Forms
-.ng-touched.ng-invalid {
-  @extend .is-invalid;
-}
-
-.ng-touched.ng-valid {
-  @extend .is-valid;
-}
-
-// Pagination
-ngb-pagination {
-  .pagination {
-    margin: 0;
+    color: map.get($gv-grey-palette, 200);
   }
 }
 
@@ -736,7 +447,7 @@ gv-entity-preview {
 $gv-bg-drawer-list: #cde4f3;
 
 .gv-nav-btn {
-  $background: $gray-200;
+  $background: map.get($gv-grey-palette, 200);
   $active-background: $gv-bg-drawer-list;
   $hover-background: darken($background, 7.5%);
   height: 80px;
@@ -746,20 +457,20 @@ $gv-bg-drawer-list: #cde4f3;
   background-color: $background;
   border: none;
 
-  @include hover {
+  &:hover {
     color: color-yiq($hover-background);
     background-color: darken($background, 7.5%);
   }
 
   &:focus,
   &.focus {
-    outline: none; // background-color: $gray-500;
+    outline: none;
   }
 
   // Disabled comes first so active can properly restyle
   &.disabled,
   &:disabled {
-    background-color: $gray-100;
+    background-color: map.get($gv-grey-palette, 100);
   }
 
   &:not(:disabled):not(.disabled):active,
@@ -779,17 +490,6 @@ $gv-bg-drawer-list: #cde4f3;
   top: 0;
   left: 50%;
   z-index: 1000;
-}
-.beta-banner {
-  position: fixed;
-  top: 8px;
-  -webkit-transform: rotate(45deg);
-  transform: rotate(45deg);
-  background: #64ffda;
-  padding: 0 27px 0 27px;
-  right: -26px;
-  font-weight: 600;
-  font-size: 0.9rem;
 }
 
 .gv-logo {
@@ -811,15 +511,6 @@ $gv-bg-drawer-list: #cde4f3;
 gv-tab-handle.tab-box {
   height: 32px;
 }
-.gv-tab-content {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-}
 
 .gv-detail-top-bar {
   .mat-tab-label {
@@ -837,74 +528,8 @@ gv-tab-handle.tab-box {
 }
 
 /***************************
-* Tile Header
+* Section Header
 ****************************/
-
-.gv-canvas {
-  background-color: $gray-100;
-  @extend .px-2;
-  @extend .pb-2;
-  @extend .pt-3;
-  flex-basis: 100%;
-  overflow-x: auto;
-}
-
-.gv-panel {
-  @extend .gv-flex-fh;
-  overflow-y: auto; // @extend .align-items-center;
-}
-
-.gv-tile {
-  min-width: 20rem;
-  background-color: $gray-100; // @extend .gv-flex-fh;
-  // @extend .border;
-  // @extend .border-primary;
-  // @extend .mb-2;
-  // @extend .rounded;
-}
-
-.gv-tile:last-child {
-  margin-bottom: 0;
-}
-
-.gv-tile-header,
-gv-tile-header {
-  @extend .gv-flex-shrink-0;
-  @extend .d-flex; // @extend .border-bottom; // @extend .border-top;
-  // @extend .border-primary;
-  background-color: $gray-150; // background-color: lighten($teal, 30%);
-  height: 2.5rem;
-  // color: $white;
-  @extend .align-items-center;
-  @extend .mb-0;
-  @extend .px-2;
-  // @extend .h4; // padding-left: $btn-padding-y-sm;
-  @extend .border-bottom;
-
-  // @extend .border-secondary; // height: calc((#{$btn-border-width} * 2) + (#{$font-size-sm} * #{$btn-line-height-sm}) + (#{$btn-padding-y-sm} * 2) + 1px); // @extend .rounded-top;
-
-  .btn {
-    @extend .btn-link-gray;
-  }
-}
-
-.gv-tile-body {
-  // @extend .gv-flex-fh;
-  display: flex;
-  flex-direction: column;
-  // @extend .p-2;
-}
-
-.gv-field {
-  @extend .my-2;
-}
-
-.gv-field-header-label {
-  font-size: $font-size-sm;
-  font-weight: 600;
-  color: $secondary;
-  // margin-bottom: 0.5rem;
-}
 
 .gv-section-header {
   display: flex;
@@ -914,84 +539,6 @@ gv-tile-header {
   height: 48px;
   flex: 0 0 48px;
   padding: 0 8px 0 16px;
-}
-
-.upper-case {
-  text-transform: uppercase;
-}
-
-/***************************
-* Properties Tree
-****************************/
-
-.gv-view-sections {
-  .tree-invisible {
-    display: none;
-  }
-
-  ul,
-  li {
-    margin-top: 0;
-    margin-bottom: 0;
-    list-style-type: none;
-  }
-
-  .drop-list {
-    max-width: 100%;
-    border: solid 1px #ccc;
-    min-height: 50px;
-    display: block;
-    background: white;
-    border-radius: 4px;
-    overflow: hidden;
-    padding: 0;
-    // margin: 0 0 20px 40px;
-  }
-
-  .drag-box {
-    padding: 0.3rem 0.3rem 0.3rem 1rem;
-    border-bottom: solid 1px #ccc;
-    color: rgba(0, 0, 0, 0.87);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    // justify-content: space-between;
-    box-sizing: border-box;
-    cursor: move;
-    background: white;
-    font-size: 16px;
-  }
-
-  .cdk-drag-preview {
-    box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-      0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  }
-
-  .cdk-drag-placeholder {
-    opacity: 0;
-  }
-
-  .cdk-drag-animating {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
-
-  .drag-box:last-child {
-    border: none;
-  }
-
-  .drop-list.cdk-drop-list-dragging .drag-box:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-  }
-}
-
-/***************************
-* TeEnt
-****************************/
-
-.gv-p-list-group-item {
-  padding: 0.75rem 1.25rem;
 }
 
 /***************************
@@ -1004,11 +551,6 @@ gv-tile-header {
       border: 0;
     }
   }
-}
-
-.placement-right .dropdown-menu.show {
-  left: auto;
-  right: 0;
 }
 
 /***************************
@@ -1028,7 +570,7 @@ gv-project-edit {
     background: white;
     border-radius: 0px;
     overflow: hidden;
-    background: $gray-200;
+    background: map.get($gv-grey-palette, 200);
   }
   .focus {
     .tab-box {
@@ -1037,10 +579,10 @@ gv-project-edit {
   }
 
   .tab-box {
-    color: $gray-500;
+    color: map.get($gv-grey-palette, 500);
     padding: 5px 10px;
     border-right: solid 1px #ccc;
-    background: $gray-200;
+    background: map.get($gv-grey-palette, 200);
     font-size: $font-size-sm;
     min-width: 100px;
     display: flex;
@@ -1138,6 +680,8 @@ gv-tab-handle {
  * qf form array
  ***************************/
 gv-qf-form-array {
+  position: relative;
+  display: block;
   $top-horizontal-line: 30px;
 
   .full-with {
@@ -1185,7 +729,7 @@ gv-qf-form-array {
   }
 
   .gv-condition-block {
-    border: 1px solid $success;
+    border: 1px solid map.get($gv-mat-teal, 300);
     padding: 0.75rem;
     margin-top: 1.25rem;
   }
@@ -1204,14 +748,9 @@ gv-qf-form-array {
       height: 31px;
       flex-shrink: 0;
       &.line {
-        border-bottom: 1px solid $success;
+        border-bottom: 1px solid map.get($gv-mat-teal, 300);
       }
     }
-
-    // .zero.line {
-    //   border-bottom: 1px solid $success;
-    //   border-left: 1px solid $success;
-    // }
 
     .first {
       width: 1px;
@@ -1219,7 +758,7 @@ gv-qf-form-array {
       // margin-top: $top-horizontal-line;
       margin-bottom: 34px;
       position: relative;
-      background-color: $success;
+      background-color: map.get($gv-mat-teal, 300);
       z-index: 1;
       .subgroup-operation-container {
         position: absolute;
@@ -1233,10 +772,11 @@ gv-qf-form-array {
       .subgroup-operation-select {
         font-size: 14px;
         background: $white;
-        @extend .border;
-        @extend .border-success;
-        @extend .rounded;
-        @extend .px-1;
+        border: 1px solid map.get($gv-grey-palette, 100) !important;
+        border-color: map.get($gv-grey-palette, 400) !important;
+        border-radius: 0.25rem !important;
+        padding-right: 0.25rem;
+        padding-left: 0.25rem;
         z-index: 1;
         &::ng-deep .mat-select-arrow {
           margin: 0;
@@ -1270,7 +810,7 @@ gv-qf-form-array {
             left: 0;
             right: 0;
             height: 1px;
-            background-color: $success;
+            background-color: map.get($gv-mat-teal, 300);
             &.is-subgroup {
               top: 62px;
             }
@@ -1340,13 +880,12 @@ gv-qf-form-array {
  ***************************/
 gv-timeline-table {
   $bg-timeline: none;
-  $font-color: $dark;
+  $font-color: map.get($gv-grey-palette, 800);
 
   .timeline-container {
     background-color: $bg-timeline;
-    @extend .border-top;
-    @extend .border-bottom;
-    @extend .border-secondary;
+    border-top: 1px solid map.get($gv-grey-palette, 600) !important;
+    border-bottom: 1px solid map.get($gv-grey-palette, 600) !important;
   }
 
   path.domain {
@@ -1367,7 +906,7 @@ gv-timeline-table {
   .body.mat-cell {
     font-size: $font-size-xs;
     .tick {
-      color: $gray-400;
+      color: map.get($gv-grey-palette, 400);
     }
     .row-bg {
       fill: none;
@@ -1393,7 +932,7 @@ gv-timeline-table {
   }
 
   .gv-open-path {
-    stroke: $black;
+    stroke: map.get($gv-grey-palette, 900);
     fill: none;
   }
 
@@ -1401,16 +940,6 @@ gv-timeline-table {
     stroke: none;
     fill-opacity: 0.8;
   }
-
-  // .gv-closed-path.gv-inner,
-  // .gv-rectangle.gv-inner {
-  //     fill: lighten(theme-color("info"), 0%);
-  // }
-
-  // .gv-closed-path.gv-outer,
-  // .gv-rectangle.gv-outer {
-  //     fill: lighten(theme-color("info"), 20%);
-  // }
 
   .separator-line {
     stroke: theme-color("dark");
@@ -1437,257 +966,6 @@ gv-timeline-table {
 
   .btn {
     @extend .btn-link-gray;
-  }
-}
-
-gv-timeline {
-  $bg-timeline: $gray-100;
-  $font-color: $dark;
-
-  .timeline-container {
-    background-color: $bg-timeline;
-    @extend .border-top;
-    @extend .border-bottom;
-    @extend .border-secondary;
-  }
-
-  path.domain {
-    stroke: none; // no outer line around xAxis
-  }
-
-  .header {
-    .tick > line {
-      stroke: none;
-    }
-
-    .tick > text {
-      font-size: $font-size-xs;
-      fill: $font-color;
-    }
-  }
-
-  .rows {
-    border-top: 1px solid theme-color(dark);
-
-    .tick > text {
-      fill: none;
-    }
-
-    .x-axis-julian {
-      .tick > line {
-        stroke: $gray-400; // stroke-dasharray: 7;
-      }
-    }
-
-    .x-axis-gregorian {
-      .tick > line {
-        stroke: $gray-400; // stroke-dasharray: 7;
-      }
-    }
-  }
-
-  .row {
-    font-size: $font-size-xs;
-  }
-
-  .row:nth-child(odd) .row-bg {
-    fill: $gray-200; //opacity: 0.2;
-  }
-
-  .row:nth-child(even) .row-bg {
-    fill: $white;
-    opacity: 0.2;
-  }
-
-  .row .row-bg.selected {
-    fill: #ffffff;
-    opacity: 0.6;
-  }
-
-  .row .row-bg.highlighted {
-    fill: #ffffff;
-    opacity: 0.4;
-  }
-
-  .row-label-bg {
-    fill: $bg-timeline;
-  }
-
-  text.row-label {
-    fill: $font-color;
-  }
-
-  .gv-open-path {
-    stroke: $black;
-    fill: none;
-  }
-
-  .gv-closed-path {
-    stroke: none;
-    fill-opacity: 0.8;
-  }
-
-  // .gv-closed-path.gv-inner,
-  // .gv-rectangle.gv-inner {
-  //     fill: lighten(theme-color("info"), 0%);
-  // }
-
-  // .gv-closed-path.gv-outer,
-  // .gv-rectangle.gv-outer {
-  //     fill: lighten(theme-color("info"), 20%);
-  // }
-
-  .separator-line {
-    stroke: theme-color("dark");
-  }
-
-  .cover-rect {
-    fill: $bg-timeline;
-  }
-
-  .no-data-text {
-    fill: theme-color("secondary");
-    font-size: $font-size-sm;
-  }
-
-  .cursor-handle {
-    fill: theme-color("primary");
-    stroke: $white; // fill-opacity: .8;
-  }
-
-  .cursor-line {
-    stroke: theme-color("primary");
-    stroke-width: 2;
-  }
-
-  .btn {
-    @extend .btn-link-gray;
-  }
-}
-
-gv-timeline.gv-timeline-dark {
-  $bg-timeline: $gray-600;
-  $font-color: $white;
-
-  .timeline-container {
-    background-color: $bg-timeline;
-    @extend .border;
-    @extend .border-dark;
-    @extend .rounded;
-  }
-
-  path.domain {
-    stroke: none; // no outer line around xAxis
-  }
-
-  .header {
-    .tick > line {
-      stroke: none;
-    }
-
-    .tick > text {
-      font-size: $font-size-xs;
-      fill: $font-color;
-    }
-  }
-
-  .rows {
-    border-top: 1px solid theme-color(dark);
-
-    .tick > text {
-      fill: none;
-    }
-
-    .x-axis-julian {
-      .tick > line {
-        stroke: $gray-400; // stroke-dasharray: 7;
-      }
-    }
-
-    .x-axis-gregorian {
-      .tick > line {
-        stroke: $gray-400; // stroke-dasharray: 7;
-      }
-    }
-  }
-
-  .row {
-    font-size: $font-size-xs;
-  }
-
-  .row:nth-child(odd) .row-bg {
-    fill: $gray-200;
-    opacity: 0.2;
-  }
-
-  .row:nth-child(even) .row-bg {
-    fill: $white;
-    opacity: 0.2;
-  }
-
-  .row .row-bg.selected {
-    fill: #ffffff;
-    opacity: 0.6;
-  }
-
-  .row .row-bg.highlighted {
-    fill: #ffffff;
-    opacity: 0.4;
-  }
-
-  .row-label-bg {
-    fill: $bg-timeline;
-  }
-
-  text.row-label {
-    fill: $font-color;
-  }
-
-  .gv-open-path {
-    stroke: darken(theme-color("info"), 20%);
-    fill: none;
-  }
-
-  .gv-closed-path {
-    stroke: none;
-    fill-opacity: 0.8;
-  }
-
-  .gv-closed-path.gv-inner,
-  .gv-rectangle.gv-inner {
-    fill: lighten(theme-color("info"), 20%);
-  }
-
-  .gv-closed-path.gv-outer,
-  .gv-rectangle.gv-outer {
-    fill: lighten(theme-color("info"), 50%);
-  }
-
-  .separator-line {
-    stroke: theme-color("dark");
-  }
-
-  .cover-rect {
-    fill: $bg-timeline;
-  }
-
-  .no-data-text {
-    fill: theme-color("secondary");
-    font-size: $font-size-sm;
-  }
-
-  .cursor-handle {
-    fill: theme-color("primary");
-    stroke: $white; // fill-opacity: .8;
-  }
-
-  .cursor-line {
-    stroke: theme-color("primary");
-    stroke-width: 2;
-  }
-
-  .btn {
-    @extend .btn-gray-700;
   }
 }
 
@@ -1705,8 +983,8 @@ gv-quill-view {
   .ql-container.ql-snow {
     height: auto;
     border: none;
-    font-size: $font-size-base;
-    font-family: $font-family-base;
+    font-size: 1rem;
+    font-family: $font-family;
   }
 
   .ql-editor {
@@ -1717,10 +995,10 @@ gv-quill-view {
 gv-quill-edit {
   .ql-container.ql-snow {
     @extend .d-flex;
-    @extend .flex-column;
+    flex-direction: column;
     @extend .gv-grow-1;
 
-    font-family: $font-family-base;
+    font-family: $font-family;
   }
 
   .ql-editor {
@@ -1739,7 +1017,7 @@ gv-quill-edit {
 gv-text-detail2 {
   gv-quill-edit {
     .ql-container.ql-snow {
-      font-size: $font-size-base;
+      font-size: 1rem;
     }
   }
 }
@@ -1756,40 +1034,10 @@ gv-quill-edit.gv-hide-toolbar {
     border-top: 0;
     border-left: 0;
     border-right: 0;
-    @extend .border-bottom;
+    border-bottom: 1px solid map.get($gv-grey-palette, 100) !important;
   }
   .ql-container.ql-snow {
     border: 0;
-  }
-}
-
-// Outer form control is for nesting form controls
-// Assign this class to the wrapper form-control.
-.gv-outer-form-control {
-  @extend .form-control;
-  padding: 0;
-  overflow-y: visible;
-
-  .form-control {
-    border: 0;
-    height: $input-height-inner;
-  }
-}
-
-gv-quill-edit.gv-quill-input-like {
-  .ql-toolbar,
-  .ql-tooltip {
-    display: none;
-  }
-
-  .gv-editor {
-    height: auto;
-  }
-
-  .ql-editor {
-    @extend .form-control;
-    border: 0;
-    height: $input-height-inner;
   }
 }
 
@@ -1836,24 +1084,16 @@ gv-quill-edit.gv-quill-textarea-like {
     display: block;
     width: 100%;
     padding: 0;
-    font-size: $font-size-base;
-    line-height: $input-line-height;
-    color: $input-color;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: map.get($gv-grey-palette, 700);
     // background-color: $input-bg;
     background-clip: padding-box;
 
-    @if $enable-rounded {
-      // Manually use the if/else instead of the mixin to account for iOS override
-      border-radius: $input-border-radius;
-    } @else {
-      // Otherwise undo the iOS default
-      border-radius: 0;
-    }
+    border-radius: 0.25rem;
 
-    @include box-shadow($input-box-shadow);
-    @include transition(
-      $input-transition
-    ); // Unstyle the caret on `<select>`s in IE10+.
+    box-shadow: inset 0 1px 1px rgba(#000, 0.075);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 
     &::-ms-expand {
       background-color: transparent;
@@ -1864,7 +1104,10 @@ gv-quill-edit.gv-quill-textarea-like {
     // @include form-control-focus(); // Placeholder
 
     &::placeholder {
-      color: $input-placeholder-color; // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
+      color: map.get(
+        $gv-grey-palette,
+        600
+      ); // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
       opacity: 1;
     }
 
@@ -1875,7 +1118,10 @@ gv-quill-edit.gv-quill-textarea-like {
     // don't honor that edge case; we style them as disabled anyway.
     &:disabled,
     &[readonly] {
-      background-color: $input-disabled-bg; // iOS fix for unreadable disabled content; see https://github.com/twbs/bootstrap/issues/11655.
+      background-color: map.get(
+        $gv-grey-palette,
+        200
+      ); // iOS fix for unreadable disabled content; see https://github.com/twbs/bootstrap/issues/11655.
       opacity: 1;
     }
   }
@@ -1884,30 +1130,13 @@ gv-quill-edit.gv-quill-textarea-like {
 gv-source-list {
   @extend .d-flex;
   @extend .gv-grow-1;
-  @extend .flex-column;
+  flex-direction: column;
 }
 
 gv-entity-list {
   @extend .d-flex;
   @extend .gv-grow-1;
-  @extend .flex-column;
-}
-
-gv-pe-it-property-field-editable {
-  min-width: 360px;
-  display: block;
-}
-
-gv-add-info-pe-it {
-  .dropdown-item.active {
-    color: inherit;
-    background-color: $gray-300; // border: 1px solid theme-color("primary");
-  }
-}
-
-gv-mentioning-list .ngx-table__header-title {
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  flex-direction: column;
 }
 
 .gv-show-token-ids {
@@ -1924,32 +1153,6 @@ gv-mentioning-list .ngx-table__header-title {
 }
 
 /***************************
- * Cesium / Map
- ***************************/
-
-gv-map {
-  ac-map {
-    height: 400px;
-
-    .map-container {
-      flex: 1 1 100px;
-      height: 400px;
-      background-color: lightcyan;
-      position: relative;
-      border: 1px solid #00ffff;
-      display: flex;
-      flex-direction: column;
-      flex-flow: column;
-      @extend .border;
-
-      .cesium-viewer {
-        flex: 1 1 auto;
-      }
-    }
-  }
-}
-
-/***************************
  * Drop Zone
  ***************************/
 
@@ -1957,132 +1160,17 @@ gv-map {
   background-color: #dcdede4d;
   padding: 2rem;
   text-align: center;
-  font-size: $font-size-lg;
+  font-size: 1.25rem;
   border: 3px dashed #dcdede95;
-  border-radius: $btn-border-radius-lg;
+  border-radius: 0.3rem;
 }
 .gv-select-text {
   background-color: #dcdede4d;
   padding: 2rem;
   text-align: center;
-  font-size: $font-size-lg;
+  font-size: 1.25rem;
   border: 3px solid #dcdede95;
-  border-radius: $btn-border-radius-lg;
-}
-
-/**************************
-* Ngx easy table vertical scroll
-**************************/
-
-ngx-table.light-header {
-  th {
-    font-weight: 400;
-  }
-}
-
-ngx-table.sticky-header {
-  @extend .gv-flex-fh;
-
-  .ngx-container {
-    @extend .gv-flex-fh;
-  }
-
-  .ngx-table {
-    @extend .gv-flex-fh;
-  }
-
-  thead {
-    display: table;
-
-    th {
-      font-weight: 400;
-    }
-  }
-
-  tbody {
-    @extend .gv-flex-fh;
-    overflow-y: auto;
-
-    tr {
-      display: flex;
-      flex-shrink: 0;
-
-      td {
-        flex-grow: 1;
-        flex-shrink: 0;
-      }
-    }
-  }
-}
-
-/**************************
-* Switch / Toggle Button
-**************************/
-
-.switch {
-  /* Box around the slider */
-  .box {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
-    @extend .mr-1;
-  }
-
-  /* Hide default HTML checkbox */
-  .box input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  /* The slider */
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: $gray-300;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-  }
-
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-  }
-
-  input:checked + .slider {
-    background-color: $primary;
-  }
-
-  input:focus + .slider {
-    box-shadow: 0 0 1px $primary;
-  }
-
-  input:checked + .slider:before {
-    -webkit-transform: translateX(26px);
-    -ms-transform: translateX(26px);
-    transform: translateX(26px);
-  }
-
-  /* Rounded sliders */
-  .slider.round {
-    border-radius: 34px;
-  }
-
-  .slider.round:before {
-    border-radius: 50%;
-  }
+  border-radius: 0.3rem;
 }
 
 /***********************************
@@ -2138,16 +1226,6 @@ $border: 1px solid #000;
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-/*****************
-* MccColorPicker
-*****************/
-
-// mcc-color-picker-selector {
-//   .mcc-color-picker-selector-preview {
-//     box-sizing: content-box;
-//   }
-// }
-
 /******************
 ** Resizable Split Panel
 ******************/
@@ -2160,12 +1238,12 @@ as-split.gv-split-style {
   }
 
   ::ng-deep .as-split-gutter {
-    background-color: $gray-300 !important;
+    background-color: map.get($gv-grey-palette, 300) !important;
     position: relative;
   }
 
   .as-split-gutter {
-    background-color: $gray-300 !important;
+    background-color: map.get($gv-grey-palette, 300) !important;
     position: relative;
   }
 
@@ -2231,11 +1309,6 @@ as-split.gv-split-style.gv-hide-split-gutter {
   }
 }
 
-// Query Details
-.gv-sub-query-item {
-  margin-left: 0rem;
-}
-
 $gv-category-primary: (
   digitals: #ee7f18,
   sources: #17a2b8,
@@ -2288,174 +1361,6 @@ $categories: digitals, sources, entities, analysis, stories, values;
     color: map_get($gv-category-light, $category);
   }
 }
-.gv-digital-color {
-  color: $secondary;
-}
-// Main category icons
-.gv-source-color {
-  color: $cyan;
-}
-
-.gv-entity-color {
-  color: $blue;
-}
-
-// .gv-query-color {
-//   color: $pink;
-// }
-
-.gv-visual-color {
-  color: $pink;
-}
-
-.gv-settings-color {
-  color: $secondary;
-}
-
-.gv-story-color {
-  color: $green;
-  // color: $orange;
-}
-
-gv-qf-form-array {
-  position: relative;
-  display: block;
-}
-
-/************************************************************************************
-** INCLUDE MATERIAL THEME
-************************************************************************************/
-
-// Define a custom typography config that overrides the font-family as well as the
-// `title` and `body-2` and `button` levels to have a wheight of 600 instead of 500
-// because Source Sans Pro does not have 500
-$gv-typography: mat.define-typography-config(
-  $font-family: $font-family-base,
-  $body-2: mat.define-typography-level(14px, 24px, 600),
-  $button: mat.define-typography-level(14px, 14px, 600),
-);
-
-// Custom color Palette for primary colors (flex-starting with $purple)
-$gv-mat-purple: (
-  50: #f2e7f5,
-  100: #dfc3e8,
-  200: #ca9cda,
-  300: #b576cb,
-  400: #a55abf,
-  500: #9643b3,
-  600: #893eac,
-  700: #7638a2,
-  800: #663399,
-  900: #482a87,
-  A100: #ea80fc,
-  A200: #e040fb,
-  A400: #d500f9,
-  A700: #aa00ff,
-  contrast: (
-    50: rgba(black, 0.87),
-    100: rgba(black, 0.87),
-    200: rgba(black, 0.87),
-    300: white,
-    400: white,
-    500: white,
-    600: white,
-    700: white,
-    800: white,
-    900: white,
-    A100: rgba(black, 0.87),
-    A200: white,
-    A400: white,
-    A700: white,
-  ),
-);
-$gv-mat-teal: (
-  50: #dff6ed,
-  100: #b1e8d1,
-  200: #7ad8b4,
-  300: #20c996,
-  400: #00bd80,
-  500: #00b06a,
-  600: #00a15f,
-  700: #008f52,
-  800: #007d45,
-  900: #005d2f,
-  A100: #a7ffeb,
-  A200: #64ffda,
-  A400: #1de9b6,
-  A700: #00bfa5,
-  contrast: (
-    50: rgba(black, 0.87),
-    100: rgba(black, 0.87),
-    200: rgba(black, 0.87),
-    300: rgba(black, 0.87),
-    400: rgba(black, 0.87),
-    500: white,
-    600: white,
-    700: white,
-    800: white,
-    900: white,
-    A100: rgba(black, 0.87),
-    A200: rgba(black, 0.87),
-    A400: rgba(black, 0.87),
-    A700: rgba(black, 0.87),
-  ),
-);
-
-$gv-grey-palette: (
-  50: #f7f8fb,
-  100: #eeeff6,
-  200: #e5e9f0,
-  300: #d4dade,
-  400: #b7c2c8,
-  500: #9aaab1,
-  600: #68747b,
-  700: #4e5d65,
-  800: #374348,
-  900: #21282b,
-  A100: #eeeff6,
-  A200: #e5e9f0,
-  A400: #b7c2c8,
-  A700: #4e5d65,
-  contrast: (
-    50: mat-palettes.$dark-primary-text,
-    100: mat-palettes.$dark-primary-text,
-    200: mat-palettes.$dark-primary-text,
-    300: mat-palettes.$dark-primary-text,
-    400: mat-palettes.$dark-primary-text,
-    500: mat-palettes.$light-primary-text,
-    600: mat-palettes.$light-primary-text,
-    700: mat-palettes.$light-primary-text,
-    800: mat-palettes.$light-primary-text,
-    900: mat-palettes.$light-primary-text,
-    A100: mat-palettes.$dark-primary-text,
-    A200: mat-palettes.$dark-primary-text,
-    A400: mat-palettes.$light-primary-text,
-    A700: mat-palettes.$light-primary-text,
-  ),
-);
-
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-$app-primary: mat.define-palette($gv-mat-purple);
-$app-accent: mat.define-palette($gv-mat-teal, A200, A100, A400);
-// The warn palette is optional (defaults to red).
-$app-warn: mat.define-palette(mat.$red-palette);
-// Create the theme object (a Sass map containing all of the palettes).
-$app-theme: mat.define-light-theme(
-  (
-    color: (
-      primary: $app-primary,
-      accent: $app-accent,
-      warn: $app-warn,
-    ),
-    typography: $gv-typography,
-  )
-);
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-@include mat.all-component-themes($app-theme);
 
 /***********************************
 * Custom sidenav accordion theme
@@ -2734,12 +1639,6 @@ button.mat-menu-item {
 }
 a.mat-menu-item > mat-icon {
   margin-bottom: 14px;
-}
-.gv-btn-info {
-  background: $white;
-  @extend .border;
-  @extend .border-info;
-  @extend .rounded-circle;
 }
 
 .gv-btn-danger {

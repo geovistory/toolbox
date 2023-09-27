@@ -18,7 +18,7 @@
       <div class="d-flex">
         <div class="d-flex flex-column" style="flex: 1 1 1px; overflow:hidden; text-overflow:ellipsis;">
           <h5 class="d-flex align-items-center">
-            <span class="fa-2x gv-icon gv-icon-entity gv-entity-color"></span>
+            <span class="fa-2x gv-icon gv-icon-entity gv-entities-primary-color"></span>
             <span class="ml-1">ENTITY CLASSES</span>
           </h5>
           <mat-radio-button *ngFor="let class of (filteredClasses$ | async).normalClasses"
@@ -29,7 +29,7 @@
 
         <div class="d-flex flex-column w-50" style="flex: 1 1 1px; overflow:hidden; text-overflow:ellipsis;">
           <h5 class="d-flex align-items-center">
-            <mat-icon class="gv-entity-color" svgIcon="ruler-square"></mat-icon>
+            <mat-icon class="gv-entities-primary-color" svgIcon="ruler-square"></mat-icon>
             <span class="ml-1">VALUE CLASSES</span>
           </h5>
           <mat-radio-button *ngFor="let class of (filteredClasses$ | async).specialClasses"

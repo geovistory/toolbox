@@ -10,10 +10,10 @@
                 <i class="mat-body-1 mr-3">{{mc.columnName}}</i>
                 <mat-icon svgIcon="arrow-right" color="primary"></mat-icon>
                 <span *ngIf="(mc.icon$|async) === 'PeIt'"
-                    class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
+                    class="icon gv-icon gv-entities-primary-color gv-icon-persistent-entity align-self-center gv-icon-preview"></span>
                 <span *ngIf="(mc.icon$|async) === 'TeEn'"
-                    class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview"></span>
-                <mat-icon *ngIf="(mc.icon$|async) === 'VOT'" class="gv-entity-color" svgIcon="ruler-square"
+                    class="icon fa fa-star-o gv-entities-primary-color align-self-center gv-icon-preview"></span>
+                <mat-icon *ngIf="(mc.icon$|async) === 'VOT'" class="gv-entities-primary-color" svgIcon="ruler-square"
                     style="margin-right: 0;"></mat-icon>
                 <span class="mat-body-1 ml-1">{{mc.className$|async}}</span>
             </mat-option>
@@ -38,11 +38,11 @@
         <i class="mat-body-1 mr-3 gv-col-center">{{selected.columnName}}</i>
         <mat-icon svgIcon="arrow-right" color="primary" class="mr-3 my-auto gv-col-center"></mat-icon>
         <span *ngIf="(selected.icon$|async) === 'PeIt'"
-            class="icon gv-icon gv-entity-color gv-icon-persistent-entity align-self-center gv-icon-preview gv-col-center"></span>
+            class="icon gv-icon gv-entities-primary-color gv-icon-persistent-entity align-self-center gv-icon-preview gv-col-center"></span>
         <span *ngIf="(selected.icon$|async) === 'TeEn'"
-            class="icon fa fa-star-o gv-entity-color align-self-center gv-icon-preview gv-col-center"></span>
-        <mat-icon *ngIf="(selected.icon$|async) === 'VOT'" class="gv-entity-color gv-col-center" svgIcon="ruler-square"
-            style="margin-right: 0;"></mat-icon>
+            class="icon fa fa-star-o gv-entities-primary-color align-self-center gv-icon-preview gv-col-center"></span>
+        <mat-icon *ngIf="(selected.icon$|async) === 'VOT'" class="gv-entities-primary-color gv-col-center"
+            svgIcon="ruler-square" style="margin-right: 0;"></mat-icon>
         <span class="mat-body-1 ml-1 gv-col-center">{{selected.className$|async}}</span>
     </div>
 </ng-container>

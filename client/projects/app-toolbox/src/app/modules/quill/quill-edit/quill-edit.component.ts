@@ -88,9 +88,6 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
   @ViewChild('toolbar', { static: true }) toolbar: ElementRef;
 
   // Add styling and behavior of an Input element
-  @HostBinding('class.gv-quill-input-like') @Input() inputLike = false;
-
-  // Add styling and behavior of an Input element
   @HostBinding('class.gv-quill-mat-input-like') @Input() matInputLike = false;
 
   // Add styling and behavior of an Input element
@@ -288,7 +285,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     };
 
     // initialize config for look and feel of conventional input element
-    if (this.inputLike || this.matInputLike) {
+    if (this.matInputLike) {
       this.initInputLike();
     }
     // initialize config for look and feel of conventional textarea element
@@ -330,9 +327,6 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
     if (this.quillEditorService.latestId < 0) {
       throw new Error('LatestId must be 0 or higher');
     }
-    if (this.inputLike && this.textareaLike) {
-      throw new Error('Quill-Edit-Component: you can\'t set [inputLike] and [textareaLike] true. They are mutually exclusive.');
-    }
   }
 
   private initContents() {
@@ -359,8 +353,6 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
    * Quill editor will look and feel almost like a convetional input
    */
   initInputLike() {
-    // styling
-    if (this.inputLike) this.editorConfig.theme = 'bubble';
     // disable all formatting (no bold, italic etc.)
     this.editorConfig.formats = ['charid', 'blockid'];
     // disable tabs and linebreak keys
@@ -516,7 +508,7 @@ export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
                 d.insert(char, { ...op.attributes, charid: ++this.quillEditorService.latestId });
               }
               else {
-                if (this.matInputLike || this.inputLike) {
+                if (this.matInputLike) {
                   d.insert(' ', { ...op.attributes, charid: ++this.quillEditorService.latestId });
                 }
                 else {

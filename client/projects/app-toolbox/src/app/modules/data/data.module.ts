@@ -7,7 +7,6 @@ import { NgxFileDropModule } from 'ngx-file-drop';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { AnnotationModule } from 'projects/app-toolbox/src/app/modules/annotation/annotation.module';
 import { DigitalTableModule } from 'projects/app-toolbox/src/app/shared/components/digital-table/digital-table.module';
-import { CoverModule } from 'projects/app-toolbox/src/app/shared/directives/cover/cover.module';
 import { ClassDropdownModule } from '../../shared/components/class-dropdown/class-dropdown.module';
 import { CommentMenuModule } from '../../shared/components/comment-menu/comment-menu.module';
 import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
@@ -43,7 +42,6 @@ import { ViewFieldHasTableValueComponent } from './components/view-field-has-tab
     DetailContentModule,
     DetailTopBarModule,
     AnnotationModule,
-    CoverModule,
     MaterialModule,
     DigitalTableModule,
     NgxFileDropModule,

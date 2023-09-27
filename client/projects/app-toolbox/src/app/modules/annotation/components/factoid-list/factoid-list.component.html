@@ -51,7 +51,7 @@
     <mat-grid-tile [colspan]="12" [rowspan]="1">
       <!-- <div class="content"> -->
       <span class="content align-middle" style="font-size: 15px;">
-        <span class="icon fa fa-star-o align-self-center gv-icon-preview gv-entity-color"></span>
+        <span class="icon fa fa-star-o align-self-center gv-icon-preview gv-entities-primary-color"></span>
         {{c.pipeClassLabel(factoidEntity.pkClass) | async}} - Factoid from table {{factoidEntity.pkDigital}}
       </span>
       <!-- </div> -->
@@ -92,14 +92,14 @@
     <!-- principal locations-->
     <mat-grid-tile [colspan]="2" [rowspan]="1">
       <div class="content mat-text-secondary gv-one-liner gv-fade-out-right">
-        <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="alpha-f-box-outline"
+        <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="alpha-f-box-outline"
           [matTooltip]="'Factoid ' + factoidEntity.pkFactoidMapping + '.'">
         </mat-icon>
-        <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="file-table"
+        <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="file-table"
           [matTooltip]="'Table ' + factoidEntity.pkDigital + '. Click to open.'"
           (click)="this.p.addTableTab(factoidEntity.pkDigital)">
         </mat-icon>
-        <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="google-spreadsheet"
+        <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="google-spreadsheet"
           [matTooltip]="'Row ' + factoidEntity.pkRow + '. Click to open table and filter on the row.'"
           (click)="this.p.addTableTab(factoidEntity.pkDigital, factoidEntity.pkRow);">
         </mat-icon>
@@ -141,14 +141,14 @@
         <!-- header cell position-->
         <mat-grid-tile [colspan]="2" [rowspan]="1">
           <div class="content fade gv-one-liner gv-fade-out-right">
-            <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="alpha-f-box-outline"
+            <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="alpha-f-box-outline"
               [matTooltip]="'Factoid ' + factoidEntity.pkFactoidMapping + '.'">
             </mat-icon>
-            <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="file-table"
+            <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="file-table"
               [matTooltip]="'Table ' + factoidEntity.pkDigital + '. Click to open.'"
               (click)="this.p.addTableTab(factoidEntity.pkDigital)">
             </mat-icon>
-            <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="google-spreadsheet"
+            <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="google-spreadsheet"
               [matTooltip]="'Row ' + factoidEntity.pkRow + '. Click to open table and filter on the row.'"
               (click)="this.p.addTableTab(factoidEntity.pkDigital, factoidEntity.pkRow);">
             </mat-icon>
@@ -204,14 +204,14 @@
       <!-- body cell position-->
       <mat-grid-tile [colspan]="2" [rowspan]="1">
         <div class="content bold gv-one-liner gv-fade-out-right">
-          <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="alpha-f-box-outline"
+          <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="alpha-f-box-outline"
             [matTooltip]="'Factoid ' + factoidEntity.pkFactoidMapping + '.'">
           </mat-icon>
-          <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="file-table"
+          <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="file-table"
             [matTooltip]="'Table ' + factoidEntity.pkDigital + '. Click to open.'"
             (click)="this.p.addTableTab(factoidEntity.pkDigital)">
           </mat-icon>
-          <mat-icon class="gv-pointer entity-icon gv-digital-color" svgIcon="google-spreadsheet"
+          <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="google-spreadsheet"
             [matTooltip]="'Row ' + factoidEntity.pkRow + '. Click to open table and filter on the row.'"
             (click)="this.p.addTableTab(factoidEntity.pkDigital, factoidEntity.pkRow);">
           </mat-icon>

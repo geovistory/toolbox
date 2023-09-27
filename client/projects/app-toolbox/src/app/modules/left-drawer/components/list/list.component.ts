@@ -1,5 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { PageEvent } from '@angular/material/paginator';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
 import { IAppState } from '@kleiolab/lib-redux';
 import { EntitySearchHit, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
@@ -126,7 +127,8 @@ export class ListComponent implements OnInit, OnDestroy {
     return upper > this.collectionSize ? this.collectionSize : upper;
   }
 
-  pageChange() {
+  pageChange(p: PageEvent) {
+    this.page = p.pageIndex;
     this.searchProject();
   }
 
