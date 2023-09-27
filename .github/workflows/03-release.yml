@@ -124,6 +124,15 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16.13.2"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Setup version info
+        id: setup_version
+        run: "npm --prefix client run setup:version"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
