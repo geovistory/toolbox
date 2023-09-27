@@ -1,10 +1,8 @@
-import { DragDropModule } from '@angular/cdk/drag-drop';
 import { PortalModule } from '@angular/cdk/portal';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DndModule } from '@suez/ngx-dnd';
 import { AngularSplitModule } from 'angular-split';
 import { NavbarModule, ProxyRouteModule } from 'projects/app-toolbox/src/app/shared';
 import { ReadMoreModule } from 'projects/app-toolbox/src/app/shared/components/read-more/read-more.module';
@@ -59,7 +57,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     KeysModule,
     ReadMoreModule,
     HighlightModule,
-    DragDropModule,
     AnalysisModule,
     PortalModule,
     AngularSplitModule,
@@ -71,7 +68,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     AnalysisIconModule,
     SettingsModule,
     OntoInfoModule,
-    DndModule,
     QuillOpsToStrModule,
     EntityLabelConfigModule,
   ],

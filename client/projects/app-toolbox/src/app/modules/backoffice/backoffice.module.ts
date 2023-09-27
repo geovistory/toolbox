@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DndModule } from '@suez/ngx-dnd';
 import { TableModule } from 'primeng/table';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { KeysModule } from '../../shared/pipes/keys.module';
@@ -19,7 +18,6 @@ import { SystemTypeListComponent } from './components/system-type-list/system-ty
     CommonModule,
     BackofficeRoutingModule,
     KeysModule,
-    DndModule,
     FormsModule,
     ReactiveFormsModule,
     TableModule,

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { DndModule } from '@suez/ngx-dnd';
 import { TableModule } from 'primeng/table';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
 import { EntityPreviewModule } from '../../shared/components/entity-preview/entity-preview.module';
@@ -15,7 +14,6 @@ import { RamListRemoveDialogComponent } from './components/ram-list-remove-dialo
   imports: [
     CommonModule,
     BaseModule,
-    DndModule,
     TableModule,
     MaterialModule,
     EntityPreviewModule,
