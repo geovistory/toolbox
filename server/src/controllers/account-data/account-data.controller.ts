@@ -3,8 +3,8 @@ import {inject} from '@loopback/core';
 import {param, tags} from '@loopback/openapi-v3';
 import {repository} from '@loopback/repository';
 import {get} from '@loopback/rest';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
-import {PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__DESCRIPTION, PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__LABEL} from '../../config';
+import {SecurityBindings, UserProfile, securityId} from '@loopback/security';
+import {PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_LABEL, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_URL, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_LABEL, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_URL, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_DESCRIPTION, PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_LABEL} from '../../config';
 import {Postgres1DataSource} from '../../datasources/postgres1.datasource';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {PubRole} from '../../models/pub-role.model';
@@ -55,8 +55,12 @@ export class AccountDataController {
         fk_pro_project: {inq: projects.map(p => p.pk_entity)},
         fk_system_type: {
           inq: [
-            PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__LABEL,
-            PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__DESCRIPTION
+            PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_LABEL,
+            PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_DESCRIPTION,
+            PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_LABEL,
+            PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_URL,
+            PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_LABEL,
+            PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_URL,
           ]
         }
       }

@@ -9,6 +9,10 @@
     </div>
     <span class="gv-nv-spacer"></span>
 
+    <ng-content select="[buttons]">
+
+    </ng-content>
+
     <button class="gv-nv-item gv-nv-feedback-btn" mat-flat-button color="accent"
       (click)="openFeedbackDialog()">Help</button>
 

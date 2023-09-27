@@ -20,7 +20,10 @@ export const CLASS_PK_ITEM = 221;
 export const CLASS_PK_WEB_REQUEST = 502;
 
 
-export const PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__LABEL = 639;
-export const PK_SYSTEM_TYPE__PRO_TEXT_PROPERTY__DESCRIPTION = 638;
-
+export const PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_LABEL = 639;
+export const PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_DESCRIPTION = 638;
+export const PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_LABEL = 3509; // Label for project button 1
+export const PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_1_URL = 3510; // Url for project button 1
+export const PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_LABEL = 3511; // Label for project button 2
+export const PK_SYSTEM_TYPE_PRO_TEXT_PROPERTY_BTN_2_URL = 3512; // Url for project button 2
 export const PK_PROJECT_OF_TEMPLATE_PROJECT = 173
