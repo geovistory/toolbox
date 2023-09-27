@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 
-type FrameworkTypes = 'material' | 'bootstrap'
 
 @Component({
   selector: 'gv-control-messages',
@@ -10,7 +9,6 @@ type FrameworkTypes = 'material' | 'bootstrap'
 })
 export class ControlMessagesComponent {
   @Input() control: AbstractControl;
-  @Input() framework: FrameworkTypes = 'bootstrap';
 
   constructor() { }
 

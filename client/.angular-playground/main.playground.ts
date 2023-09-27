@@ -12,7 +12,6 @@ import { ReduxQueriesModule } from '@kleiolab/lib-queries';
 import { ReduxModule } from '@kleiolab/lib-redux';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsModule } from '@kleiolab/lib-sockets';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PlaygroundModule } from 'angular-playground';
 import { AngularSplitModule } from 'angular-split';
 import { buildModuleUrl, Ion } from 'cesium';
@@ -64,7 +63,6 @@ platformBrowserDynamic().bootstrapModule(PlaygroundModule
       // other thid party modules
       NgReduxRouterModule,
       NgReduxModule,
-      NgbModule,
       AngularSplitModule.forRoot(),
       CookiesModule.forRoot(),
 

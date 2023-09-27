@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DndModule } from '@suez/ngx-dnd';
 import { AngularSplitModule } from 'angular-split';
 import { LanguageSearchTypeaheadModule, NavbarModule, ProxyRouteModule } from 'projects/app-toolbox/src/app/shared';
@@ -56,7 +55,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     NavbarModule,
     ProjectsRoutingModule,
     FormsModule,
-    NgbModule,
     ProxyRouteModule,
     KeysModule,
     ReadMoreModule,

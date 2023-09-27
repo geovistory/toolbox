@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DateTimeModule } from '@kleiolab/lib-utils';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DndModule } from '@suez/ngx-dnd';
 import { DndModule as NgxDndModule } from 'ngx-drag-drop';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
@@ -198,7 +197,6 @@ const components = [
 ]
 
 const baseModules = [
-  NgbModule, // TODO remove all dependencies and then the module
   CommonModule,
   DndModule,
   ReactiveFormsModule,

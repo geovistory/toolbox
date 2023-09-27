@@ -5,7 +5,6 @@ import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { DateTimeModule } from '@kleiolab/lib-utils';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
 import { TreeModule } from 'primeng/tree';
 import { TimelineModule } from 'projects/app-toolbox/src/app/modules/timeline/timeline.module';
@@ -31,7 +30,6 @@ import { EntityDetailComponent } from './containers/entity-detail/entity-detail.
     AngularSplitModule,
     DetailContentModule,
     DetailTopBarModule,
-    NgbModule,
     LanguageSearchTypeaheadModule,
     ControlMessagesModule,
     PassiveLinkModule,

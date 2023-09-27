@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
 import { AnalysisIconModule } from '../../shared/pipes/analysis-icon/analysis-icon.module';
 import { BaseModule } from '../base/base.module';
@@ -19,7 +18,6 @@ import { SourcesTabsComponent } from './components/sources-tabs/sources-tabs.com
   imports: [
     BaseModule,
     PassiveLinkModule,
-    NgbModule,
     AnalysisIconModule
   ],
   providers: [

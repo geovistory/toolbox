@@ -12,7 +12,6 @@ import { ReduxQueriesModule } from '@kleiolab/lib-queries';
 import { ReduxModule } from '@kleiolab/lib-redux';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsConfig, SocketsModule, SOCKETS_CONFIG } from '@kleiolab/lib-sockets';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
@@ -69,7 +68,6 @@ registerLocaleData(localeDeCh);
 
     // other thid party modules
     NgReduxModule,
-    NgbModule,
     AngularSplitModule.forRoot(),
     CookiesModule.forRoot(),
 
