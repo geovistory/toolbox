@@ -1,4 +1,4 @@
-<mat-form-field *ngIf="formControlFactory.config?.data.columnLabel" class="w-100" appearance="legacy">
+<mat-form-field *ngIf="formControlFactory.config?.data.columnLabel" class="w-100" appearance="outline">
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
 
   <input matInput [formControl]="formControlFactory.control" [required]="formControlFactory.config?.required" />
@@ -7,7 +7,7 @@
   </mat-error>
 </mat-form-field>
 
-<mat-form-field *ngIf="formControlFactory.config?.data.ctrlClasses" class="w-100" appearance="legacy">
+<mat-form-field *ngIf="formControlFactory.config?.data.ctrlClasses" class="w-100" appearance="outline">
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
   <gv-class-and-type-select [formControl]="formControlFactory.control"
     [disabled]="formControlFactory.config?.disabled$ | async"

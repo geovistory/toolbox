@@ -1,4 +1,4 @@
-<mat-form-field *ngIf="config?.data.ctrlClasses" class="w-100" appearance="legacy">
+<mat-form-field *ngIf="config?.data.ctrlClasses" class="w-100" appearance="outline">
   <mat-label>{{config?.placeholder}}</mat-label>
   <gv-class-and-type-select [formControl]="formControlFactory.control" [disabled]="config?.disabled$ | async"
     [pkClasses$]="config?.data.ctrlClasses.pkClasses$" [required]="config?.required">
@@ -9,7 +9,7 @@
 </mat-form-field>
 
 
-<mat-form-field *ngIf="config?.data.ctrlCondition" class="w-100" appearance="legacy">
+<mat-form-field *ngIf="config?.data.ctrlCondition" class="w-100" appearance="outline">
   <mat-label>{{config?.placeholder}}</mat-label>
 
   <mat-select [formControl]="formControlFactory.control" [required]="config?.required">
@@ -22,7 +22,7 @@
 
 
 
-<mat-form-field *ngIf="config?.data.ctrlProperties" class="w-100" appearance="legacy">
+<mat-form-field *ngIf="config?.data.ctrlProperties" class="w-100" appearance="outline">
   <mat-label>{{config?.placeholder}}</mat-label>
   <gv-property-select [formControl]="formControlFactory.control" [required]="config?.required"
     [rootFormGroup]="rootFormGroup" [options$]="config?.data.ctrlProperties.options$">
@@ -33,7 +33,7 @@
 </mat-form-field>
 
 
-<mat-form-field *ngIf="config?.data.ctrlSearchTerm" class="w-100" appearance="legacy">
+<mat-form-field *ngIf="config?.data.ctrlSearchTerm" class="w-100" appearance="outline">
   <mat-label>{{config?.placeholder}}</mat-label>
   <input matInput autocomplete="off" [formControl]="formControlFactory.control" [required]="config?.required" />
   <mat-error *ngIf="formControlFactory.control.hasError('required')">

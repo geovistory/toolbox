@@ -1,6 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Zoomer } from '../../models/zoomer';
-import { MatSliderChange } from '@angular/material/slider';
 
 @Component({
   selector: 'gv-zoom-slider',
@@ -16,8 +15,8 @@ export class ZoomSliderComponent implements OnInit {
 
   ngOnInit() {
   }
-  onSlide(e: MatSliderChange) {
-    this.zoomer.zoomToLevel(e.value)
+  onSlide(e: number) {
+    this.zoomer.zoomToLevel(e)
     this.onChange()
   }
 
@@ -27,7 +26,7 @@ export class ZoomSliderComponent implements OnInit {
     }, 0);
   }
   createThumbLabel(currentLevel: number) {
-    return currentLevel + 1;
+    return currentLevel + 1 + "";
   }
 
 }

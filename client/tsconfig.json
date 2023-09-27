@@ -1,7 +1,6 @@
 {
   "compileOnSave": false,
   "angularCompilerOptions": {
-    "enableIvy": true,
     "strictTemplates": true,
     "fullTemplateTypeCheck": true
   },

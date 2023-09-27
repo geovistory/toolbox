@@ -14,7 +14,6 @@ import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsConfig, SocketsModule, SOCKETS_CONFIG } from '@kleiolab/lib-sockets';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularSplitModule } from 'angular-split';
-import { ElasticInputModule } from 'angular2-elastic-input';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { AuthGuard } from 'projects/app-toolbox/src/app/core/auth/auth-guard.service';
@@ -45,7 +44,7 @@ const socketIoConfig: SocketIoConfig = { url: environment.apiUrl, options: {} };
 const socketsConfig: SocketsConfig = { baseUrl: environment.apiUrl, options: { autoConnect: true } };
 
 const appearance: MatFormFieldDefaultOptions = {
-  appearance: 'standard'
+  appearance: 'outline'
 };
 
 registerLocaleData(localeDeCh);
@@ -71,7 +70,6 @@ registerLocaleData(localeDeCh);
     // other thid party modules
     NgReduxModule,
     NgbModule,
-    ElasticInputModule.forRoot(),
     AngularSplitModule.forRoot(),
     CookiesModule.forRoot(),
 

@@ -1,4 +1,4 @@
-<mat-form-field *ngIf="formControlFactory.config?.data.type=='lineLabel'" class="w-100" appearance="legacy">
+<mat-form-field *ngIf="formControlFactory.config?.data.type=='lineLabel'" class="w-100" appearance="outline">
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
 
   <input matInput [formControl]="formControlFactory.control" [required]="formControlFactory.config?.required" />

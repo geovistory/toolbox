@@ -90,8 +90,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   * of all profiles that are enabled by the given project.
   * The array will always include PK_PROFILE_GEOVISTORY_BASIC
   */
-  // @spyTag
-  // @cache({ refCount: false })
   public pipeProfilesEnabledByProject(): Observable<number[]> {
     return combineLatest([
       this.a.pkProject$,
@@ -255,8 +253,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     * pipe all the basic fields of a class,
     * ordered by the position of the field within the basic/metadata/specific fields
     */
-  // @spyTag
-  // @cache({ refCount: false })
   public pipeSection(pkClass: number, displayType: DisplayType, section: SectionName, noNesting = false): Observable<Field[]> {
 
     // console.log('PipeSection:', pkClass, displayType, section, noNesting) // freezing bug log
@@ -324,8 +320,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
      * - the when field
      * - if available: the type field
      */
-  // @spyTag
-  // @cache({ refCount: false })
   public pipeFieldsForTeEnForm(pkClass: number, noNesting = false): Observable<Field[]> {
     const obs$ = this.pipeFields(pkClass, noNesting).pipe(
       // filter fields that are displayd in specific fields
@@ -356,8 +350,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   * - specific fields
   * - timeSpan fields
   */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeAllSections(pkClass: number, displayType: DisplayType, noNesting = false): Observable<Field[]> {
     const obs$ = combineLatest([
       this.pipeSection(pkClass, displayType, SectionName.basic, noNesting),
@@ -516,8 +508,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    * (and thus Subfields) because the UI then does not allow to choose
    * the right target class.
    */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeTargetTypesOfClass(
     pkClass: number,
     targetMaxQuantity: number = -1,
@@ -650,8 +640,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    * - empty array
    *
    */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeFieldConfigs(pkClass: number): Observable<ProClassFieldConfig[]> {
     const obs$ = this.a.pkProject$.pipe(
       switchMap((fkProject) => {
@@ -688,8 +676,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   /**
    * Delivers class label for active project
    */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeClassLabel(pkClass?: number): Observable<string> {
     const obs$ = combineLatest([
       this.a.pkProject$,
@@ -723,8 +709,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    * - origin == 'of ontome in project lang'          (from data_for_history.label)
    * - origin == 'of ontome in english'               (from data_for_history.label)
    */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeLabels(d: {
     fkProject: number,
     type: 'label' | 'inverse_label' | 'definition' | 'scope_note',
@@ -848,8 +832,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   /**
    * Pipes ProTextProperty
    */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeProTextProperty(d: {
     fk_project: number,
     fk_system_type: number,
@@ -866,8 +848,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   /**
    * Pipes DfhLabel
    */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeDfhLabel(d: {
     type: 'label' | 'inverse_label' | 'definition' | 'scope_note',
     language: string,
@@ -889,8 +869,6 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   /**
    * Delivers best fitting field label for active project
   */
-  // @spyTag
-  // @cache({ refCount: false })
   pipeFieldLabel(fkSource: number, isOutgoing: boolean, fkProperty: number): Observable<string> {
     const fkPropertyDomain = isOutgoing ? fkSource : undefined;
     const fkPropertyRange = isOutgoing ? undefined : fkSource;

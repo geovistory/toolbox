@@ -1,8 +1,9 @@
 <button mat-icon-button (click)="zoomer.zoomOut(); onChange()">
   <mat-icon svgIcon="magnify-minus-outline"></mat-icon>
 </button>
-<mat-slider [min]="0" [max]="zoomer.zoomLevels.length -1" [step]="1" [value]="zoomer.currentLevel" [thumbLabel]="true"
-  [tickInterval]="1" [invert]="true" [displayWith]="createThumbLabel" (change)="onSlide($event)">
+<mat-slider [min]="0" [max]="zoomer.zoomLevels.length -1" [step]="1" [displayWith]="createThumbLabel">
+  <input matSliderThumb [value]="zoomer.currentLevel" (valueChange)="onSlide($event)">
+
 </mat-slider>
 <button mat-icon-button (click)="zoomer.zoomIn(); onChange()">
   <mat-icon svgIcon="magnify-plus-outline"></mat-icon>

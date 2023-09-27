@@ -1,4 +1,4 @@
-<mat-form-field *ngIf="formControlFactory.config?.data.classesSegment" class="w-100" appearance="legacy">
+<mat-form-field *ngIf="formControlFactory.config?.data.classesSegment" class="w-100" appearance="outline">
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
 
   <gv-class-and-type-select [formControl]="formControlFactory.control" [required]="formControlFactory.config?.required"
@@ -11,7 +11,7 @@
 </mat-form-field>
 
 
-<mat-form-field *ngIf="formControlFactory.config?.data.propertiesSegment" class="w-100" appearance="legacy">
+<mat-form-field *ngIf="formControlFactory.config?.data.propertiesSegment" class="w-100" appearance="outline">
 
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
   <gv-property-select [options$]="formControlFactory.config.data.propertiesSegment.options$"

@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Route, RouterModule, Routes } from '@angular/router';
-
 import { AuthGuard } from 'projects/app-toolbox/src/app/core/auth/auth-guard.service';
-import { ProjectsModule } from './modules/projects/projects.module';
-import { BackofficeModule } from './modules/backoffice/backoffice.module';
 import { SystemAdminGuard } from 'projects/app-toolbox/src/app/core/auth/system-admin-guard.service';
+import { BackofficeModule } from './modules/backoffice/backoffice.module';
+import { ProjectsModule } from './modules/projects/projects.module';
+
 
 
 export function getProjectModule() { return ProjectsModule };
@@ -58,7 +58,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

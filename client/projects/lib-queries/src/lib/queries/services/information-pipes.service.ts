@@ -85,7 +85,6 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
    * This will use entity previews for getting strings of related temporal entities
    * So this may take a little while
    */
-  // @spyTag
   pipeLabelOfEntity(fkEntity: number): Observable<string> {
     return this.p.streamEntityPreview(fkEntity).pipe(map(p => p.entity_label))
   }
@@ -94,7 +93,6 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
   /**
    * Pipes the class label of given entity
    */
-  // @spyTag
   pipeClassLabelOfEntity(fkEntity: number): Observable<string> {
     return this.b.pipeClassOfEntity(fkEntity).pipe(
       switchMap(pkClass => this.c.pipeClassLabel(pkClass))
@@ -104,7 +102,6 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
   /**
    * Pipes the pk_entity of the type of an entity
    */
-  // @spyTag
   pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number, isOutgoing: boolean): Observable<InfStatement> {
     if (isOutgoing) {
       return this.s.inf$.statement$.by_subject_and_property_indexed$({ fk_property: hasTypeProperty, fk_subject_info: pkEntity }).pipe(map(items => {
@@ -181,8 +178,6 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
 
   }
 
-  // @spyTag
-  // @cache({ refCount: false })
   pipeClassesAndTypesOfClasses(classes: number[]) {
     const obs$ = this.c.pipeTypeAndTypedClassesOfTypedClasses(classes).pipe(
       switchMap(items => this.pipeClassAndTypeNodes(items)),
@@ -190,8 +185,6 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
     return this.cache('pipeClassesAndTypesOfClasses', obs$, ...arguments)
   }
 
-  // @spyTag
-  // @cache({ refCount: false })
   pipeClassAndTypeNodes(typeAndTypedClasses: HasTypePropertyInfo[]): Observable<ClassAndTypeNode[]> {
     const obs$ = combineLatestOrEmpty(
       typeAndTypedClasses.map(item => this.c.pipeClassLabel(item.typedClass).pipe(

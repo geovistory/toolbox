@@ -1,5 +1,4 @@
 import { iif, Observable, of } from 'rxjs';
-import { tag } from 'rxjs-spy/operators';
 import { switchMap } from 'rxjs/operators';
 
 
@@ -17,7 +16,6 @@ export function switchMapOr<I, O>(defaultValue: O, elseOutput: (s: I) => Observa
       switchMap(value => {
         return iif(() => conditionForDefault(value), of(defaultValue), elseOutput(value))
       }),
-      tag(`switchMapOr`)
     )
 
   }
