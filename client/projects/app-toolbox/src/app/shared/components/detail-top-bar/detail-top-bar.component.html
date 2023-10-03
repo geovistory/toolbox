@@ -1,12 +1,12 @@
 <div class="gv-detail-top-bar border-bottom boder-gray-300 bg-white" fxLayout="row" fxLayoutAlign="space-between center"
   [ngStyle]="{height: height}">
 
-  <button fxFlex="24px" mat-stroked-button class="close-right-area-btn mr-3 text-muted" *ngIf="closeRightAreaBtn"
-    (click)="closeRight.emit()">
+  <button fxFlex="24px" mat-stroked-button class="close-right-area-btn mr-3 mat-text-secondary"
+    *ngIf="closeRightAreaBtn" (click)="closeRight.emit()">
     <mat-icon aria-label="Close right area">chevron_right</mat-icon>
   </button>
 
-  <button fxFlex="24px" mat-stroked-button class="close-right-area-btn mr-3 text-muted" *ngIf="openLeftAreaBtn"
+  <button fxFlex="24px" mat-stroked-button class="close-right-area-btn mr-3 mat-text-secondary" *ngIf="openLeftAreaBtn"
     (click)="openLeft.emit()">
     <mat-icon aria-label="Close right area">chevron_right</mat-icon>
   </button>
@@ -15,12 +15,12 @@
     <ng-content></ng-content>
   </div>
 
-  <button fxFlex="24px" mat-stroked-button class="open-right-area-btn ml-3 text-muted" *ngIf="openRightAreaBtn"
+  <button fxFlex="24px" mat-stroked-button class="open-right-area-btn ml-3 mat-text-secondary" *ngIf="openRightAreaBtn"
     (click)="openRight.emit()">
     <mat-icon aria-label="Open left area">chevron_left</mat-icon>
   </button>
 
-  <button fxFlex="24px" mat-stroked-button class="open-right-area-btn ml-3 text-muted" *ngIf="closeLeftAreaBtn"
+  <button fxFlex="24px" mat-stroked-button class="open-right-area-btn ml-3 mat-text-secondary" *ngIf="closeLeftAreaBtn"
     (click)="closeLeft.emit()">
     <mat-icon aria-label="Open left area">chevron_left</mat-icon>
   </button>

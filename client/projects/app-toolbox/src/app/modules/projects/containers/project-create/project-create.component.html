@@ -21,7 +21,7 @@
 
       <ng-template #rt let-r="result" let-t="term">
         {{ r.notes}}
-        <small class="text-muted">{{ r.iso6391}}</small>
+        <small class="mat-text-secondary">{{ r.iso6391}}</small>
       </ng-template>
 
       <form name="form" (ngSubmit)="f.form.valid && request()" #f="ngForm" novalidate>

@@ -1,6 +1,6 @@
 <div mat-dialog-title>
   <h2>
-    Time span <small *ngIf="(helpMode$ | async) === 'long'" class="text-muted">(Help)</small>
+    Time span <small *ngIf="(helpMode$ | async) === 'long'" class="mat-text-secondary">(Help)</small>
 
     <button class="float-right" mat-button *ngIf="(helpMode$ | async) === 'hidden'"
       (click)="setHelpMode('long')">Help</button>

@@ -33,7 +33,7 @@
             class="help-block form-text text-danger">Email is invalid</div>
           <div *ngIf="validationError?.email" class="help-block form-text text-danger">{{validationError?.email}}
           </div>
-          <small id="emailHelp" class="form-text text-muted">You will receive account related emails.</small>
+          <small id="emailHelp" class="form-text mat-text-secondary">You will receive account related emails.</small>
         </div>
         <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
           <label for="password">Password</label>
@@ -72,7 +72,7 @@
       <h1>Thanks for registering</h1>
       <p class="lead mt-5">A verification email has been sent to <strong>{{model.email}}</strong></p>
       <p>Please open the email and click on the verication link to verify your email address.</p>
-      <small class="text-muted">
+      <small class="mat-text-secondary">
         No email received? Check your spam folder.
         <!-- first then try to <a href class="gv-passive-link" (click)="register()">resend</a> the verification email. -->
       </small>

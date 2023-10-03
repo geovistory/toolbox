@@ -20,12 +20,12 @@
     <div class="form-row">
       <div class="form-group"
         [ngClass]="{'col-sm-12': (!monthVisible && !dayVisible), 'col-sm-6': (monthVisible && !dayVisible), 'col-sm-4': (monthVisible && dayVisible)}">
-        <label class="font-sm text-muted">Year*</label>
+        <label class="font-sm mat-text-secondary">Year*</label>
         <input type="number" class="form-control" formControlName="year" placeholder="Year" autofocus #yearInput />
         <gv-control-messages [control]="form?.controls.year"></gv-control-messages>
       </div>
       <div class="form-group" *ngIf="monthVisible" [ngClass]="{'col-sm-6': (!dayVisible), 'col-sm-4': (dayVisible)}">
-        <label class="font-sm text-muted">Month</label>
+        <label class="font-sm mat-text-secondary">Month</label>
         <!-- <input type="number" class="form-control" formControlName="month" placeholder="Month"/> -->
         <select class="form-control" class="custom-select" formControlName="month">
           <option [ngValue]="null" selected></option>
@@ -45,7 +45,7 @@
         <gv-control-messages [control]="form?.controls.month"></gv-control-messages>
       </div>
       <div class="form-group col-sm-4" *ngIf="dayVisible">
-        <label class="font-sm text-muted">Day</label>
+        <label class="font-sm mat-text-secondary">Day</label>
         <input type="number" class="form-control" formControlName="day" placeholder="Day" />
         <gv-control-messages [control]="form?.controls.day"></gv-control-messages>
       </div>
@@ -54,7 +54,7 @@
     <div class="form-row" [hidden]="!timeInputsVisible">
 
       <div class="form-group col-sm-4" *ngIf="hoursVisible">
-        <label class="font-sm text-muted">Hours</label>
+        <label class="font-sm mat-text-secondary">Hours</label>
         <div class="input-group">
 
           <input type="number" class="form-control" formControlName="hours" placeholder="0-23" />
@@ -68,13 +68,13 @@
       </div>
 
       <div class="form-group col-sm-4" *ngIf="minutesVisible">
-        <label class="font-sm text-muted">Minutes</label>
+        <label class="font-sm mat-text-secondary">Minutes</label>
         <input type="number" class="form-control" formControlName="minutes" placeholder="0-59" />
         <gv-control-messages [control]="form?.controls.minutes"></gv-control-messages>
       </div>
 
       <div class="form-group col-sm-4" *ngIf="secondsVisible">
-        <label class="font-sm text-muted">Seconds</label>
+        <label class="font-sm mat-text-secondary">Seconds</label>
         <input type="number" class="form-control" formControlName="seconds" placeholder="0-59" />
         <gv-control-messages [control]="form?.controls.seconds"></gv-control-messages>
       </div>
@@ -85,7 +85,7 @@
         <label class="sr-only">Calendar</label>
 
         <span *ngIf="!editingCalendar">
-          <i class="font-sm" [ngClass]="{'text-muted' : form?.controls.calendar.pristine}">{{calendar ===
+          <i class="font-sm" [ngClass]="{'mat-text-secondary' : form?.controls.calendar.pristine}">{{calendar ===
             'gregorian'?'Gregorian':'Julian'}}
             calendar</i>
           <a *ngIf="editCalBtnVisible" href="" class="gv-passive-link ml-1" (click)="editingCalendar = true">edit</a>
@@ -114,7 +114,7 @@
 
 
     <!-- <div class="form-row mt-3">
-          <div class="col text-muted">
+          <div class="col mat-text-secondary">
           <button type="button" mat-button (click)="showInfo()" *ngIf="form?.status == 'VALID' && !infoVisible">
           Show info
         </button>
@@ -127,14 +127,14 @@
         </div>
         <div class="card-body font-sm" *ngIf="this.info.gregStartDate">
         <div>{{this.info.gregStartDate | date:'MMM d, y GG, HH:mm:ss' }} – {{this.info.gregEndDate | date:'MMM d, y GG, HH:mm:ss' }} </div>
-        <div class="text-muted">in the Gregorian Calendar</div>
+        <div class="mat-text-secondary">in the Gregorian Calendar</div>
         </div>
         <div class="card-body font-sm">
         <div>{{this.info.julStartDate | date:'MMM d, y GG, HH:mm:ss' }} – {{this.info.julEndDate | date:'MMM d, y GG, HH:mm:ss' }}</div>
-        <div class="text-muted">in the Julian Calendar</div>
+        <div class="mat-text-secondary">in the Julian Calendar</div>
         </div>
         <div class="card-body font-sm">
-        <div><span class="text-muted">and a duration of </span> {{info.duration}}.</div>
+        <div><span class="mat-text-secondary">and a duration of </span> {{info.duration}}.</div>
         </div>
         </div>
         </div>

@@ -3,6 +3,6 @@
 
 <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" [panelWidth]="300">
   <mat-option *ngFor="let option of (options$ | async)" [value]="option">
-    {{option.notes}} <small class="text-muted">{{ option.iso6391}}</small>
+    {{option.notes}} <small class="mat-text-secondary">{{ option.iso6391}}</small>
   </mat-option>
 </mat-autocomplete>
