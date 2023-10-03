@@ -1,5 +1,5 @@
 import {expect} from '@loopback/testlab';
-import io from 'socket.io-client';
+import io, {Socket} from 'socket.io-client';
 import {GeovistoryApplication} from '../../../../application';
 import {IO_FIELD_CHANGE} from '../../../../controllers/project-data/field-change.controller';
 import {WarFieldChangeAddToStream} from '../../../../models/war-field-change-id.model';
@@ -13,7 +13,7 @@ const pEvent = require('p-event');
 
 describe('WarFieldChangeController', () => {
   let server: GeovistoryApplication;
-  let socket: SocketIOClient.Socket
+  let socket: Socket
 
   before('setupApplication', async () => {
     ({server} = await setupApplication());

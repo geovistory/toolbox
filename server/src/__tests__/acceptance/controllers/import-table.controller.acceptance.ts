@@ -1,5 +1,5 @@
 import {Client, expect} from '@loopback/testlab';
-import io from 'socket.io-client';
+import io, {Socket} from 'socket.io-client';
 import {GeovistoryApplication} from '../../../application';
 import {DatNamespace, ProProject} from '../../../models';
 import {ImportTable} from '../../../models/import-table.model';
@@ -136,7 +136,7 @@ describe('ImportTableController', () => {
 
 
     describe('WSS /ImportTable', () => {
-        let socketClient: SocketIOClient.Socket;
+        let socketClient: Socket;
 
         beforeEach(async () => {
             try {
