@@ -35,8 +35,8 @@ export class ListComponent implements OnInit, OnDestroy {
 
   // Pagination
   collectionSize: number; // number of search results
-  limit = 10; // max number of results on a page
-  page = 1; // current page
+  limit = 5; // max number of results on a page
+  page = 0; // current page
 
   // Search
   searchString = '';
@@ -92,14 +92,14 @@ export class ListComponent implements OnInit, OnDestroy {
 
   search() {
     this.loading$.next(true)
-
+    this.items$.next([])
     this.entityPreviewApi.warEntityPreviewControllerSearch({
       projectId: this.projectId,
       searchString: this.searchString,
       pkClasses: this.pkAllowedClasses,
       entityType: this.entityType,
       limit: this.limit,
-      page: this.page
+      page: this.page + 1
     }).pipe(
       takeUntil(this.destroy$),
     ).subscribe({
@@ -120,10 +120,10 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   get hitsFrom() {
-    return (this.limit * (this.page - 1)) + 1;
+    return (this.limit * (this.page)) + 1;
   }
   get hitsTo() {
-    const upper = (this.limit * (this.page - 1)) + this.limit;
+    const upper = (this.limit * (this.page)) + this.limit;
     return upper > this.collectionSize ? this.collectionSize : upper;
   }
 
@@ -133,7 +133,7 @@ export class ListComponent implements OnInit, OnDestroy {
   }
 
   searchStringChange() {
-    this.page = 1;
+    this.page = 0;
     this.searchProject();
   }
 

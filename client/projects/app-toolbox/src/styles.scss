@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+/* Track */
 
 @use "sass:map";
 @use "node_modules/@angular/material" as mat;
@@ -153,9 +154,11 @@ $app-theme: mat.define-light-theme(
 /*************** Other ******************/
 
 $font-size-xs: 0.68rem;
+
 label {
   margin-bottom: 0;
 }
+
 .form-group label {
   margin-bottom: 1rem;
 }
@@ -166,27 +169,35 @@ label {
 * the same visual design (e.g. naming and additional info).
 */
 $font-size-sm: 0.75rem;
+
 .gv-search-hit {
   margin-bottom: 1.5rem;
+
   .gv-search-hit-is-in-project {
     font-size: $font-size-sm;
     margin-left: 1rem;
     color: theme-color("success");
   }
+
   .gv-search-hit-project-count {
     font-size: $font-size-sm;
     margin-left: 1rem;
     color: theme-color("secondary");
   }
+
   .gv-search-hit-header {
   }
+
   .gv-search-hit-body {
     font-size: $font-size-sm;
+
     .gv-search-hit-property b {
       color: theme-color("success");
     }
+
     .gv-search-hit-property:not(:first-child) {
     }
+
     .gv-search-hit-property:not(:first-child)::before {
       content: "•";
       margin-left: 0.4rem;
@@ -194,6 +205,7 @@ $font-size-sm: 0.75rem;
     }
   }
 }
+
 gv-project-list {
   .gv-project-language {
     font-size: $font-size-sm;
@@ -263,18 +275,22 @@ button:focus {
   white-space: nowrap;
   overflow: hidden;
 }
+
 .gv-fade-out-right {
   -webkit-mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
   mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
 }
+
 .gv-fade-out-right-75 {
   -webkit-mask-image: linear-gradient(to right, #000000 75%, transparent 100%);
   mask-image: linear-gradient(to right, #000000 75%, transparent 100%);
 }
+
 .gv-fade-out-bottom {
   -webkit-mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
 }
+
 .gv-word-wrap-break-word {
   word-wrap: break-word;
   white-space: unset !important;
@@ -342,6 +358,7 @@ $gv-color-selected: #00ffff;
 .gv-scroll-y-auto {
   overflow-y: auto;
 }
+
 .gv-overflow-hidden {
   overflow: hidden;
 }
@@ -349,6 +366,7 @@ $gv-color-selected: #00ffff;
 .gv-pointer {
   cursor: pointer;
 }
+
 .gv-cursor-drag {
   cursor: move;
 }
@@ -406,11 +424,13 @@ $gv-color-selected: #00ffff;
   top: 0;
   left: 0;
   right: 0;
+
   mat-progress-bar {
     height: 2px !important;
     transition: visibility 0s linear 0.33s, opacity 0.33s linear;
     opacity: 0;
     transition-delay: 0s;
+
     &.is-visible {
       opacity: 1;
       transition-delay: 0s;
@@ -508,6 +528,7 @@ gv-tab-handle.tab-box {
   .mat-tab-label {
     height: 40px;
   }
+
   .mat-tab-label-content mat-icon {
     margin-right: 8px;
   }
@@ -548,6 +569,7 @@ gv-project-edit {
   .gv-drawer-list {
     background-color: $gv-bg-drawer-list;
   }
+
   .tab-list {
     max-width: 100%; // border: solid 1px #ccc;
     min-height: $tabs-height;
@@ -558,6 +580,7 @@ gv-project-edit {
     overflow: hidden;
     background: map.get($gv-grey-palette, 200);
   }
+
   .focus {
     .tab-box {
       color: inherit;
@@ -581,6 +604,7 @@ gv-project-edit {
   .panel-body {
     @extend .gv-flex-fh;
     position: relative;
+
     .split-panel-drop-zone {
       $active-color: rgba(122, 237, 255, 0.256);
       pointer-events: none;
@@ -589,45 +613,56 @@ gv-project-edit {
       bottom: 0;
       left: 0;
       right: 0;
+
       .split {
         position: absolute; // border: 1px solid blue;
         width: 33.33%;
         height: 100%;
+
         &.left {
           margin-left: 0;
         }
+
         &.center {
           margin-left: 33.33%;
         }
+
         &.right {
           margin-left: 66.66%;
         }
       }
+
       .highlight {
         position: absolute;
         width: 50%;
         height: 100%;
+
         &.left {
           margin-left: 0;
         }
+
         &.right {
           margin-left: 50%;
         }
+
         &.active {
           background-color: $active-color;
           z-index: 99999;
         }
       }
+
       &.active {
         background-color: $active-color;
         z-index: 99999;
       }
+
       &.enabled {
         pointer-events: initial;
       }
     }
   }
 }
+
 /***************************
  * tab handle component
  ***************************/
@@ -636,10 +671,12 @@ gv-tab-handle {
     cursor: grab;
     display: flex;
     overflow: hidden;
+
     .icon {
       min-width: 1rem;
       padding-right: 0.2rem;
     }
+
     .label {
       max-width: 160px;
       text-overflow: ellipsis;
@@ -648,9 +685,11 @@ gv-tab-handle {
       overflow: hidden;
     }
   }
+
   .left :active {
     cursor: grabbing;
   }
+
   .right {
     cursor: pointer;
     width: 1rem;
@@ -662,6 +701,7 @@ gv-tab-handle {
     @extend .btn-link-gray;
   }
 }
+
 /***************************
  * qf form array
  ***************************/
@@ -698,6 +738,7 @@ gv-qf-form-array {
     position: relative;
     /*temp*/
   }
+
   .qf-arr-classes {
     // border: 1px dashed rgb(194, 48, 121);
     // margin: 5px;
@@ -733,6 +774,7 @@ gv-qf-form-array {
       width: 0.75rem;
       height: 31px;
       flex-shrink: 0;
+
       &.line {
         border-bottom: 1px solid map.get($gv-mat-teal, 300);
       }
@@ -746,6 +788,7 @@ gv-qf-form-array {
       position: relative;
       background-color: map.get($gv-mat-teal, 300);
       z-index: 1;
+
       .subgroup-operation-container {
         position: absolute;
         bottom: 0;
@@ -755,6 +798,7 @@ gv-qf-form-array {
         display: flex;
         flex-direction: column;
       }
+
       .subgroup-operation-select {
         font-size: 14px;
         background: $white;
@@ -764,15 +808,18 @@ gv-qf-form-array {
         padding-right: 0.25rem;
         padding-left: 0.25rem;
         z-index: 1;
+
         &::ng-deep .mat-select-arrow {
           margin: 0;
         }
       }
+
       .add-sibling-button {
         position: absolute;
         bottom: -24px;
         left: -12px;
       }
+
       &.top-cut {
         margin-top: 30px;
       }
@@ -782,14 +829,17 @@ gv-qf-form-array {
       display: flex;
       flex-direction: column;
       flex: 1 0 0%;
+
       .sub-query-item {
         position: relative;
         display: flex;
         align-items: flex-start;
+
         .subquery-left {
           position: relative;
           width: 35px;
           padding: 0 0 0 5px;
+
           .horizontal-line {
             position: absolute;
             top: $top-horizontal-line;
@@ -797,17 +847,21 @@ gv-qf-form-array {
             right: 0;
             height: 1px;
             background-color: map.get($gv-mat-teal, 300);
+
             &.is-subgroup {
               top: 62px;
             }
           }
+
           .add-subgroup-button {
             margin-top: 18px;
           }
         }
+
         gv-qf-form-array {
           // margin-left: 0.75rem;
           flex: 1 0 0%;
+
           &.is-subgroup {
             margin-top: 2rem;
           }
@@ -820,34 +874,42 @@ gv-qf-form-array {
     position: absolute;
     right: -31px;
     top: 20px;
+
     mat-icon-btn {
       line-height: 20px;
     }
   }
+
   .gv-qf-button-absolute-2 {
     position: absolute;
     left: 12px;
     bottom: -10px;
+
     mat-icon-btn {
       line-height: 20px;
     }
   }
+
   .gv-qf-button-absolute-3 {
     position: absolute;
     right: -31px;
     top: 54px;
+
     mat-icon-btn {
       line-height: 20px;
     }
   }
+
   .gv-mat-icon-button-sm {
     width: 24px !important;
     height: 24px !important;
     line-height: 20px;
+
     svg {
       width: 20px !important;
       height: 20px !important;
     }
+
     &::ng-deep .mat-button-wrapper {
       display: flex !important;
       align-items: center !important;
@@ -861,6 +923,7 @@ gv-qf-form-array {
     }
   }
 }
+
 /***************************
  * Timeline
  ***************************/
@@ -891,9 +954,11 @@ gv-timeline-table {
 
   .body.mat-cell {
     font-size: $font-size-xs;
+
     .tick {
       color: map.get($gv-grey-palette, 400);
     }
+
     .row-bg {
       fill: none;
     }
@@ -996,10 +1061,12 @@ gv-quill-edit {
     width: 40px;
     height: 40px;
   }
+
   .ql-snow.ql-toolbar button.mat-icon-button:focus {
     color: unset;
   }
 }
+
 gv-text-detail2 {
   gv-quill-edit {
     .ql-container.ql-snow {
@@ -1022,6 +1089,7 @@ gv-quill-edit.gv-hide-toolbar {
     border-right: 0;
     border-bottom: 1px solid map.get($gv-grey-palette, 100) !important;
   }
+
   .ql-container.ql-snow {
     border: 0;
   }
@@ -1150,6 +1218,7 @@ gv-entity-list {
   border: 3px dashed #dcdede95;
   border-radius: 0.3rem;
 }
+
 .gv-select-text {
   background-color: #dcdede4d;
   padding: 2rem;
@@ -1289,6 +1358,7 @@ as-split.gv-split-style {
     }
   }
 }
+
 as-split.gv-split-style.gv-hide-split-gutter {
   .as-split-gutter {
     display: none;
@@ -1323,26 +1393,32 @@ $gv-category-light: (
 );
 
 $categories: digitals, sources, entities, analysis, stories, values;
+
 @each $category in $categories {
   .gv-#{$category}-primary-bg {
     background-color: map_get($gv-category-primary, $category);
   }
+
   .gv-#{$category}-primary-color {
     color: map_get($gv-category-primary, $category);
   }
 }
+
 @each $category in $categories {
   .gv-#{$category}-secondary-bg {
     background-color: map_get($gv-category-secondary, $category);
   }
+
   .gv-#{$category}-secondary-color {
     color: map_get($gv-category-secondary, $category);
   }
 }
+
 @each $category in $categories {
   .gv-#{$category}-light-bg {
     background-color: map_get($gv-category-light, $category);
   }
+
   .gv-#{$category}-light-color {
     color: map_get($gv-category-light, $category);
   }
@@ -1423,14 +1499,17 @@ $categories: digitals, sources, entities, analysis, stories, values;
     padding-left: 4px;
   }
 }
+
 @include gv-condensed-mat-tabs();
 
 .mat-table.gv-head-gray thead {
   background: #f5f5f5;
 }
+
 .mat-paginator {
   background: inherit;
 }
+
 $foreground: map-get($app-theme, foreground);
 
 $mat-color-primary: mat.get-color-from-palette($app-primary);
@@ -1460,6 +1539,7 @@ $mat-color-secondary-text: mat.get-color-from-palette(
 .mat-text-disabled {
   color: $mat-color-disabled-text;
 }
+
 .mat-text-secondary {
   color: $mat-color-secondary-text;
 }
@@ -1471,6 +1551,7 @@ $mat-color-secondary-text: mat.get-color-from-palette(
 .mat-bg-primary-50 {
   background-color: map-get($app-primary, 50);
 }
+
 .mat-bg-accent-50 {
   background-color: map-get($app-accent, 50);
 }
@@ -1500,6 +1581,7 @@ $color-ids: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, "A100", "A200",
   $contrast-map: map_get($gv-grey-palette, "contrast");
   color: map_get($contrast-map, 100);
 }
+
 .mat-bg-accent-50-on-hover:hover {
   background-color: map_get($app-accent, 50);
   $contrast-map: map_get($app-accent, "contrast");
@@ -1513,15 +1595,19 @@ $color-ids: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, "A100", "A200",
     color: map_get($contrast-map, $id);
   }
 }
+
 @each $id in $color-ids {
   @include mat-bg($gv-grey-palette, "grey", $id);
 }
+
 @each $id in $color-ids {
   @include mat-bg($app-primary, "primary", $id);
 }
+
 @each $id in $color-ids {
   @include mat-bg($app-accent, "accent", $id);
 }
+
 /*
 * theme colors for svg strokes
 */
@@ -1540,6 +1626,7 @@ $color-ids: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, "A100", "A200",
 .mat-stroke-disabled {
   stroke: mat.get-color-from-palette($foreground, disabled-text);
 }
+
 .mat-stroke-secondary {
   stroke: mat.get-color-from-palette($foreground, secondary-text);
 }
@@ -1557,6 +1644,7 @@ $mat-color-divider: mat.get-color-from-palette($foreground, divider);
   border-bottom-width: 1px !important;
   border-bottom-style: solid !important;
 }
+
 .mat-border-left {
   border-left-color: $mat-color-divider !important;
   border-left-width: 1px !important;
@@ -1597,9 +1685,11 @@ mat-icon {
     vertical-align: unset;
   }
 }
+
 mat-icon.mat-icon-sm,
 .material-icons.md-18 {
   font-size: 18px;
+
   svg {
     height: 18px;
     width: 18px;
@@ -1610,6 +1700,7 @@ mat-icon.mat-icon-caption {
   font-size: 12px;
   height: 13px;
   width: 13px;
+
   svg {
     height: 13px;
     width: 13px;
@@ -1621,6 +1712,7 @@ mat-icon.mat-icon-caption {
   padding-right: 8px !important;
   min-width: unset !important;
 }
+
 .mat-btn-padding-left-8 {
   padding-left: 8px !important;
   min-width: unset !important;
@@ -1633,6 +1725,7 @@ mat-icon.mat-icon-caption {
 button.mat-menu-item {
   line-height: 24px !important;
 }
+
 a.mat-menu-item > mat-icon {
   margin-bottom: 14px;
 }
@@ -1686,12 +1779,15 @@ a.mat-menu-item > mat-icon {
 .gv-quill-text-highlight {
   background-color: hsla(271, 68%, 80%, 0.5);
 }
+
 .gv-quill-text-highlight:hover {
   background-color: hsla(271, 68%, 80%, 0.9);
 }
+
 .gv-quill-text-accent {
   background-color: mat.get-color-from-palette($app-accent);
 }
+
 .mat-row.gv-bg-highlight {
   background-color: rgba(223, 213, 232, 0.5);
 }
@@ -1713,19 +1809,24 @@ a.mat-menu-item > mat-icon {
     .p-datatable-thead {
       tr {
         height: 56px;
+
         th {
           color: mat.get-color-from-palette($foreground, secondary-text);
           text-align: left;
         }
+
         th:first-of-type {
           padding-left: 24px;
         }
+
         th:last-of-type {
           padding-right: 24px;
         }
       }
+
       tr.loading-bar {
         height: 0;
+
         th {
           padding: 0;
         }
@@ -1736,13 +1837,16 @@ a.mat-menu-item > mat-icon {
     .p-datatable-tfoot > tr > td {
       color: mat.get-color-from-palette($foreground, text);
     }
+
     .p-datatable-tbody > tr > td:first-of-type,
     .p-datatable-tfoot > tr > td:first-of-type {
       padding-left: 24px;
     }
+
     .p-datatable-tfoot > tr {
       height: 36px;
     }
+
     .p-datatable-tfoot > tr > td {
       color: mat.get-color-from-palette($foreground, secondary-text);
       padding: 0;
@@ -1750,6 +1854,7 @@ a.mat-menu-item > mat-icon {
       border-top-style: solid;
       border-top-color: mat.get-color-from-palette($foreground, divider);
     }
+
     .p-datatable-tbody > tr > td:last-of-type,
     .p-datatable-tfoot > tr > td:last-of-type {
       padding-right: 24px;
@@ -1763,22 +1868,27 @@ a.mat-menu-item > mat-icon {
     border-bottom-style: solid;
     border-bottom-color: mat.get-color-from-palette($foreground, divider);
   }
+
   .p-datatable-gridlines .p-datatable-tbody > tr > td,
   .p-datatable-gridlines .p-datatable-thead > tr > th {
     border-width: 0.5px;
     border-style: solid;
   }
+
   .p-datatable-gridlines .p-datatable-tbody > tr > td {
     border-color: mat.get-color-from-palette($foreground, divider);
   }
+
   .p-datatable-gridlines .p-datatable-thead > tr > th {
     border-color: #d9dadc;
   }
+
   .p-datatable-dragpoint-bottom {
     border-bottom-width: 3px;
     border-bottom-style: solid;
     border-bottom-color: $mat-color-primary;
   }
+
   .p-datatable-dragpoint-top {
     border-top-width: 3px;
     border-top-style: solid;
@@ -1796,6 +1906,7 @@ a.mat-menu-item > mat-icon {
     display: none;
   }
 }
+
 @mixin primeng-table-typography($config) {
   .p-datatable {
     font-family: mat.font-family($config);
@@ -1825,28 +1936,35 @@ a.mat-menu-item > mat-icon {
   .p-toast {
     opacity: 0.9;
   }
+
   .p-toast .p-toast-message {
     margin: 0 0 1rem 0;
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
       0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
     border-radius: 4px;
   }
+
   .p-toast .p-toast-message .p-toast-message-content {
     padding: 1.25rem;
     border-width: 0 0 0 0;
   }
+
   .p-toast .p-toast-message .p-toast-message-content .p-toast-message-text {
     margin: 0 0 0 1rem;
   }
+
   .p-toast .p-toast-message .p-toast-message-content .p-toast-message-icon {
     font-size: 2rem;
   }
+
   .p-toast .p-toast-message .p-toast-message-content .p-toast-summary {
     font-weight: 700;
   }
+
   .p-toast .p-toast-message .p-toast-message-content .p-toast-detail {
     margin: 0.5rem 0 0 0;
   }
+
   .p-toast .p-toast-message .p-toast-icon-close {
     width: 2rem;
     height: 2rem;
@@ -1854,55 +1972,66 @@ a.mat-menu-item > mat-icon {
     background: transparent;
     transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
   }
+
   .p-toast .p-toast-message .p-toast-icon-close:hover {
     background: rgba(255, 255, 255, 0.3);
   }
+
   .p-toast .p-toast-message .p-toast-icon-close:focus {
     outline: 0 none;
     outline-offset: 0;
     box-shadow: none;
   }
+
   .p-toast .p-toast-message.p-toast-message-info {
     background: #b3e5fc;
     border: solid transparent;
     border-width: 0 0 0 0;
     color: #01579b;
   }
+
   .p-toast .p-toast-message.p-toast-message-info .p-toast-message-icon,
   .p-toast .p-toast-message.p-toast-message-info .p-toast-icon-close {
     color: #01579b;
   }
+
   .p-toast .p-toast-message.p-toast-message-success {
     background: #c8e6c9;
     border: solid transparent;
     border-width: 0 0 0 0;
     color: #1b5e20;
   }
+
   .p-toast .p-toast-message.p-toast-message-success .p-toast-message-icon,
   .p-toast .p-toast-message.p-toast-message-success .p-toast-icon-close {
     color: #1b5e20;
   }
+
   .p-toast .p-toast-message.p-toast-message-warn {
     background: #ffecb3;
     border: solid transparent;
     border-width: 0 0 0 0;
     color: #7f6003;
   }
+
   .p-toast .p-toast-message.p-toast-message-warn .p-toast-message-icon,
   .p-toast .p-toast-message.p-toast-message-warn .p-toast-icon-close {
     color: #7f6003;
   }
+
   .p-toast .p-toast-message.p-toast-message-error {
     background: #ffcdd2;
     border: solid transparent;
     border-width: 0 0 0 0;
     color: #b71c1c;
   }
+
   .p-toast .p-toast-message.p-toast-message-error .p-toast-message-icon,
   .p-toast .p-toast-message.p-toast-message-error .p-toast-icon-close {
     color: #b71c1c;
   }
 }
+
 @include primeng-toast($app-theme);
 
 // override bootsrap symbol
@@ -1922,31 +2051,9 @@ mat-dialog-actions {
   box-sizing: content-box;
 }
 
-/**
-* classes for styling mat-table witout using mat-angular components / directives
-*/
-// .mat-table-plain-html {
-//   display: block;
-
-//   .mat-row,
-//   .mat-header-row {
-//     display: flex;
-//     border-bottom-width: 1px;
-//     border-bottom-style: solid;
-//     align-items: center;
-//     min-height: 48px;
-//     padding: 0 24px;
-//     border-bottom-color: mat.get-color-from-palette($foreground, divider);
-//   }
-
-//   .mat-cell,
-//   .mat-header-cell {
-//     text-align: left;
-//     flex: 1;
-//     overflow: hidden;
-//     word-wrap: break-word;
-//   }
-// }
+mat-paginator.dense .mat-mdc-paginator-range-label {
+  margin: 0;
+}
 
 .gv-p-datatable-border-cells {
   .p-datatable {
@@ -1999,6 +2106,7 @@ mat-dialog-actions {
 
 .gv-form-field-slim .mat-form-field-wrapper {
   padding-bottom: 0;
+
   .mat-form-field-infix {
     padding: 0.2em 0 0.7em 0;
   }
@@ -2007,6 +2115,7 @@ mat-dialog-actions {
 .gv-split-area {
   position: relative;
 }
+
 .gv-split-area-toggle-button {
   cursor: pointer;
 
@@ -2032,6 +2141,7 @@ mat-dialog-actions {
   &.align-left {
     left: 0;
   }
+
   &.align-right {
     right: 0;
   }
@@ -2054,6 +2164,7 @@ mat-dialog-actions {
     background-color: $white;
     height: 2.5rem;
     margin-left: 24px;
+
     .mat-tab-label {
       height: 2.5rem;
     }
@@ -2063,6 +2174,7 @@ mat-dialog-actions {
 .gv-slim-tabs {
   > .mat-tab-header {
     height: 2.5rem;
+
     .mat-tab-label {
       height: 2.5rem;
     }
@@ -2085,6 +2197,7 @@ mat-dialog-actions {
   min-width: 320px;
   margin: 2.5rem 0;
 }
+
 .gv-add-list-table-container {
   position: relative;
   min-width: 240px;
@@ -2126,13 +2239,16 @@ gv-importer {
     padding: 0.6em 0 0.4em 0 !important;
     border-top: unset !important;
   }
+
   .mat-form-field-label-wrapper {
     top: -1.5em;
   }
+
   &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
     .mat-form-field-label {
     transform: translateY(-1.1em) scale(0.75);
   }
+
   .mat-form-field-wrapper {
     padding-bottom: 0;
   }

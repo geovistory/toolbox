@@ -2,10 +2,6 @@ import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ListService } from '../../services/list.service';
 
-type Options = {
-  value: any;
-  label: string;
-};
 
 @Component({
   selector: 'gv-entities-tabs',
@@ -17,12 +13,6 @@ export class EntitiesTabsComponent implements OnDestroy {
 
   destroy$ = new Subject<boolean>();
 
-  // Entity type (TeEn/PeIt) Filter
-  typeOptions: Options[] = [
-    { value: 'peIt', label: '<i class="gv-icon gv-icon-persistent-entity"></i> Persistent' },
-    { value: 'teEn', label: '<i class="fa fa-star-o"></i> Temporal' },
-    { value: undefined, label: '<i class="gv-icon gv-icon-entity"></i> All' },
-  ]
 
   constructor(
     public listService: ListService
