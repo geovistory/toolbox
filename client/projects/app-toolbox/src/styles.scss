@@ -3,6 +3,7 @@
 @use "sass:map";
 @use "node_modules/@angular/material" as mat;
 @use "node_modules/@angular/material/core/theming/palette" as mat-palettes;
+@include mat.core();
 
 $font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
   Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
@@ -143,26 +144,10 @@ $app-theme: mat.define-light-theme(
 // that you are using.
 @include mat.all-component-themes($app-theme);
 
-/** Utils **/
-.d-flex {
-  display: -ms-flexbox !important;
-  display: flex !important;
-}
-.border {
-  border: 1px solid map.get($gv-grey-palette, 100) !important;
-}
-.border-bottom {
-  border-bottom: 1px solid map.get($gv-grey-palette, 100) !important;
-}
-.border-danger {
-  border-color: 1px solid map.get(mat.$red-palette, 700) !important;
-}
-.rounded-circle {
-  border-radius: 50% !important;
-}
-.border-success {
-  border-color: map.get($gv-mat-teal, 300) !important;
-}
+@import "./styles/utils.scss";
+@import "./styles/spacing.scss";
+@import "./styles/forms.scss";
+@import "./styles/coloring.scss";
 
 /*************** Other ******************/
 
@@ -1424,6 +1409,20 @@ $categories: digitals, sources, entities, analysis, stories, values;
 // Include theme styles for your custom components.
 @include gv-sidenav-accordion-theme($app-theme);
 @include gv-sidenav-accordion-typography($gv-typography);
+
+/***********************************
+* Condensed mat-tabs
+***********************************/
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin gv-condensed-mat-tabs() {
+  // Define any styles affected by the theme.
+  mat-tab-group.condensed .mdc-tab {
+    min-width: 0px;
+    padding-right: 4px;
+    padding-left: 4px;
+  }
+}
+@include gv-condensed-mat-tabs();
 
 .mat-table.gv-head-gray thead {
   background: #f5f5f5;
