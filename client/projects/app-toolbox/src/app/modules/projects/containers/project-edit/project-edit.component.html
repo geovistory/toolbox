@@ -49,9 +49,10 @@
 
       <!-- List of Sources, Entities … -->
       <mat-drawer class="gv-drawer-list" #list mode="side" [opened]="(p.list$ | async) !== ''" style="width: 300px;">
-        <button class="btn btn-link-gray position-absolute" style="right: 0; top: 50%; z-index: 2000"
-          (click)="list.close()" (positionChanged)="setList('')">
-          <i class="fa fa-chevron-left"></i> </button>
+        <button mat-icon-button style="position:absolute; right: 0; top: 50%; z-index: 2000" (click)="list.close()"
+          (positionChanged)="setList('')">
+          <mat-icon class="mat-text-secondary" svgIcon="chevron-left"></mat-icon>
+        </button>
         <gv-digitals-list [hidden]="(p.list$ | async) !== 'digitals'"></gv-digitals-list>
         <gv-source-list [hidden]="(p.list$ | async) !== 'sources'"></gv-source-list>
         <gv-entity-list [hidden]="(p.list$ | async) !== 'entities'"></gv-entity-list>
