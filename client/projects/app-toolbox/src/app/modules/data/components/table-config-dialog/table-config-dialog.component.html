@@ -59,8 +59,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button class="btn btn-secondary mt-1" mat-dialog-close>Cancel</button>
-  <button class="btn btn-primary ml-2 mt-1" *ngIf="updates.length != 0" (click)="onClose()">
+  <button mat-flat-button color="secondary" class="mt-1" mat-dialog-close>Cancel</button>
+  <button mat-flat-button color="primary" class="ml-2 mt-1" *ngIf="updates.length != 0" (click)="onClose()">
     Validate
   </button>
 </mat-dialog-actions>

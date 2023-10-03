@@ -23,7 +23,6 @@ export class EntitiesTabsComponent implements OnDestroy {
     { value: 'teEn', label: '<i class="fa fa-star-o"></i> Temporal' },
     { value: undefined, label: '<i class="gv-icon gv-icon-entity"></i> All' },
   ]
-  selectedType: Options = this.typeOptions[0];
 
   constructor(
     public listService: ListService
@@ -38,10 +37,9 @@ export class EntitiesTabsComponent implements OnDestroy {
   /**
    * Called when user changes to see only teEn / peIt or all classes
    */
-  entityTypeChange(type: Options) {
-    if (this.selectedType !== type) {
-      this.selectedType = type;
-      this.listService.entityType$.next(type.value)
-    }
+  entityTypeChange(index: number) {
+    const type = ['peIt', 'teEn', undefined][index] as 'teEn' | 'peIt' | undefined;
+    if (this.listService.entityType$.value !== type)
+      this.listService.entityType$.next(type)
   }
 }

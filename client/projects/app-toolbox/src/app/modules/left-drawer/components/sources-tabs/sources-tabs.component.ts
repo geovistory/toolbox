@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ListService } from '../../services/list.service';
 
@@ -24,7 +24,7 @@ export class SourcesTabsComponent implements OnDestroy {
     { value: 'container', label: 'Container' },
     { value: 'content', label: 'Content' },
   ]
-  selectedType$ = new BehaviorSubject<Option>(this.typeOptions[0]);
+  selectedType$ = new BehaviorSubject<'container' | 'content'>('container');
 
   constructor(
     private c: ConfigurationPipesService,
@@ -40,7 +40,7 @@ export class SourcesTabsComponent implements OnDestroy {
     const contentClasses = [C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID]
     listService.pkAllowedClasses$ = combineLatest([sourceClasses$, this.selectedType$])
       .pipe(map(([sourceClasses, option]) => {
-        if (option.value === 'content') return contentClasses;
+        if (option === 'content') return contentClasses;
         return sourceClasses;
       }))
   }
@@ -53,8 +53,9 @@ export class SourcesTabsComponent implements OnDestroy {
   /**
    * Called when user clicks tab
    */
-  optionChange(type: Option) {
-    if (this.selectedType$.value.value !== type.value) {
+  optionChange(index: number) {
+    const type = ['container', 'content'][index] as 'container' | 'content';
+    if (this.selectedType$.value !== type) {
       this.selectedType$.next(type);
     }
   }

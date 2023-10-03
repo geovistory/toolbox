@@ -10,16 +10,16 @@
 <div *ngIf="(showDashboard$ |async)" id="project-dashboard" class="container">
   <div class="row">
     <div class="col">
-      <h2>Project {{project.label}} <a class="btn btn-link pull-right" routerLink="settings">Project
+      <h2>Project {{project.label}} <a mat-button class="pull-right" routerLink="settings">Project
           settings</a></h2>
     </div>
   </div>
   <div class="row justify-content-center">
     <div class="col text-center">
-      <button id="stopTourBtn" type="button" name="stopTour" class="btn btn-link" (click)="stopTour()" *ngIf="activeSlideId">Stop
+      <button id="stopTourBtn" type="button" name="stopTour" mat-button (click)="stopTour()" *ngIf="activeSlideId">Stop
         the Tour</button>
       <div class="" *ngIf="!activeSlideId">
-        <button type="button" name="startTour" class="btn btn-link" (click)="activateStep('step1')">Need Help? Start a
+        <button type="button" name="startTour" mat-button (click)="activateStep('step1')">Need Help? Start a
           Tour</button>
       </div>
     </div>

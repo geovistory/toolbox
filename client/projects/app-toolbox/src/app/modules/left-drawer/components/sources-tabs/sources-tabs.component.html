@@ -1,6 +1,12 @@
-<ul class="nav gv-search-filter">
-  <li *ngFor="let type of typeOptions" class="nav-item" (click)="optionChange(type)">
-    <button class="btn btn-sm btn-link nav-link"
-      [ngClass]="{'font-weight-bold': (selectedType$|async)?.value === type.value}" [innerHtml]="type.label"></button>
-  </li>
-</ul>
+<mat-tab-group animationDuration="0ms" (selectedIndexChange)="optionChange($event)">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Container
+    </ng-template>
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      Content
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>

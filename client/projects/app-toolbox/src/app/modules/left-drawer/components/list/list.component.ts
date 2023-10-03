@@ -5,7 +5,7 @@ import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
 import { IAppState } from '@kleiolab/lib-redux';
 import { EntitySearchHit, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { WarEntityPreview } from 'projects/lib-sdk-lb4/src/public-api';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ListService } from '../../services/list.service';
 

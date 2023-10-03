@@ -1,16 +1,19 @@
 <!-- Search input -->
 <div class="mx-3 mt-3 mb-2 d-flex">
+  <div>
 
-  <div class="input-group ">
-
-    <input type="text" name="searchString" class="form-control" aria-describedby="search" autocomplete="off"
-      placeholder="Search …" [(ngModel)]="searchString" (keydown)="searchKeydown($event)" autofocus>
-
-    <span class="input-group-append">
-      <button class="btn btn-primary" type="button" (click)="searchStringChange()">
-        <i class="fa fa-search"></i>
-      </button>
-    </span>
+    <mat-form-field appearance="outline">
+      <mat-label>Search...</mat-label>
+      <input matInput placeholder="Search..." autocomplete="off" (keydown)="searchKeydown($event)"
+        [(ngModel)]="searchString">
+      <button matSuffix mat-icon-button color="primary" (click)="searchStringChange()"><mat-icon
+          [svgIcon]="'magnify'"></mat-icon></button>
+      <mat-hint *ngIf=" !(loading$ | async)">
+        <span *ngIf="collectionSize > limit">
+          {{hitsFrom}}-{{hitsTo}} of
+        </span>
+        {{collectionSize | number}} {{(collectionSize == 1 ? 'result' : 'results')}}</mat-hint>
+    </mat-form-field>
   </div>
 
   <ng-content select="[addBtn]"></ng-content>
@@ -20,10 +23,7 @@
 
 <!-- Results count -->
 <div class="mx-3 mb-3 px-3 text-muted font-sm" *ngIf="!(loading$ | async)">
-  <span *ngIf="collectionSize > limit">
-    {{hitsFrom}}-{{hitsTo}} of
-  </span>
-  {{collectionSize | number}} {{(collectionSize == 1 ? 'result' : 'results')}}
+
 </div>
 
 <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 text-muted"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->

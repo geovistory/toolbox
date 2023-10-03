@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ValidationDirectivesModule } from 'projects/app-toolbox/src/app/core/validation/validation.directives';
 import { PassiveLinkModule } from 'projects/app-toolbox/src/app/shared';
+import { MaterialModule } from '../../core/material/material.module';
 import { NavbarModule } from '../../shared/components/navbar/navbar.module';
 import { AccountRoutingModule } from './account-routing.module';
 import { AccessDeniedComponent } from './components/access-denied/access-denied.component';
@@ -19,9 +20,9 @@ import { AccountComponent } from './pages/account/account.component';
 
 
 
-
 @NgModule({
   imports: [
+    MaterialModule,
     FormsModule,
     CommonModule,
     AccountRoutingModule,

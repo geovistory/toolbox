@@ -51,14 +51,6 @@
       </div>
     </div>
 
-    <!-- <div class="form-row" *ngIf="addTimeBtnVisible">
-        <div class="form-group col-sm-4">
-        <button type="button" class="btn btn-link" (click)="showTimeInputs()" >
-        <i class="fa fa-clock-o"></i>  Set time
-        </button>
-        </div>
-        </div> -->
-
     <div class="form-row" [hidden]="!timeInputsVisible">
 
       <div class="form-group col-sm-4" *ngIf="hoursVisible">
@@ -67,8 +59,8 @@
 
           <input type="number" class="form-control" formControlName="hours" placeholder="0-23" />
           <div class="input-group-append" *ngIf="removeTimeBtnVisible">
-            <button class="btn btn-outline-secondary">
-              <i class="fa fa-close"></i>
+            <button mat-icon-button color="secondary">
+              <mat-icon svgIcon="close-circle-outline"></mat-icon>
             </button>
           </div>
         </div>
@@ -123,10 +115,10 @@
 
     <!-- <div class="form-row mt-3">
           <div class="col text-muted">
-          <button type="button" class="btn btn-link" (click)="showInfo()" *ngIf="form?.status == 'VALID' && !infoVisible">
+          <button type="button" mat-button (click)="showInfo()" *ngIf="form?.status == 'VALID' && !infoVisible">
           Show info
         </button>
-        <button type="button" class="btn btn-link" (click)="hideInfo()" *ngIf="form?.status == 'VALID' && infoVisible">
+        <button type="button" mat-button (click)="hideInfo()" *ngIf="form?.status == 'VALID' && infoVisible">
         hide info
         </button>
         <div class="card" *ngIf="form?.status == 'VALID' && infoVisible">

@@ -1,6 +1,20 @@
-<ul class="nav gv-search-filter">
-  <li *ngFor="let type of typeOptions" class="nav-item" (click)="entityTypeChange(type)">
-    <button class="btn btn-sm btn-link nav-link" [ngClass]="{'font-weight-bold': selectedType === type}"
-      [innerHtml]="type.label"></button>
-  </li>
-</ul>
+<mat-tab-group class="condensed" animationDuration="0ms" (selectedIndexChange)="entityTypeChange($event)">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="gv-icon gv-icon-persistent-entity"></i> Persistent
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="fa fa-star-o"></i> Temporal
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="gv-icon gv-icon-entity"></i> All
+    </ng-template>
+
+  </mat-tab>
+</mat-tab-group>

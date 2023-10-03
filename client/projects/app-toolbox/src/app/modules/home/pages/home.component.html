@@ -24,8 +24,8 @@
   </div>
   <div class="row mt-5">
     <div class="col text-center">
-      <a class="btn btn-primary mr-2" routerLink="/login">Login</a>
-      <a class="btn btn-link" routerLink="/registration">Register</a>
+      <a mat-flat-button color="primary" class="mr-2" routerLink="/login">Login</a>
+      <a mat-button routerLink="/registration">Register</a>
     </div>
   </div>
   <div class="row powered-by">
@@ -48,8 +48,8 @@
     </div>
     <div class="row mt-5 justify-content-center">
       <div class="col-md-6">
-        <a class="btn btn-outline-primary mr-2" routerLink="/projects">Your Projects</a>
-        <a class="btn btn-outline-secondary disabled" routerLink="/account">Personal Settings</a>
+        <button mat-stroked-button color="primary" class="mr-2" routerLink="/projects">Your Projects</button>
+        <button mat-stroked-button color="secondary" [disabled]="true" routerLink="/account">Personal Settings</button>
       </div>
     </div>
     <div class="row powered-by justify-content-center">
