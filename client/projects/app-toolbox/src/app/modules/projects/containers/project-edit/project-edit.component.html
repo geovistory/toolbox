@@ -66,13 +66,13 @@
 
           <div *ngIf="(p.panels$ | async)?.length === 0"
             class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
-            <div class="mat-display-1 mb-3 mat-text-secondary">
+            <div class="mat-headline-4 mb-3 mat-text-grey-400">
               Your Project
             </div>
-            <div class="mat-display-3 mb-4 mat-text-secondary">
+            <div class="mat-headline-2 mb-3 mat-text-grey-400">
               {{(projectLabel$|async)}}
             </div>
-            <div class="mat-text-secondary helper-text">
+            <div class="mat-text-grey-400">
               Find your Entities and Sources to the left.
             </div>
 
