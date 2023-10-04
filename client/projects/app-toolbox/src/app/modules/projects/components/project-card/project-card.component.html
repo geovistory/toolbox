@@ -1,6 +1,6 @@
 <div class="card mt-2" [ngClass]="{
   'bg-info': (project.pk_entity == PK_PROJECT_OF_TEMPLATE_PROJECT),
-  'bg-success': (project.pk_entity == PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT),
+  'mat-bg-accent-300': (project.pk_entity == PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT),
   'bg-warning': (project.pk_entity) == PK_PROJECT_OF_SANDBOX_PROJECT
 }">
   <div class="card-body">

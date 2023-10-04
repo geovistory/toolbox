@@ -8,11 +8,12 @@
 <mat-drawer-container class="gv-flex-fh">
 
   <!-- Main Categories (Sources, Entities …) -->
-  <mat-drawer class="bg-light gv-main-drawer" mode="side" [opened]=true [disableClose]="true" style="width: 80px">
+  <mat-drawer class="mat-bg-grey-200 gv-main-drawer" mode="side" [opened]=true [disableClose]="true"
+    style="width: 80px">
 
     <div class="h-100 d-flex flex-column">
 
-      <div class="gv-main-categories btn-group-vertical rounded-0 d-block">
+      <div class="btn-group-vertical rounded-0 d-block">
         <button class="gv-nav-btn d-flex flex-column align-items-center justify-content-center"
           [ngClass]="{active:(p.list$ | async)==='sources'}" (click)="setList('sources')">
           <div class="fa-2x gv-icon gv-icon-source gv-sources-primary-color"></div>

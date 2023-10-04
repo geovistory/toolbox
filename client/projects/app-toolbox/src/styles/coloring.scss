@@ -47,44 +47,14 @@ a.text-primary:focus {
 }
 
 .border-light {
-  border-color: #f8f9fa !important;
-}
-
-.bg-success {
-  background-color: #28a745 !important;
-}
-
-.bg-white {
-  background-color: #fff !important;
-}
-
-.bg-light {
-  background-color: #f8f9fa !important;
-}
-
-a.bg-light:hover,
-a.bg-light:focus,
-button.bg-light:hover,
-button.bg-light:focus {
-  background-color: #dae0e5 !important;
+  border-color: map.get($gv-grey-palette, 200) !important;
 }
 
 .bg-info {
   background-color: #17a2b8 !important;
 }
-
-a.bg-info:hover,
-a.bg-info:focus,
-button.bg-info:hover,
-button.bg-info:focus {
-  background-color: #117a8b !important;
-}
-
-a.bg-success:hover,
-a.bg-success:focus,
-button.bg-success:hover,
-button.bg-success:focus {
-  background-color: #1e7e34 !important;
+.bg-warning {
+  background-color: #ffc107 !important;
 }
 
 .alert-success {
