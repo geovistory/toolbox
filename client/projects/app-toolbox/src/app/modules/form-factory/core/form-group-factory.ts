@@ -1,4 +1,3 @@
-import { UntypedFormGroup } from '@angular/forms';
 import { asyncScheduler, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { FormArrayConfig } from '../services/FormArrayConfig';
@@ -16,9 +15,7 @@ import { AbstractControlFactory, FactoryType } from './form-factory.models';
  */
 export class FormGroupFactory extends AbstractControlFactory {
   factoryType: FactoryType = 'group';
-  control: UntypedFormGroup
   child?: FormArrayFactory<any, any, any>;
-
   config: FormGroupConfig<any>
   childConfig: FormArrayConfig<any>
 
@@ -45,10 +42,10 @@ export class FormGroupFactory extends AbstractControlFactory {
 
       if (this.childConfig) this.child = new FormArrayFactory(this.globalConfig, this.childConfig, this.level + 1, { groupFactory: this });
 
-      if (this.child) this.control = this.globalConfig.fb.group({ 'childControl': this.child.control });
+      if (this.child) this.formGroup = this.globalConfig.fb.group({ 'childControl': this.child.formArray });
 
       asyncScheduler.schedule(() => {
-        this.formFactory = new FormFactory(this.control, this)
+        this.formFactory = new FormFactory(this.formGroup, this)
         this.formFactory$.next(this.formFactory)
       }, 0)
 
@@ -66,7 +63,7 @@ export class FormGroupFactory extends AbstractControlFactory {
   }
 
   markAllAsTouched() {
-    this.control.markAsTouched()
+    this.formGroup.markAsTouched()
     this.child.markAllAsTouched()
   }
 

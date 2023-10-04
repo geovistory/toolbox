@@ -8,7 +8,7 @@
     </gv-qf-form-control>
   </div>
   <div class="gv-qf-button-absolute-2">
-    <button *ngIf="formArrayFactory.children?.length < 2 && formArrayFactory.control?.valid" mat-icon-button
+    <button *ngIf="formArrayFactory.children?.length < 2 && formArrayFactory.formArray?.valid" mat-icon-button
       (click)="addClassesSubfilter()" matTooltip="Add Sub-Filter" class="gv-mat-icon-button-sm gv-btn-success">
       <mat-icon svgIcon="subdirectory-arrow-right"></mat-icon>
     </button>
@@ -78,7 +78,7 @@
     </div>
 
     <!-- Add a sibling condition -->
-    <button [disabled]="formArrayFactory?.control?.invalid"
+    <button [disabled]="formArrayFactory?.formArray?.invalid"
       class="add-sibling-button gv-mat-icon-button-sm gv-btn-success" mat-icon-button (click)="addSubgroupItem()"
       matTooltip="Add an 'and'/'or' Condition">
       <mat-icon>add</mat-icon>
@@ -109,15 +109,12 @@
       </div>
       <div *ngIf="child.arrayFactory &&
       formArrayFactory.children.length > 2 &&
-      formArrayFactory?.control?.valid &&
+      formArrayFactory?.formArray?.valid &&
       !childIsArraySubgroup(child.arrayFactory)" class="gv-qf-button-absolute-3">
         <button mat-icon-button (click)="splitSubfilter(i, child.arrayFactory)" matTooltip="Split"
           class="gv-mat-icon-button-sm gv-btn-success">
           <mat-icon class="rotate-90">call_split</mat-icon>
         </button>
-        <!-- l: {{formArrayFactory.children.length}}  -->
-        <!-- p: {{parentIsArraySubgroup}} -->
-        <!-- valid: {{formArrayFactory?.control?.valid}} -->
       </div>
     </div>
   </div>

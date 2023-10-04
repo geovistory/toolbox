@@ -1,6 +1,6 @@
 <form *ngIf="formFactory?.formGroup" [formGroup]="formFactory.formGroup">
   <div *ngIf="formFactory.formGroupFactory.child.factoryType === 'array'"
-    [formGroup]="formFactory.formGroupFactory.control">
+    [formGroup]="formFactory.formGroupFactory.formGroup">
     <div formArrayName="childControl" class="gv-fg-dimension-container">
       <ng-container *ngFor=" let child of formFactory.formGroupFactory.child.children">
 
@@ -8,10 +8,10 @@
           [appearance]="appearance">
           <mat-label>{{child?.controlFactory?.config.placeholder}}</mat-label>
 
-          <input matInput type="number" placeholder="Number ..." [formControl]="child.controlFactory.control"
+          <input matInput type="number" placeholder="Number ..." [formControl]="child.controlFactory.formControl"
             autocomplete="off" />
 
-          <mat-error *ngIf="child.controlFactory.control.hasError('required')">
+          <mat-error *ngIf="child.controlFactory.formControl.hasError('required')">
             Required
           </mat-error>
         </mat-form-field>
@@ -21,10 +21,10 @@
           <mat-label>{{child?.controlFactory?.config.placeholder}}</mat-label>
 
           <gv-ctrl-type #c [pkTypedClass]="pkClassOfDimension" [pkTypeClass]="pkClassOfMeasurementUnit$|async"
-            placeholder="Select ..." [formControl]="child.controlFactory.control">
+            placeholder="Select ..." [formControl]="child.controlFactory.formControl">
           </gv-ctrl-type>
 
-          <mat-error *ngIf="child.controlFactory.control.hasError('required')">
+          <mat-error *ngIf="child.controlFactory.formControl.hasError('required')">
             Required
           </mat-error>
         </mat-form-field>

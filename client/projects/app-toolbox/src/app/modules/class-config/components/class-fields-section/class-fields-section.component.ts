@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
+import { TableRowReorderEvent } from 'primeng/table';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
@@ -99,7 +100,7 @@ export class ClassFieldsSectionComponent implements OnInit, OnDestroy {
     })
   }
 
-  onRowReorder(event: { dragIndex: number, dropIndex: number }) {
+  onRowReorder(event: TableRowReorderEvent) {
     if (this.section == SectionName.basic) return;
 
     this.reordering = true

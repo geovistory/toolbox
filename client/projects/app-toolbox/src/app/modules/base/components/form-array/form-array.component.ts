@@ -57,7 +57,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   }
 
   get length() {
-    return sum(this.formArrayFactory.control.controls.map((ctrl: UntypedFormArray) => ctrl.controls ? ctrl.controls.length : 0))
+    return sum(this.formArrayFactory.formArray.controls.map((ctrl: UntypedFormArray) => ctrl.controls ? ctrl.controls.length : 0))
   }
 
   get parentMinLength() {
@@ -65,7 +65,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   }
 
   get parentLength() {
-    const formArray = this.parent?.arrayFactory?.control;
+    const formArray = this.parent?.arrayFactory?.formArray;
     if (formArray?.controls?.length > 0) {
       return sum(formArray.controls.map((ctrl: UntypedFormArray) => ctrl.controls ? ctrl.controls.length : 0))
     }
@@ -80,7 +80,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.parent = this.formArrayFactory.parent
     this.data = this.formArrayFactory.config.data
-    this.control = this.formArrayFactory.control
+    this.control = this.formArrayFactory.formArray
   }
 
   trackByFn(i: number, _) {

@@ -1,5 +1,5 @@
-import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, ValidationErrors } from '@angular/forms';
+import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { FormFactory } from './form-factory';
 
@@ -14,7 +14,9 @@ export interface StatusChange {
 
 export abstract class AbstractControlFactory {
   factoryType: FactoryType
-  control: AbstractControl
+  formArray?: UntypedFormArray
+  formGroup?: UntypedFormGroup
+  formControl?: UntypedFormControl
   valueChanges$ = new BehaviorSubject(undefined)
   statusChanges$ = new BehaviorSubject<StatusChange>(undefined)
 

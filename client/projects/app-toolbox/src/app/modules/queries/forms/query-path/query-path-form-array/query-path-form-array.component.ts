@@ -3,7 +3,7 @@ import { InformationPipesService } from '@kleiolab/lib-queries';
 import { QueryPathSegment } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { map, mergeMap, switchMap } from 'rxjs/operators';
-import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory } from '../query-path-form/query-path-form.component';
+import { QueryPathFormArrayFactory, classesSegmentConfig, propertiesSegmentConfig } from '../query-path-form/query-path-form.component';
 
 @Component({
   selector: 'gv-query-path-form-array',
@@ -61,7 +61,7 @@ export class QueryPathFormArrayComponent implements OnInit {
   }
 
   addSegment() {
-    if (this.formArrayFactory.globalConfig.root.control.valid) {
+    if (this.formArrayFactory.globalConfig.root.formGroup.valid) {
 
       if (this.lastChild.controlFactory?.config.data.propertiesSegment) {
         this.addClassesSegment()

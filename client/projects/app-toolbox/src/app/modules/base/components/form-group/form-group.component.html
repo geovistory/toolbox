@@ -1,6 +1,6 @@
 <!-- Array as intermediate node of nested form-->
 
-<div class="mat-typography" *ngIf="formGroupFactory.child" [formGroup]="formGroupFactory.control">
+<div class="mat-typography" *ngIf="formGroupFactory.child" [formGroup]="formGroupFactory.formGroup">
   <div formArrayName="childControl">
     <gv-form-array [formArrayFactory]="formGroupFactory.child"></gv-form-array>
   </div>

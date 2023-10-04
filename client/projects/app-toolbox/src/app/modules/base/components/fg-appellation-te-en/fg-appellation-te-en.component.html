@@ -1,6 +1,6 @@
 <form *ngIf="formFactory?.formGroup" [formGroup]="formFactory.formGroup">
   <div *ngIf="formFactory.formGroupFactory.child.factoryType === 'array'"
-    [formGroup]="formFactory.formGroupFactory.control">
+    [formGroup]="formFactory.formGroupFactory.formGroup">
     <div formArrayName="childControl">
 
       <div class="second-line">

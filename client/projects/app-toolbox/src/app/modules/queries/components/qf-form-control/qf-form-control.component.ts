@@ -17,7 +17,7 @@ export class QfFormControlComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.rootFormGroup = this.formControlFactory.globalConfig.root.control;
+    this.rootFormGroup = this.formControlFactory.globalConfig.root.formGroup;
 
     this.config = this.formControlFactory.config
   }

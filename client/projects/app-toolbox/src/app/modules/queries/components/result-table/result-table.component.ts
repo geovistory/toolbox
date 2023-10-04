@@ -3,8 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { SysConfig } from '@kleiolab/lib-config';
 import { AnalysisDefinition, AnalysisTableCellValue, AnalysisTableExportRequest, AnalysisTableRequest, AnalysisTableResponse, ColDef, QueryDefinition, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { saveAs } from 'file-saver';
-import { LazyLoadEvent } from 'primeng/api';
-import { Table } from 'primeng/table';
+import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
 import { Observable, Subject } from 'rxjs';
@@ -49,7 +48,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   colDefs: ColDef[] = [];
 
   limit = 100;
-  lazyLoadState: LazyLoadEvent
+  lazyLoadState: TableLazyLoadEvent
   pkProject: number;
   items: ResultTableRow[];
 
@@ -184,7 +183,7 @@ export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
 
   }
 
-  loadDataOnScroll(event: LazyLoadEvent) {
+  loadDataOnScroll(event: TableLazyLoadEvent) {
     this.lazyLoadState = event;
     if (this.definition) this.load(this.definition, event.first, event.rows);
     // combineLatest([this.p.pkProject$, this.definition$]).pipe(first(), takeUntil(this.destroy$))

@@ -3,16 +3,16 @@ import { UntypedFormControl } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { InfAppellationWithRelations, InfLanguage, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
+import { AppellationFormCtrlType } from 'projects/__test__/data/auto-gen/enums/AppellationFormCtrlType';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
-import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
+import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { C_339_STRING_ID, P_1864_HAS_VALUE_VERSION_ID, P_63_HAS_LANGUAGE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
-import { AppellationFormCtrlType } from 'projects/__test__/data/auto-gen/enums/AppellationFormCtrlType';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
 import { getFirstElementFormQueryList } from '../../base.helpers';
@@ -95,8 +95,8 @@ export class FgTextWithLangComponent implements OnInit, OnDestroy, AfterViewInit
       this.formFactory$.next(v)
       this.formFactory = v;
       this.ctrls = {
-        text: v?.formGroupFactory?.child?.children?.[0]?.controlFactory.control,
-        lang: v?.formGroupFactory?.child?.children?.[1]?.controlFactory.control,
+        text: v?.formGroupFactory?.child?.children?.[0]?.controlFactory.formControl,
+        lang: v?.formGroupFactory?.child?.children?.[1]?.controlFactory.formControl,
       }
       this.placeholders = {
         text: v?.formGroupFactory?.child?.children?.[0]?.controlFactory.config.placeholder,

@@ -8,10 +8,10 @@ import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-p
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
-import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
 import { getFirstElementFormQueryList } from '../../base.helpers';
@@ -115,9 +115,9 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
       this.formFactory$.next(v)
       this.formFactory = v;
       this.ctrls = {
-        text: v?.formGroupFactory?.child?.children?.[0]?.controlFactory.control,
-        lang: v?.formGroupFactory?.child?.children?.[1]?.controlFactory.control,
-        type: v?.formGroupFactory?.child?.children?.[2]?.controlFactory.control,
+        text: v?.formGroupFactory?.child?.children?.[0]?.controlFactory.formControl,
+        lang: v?.formGroupFactory?.child?.children?.[1]?.controlFactory.formControl,
+        type: v?.formGroupFactory?.child?.children?.[2]?.controlFactory.formControl,
       }
       this.placeholders = {
         text: v?.formGroupFactory?.child?.children?.[0]?.controlFactory.config.placeholder,

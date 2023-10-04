@@ -44,7 +44,7 @@ export class QfFormArrayComponent implements OnInit, OnDestroy {
       const second = this.formArrayFactory.childConfigs[1]
       return !!second && second.id === 'properties' &&
         this.formArrayFactory.children.length < 3 &&
-        this.formArrayFactory.control.valid
+        this.formArrayFactory.formArray.valid
     }
     return false
   }
@@ -63,10 +63,10 @@ export class QfFormArrayComponent implements OnInit, OnDestroy {
     return child.factoryType === 'array' && !!(child.config.data as QfFormArrayData).arraySubgroup;
   }
   isCtrlClasses(child: QfFormArrayFactory | QfFormControlFactory) {
-    return child.control && (child.config.data as QfFormControlData).ctrlClasses;
+    return child.formArray && (child.config.data as QfFormControlData).ctrlClasses;
   }
   isCtrlProperties(child: QfFormArrayFactory | QfFormControlFactory) {
-    return child.control && (child.config.data as QfFormControlData).ctrlProperties;
+    return child.formArray && (child.config.data as QfFormControlData).ctrlProperties;
   }
 
   isFormControl(child: QfFormArrayFactory | QfFormControlFactory) {

@@ -1,11 +1,11 @@
 <mat-form-field *ngIf="formControlFactory.config?.data.classesSegment" class="w-100" appearance="outline">
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
 
-  <gv-class-and-type-select [formControl]="formControlFactory.control" [required]="formControlFactory.config?.required"
-    [disabled]="formControlFactory.config?.disabled$ |async"
+  <gv-class-and-type-select [formControl]="formControlFactory.formControl"
+    [required]="formControlFactory.config?.required" [disabled]="formControlFactory.config?.disabled$ |async"
     [pkClasses$]="formControlFactory.config.data.classesSegment.options$">
   </gv-class-and-type-select>
-  <mat-error *ngIf="formControlFactory.control.hasError('required')">
+  <mat-error *ngIf="formControlFactory.formControl.hasError('required')">
     Please enter a value
   </mat-error>
 </mat-form-field>
@@ -15,11 +15,11 @@
 
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
   <gv-property-select [options$]="formControlFactory.config.data.propertiesSegment.options$"
-    [formControl]="formControlFactory.control" [required]="formControlFactory.config?.required"
+    [formControl]="formControlFactory.formControl" [required]="formControlFactory.config?.required"
     [disabled]="formControlFactory.config?.disabled$ |async">
   </gv-property-select>
 
-  <mat-error *ngIf="formControlFactory.control.hasError('required')">
+  <mat-error *ngIf="formControlFactory.formControl.hasError('required')">
     Select or remove.
   </mat-error>
 </mat-form-field>

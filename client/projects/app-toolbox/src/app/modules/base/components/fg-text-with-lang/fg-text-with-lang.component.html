@@ -1,6 +1,6 @@
 <form *ngIf="formFactory?.formGroup" [formGroup]="formFactory.formGroup">
   <div *ngIf="formFactory.formGroupFactory.child.factoryType === 'array'"
-    [formGroup]="formFactory.formGroupFactory.control">
+    [formGroup]="formFactory.formGroupFactory.formGroup">
     <div formArrayName="childControl" class="loc-container">
 
       <mat-form-field class="ctrl-text" *ngIf="ctrls?.text" [appearance]="appearance">

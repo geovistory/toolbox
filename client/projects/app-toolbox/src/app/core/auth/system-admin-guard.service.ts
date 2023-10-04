@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { IAppState } from "@kleiolab/lib-redux";
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -9,7 +9,7 @@ import { ActiveAccountService } from '../active-account/active-account.service';
 
 
 @Injectable()
-export class SystemAdminGuard implements CanActivate {
+export class SystemAdminGuard  {
 
   constructor(
     private activeAccountService: ActiveAccountService,

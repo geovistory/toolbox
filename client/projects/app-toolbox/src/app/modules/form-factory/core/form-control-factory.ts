@@ -1,5 +1,5 @@
 import { UntypedFormControl, Validators } from '@angular/forms';
-import { merge, of, ReplaySubject } from 'rxjs';
+import { ReplaySubject, merge, of } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { FormControlConfig } from '../services/FormControlConfig';
 import { FormFactoryGlobal } from '../services/FormFactoryGlobal';
@@ -10,8 +10,6 @@ import { AbstractControlFactory, FactoryType, StatusChange } from './form-factor
  */
 export class FormControlFactory<C> extends AbstractControlFactory {
   factoryType: FactoryType = 'control';
-
-  public control: UntypedFormControl
 
   // can be used by the component that gets created using this factory to expose
   // its child component(s) to the factory
@@ -25,17 +23,17 @@ export class FormControlFactory<C> extends AbstractControlFactory {
   ) {
     super()
     const validators = config.required ? [Validators.required, ...(config.validators || [])] : config.validators
-    this.control = new UntypedFormControl(config.initValue || null, validators)
-    merge(of(this.control.value), this.control.valueChanges).pipe(
+    this.formControl = new UntypedFormControl(config.initValue || null, validators)
+    merge(of(this.formControl.value), this.formControl.valueChanges).pipe(
       map(item => this.config.mapValue(item)),
       takeUntil(this.globalConfig.destroy$)
     ).subscribe(x => this.valueChanges$.next(x))
 
-    merge(of(this.control.status), this.control.statusChanges).pipe(
+    merge(of(this.formControl.status), this.formControl.statusChanges).pipe(
       map(status => {
         const s: StatusChange = {
           status,
-          errors: this.control.errors
+          errors: this.formControl.errors
         }
         return s
       }),
@@ -43,6 +41,6 @@ export class FormControlFactory<C> extends AbstractControlFactory {
     ).subscribe(x => this.statusChanges$.next(x))
   }
   markAllAsTouched() {
-    this.control.markAsTouched()
+    this.formControl.markAsTouched()
   }
 }

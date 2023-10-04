@@ -1,13 +1,13 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
-import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { BehaviorSubject, combineLatest, merge, Observable, of } from 'rxjs';
+import { UntypedFormGroup } from '@angular/forms';
+import { BehaviorSubject, Observable, combineLatest, merge, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { FormArrayConfig } from '../services/FormArrayConfig';
 import { FormFactoryGlobal } from '../services/FormFactoryGlobal';
 import { FormNodeConfig } from '../services/FormNodeConfig';
 import { FormChildFactory } from './form-child-factory';
 import { FormControlFactory } from './form-control-factory';
-import { AbstractControlFactory, combineLatestOrEmpty, FactoryType, StatusChange } from './form-factory.models';
+import { AbstractControlFactory, FactoryType, StatusChange, combineLatestOrEmpty } from './form-factory.models';
 import { FormGroupFactory } from './form-group-factory';
 
 export interface FormArrayChild<C, A, Ch> extends AbstractControlFactory {
@@ -25,7 +25,6 @@ export interface ParentFactory<C, A, Ch> {
 export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
 
   factoryType: FactoryType = 'array';
-  control: UntypedFormArray
   children: FormArrayChild<C, A, Ch>[] = []
 
   childConfigs: FormNodeConfig<any, any, any, any>[] = []
@@ -45,7 +44,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
 
     this.children = []
     const validators = config.validators || []
-    this.control = this.globalConfig.fb.array([], validators)
+    this.formArray = this.globalConfig.fb.array([], validators)
 
     const childNodes$ = this.globalConfig.getChildNodeConfigs({ array: this.config })
     const defaultChildConfigs$ = this.globalConfig.getChildNodeConfigs({
@@ -141,7 +140,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
 
     // emit status changes
     combineLatest(
-      merge(of(this.control.status), this.control.statusChanges),
+      merge(of(this.formArray.status), this.formArray.statusChanges),
       this.childFactoryStatuses$.pipe(
         switchMap(s$ => combineLatest(s$))
       )
@@ -149,7 +148,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
       map(([status, childStatuses]) => {
         const s: StatusChange = {
           status,
-          errors: this.control.errors,
+          errors: this.formArray.errors,
           children: childStatuses
         }
         return s
@@ -166,7 +165,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
     let portalFactory: FormChildFactory<Ch>;
     if (i.array) arrayFactory = new FormArrayFactory(this.globalConfig, i.array, this.level + 1, { arrayFactory: this })
     if (i.control) controlFactory = new FormControlFactory(this.globalConfig, i.control, this.level + 1, { arrayFactory: this })
-    if (i.childFactory) portalFactory = new FormChildFactory(this.globalConfig, i.childFactory, this.level + 1, { arrayFactory: this })
+    if (i.childFactory) portalFactory = new FormChildFactory(this.globalConfig, i.childFactory)
     const factory = controlFactory ?? arrayFactory ?? portalFactory
     return {
       childFactory: portalFactory,
@@ -176,7 +175,9 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
       valueChanges$: factory.valueChanges$,
       factoryType: factory.factoryType,
       markAllAsTouched: factory.markAllAsTouched,
-      control: factory.control
+      formArray: factory.formArray,
+      formGroup: factory.formGroup,
+      formControl: factory.formControl
     }
   }
 
@@ -187,16 +188,15 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
     this.children.splice(i, 0, f)
 
     // add child control
-    if (f.controlFactory || f.arrayFactory) {
-      this.control.insert(i, f.control)
-    }
+    if (f.formControl) this.formArray.insert(i, f.formControl);
+    else if (f.formArray) this.formArray.insert(i, f.formArray);
     else if (f.childFactory) {
       const count = 0;
       f.childFactory.control$.pipe(takeUntil(this.globalConfig.destroy$))
         .subscribe((portalControl: UntypedFormGroup) => {
           count === 0 ?
-            this.control.insert(i, portalControl) :
-            this.control.setControl(i, portalControl)
+            this.formArray.insert(i, portalControl) :
+            this.formArray.setControl(i, portalControl)
         })
     }
     else {
@@ -225,7 +225,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
    * add control at last position of array
    */
   append(c: FormNodeConfig<any, any, any, any>) {
-    return this.add(this.control.length, c)
+    return this.add(this.formArray.length, c)
   }
 
   /**
@@ -243,7 +243,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
   }
 
   appendDefault() {
-    return this.add(this.control.length, this.defaultChildConfig)
+    return this.add(this.formArray.length, this.defaultChildConfig)
   }
   prependDefault() {
     return this.add(0, this.defaultChildConfig)
@@ -257,7 +257,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
 
     this.children.splice(i, 1)
     this.childConfigs.splice(i, 1)
-    this.control.removeAt(i)
+    this.formArray.removeAt(i)
 
 
     this.childFactoryValues$.pipe(first()).subscribe(vs$ => {
@@ -285,9 +285,9 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
 
   moveItemInArray(previousIndex: number, currentIndex: number) {
     // move child control
-    const control = this.control.at(previousIndex);
-    this.control.removeAt(previousIndex);
-    this.control.insert(currentIndex, control);
+    const control = this.formArray.at(previousIndex);
+    this.formArray.removeAt(previousIndex);
+    this.formArray.insert(currentIndex, control);
 
     // move child factory
     moveItemInArray(this.children, previousIndex, currentIndex);
@@ -310,7 +310,7 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
   }
 
   markAllAsTouched() {
-    this.control.markAsTouched()
+    this.formArray.markAsTouched()
     this.children.forEach(child => {
       child.markAllAsTouched()
     })

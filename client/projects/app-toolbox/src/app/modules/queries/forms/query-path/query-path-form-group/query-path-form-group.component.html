@@ -1,4 +1,4 @@
-<div *ngIf="formGroupFactory.child.factoryType === 'array'" [formGroup]="formGroupFactory.control">
+<div *ngIf="formGroupFactory.child.factoryType === 'array'" [formGroup]="formGroupFactory.formGroup">
   <div formArrayName="childControl">
     <gv-query-path-form-array class="d-inline-block" [formArrayFactory]="formGroupFactory.child">
       <ng-content></ng-content>

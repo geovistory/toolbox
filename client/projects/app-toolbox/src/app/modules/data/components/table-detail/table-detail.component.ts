@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
 import { ReduxMainService } from '@kleiolab/lib-redux';
@@ -8,7 +8,6 @@ import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { slideInOut } from '../../../information/shared/animations';
-import { TabBody } from '../../../projects/containers/project-edit/project-edit.component';
 
 export interface TableDetailConfig {
   pkEntity: number,
@@ -29,7 +28,6 @@ export class TableDetailComponent
   extends DetailBaseComponent<TableDetailConfig>
   implements OnInit {
 
-  @Input() tab: TabBody<any>;
 
   constructor(
     protected p: ActiveProjectService,

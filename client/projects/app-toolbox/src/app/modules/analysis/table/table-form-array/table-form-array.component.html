@@ -51,14 +51,14 @@
     </div>
   </mat-list-item>
   <mat-list-item class="p-0"
-    *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+    *ngIf="formArrayFactory.formArray.hasError('invalidArrayLength') && formArrayFactory.formArray.touched">
     <mat-error>
       Please add at least one colum
     </mat-error>
 
   </mat-list-item>
   <mat-list-item class="p-0"
-    *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+    *ngIf="formArrayFactory.formArray.hasError('invalidArrayLength') && formArrayFactory.formArray.touched">
     <mat-hint>
       A good starting point is 'Entity Preview Column'
     </mat-hint>
@@ -86,7 +86,8 @@
         <mat-panel-description>
           <span class="mat-caption"> {{child.valueChanges$ | async | coltype}}</span>
         </mat-panel-description>
-        <mat-panel-description *ngIf="(child.control.statusChanges | async )=== 'INVALID' && child.control.touched ">
+        <mat-panel-description
+          *ngIf="(child.formArray.statusChanges | async )=== 'INVALID' && child.formArray.touched ">
           <mat-error>
             Invalid, open for details.
           </mat-error>
@@ -177,13 +178,13 @@
 
     <div *ngIf="child?.controlFactory?.config?.data?.ctrlClasses">
       <button mat-flat-button color="primary"
-        *ngIf="!(child.controlFactory?.config?.disabled$|async) && child.control.valid" class="mb-4"
+        *ngIf="!(child.controlFactory?.config?.disabled$|async) && child.formArray.valid" class="mb-4"
         (click)="addQueryDefinition(child.controlFactory)">
         Continue
       </button>
     </div>
     <mat-list-item class="p-0"
-      *ngIf="formArrayFactory.control.hasError('invalidArrayLength') && formArrayFactory.control.touched">
+      *ngIf="formArrayFactory.formArray.hasError('invalidArrayLength') && formArrayFactory.formArray.touched">
       <mat-error>
         Please continue
       </mat-error>
