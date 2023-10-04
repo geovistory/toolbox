@@ -140,10 +140,12 @@ $app-theme: mat.define-light-theme(
     typography: $gv-typography,
   )
 );
+
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
 @include mat.all-component-themes($app-theme);
+@include mat.form-field-density(-2);
 
 // In addition to styles shared between components, the typography-hierarchy mixin
 // includes CSS classes for styling your application. These CSS classes correspond
@@ -452,6 +454,7 @@ $gv-bg-drawer-list: #cde4f3;
   $background: map.get($gv-grey-palette, 200);
   $active-background: $gv-bg-drawer-list;
   $hover-background: darken($background, 7.5%);
+  font-size: 16px;
   height: 80px;
   width: 100%;
   outline: none;
@@ -2372,3 +2375,4 @@ gv-project-card {
 @import "./styles/breadcrumb.scss";
 @import "./styles/typography.scss";
 @import "./styles/badge.scss";
+@import "./styles/alert.scss";
