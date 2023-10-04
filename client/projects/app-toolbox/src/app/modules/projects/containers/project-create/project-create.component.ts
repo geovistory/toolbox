@@ -26,7 +26,6 @@ export class ProjectCreateComponent implements OnInit {
   // Language search
   public languageSearch: any;
   searching = false;
-  searchFailed = false;
   hideSearchingWhenUnsubscribed = new Observable(() => () => this.searching = false);
 
   constructor(
