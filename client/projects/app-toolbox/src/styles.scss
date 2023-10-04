@@ -217,7 +217,9 @@ gv-project-list {
 */
 
 body {
+  margin: 0;
   background-color: map.get($gv-grey-palette, 100);
+  text-align: left;
 }
 
 .container {
@@ -1678,6 +1680,9 @@ button:not(.mat-icon-button) {
     font-size: 20px !important;
   }
 }
+button.mat-mdc-button.active {
+  color: $mat-color-primary;
+}
 
 mat-icon {
   svg {
@@ -2356,3 +2361,4 @@ gv-importer {
 @import "./styles/grid.scss";
 @import "./styles/breadcrumb.scss";
 @import "./styles/typography.scss";
+@import "./styles/badge.scss";
