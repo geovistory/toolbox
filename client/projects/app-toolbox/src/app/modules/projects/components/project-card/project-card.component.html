@@ -13,6 +13,10 @@
   </mat-card-content>
   <mat-card-content>
     <p>{{projectDescription$|async}}</p>
-    <button class="mt-2" mat-flat-button color="primary" routerLink="{{project.pk_entity}}/edit">Open</button>
+    <button class="mt-2" mat-flat-button [color]="'primary'" routerLink="{{project.pk_entity}}/edit">Open</button>
+    <a *ngIf="btn1Label$|async" mat-stroked-button [color]="'primary'" class="mt-2 ml-2" href="{{btn1Url$|async}}"
+      target="_blank">{{btn1Label$|async}}</a>
+    <a *ngIf="btn2Label$|async" mat-stroked-button [color]="'primary'" class="mt-2 ml-2" href="{{btn2Url$|async}}"
+      target="_blank">{{btn2Label$|async}}</a>
   </mat-card-content>
 </mat-card>

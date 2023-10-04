@@ -124,6 +124,10 @@ jobs:
         with:
           ref: ${{ github.head_ref }}
 
+      - name: Setup version info
+        id: setup_version
+        run: "npm --prefix client run setup:version -- ${{needs.set-version.outputs.version_tag}}"
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 

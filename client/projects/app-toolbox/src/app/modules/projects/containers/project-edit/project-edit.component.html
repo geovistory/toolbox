@@ -4,6 +4,13 @@
     <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
     <li class="breadcrumb-item">{{(projectLabel$|async)}}</li>
   </ol>
+
+  <div buttons>
+    <a *ngIf="btn1Label$|async" class="gv-nv-item mr-2" mat-stroked-button href="{{btn1Url$|async}}" [color]="'primary'"
+      target="_blank">{{btn1Label$|async}}</a>
+    <a *ngIf="btn2Label$|async" class="gv-nv-item mr-2" mat-stroked-button href="{{btn2Url$|async}}" [color]="'primary'"
+      target="_blank">{{btn2Label$|async}}</a>
+  </div>
 </gv-navbar>
 <mat-drawer-container class="gv-flex-fh">
 
