@@ -7,22 +7,25 @@
 <div class="container">
   <div class="row">
     <div class="col-3">
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title">Personal Settings</h4>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item" routerLink="profile" routerLinkActive="active">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Personal Settings</mat-card-title>
+        </mat-card-header>
+        <mat-nav-list>
+          <mat-divider></mat-divider>
+          <mat-list-item routerLink="profile" routerLinkActive="active">
             Profile
-          </li>
-          <li class="list-group-item" routerLink="password" routerLinkActive="active">
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item routerLink="password" routerLinkActive="active">
             Password
-          </li>
-          <li class="list-group-item" routerLink="email" routerLinkActive="active">
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item routerLink="email" routerLinkActive="active">
             Email
-          </li>
-        </ul>
-      </div>
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-card>
     </div>
     <div class="col-md-9 col-lg-6">
       <router-outlet></router-outlet>

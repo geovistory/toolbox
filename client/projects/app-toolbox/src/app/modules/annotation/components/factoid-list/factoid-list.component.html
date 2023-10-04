@@ -119,20 +119,20 @@
 
           <gv-field-label [fkSourceClass]="factoidEntity.pkClass" [fkProperty]="headStatement.fkProperty"
             [isOutgoing]="headStatement.isOutgoing" [showTooltip]="true"
-            class="content fade gv-one-liner gv-fade-out-right ">
+            class="content loc-fade gv-one-liner gv-fade-out-right ">
           </gv-field-label>
 
         </mat-grid-tile>
 
         <!-- header cells content -->
         <mat-grid-tile [colspan]="3" [rowspan]="1">
-          <div class="content fade italic gv-one-liner gv-fade-out-right ">{{headStatement.value}}</div>
+          <div class="content loc-fade italic gv-one-liner gv-fade-out-right ">{{headStatement.value}}</div>
         </mat-grid-tile>
 
         <!-- header entity preview -->
         <mat-grid-tile [colspan]="3" [rowspan]="1">
 
-          <div class="content fade">
+          <div class="content loc-fade">
             <gv-entity-preview *ngIf="headStatement.pkEntity" [pkEntity]="headStatement.pkEntity" class="left-col">
             </gv-entity-preview>
           </div>
@@ -140,7 +140,7 @@
 
         <!-- header cell position-->
         <mat-grid-tile [colspan]="2" [rowspan]="1">
-          <div class="content fade gv-one-liner gv-fade-out-right">
+          <div class="content loc-fade gv-one-liner gv-fade-out-right">
             <mat-icon class="gv-pointer entity-icon mat-text-secondary" svgIcon="alpha-f-box-outline"
               [matTooltip]="'Factoid ' + factoidEntity.pkFactoidMapping + '.'">
             </mat-icon>

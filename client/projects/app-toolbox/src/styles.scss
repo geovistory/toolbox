@@ -206,12 +206,6 @@ $font-size-sm: 0.75rem;
   }
 }
 
-gv-project-list {
-  .gv-project-language {
-    font-size: $font-size-sm;
-  }
-}
-
 /**
 * Generic stuff
 */
@@ -2359,6 +2353,13 @@ gv-importer {
 
 .gv-text-align-center {
   text-align: center;
+}
+
+gv-project-card {
+  mat-card.mat-mdc-card {
+    box-shadow: none;
+    border: 1px solid map.get($gv-grey-palette, 300) !important;
+  }
 }
 
 @import "~jsoneditor/dist/jsoneditor.min.css";

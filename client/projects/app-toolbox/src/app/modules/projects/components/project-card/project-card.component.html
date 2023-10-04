@@ -1,16 +1,18 @@
-<div class="card mt-2" [ngClass]="{
+<mat-card class="mt-2" [ngClass]="{
   'bg-info': (project.pk_entity == PK_PROJECT_OF_TEMPLATE_PROJECT),
   'mat-bg-accent-300': (project.pk_entity == PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT),
   'bg-warning': (project.pk_entity) == PK_PROJECT_OF_SANDBOX_PROJECT
 }">
-  <div class="card-body">
-    <h4 class="card-title">{{projectLabel$|async}}
-      <span class="gv-project-language mat-text-secondary pull-right">
+  <mat-card-content>
+    <mat-card-title class="d-flex d-flex justify-content-between mb-3">
+      <div>{{projectLabel$|async}}</div>
+      <span class="mat-text-secondary mat-caption">
         {{projectLanugageLabel$|async}}
       </span>
-    </h4>
-    <p class="card-text">{{projectDescription$|async}}</p>
-
-    <button mat-flat-button color="primary" routerLink="{{project.pk_entity}}/edit">Open</button>
-  </div>
-</div>
+    </mat-card-title>
+  </mat-card-content>
+  <mat-card-content>
+    <p>{{projectDescription$|async}}</p>
+    <button class="mt-2" mat-flat-button color="primary" routerLink="{{project.pk_entity}}/edit">Open</button>
+  </mat-card-content>
+</mat-card>

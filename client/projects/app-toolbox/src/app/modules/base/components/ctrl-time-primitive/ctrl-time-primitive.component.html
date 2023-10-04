@@ -111,36 +111,5 @@
         <gv-control-messages [control]="form?.controls.calendar"></gv-control-messages>
       </div>
     </div>
-
-
-    <!-- <div class="form-row mt-3">
-          <div class="col mat-text-secondary">
-          <button type="button" mat-button (click)="showInfo()" *ngIf="form?.status == 'VALID' && !infoVisible">
-          Show info
-        </button>
-        <button type="button" mat-button (click)="hideInfo()" *ngIf="form?.status == 'VALID' && infoVisible">
-        hide info
-        </button>
-        <div class="card" *ngIf="form?.status == 'VALID' && infoVisible">
-        <div class="card-body">
-        Your input corresponds to
-        </div>
-        <div class="card-body font-sm" *ngIf="this.info.gregStartDate">
-        <div>{{this.info.gregStartDate | date:'MMM d, y GG, HH:mm:ss' }} – {{this.info.gregEndDate | date:'MMM d, y GG, HH:mm:ss' }} </div>
-        <div class="mat-text-secondary">in the Gregorian Calendar</div>
-        </div>
-        <div class="card-body font-sm">
-        <div>{{this.info.julStartDate | date:'MMM d, y GG, HH:mm:ss' }} – {{this.info.julEndDate | date:'MMM d, y GG, HH:mm:ss' }}</div>
-        <div class="mat-text-secondary">in the Julian Calendar</div>
-        </div>
-        <div class="card-body font-sm">
-        <div><span class="mat-text-secondary">and a duration of </span> {{info.duration}}.</div>
-        </div>
-        </div>
-        </div>
-        </div> -->
-
-    <!-- <button mat-flat-button class="mr-2" (click)="closeMenu()">Confirm</button> -->
-    <!-- <button mat-flat-button (click)="clearForm()">Clear</button> -->
   </form>
 </mat-menu>
