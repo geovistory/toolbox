@@ -2,18 +2,20 @@ import {authenticate} from '@loopback/authentication';
 import {inject} from '@loopback/core';
 import {tags} from '@loopback/openapi-v3/dist/decorators/tags.decorator';
 import {JsonSchemaWithExtensions, Model, model, property, repository} from '@loopback/repository';
-import {get, HttpErrors, oas, param, post, requestBody, Response, RestBindings} from '@loopback/rest';
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import {HttpErrors, Response, RestBindings, get, oas, param, post, requestBody} from '@loopback/rest';
+import {SecurityBindings, UserProfile, securityId} from '@loopback/security';
 import {genSalt, hash} from 'bcryptjs';
 import _ from 'lodash';
 import {JWTService} from '../components/jwt';
 import {JWTBindings} from '../components/jwt/keys';
 import {Postgres1DataSource} from '../datasources';
 import {PubAccount} from '../models/pub-account.model';
+import {PubAccountProjectRelRepository} from '../repositories';
 import {PubAccountRepository} from '../repositories/pub-account.repository';
 import {AccountService} from '../services/account.service';
 import {EmailService} from '../services/email.service';
 import {PasswordResetTokenService} from '../services/password-reset-token.service';
+import {envVars} from '../utils/env-vars';
 
 
 // the requirements for new passwords can be higher
@@ -95,6 +97,7 @@ export class AccountController {
     @inject('APP_PASSWORD_RESET_TOKEN_SERVICE') protected passwordResetTokenService: PasswordResetTokenService,
     @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
     @repository(PubAccountRepository) protected accountRepository: PubAccountRepository,
+    @repository(PubAccountProjectRelRepository) protected accountProjectRelRepository: PubAccountProjectRelRepository,
     @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
   ) { }
 
@@ -202,6 +205,15 @@ export class AccountController {
     const sql = 'SELECT commons.clone_sandbox_project($1);';
     const params = [savedAccount.id];
     await this.dataSource.execute(sql, params);
+
+    // add to community project
+    if (envVars.communityProjectId && parseInt(envVars.communityProjectId, 10) > 0) {
+      await this.accountProjectRelRepository.create({
+        account_id: savedAccount.id,
+        fk_project: parseInt(envVars.communityProjectId, 10),
+        role: 'owner'
+      })
+    }
 
     return {
       success: new PubAccount({

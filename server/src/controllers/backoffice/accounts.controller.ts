@@ -56,7 +56,7 @@ export class FindAccountDataController {
       ) AS rolemappings
       ON rolemappings.principalid = account.id::text
       LEFT JOIN LATERAL (
-        SELECT apr.account_id ,jsonb_build_object('pk_entity', pk_entity, 'role', role) projects
+        SELECT apr.account_id ,jsonb_build_object('fk_project', fk_project, 'role', role) projects
         FROM account_project_rel AS apr
         JOIN projects.project ON apr.fk_project = project.pk_entity
       ) AS project_rels
