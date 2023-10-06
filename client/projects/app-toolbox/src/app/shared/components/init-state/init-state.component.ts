@@ -1,9 +1,9 @@
-import { NgRedux, ObservableStore } from '@angular-redux/store';
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { IAppState, SchemaService, SET_APP_STATE } from '@kleiolab/lib-redux';
+import { IAppState, SET_APP_STATE, SchemaService } from '@kleiolab/lib-redux';
 import { GvPaginationObject, GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { NgRedux, ObservableStore } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { combineLatest, Observable, of, Subject, timer } from 'rxjs';
+import { Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 
 

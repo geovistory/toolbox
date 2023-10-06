@@ -1,4 +1,3 @@
-import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
@@ -6,6 +5,7 @@ import { ActiveProjectPipesService, ConfigurationPipesService, DisplayType, Fiel
 import { IAppState, InfActions, SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
+import { NgRedux } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ViewSectionsDialogComponent, ViewSectionsDialogData } from 'projects/app-toolbox/src/app/modules/base/components/view-sections-dialog/view-sections-dialog.component';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
@@ -13,7 +13,7 @@ import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/ser
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets } from '../../../base/base.helpers';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
@@ -81,8 +81,6 @@ export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInte
   }
 
   ngOnInit() {
-    // this.localStore = this.ngRedux.configureSubStore(this.basePath, typesReducer);
-    // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.t = this.tabLayout.t;
 

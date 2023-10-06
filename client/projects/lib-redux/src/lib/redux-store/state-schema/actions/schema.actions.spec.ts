@@ -1,9 +1,9 @@
-import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { GvPositiveSchemaObject, SdkLb4Module, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { Store } from '@ngrx/store';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { GvFieldPageReqMock } from 'projects/__test__/data/auto-gen/api-requests/GvFieldPageReq';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
-import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { MockPaginatedStatementsControllerService } from 'projects/__test__/mock-services/MockPaginatedStatementsControllerService';
 import { keys } from 'ramda';
 import { BehaviorSubject } from 'rxjs';
@@ -16,7 +16,7 @@ import { GvSchemaActions } from './schema.actions';
 describe('GvSchemaActions', () => {
   let actions: GvSchemaActions;
   let main: ReduxMainService;
-  let ngRedux: NgRedux<IAppState>;
+  let store: Store<IAppState>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,26 +30,33 @@ describe('GvSchemaActions', () => {
     })
     actions = TestBed.inject(GvSchemaActions);
     main = TestBed.inject(ReduxMainService);
-    ngRedux = TestBed.inject(NgRedux);
+    store = TestBed.inject(Store);
   });
   describe('.loadGvSchemaObject()', () => {
-    it('should put parts of object into store', () => {
-      const apiCall$ = new BehaviorSubject<GvPositiveSchemaObject>({
-        inf: { language: [InfLanguageMock.GERMAN] }
-      })
+    const apiCall$ = new BehaviorSubject<GvPositiveSchemaObject>({
+      inf: { language: [InfLanguageMock.GERMAN] }
+    })
+    it('should put language of object into store', async (done) => {
       actions.loadGvSchemaObject(apiCall$)
-      const expectedLanguage = ngRedux.getState().inf.language.by_pk_entity[InfLanguageMock.GERMAN.pk_entity]
-      expect(expectedLanguage.pk_entity).toEqual(InfLanguageMock.GERMAN.pk_entity)
-
-      const expectedClass = ngRedux.getState().inf.pkEntityModelMap[18605].fkClass
-      expect(expectedClass).toEqual(InfLanguageMock.GERMAN.fk_class)
-
+      store.select(s => s.inf.language.by_pk_entity[InfLanguageMock.GERMAN.pk_entity]).subscribe(lang => {
+        expect(lang.pk_entity).toEqual(InfLanguageMock.GERMAN.pk_entity)
+        done()
+      })
+    })
+    it('should put class of object into store', async (done) => {
+      actions.loadGvSchemaObject(apiCall$)
+      store.select(s => s.inf.pkEntityModelMap[18605].fkClass).subscribe(fkClass => {
+        expect(fkClass).toEqual(InfLanguageMock.GERMAN.pk_entity)
+        done()
+      })
     });
-    it('should put klasses into store', () => {
+    it('should put klasses into store', async (done) => {
       const apiCall$ = new BehaviorSubject<GvPositiveSchemaObject>(GvSchemaObjectMock.basicClassesAndProperties)
       actions.loadGvSchemaObject(apiCall$)
-      expect(Object.keys(ngRedux.getState().dfh.klass).length).toBeGreaterThan(0);
-
+      store.select(s => s.dfh.klass).subscribe(classes => {
+        expect(Object.keys(classes).length).toBeGreaterThan(0);
+        done()
+      })
     });
   })
 
@@ -58,18 +65,13 @@ describe('GvSchemaActions', () => {
 
       main.loadFieldPage([GvFieldPageReqMock.appeTeEnRefersToName])
 
-      const q$ = ngRedux.select(['inf', 'statement', 'by_subfield_page', subfieldIdToString(GvFieldPageReqMock.appeTeEnRefersToName.page)])
+      const q$ = store.select(s => s.inf.statement.by_subfield_page?.[subfieldIdToString(GvFieldPageReqMock.appeTeEnRefersToName.page)])
         .pipe(
           first((p: any) => (p && !!p.rows))
         )
 
       q$.subscribe(
         (paginationInfo: any) => {
-
-          // const paginationInfo = ngRedux.getState().inf
-          //   .statement
-          //   .by_subfield_page[subfieldIdToString(req.page)]
-
           expect(paginationInfo.count).toEqual(1)
           expect(paginationInfo.loading['0_7']).toEqual(false)
           console.log(paginationInfo.rows)

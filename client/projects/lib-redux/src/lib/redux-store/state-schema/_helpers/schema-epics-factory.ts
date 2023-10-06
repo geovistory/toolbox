@@ -1,13 +1,15 @@
+import { Actions, createEffect } from '@ngrx/effects';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Action } from 'redux';
 import { ofType } from 'redux-observable';
 import { Observable, Subscriber } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { FluxActionObservable, LoadActionMeta, ModifyActionMeta, SchemaActionsFactory } from './schema-actions-factory';
+import { LoadActionMeta, ModifyActionMeta, SchemaActionsFactory } from './schema-actions-factory';
 
 export class SchemaEpicsFactory<Payload, Model> {
   constructor(
+    private actions$: Actions<FluxStandardAction<Payload, LoadActionMeta>>,
     public actionPrefix: string,
     public modelName: string,
     public actions: SchemaActionsFactory<Model>,
@@ -15,25 +17,23 @@ export class SchemaEpicsFactory<Payload, Model> {
 
 
   createLoadEpic<T>(apiFn: (meta: T) => Observable<Model[]>, actionSuffix: string, onSuccessHook?: (data: Model[], pk?, initialMeta?: T) => void) {
-    return (action$: FluxActionObservable<Payload, LoadActionMeta>, store) => {
-      return action$.pipe(
-        ofType(this.type('LOAD', actionSuffix)),
-        mergeMap((action) => new Observable<Action>((globalActions) => {
-          const pendingKey = action.meta.addPending;
-          const meta = action.meta as any as T;
-          apiFn(meta).subscribe((data: Model[]) => {
-            if (onSuccessHook) {
-              onSuccessHook(data, action.meta.pk, meta);
-              this.actions.succeeded(data, pendingKey, action.meta.pk);
-            }
-            else {
-              this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
-            }
-          }, error => {
-            this.onError(globalActions, error, pendingKey, action.meta.pk)
-          });
-        })));
-    };
+    return createEffect(() => this.actions$.pipe(
+      ofType(this.type('LOAD', actionSuffix)),
+      mergeMap((action) => new Observable<Action>((globalActions) => {
+        const pendingKey = action.meta.addPending;
+        const meta = action.meta as any as T;
+        apiFn(meta).subscribe((data: Model[]) => {
+          if (onSuccessHook) {
+            onSuccessHook(data, action.meta.pk, meta);
+            this.actions.succeeded(data, pendingKey, action.meta.pk);
+          }
+          else {
+            this.actions.loadSucceeded(data, pendingKey, action.meta.pk);
+          }
+        }, error => {
+          this.onError(globalActions, error, pendingKey, action.meta.pk)
+        });
+      }))))
   }
   createUpsertEpic<T>(apiFn: (meta: T) => Observable<Model[]>, onSuccessHook?: (data: Model[], pk?) => void) {
     return (action$, store) => {

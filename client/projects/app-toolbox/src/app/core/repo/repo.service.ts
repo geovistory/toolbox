@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { InfSelector } from "@kleiolab/lib-queries";
-import { BehaviorSubject } from 'rxjs';
-import { NgRedux } from '@angular-redux/store';
 import { IAppState } from "@kleiolab/lib-redux";
+import { NgRedux } from '@ngrx/store';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

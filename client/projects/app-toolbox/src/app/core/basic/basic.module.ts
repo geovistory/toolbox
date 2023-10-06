@@ -1,6 +1,6 @@
-import { ObservableStore } from '@angular-redux/store';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ObservableStore } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { BasicService } from './basic.service';
 

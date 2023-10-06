@@ -1,29 +1,31 @@
-import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
 import { GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
-import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
-import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';
-import { PK_DEFAULT_CONFIG_PROJECT } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
+import { Store, StoreModule, createReducer } from '@ngrx/store';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
+import { PK_DEFAULT_CONFIG_PROJECT } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
+import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { of } from 'rxjs';
 import { take, toArray } from 'rxjs/operators';
 import { IAppState, SchemaService } from '../lib/redux-store/public-api';
 
 describe('Select deep nested', () => {
-  let ngRedux: NgRedux<IAppState>;
+  let store: Store<IAppState>;
   let schemaObjServcie: SchemaService;
 
   beforeEach(() => {
+
     TestBed.configureTestingModule({
-      imports: moduleImports
+      imports: [
+        ...moduleImports,
+        StoreModule.forRoot(createReducer(IAppStateMock.stateProject1))],
+
     });
     schemaObjServcie = TestBed.inject(SchemaService);
-    ngRedux = TestBed.inject(NgRedux);
+    store = TestBed.inject(Store);
   });
 
   it('should emit 3 changes after deep change', (done) => {
-    setAppState(ngRedux, IAppStateMock.stateProject1)
-    const q$ = ngRedux.select(['pro', 'table_config', 'by_fk_digital']);
+    const q$ = store.select(s => s.pro.table_config.by_fk_digital);
     q$.pipe(take(3), toArray())
       .subscribe(
         actualSequence => {
@@ -92,8 +94,7 @@ describe('Select deep nested', () => {
 
   it('should emit 3 changes after deep change with more data', (done) => {
     const dat = { 'column': [{ 'pk_entity': 100094, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }, { 'pk_entity': 100095, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }, { 'pk_entity': 100096, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }, { 'pk_entity': 100097, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }, { 'pk_entity': 100098, 'fk_digital': 100093, 'is_imported': true, 'fk_data_type': 3292, 'fk_namespace': 1001, 'fk_column_content_type': 3291, 'fk_column_relationship_type': 3367 }], 'text_property': [{ 'string': '1', 'fk_entity': 100094, 'pk_entity': 100099, 'quill_doc': { 'ops': [{ 'insert': '1', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }, { 'string': '2', 'fk_entity': 100095, 'pk_entity': 100100, 'quill_doc': { 'ops': [{ 'insert': '2', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }, { 'string': '3', 'fk_entity': 100096, 'pk_entity': 100101, 'quill_doc': { 'ops': [{ 'insert': '3', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }, { 'string': '4', 'fk_entity': 100097, 'pk_entity': 100102, 'quill_doc': { 'ops': [{ 'insert': '4', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }, { 'string': '5', 'fk_entity': 100098, 'pk_entity': 100103, 'quill_doc': { 'ops': [{ 'insert': '5', 'attributes': { 'charid': '1' } }, { 'insert': '\n', 'attributes': { 'blockid': '2' } }], 'latestId': 2 }, 'fk_language': 18889, 'fk_namespace': 1001, 'fk_system_type': 3295 }] }
-    setAppState(ngRedux, IAppStateMock.stateProject1)
-    const q$ = ngRedux.select(['pro', 'table_config', 'by_fk_digital']);
+    const q$ = store.select(s => s.pro.table_config.by_fk_digital);
     q$.pipe(take(3), toArray())
       .subscribe(
         actualSequence => {

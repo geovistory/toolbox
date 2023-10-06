@@ -1,12 +1,12 @@
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AnalysisTabData, IAppState, NotificationsAPIActions, ReduxMainService } from '@kleiolab/lib-redux';
 import { AnalysisService as LbAnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
+import { NgRedux } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ErrorDialogComponent, ErrorDialogData } from 'projects/app-toolbox/src/app/shared/components/error-dialog/error-dialog.component';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { catchError, first, switchMap, tap } from 'rxjs/operators';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/dialog-create/dialog-create.component';
 @Injectable({

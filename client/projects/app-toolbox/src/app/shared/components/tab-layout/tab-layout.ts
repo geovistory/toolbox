@@ -1,6 +1,6 @@
-import { dispatch, select, WithSubStore } from '@angular-redux/store';
 import { ChangeDetectorRef } from '@angular/core';
 import { PanelTab, TabLayoutMode } from '@kleiolab/lib-redux';
+import { dispatch, select, WithSubStore } from '@ngrx/store';
 import { IOutputData } from 'angular-split/lib/interface';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable, Subject } from 'rxjs';

@@ -1,11 +1,11 @@
 
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
+import { Store } from '@ngrx/store';
 import { IAppState, SchemaObject } from '../../root/models/model';
+import { LoadActionMeta, SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 import { InfResourceSlice } from '../models/inf.models';
 import { infRoot } from '../reducer-configs/inf.config';
-import { LoadActionMeta, SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 
 
 
@@ -68,19 +68,27 @@ export interface LoadAlternativeTextProperties extends LoadActionMeta { fkEntity
 })
 export class InfActions {
 
-  statement = new SchemaActionsFactory<InfStatement>(this.ngRedux, infRoot, 'statement')
-  resource = new SchemaActionsFactory<InfResource>(this.ngRedux, infRoot, 'resource')
-
-  language = new SchemaActionsFactory<InfLanguage>(this.ngRedux, infRoot, 'language')
-  appellation = new SchemaActionsFactory<InfAppellation>(this.ngRedux, infRoot, 'appellation')
-  lang_string = new SchemaActionsFactory<InfLangString>(this.ngRedux, infRoot, 'lang_string')
-  dimension = new SchemaActionsFactory<InfDimension>(this.ngRedux, infRoot, 'dimension')
-  place = new SchemaActionsFactory<InfPlace>(this.ngRedux, infRoot, 'place')
-  time_primitive = new SchemaActionsFactory<InfTimePrimitive>(this.ngRedux, infRoot, 'time_primitive')
+  statement: SchemaActionsFactory<InfStatement>;
+  resource: SchemaActionsFactory<InfResource>;
+  language: SchemaActionsFactory<InfLanguage>;
+  appellation: SchemaActionsFactory<InfAppellation>;
+  lang_string: SchemaActionsFactory<InfLangString>;
+  dimension: SchemaActionsFactory<InfDimension>;
+  place: SchemaActionsFactory<InfPlace>;
+  time_primitive: SchemaActionsFactory<InfTimePrimitive>;
 
   constructor(
-    public ngRedux: NgRedux<IAppState>,
-  ) { }
+    public store: Store<IAppState>,
+  ) {
+    this.statement = new SchemaActionsFactory<InfStatement>(this.store, infRoot, 'statement')
+    this.resource = new SchemaActionsFactory<InfResource>(this.store, infRoot, 'resource')
+    this.language = new SchemaActionsFactory<InfLanguage>(this.store, infRoot, 'language')
+    this.appellation = new SchemaActionsFactory<InfAppellation>(this.store, infRoot, 'appellation')
+    this.lang_string = new SchemaActionsFactory<InfLangString>(this.store, infRoot, 'lang_string')
+    this.dimension = new SchemaActionsFactory<InfDimension>(this.store, infRoot, 'dimension')
+    this.place = new SchemaActionsFactory<InfPlace>(this.store, infRoot, 'place')
+    this.time_primitive = new SchemaActionsFactory<InfTimePrimitive>(this.store, infRoot, 'time_primitive')
+  }
 
 
 

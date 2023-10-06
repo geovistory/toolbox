@@ -1,9 +1,9 @@
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { DatClassColumnMapping, DatColumn, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb4';
+import { DatClassColumnMapping, DatColumn, DatDigital, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb4';
+import { Store } from '@ngrx/store';
 import { IAppState } from '../../root/models/model';
-import { datRoot } from '../reducer-configs/dat.config';
 import { SchemaActionsFactory } from '../_helpers/schema-actions-factory';
+import { datRoot } from '../reducer-configs/dat.config';
 
 
 @Injectable({
@@ -11,18 +11,30 @@ import { SchemaActionsFactory } from '../_helpers/schema-actions-factory';
 })
 export class DatActions {
 
-  digital = new SchemaActionsFactory(this.ngRedux, datRoot, 'digital')
+  digital: SchemaActionsFactory<DatDigital>;
 
-  chunk = new SchemaActionsFactory<DatNamespace>(this.ngRedux, datRoot, 'chunk')
+  chunk: SchemaActionsFactory<DatNamespace>;
 
-  column = new SchemaActionsFactory<DatColumn>(this.ngRedux, datRoot, 'column')
+  column: SchemaActionsFactory<DatColumn>;
 
-  class_column_mapping = new SchemaActionsFactory<DatClassColumnMapping>(this.ngRedux, datRoot, 'class_column_mapping')
+  class_column_mapping: SchemaActionsFactory<DatClassColumnMapping>;
 
-  namespace = new SchemaActionsFactory<DatNamespace>(this.ngRedux, datRoot, 'namespace')
+  namespace: SchemaActionsFactory<DatNamespace>;
 
-  text_property = new SchemaActionsFactory<DatTextProperty>(this.ngRedux, datRoot, 'text_property')
+  text_property: SchemaActionsFactory<DatTextProperty>;
 
-  constructor(public ngRedux: NgRedux<IAppState>) { }
+  constructor(private store: Store<IAppState>) {
+    this.digital = new SchemaActionsFactory(this.store, datRoot, 'digital')
+
+    this.chunk = new SchemaActionsFactory<DatNamespace>(this.store, datRoot, 'chunk')
+
+    this.column = new SchemaActionsFactory<DatColumn>(this.store, datRoot, 'column')
+
+    this.class_column_mapping = new SchemaActionsFactory<DatClassColumnMapping>(this.store, datRoot, 'class_column_mapping')
+
+    this.namespace = new SchemaActionsFactory<DatNamespace>(this.store, datRoot, 'namespace')
+
+    this.text_property = new SchemaActionsFactory<DatTextProperty>(this.store, datRoot, 'text_property')
+  }
 
 }

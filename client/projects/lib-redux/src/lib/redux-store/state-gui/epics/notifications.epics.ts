@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
+import { Actions, createEffect } from '@ngrx/effects';
 import { FluxStandardAction } from 'flux-standard-action';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { ofType } from 'redux-observable';
 import { Observable, ReplaySubject } from 'rxjs';
-import { filter, switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs/operators';
 import { NotificationsAPIAction, NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { NotificationsI } from '../models/notifications.models';
 
@@ -13,39 +14,29 @@ import { NotificationsI } from '../models/notifications.models';
 })
 export class NotificationsAPIEpics {
   notificationChannel$ = new ReplaySubject<NotificationsI>()
-  constructor(
-  ) {
 
-  }
-
-  public createEpics(): Epic {
-    return combineEpics(this.createAddToastEpic());
-  }
-
-  private createAddToastEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
+  addToast$ = createEffect(() =>
+    this.actions$.pipe(
+      /**
+       * Filter the actions that triggers this epic
+       */
+      ofType(NotificationsAPIActions.ADD_TOAST),
+      switchMap((action) => new Observable<FluxStandardAction<any>>((observer) => {
         /**
-         * Filter the actions that triggers this epic
+         * Add Toast
          */
-        filter((a) => {
-          return a;
-        }),
-        ofType(NotificationsAPIActions.ADD_TOAST),
-        switchMap((action) => new Observable<FluxStandardAction<any>>((observer) => {
-          /**
-           * Add Toast
-           */
-          const a = action as NotificationsAPIAction;
-          if (!a.payload.options.title && !a.payload.options.msg) {
-            if (a.payload.type === 'error') {
-              a.payload.options.title = 'Oops, something went wrong!'
-            }
+        const a = action as NotificationsAPIAction;
+        if (!a.payload.options.title && !a.payload.options.msg) {
+          if (a.payload.type === 'error') {
+            a.payload.options.title = 'Oops, something went wrong!'
           }
-          this.notificationChannel$.next(a.payload)
+        }
+        this.notificationChannel$.next(a.payload)
 
-        })),
-      )
-    }
-  }
+      })),
+    )
+  )
+  constructor(
+    private actions$: Actions
+  ) { }
 }

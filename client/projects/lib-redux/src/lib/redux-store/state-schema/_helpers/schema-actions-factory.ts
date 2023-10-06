@@ -1,6 +1,6 @@
-import { NgRedux } from '@angular-redux/store';
 import { GvFieldPage, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
+import { Store } from '@ngrx/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable } from 'rxjs';
 import { filter } from 'rxjs/operators';
@@ -35,7 +35,7 @@ export class SchemaActionsFactory<Model> {
 
 
   constructor(
-    public ngRedux: NgRedux<IAppState>,
+    public store: Store<IAppState>,
     public actionPrefix: string,
     public modelName: string
   ) {
@@ -48,10 +48,10 @@ export class SchemaActionsFactory<Model> {
       meta: { addPending, pk },
       payload: null,
     };
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
     return {
-      pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-      resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
+      pending$: this.store.select((s) => s?.pending?.[addPending]),
+      resolved$: this.store.select<SucceedActionMeta<Model>>(s => s.resolved?.[addPending]),
       key: addPending
     };
   }
@@ -62,7 +62,7 @@ export class SchemaActionsFactory<Model> {
       meta: { items, removePending, pk },
       payload: null
     })
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
   }
 
   /**
@@ -75,10 +75,10 @@ export class SchemaActionsFactory<Model> {
       meta: { items, addPending, pk },
       payload: null
     })
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
     return {
-      pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-      resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]),
+      pending$: this.store.select((s) => s?.pending?.[addPending]),
+      resolved$: this.store.select<SucceedActionMeta<Model>>(s => s.resolved?.[addPending]),
       key: addPending
     };
   }
@@ -89,7 +89,7 @@ export class SchemaActionsFactory<Model> {
       meta: { items, removePending, pk },
       payload: null
     })
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
   }
 
   /**
@@ -102,7 +102,7 @@ export class SchemaActionsFactory<Model> {
       meta: { items, removePending, pk },
       payload: null
     })
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
   }
 
 
@@ -116,16 +116,16 @@ export class SchemaActionsFactory<Model> {
       meta: { items, addPending, pk },
       payload: null
     })
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
     return {
-      pending$: this.ngRedux.select<boolean>(['pending', addPending]),
-      resolved$: this.ngRedux.select<SucceedActionMeta<Model>>(['resolved', addPending]).pipe(filter(x => !!x)),
+      pending$: this.store.select((s) => s?.pending?.[addPending]),
+      resolved$: this.store.select<SucceedActionMeta<Model>>(s => s.resolved?.[addPending]).pipe(filter(x => !!x)),
       key: addPending
     };
   }
 
   deleteSucceeded(items: Model[], removePending: string, pk?: number): void {
-    this.ngRedux.dispatch(this.deleteSucceededAction(items, removePending, pk))
+    this.store.dispatch(this.deleteSucceededAction(items, removePending, pk))
   }
 
   deleteSucceededAction(items: Model[], removePending: string, pk?: number): FluxStandardAction<Payload, SucceedActionMeta<Model>> {
@@ -143,7 +143,7 @@ export class SchemaActionsFactory<Model> {
       payload: null,
       error,
     })
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
   }
 
 
@@ -153,7 +153,7 @@ export class SchemaActionsFactory<Model> {
       meta: { page, pk },
       payload: null,
     })
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
   }
 
   loadPageSucceeded(statements: StatementWithTarget[], count: number, page: GvFieldPage, pk?: number): void {
@@ -162,7 +162,7 @@ export class SchemaActionsFactory<Model> {
       meta: { page, statements, count, pk },
       payload: null,
     })
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
   }
 
   loadPageSucceededAction(statements: StatementWithTarget[], count: number, page: GvFieldPage, pk?: number) {
@@ -180,7 +180,7 @@ export class SchemaActionsFactory<Model> {
       meta: { page, pk },
       payload: null,
     })
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
   }
 
 

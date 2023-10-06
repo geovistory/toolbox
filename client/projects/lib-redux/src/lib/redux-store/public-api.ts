@@ -1,6 +1,5 @@
 export * from './module/redux-store.module';
 export * from './root/models/model';
-export * from './root/root-epics';
 export * from './root/root-reducer';
 export * from './state-gui/actions/account.actions';
 export * from './state-gui/actions/active-project.action';
@@ -18,6 +17,10 @@ export * from './state-gui/models/list';
 export * from './state-gui/models/loading-bar.models';
 export * from './state-gui/models/notifications.models';
 export * from './state-gui/models/source-list.models';
+export * from './state-schema/_helpers/reducer-factory';
+export * from './state-schema/_helpers/schema-actions-factory';
+export * from './state-schema/_helpers/schema-epics-factory';
+export * from './state-schema/_helpers/subfieldIdToString';
 export * from './state-schema/actions/dat.actions';
 export * from './state-schema/actions/dfh.actions';
 export * from './state-schema/actions/inf.actions';
@@ -49,10 +52,6 @@ export * from './state-schema/reducers/tab.reducer';
 export * from './state-schema/reducers/war.reducer';
 export * from './state-schema/services/reduxMain.service';
 export * from './state-schema/services/schema.service';
-export * from './state-schema/_helpers/reducer-factory';
-export * from './state-schema/_helpers/schema-actions-factory';
-export * from './state-schema/_helpers/schema-epics-factory';
-export * from './state-schema/_helpers/subfieldIdToString';
 
 
 

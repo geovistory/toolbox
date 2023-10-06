@@ -1,15 +1,15 @@
 
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, DatSelector, DfhClassEnriched, DfhSelector, InfSelector, ProSelector, ShouldPauseService, SysSelector, TabSelector } from '@kleiolab/lib-queries';
 import { ActiveProjectActions, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, ReduxMainService } from '@kleiolab/lib-redux';
 import { ClassConfig, DatNamespace, GvPositiveSchemaObject, InfLanguage, ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
+import { NgRedux } from '@ngrx/store';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, timer } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, combineLatest, timer } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { TableDetailConfig } from '../../modules/data/components/table-detail/table-detail.component';
 import { TextDetail2Config } from '../../modules/data/components/text-detail2/text-detail2.component';

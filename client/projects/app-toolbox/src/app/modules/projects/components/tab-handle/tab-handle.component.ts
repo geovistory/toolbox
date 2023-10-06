@@ -1,8 +1,8 @@
 
-import { NgRedux } from '@angular-redux/store';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IAppState, PanelTab, TabBase } from '@kleiolab/lib-redux';
 import { ClassConfig } from '@kleiolab/lib-sdk-lb4';
+import { NgRedux } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { delay, map } from 'rxjs/operators';

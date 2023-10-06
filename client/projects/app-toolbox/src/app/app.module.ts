@@ -1,4 +1,3 @@
-import { NgReduxModule } from '@angular-redux/store';
 import { CommonModule, registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import localeDeCh from '@angular/common/locales/de-CH';
@@ -12,6 +11,7 @@ import { ReduxQueriesModule } from '@kleiolab/lib-queries';
 import { ReduxModule } from '@kleiolab/lib-redux';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SOCKETS_CONFIG, SocketsConfig, SocketsModule } from '@kleiolab/lib-sockets';
+import { StoreModule } from '@ngrx/store';
 import { DndModule } from '@suez/ngx-dnd';
 import { AngularSplitModule } from 'angular-split';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
@@ -68,7 +68,7 @@ registerLocaleData(localeDeCh);
 
 
     // other thid party modules
-    NgReduxModule,
+    StoreModule.forRoot(),
     AngularSplitModule,
     CookiesModule.forRoot(),
     DndModule.forRoot(),

@@ -1,7 +1,7 @@
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
+import { GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
+import { Store } from '@ngrx/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
@@ -10,10 +10,6 @@ import { LoadActionMeta } from '../_helpers/schema-actions-factory';
 
 export type GvSchemaObjectAction = FluxStandardAction<Observable<GvPositiveSchemaObject>, LoadActionMeta>;
 export type GvSchemaModifierAction = FluxStandardAction<Observable<GvSchemaModifier>, LoadActionMeta>;
-
-interface GvPaginationObjectActionMeta extends LoadActionMeta {
-  req: GvFieldPageReq
-}
 export type GvPaginationObjectAction = FluxStandardAction<Observable<GvPaginationObject>, LoadActionMeta>;
 
 
@@ -33,7 +29,7 @@ export class GvSchemaActions {
 
   static readonly GV_MODIFIER_LOAD_SUCCEEDED = 'GV_MODIFIER_LOAD_SUCCEEDED::SUCCEEDED';
 
-  constructor(private ngRedux: NgRedux<IAppState>) { }
+  constructor(private store: Store<IAppState>) { }
 
   /**
    * Action for loading GvSchemaObject into the store
@@ -50,7 +46,7 @@ export class GvSchemaActions {
       meta: { addPending },
       payload: $,
     };
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
     return $
   }
 
@@ -69,7 +65,7 @@ export class GvSchemaActions {
       meta: { addPending },
       payload: $,
     };
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
     return $
   }
 
@@ -88,7 +84,7 @@ export class GvSchemaActions {
       meta: { addPending },
       payload: $
     };
-    this.ngRedux.dispatch(action)
+    this.store.dispatch(action)
     return $
   }
 
@@ -99,7 +95,7 @@ export class GvSchemaActions {
   storeGvSchemaModifier(
     req: GvSchemaModifier,
   ): void {
-    this.ngRedux.dispatch(this.storeGvSchemaModifierAction(req))
+    this.store.dispatch(this.storeGvSchemaModifierAction(req))
   }
 
   storeGvSchemaModifierAction(req: GvSchemaModifier): FluxStandardAction<GvSchemaModifier> {

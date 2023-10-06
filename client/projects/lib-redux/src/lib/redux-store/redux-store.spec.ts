@@ -1,5 +1,5 @@
-import { NgRedux, NgReduxModule } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
+import { Store, StoreModule, createReducer } from '@ngrx/store';
 import { first, toArray } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 import { IAppState } from './root/models/model';
@@ -9,16 +9,10 @@ const testScheduler = new TestScheduler((actual, expected) => {
   expect(actual).toEqual(expected);
 });
 // Straight Jasmine testing without Angular's testing support
-describe('NgRedux', () => {
-  let service: NgRedux<IAppState>;
+describe('Store', () => {
+  let store: Store<IAppState>;
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [NgReduxModule],
-    });
-    service = TestBed.inject(NgRedux);
-    service.configureStore((state, a) => {
-      return state
-    }, {
+    const initialState: IAppState = {
       inf: {
         lang_string: {
           by_pk_entity: {
@@ -26,11 +20,15 @@ describe('NgRedux', () => {
           }
         }
       }
-    })
-  });
+    }
+    TestBed.configureTestingModule({
+      imports: [StoreModule.forRoot(createReducer(initialState))],
+    });
+    store = TestBed.inject(Store);
+  })
 
   it('#select should return app state', (done) => {
-    const q$ = service.select<string>(['inf', 'lang_string', 'by_pk_entity', 123, 'string']).pipe(first())
+    const q$ = store.select(s => s.inf.lang_string.by_pk_entity['123'].string).pipe(first())
     const expectedSequence = ['hello']
     q$.pipe(toArray())
       .subscribe(

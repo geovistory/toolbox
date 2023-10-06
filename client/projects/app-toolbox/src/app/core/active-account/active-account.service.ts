@@ -1,7 +1,7 @@
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { AccountActions, IAppState } from '@kleiolab/lib-redux';
 import { AccountService, LoginRequest, LoginResponse, PubAccount, PubRole } from '@kleiolab/lib-sdk-lb4';
+import { NgRedux } from '@ngrx/store';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { GvAuthService, GvAuthToken } from '../auth/auth.service';

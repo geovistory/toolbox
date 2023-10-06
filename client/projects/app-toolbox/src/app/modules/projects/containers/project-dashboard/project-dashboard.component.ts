@@ -1,7 +1,7 @@
-import { NgRedux } from '@angular-redux/store';
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IAppState, ProjectDetail } from '@kleiolab/lib-redux';
+import { NgRedux } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';

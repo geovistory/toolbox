@@ -1,11 +1,11 @@
-import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
+import { Store } from '@ngrx/store';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { take, toArray } from 'rxjs/operators';
 import { IAppState, LoadingBarActions } from '../lib/redux-store/public-api';
 
 describe('Loading Bar Actions', () => {
-  let ngRedux: NgRedux<IAppState>;
+  let store: Store<IAppState>;
   let loadingBarActions: LoadingBarActions;
 
   beforeEach(() => {
@@ -13,11 +13,11 @@ describe('Loading Bar Actions', () => {
       imports: moduleImports
     });
     loadingBarActions = TestBed.inject(LoadingBarActions);
-    ngRedux = TestBed.inject(NgRedux);
+    store = TestBed.inject(Store);
   });
 
   it('should init running-jobs-count with 0', (done) => {
-    const q$ = ngRedux.select<number>(['loadingBar', 'runningJobsCount']);
+    const q$ = store.select((s) => s.loadingBar.runningJobsCount);
     q$.pipe(take(1), toArray())
       .subscribe(
         actualSequence => {
@@ -30,7 +30,7 @@ describe('Loading Bar Actions', () => {
 
 
   it('should increase and decrease the running-jobs-count', (done) => {
-    const q$ = ngRedux.select<number>(['loadingBar', 'runningJobsCount']);
+    const q$ = store.select((s) => s.loadingBar.runningJobsCount);
 
     q$.pipe(take(5), toArray())
       .subscribe(

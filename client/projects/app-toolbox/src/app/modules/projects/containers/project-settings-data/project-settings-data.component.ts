@@ -1,4 +1,3 @@
-import { NgRedux, ObservableStore, select, WithSubStore } from '@angular-redux/store';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
@@ -10,6 +9,7 @@ import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { EntityType, IAppState, ProjectSettingsData, ReduxMainService, RootEpics } from '@kleiolab/lib-redux';
 import { ProDfhClassProjRel, SysConfigClassCategoryBelonging, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { NgRedux, ObservableStore, WithSubStore, select } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from 'projects/app-toolbox/src/app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
@@ -18,7 +18,7 @@ import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-la
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { HighlightPipe } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.pipe';
 import { equals, indexBy, keys, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
 import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
@@ -185,7 +185,6 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
 
   ngOnInit() {
     this.localStore = this.ngRedux.configureSubStore(this.basePath, projectSettingsDataReducer);
-    // this.rootEpics.addEpic(this.epics.createEpics(this));
 
     this.t = this.tabLayout.t;
     this.dataApi.loadProjectProfileRelations(this.p.state.pk_project);

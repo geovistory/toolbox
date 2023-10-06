@@ -1,7 +1,7 @@
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { IAppState } from "@kleiolab/lib-redux";
+import { NgRedux } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ActiveAccountService } from '../active-account/active-account.service';
@@ -9,7 +9,7 @@ import { ActiveAccountService } from '../active-account/active-account.service';
 
 
 @Injectable()
-export class SystemAdminGuard  {
+export class SystemAdminGuard {
 
   constructor(
     private activeAccountService: ActiveAccountService,

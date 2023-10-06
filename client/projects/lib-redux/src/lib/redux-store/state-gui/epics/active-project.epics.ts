@@ -1,10 +1,10 @@
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { FluxStandardAction } from 'flux-standard-action';
+import { Actions, concatLatestFrom, createEffect } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { Action } from 'redux';
-import { combineEpics, Epic, ofType } from 'redux-observable';
+import { ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
-import { map, mapTo, mergeMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
 import { ActiveProjectAction, ActiveProjectActions } from '../../state-gui/actions/active-project.action';
 
@@ -15,91 +15,74 @@ import { ActiveProjectAction, ActiveProjectActions } from '../../state-gui/actio
 export class ActiveProjectEpics {
   constructor(
     private actions: ActiveProjectActions,
-    private ngRedux: NgRedux<IAppState>,
+    private actions$: Actions<ActiveProjectAction>,
+    private store: Store<IAppState>
   ) { }
 
-  public createEpics(): Epic<FluxStandardAction<any>, FluxStandardAction<any>, void, any> {
-    return combineEpics(
-      this.createClosePanelEpic(),
-      this.createActivateTabFocusPanelEpic(),
-      this.createMoveTabFocusPanelEpic(),
-      this.createClosePanelFocusPanelEpic(),
-      this.createSplitPanelActivateTabEpic(),
-      this.createAddTabCloseListEpic(),
-    );
-  }
+
 
   /**
    * LAYOUT
    */
-  private createClosePanelEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        ofType(ActiveProjectActions.CLOSE_TAB, ActiveProjectActions.MOVE_TAB, ActiveProjectActions.SPLIT_PANEL),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          this.ngRedux.getState().activeProject.panels.forEach((panel, panelIndex) => {
-            if (panel.tabs.length === 0) globalStore.next(this.actions.closePanel(panelIndex));
-          })
-        }))
-      )
-    }
-  }
-  private createSplitPanelActivateTabEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        ofType(ActiveProjectActions.SPLIT_PANEL),
-        map((action: ActiveProjectAction) => {
-          const p = this.ngRedux.getState().activeProject;
-          const c = action.meta.currentPanelIndex;
-          const panelIndex = p.panels.length < (c + 1) ? c - 1 : c;
-          return this.actions.activateTab(panelIndex, 0)
+  closePanel$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActiveProjectActions.CLOSE_TAB, ActiveProjectActions.MOVE_TAB, ActiveProjectActions.SPLIT_PANEL),
+      concatLatestFrom(() => this.store.select((s) => s?.activeProject?.panels)),
+      mergeMap(([action, panels]) => new Observable<Action>((globalStore) => {
+        panels?.forEach((panel, panelIndex) => {
+          if (panel.tabs.length === 0) globalStore.next(this.actions.closePanel(panelIndex));
         })
-      )
-    }
-  }
-  private createActivateTabFocusPanelEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        ofType(ActiveProjectActions.ACTIVATE_TAB),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          if (this.ngRedux.getState().activeProject.focusedPanel !== action.meta.panelIndex) {
-            globalStore.next(this.actions.focusPanel(action.meta.panelIndex));
-          }
-        }))
-      )
-    }
-  }
-  private createMoveTabFocusPanelEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        ofType(ActiveProjectActions.MOVE_TAB),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          if (this.ngRedux.getState().activeProject.focusedPanel !== action.meta.currentPanelIndex) {
-            globalStore.next(this.actions.focusPanel(action.meta.currentPanelIndex));
-          }
-        }))
-      )
-    }
-  }
-  private createClosePanelFocusPanelEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        ofType(ActiveProjectActions.CLOSE_PANEL),
-        mergeMap((action: ActiveProjectAction) => new Observable<Action>((globalStore) => {
-          if (this.ngRedux.getState().activeProject.focusedPanel > (this.ngRedux.getState().activeProject.panels.length - 1)) {
-            globalStore.next(this.actions.focusPanel(0));
-          }
-        }))
-      )
-    }
-  }
-  private createAddTabCloseListEpic(): Epic {
-    return (action$, store) => {
-      return action$.pipe(
-        ofType(ActiveProjectActions.ADD_TAB),
-        mapTo(this.actions.setListType(''))
-      )
-    }
-  }
-
+      }))
+    )
+  )
+  splitPanelActivateTab$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActiveProjectActions.SPLIT_PANEL),
+      concatLatestFrom(() => this.store.select((s) => s?.activeProject)),
+      map(([action, p]) => {
+        const c = action.meta.currentPanelIndex;
+        const panelIndex = p.panels.length < (c + 1) ? c - 1 : c;
+        return this.actions.activateTab(panelIndex, 0)
+      })
+    )
+  )
+  activateTabFocusPanel$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActiveProjectActions.ACTIVATE_TAB),
+      concatLatestFrom(() => this.store.select((s) => s?.activeProject?.focusedPanel)),
+      mergeMap(([action, focusedPanel]) => new Observable<Action>((globalStore) => {
+        if (focusedPanel !== action.meta.panelIndex) {
+          globalStore.next(this.actions.focusPanel(action.meta.panelIndex));
+        }
+      }))
+    )
+  )
+  moveTabFocusPanel$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActiveProjectActions.MOVE_TAB),
+      concatLatestFrom(() => this.store.select((s) => s?.activeProject?.focusedPanel)),
+      mergeMap(([action, focusedPanel]) => new Observable<Action>((globalStore) => {
+        if (focusedPanel !== action.meta.currentPanelIndex) {
+          globalStore.next(this.actions.focusPanel(action.meta.currentPanelIndex));
+        }
+      }))
+    )
+  )
+  closePanelFocusPanel$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActiveProjectActions.CLOSE_PANEL),
+      concatLatestFrom(() => this.store.select((s) => s?.activeProject)),
+      mergeMap(([action, activeProject]) => new Observable<Action>((globalStore) => {
+        if (activeProject.focusedPanel > (activeProject.panels.length - 1)) {
+          globalStore.next(this.actions.focusPanel(0));
+        }
+      }))
+    )
+  )
+  addTabCloseList$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(ActiveProjectActions.ADD_TAB),
+      map(() => this.actions.setListType(''))
+    )
+  )
 }

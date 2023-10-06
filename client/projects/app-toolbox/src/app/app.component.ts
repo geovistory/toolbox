@@ -1,6 +1,6 @@
-import { NgRedux } from '@angular-redux/store';
 import { Component } from '@angular/core';
 import { IAppState } from '@kleiolab/lib-redux';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -11,9 +11,9 @@ import { Observable } from 'rxjs';
 export class AppComponent {
   loadingBarJobs$: Observable<number>;
   constructor(
-    ngRedux: NgRedux<IAppState>
+    store: Store<IAppState>
   ) {
-    this.loadingBarJobs$ = ngRedux.select<number>(['loadingBar', 'runningJobsCount']);
+    this.loadingBarJobs$ = store.select<number>((s) => s?.loadingBar?.runningJobsCount);
   }
 
 

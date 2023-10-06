@@ -4,6 +4,7 @@ import { ProjectDetail } from '../../state-gui/models/active-project.models';
 import { Information } from '../../state-gui/models/entity-list.models';
 import { LoadingBar } from '../../state-gui/models/loading-bar.models';
 import { SourceList } from '../../state-gui/models/source-list.models';
+import { SucceedActionMeta } from '../../state-schema/_helpers/schema-actions-factory';
 import { Dat } from '../../state-schema/models/dat.models';
 import { Dfh } from '../../state-schema/models/dfh.models';
 import { Inf } from '../../state-schema/models/inf.models';
@@ -64,7 +65,8 @@ export interface IAppState {
   information?: Information,
   sources?: SourceList,
   sandboxState?: any,
-  pending?: ByPk<string>
+  pending?: ByPk<boolean>
+  resolved?: ByPk<SucceedActionMeta<any>>
 }
 
 // generic interfaces used by different store modules
