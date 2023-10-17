@@ -1,9 +1,9 @@
 import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
 import { CrudReducerFactory, ReducerConfig } from '../../_helpers/crud-reducer-factory';
-import { infRoot } from '../inf.config';
+import { infFeatureKey } from "../inf.feature.key";
 
 export const infTimePrimitiveFeature = 'time_primitive'
-const infTimePrimitiveReducerConfig: ReducerConfig = {
+export const infTimePrimitiveReducerConfig: ReducerConfig = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item: InfTimePrimitive) => {
@@ -14,6 +14,6 @@ const infTimePrimitiveReducerConfig: ReducerConfig = {
 }
 
 
-export const infTimePrimitiveReducers = new CrudReducerFactory(infRoot, { [infTimePrimitiveFeature]: infTimePrimitiveReducerConfig }).createReducers();
+export const infTimePrimitiveReducers = new CrudReducerFactory(infFeatureKey, { [infTimePrimitiveFeature]: infTimePrimitiveReducerConfig }).createReducers();
 
 

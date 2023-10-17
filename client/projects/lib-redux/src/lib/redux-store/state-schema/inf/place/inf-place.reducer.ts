@@ -1,9 +1,9 @@
 import { InfPlace } from '@kleiolab/lib-sdk-lb4';
 import { CrudReducerFactory, ReducerConfig } from '../../_helpers/crud-reducer-factory';
-import { infRoot } from '../inf.config';
+import { infFeatureKey } from "../inf.feature.key";
 
 export const infPlaceFeature = 'place'
-const infPlaceReducerConfig: ReducerConfig = {
+export const infPlaceReducerConfig: ReducerConfig = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item: InfPlace) => {
@@ -14,6 +14,6 @@ const infPlaceReducerConfig: ReducerConfig = {
 }
 
 
-export const infPlaceReducers = new CrudReducerFactory(infRoot, { [infPlaceFeature]: infPlaceReducerConfig }).createReducers();
+export const infPlaceReducers = new CrudReducerFactory(infFeatureKey, { [infPlaceFeature]: infPlaceReducerConfig }).createReducers();
 
 

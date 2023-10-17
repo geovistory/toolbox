@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
 import { Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { infRoot } from '../inf.config';
-import { InfState } from '../inf.models';
+import { infFeatureKey } from "../inf.feature.key";
+import { InfState } from "../inf.models";
 import { InfTimePrimitiveFacade } from './inf-time-primitive.facade';
 import { infTimePrimitiveReducers } from './inf-time-primitive.reducer';
 
@@ -15,7 +15,7 @@ fdescribe('InfTimePrimitive Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(infRoot, infTimePrimitiveReducers),
+        StoreModule.forFeature(infFeatureKey, infTimePrimitiveReducers),
       ],
       providers: [InfTimePrimitiveFacade]
     })

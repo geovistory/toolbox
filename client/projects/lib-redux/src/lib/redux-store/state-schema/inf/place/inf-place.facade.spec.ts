@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { InfPlace } from '@kleiolab/lib-sdk-lb4';
 import { Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { infRoot } from '../inf.config';
-import { InfState } from '../inf.models';
+import { infFeatureKey } from "../inf.feature.key";
+import { InfState } from "../inf.models";
 import { InfPlaceFacade } from './inf-place.facade';
 import { infPlaceReducers } from './inf-place.reducer';
 
@@ -15,7 +15,7 @@ fdescribe('InfPlace Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(infRoot, infPlaceReducers),
+        StoreModule.forFeature(infFeatureKey, infPlaceReducers),
       ],
       providers: [InfPlaceFacade]
     })

@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { InfResource } from '@kleiolab/lib-sdk-lb4';
 import { Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { infRoot } from '../inf.config';
-import { InfState } from '../inf.models';
+import { infFeatureKey } from "../inf.feature.key";
+import { InfState } from "../inf.models";
 import { InfResourceFacade } from './inf-resource.facade';
 import { infResourceReducers } from './inf-resource.reducer';
 
@@ -15,7 +15,7 @@ fdescribe('InfResource Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(infRoot, infResourceReducers),
+        StoreModule.forFeature(infFeatureKey, infResourceReducers),
       ],
       providers: [InfResourceFacade]
     })

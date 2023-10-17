@@ -1,6 +1,6 @@
 import { InfPlace } from '@kleiolab/lib-sdk-lb4';
 import { CrudActionsFactory } from '../../_helpers/crud-actions-factory';
-import { infRoot } from '../inf.config';
+import { infFeatureKey } from "../inf.feature.key";
 import { infPlaceFeature } from './inf-place.reducer';
 
-export const infPlaceActions = new CrudActionsFactory<InfPlace>(infRoot, infPlaceFeature)
+export const infPlaceActions = new CrudActionsFactory<InfPlace>(infFeatureKey, infPlaceFeature)

@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { getInfState } from '../getInfState';
+import { getInfState } from '../inf.selectors';
 import { indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks } from './inf-statement.reducer';
 
 export const getStatementState = createSelector(getInfState, s => s?.statement);

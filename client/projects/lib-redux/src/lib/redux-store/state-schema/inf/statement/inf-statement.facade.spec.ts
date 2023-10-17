@@ -2,21 +2,21 @@ import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { Store, StoreModule } from '@ngrx/store';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
-import { infRoot } from '../inf.config';
-import { InfState } from '../inf.models';
-import { InfStatementFacade, PROJECT_ID$ } from './inf-statement.facade';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { PROJECT_ID$ } from "../../../root/PROJECT_ID$";
+import { infFeatureKey } from "../inf.feature.key";
+import { InfState } from "../inf.models";
+import { InfStatementFacade } from './inf-statement.facade';
 import { infStatementReducers } from './inf-statement.reducer';
 
 fdescribe('InfStatement Facade', () => {
   let facade: InfStatementFacade;
   let store: Store<InfState>;
-  let fkProject: Observable<number>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(infRoot, infStatementReducers),
+        StoreModule.forFeature(infFeatureKey, infStatementReducers),
       ],
       providers: [
         InfStatementFacade,

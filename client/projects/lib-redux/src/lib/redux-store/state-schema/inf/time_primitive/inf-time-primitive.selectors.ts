@@ -1,5 +1,5 @@
 import { createSelector } from '@ngrx/store';
-import { getInfState } from '../getInfState';
+import { getInfState } from '../inf.selectors';
 
 export const getTimePrimitiveState = createSelector(getInfState, s => s?.time_primitive);
 

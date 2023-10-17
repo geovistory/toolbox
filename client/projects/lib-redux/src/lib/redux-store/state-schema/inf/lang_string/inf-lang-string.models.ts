@@ -1,7 +1,7 @@
-import { InfDimension } from '@kleiolab/lib-sdk-lb4';
+import { InfLangString } from '@kleiolab/lib-sdk-lb4';
 import { ByPk } from '../../../public-api';
 
-export class InfDimensionSlice {
-  by_pk_entity?: ByPk<InfDimension>;
+export class InfLangStringSlice {
+  by_pk_entity?: ByPk<InfLangString>;
   loading?: boolean
 }

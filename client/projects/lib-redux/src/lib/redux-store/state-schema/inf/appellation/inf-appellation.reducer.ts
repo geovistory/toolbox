@@ -1,8 +1,8 @@
 import { CrudReducerFactory, ReducerConfig } from '../../_helpers/crud-reducer-factory';
-import { infRoot } from '../inf.config';
+import { infFeatureKey } from "../inf.feature.key";
 
 export const infAppellationFeature = 'appellation'
-const infAppellationReducerConfig: ReducerConfig = {
+export const infAppellationReducerConfig: ReducerConfig = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item) => {
@@ -13,6 +13,6 @@ const infAppellationReducerConfig: ReducerConfig = {
 }
 
 
-export const infAppellationReducers = new CrudReducerFactory(infRoot, { [infAppellationFeature]: infAppellationReducerConfig }).createReducers();
+export const infAppellationReducers = new CrudReducerFactory(infFeatureKey, { [infAppellationFeature]: infAppellationReducerConfig }).createReducers();
 
 

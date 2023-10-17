@@ -1,17 +1,16 @@
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { GvFieldId, GvFieldPage, InfStatement, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { Store } from '@ngrx/store';
 import { values } from 'ramda';
 import { filter, first, map, Observable, of, pipe, switchMap } from 'rxjs';
 import { ByPk, IAppState, subfieldIdToString } from '../../../public-api';
+import { PROJECT_ID$ } from '../../../root/PROJECT_ID$';
 import { CrudFacade } from '../../_helpers/crud-facade';
 import { getFromTo } from '../../_helpers/crud-reducer-factory';
 import { infStatementActions } from './inf-statement.actions';
 import { InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks } from './inf-statement.reducer';
 import { getStatementByObject, getStatementByObjectAndProperty, getStatementByPkEntity, getStatementBySubject, getStatementBySubjectAndProperty, getStatementPkEntityIdxtate } from './inf-statement.selectors';
-
-export const PROJECT_ID$ = new InjectionToken<Observable<number>>('Observable project id');
 
 @Injectable()
 export class InfStatementFacade extends CrudFacade<InfStatement> {

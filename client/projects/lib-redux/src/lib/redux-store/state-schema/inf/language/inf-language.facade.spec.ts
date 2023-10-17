@@ -3,8 +3,8 @@ import { TestBed } from '@angular/core/testing';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
 import { Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { infRoot } from '../inf.config';
-import { InfState } from '../inf.models';
+import { infFeatureKey } from "../inf.feature.key";
+import { InfState } from "../inf.models";
 import { InfLanguageFacade } from './inf-language.facade';
 import { infLanguageReducers } from './inf-language.reducer';
 
@@ -15,7 +15,7 @@ fdescribe('InfLanguage Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(infRoot, infLanguageReducers),
+        StoreModule.forFeature(infFeatureKey, infLanguageReducers),
       ],
       providers: [InfLanguageFacade]
     })

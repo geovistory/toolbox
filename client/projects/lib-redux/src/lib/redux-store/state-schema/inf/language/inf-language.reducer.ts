@@ -1,9 +1,9 @@
 import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
 import { CrudReducerFactory, ReducerConfig } from '../../_helpers/crud-reducer-factory';
-import { infRoot } from '../inf.config';
+import { infFeatureKey } from "../inf.feature.key";
 
 export const infLanguageFeature = 'language'
-const infLanguageReducerConfig: ReducerConfig = {
+export const infLanguageReducerConfig: ReducerConfig = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item: InfLanguage) => {
@@ -14,6 +14,6 @@ const infLanguageReducerConfig: ReducerConfig = {
 }
 
 
-export const infLanguageReducers = new CrudReducerFactory(infRoot, { [infLanguageFeature]: infLanguageReducerConfig }).createReducers();
+export const infLanguageReducers = new CrudReducerFactory(infFeatureKey, { [infLanguageFeature]: infLanguageReducerConfig }).createReducers();
 
 

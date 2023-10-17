@@ -1,10 +1,10 @@
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { CrudReducerFactory, ReducerConfig } from '../../_helpers/crud-reducer-factory';
-import { infRoot } from '../inf.config';
+import { infFeatureKey } from "../inf.feature.key";
 
 export const infStatementFeature = 'statement'
-const infStatementReducerConfig: ReducerConfig = {
+export const infStatementReducerConfig: ReducerConfig = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item: InfStatement) => {
@@ -37,7 +37,7 @@ const infStatementReducerConfig: ReducerConfig = {
 }
 
 
-export const infStatementReducers = new CrudReducerFactory(infRoot, { [infStatementFeature]: infStatementReducerConfig }).createReducers();
+export const infStatementReducers = new CrudReducerFactory(infFeatureKey, { [infStatementFeature]: infStatementReducerConfig }).createReducers();
 
 
 

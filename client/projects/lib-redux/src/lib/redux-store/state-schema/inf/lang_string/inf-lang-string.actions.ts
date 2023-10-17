@@ -1,6 +1,6 @@
 import { InfLangString } from '@kleiolab/lib-sdk-lb4';
 import { CrudActionsFactory } from '../../_helpers/crud-actions-factory';
-import { infRoot } from '../inf.config';
+import { infFeatureKey } from "../inf.feature.key";
 import { infLangStringFeature } from './inf-lang-string.reducer';
 
-export const infLangStringActions = new CrudActionsFactory<InfLangString>(infRoot, infLangStringFeature)
+export const infLangStringActions = new CrudActionsFactory<InfLangString>(infFeatureKey, infLangStringFeature)
