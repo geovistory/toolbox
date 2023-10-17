@@ -7,11 +7,11 @@ import { ofType } from 'redux-observable';
 import { of } from 'rxjs';
 import { catchError, mergeMap, startWith } from 'rxjs/operators';
 import { IAppState } from '../../root/models/model';
-import { LoadingBarActions } from '../../state-gui/actions/loading-bar.actions';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { InfActions } from '../actions/inf.actions';
-import { GvPaginationObjectAction, GvSchemaActions, GvSchemaModifierAction, GvSchemaObjectAction } from '../actions/schema.actions';
-import { SchemaService } from '../services/schema.service';
+import { LoadingBarActions } from '../../state-gui/loadingbar/loading-bar.actions';
+import { infStatementActions } from '../inf/statement/inf-statement.actions';
+import { GvPaginationObjectAction, GvSchemaActions, GvSchemaModifierAction, GvSchemaObjectAction } from './schema.actions';
+import { SchemaService } from './schema.service';
 
 @Injectable({
   providedIn: 'root'
@@ -30,10 +30,10 @@ export class SchemaEpics {
     mergeMap((action: GvSchemaObjectAction) => action.payload.pipe(
       mergeMap(data => of(
         this.schemaObjectService.getStoreSchemaObjectGvAction(data),
-        this.loadingBarActions.removeJobAction
+        LoadingBarActions.REMOVE_JOB()
       )),
       catchError((error: HttpErrorResponse) => of(...this.errorActions(error))),
-      startWith(this.loadingBarActions.addJobAction),
+      startWith(LoadingBarActions.ADD_JOB()),
     ))
   ))
   /**
@@ -48,10 +48,10 @@ export class SchemaEpics {
       mergeMap(data => of(
         this.schemaObjectService.getStoreSchemaObjectGvAction(data.positive),
         ...this.schemaObjectService.getDeleteSchemaObjectGvActions(data.negative, 0),
-        this.loadingBarActions.removeJobAction
+        LoadingBarActions.REMOVE_JOB()
       )),
       catchError((error: HttpErrorResponse) => of(...this.errorActions(error))),
-      startWith(this.loadingBarActions.addJobAction),
+      startWith(LoadingBarActions.ADD_JOB()),
     ))
   ))
 
@@ -66,25 +66,23 @@ export class SchemaEpics {
     mergeMap((action: GvPaginationObjectAction) => action.payload.pipe(
       concatLatestFrom(() => this.store.select((s) => s.activeProject?.pk_project)),
       mergeMap(([data, pkProject]) => {
-        const pageLoadedActions = data.subfieldPages.map(p => this.infActions.statement.loadPageSucceededAction(
+        const pageLoadedActions = data.subfieldPages.map(p => infStatementActions.loadPageSucceededAction(
           p.paginatedStatements, p.count, p.req.page, pkProject
         ))
         return of(
           ...pageLoadedActions,
-          this.loadingBarActions.removeJobAction
+          LoadingBarActions.REMOVE_JOB()
         )
       }),
       catchError((error: HttpErrorResponse) => of(...this.errorActions(error))),
-      startWith(this.loadingBarActions.addJobAction),
+      startWith(LoadingBarActions.ADD_JOB()),
     ))
   ))
 
 
   constructor(
     private schemaObjectService: SchemaService,
-    private loadingBarActions: LoadingBarActions,
     private notificationActions: NotificationsAPIActions,
-    public infActions: InfActions,
     private actions$: Actions<FluxStandardAction<any, any>>,
     private store: Store<IAppState>
   ) { }
@@ -92,7 +90,7 @@ export class SchemaEpics {
 
   errorActions(error: HttpErrorResponse) {
     return [
-      this.loadingBarActions.removeJobAction,
+      LoadingBarActions.REMOVE_JOB(),
       this.notificationActions.addToast({
         type: 'error',
         options: {

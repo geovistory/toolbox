@@ -1,6 +1,6 @@
 import { tabDefinitions, tabRoot } from '../reducer-configs/tab.config';
-import { ReducerFactory } from '../_helpers/reducer-factory';
+import { CrudReducerFactory } from '../_helpers/crud-reducer-factory';
 
 export function createTabReducer() {
-  return new ReducerFactory(tabRoot, tabDefinitions).createReducers()
+  return new CrudReducerFactory(tabRoot, tabDefinitions).createReducers()
 }

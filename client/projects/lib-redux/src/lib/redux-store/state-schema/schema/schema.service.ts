@@ -6,10 +6,10 @@ import { SchemaActionsFactory, SucceedActionMeta } from '../../public-api';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { DatActions } from '../actions/dat.actions';
-import { InfActions } from '../actions/inf.actions';
 import { ProActions } from '../actions/pro.actions';
-import { GvSchemaActions } from '../actions/schema.actions';
 import { WarActions } from '../actions/war.actions';
+import { InfFacade } from '../inf/inf.facade';
+import { GvSchemaActions } from './schema.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +22,7 @@ export class SchemaService {
   schemaObjectStored$ = new Subject<GvPositiveSchemaObject>()
 
   constructor(
-    private infActions: InfActions,
+    private infFacade: InfFacade,
     private proActions: ProActions,
     private datActions: DatActions,
     private warActions: WarActions,
@@ -150,7 +150,7 @@ export class SchemaService {
     if (object && Object.keys(object).length > 0) {
       Object.keys(object).forEach(schema => {
         let actions;
-        if (schema === 'inf') actions = this.infActions;
+        if (schema === 'inf') actions = this.infFacade;
         else if (schema === 'pro') actions = this.proActions;
         else if (schema === 'dat') actions = this.datActions;
         else if (schema === 'war') actions = this.warActions;
@@ -196,7 +196,7 @@ export class SchemaService {
       Object.keys(object).forEach(schema => {
         let actions;
         if (schema === 'dat') actions = this.datActions;
-        if (schema === 'inf') actions = this.infActions;
+        if (schema === 'inf') actions = this.infFacade;
         if (schema === 'pro') actions = this.proActions;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {
@@ -220,7 +220,7 @@ export class SchemaService {
       Object.keys(object).forEach(schema => {
         let actions;
         if (schema === 'dat') actions = this.datActions;
-        if (schema === 'inf') actions = this.infActions;
+        if (schema === 'inf') actions = this.infFacade;
         if (schema === 'pro') actions = this.proActions;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {

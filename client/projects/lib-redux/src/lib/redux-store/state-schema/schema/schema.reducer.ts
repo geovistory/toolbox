@@ -1,15 +1,15 @@
 import { GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
 import { IAppState } from '../../root/models/model';
-import { GvSchemaActions } from '../actions/schema.actions';
+import { infDefinitions } from '../inf/inf.config';
 import { datDefinitions } from '../reducer-configs/dat.config';
 import { dfhDefinitions } from '../reducer-configs/dfh.config';
-import { infDefinitions } from '../reducer-configs/inf.config';
 import { proDefinitions } from '../reducer-configs/pro.config';
 import { sysDefinitions } from '../reducer-configs/sys.config';
 import { tabDefinitions } from '../reducer-configs/tab.config';
 import { warDefinitions } from '../reducer-configs/war.config';
-import { addToEntityModelMap, mergeItemsInState, ReducerConfigCollection } from '../_helpers/reducer-factory';
+import { addToEntityModelMap, mergeItemsInState, ReducerConfigCollection } from '../_helpers/crud-reducer-factory';
+import { GvSchemaActions } from './schema.actions';
 
 const definitions = {
   dat: datDefinitions,
@@ -36,8 +36,6 @@ export const schemaModifierReducer = (state: IAppState = {}, action: FluxStandar
     }
 
   }
-
-
   return state;
 }
 

@@ -2,17 +2,16 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
 import { combineReducers } from 'redux';
 import { composeReducers } from '../lib/composeReducers';
+import { loadingBarReducer } from '../state-gui/loadingbar/loading-bar.reducer';
 import { accountRootReducer } from '../state-gui/reducers/account.reducers';
 import { activeProjectReducer } from '../state-gui/reducers/active-project.reducer';
-import { loadingBarReducer } from '../state-gui/reducers/loading-bar.reducer';
 import { createDatReducer } from '../state-schema/reducers/dat.reducer';
 import { createDfhReducer } from '../state-schema/reducers/dfh.reducer';
-import { createInfReducer } from '../state-schema/reducers/inf.reducer';
 import { createProReducer } from '../state-schema/reducers/pro.reducer';
-import { schemaModifierReducer } from '../state-schema/reducers/schema.reducer';
 import { createSysReducer } from '../state-schema/reducers/sys.reducer';
 import { createTabReducer } from '../state-schema/reducers/tab.reducer';
 import { createWarReducer } from '../state-schema/reducers/war.reducer';
+import { schemaModifierReducer } from '../state-schema/schema/schema.reducer';
 
 
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
@@ -88,7 +87,6 @@ export const rootReducer = composeReducers(
     sandboxState: sandboxStateReducer,
     sys: createSysReducer(),
     dfh: createDfhReducer(),
-    inf: createInfReducer(),
     dat: createDatReducer(),
     pro: createProReducer(),
     war: createWarReducer(),

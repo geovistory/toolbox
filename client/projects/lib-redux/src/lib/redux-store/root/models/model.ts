@@ -1,17 +1,17 @@
 import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { LoadingBarState } from '../../state-gui/loadingbar/loading-bar.models';
 import { IAccount } from '../../state-gui/models/account.model';
 import { ProjectDetail } from '../../state-gui/models/active-project.models';
 import { Information } from '../../state-gui/models/entity-list.models';
-import { LoadingBar } from '../../state-gui/models/loading-bar.models';
 import { SourceList } from '../../state-gui/models/source-list.models';
-import { SucceedActionMeta } from '../../state-schema/_helpers/schema-actions-factory';
+import { InfState } from "../../state-schema/inf/inf.models";
 import { Dat } from '../../state-schema/models/dat.models';
 import { Dfh } from '../../state-schema/models/dfh.models';
-import { Inf } from '../../state-schema/models/inf.models';
 import { Pro } from '../../state-schema/models/pro.models';
 import { Sys } from '../../state-schema/models/sys.models';
 import { Tab } from '../../state-schema/models/tab.models';
 import { War } from '../../state-schema/models/war.models';
+import { SucceedActionMeta } from '../../state-schema/_helpers/schema-actions-factory';
 
 
 export interface InfObject {
@@ -52,10 +52,10 @@ export interface PaginationObject {
 export interface IAppState {
   account?: IAccount,
   // backoffice?: Backoffice,
-  loadingBar?: LoadingBar,
+  loadingBar?: LoadingBarState,
   sys?: Sys
   dfh?: Dfh
-  inf?: Inf
+  inf?: InfState
   dat?: Dat
   pro?: Pro
   war?: War

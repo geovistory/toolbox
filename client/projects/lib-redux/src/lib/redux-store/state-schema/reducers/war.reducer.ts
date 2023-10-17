@@ -1,8 +1,8 @@
 import { warDefinitions, warRoot } from '../reducer-configs/war.config';
-import { ReducerFactory } from '../_helpers/reducer-factory';
+import { CrudReducerFactory } from '../_helpers/crud-reducer-factory';
 
 export function createWarReducer() {
-  return new ReducerFactory(warRoot, warDefinitions).createReducers()
+  return new CrudReducerFactory(warRoot, warDefinitions).createReducers()
 }
 
 

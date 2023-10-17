@@ -1,5 +1,5 @@
 import { DfhClass, DfhLabel, DfhProfile, DfhProperty } from '@kleiolab/lib-sdk-lb4';
-import { ReducerConfigCollection } from '../_helpers/reducer-factory';
+import { ReducerConfigCollection } from '../_helpers/crud-reducer-factory';
 
 
 export const dfhRoot = 'dfh';

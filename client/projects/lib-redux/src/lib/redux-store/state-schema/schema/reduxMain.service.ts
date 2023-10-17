@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AccountDataService, AnalysisService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, ProTextProperty, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { GvSchemaActions } from '../actions/schema.actions';
+import { GvSchemaActions } from './schema.actions';
 
 @Injectable({
   providedIn: 'root'

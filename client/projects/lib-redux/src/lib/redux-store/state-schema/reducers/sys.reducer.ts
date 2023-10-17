@@ -1,5 +1,5 @@
 import { sysDefinitions, sysRoot } from '../reducer-configs/sys.config';
-import { ReducerFactory } from '../_helpers/reducer-factory';
+import { CrudReducerFactory } from '../_helpers/crud-reducer-factory';
 export function createSysReducer() {
-  return new ReducerFactory(sysRoot, sysDefinitions).createReducers()
+  return new CrudReducerFactory(sysRoot, sysDefinitions).createReducers()
 }

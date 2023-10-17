@@ -5,8 +5,8 @@ import { ofType } from 'redux-observable';
 import { of } from 'rxjs';
 import { catchError, first, mergeMap, startWith } from 'rxjs/operators';
 import { AccountAction, AccountActions } from '../actions/account.actions';
-import { LoadingBarActions } from '../actions/loading-bar.actions';
 import { NotificationsAPIActions } from '../actions/notifications.actions';
+import { LoadingBarActions } from '../loadingbar/loading-bar.actions';
 
 
 
@@ -21,16 +21,16 @@ export class AccountEpics {
       first(),
       mergeMap(data => of(
         this.actions.loadRolesSucceeded(data),
-        this.loadingBarActions.removeJobAction
+        LoadingBarActions.REMOVE_JOB()
       )),
       catchError(error => of(
-        this.loadingBarActions.removeJobAction,
+        LoadingBarActions.REMOVE_JOB(),
         this.notificationActions.addToast({
           type: 'error',
           options: { title: error }
         })
       )),
-      startWith(this.loadingBarActions.addJobAction)
+      startWith(LoadingBarActions.ADD_JOB())
     ))
 
   )

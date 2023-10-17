@@ -1,5 +1,5 @@
-import { ReducerConfigCollection } from '../_helpers/reducer-factory';
 import { TabCell } from '@kleiolab/lib-sdk-lb4';
+import { ReducerConfigCollection } from '../_helpers/crud-reducer-factory';
 
 export const tabRoot = 'tab';
 

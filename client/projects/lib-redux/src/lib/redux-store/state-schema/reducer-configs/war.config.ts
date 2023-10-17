@@ -1,5 +1,5 @@
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { ReducerConfigCollection } from '../_helpers/reducer-factory';
+import { ReducerConfigCollection } from '../_helpers/crud-reducer-factory';
 
 export const warRoot = 'war';
 

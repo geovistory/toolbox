@@ -1,5 +1,5 @@
 import { DatClassColumnMapping, DatDigital, DatTextProperty } from '@kleiolab/lib-sdk-lb4';
-import { ReducerConfigCollection } from '../_helpers/reducer-factory';
+import { ReducerConfigCollection } from '../_helpers/crud-reducer-factory';
 
 export const datRoot = 'dat';
 export const facetteByPk = 'by_namespace';

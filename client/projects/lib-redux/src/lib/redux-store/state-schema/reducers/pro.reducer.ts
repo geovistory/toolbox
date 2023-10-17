@@ -1,11 +1,11 @@
-import { ReducerFactory } from '../_helpers/reducer-factory';
 import { proDefinitions, proRoot } from '../reducer-configs/pro.config';
+import { CrudReducerFactory } from '../_helpers/crud-reducer-factory';
 
 
 
 
 export function createProReducer() {
-  return new ReducerFactory(proRoot, proDefinitions).createReducers()
+  return new CrudReducerFactory(proRoot, proDefinitions).createReducers()
 }
 
 

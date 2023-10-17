@@ -3,13 +3,12 @@ import { Configuration, ConfigurationParameters, SdkLb4Module } from '@kleiolab/
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { IAppState } from '../root/models/model';
-import { rootReducer } from '../root/root-reducer';
 import { AccountEpics } from '../state-gui/epics/account.epics';
 import { ActiveProjectEpics } from '../state-gui/epics/active-project.epics';
 import { NotificationsAPIEpics } from '../state-gui/epics/notifications.epics';
 import { ActionResolverEpics } from '../state-schema/epics/action-resolver.epics';
-import { SchemaEpics } from '../state-schema/epics/schema.epics';
 import { SysEpics } from '../state-schema/epics/sys.epics';
+import { SchemaEpics } from '../state-schema/schema/schema.epics';
 
 export const APP_INITIAL_STATE = new InjectionToken<IAppState>('app.INITIAL_STATE');
 
@@ -22,7 +21,7 @@ export function apiConfigFactory(): Configuration {
 
 @NgModule({
   imports: [
-    StoreModule.forRoot(rootReducer),
+    StoreModule.forRoot(),
     EffectsModule.forRoot(
       NotificationsAPIEpics,
       ActiveProjectEpics,
