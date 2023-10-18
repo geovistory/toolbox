@@ -8,7 +8,6 @@ import { activeProjectReducer } from '../state-gui/reducers/active-project.reduc
 import { createDfhReducer } from '../state-schema/reducers/dfh.reducer';
 import { createSysReducer } from '../state-schema/reducers/sys.reducer';
 import { createTabReducer } from '../state-schema/reducers/tab.reducer';
-import { createWarReducer } from '../state-schema/reducers/war.reducer';
 import { schemaModifierReducer } from '../state-schema/schema/schema.reducer';
 
 
@@ -85,7 +84,6 @@ export const rootReducer = composeReducers(
     sandboxState: sandboxStateReducer,
     sys: createSysReducer(),
     dfh: createDfhReducer(),
-    war: createWarReducer(),
     tab: createTabReducer(),
     pending: pendingRequestReducer,
     resolved: composeReducers(resolvedRequestReducer, cleanupResolved),

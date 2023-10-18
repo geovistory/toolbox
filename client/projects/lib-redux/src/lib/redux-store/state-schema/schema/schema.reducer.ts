@@ -7,7 +7,7 @@ import { proDefinitions } from '../pro/pro.config';
 import { dfhDefinitions } from '../reducer-configs/dfh.config';
 import { sysDefinitions } from '../reducer-configs/sys.config';
 import { tabDefinitions } from '../reducer-configs/tab.config';
-import { warDefinitions } from '../reducer-configs/war.config';
+import { warDefinitions } from '../war/war.config';
 import { addToEntityModelMap, mergeItemsInState, ReducerConfigCollection } from '../_helpers/crud-reducer-factory';
 import { GvSchemaActions } from './schema.actions';
 
@@ -19,8 +19,8 @@ const definitions = {
   sys: sysDefinitions,
   tab: tabDefinitions,
   war: warDefinitions,
-
 }
+
 export const schemaModifierReducer = (state: IAppState = {}, action: FluxStandardAction<GvSchemaModifier>) => {
 
   if (action.type === GvSchemaActions.GV_MODIFIER_LOAD_SUCCEEDED) {

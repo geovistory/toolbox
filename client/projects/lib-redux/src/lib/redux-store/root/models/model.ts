@@ -9,8 +9,8 @@ import { InfState } from "../../state-schema/inf/inf.models";
 import { Dfh } from '../../state-schema/models/dfh.models';
 import { Sys } from '../../state-schema/models/sys.models';
 import { Tab } from '../../state-schema/models/tab.models';
-import { War } from '../../state-schema/models/war.models';
 import { ProState } from '../../state-schema/pro/pro.models';
+import { WarState } from '../../state-schema/war/war.models';
 import { SucceedActionMeta } from '../../state-schema/_helpers/schema-actions-factory';
 
 
@@ -58,7 +58,7 @@ export interface IAppState {
   inf?: InfState
   dat?: DatState
   pro?: ProState
-  war?: War
+  war?: WarState
   tab?: Tab
   activeProject?: ProjectDetail
   routes?: any,

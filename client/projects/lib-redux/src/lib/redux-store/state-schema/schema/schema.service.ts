@@ -5,10 +5,10 @@ import { Observable, Subject } from 'rxjs';
 import { SchemaActionsFactory, SucceedActionMeta } from '../../public-api';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { WarActions } from '../actions/war.actions';
 import { DatFacade } from '../dat/dat.facade';
 import { InfFacade } from '../inf/inf.facade';
 import { ProFacade } from '../pro/pro.facade';
+import { WarFacade } from '../war/war.facade';
 import { GvSchemaActions } from './schema.actions';
 
 @Injectable({
@@ -25,7 +25,7 @@ export class SchemaService {
     private infFacade: InfFacade,
     private proFacade: ProFacade,
     private datFacade: DatFacade,
-    private warActions: WarActions,
+    private warFacade: WarFacade,
     private schemaActions: GvSchemaActions,
     private notifications: NotificationsAPIActions,
   ) { }
@@ -153,7 +153,7 @@ export class SchemaService {
         if (schema === 'inf') actions = this.infFacade;
         else if (schema === 'pro') actions = this.proFacade;
         else if (schema === 'dat') actions = this.datFacade;
-        else if (schema === 'war') actions = this.warActions;
+        else if (schema === 'war') actions = this.warFacade;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {
             actions[model].loadSucceeded(object[schema][model], undefined, pkProject);
