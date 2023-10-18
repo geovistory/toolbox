@@ -1,11 +1,12 @@
 import { ChunkSlice } from './chunk/dat-chunk.models';
 import { ClassColumnMappingSlice } from './class_column_mapping/dat-class-column-mapping.models';
 import { ColumnSlice } from './column/dat-column.models';
+import { DigitalSlice } from './digital/dat-digital.models';
 
 
 
 export interface DatState {
-  // digital?: DigitalSlice;
+  digital?: DigitalSlice;
   chunk?: ChunkSlice;
   class_column_mapping?: ClassColumnMappingSlice
   column?: ColumnSlice;
