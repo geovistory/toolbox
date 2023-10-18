@@ -5,8 +5,8 @@ import { ProjectDetail } from '../../state-gui/models/active-project.models';
 import { Information } from '../../state-gui/models/entity-list.models';
 import { SourceList } from '../../state-gui/models/source-list.models';
 import { DatState } from '../../state-schema/dat/dat.models';
+import { DfhState } from '../../state-schema/dfh/dfh.models';
 import { InfState } from "../../state-schema/inf/inf.models";
-import { Dfh } from '../../state-schema/models/dfh.models';
 import { Tab } from '../../state-schema/models/tab.models';
 import { ProState } from '../../state-schema/pro/pro.models';
 import { SysState } from '../../state-schema/sys/sys.models';
@@ -54,7 +54,7 @@ export interface IAppState {
   // backoffice?: Backoffice,
   loadingBar?: LoadingBarState,
   sys?: SysState
-  dfh?: Dfh
+  dfh?: DfhState
   inf?: InfState
   dat?: DatState
   pro?: ProState

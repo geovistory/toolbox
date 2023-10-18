@@ -2,9 +2,9 @@ import { GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4'
 import { FluxStandardAction } from 'flux-standard-action';
 import { IAppState } from '../../root/models/model';
 import { datDefinitions } from '../dat/dat.config';
+import { dfhDefinitions } from '../dfh/dfh.config';
 import { infDefinitions } from '../inf/inf.config';
 import { proDefinitions } from '../pro/pro.config';
-import { dfhDefinitions } from '../reducer-configs/dfh.config';
 import { tabDefinitions } from '../reducer-configs/tab.config';
 import { sysDefinitions } from '../sys/sys.config';
 import { warDefinitions } from '../war/war.config';

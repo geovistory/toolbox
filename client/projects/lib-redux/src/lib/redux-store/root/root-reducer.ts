@@ -5,7 +5,6 @@ import { composeReducers } from '../lib/composeReducers';
 import { loadingBarReducer } from '../state-gui/loadingbar/loading-bar.reducer';
 import { accountRootReducer } from '../state-gui/reducers/account.reducers';
 import { activeProjectReducer } from '../state-gui/reducers/active-project.reducer';
-import { createDfhReducer } from '../state-schema/reducers/dfh.reducer';
 import { createTabReducer } from '../state-schema/reducers/tab.reducer';
 import { schemaModifierReducer } from '../state-schema/schema/schema.reducer';
 
@@ -81,7 +80,6 @@ export const rootReducer = composeReducers(
     loadingBar: loadingBarReducer,
     activeProject: activeProjectReducer,
     sandboxState: sandboxStateReducer,
-    dfh: createDfhReducer(),
     tab: createTabReducer(),
     pending: pendingRequestReducer,
     resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
