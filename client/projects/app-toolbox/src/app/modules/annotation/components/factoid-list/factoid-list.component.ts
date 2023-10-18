@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService } from '@kleiolab/lib-queries';
 import { SchemaService } from '@kleiolab/lib-redux';
 import { FactoidControllerService, FactoidEntity, FactoidStatement, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -7,7 +7,7 @@ import { ValueObjectTypeName } from 'projects/app-toolbox/src/app/shared/compone
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
 import { QuillOpsToStrPipe } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { values } from 'ramda';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 
 
@@ -34,11 +34,9 @@ export class FactoidListComponent implements OnInit, OnDestroy {
 
   constructor(
     public p: ActiveProjectService,
-    private ap: ActiveProjectPipesService,
     private factoidService: FactoidControllerService,
     public ref: ChangeDetectorRef,
     public c: ConfigurationPipesService,
-    private sss: SchemaSelectorsService,
     private s: SchemaService,
   ) {
   }

@@ -1,7 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, Input, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
+import { ReduxMainService } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { P_1879_HAS_VALUE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
@@ -28,13 +31,15 @@ export class EntityFieldComponent implements OnInit {
   isCircular = false;
   page$: Observable<FieldPage>
   constructor(
+    private projectService: ActiveProjectService,
     private p: ActiveProjectPipesService,
     private i: InformationPipesService,
     private pag: PaginationService,
     private dialog: MatDialog,
     private ref: ChangeDetectorRef,
     @Optional() @Inject(READ_ONLY) public readonly: boolean,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    private dataService: ReduxMainService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
   }
@@ -103,6 +108,25 @@ export class EntityFieldComponent implements OnInit {
         data
       })
     })
+  }
+  async openTableOnRow(pkDigital: number, fkRow: number) {
+    const pkProject = await this.p.pkProject$.pipe(first()).toPromise();
+    // load the has value statement to get the table id
+    const page = await this.dataService.loadFieldPage([{
+      page: {
+        isOutgoing: false,
+        limit: 1, offset: 0,
+        property: { fkProperty: P_1879_HAS_VALUE_ID },
+        scope: { inProject: pkProject },
+        source: { fkData: pkDigital }
+      },
+      pkProject,
+      targets: {}
+    }]).pipe(first()).toPromise();;
+
+    // open a table tab
+    const pkEntity = page.subfieldPages?.[0].paginatedStatements?.[0]?.statement?.fk_subject_info;
+    this.projectService.addTableTab(pkEntity, fkRow)
   }
   ngOnDestroy() {
     this.destroy$.next(true);
