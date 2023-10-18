@@ -4,6 +4,7 @@ import { ProClassFieldConfigSlice } from './class_field_config/pro-class-field-c
 import { ProDfhClassProjRelSlice } from './dfh_class_proj_rel/pro-dfh-class-proj-rel.models';
 import { ProDfhProfileProjRelSlice } from './dfh_profile_proj_rel/pro-dfh-profile-proj-rel.models';
 import { ProInfoProjRelSlice } from './info_proj_rel/pro-info-proj-rel.models';
+import { ProTableConfigSlice } from './table_config/pro-table-config.models';
 
 
 
@@ -15,6 +16,6 @@ export interface ProState {
   class_field_config?: ProClassFieldConfigSlice;
   // text_property?: ProTextPropertySlice;
   analysis?: ProAnalysisSlice;
-  // table_config?: ProTableConfigSlice;
+  table_config?: ProTableConfigSlice;
 }
 
