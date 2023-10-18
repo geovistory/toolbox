@@ -7,9 +7,9 @@ import { SourceList } from '../../state-gui/models/source-list.models';
 import { DatState } from '../../state-schema/dat/dat.models';
 import { InfState } from "../../state-schema/inf/inf.models";
 import { Dfh } from '../../state-schema/models/dfh.models';
-import { Sys } from '../../state-schema/models/sys.models';
 import { Tab } from '../../state-schema/models/tab.models';
 import { ProState } from '../../state-schema/pro/pro.models';
+import { SysState } from '../../state-schema/sys/sys.models';
 import { WarState } from '../../state-schema/war/war.models';
 import { SucceedActionMeta } from '../../state-schema/_helpers/schema-actions-factory';
 
@@ -53,7 +53,7 @@ export interface IAppState {
   account?: IAccount,
   // backoffice?: Backoffice,
   loadingBar?: LoadingBarState,
-  sys?: Sys
+  sys?: SysState
   dfh?: Dfh
   inf?: InfState
   dat?: DatState

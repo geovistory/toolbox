@@ -5,5 +5,6 @@ import { SysConfigFacade } from './config/sys-config.facade';
 export class SysFacade {
   constructor(
     public config: SysConfigFacade,
+    public systemRelevantClass: SysConfigFacade,
   ) { }
 }
