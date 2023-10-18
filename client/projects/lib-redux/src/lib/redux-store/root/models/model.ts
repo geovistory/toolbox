@@ -7,9 +7,9 @@ import { SourceList } from '../../state-gui/models/source-list.models';
 import { DatState } from '../../state-schema/dat/dat.models';
 import { DfhState } from '../../state-schema/dfh/dfh.models';
 import { InfState } from "../../state-schema/inf/inf.models";
-import { Tab } from '../../state-schema/models/tab.models';
 import { ProState } from '../../state-schema/pro/pro.models';
 import { SysState } from '../../state-schema/sys/sys.models';
+import { TabState } from '../../state-schema/tab/tab.models';
 import { WarState } from '../../state-schema/war/war.models';
 import { SucceedActionMeta } from '../../state-schema/_helpers/schema-actions-factory';
 
@@ -59,7 +59,7 @@ export interface IAppState {
   dat?: DatState
   pro?: ProState
   war?: WarState
-  tab?: Tab
+  tab?: TabState
   activeProject?: ProjectDetail
   routes?: any,
   information?: Information,
