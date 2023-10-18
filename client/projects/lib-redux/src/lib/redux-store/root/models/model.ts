@@ -4,8 +4,8 @@ import { IAccount } from '../../state-gui/models/account.model';
 import { ProjectDetail } from '../../state-gui/models/active-project.models';
 import { Information } from '../../state-gui/models/entity-list.models';
 import { SourceList } from '../../state-gui/models/source-list.models';
+import { DatState } from '../../state-schema/dat/dat.models';
 import { InfState } from "../../state-schema/inf/inf.models";
-import { Dat } from '../../state-schema/models/dat.models';
 import { Dfh } from '../../state-schema/models/dfh.models';
 import { Sys } from '../../state-schema/models/sys.models';
 import { Tab } from '../../state-schema/models/tab.models';
@@ -56,7 +56,7 @@ export interface IAppState {
   sys?: Sys
   dfh?: Dfh
   inf?: InfState
-  dat?: Dat
+  dat?: DatState
   pro?: ProState
   war?: War
   tab?: Tab

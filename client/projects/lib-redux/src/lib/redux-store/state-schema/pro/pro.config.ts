@@ -8,11 +8,11 @@ import { proTableConfigReducerConfig } from './table_config/pro-table-config.red
 import { proTextPropertyReducerConfig } from './text_property/pro-text-property.reducer';
 
 export const proDefinitions: ReducerConfigCollection = {
-  infoProjRel: proInfoProjRelReducerConfig,
-  dfhProfileProjRel: proDfhProfileProjRelReducerConfig,
-  dfhClassProjRel: proDfhClassProjRelReducerConfig,
-  classFieldConfig: proClassFieldConfigReducerConfig,
-  textProperty: proTextPropertyReducerConfig,
+  info_proj_rel: proInfoProjRelReducerConfig,
+  dfh_profile_proj_rel: proDfhProfileProjRelReducerConfig,
+  dfh_class_proj_rel: proDfhClassProjRelReducerConfig,
+  class_field_config: proClassFieldConfigReducerConfig,
+  text_property: proTextPropertyReducerConfig,
   analysis: proAnalysisReducerConfig,
-  tableConfig: proTableConfigReducerConfig,
+  table_config: proTableConfigReducerConfig,
 }

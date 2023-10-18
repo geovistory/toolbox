@@ -5,8 +5,8 @@ import { Observable, Subject } from 'rxjs';
 import { SchemaActionsFactory, SucceedActionMeta } from '../../public-api';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { DatActions } from '../actions/dat.actions';
 import { WarActions } from '../actions/war.actions';
+import { DatFacade } from '../dat/dat.facade';
 import { InfFacade } from '../inf/inf.facade';
 import { ProFacade } from '../pro/pro.facade';
 import { GvSchemaActions } from './schema.actions';
@@ -24,7 +24,7 @@ export class SchemaService {
   constructor(
     private infFacade: InfFacade,
     private proFacade: ProFacade,
-    private datActions: DatActions,
+    private datFacade: DatFacade,
     private warActions: WarActions,
     private schemaActions: GvSchemaActions,
     private notifications: NotificationsAPIActions,
@@ -152,7 +152,7 @@ export class SchemaService {
         let actions;
         if (schema === 'inf') actions = this.infFacade;
         else if (schema === 'pro') actions = this.proFacade;
-        else if (schema === 'dat') actions = this.datActions;
+        else if (schema === 'dat') actions = this.datFacade;
         else if (schema === 'war') actions = this.warActions;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {
@@ -195,7 +195,7 @@ export class SchemaService {
     if (object && Object.keys(object).length > 0) {
       Object.keys(object).forEach(schema => {
         let actions;
-        if (schema === 'dat') actions = this.datActions;
+        if (schema === 'dat') actions = this.datFacade;
         if (schema === 'inf') actions = this.infFacade;
         if (schema === 'pro') actions = this.proFacade;
         if (actions) {
@@ -219,7 +219,7 @@ export class SchemaService {
     if (object && Object.keys(object).length > 0) {
       Object.keys(object).forEach(schema => {
         let actions;
-        if (schema === 'dat') actions = this.datActions;
+        if (schema === 'dat') actions = this.datFacade;
         if (schema === 'inf') actions = this.infFacade;
         if (schema === 'pro') actions = this.proFacade;
         if (actions) {

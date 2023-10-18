@@ -11,10 +11,10 @@ import { infTimePrimitiveReducerConfig } from './time_primitive/inf-time-primiti
 export const infDefinitions: ReducerConfigCollection = {
   appellation: infAppellationReducerConfig,
   dimension: infDimensionReducerConfig,
-  langString: infLangStringReducerConfig,
+  lang_string: infLangStringReducerConfig,
   language: infLanguageReducerConfig,
   place: infPlaceReducerConfig,
   resource: infResourceReducerConfig,
   statement: infStatementReducerConfig,
-  timePrimitive: infTimePrimitiveReducerConfig,
+  time_primitive: infTimePrimitiveReducerConfig,
 }
