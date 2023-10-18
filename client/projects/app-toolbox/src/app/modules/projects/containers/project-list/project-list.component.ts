@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccountService, ProProject } from '@kleiolab/lib-sdk-lb4';
 import { ActiveAccountPipes } from 'projects/lib-queries/src/lib/queries/services/active-account-pipes.service';
-import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
+import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/schema/reduxMain.service';
 import { Observable } from 'rxjs';
 
 

@@ -7,6 +7,7 @@ import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '
 import { equals, flatten, uniq, values } from 'ramda';
 import { combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+import { InfSelector } from '../../../../../lib-redux/src/lib/redux-store/state-schema/inf/inf.selectors';
 import { AddMenuClassOrTypeItem } from '../models/AddMenuClassOrTypeItem';
 import { ClassAndTypeNode } from '../models/ClassAndTypeNode';
 import { ClassAndTypeSelectModel } from '../models/ClassAndTypeSelectModel';
@@ -14,7 +15,6 @@ import { FieldPage } from '../models/FieldPage';
 import { GvFieldTargets } from '../models/FieldTargets';
 import { PropertyOption } from '../models/PropertyOption';
 import { PropertySelectModel } from '../models/PropertySelectModel';
-import { InfSelector } from '../selectors/inf.service';
 import { ActiveProjectPipesService } from './active-project-pipes.service';
 import { AddMenuClassItem, ConfigurationPipesService, HasTypePropertyInfo } from './configuration-pipes.service';
 import { InformationBasicPipesService } from './information-basic-pipes.service';

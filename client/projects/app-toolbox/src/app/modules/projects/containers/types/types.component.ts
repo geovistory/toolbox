@@ -12,8 +12,8 @@ import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/ser
 import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/services/pagination.service';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
-import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/services/reduxMain.service';
-import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
+import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/schema/reduxMain.service';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets } from '../../../base/base.helpers';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';

@@ -1,6 +1,6 @@
 import { AbbreviatePipe } from './abbreviate.pipe';
 
-fdescribe('AbbreviatePipe', () => {
+describe('AbbreviatePipe', () => {
   it('create an instance', () => {
     const pipe = new AbbreviatePipe();
     expect(pipe).toBeTruthy();
