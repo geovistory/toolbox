@@ -6,9 +6,9 @@ import { SchemaActionsFactory, SucceedActionMeta } from '../../public-api';
 import { SchemaObject } from '../../root/models/model';
 import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
 import { DatActions } from '../actions/dat.actions';
-import { ProActions } from '../actions/pro.actions';
 import { WarActions } from '../actions/war.actions';
 import { InfFacade } from '../inf/inf.facade';
+import { ProFacade } from '../pro/pro.facade';
 import { GvSchemaActions } from './schema.actions';
 
 @Injectable({
@@ -23,7 +23,7 @@ export class SchemaService {
 
   constructor(
     private infFacade: InfFacade,
-    private proActions: ProActions,
+    private proFacade: ProFacade,
     private datActions: DatActions,
     private warActions: WarActions,
     private schemaActions: GvSchemaActions,
@@ -151,7 +151,7 @@ export class SchemaService {
       Object.keys(object).forEach(schema => {
         let actions;
         if (schema === 'inf') actions = this.infFacade;
-        else if (schema === 'pro') actions = this.proActions;
+        else if (schema === 'pro') actions = this.proFacade;
         else if (schema === 'dat') actions = this.datActions;
         else if (schema === 'war') actions = this.warActions;
         if (actions) {
@@ -197,7 +197,7 @@ export class SchemaService {
         let actions;
         if (schema === 'dat') actions = this.datActions;
         if (schema === 'inf') actions = this.infFacade;
-        if (schema === 'pro') actions = this.proActions;
+        if (schema === 'pro') actions = this.proFacade;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {
             const m: SchemaActionsFactory<any> = actions[model]
@@ -221,7 +221,7 @@ export class SchemaService {
         let actions;
         if (schema === 'dat') actions = this.datActions;
         if (schema === 'inf') actions = this.infFacade;
-        if (schema === 'pro') actions = this.proActions;
+        if (schema === 'pro') actions = this.proFacade;
         if (actions) {
           Object.keys(object[schema]).forEach(model => {
             const m: SchemaActionsFactory<any> = actions[model]

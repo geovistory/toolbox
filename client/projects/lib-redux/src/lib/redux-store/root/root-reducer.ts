@@ -7,7 +7,6 @@ import { accountRootReducer } from '../state-gui/reducers/account.reducers';
 import { activeProjectReducer } from '../state-gui/reducers/active-project.reducer';
 import { createDatReducer } from '../state-schema/reducers/dat.reducer';
 import { createDfhReducer } from '../state-schema/reducers/dfh.reducer';
-import { createProReducer } from '../state-schema/reducers/pro.reducer';
 import { createSysReducer } from '../state-schema/reducers/sys.reducer';
 import { createTabReducer } from '../state-schema/reducers/tab.reducer';
 import { createWarReducer } from '../state-schema/reducers/war.reducer';
@@ -88,7 +87,6 @@ export const rootReducer = composeReducers(
     sys: createSysReducer(),
     dfh: createDfhReducer(),
     dat: createDatReducer(),
-    pro: createProReducer(),
     war: createWarReducer(),
     tab: createTabReducer(),
     pending: pendingRequestReducer,
