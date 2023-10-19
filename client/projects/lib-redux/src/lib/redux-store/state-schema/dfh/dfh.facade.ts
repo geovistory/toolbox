@@ -4,7 +4,9 @@ import { DfhLabelFacade } from './label/dfh-label.facade';
 import { DfhProfileFacade } from './profile/dfh-profile.facade';
 import { DfhPropertyFacade } from './property/dfh-property.facade';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DfhFacade {
   constructor(
     public dfhClass: DfhClassFacade,

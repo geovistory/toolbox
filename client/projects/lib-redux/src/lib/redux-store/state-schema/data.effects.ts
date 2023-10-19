@@ -1,23 +1,26 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Actions, concatLatestFrom, createEffect } from '@ngrx/effects';
+import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { FluxStandardAction } from 'flux-standard-action';
-import { ofType } from 'redux-observable';
 import { of } from 'rxjs';
 import { catchError, mergeMap, startWith } from 'rxjs/operators';
-import { IAppState } from '../../root/models/model';
-import { NotificationsAPIActions } from '../../state-gui/actions/notifications.actions';
-import { LoadingBarActions } from '../../state-gui/loadingbar/loading-bar.actions';
-import { infStatementActions } from '../inf/statement/inf-statement.actions';
-import { GvPaginationObjectAction, GvSchemaActions, GvSchemaModifierAction, GvSchemaObjectAction } from './schema.actions';
-import { SchemaService } from './schema.service';
+import { IAppState } from '../root/models/model';
+import { NotificationsAPIActions } from '../state-gui/actions/notifications.actions';
+import { LoadingBarActions } from '../state-gui/loadingbar/loading-bar.actions';
+import { paginationObjectActions, schemaModifierActions, schemaObjectActions } from './data.actions';
+import { infStatementActions } from './inf/statement/inf-statement.actions';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SchemaEpics {
+export class DataEffects {
 
+  constructor(
+    private notificationActions: NotificationsAPIActions,
+    private actions$: Actions<FluxStandardAction<any, any>>,
+    private store: Store<IAppState>
+  ) { }
 
   /**
    * Epic for loading GvSchemaObjects
@@ -26,10 +29,10 @@ export class SchemaEpics {
    * - else it toasts an error message
    */
   loadSchemaObject$ = createEffect(() => this.actions$.pipe(
-    ofType(GvSchemaActions.GV_SCHEMA_OBJECT_LOAD),
-    mergeMap((action: GvSchemaObjectAction) => action.payload.pipe(
+    ofType(schemaObjectActions.load),
+    mergeMap((action) => action.payload.pipe(
       mergeMap(data => of(
-        this.schemaObjectService.getStoreSchemaObjectGvAction(data),
+        schemaModifierActions.succeeded({ payload: { positive: data } }),
         LoadingBarActions.REMOVE_JOB()
       )),
       catchError((error: HttpErrorResponse) => of(...this.errorActions(error))),
@@ -43,11 +46,10 @@ export class SchemaEpics {
    * - else it toasts an error message
    */
   loadSchemaModifier$ = createEffect(() => this.actions$.pipe(
-    ofType(GvSchemaActions.GV_SCHEMA_MODIFIER_LOAD),
-    mergeMap((action: GvSchemaModifierAction) => action.payload.pipe(
+    ofType(schemaModifierActions.load),
+    mergeMap((action) => action.payload.pipe(
       mergeMap(data => of(
-        this.schemaObjectService.getStoreSchemaObjectGvAction(data.positive),
-        ...this.schemaObjectService.getDeleteSchemaObjectGvActions(data.negative, 0),
+        schemaModifierActions.succeeded({ payload: data }),
         LoadingBarActions.REMOVE_JOB()
       )),
       catchError((error: HttpErrorResponse) => of(...this.errorActions(error))),
@@ -62,8 +64,8 @@ export class SchemaEpics {
   * - else it toasts an error message
   */
   loadPaginationObject$ = createEffect(() => this.actions$.pipe(
-    ofType(GvSchemaActions.GV_PAGINATION_OBJECT_LOAD),
-    mergeMap((action: GvPaginationObjectAction) => action.payload.pipe(
+    ofType(paginationObjectActions.load),
+    mergeMap((action) => action.payload.pipe(
       concatLatestFrom(() => this.store.select((s) => s.activeProject?.pk_project)),
       mergeMap(([data, pkProject]) => {
         const pageLoadedActions = data.subfieldPages.map(p => infStatementActions.loadPageSucceededAction(
@@ -80,12 +82,6 @@ export class SchemaEpics {
   ))
 
 
-  constructor(
-    private schemaObjectService: SchemaService,
-    private notificationActions: NotificationsAPIActions,
-    private actions$: Actions<FluxStandardAction<any, any>>,
-    private store: Store<IAppState>
-  ) { }
 
 
   errorActions(error: HttpErrorResponse) {

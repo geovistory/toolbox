@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ProDfhProfileProjRel } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { proFeatureKey } from "../pro.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { ProState } from "../pro.models";
 import { ProDfhProfileProjRelFacade } from './pro-dfh-profile-proj-rel.facade';
 import { proDfhProfileProjRelReducers } from './pro-dfh-profile-proj-rel.reducer';
 
-fdescribe('ProDfhProfileProjRel Facade', () => {
+describe('ProDfhProfileProjRel Facade', () => {
   let facade: ProDfhProfileProjRelFacade;
   let store: Store<ProState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(proFeatureKey, proDfhProfileProjRelReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ pro: proDfhProfileProjRelReducers })),
       ],
       providers: [ProDfhProfileProjRelFacade]
     })
@@ -35,12 +35,12 @@ fdescribe('ProDfhProfileProjRel Facade', () => {
     store = TestBed.inject(Store);
   });
 
-  fit('should init undefined', async () => {
+  it('should init undefined', async () => {
     const res = await firstValueFrom(facade.getDfhProfileProjRelByFkProjectFkClass$)
     expect(res).toBe(undefined)
   });
 
-  fit('should reduce and find items', async () => {
+  it('should reduce and find items', async () => {
     const a1: ProDfhProfileProjRel = { pk_entity: 11, fk_profile: 123, fk_project: 456, enabled: true };
     const a2: ProDfhProfileProjRel = { pk_entity: 12, fk_profile: 124, fk_project: 456, enabled: false };
     const a3: ProDfhProfileProjRel = { pk_entity: 13, fk_profile: 125, fk_project: 456, enabled: true };

@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { DatNamespace } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { datFeatureKey } from "../dat.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { DatState } from "../dat.models";
 import { DatNamespaceFacade } from './dat-namespace.facade';
 import { datNamespaceReducers } from './dat-namespace.reducer';
 
-fdescribe('DatNamespace Facade', () => {
+describe('DatNamespace Facade', () => {
   let facade: DatNamespaceFacade;
   let store: Store<DatState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(datFeatureKey, datNamespaceReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: datNamespaceReducers })),
       ],
       providers: [DatNamespaceFacade]
     })
@@ -35,12 +35,12 @@ fdescribe('DatNamespace Facade', () => {
     store = TestBed.inject(Store);
   });
 
-  fit('should init undefined', async () => {
+  it('should init undefined', async () => {
     const res = await firstValueFrom(facade.pkEntityIndex$)
     expect(res).toBe(undefined)
   });
 
-  fit('should reduce and find item', async () => {
+  it('should reduce and find item', async () => {
     const a: DatNamespace = { pk_entity: 11, fk_project: 22, standard_label: 'A', fk_root_namespace: 33 };
     facade.loadSucceeded([a], "")
     const res = await firstValueFrom(facade.getNamespace.byPkEntity$(11))

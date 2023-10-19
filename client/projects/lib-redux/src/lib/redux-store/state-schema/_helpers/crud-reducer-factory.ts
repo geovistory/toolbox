@@ -96,7 +96,6 @@ export class CrudReducerFactory<Payload, Model> {
 
 
       else if (action.type === actionPrefix + '.' + modelName + '::LOAD_SUCCEEDED') {
-        // If action state differs from
         state = facette(action, state, (innerState) => (
           {
             ...mergeItemsInState(config, innerState, action.meta.items),
@@ -115,7 +114,6 @@ export class CrudReducerFactory<Payload, Model> {
       else if (action.type === actionPrefix + '.' + modelName + '::UPSERT_SUCCEEDED') {
         state = facette(action, state, (innerState) => ({
           ...mergeItemsInState(config, innerState, action.meta.items
-            // , true
           ),
           [this.updatingBy(config.indexBy.keyInStore)]:
             omit(values(this.indexKeyObject(action, config)), innerState[this.updatingBy(config.indexBy.keyInStore)])
@@ -134,7 +132,7 @@ export class CrudReducerFactory<Payload, Model> {
         const deletingKey = this.deletingBy(config.indexBy.keyInStore)
         state = facette(action, state, (innerState) => {
           innerState = {
-            ...this.deleteItemsFromState(config, action, innerState),
+            ...deleteItemsFromState(config, innerState, action.meta.items),
             [deletingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.deletingBy(config.indexBy.keyInStore)])
           }
           if (!Object.keys(innerState[deletingKey]).length) innerState = omit([deletingKey], innerState);
@@ -155,7 +153,7 @@ export class CrudReducerFactory<Payload, Model> {
         const removingKey = this.removingBy(config.indexBy.keyInStore)
         state = facette(action, state, (innerState) => {
           innerState = {
-            ...this.deleteItemsFromState(config, action, innerState),
+            ...deleteItemsFromState(config, innerState, action.meta.items),
             [removingKey]: omit(values(this.indexKeyObject(action, config)), innerState[this.removingBy(config.indexBy.keyInStore)])
           }
           if (!Object.keys(innerState[removingKey]).length) innerState = omit([removingKey], innerState);
@@ -351,106 +349,7 @@ export class CrudReducerFactory<Payload, Model> {
 
 
 
-  deleteItemsFromState(config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; }>, state) {
-    const items = action.meta.items;
-    // let state = {}
-    const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
-    const groups = groupBys.map(i => ({
-      groupByKey: by(i.keyInStore),
-      groupByFn: i.groupByFn,
-    }))
-    const mainIndexKey = by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
 
-    items.forEach((removedItem) => {
-      // get path segments of new item
-      const itemKey = config.indexBy.indexByFn(removedItem); // second segment e.g. '807060'
-
-      // get old item, if exists
-      const oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
-
-      // Q: Does the item exists?
-      if (oldItem) {
-        // A: Yes. use old item does exist
-
-        // remove the removedItem at path in main index
-        state = {
-          ...state,
-          [mainIndexKey]: {
-            ...omit([itemKey], state[mainIndexKey]),
-          }
-        }
-
-        // delete the removedItem at path in the group index
-        groups.forEach(g => {
-          const groupKey = getGroupKeyOfItem(g.groupByFn, oldItem)
-          state = {
-            ...state,
-            [g.groupByKey]: {
-              ...state[g.groupByKey],
-              [groupKey]: {
-                ...omit([itemKey], (state[g.groupByKey] || {})[groupKey])
-              }
-            }
-          }
-          // // cleanup paginations
-          // state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
-
-        })
-      }
-
-
-    })
-
-    // cleanup main index
-    if (Object.keys(state[mainIndexKey]).length < 1) {
-      state = { ...omit([mainIndexKey], state) }
-    }
-    // cleanup group indices
-    groups.forEach(g => {
-
-      // cleanup groups in group index
-      Object.keys(state[g.groupByKey]).forEach(groupKey => {
-
-        if (Object.keys(state[g.groupByKey][groupKey]).length < 1) {
-          state = {
-            ...state,
-            [g.groupByKey]: omit([groupKey], state[g.groupByKey])
-          }
-        }
-      })
-
-      // cleanup group index
-      if (Object.keys(state[g.groupByKey]).length < 1) {
-        state = { ...omit([g.groupByKey], state) }
-      }
-    })
-
-
-    return state;
-  }
-
-  // /**
-  //  * resets pagination within a group, e.g. 'pag_by_fk_property'
-  //  * TODO: check if can be deleted
-  //  */
-  // private resetPaginationsByGroup(groupByKey: string, state: any, groupKey: any, isUpsert = false) {
-  //   const paginateBy = pag(groupByKey);
-  //   if (state[paginateBy] && state[paginateBy][groupKey] && state[paginateBy][groupKey].count !== undefined) {
-  //     state = {
-  //       ...state,
-  //       [paginateBy]: {
-  //         ...state[paginateBy],
-  //         [groupKey]: {
-  //           ...state[paginateBy][groupKey],
-  //           ...(!isUpsert ? {} : { count: state[paginateBy][groupKey].count + 1 }),
-  //           rows: {},
-  //           loading: {}
-  //         }
-  //       }
-  //     };
-  //   }
-  //   return state;
-  // }
 
   /**
    * Creates object where the key returned by the configured indexByFn
@@ -483,10 +382,6 @@ export class CrudReducerFactory<Payload, Model> {
     return groups;
   }
 
-
-
-
-
 }
 
 export function addToEntityModelMap<Model>(items: Model[], modelName: any) {
@@ -512,10 +407,7 @@ export function getGroupKeyOfItem(groupByFn: (item: any) => string, item: any): 
   }
   return groupKey;
 }
-export function mergeItemsInState<Model>(config: ReducerConfig, state, items: Model[]
-  // , resetPaginations = false
-) {
-  // const items = action.meta.items;
+export function mergeItemsInState<Model>(config: ReducerConfig, state, items: Model[]) {
   const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
   const groups = groupBys.map(i => ({
     groupByKey: by(i.keyInStore),
@@ -589,3 +481,79 @@ export function mergeItemsInState<Model>(config: ReducerConfig, state, items: Mo
   return state;
 }
 
+export function deleteItemsFromState<Model>(config: ReducerConfig, state, items: Model[]) {
+  // let state = {}
+  const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
+  const groups = groupBys.map(i => ({
+    groupByKey: by(i.keyInStore),
+    groupByFn: i.groupByFn,
+  }))
+  const mainIndexKey = by(config.indexBy.keyInStore); // first segment e.g. 'by_pk_entity'
+
+  items.forEach((removedItem) => {
+    // get path segments of new item
+    const itemKey = config.indexBy.indexByFn(removedItem); // second segment e.g. '807060'
+
+    // get old item, if exists
+    const oldItem = state[mainIndexKey] ? state[mainIndexKey][itemKey] : undefined;
+
+    // Q: Does the item exists?
+    if (oldItem) {
+      // A: Yes. use old item does exist
+
+      // remove the removedItem at path in main index
+      state = {
+        ...state,
+        [mainIndexKey]: {
+          ...omit([itemKey], state[mainIndexKey]),
+        }
+      }
+
+      // delete the removedItem at path in the group index
+      groups.forEach(g => {
+        const groupKey = getGroupKeyOfItem(g.groupByFn, oldItem)
+        state = {
+          ...state,
+          [g.groupByKey]: {
+            ...state[g.groupByKey],
+            [groupKey]: {
+              ...omit([itemKey], (state[g.groupByKey] || {})[groupKey])
+            }
+          }
+        }
+        // // cleanup paginations
+        // state = this.resetPaginationsByGroup(g.groupByKey, state, groupKey);
+
+      })
+    }
+
+
+  })
+
+  // cleanup main index
+  if (Object.keys(state[mainIndexKey]).length < 1) {
+    state = { ...omit([mainIndexKey], state) }
+  }
+  // cleanup group indices
+  groups.forEach(g => {
+
+    // cleanup groups in group index
+    Object.keys(state[g.groupByKey]).forEach(groupKey => {
+
+      if (Object.keys(state[g.groupByKey][groupKey]).length < 1) {
+        state = {
+          ...state,
+          [g.groupByKey]: omit([groupKey], state[g.groupByKey])
+        }
+      }
+    })
+
+    // cleanup group index
+    if (Object.keys(state[g.groupByKey]).length < 1) {
+      state = { ...omit([g.groupByKey], state) }
+    }
+  })
+
+
+  return state;
+}

@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { dfhPropertyActions } from './dfh-property.actions';
 import { getDfhProperty, indexState } from './dfh-property.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DfhPropertyFacade extends CrudFacade<DfhProperty> {
 
   dfhProperty$ = this.store.select(indexState);

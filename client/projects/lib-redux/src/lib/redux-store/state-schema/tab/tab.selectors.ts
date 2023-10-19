@@ -1,5 +1,4 @@
-import { createFeatureSelector } from '@ngrx/store';
-import { tabFeatureKey } from "./tab.feature.key";
-import { TabState } from "./tab.models";
+import { createSelector } from '@ngrx/store';
+import { getDataState } from '../data.selectors';
 
-export const getTabState = createFeatureSelector<TabState>(tabFeatureKey);
+export const getTabState = createSelector(getDataState, s => s.tab);

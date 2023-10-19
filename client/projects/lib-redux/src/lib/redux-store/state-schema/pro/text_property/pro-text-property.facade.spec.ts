@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ProTextProperty } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { proFeatureKey } from "../pro.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { ProState } from "../pro.models";
 import { ProTextPropertyFacade } from './pro-text-property.facade';
 import { proTextPropertyReducers } from './pro-text-property.reducer';
 
-fdescribe('ProTextProperty Facade', () => {
+describe('ProTextProperty Facade', () => {
   let facade: ProTextPropertyFacade;
   let store: Store<ProState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(proFeatureKey, proTextPropertyReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ pro: proTextPropertyReducers })),
       ],
       providers: [ProTextPropertyFacade]
     })

@@ -6,13 +6,16 @@ import { values } from 'ramda';
 import { filter, first, map, Observable, of, pipe, switchMap } from 'rxjs';
 import { ByPk, IAppState, subfieldIdToString } from '../../../public-api';
 import { PROJECT_ID$ } from '../../../root/PROJECT_ID$';
+import { getInfoProjRelByFkProjectPkEntity } from '../../pro/info_proj_rel/pro-info-proj-rel.selectors';
 import { CrudFacade } from '../../_helpers/crud-facade';
 import { getFromTo } from '../../_helpers/crud-reducer-factory';
 import { infStatementActions } from './inf-statement.actions';
 import { InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks } from './inf-statement.reducer';
-import { getStatementByObject, getStatementByObjectAndProperty, getStatementByPkEntity, getStatementBySubject, getStatementBySubjectAndProperty, getStatementPkEntityIdxtate } from './inf-statement.selectors';
+import { getPage, getPageCount, getPageLoadNeeded, getPageRow, getPageRows, getStatementByObject, getStatementByObjectAndProperty, getStatementByPkEntity, getStatementBySubject, getStatementBySubjectAndProperty, getStatementPkEntityIdxtate } from './inf-statement.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfStatementFacade extends CrudFacade<InfStatement> {
 
   statementsPkEntityIdx$ = this.store.select(getStatementPkEntityIdxtate);
@@ -95,9 +98,16 @@ export class InfStatementFacade extends CrudFacade<InfStatement> {
     }
   }
 
+  getPage = {
+    page: (page: GvFieldId) => this.store.select(getPage(page)),
+    pageCount: (page: GvFieldId) => this.store.select(getPageCount(page)),
+    pageRows: (page: GvFieldId) => this.store.select(getPageRows(page)),
+    pageRow: (page: GvFieldId, rowIndex: number) => this.store.select(getPageRow(page, rowIndex)),
+    pageLoadNeeded: (page: GvFieldPage) => this.store.select(getPageLoadNeeded(page)),
+  }
+
   getPage$ = (page: GvFieldPage): Observable<StatementWithTarget[]> => {
-    const key = subfieldIdToString(page)
-    return this.store.select(s => s.inf.statement?.by_subfield_page?.[key].count)
+    return this.getPage.pageCount(page)
       .pipe(
         filter(count => count !== undefined),
         switchMap(count => {
@@ -105,9 +115,7 @@ export class InfStatementFacade extends CrudFacade<InfStatement> {
           const end = count <= (start + page.limit) ? count : (start + page.limit);
           const obs$: Observable<StatementWithTarget>[] = [];
           for (let i = start; i < end; i++) {
-            obs$.push(
-              this.store.select(s => s.inf.statement?.by_subfield_page?.[key].rows?.[i]).pipe(filter(x => !!x))
-            )
+            obs$.push(this.getPage.pageRow(page, i))
           }
           return combineLatestOrEmpty(obs$)
         })
@@ -117,20 +125,25 @@ export class InfStatementFacade extends CrudFacade<InfStatement> {
     const key = subfieldIdToString(page)
     const fromToString = getFromTo(page.limit, page.offset)
     return trigger$.pipe(
-      switchMap(() => this.store.select(s => s?.inf?.statement?.by_subfield_page?.[key]?.loading?.[fromToString])
+      switchMap(() => this.getPage.pageLoadNeeded(page)
         .pipe(
           first(),
           map(loading => !loading)
         )
       ))
   }
+
+  /**
+   * Deprecated, use getPage.pageCount() instead
+   * @param page
+   * @returns
+   */
   getPageCount$ = (page: GvFieldId): Observable<number | undefined> => {
-    const key = subfieldIdToString(page)
-    return this.store.select<number>(s => s?.inf?.statement?.by_subfield_page?.[key]?.count)
+    return this.getPage.pageCount(page)
   }
 
   // TODO refactor: could we use createSelector() with two input selectors instead of a pipe?
-  pipeItemsInProject<M>(pkProject$: Observable<number | string>, getFkEntity: (item: M) => number) {
+  pipeItemsInProject<M>(pkProject$: Observable<number>, getFkEntity: (item: M) => number) {
 
     return pipe(
       switchMap((items: ByPk<M>) => {
@@ -141,8 +154,7 @@ export class InfStatementFacade extends CrudFacade<InfStatement> {
               if (items.hasOwnProperty(k)) {
                 const item = items[k];
                 proRelsAndKey$.push(
-                  // TODO refactor: extract the select function to a createSelector() in pro-info-proj-rel.selectors.ts
-                  this.store.select(s => s.pro?.info_proj_rel?.by_fk_project__fk_entity?.[pkProject + '_' + getFkEntity(item)])
+                  this.store.select(getInfoProjRelByFkProjectPkEntity(pkProject, getFkEntity(item)))
                     .pipe(map(rel => ({ key: k, rel })))
                 )
               }
@@ -168,13 +180,13 @@ export class InfStatementFacade extends CrudFacade<InfStatement> {
 
   }
 
-  pipeItemInProject<M>(pkProject$: Observable<number | string>, getFkEntity: (item: M) => number) {
+  pipeItemInProject<M>(pkProject$: Observable<number>, getFkEntity: (item: M) => number) {
     return pipe(
       switchMap((item: M) => {
         if (!item) return of(undefined);
         return pkProject$.pipe(
           switchMap(pkProject => {
-            const proRel$ = this.store.select(s => s.pro?.info_proj_rel?.by_fk_project__fk_entity?.[pkProject + '_' + getFkEntity(item)])
+            const proRel$ = this.store.select(getInfoProjRelByFkProjectPkEntity(pkProject, getFkEntity(item)))
             return proRel$.pipe(
               // filter(proRel => proRel.is_in_project == true),
               map((proRel) => proRel && proRel.is_in_project == true ? item : undefined)

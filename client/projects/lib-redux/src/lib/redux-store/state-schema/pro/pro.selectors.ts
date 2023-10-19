@@ -1,5 +1,5 @@
-import { createFeatureSelector } from '@ngrx/store';
-import { proFeatureKey } from "./pro.feature.key";
-import { ProState } from "./pro.models";
+import { createSelector } from '@ngrx/store';
+import { getDataState } from '../data.selectors';
 
-export const getProState = createFeatureSelector<ProState>(proFeatureKey);
+export const getProState = createSelector(getDataState, s => s.pro);
+

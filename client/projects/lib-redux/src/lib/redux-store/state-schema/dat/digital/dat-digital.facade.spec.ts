@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { DatDigital } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { datFeatureKey } from "../dat.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { DatState } from "../dat.models";
 import { DatDigitalFacade } from './dat-digital.facade';
 import { datDigitalReducers } from './dat-digital.reducer';
 
-fdescribe('DatDigital Facade', () => {
+describe('DatDigital Facade', () => {
   let facade: DatDigitalFacade;
   let store: Store<DatState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(datFeatureKey, datDigitalReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: datDigitalReducers })),
       ],
       providers: [DatDigitalFacade]
     })
@@ -35,12 +35,12 @@ fdescribe('DatDigital Facade', () => {
     store = TestBed.inject(Store);
   });
 
-  fit('should init undefined', async () => {
+  it('should init undefined', async () => {
     const res = await firstValueFrom(facade.pkEntityVersionIndex$)
     expect(res).toBe(undefined)
   });
 
-  fit('should reduce and find item', async () => {
+  it('should reduce and find item', async () => {
     const a: DatDigital = { pk_entity: 11, entity_version: 22, pk_text: 33 };
     facade.loadSucceeded([a], "")
     const res = await firstValueFrom(facade.getDigital.byPkEntityVersion$(11, 22))

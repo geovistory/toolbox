@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { TabCell } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { tabFeatureKey } from "../tab.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { TabState } from "../tab.models";
 import { TabCellFacade } from './tab-cell.facade';
 import { tabCellReducers } from './tab-cell.reducer';
 
-fdescribe('TabCell Facade', () => {
+describe('TabCell Facade', () => {
   let facade: TabCellFacade;
   let store: Store<TabState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(tabFeatureKey, tabCellReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ tab: tabCellReducers })),
       ],
       providers: [TabCellFacade]
     })

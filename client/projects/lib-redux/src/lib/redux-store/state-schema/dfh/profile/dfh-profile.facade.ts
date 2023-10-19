@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { dfhProfileActions } from './dfh-profile.actions';
 import { getDfhProfile, indexState } from './dfh-profile.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DfhProfileFacade extends CrudFacade<DfhProfile> {
 
   dfhProfile$ = this.store.select(indexState);

@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { InfDimension } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { infFeatureKey } from "../inf.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { InfState } from "../inf.models";
 import { InfDimensionFacade } from './inf-dimension.facade';
 import { infDimensionReducers } from './inf-dimension.reducer';
 
-fdescribe('InfDimension Facade', () => {
+describe('InfDimension Facade', () => {
   let facade: InfDimensionFacade;
   let store: Store<InfState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(infFeatureKey, infDimensionReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: infDimensionReducers })),
       ],
       providers: [InfDimensionFacade]
     })
@@ -35,12 +35,12 @@ fdescribe('InfDimension Facade', () => {
     store = TestBed.inject(Store);
   });
 
-  fit('should init undefined', async () => {
+  it('should init undefined', async () => {
     const res = await firstValueFrom(facade.dimensionsByPkEntity$)
     expect(res).toBe(undefined)
   });
 
-  fit('should reduce and find item by pkEntity', async () => {
+  it('should reduce and find item by pkEntity', async () => {
     const input: InfDimension = { fk_class: 1, pk_entity: 11, fk_measurement_unit: 1, numeric_value: 12.34 };
     facade.loadSucceeded([input], "")
     const res = await firstValueFrom(facade.getDimension.byPkEntity$(11))

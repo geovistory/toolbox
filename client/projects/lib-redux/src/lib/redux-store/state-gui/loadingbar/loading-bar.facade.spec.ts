@@ -11,7 +11,7 @@ import { loadingbarFeatureName } from './loading-bar.selectors';
 interface TestSchema {
   [loadingbarFeatureName]: LoadingBarState;
 }
-fdescribe('LoadingBar Facade', () => {
+describe('LoadingBar Facade', () => {
   let facade: LoadingBarFacade;
   let store: Store<TestSchema>;
 

@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { infLanguageActions } from './inf-language.actions';
 import { getLanguageByPkEntity, getLanguageByPkEntityState } from './inf-language.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfLanguageFacade extends CrudFacade<InfLanguage> {
 
   languagesByPkEntity$ = this.store.select(getLanguageByPkEntityState);

@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { infPlaceActions } from './inf-place.actions';
 import { getPlaceByPkEntity, getPlaceByPkEntityState } from './inf-place.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfPlaceFacade extends CrudFacade<InfPlace> {
 
   placesByPkEntity$ = this.store.select(getPlaceByPkEntityState);

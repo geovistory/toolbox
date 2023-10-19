@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ProTableConfig } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { proFeatureKey } from "../pro.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { ProState } from "../pro.models";
 import { ProTableConfigFacade } from './pro-table-config.facade';
 import { proTableConfigReducers } from './pro-table-config.reducer';
 
-fdescribe('ProTableConfig Facade', () => {
+describe('ProTableConfig Facade', () => {
   let facade: ProTableConfigFacade;
   let store: Store<ProState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(proFeatureKey, proTableConfigReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ pro: proTableConfigReducers })),
       ],
       providers: [ProTableConfigFacade]
     })

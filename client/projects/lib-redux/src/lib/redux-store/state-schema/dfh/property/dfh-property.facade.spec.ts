@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { IAppState } from '@kleiolab/lib-redux/public-api';
 import { DfhProperty } from '@kleiolab/lib-sdk-lb4/public-api';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { dfhFeatureKey } from "../dfh.feature.key";
-import { DfhState } from "../dfh.models";
+import { dataFeatureKey } from '../../data.feature.key';
 import { DfhPropertyFacade } from './dfh-property.facade';
 import { dfhPropertyReducers } from './dfh-property.reducer';
 
-fdescribe('DfhProperty Facade', () => {
+describe('DfhProperty Facade', () => {
   let facade: DfhPropertyFacade;
-  let store: Store<DfhState>;
+  let store: Store<IAppState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dfhFeatureKey, dfhPropertyReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dfh: dfhPropertyReducers })),
       ],
       providers: [DfhPropertyFacade]
     })

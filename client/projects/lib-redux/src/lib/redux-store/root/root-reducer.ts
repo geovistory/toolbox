@@ -5,7 +5,6 @@ import { composeReducers } from '../lib/composeReducers';
 import { loadingBarReducer } from '../state-gui/loadingbar/loading-bar.reducer';
 import { accountRootReducer } from '../state-gui/reducers/account.reducers';
 import { activeProjectReducer } from '../state-gui/reducers/active-project.reducer';
-import { schemaModifierReducer } from '../state-schema/schema/schema.reducer';
 
 
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
@@ -73,7 +72,6 @@ export const setAppState = (state = {}, action) => {
 }
 
 export const rootReducer = composeReducers(
-  schemaModifierReducer,
   combineReducers({
     account: accountRootReducer,
     loadingBar: loadingBarReducer,

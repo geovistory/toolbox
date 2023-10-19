@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { ReduxModule } from './redux-store.module';
@@ -9,6 +10,7 @@ describe('ReduxModule', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
+        HttpClientModule,
         ReduxModule,
         SdkLb4Module
       ]

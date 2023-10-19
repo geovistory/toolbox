@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { infFeatureKey } from "../inf.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { InfState } from "../inf.models";
 import { InfLanguageFacade } from './inf-language.facade';
 import { infLanguageReducers } from './inf-language.reducer';
 
-fdescribe('InfLanguage Facade', () => {
+describe('InfLanguage Facade', () => {
   let facade: InfLanguageFacade;
   let store: Store<InfState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(infFeatureKey, infLanguageReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: infLanguageReducers })),
       ],
       providers: [InfLanguageFacade]
     })
@@ -35,12 +35,12 @@ fdescribe('InfLanguage Facade', () => {
     store = TestBed.inject(Store);
   });
 
-  fit('should init undefined', async () => {
+  it('should init undefined', async () => {
     const res = await firstValueFrom(facade.languagesByPkEntity$)
     expect(res).toBe(undefined)
   });
 
-  fit('should reduce and find item by pkEntity', async () => {
+  it('should reduce and find item by pkEntity', async () => {
     const input: InfLanguage = { fk_class: 1, pk_entity: 11, iso6391: "1" };
     facade.loadSucceeded([input], "")
     const res = await firstValueFrom(facade.getLanguage.byPkEntity$(11))

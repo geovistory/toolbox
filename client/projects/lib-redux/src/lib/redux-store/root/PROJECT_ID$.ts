@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 
-export const PROJECT_ID$ = new InjectionToken<Observable<number>>('Observable project id');
+export const PROJECT_ID$ = new InjectionToken<BehaviorSubject<number>>('Observable project id');

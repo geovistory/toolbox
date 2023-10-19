@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { infResourceActions } from './inf-resource.actions';
 import { getResourceByFkClass, getResourceByPkEntity, getResourceByPkEntityState } from './inf-resource.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfResourceFacade extends CrudFacade<InfResource> {
 
   resourcesByPkEntity$ = this.store.select(getResourceByPkEntityState);

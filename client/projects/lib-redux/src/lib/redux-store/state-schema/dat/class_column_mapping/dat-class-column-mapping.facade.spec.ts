@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { DatClassColumnMapping } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { datFeatureKey } from "../dat.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { DatState } from "../dat.models";
 import { DatClassColumnMappingFacade } from './dat-class-column-mapping.facade';
 import { datClassColumnMappingReducers } from './dat-class-column-mapping.reducer';
 
-fdescribe('DatClassColumnMapping Facade', () => {
+describe('DatClassColumnMapping Facade', () => {
   let facade: DatClassColumnMappingFacade;
   let store: Store<DatState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(datFeatureKey, datClassColumnMappingReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: datClassColumnMappingReducers })),
       ],
       providers: [DatClassColumnMappingFacade]
     })
@@ -35,12 +35,12 @@ fdescribe('DatClassColumnMapping Facade', () => {
     store = TestBed.inject(Store);
   });
 
-  fit('should init undefined', async () => {
+  it('should init undefined', async () => {
     const res = await firstValueFrom(facade.pkEntityIndex$)
     expect(res).toBe(undefined)
   });
 
-  fit('should reduce and find item', async () => {
+  it('should reduce and find item', async () => {
     const a: DatClassColumnMapping = { pk_entity: 11, fk_column: 22, fk_class: 33 };
     facade.loadSucceeded([a], "")
     const res = await firstValueFrom(facade.getClassColumnMapping.byPkEntity$(11))

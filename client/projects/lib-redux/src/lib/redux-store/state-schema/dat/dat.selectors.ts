@@ -1,5 +1,4 @@
-import { createFeatureSelector } from '@ngrx/store';
-import { datFeatureKey } from "./dat.feature.key";
-import { DatState } from "./dat.models";
+import { createSelector } from '@ngrx/store';
+import { getDataState } from '../data.selectors';
 
-export const getDatState = createFeatureSelector<DatState>(datFeatureKey);
+export const getDatState = createSelector(getDataState, s => s.dat);

@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { SysConfigValue } from '@kleiolab/lib-sdk-lb4/public-api';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { sysFeatureKey } from "../sys.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { SysState } from "../sys.models";
 import { SysConfigFacade } from './sys-config.facade';
 import { sysConfigReducers } from './sys-config.reducer';
 
-fdescribe('SysConfig Facade', () => {
+describe('SysConfig Facade', () => {
   let facade: SysConfigFacade;
   let store: Store<SysState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(sysFeatureKey, sysConfigReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ sys: sysConfigReducers })),
       ],
       providers: [SysConfigFacade]
     })

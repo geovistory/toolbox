@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { infDimensionActions } from './inf-dimension.actions';
 import { getDimensionByPkEntity, getDimensionByPkEntityState } from './inf-dimension.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfDimensionFacade extends CrudFacade<InfDimension> {
 
   dimensionsByPkEntity$ = this.store.select(getDimensionByPkEntityState);

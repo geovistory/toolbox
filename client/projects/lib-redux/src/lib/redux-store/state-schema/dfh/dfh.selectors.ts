@@ -1,5 +1,4 @@
-import { createFeatureSelector } from '@ngrx/store';
-import { dfhFeatureKey } from "./dfh.feature.key";
-import { DfhState } from './dfh.models';
+import { createSelector } from '@ngrx/store';
+import { getDataState } from '../data.selectors';
 
-export const getDfhState = createFeatureSelector<DfhState>(dfhFeatureKey);
+export const getDfhState = createSelector(getDataState, s => s.dfh);

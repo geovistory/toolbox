@@ -1,5 +1,4 @@
-import { createFeatureSelector } from '@ngrx/store';
-import { infFeatureKey } from "./inf.feature.key";
-import { InfState } from "./inf.models";
+import { createSelector } from '@ngrx/store';
+import { getDataState } from '../data.selectors';
 
-export const getInfState = createFeatureSelector<InfState>(infFeatureKey);
+export const getInfState = createSelector(getDataState, s => s.inf);

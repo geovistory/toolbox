@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { infTimePrimitiveActions } from './inf-time-primitive.actions';
 import { getTimePrimitiveByPkEntity, getTimePrimitiveByPkEntityState } from './inf-time-primitive.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfTimePrimitiveFacade extends CrudFacade<InfTimePrimitive> {
 
   timePrimitivesByPkEntity$ = this.store.select(getTimePrimitiveByPkEntityState);

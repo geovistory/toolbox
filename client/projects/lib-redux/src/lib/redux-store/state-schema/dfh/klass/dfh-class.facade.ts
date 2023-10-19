@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { dfhClassActions } from './dfh-class.actions';
 import { byPkClassState, getDfhClass } from './dfh-class.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DfhClassFacade extends CrudFacade<DfhClass> {
 
   dfhClass$ = this.store.select(byPkClassState);

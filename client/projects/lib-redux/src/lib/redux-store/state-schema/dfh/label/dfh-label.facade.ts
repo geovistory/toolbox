@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { dfhLabelActions } from './dfh-label.actions';
 import { getDfhLabel, indexState } from './dfh-label.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class DfhLabelFacade extends CrudFacade<DfhLabel> {
 
   dfhLabel$ = this.store.select(indexState);

@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { sysFeatureKey } from "../sys.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { SysState } from "../sys.models";
 import { SysSystemRelevantClassFacade } from './sys-system-relevant-class.facade';
 import { sysSystemRelevantClassReducers } from './sys-system-relevant-class.reducer';
 
-fdescribe('SysSystemRelevantClass Facade', () => {
+describe('SysSystemRelevantClass Facade', () => {
   let facade: SysSystemRelevantClassFacade;
   let store: Store<SysState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(sysFeatureKey, sysSystemRelevantClassReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ sys: sysSystemRelevantClassReducers })),
       ],
       providers: [SysSystemRelevantClassFacade]
     })

@@ -7,7 +7,6 @@ import { AccountEpics } from '../state-gui/epics/account.epics';
 import { ActiveProjectEpics } from '../state-gui/epics/active-project.epics';
 import { NotificationsAPIEpics } from '../state-gui/epics/notifications.epics';
 import { ActionResolverEpics } from '../state-schema/epics/action-resolver.epics';
-import { SchemaEpics } from '../state-schema/schema/schema.epics';
 
 export const APP_INITIAL_STATE = new InjectionToken<IAppState>('app.INITIAL_STATE');
 
@@ -25,7 +24,6 @@ export function apiConfigFactory(): Configuration {
       NotificationsAPIEpics,
       ActiveProjectEpics,
       AccountEpics,
-      SchemaEpics,
       // important: this needs to be the last epic
       ActionResolverEpics)
   ],

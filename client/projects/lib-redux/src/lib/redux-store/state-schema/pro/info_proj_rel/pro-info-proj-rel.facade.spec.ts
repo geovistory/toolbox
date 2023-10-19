@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { proFeatureKey } from "../pro.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { ProState } from "../pro.models";
 import { ProInfoProjRelFacade } from './pro-info-proj-rel.facade';
 import { proInfoProjRelReducers } from './pro-info-proj-rel.reducer';
 
-fdescribe('ProInfoProjRel Facade', () => {
+describe('ProInfoProjRel Facade', () => {
   let facade: ProInfoProjRelFacade;
   let store: Store<ProState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(proFeatureKey, proInfoProjRelReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ pro: proInfoProjRelReducers })),
       ],
       providers: [ProInfoProjRelFacade]
     })

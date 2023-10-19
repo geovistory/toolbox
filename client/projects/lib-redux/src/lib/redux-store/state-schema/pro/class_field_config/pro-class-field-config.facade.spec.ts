@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { proFeatureKey } from "../pro.feature.key";
+import { dataFeatureKey } from '../../data.feature.key';
 import { ProState } from "../pro.models";
 import { ProClassFieldConfigFacade } from './pro-class-field-config.facade';
 import { proClassFieldConfigReducers } from './pro-class-field-config.reducer';
 
-fdescribe('ProClassFieldConfig Facade', () => {
+describe('ProClassFieldConfig Facade', () => {
   let facade: ProClassFieldConfigFacade;
   let store: Store<ProState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(proFeatureKey, proClassFieldConfigReducers),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ pro: proClassFieldConfigReducers })),
       ],
       providers: [ProClassFieldConfigFacade]
     })
@@ -35,12 +35,12 @@ fdescribe('ProClassFieldConfig Facade', () => {
     store = TestBed.inject(Store);
   });
 
-  fit('should init undefined', async () => {
+  it('should init undefined', async () => {
     const res = await firstValueFrom(facade.classFieldConfigByPkEntity$)
     expect(res).toBe(undefined)
   });
 
-  fit('should reduce and find item by pkEntity', async () => {
+  it('should reduce and find item by pkEntity', async () => {
     const a: ProClassFieldConfig = { pk_entity: 11, fk_domain_class: 123, fk_project: 456 };
     facade.loadSucceeded([a], "")
     const res = await firstValueFrom(facade.getClassFieldConfig.byPkEntity$(11))

@@ -6,7 +6,9 @@ import { CrudFacade } from '../../_helpers/crud-facade';
 import { infAppellationActions } from './inf-appellation.actions';
 import { getAppellationByPkEntity, getAppellationByPkEntityState } from './inf-appellation.selectors';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfAppellationFacade extends CrudFacade<InfAppellation> {
 
   // Loaders

@@ -1,4 +1,7 @@
+import { GvFieldId, GvFieldPage } from '@kleiolab/lib-sdk-lb4';
 import { createSelector } from '@ngrx/store';
+import { getFromTo } from '../../_helpers/crud-reducer-factory';
+import { subfieldIdToString } from '../../_helpers/subfieldIdToString';
 import { getInfState } from '../inf.selectors';
 import { indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks } from './inf-statement.reducer';
 
@@ -23,3 +26,13 @@ export const getStatementByObject = (key: InfStatementObjectFks) => createSelect
 
 export const getStatementObjectAndPropertyIdxState = createSelector(getStatementState, state => state?.['by_object+property']);
 export const getStatementByObjectAndProperty = (key: InfStatementObjectAndProperyFks) => createSelector(getStatementObjectAndPropertyIdxState, (state) => state?.[indexStatementByObjectProperty(key)]);
+
+
+// Pagination selectors
+
+const getSubfieldPageState = createSelector(getStatementState, s => s?.by_subfield_page);
+export const getPage = (page: GvFieldId) => createSelector(getSubfieldPageState, (state) => state?.[subfieldIdToString(page)]);
+export const getPageCount = (page: GvFieldId) => createSelector(getSubfieldPageState, (state) => state?.[subfieldIdToString(page)]?.count);
+export const getPageRows = (page: GvFieldId) => createSelector(getSubfieldPageState, (state) => state?.[subfieldIdToString(page)]?.rows);
+export const getPageRow = (page: GvFieldId, rowIndex: number) => createSelector(getSubfieldPageState, (state) => state?.[subfieldIdToString(page)]?.rows?.[rowIndex]);
+export const getPageLoadNeeded = (page: GvFieldPage) => createSelector(getSubfieldPageState, (state) => state?.[subfieldIdToString(page)]?.loading?.[getFromTo(page.limit, page.offset)]);

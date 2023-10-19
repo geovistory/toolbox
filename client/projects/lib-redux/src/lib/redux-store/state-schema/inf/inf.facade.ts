@@ -8,7 +8,9 @@ import { InfResourceFacade } from './resource/inf-resource.facade';
 import { InfStatementFacade } from './statement/inf-statement.facade';
 import { InfTimePrimitiveFacade } from './time_primitive/inf-time-primitive.facade';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class InfFacade {
   constructor(
     public appellationFacade: InfAppellationFacade,
