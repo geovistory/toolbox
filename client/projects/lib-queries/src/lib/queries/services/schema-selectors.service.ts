@@ -2,7 +2,7 @@ import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { IAppState } from '@kleiolab/lib-redux';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
-import { InfSelector } from '../../../../../lib-redux/src/lib/redux-store/state-schema/inf/inf.selectors';
+import { InfSelector } from '../../../../../lib-redux/src/lib/redux-store/data/inf/inf.selectors';
 import { DatSelector } from '../selectors/dat.service';
 import { DfhSelector } from '../selectors/dfh.service';
 import { ProSelector } from '../selectors/pro.service';

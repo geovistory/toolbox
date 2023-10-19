@@ -7,7 +7,7 @@ import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '
 import { equals, flatten, uniq, values } from 'ramda';
 import { combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-import { InfSelector } from '../../../../../lib-redux/src/lib/redux-store/state-schema/inf/inf.selectors';
+import { InfSelector } from '../../../../../lib-redux/src/lib/redux-store/data/inf/inf.selectors';
 import { AddMenuClassOrTypeItem } from '../models/AddMenuClassOrTypeItem';
 import { ClassAndTypeNode } from '../models/ClassAndTypeNode';
 import { ClassAndTypeSelectModel } from '../models/ClassAndTypeSelectModel';
