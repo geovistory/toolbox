@@ -1,7 +1,7 @@
 import { InfStatement, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { ByPk } from '../../../public-api';
 
-interface PaginationInfo {
+export interface PaginationInfo {
   loading: {
     [key: string]: boolean
   },

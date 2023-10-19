@@ -4,8 +4,6 @@ import { SucceedActionMeta } from './data/_lib/crud-actions-factory';
 import { LoadingBarState } from './ui/loadingbar/loading-bar.models';
 import { IAccount } from './ui/models/account.model';
 import { ProjectDetail } from './ui/models/active-project.models';
-import { Information } from './ui/models/entity-list.models';
-import { SourceList } from './ui/models/source-list.models';
 
 
 export interface InfObject {
@@ -49,10 +47,6 @@ export interface IAppState {
   loadingBar?: LoadingBarState,
   data?: DataState
   activeProject?: ProjectDetail
-  routes?: any,
-  information?: Information,
-  sources?: SourceList,
-  sandboxState?: any,
   pending?: ByPk<boolean>
   resolved?: ByPk<SucceedActionMeta<any>>
 }

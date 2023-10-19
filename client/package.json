@@ -11,6 +11,7 @@
     "setup:version": "node ./scripts/setup-version.js",
     "serve": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng serve app-toolbox",
     "start": "ng serve",
+    "build": "ng build",
     "build:libs": "sh ./scripts/ng-build-libs.sh",
     "build:all": "sh ./scripts/ng-build-all.sh",
     "build:app-stats": "node --max_old_space_size=4096 node_modules/@angular/cli/bin/ng build app-toolbox --prod --sourceMap=true",

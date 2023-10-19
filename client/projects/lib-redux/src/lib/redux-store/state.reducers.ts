@@ -2,8 +2,8 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
 import { combineReducers } from 'redux';
 import { dataReducer } from './data/data.reducer';
-import { composeReducers } from './lib/composeReducers';
 import { uiReducers } from './ui/ui.reducers';
+import { composeReducers } from './_lib/composeReducers';
 
 
 export const INIT_SANDBOX_STATE = 'INIT_SANDBOX_STATE';
