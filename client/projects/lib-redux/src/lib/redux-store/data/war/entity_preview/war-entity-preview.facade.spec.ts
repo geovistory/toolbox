@@ -43,8 +43,6 @@ describe('WarEntityPreview Facade', () => {
   it('should reduce and find item ', async () => {
     const a: WarEntityPreview = { pk_entity: 11, project_id: 22, entity_label: 'A', fk_class: 33 };
     facade.loadSucceeded([a], "")
-    const state = await firstValueFrom(store.select(s => s))
-    console.log(state);
     const res = await firstValueFrom(facade.getEntityPreview.byProjectIdPkEntity$(22, 11))
     expect(res).toEqual(a)
   });

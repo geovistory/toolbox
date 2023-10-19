@@ -1,24 +1,25 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { Store, StoreModule } from '@ngrx/store';
+import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { take, toArray } from 'rxjs/operators';
+import { IAppState } from '../../state.model';
+import { uiFeatureKey } from '../ui.feature.key';
 import { LoadingBarFacade } from './loading-bar.facade';
-import { LoadingBarState } from './loading-bar.models';
 import { initialState, loadingBarReducer } from './loading-bar.reducer';
-import { loadingbarFeatureName } from './loading-bar.selectors';
 
-interface TestSchema {
-  [loadingbarFeatureName]: LoadingBarState;
-}
 describe('LoadingBar Facade', () => {
   let facade: LoadingBarFacade;
-  let store: Store<TestSchema>;
+  let store: Store<IAppState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(loadingbarFeatureName, loadingBarReducer, { initialState }),
+        StoreModule.forFeature(
+          uiFeatureKey,
+          combineReducers({ loadingBar: loadingBarReducer }),
+          { initialState: { loadingBar: initialState } }
+        ),
       ],
       providers: [LoadingBarFacade]
     })

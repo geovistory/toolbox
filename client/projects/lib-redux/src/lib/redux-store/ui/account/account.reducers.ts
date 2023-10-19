@@ -1,13 +1,13 @@
-import { AccountAction, AccountActions } from '../../ui/actions/account.actions';
-import { IAccount } from '../models/account.model';
+import { AccountAction, AccountActions } from './account.actions';
+import { AccountState } from './account.model';
 
 
-const INITIAL_STATE: IAccount = {
+export const initialAccountState: AccountState = {
   account: undefined,
-  roles: undefined
+  roles: []
 };
 
-export const accountRootReducer = (lastState: IAccount = INITIAL_STATE, action: AccountAction): IAccount => {
+export const accountReducer = (lastState: AccountState = initialAccountState, action: AccountAction): AccountState => {
   switch (action.type) {
     case AccountActions.LOGIN_SUCCEEDED:
       lastState = {
@@ -15,7 +15,6 @@ export const accountRootReducer = (lastState: IAccount = INITIAL_STATE, action: 
         account: action.meta.account
       };
       break;
-
 
     case AccountActions.ACCOUNT_UPDATED:
       lastState = {

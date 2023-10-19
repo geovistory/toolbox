@@ -1,24 +1,21 @@
-import { ClassConfig as LbClassConfig, InfAppellation } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig as LbClassConfig } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { EntityDetail } from './active-project/entity-detail';
-import { ProjectSettingsData } from './active-project/project-settings-data.models';
 import { TabBase } from './active-project/tab-layout.models';
-import { Types } from './active-project/types.models';
 
 
 
-export interface EntityByPk<T> {
-  [pk_entity: number]: T
-}
+// export interface EntityByPk<T> {
+//   [pk_entity: number]: T
+// }
 
-export interface VersionEntity<T> {
-  _latestVersion: number, // version number of the latest version
-  [v: number]: T
-}
+// export interface VersionEntity<T> {
+//   _latestVersion: number, // version number of the latest version
+//   [v: number]: T
+// }
 
-export interface EntityVersionsByPk<T> {
-  [pk_entity: number]: VersionEntity<T>
-}
+// export interface EntityVersionsByPk<T> {
+//   [pk_entity: number]: VersionEntity<T>
+// }
 
 export interface Panel {
   id: number;
@@ -57,56 +54,41 @@ export interface PanelTab<D> {
 //     // stateSettings?: StateSettings
 //   }
 // }
-export interface AnalysisTabData {
-  pkEntity?: number;
-  fkAnalysisType?: number;
-}
-export interface TabData {
-  pkEntity?: number;
-  // classAndTypePk?: ClassAndTypePk;
+// export interface AnalysisTabData {
+//   pkEntity?: number;
+//   fkAnalysisType?: number;
+// }
+// export interface TabData {
+//   pkEntity?: number;
+//   // classAndTypePk?: ClassAndTypePk;
 
-  pkProperty?: number;
+//   pkProperty?: number;
 
-  // Used by peIt detail state creato
-  peItDetailConfig?: {
-    peItDetail?: EntityDetail
-    // stateSettings?: StateSettings
-  }
+//   // Used by peIt detail state creato
+//   peItDetailConfig?: {
+//     peItDetail?: EntityDetail
+//     // stateSettings?: StateSettings
+//   }
 
-  // // Used by teEnt detail state creato
-  // teEntDetailConfig?: {
-  //   teEntDetail?: TeEntDetail
-  //   // stateSettings?: StateSettingsÚ
-  // }
-}
+//   // // Used by teEnt detail state creato
+//   // teEntDetailConfig?: {
+//   //   teEntDetail?: TeEntDetail
+//   //   // stateSettings?: StateSettingsÚ
+//   // }
+// }
 
-export interface RamSource {
-  pkEntity?: number,
-  annotation?: {
-    textChunk: InfAppellation,
-    pkEntityOfText: number
-  };
-}
+// export interface RamSource {
+//   pkEntity?: number,
+//   annotation?: {
+//     textChunk: InfAppellation,
+//     pkEntityOfText: number
+//   };
+// }
 
-export interface ProjectDetail {
+export interface ActiveProjectState {
 
   pk_project?: number;
-  /******************************************************************
-   * CRM and Project Config
-   */
 
-  // Conceptional Reference Model
-  // crm?: ProjectCrm,
-  loadingConfigData?: boolean;
-  configDataInitialized?: boolean;
-
-  /******************************************************************
-   * Information Cache
-   */
-
-  /******************************************************************
-   * Layout – Tabs
-   */
   list?: ListType;
 
   panels?: Panel[]
@@ -123,22 +105,22 @@ export interface ProjectDetail {
   tabLayouts?: { [uiId: string]: TabBase }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  textDetails?: { [uiId: string]: TabBase }
+  // textDetails?: { [uiId: string]: TabBase }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  peItDetails?: { [uiId: string]: EntityDetail }
+  // peItDetails?: { [uiId: string]: EntityDetail }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  analysisDetails?: { [uiId: string]: any }
+  // analysisDetails?: { [uiId: string]: any }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  classesSettings?: { [uiId: string]: ProjectSettingsData }
+  // classesSettings?: { [uiId: string]: ProjectSettingsData }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  contrVocabSettings?: { [uiId: string]: Types }
+  // contrVocabSettings?: { [uiId: string]: Types }
 
   // reference the uiId within the path of the tab (uiId has nothing to do with pk_entity)
-  ontomeProfilesSettings?: { [uiId: string]: any }
+  // ontomeProfilesSettings?: { [uiId: string]: any }
 
   // /******************************************************************
   //  * Layout – Modals
@@ -171,33 +153,33 @@ export interface ProjectDetail {
 }
 
 
-export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig }
+// export interface ClassConfigList { [dfh_pk_class: number]: ClassConfig }
 
-export interface ClassConfig {
-  pkEntity: number;
-  dfh_pk_class: number;
+// export interface ClassConfig {
+//   pkEntity: number;
+//   dfh_pk_class: number;
 
-  label: string;
-  dfh_standard_label: string;
+//   label: string;
+//   dfh_standard_label: string;
 
-  profileLabels: string;
-  profilePks: number[];
+//   profileLabels: string;
+//   profilePks: number[];
 
-  isInProject?: boolean; // reflects the enabled / disabled state from data settings of the project
-  changingProjRel: boolean;
+//   isInProject?: boolean; // reflects the enabled / disabled state from data settings of the project
+//   changingProjRel: boolean;
 
-  subclassOf?: 'peIt' | 'teEnt' | 'other'; // to distinguish TeEnts from PeIts
+//   subclassOf?: 'peIt' | 'teEnt' | 'other'; // to distinguish TeEnts from PeIts
 
-  subclassOfType?: boolean; // true if subclass of E55 Type
+//   subclassOfType?: boolean; // true if subclass of E55 Type
 
-  scopeNote: string;
+//   scopeNote: string;
 
-  dfh_identifier_in_namespace: string;
+//   dfh_identifier_in_namespace: string;
 
-  required_by_sources?: boolean
-  required_by_entities?: boolean
-  required_by_basics?: boolean
-  excluded_from_entities?: boolean
-}
+//   required_by_sources?: boolean
+//   required_by_entities?: boolean
+//   required_by_basics?: boolean
+//   excluded_from_entities?: boolean
+// }
 
 

@@ -4,23 +4,23 @@ import { Actions, createEffect } from '@ngrx/effects';
 import { ofType } from 'redux-observable';
 import { of } from 'rxjs';
 import { catchError, first, mergeMap, startWith } from 'rxjs/operators';
-import { AccountAction, AccountActions } from '../actions/account.actions';
 import { NotificationsAPIActions } from '../actions/notifications.actions';
-import { LoadingBarActions } from '../loadingbar/loading-bar.actions';
+import { LoadingBarActions } from '../loadingBar/loading-bar.actions';
+import { AccountAction, AccountActions } from './account.actions';
 
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class AccountEpics {
+export class AccountEffects {
 
   loadRoles$ = createEffect(() => this.actions$.pipe(
     ofType(AccountActions.LOAD_ROLES),
     mergeMap((action: AccountAction) => this.accountDataApi.accountDataControllerGetRoles(action.meta.accountId).pipe(
       first(),
       mergeMap(data => of(
-        this.actions.loadRolesSucceeded(data),
+        AccountActions.loadRolesSucceeded(data),
         LoadingBarActions.REMOVE_JOB()
       )),
       catchError(error => of(
@@ -36,15 +36,8 @@ export class AccountEpics {
   )
   )
   constructor(
-    private actions: AccountActions,
-    private loadingBarActions: LoadingBarActions,
     private accountDataApi: AccountDataService,
     private notificationActions: NotificationsAPIActions,
     private actions$: Actions<AccountAction>,
   ) { }
-
-
-
-
-
 }

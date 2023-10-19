@@ -1,17 +1,17 @@
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { omit } from 'ramda';
-import { ActiveProjectAction, ActiveProjectActions } from '../../ui/actions/active-project.action';
-import { ProjectDetail } from '../models/active-project.models';
+import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
+import { ActiveProjectState } from './active-project.models';
 
 
-const INITIAL_STATE: ProjectDetail = {
+export const initialActiveProjectState: ActiveProjectState = {
   list: '',
   uiIdSerial: 0,
   panelSerial: 0,
   focusedPanel: 0,
   panels: []
 };
-export const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, action: ActiveProjectAction): ProjectDetail => {
+export const activeProjectReducer = (state: ActiveProjectState = initialActiveProjectState, action: ActiveProjectAction): ActiveProjectState => {
   let pi, ti, ppi, cpi, pti, cti;
   switch (action.type) {
     /************************************************************************************
@@ -51,8 +51,10 @@ export const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, actio
           [pi]: {
             ...state.panels[pi],
             tabs: [...state.panels[pi].tabs].map((tab, index) => {
-              tab.active = (index === ti);
-              return tab;
+              return {
+                ...tab,
+                active: (index === ti)
+              }
             })
           }
         })
@@ -86,15 +88,19 @@ export const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, actio
             [ppi]: {
               ...state.panels[ppi],
               tabs: pTabs.map((tab, index) => {
-                tab.active = (index === (pti < pTabs.length ? pti : (pti - 1)));
-                return tab;
+                return {
+                  ...tab,
+                  active: (index === (pti < pTabs.length ? pti : (pti - 1)))
+                }
               })
             },
             [cpi]: {
               ...state.panels[cpi],
               tabs: cTabs.map((tab, index) => {
-                tab.active = (index === cti);
-                return tab;
+                return {
+                  ...tab,
+                  active: (index === cti)
+                }
               })
             }
           })
@@ -124,8 +130,7 @@ export const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, actio
             ...state.panels[pi],
             tabs: [
               ...state.panels[pi].tabs.map(t => {
-                t.active = false;
-                return t;
+                return { ...t, active: true }
               }),
               {
                 ...omit(['pathSegment'], action.meta.tab),
@@ -201,7 +206,9 @@ export const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, actio
             tabs: [...state.panels[ppi].tabs]
               .filter((tab, index) => index !== ti)
               .map((tab, index) => {
-                if (index === 0) tab.active = true;
+                if (index === 0) {
+                  return { ...tab, active: true }
+                }
                 return tab;
               })
           }
@@ -258,7 +265,7 @@ export const activeProjectReducer = (state: ProjectDetail = INITIAL_STATE, actio
      * Destroy the active project state (on closing a project)
     ************************************************************************************/
     case ActiveProjectActions.DESTROY:
-      state = INITIAL_STATE;
+      state = initialActiveProjectState;
       break;
   }
 

@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { catchError, mergeMap, startWith } from 'rxjs/operators';
 import { IAppState } from '../state.model';
 import { NotificationsAPIActions } from '../ui/actions/notifications.actions';
-import { LoadingBarActions } from '../ui/loadingbar/loading-bar.actions';
+import { LoadingBarActions } from '../ui/loadingBar/loading-bar.actions';
 import { paginationObjectActions, schemaModifierActions, schemaObjectActions } from './data.actions';
 import { infStatementActions } from './inf/statement/inf-statement.actions';
 

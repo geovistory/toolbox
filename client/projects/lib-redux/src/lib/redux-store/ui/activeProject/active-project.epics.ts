@@ -6,7 +6,7 @@ import { ofType } from 'redux-observable';
 import { Observable } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { IAppState } from '../../state.model';
-import { ActiveProjectAction, ActiveProjectActions } from '../../ui/actions/active-project.action';
+import { ActiveProjectAction, ActiveProjectActions } from './active-project.action';
 
 
 @Injectable({
@@ -14,7 +14,6 @@ import { ActiveProjectAction, ActiveProjectActions } from '../../ui/actions/acti
 })
 export class ActiveProjectEpics {
   constructor(
-    private actions: ActiveProjectActions,
     private actions$: Actions<ActiveProjectAction>,
     private store: Store<IAppState>
   ) { }
@@ -30,7 +29,7 @@ export class ActiveProjectEpics {
       concatLatestFrom(() => this.store.select((s) => s?.activeProject?.panels)),
       mergeMap(([action, panels]) => new Observable<Action>((globalStore) => {
         panels?.forEach((panel, panelIndex) => {
-          if (panel.tabs.length === 0) globalStore.next(this.actions.closePanel(panelIndex));
+          if (panel.tabs.length === 0) globalStore.next(ActiveProjectActions.closePanel(panelIndex));
         })
       }))
     )
@@ -42,7 +41,7 @@ export class ActiveProjectEpics {
       map(([action, p]) => {
         const c = action.meta.currentPanelIndex;
         const panelIndex = p.panels.length < (c + 1) ? c - 1 : c;
-        return this.actions.activateTab(panelIndex, 0)
+        return ActiveProjectActions.activateTab(panelIndex, 0)
       })
     )
   )
@@ -52,7 +51,7 @@ export class ActiveProjectEpics {
       concatLatestFrom(() => this.store.select((s) => s?.activeProject?.focusedPanel)),
       mergeMap(([action, focusedPanel]) => new Observable<Action>((globalStore) => {
         if (focusedPanel !== action.meta.panelIndex) {
-          globalStore.next(this.actions.focusPanel(action.meta.panelIndex));
+          globalStore.next(ActiveProjectActions.focusPanel(action.meta.panelIndex));
         }
       }))
     )
@@ -63,7 +62,7 @@ export class ActiveProjectEpics {
       concatLatestFrom(() => this.store.select((s) => s?.activeProject?.focusedPanel)),
       mergeMap(([action, focusedPanel]) => new Observable<Action>((globalStore) => {
         if (focusedPanel !== action.meta.currentPanelIndex) {
-          globalStore.next(this.actions.focusPanel(action.meta.currentPanelIndex));
+          globalStore.next(ActiveProjectActions.focusPanel(action.meta.currentPanelIndex));
         }
       }))
     )
@@ -74,7 +73,7 @@ export class ActiveProjectEpics {
       concatLatestFrom(() => this.store.select((s) => s?.activeProject)),
       mergeMap(([action, activeProject]) => new Observable<Action>((globalStore) => {
         if (activeProject.focusedPanel > (activeProject.panels.length - 1)) {
-          globalStore.next(this.actions.focusPanel(0));
+          globalStore.next(ActiveProjectActions.focusPanel(0));
         }
       }))
     )
@@ -82,7 +81,7 @@ export class ActiveProjectEpics {
   addTabCloseList$ = createEffect(() =>
     this.actions$.pipe(
       ofType(ActiveProjectActions.ADD_TAB),
-      map(() => this.actions.setListType(''))
+      map(() => ActiveProjectActions.setListType(''))
     )
   )
 }

@@ -1,9 +1,9 @@
 import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { DataState } from './data/data.model';
 import { SucceedActionMeta } from './data/_lib/crud-actions-factory';
-import { LoadingBarState } from './ui/loadingbar/loading-bar.models';
-import { IAccount } from './ui/models/account.model';
-import { ProjectDetail } from './ui/models/active-project.models';
+import { AccountState } from './ui/account/account.model';
+import { ActiveProjectState } from './ui/activeProject/active-project.models';
+import { LoadingBarState } from './ui/loadingBar/loading-bar.models';
 
 
 export interface InfObject {
@@ -42,11 +42,11 @@ export interface PaginationObject {
 }
 
 export interface IAppState {
-  account?: IAccount,
+  account?: AccountState,
   // backoffice?: Backoffice,
   loadingBar?: LoadingBarState,
   data?: DataState
-  activeProject?: ProjectDetail
+  activeProject?: ActiveProjectState
   pending?: ByPk<boolean>
   resolved?: ByPk<SucceedActionMeta<any>>
 }

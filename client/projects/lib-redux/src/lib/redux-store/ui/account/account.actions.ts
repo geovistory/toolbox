@@ -1,19 +1,14 @@
-import { Injectable } from '@angular/core';
 import { PubAccount, PubRole } from '@kleiolab/lib-sdk-lb4';
 import { FluxStandardAction } from 'flux-standard-action';
-import { IAccount } from '../models/account.model';
+import { AccountState } from './account.model';
 
 export interface AccountActionMeta {
   accountId?: number;
   accountRoles?: PubRole[];
   account?: PubAccount;
 };
-export type AccountAction = FluxStandardAction<IAccount, AccountActionMeta>;
+export type AccountAction = FluxStandardAction<AccountState, AccountActionMeta>;
 
-
-@Injectable({
-  providedIn: 'root'
-})
 export class AccountActions {
   static LOGIN = 'Account::LOGIN';
   static LOGIN_SUCCEEDED = 'Account::LOGIN_SUCCEEDED';
@@ -26,7 +21,7 @@ export class AccountActions {
   static ACCOUNT_UPDATED = 'Account::ACCOUNT_UPDATED';
 
 
-  login(): AccountAction {
+  static login(): AccountAction {
     return {
       type: AccountActions.LOGIN,
       payload: null,
@@ -34,7 +29,7 @@ export class AccountActions {
     };
   }
 
-  loginSucceeded(account: PubAccount): AccountAction {
+  static loginSucceeded(account: PubAccount): AccountAction {
     return {
       type: AccountActions.LOGIN_SUCCEEDED,
       payload: null,
@@ -42,7 +37,7 @@ export class AccountActions {
     };
   }
 
-  loginFailed(error): AccountAction {
+  static loginFailed(error): AccountAction {
     return {
       type: AccountActions.LOGIN_FAILED,
       payload: null,
@@ -51,7 +46,7 @@ export class AccountActions {
     };
   }
 
-  accountUpdated(account: PubAccount): AccountAction {
+  static accountUpdated(account: PubAccount): AccountAction {
     return {
       type: AccountActions.ACCOUNT_UPDATED,
       payload: null,
@@ -60,7 +55,7 @@ export class AccountActions {
   }
 
   // Roles of the account, used to check permissions
-  loadRoles(accountId: number): AccountAction {
+  static loadRoles(accountId: number): AccountAction {
     return {
       type: AccountActions.LOAD_ROLES,
       payload: null,
@@ -68,7 +63,7 @@ export class AccountActions {
     };
   }
 
-  loadRolesSucceeded(accountRoles: PubRole[]): AccountAction {
+  static loadRolesSucceeded(accountRoles: PubRole[]): AccountAction {
     return {
       type: AccountActions.LOAD_ROLES_SUCCEEDED,
       payload: null,
@@ -76,7 +71,7 @@ export class AccountActions {
     };
   }
 
-  loadRolesFailed(accountRoles: PubRole[]): AccountAction {
+  static loadRolesFailed(): AccountAction {
     return {
       type: AccountActions.LOAD_ROLES_FAILED,
       payload: null,

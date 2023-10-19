@@ -1,10 +1,10 @@
 import { combineReducers } from '@ngrx/store'
-import { loadingBarReducer } from './loadingbar/loading-bar.reducer'
-import { accountRootReducer } from './reducers/account.reducers'
-import { activeProjectReducer } from './reducers/active-project.reducer'
+import { accountReducer } from './account/account.reducers'
+import { activeProjectReducer } from './activeProject/active-project.reducer'
+import { loadingBarReducer } from './loadingBar/loading-bar.reducer'
 
 export const uiReducers = combineReducers({
-  account: accountRootReducer,
+  account: accountReducer,
   loadingBar: loadingBarReducer,
   activeProject: activeProjectReducer,
 })
