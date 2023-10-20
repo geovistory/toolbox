@@ -1,6 +1,6 @@
 import { PubAccount, PubRole } from '@kleiolab/lib-sdk-lb4';
 
 export interface AccountState {
-  account: PubAccount,
+  account?: PubAccount,
   roles?: PubRole[]
 }

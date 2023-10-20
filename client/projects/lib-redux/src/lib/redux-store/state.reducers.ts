@@ -1,8 +1,8 @@
-import { IAppState } from '@kleiolab/lib-redux/public-api';
 import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
 import { combineReducers } from 'redux';
 import { dataReducer } from './data/data.reducer';
+import { IAppState } from './state.model';
 import { uiReducers } from './ui/ui.reducers';
 import { composeReducers } from './_lib/composeReducers';
 
@@ -72,7 +72,6 @@ export const rootReducer = composeReducers(
   combineReducers<IAppState>({
     data: dataReducer,
     ui: uiReducers,
-    sandboxState: sandboxStateReducer,
     pending: pendingRequestReducer,
     resolved: composeReducers(resolvedRequestReducer, cleanupResolved),
   }),

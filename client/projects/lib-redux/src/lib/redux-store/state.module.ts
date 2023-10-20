@@ -2,10 +2,9 @@ import { Inject, InjectionToken, NgModule, Optional, SkipSelf } from '@angular/c
 import { Configuration, ConfigurationParameters, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+import { DataModule } from './data/data.module';
 import { StateEffects } from './state.effects';
 import { IAppState } from './state.model';
-import { AccountEffects } from './ui/account/account.effects';
-import { ActiveProjectEffects } from './ui/active-project/active-project.effects';
 import { UiModule } from './ui/ui.module';
 
 export const APP_INITIAL_STATE = new InjectionToken<IAppState>('app.INITIAL_STATE');
@@ -20,12 +19,9 @@ export function apiConfigFactory(): Configuration {
 @NgModule({
   imports: [
     UiModule,
+    DataModule,
     StoreModule.forRoot(),
-    EffectsModule.forRoot(
-      ActiveProjectEffects,
-      AccountEffects,
-      // important: this needs to be the last epic
-      StateEffects)
+    EffectsModule.forRoot(StateEffects)
   ],
   providers: []
 })
@@ -41,7 +37,15 @@ export class StateModule {
     if (parentModule) errors.push('ReduxModule is already loaded. Import in your base AppModule only.');
     if (!sdkLb4) errors.push('You need to import the SdkLb4Module in your AppModule!');
     if (errors.length) throw new Error(errors.join('\n'));
-    if (!initialState) initialState = {}
+    if (!initialState) initialState = {
+      ui: {
+        account: {},
+        activeProject: {},
+        loadingBar: {},
+        notifications: []
+      },
+      data: {}
+    }
 
   }
 }

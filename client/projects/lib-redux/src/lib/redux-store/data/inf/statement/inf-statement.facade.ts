@@ -1,11 +1,11 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { GvFieldId, GvFieldPage, InfStatement, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { Store } from '@ngrx/store';
 import { values } from 'ramda';
 import { filter, first, map, Observable, of, pipe, switchMap } from 'rxjs';
-import { PROJECT_ID$ } from '../../../PROJECT_ID$';
 import { IAppState } from '../../../public-api';
+import { getActiveProjectId } from '../../../ui/active-project/active-project.selectors';
 import { ByPk } from '../../../_lib/ByPk';
 import { getInfoProjRelByFkProjectPkEntity } from '../../pro/info_proj_rel/pro-info-proj-rel.selectors';
 import { CrudFacade } from '../../_lib/crud-facade';
@@ -21,9 +21,9 @@ import { getPage, getPageCount, getPageLoadNeeded, getPageRow, getPageRows, getS
 export class InfStatementFacade extends CrudFacade<InfStatement> {
 
   statementsPkEntityIdx$ = this.store.select(getStatementPkEntityIdxtate);
+  private pkProject$ = this.store.select(getActiveProjectId);
 
   constructor(
-    @Inject(PROJECT_ID$) private pkProject$: Observable<number>,
     protected store: Store<IAppState>
   ) {
     super(store, infStatementActions)
