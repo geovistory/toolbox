@@ -6,7 +6,6 @@ import { GvPaginationObjectMock } from 'projects/__test__/data/auto-gen/api-resp
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { keys } from 'ramda';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { PROJECT_ID$ } from "../../../PROJECT_ID$";
 import { IAppState } from '../../../public-api';
 import { dataFeatureKey } from '../../data.feature.key';
 import { DataState } from '../../data.model';
@@ -27,7 +26,6 @@ describe('InfStatement Facade', () => {
       ],
       providers: [
         InfStatementFacade,
-        { provide: PROJECT_ID$, useValue: new BehaviorSubject(1) }
       ]
     })
     class CustomFeatureModule { }
@@ -44,7 +42,6 @@ describe('InfStatement Facade', () => {
 
     facade = TestBed.inject(InfStatementFacade);
     store = TestBed.inject(Store);
-    projectId$ = TestBed.inject(PROJECT_ID$);
   });
 
   it('should init undefined', async () => {

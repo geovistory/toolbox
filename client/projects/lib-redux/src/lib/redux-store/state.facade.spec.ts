@@ -38,7 +38,7 @@ describe('State Facade', () => {
     expect(res[0].type).toBe('success')
   });
 
-  fit('should reduce and find item by pkEntity and project 99', async () => {
+  it('should reduce and find item by pkEntity and project 99', async () => {
     const input: InfStatement = { fk_property: 1, pk_entity: 11, fk_subject_info: 123 };
     const input2: InfStatement = { fk_property: 1, pk_entity: 12, fk_subject_info: 123 };
     facade.data.inf.statement.loadSucceeded([input, input2], "")
