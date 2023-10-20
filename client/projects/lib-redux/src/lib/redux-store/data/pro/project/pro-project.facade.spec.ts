@@ -48,4 +48,13 @@ describe('ProProject Facade', () => {
     expect(res).toEqual(a)
   });
 
+  it('should return projects sorted by latest first', async () => {
+    facade.loadSucceeded([
+      { fk_language: 1, pk_entity: 1, tmsp_last_modification: "2020-01-01T12:00:00.000Z" },
+      { fk_language: 2, pk_entity: 2, tmsp_last_modification: "2020-01-01T13:00:00.000Z" },
+    ], '')
+    const q = await firstValueFrom(facade.latestFirst$)
+    expect(q[0].pk_entity).toEqual(2)
+  });
+
 })

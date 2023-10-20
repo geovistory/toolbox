@@ -1,4 +1,3 @@
-import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
 import { IAppState, SchemaService } from '@kleiolab/lib-redux';
 import { GvPositiveSchemaObject, InfLanguage, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';

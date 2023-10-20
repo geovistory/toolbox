@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { isDevMode, NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
+import { SocketsModule } from '@kleiolab/lib-sockets';
 import { EffectsModule } from '@ngrx/effects';
 import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -25,7 +26,8 @@ describe('Data Facade', () => {
         StoreModule.forRoot(),
         StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
         EffectsModule.forRoot(),
-        DataModule
+        DataModule,
+        SocketsModule
       ]
     })
     class RootModule { }

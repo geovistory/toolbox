@@ -46,6 +46,8 @@ describe('WarEntityPreview Facade', () => {
     facade.loadSucceeded([a], "")
     const res = await firstValueFrom(facade.getEntityPreview.byProjectIdPkEntity$(22, 11))
     expect(res).toEqual(a)
+    const res2 = await firstValueFrom(facade.getEntityPreview.byKey$('22_11'))
+    expect(res2).toEqual(a)
   });
 
 })

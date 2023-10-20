@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WarActions } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { Socket } from 'ngx-socket-io';
 import { ConfigService } from './config.service';
@@ -7,7 +7,7 @@ import { ConfigService } from './config.service';
 export class EntityPreviewSocket extends Socket {
 
   constructor(
-    warActions: WarActions,
+    state: StateFacade,
     c: ConfigService,
     // @Optional() @Inject(SOCKETS_CONFIG) config?: SocketsConfig,
   ) {
@@ -22,7 +22,7 @@ export class EntityPreviewSocket extends Socket {
 
     // dispatch a method to put the EntityPreview to the store
     this.fromEvent<WarEntityPreview>('entityPreview').subscribe(data => {
-      warActions.entity_preview.loadSucceeded([data], '');
+      state.data.war.entityPreview.loadSucceeded([data], '');
     });
 
   }

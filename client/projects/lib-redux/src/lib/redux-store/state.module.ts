@@ -1,5 +1,6 @@
 import { Inject, InjectionToken, NgModule, Optional, SkipSelf } from '@angular/core';
 import { Configuration, ConfigurationParameters, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
+import { SocketsModule } from '@kleiolab/lib-sockets';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { DataModule } from './data/data.module';
@@ -21,7 +22,8 @@ export function apiConfigFactory(): Configuration {
     UiModule,
     DataModule,
     StoreModule.forRoot(),
-    EffectsModule.forRoot(StateEffects)
+    EffectsModule.forRoot(StateEffects),
+    SocketsModule
   ],
   providers: []
 })

@@ -48,4 +48,12 @@ describe('InfLanguage Facade', () => {
     expect(res).toEqual(input)
   });
 
+
+  it('should reduce and find language label by pkEntity', async () => {
+    const input: InfLanguage = { fk_class: 1, pk_entity: 11, iso6391: "1", notes: 'My Lang' };
+    facade.loadSucceeded([input], "")
+    const res = await firstValueFrom(facade.getLanguageLabel.byPkEntity$(11))
+    expect(res).toEqual('My Lang')
+  });
+
 })

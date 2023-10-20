@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { IAppState } from '../../../public-api';
 import { CrudFacade } from '../../_lib/crud-facade';
 import { infLanguageActions } from './inf-language.actions';
-import { getLanguageByPkEntity, getLanguageByPkEntityState } from './inf-language.selectors';
+import { getLanguageByPkEntity, getLanguageByPkEntityState, getLanguageLabelByPkEntity } from './inf-language.selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -20,4 +20,8 @@ export class InfLanguageFacade extends CrudFacade<InfLanguage> {
   getLanguage = {
     byPkEntity$: (pkEntity: number) => this.store.select(getLanguageByPkEntity(pkEntity))
   };
+
+  getLanguageLabel = {
+    byPkEntity$: (pkEntity: number) => this.store.select(getLanguageLabelByPkEntity(pkEntity))
+  }
 }

@@ -1,10 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { Actions, concatLatestFrom, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { of } from 'rxjs';
-import { catchError, mergeMap, startWith } from 'rxjs/operators';
+import { catchError, filter, map, mergeMap, startWith, tap } from 'rxjs/operators';
+import { StateFacade } from '../state.facade';
 import { IAppState } from '../state.model';
 import { getActiveProjectId } from '../ui/active-project/active-project.selectors';
 import { LoadingBarActions } from '../ui/loading-bar/loading-bar.actions';
@@ -19,7 +21,9 @@ export class DataEffects {
 
   constructor(
     private actions$: Actions<FluxStandardAction<any, any>>,
-    private store: Store<IAppState>
+    private store: Store<IAppState>,
+    private facade: StateFacade,
+    private entityPreviewSocket: EntityPreviewSocket
   ) { }
 
   /**
@@ -82,6 +86,28 @@ export class DataEffects {
   ))
 
 
+  /**
+   * Epic for extending stream of entity previews when new entity previews are
+   * successfully loaded into the store
+   */
+  extendEntityPreviewStream$ = createEffect(
+    () => this.actions$.pipe(
+      ofType(schemaModifierActions.succeeded),
+      map(a => a.payload?.positive?.war?.entity_preview),
+      filter(items => !!items?.length),
+      concatLatestFrom(() => this.facade.ui.activeProject.projectId$),
+      tap(([entityPreviews, pkProject]) => {
+        this.entityPreviewSocket.emit('extendStream', {
+          pkProject,
+          pks: entityPreviews.map(p => p.project_id + '_' + p.pk_entity)
+        })
+      }),
+
+    ),
+    {
+      dispatch: false,
+    }
+  )
 
 
   errorActions(error: HttpErrorResponse) {
@@ -98,5 +124,6 @@ export class DataEffects {
       })
     ]
   }
+
 }
 
