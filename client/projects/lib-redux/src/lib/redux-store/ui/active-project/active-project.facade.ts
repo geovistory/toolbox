@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core'
-import { TabData } from '@kleiolab/lib-redux/lib/redux-store/ui/models/active-project.models'
 import { Store } from '@ngrx/store'
 import { ActiveProjectActions } from './active-project.action'
 import { ListType, Panel, PanelTab } from './active-project.models'
@@ -28,7 +27,7 @@ export class ActiveProjectFacade {
   setActiveTab = (panelIndex: number, tabIndex: number) => this.store.dispatch(ActiveProjectActions.activateTab(panelIndex, tabIndex))
   moveTab = (previousPanelIndex: number, currentPanelIndex: number, previousTabIndex: number, currentTabIndex: number) =>
     this.store.dispatch(ActiveProjectActions.moveTab(previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex))
-  addTab = (tab: PanelTab<TabData>) =>
+  addTab = <TabData>(tab: PanelTab<TabData>) =>
     this.store.dispatch(ActiveProjectActions.addTab(tab))
   closeTab = (panelIndex: number, tabIndex: number) =>
     this.store.dispatch(ActiveProjectActions.closeTab(panelIndex, tabIndex))
