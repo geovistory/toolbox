@@ -15,7 +15,7 @@ describe('DfhProfile Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ dfh: dfhProfileReducers })),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dfh: combineReducers({ profile: dfhProfileReducers }) }))
       ],
       providers: [DfhProfileFacade]
     })

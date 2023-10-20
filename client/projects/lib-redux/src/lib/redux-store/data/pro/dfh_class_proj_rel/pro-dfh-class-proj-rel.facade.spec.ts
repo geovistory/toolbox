@@ -4,6 +4,7 @@ import { ProDfhClassProjRel } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { ProState } from "../pro.models";
 import { ProDfhClassProjRelFacade } from './pro-dfh-class-proj-rel.facade';
 import { proDfhClassProjRelReducers } from './pro-dfh-class-proj-rel.reducer';
@@ -15,7 +16,7 @@ describe('ProDfhClassProjRel Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ pro: proDfhClassProjRelReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ pro: combineReducers({ dfh_class_proj_rel: proDfhClassProjRelReducers }) }))
       ],
       providers: [ProDfhClassProjRelFacade]
     })

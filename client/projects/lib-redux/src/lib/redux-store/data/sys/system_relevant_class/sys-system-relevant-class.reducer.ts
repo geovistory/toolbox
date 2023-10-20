@@ -1,5 +1,5 @@
 import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { sysFeatureKey } from "../sys.feature.key";
 
 export const sysSystemRelevantClassFeature = 'system_relevant_class'
@@ -25,5 +25,5 @@ export const sysSystemRelevantClassReducerConfig: ReducerConfig = {
     }
   ]
 }
-export const sysSystemRelevantClassReducers = new CrudReducerFactory(sysFeatureKey, { [sysSystemRelevantClassFeature]: sysSystemRelevantClassReducerConfig }).createReducers();
+export const sysSystemRelevantClassReducers = createModelReducers(sysFeatureKey, sysSystemRelevantClassFeature, sysSystemRelevantClassReducerConfig)
 

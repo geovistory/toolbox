@@ -4,6 +4,7 @@ import { InfResource } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { InfState } from "../inf.models";
 import { InfResourceFacade } from './inf-resource.facade';
 import { infResourceReducers } from './inf-resource.reducer';
@@ -15,7 +16,7 @@ describe('InfResource Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: infResourceReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ inf: combineReducers({ resource: infResourceReducers }) }))
       ],
       providers: [InfResourceFacade]
     })

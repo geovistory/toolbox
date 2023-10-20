@@ -4,6 +4,7 @@ import { SysConfigValue } from '@kleiolab/lib-sdk-lb4/public-api';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { SysState } from "../sys.models";
 import { SysConfigFacade } from './sys-config.facade';
 import { sysConfigReducers } from './sys-config.reducer';
@@ -15,7 +16,7 @@ describe('SysConfig Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ sys: sysConfigReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ sys: combineReducers({ config: sysConfigReducers }) }))
       ],
       providers: [SysConfigFacade]
     })

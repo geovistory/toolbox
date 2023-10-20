@@ -15,7 +15,7 @@ describe('InfDimension Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: infDimensionReducers })),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: combineReducers({ dimension: infDimensionReducers }) }))
       ],
       providers: [InfDimensionFacade]
     })

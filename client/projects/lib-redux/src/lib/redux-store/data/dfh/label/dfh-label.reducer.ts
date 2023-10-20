@@ -1,5 +1,5 @@
 import { DfhLabel } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { dfhFeatureKey } from "../dfh.feature.key";
 
 export const dfhLabelByFksKey = (item: Partial<DfhLabel>) => `${item.type || null}_${item.language || null}_${item.fk_class || null}_${item.fk_profile || null}_${item.fk_property || null}_${item.fk_project || null}`;
@@ -24,5 +24,5 @@ export const dfhLabelReducerConfig: ReducerConfig = {
     }
   ]
 }
-export const dfhLabelReducers = new CrudReducerFactory(dfhFeatureKey, { [dfhLabelFeature]: dfhLabelReducerConfig }).createReducers();
+export const dfhLabelReducers = createModelReducers(dfhFeatureKey, dfhLabelFeature, dfhLabelReducerConfig)
 

@@ -1,5 +1,5 @@
 import { DfhClass } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { dfhFeatureKey } from "../dfh.feature.key";
 
 export const dfhClassFeature = 'klass'
@@ -16,5 +16,5 @@ export const dfhClassReducerConfig: ReducerConfig = {
   ]
 }
 
-export const dfhClassReducers = new CrudReducerFactory(dfhFeatureKey, { [dfhClassFeature]: dfhClassReducerConfig }).createReducers();
+export const dfhClassReducers = createModelReducers(dfhFeatureKey, dfhClassFeature, dfhClassReducerConfig)
 

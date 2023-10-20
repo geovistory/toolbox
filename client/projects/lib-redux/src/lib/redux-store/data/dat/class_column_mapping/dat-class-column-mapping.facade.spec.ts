@@ -15,7 +15,7 @@ describe('DatClassColumnMapping Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: datClassColumnMappingReducers })),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: combineReducers({ class_column_mapping: datClassColumnMappingReducers }) }))
       ],
       providers: [DatClassColumnMappingFacade]
     })
@@ -23,7 +23,7 @@ describe('DatClassColumnMapping Facade', () => {
 
     @NgModule({
       imports: [
-        StoreModule.forRoot({}),
+        StoreModule.forRoot(),
         CustomFeatureModule
       ]
     })

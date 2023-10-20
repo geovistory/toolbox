@@ -1,4 +1,3 @@
-import { ByPk } from '../../state.model';
 import { InfAppellationSlice } from './appellation/inf-appellation.models';
 import { InfDimensionSlice } from './dimension/inf-dimension.models';
 import { InfLanguageSlice } from './language/inf-language.models';
@@ -18,5 +17,5 @@ export interface InfState {
   lang_string?: InfLangStringSlice;
   dimension?: InfDimensionSlice;
 
-  pkEntityModelMap?: ByPk<{ modelName: string; fkClass: number; }>;
+  // pkEntityModelMap?: ByPk<{ modelName: string; fkClass: number; }>;
 }

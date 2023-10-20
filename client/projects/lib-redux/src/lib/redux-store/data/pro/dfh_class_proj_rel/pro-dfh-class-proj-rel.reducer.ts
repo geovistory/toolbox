@@ -1,5 +1,5 @@
 import { ProDfhClassProjRel } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { proFeatureKey } from "../pro.feature.key";
 
 export const proDfhClassProjRelFeature = 'dfh_class_proj_rel'
@@ -21,6 +21,6 @@ export const proDfhClassProjRelReducerConfig: ReducerConfig = {
 }
 
 
-export const proDfhClassProjRelReducers = new CrudReducerFactory(proFeatureKey, { [proDfhClassProjRelFeature]: proDfhClassProjRelReducerConfig }).createReducers();
+export const proDfhClassProjRelReducers = createModelReducers(proFeatureKey, proDfhClassProjRelFeature, proDfhClassProjRelReducerConfig)
 
 

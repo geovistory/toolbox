@@ -1,5 +1,5 @@
 import { DatClassColumnMapping } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datClassColumnMappingFeature = 'class_column_mapping'
@@ -17,6 +17,6 @@ export const datClassColumnMappingReducerConfig: ReducerConfig = {
 }
 
 
-export const datClassColumnMappingReducers = new CrudReducerFactory(datFeatureKey, { [datClassColumnMappingFeature]: datClassColumnMappingReducerConfig }).createReducers();
+export const datClassColumnMappingReducers = createModelReducers(datFeatureKey, datClassColumnMappingFeature, datClassColumnMappingReducerConfig)
 
 

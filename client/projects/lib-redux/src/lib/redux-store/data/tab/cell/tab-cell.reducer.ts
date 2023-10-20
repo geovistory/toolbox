@@ -1,5 +1,5 @@
 import { TabCell } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { tabFeatureKey } from "../tab.feature.key";
 
 export const tabCellFeature = 'cell'
@@ -15,5 +15,5 @@ export const tabCellReducerConfig: ReducerConfig = {
     }
   ]
 }
-export const tabCellReducers = new CrudReducerFactory(tabFeatureKey, { [tabCellFeature]: tabCellReducerConfig }).createReducers();
+export const tabCellReducers = createModelReducers(tabFeatureKey, tabCellFeature, tabCellReducerConfig)
 

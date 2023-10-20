@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
+import { DataState } from '@kleiolab/lib-redux/lib/redux-store/data/data.model';
 import { InfLangString } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
@@ -15,7 +16,7 @@ describe('InfLangString Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: infLangStringReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ inf: combineReducers({ lang_string: infLangStringReducers }) }))
       ],
       providers: [InfLangStringFacade]
     })

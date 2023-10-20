@@ -4,6 +4,7 @@ import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { ProState } from "../pro.models";
 import { ProClassFieldConfigFacade } from './pro-class-field-config.facade';
 import { proClassFieldConfigReducers } from './pro-class-field-config.reducer';
@@ -15,7 +16,7 @@ describe('ProClassFieldConfig Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ pro: proClassFieldConfigReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ pro: combineReducers({ class_field_config: proClassFieldConfigReducers }) }))
       ],
       providers: [ProClassFieldConfigFacade]
     })

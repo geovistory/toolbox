@@ -15,7 +15,11 @@ describe('DatChunk Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: datChunkReducers })),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({
+          dat: combineReducers({
+            chunk: datChunkReducers
+          })
+        })),
       ],
       providers: [DatChunkFacade]
     })

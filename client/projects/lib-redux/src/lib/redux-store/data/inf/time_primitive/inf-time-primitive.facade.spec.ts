@@ -4,6 +4,7 @@ import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { InfState } from "../inf.models";
 import { InfTimePrimitiveFacade } from './inf-time-primitive.facade';
 import { infTimePrimitiveReducers } from './inf-time-primitive.reducer';
@@ -15,7 +16,7 @@ describe('InfTimePrimitive Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: infTimePrimitiveReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ inf: combineReducers({ time_primitive: infTimePrimitiveReducers }) }))
       ],
       providers: [InfTimePrimitiveFacade]
     })

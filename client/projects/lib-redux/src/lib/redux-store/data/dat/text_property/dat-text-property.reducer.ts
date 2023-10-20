@@ -1,5 +1,5 @@
 import { DatTextProperty } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datTextPropertyFeature = 'text_property'
@@ -15,6 +15,6 @@ export const datTextPropertyReducerConfig: ReducerConfig = {
     }
   ]
 }
-export const datTextPropertyReducers = new CrudReducerFactory(datFeatureKey, { [datTextPropertyFeature]: datTextPropertyReducerConfig }).createReducers();
+export const datTextPropertyReducers = createModelReducers(datFeatureKey, datTextPropertyFeature, datTextPropertyReducerConfig)
 
 

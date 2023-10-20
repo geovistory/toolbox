@@ -1,5 +1,5 @@
 import { DatTextProperty } from '@kleiolab/lib-sdk-lb4';
-import { ByPk } from '../../../public-api';
+import { ByPk } from '../../../_lib/ByPk';
 
 export class TextPropertySlice {
   by_pk_entity?: ByPk<DatTextProperty>;

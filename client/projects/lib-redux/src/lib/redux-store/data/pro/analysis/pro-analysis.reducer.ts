@@ -1,4 +1,4 @@
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { proFeatureKey } from "../pro.feature.key";
 
 export const proAnalysisFeature = 'analysis'
@@ -13,6 +13,6 @@ export const proAnalysisReducerConfig: ReducerConfig = {
 }
 
 
-export const proAnalysisReducers = new CrudReducerFactory(proFeatureKey, { [proAnalysisFeature]: proAnalysisReducerConfig }).createReducers();
+export const proAnalysisReducers = createModelReducers(proFeatureKey, proAnalysisFeature, proAnalysisReducerConfig)
 
 

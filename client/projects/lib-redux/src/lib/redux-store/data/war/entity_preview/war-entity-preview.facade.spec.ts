@@ -4,6 +4,7 @@ import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { WarState } from "../war.models";
 import { WarEntityPreviewFacade } from './war-entity-preview.facade';
 import { warEntityPreviewReducers } from './war-entity-preview.reducer';
@@ -15,7 +16,7 @@ describe('WarEntityPreview Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ war: warEntityPreviewReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ war: combineReducers({ entity_preview: warEntityPreviewReducers }) }))
       ],
       providers: [WarEntityPreviewFacade]
     })

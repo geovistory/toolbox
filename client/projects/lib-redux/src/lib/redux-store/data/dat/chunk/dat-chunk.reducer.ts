@@ -1,5 +1,6 @@
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { datFeatureKey } from "../dat.feature.key";
+import { ChunkSlice } from './dat-chunk.models';
 
 export const datChunkFeature = 'chunk'
 export const datChunkReducerConfig: ReducerConfig = {
@@ -16,6 +17,5 @@ export const datChunkReducerConfig: ReducerConfig = {
 }
 
 
-export const datChunkReducers = new CrudReducerFactory(datFeatureKey, { [datChunkFeature]: datChunkReducerConfig }).createReducers();
-
+export const datChunkReducers = createModelReducers<ChunkSlice>(datFeatureKey, datChunkFeature, datChunkReducerConfig);
 

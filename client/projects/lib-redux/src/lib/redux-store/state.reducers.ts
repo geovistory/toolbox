@@ -1,3 +1,4 @@
+import { IAppState } from '@kleiolab/lib-redux/public-api';
 import { FluxStandardAction } from 'flux-standard-action';
 import { omit } from 'ramda';
 import { combineReducers } from 'redux';
@@ -26,7 +27,6 @@ export const pendingRequestReducer = (state = {}, action) => {
       ...state,
       [uuid]: true
     }
-    // console.log('add ' + uuid + ' ' + Date.now())
   }
 
   if (action && action.meta && action.meta.removePending) {
@@ -52,13 +52,11 @@ export const resolvedRequestReducer = (state = {}, action) => {
 }
 
 export const cleanupResolved = (state = {}, action) => {
-
   if (action && action.type === 'CLEAN_UP_RESOLVED') {
     const uuid = action.meta.uuid;
     state = {
       ...omit([uuid], state)
     }
-    // console.log('resolve ' + uuid + ' ' + Date.now().toString())
   }
   return state;
 }
@@ -71,11 +69,9 @@ export const setAppState = (state = {}, action) => {
 }
 
 export const rootReducer = composeReducers(
-  combineReducers({
+  combineReducers<IAppState>({
     data: dataReducer,
-    ui: uiReducers
-  }),
-  combineReducers({
+    ui: uiReducers,
     sandboxState: sandboxStateReducer,
     pending: pendingRequestReducer,
     resolved: composeReducers(resolvedRequestReducer, cleanupResolved),

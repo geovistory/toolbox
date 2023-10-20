@@ -15,7 +15,7 @@ describe('DatTextProperty Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: datTextPropertyReducers })),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: combineReducers({ text_property: datTextPropertyReducers }) }))
       ],
       providers: [DatTextPropertyFacade]
     })

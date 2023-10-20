@@ -15,7 +15,7 @@ describe('InfAppellation Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: infAppellationReducers })),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: combineReducers({ appellation: infAppellationReducers }) }))
       ],
       providers: [InfAppellationFacade]
     })

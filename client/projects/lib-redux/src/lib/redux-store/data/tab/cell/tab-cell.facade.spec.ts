@@ -4,6 +4,7 @@ import { TabCell } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { TabState } from "../tab.models";
 import { TabCellFacade } from './tab-cell.facade';
 import { tabCellReducers } from './tab-cell.reducer';
@@ -15,7 +16,7 @@ describe('TabCell Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ tab: tabCellReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ tab: combineReducers({ cell: tabCellReducers }) }))
       ],
       providers: [TabCellFacade]
     })

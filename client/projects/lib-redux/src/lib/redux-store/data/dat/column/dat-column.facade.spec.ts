@@ -15,7 +15,7 @@ describe('DatColumn Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: datColumnReducers })),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: combineReducers({ column: datColumnReducers }) }))
       ],
       providers: [DatColumnFacade]
     })

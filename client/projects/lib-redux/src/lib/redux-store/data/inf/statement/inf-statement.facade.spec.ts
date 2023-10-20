@@ -9,6 +9,7 @@ import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { PROJECT_ID$ } from "../../../PROJECT_ID$";
 import { IAppState } from '../../../public-api';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { proInfoProjRelActions } from '../../pro/info_proj_rel/pro-info-proj-rel.actions';
 import { proInfoProjRelReducers } from '../../pro/info_proj_rel/pro-info-proj-rel.reducer';
 import { infStatementActions } from './inf-statement.actions';
@@ -23,10 +24,10 @@ describe('InfStatement Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({
-          inf: infStatementReducers,
-          pro: proInfoProjRelReducers
-        })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({
+          inf: combineReducers({ statement: infStatementReducers }),
+          pro: combineReducers({ info_proj_rel: proInfoProjRelReducers })
+        }))
       ],
       providers: [
         InfStatementFacade,
@@ -104,7 +105,6 @@ describe('InfStatement Facade', () => {
     store.dispatch(proInfoProjRelActions.loadSucceededAction([proRel, proRel2], ''));
     projectId$.next(99)
 
-    console.log(await firstValueFrom(store.select(s => s)));
     const res = await firstValueFrom(facade.getOne.byPkEntity$(11, true))
     expect(res).toEqual(input)
     const res2 = await firstValueFrom(facade.getMany.by_subject$({ fk_subject_info: 123 }, true))

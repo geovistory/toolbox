@@ -4,6 +4,7 @@ import { SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { SysState } from "../sys.models";
 import { SysSystemRelevantClassFacade } from './sys-system-relevant-class.facade';
 import { sysSystemRelevantClassReducers } from './sys-system-relevant-class.reducer';
@@ -15,7 +16,7 @@ describe('SysSystemRelevantClass Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ sys: sysSystemRelevantClassReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ sys: combineReducers({ system_relevant_class: sysSystemRelevantClassReducers }) }))
       ],
       providers: [SysSystemRelevantClassFacade]
     })

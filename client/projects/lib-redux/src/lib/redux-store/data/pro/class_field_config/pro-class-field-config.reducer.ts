@@ -1,5 +1,5 @@
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { proFeatureKey } from "../pro.feature.key";
 
 export const proClassFieldConfgByProjectAndClassKey = (d: Partial<ProClassFieldConfig>): string => {
@@ -21,6 +21,6 @@ export const proClassFieldConfigReducerConfig: ReducerConfig = {
 }
 
 
-export const proClassFieldConfigReducers = new CrudReducerFactory(proFeatureKey, { [proClassFieldConfigFeature]: proClassFieldConfigReducerConfig }).createReducers();
+export const proClassFieldConfigReducers = createModelReducers(proFeatureKey, proClassFieldConfigFeature, proClassFieldConfigReducerConfig)
 
 

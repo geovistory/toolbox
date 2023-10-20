@@ -1,4 +1,4 @@
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { proFeatureKey } from "../pro.feature.key";
 
 export const proTableConfigFeature = 'table_config'
@@ -14,6 +14,6 @@ export const proTableConfigReducerConfig: ReducerConfig = {
 }
 
 
-export const proTableConfigReducers = new CrudReducerFactory(proFeatureKey, { [proTableConfigFeature]: proTableConfigReducerConfig }).createReducers();
+export const proTableConfigReducers = createModelReducers(proFeatureKey, proTableConfigFeature, proTableConfigReducerConfig)
 
 

@@ -47,6 +47,7 @@
     "@mdi/angular-material": "^4.7.95",
     "@ngrx/effects": "^16.3.0",
     "@ngrx/store": "^16.3.0",
+    "@ngrx/store-devtools": "^16.3.0",
     "@popperjs/core": "^2.11.8",
     "@suez/ngx-dnd": "^13.0.3",
     "@types/geodesy": "^1.2.2",

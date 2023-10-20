@@ -4,6 +4,7 @@ import { ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { ProState } from "../pro.models";
 import { ProInfoProjRelFacade } from './pro-info-proj-rel.facade';
 import { proInfoProjRelReducers } from './pro-info-proj-rel.reducer';
@@ -15,7 +16,7 @@ describe('ProInfoProjRel Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ pro: proInfoProjRelReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ pro: combineReducers({ info_proj_rel: proInfoProjRelReducers }) }))
       ],
       providers: [ProInfoProjRelFacade]
     })

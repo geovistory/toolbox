@@ -4,7 +4,6 @@ import { SysRelevantClassSlice } from './system_relevant_class/sys-system-releva
 export interface SysState {
   config?: SysConfigSlice;
   system_relevant_class?: SysRelevantClassSlice
-
 }
 
 

@@ -1,5 +1,5 @@
 import { DfhProfile } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { dfhFeatureKey } from "../dfh.feature.key";
 
 export const dfhProfileFeature = 'profile'
@@ -10,5 +10,5 @@ export const dfhProfileReducerConfig: ReducerConfig = {
   }
 }
 
-export const dfhProfileReducers = new CrudReducerFactory(dfhFeatureKey, { [dfhProfileFeature]: dfhProfileReducerConfig }).createReducers();
+export const dfhProfileReducers = createModelReducers(dfhFeatureKey, dfhProfileFeature, dfhProfileReducerConfig)
 

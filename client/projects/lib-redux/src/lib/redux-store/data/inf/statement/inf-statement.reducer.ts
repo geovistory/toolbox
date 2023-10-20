@@ -1,6 +1,6 @@
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { infFeatureKey } from "../inf.feature.key";
 
 export const infStatementFeature = 'statement'
@@ -37,7 +37,7 @@ export const infStatementReducerConfig: ReducerConfig = {
 }
 
 
-export const infStatementReducers = new CrudReducerFactory(infFeatureKey, { [infStatementFeature]: infStatementReducerConfig }).createReducers();
+export const infStatementReducers = createModelReducers(infFeatureKey, infStatementFeature, infStatementReducerConfig)
 
 
 

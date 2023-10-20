@@ -1,5 +1,5 @@
 import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { infFeatureKey } from "../inf.feature.key";
 
 export const infTimePrimitiveFeature = 'time_primitive'
@@ -14,6 +14,6 @@ export const infTimePrimitiveReducerConfig: ReducerConfig = {
 }
 
 
-export const infTimePrimitiveReducers = new CrudReducerFactory(infFeatureKey, { [infTimePrimitiveFeature]: infTimePrimitiveReducerConfig }).createReducers();
+export const infTimePrimitiveReducers = createModelReducers(infFeatureKey, infTimePrimitiveFeature, infTimePrimitiveReducerConfig)
 
 

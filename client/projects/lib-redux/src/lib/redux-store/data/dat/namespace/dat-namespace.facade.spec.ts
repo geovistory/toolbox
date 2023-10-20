@@ -15,7 +15,7 @@ describe('DatNamespace Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: datNamespaceReducers })),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: combineReducers({ namespace: datNamespaceReducers }) }))
       ],
       providers: [DatNamespaceFacade]
     })

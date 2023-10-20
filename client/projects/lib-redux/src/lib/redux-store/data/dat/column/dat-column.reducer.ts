@@ -1,4 +1,4 @@
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datColumnFeature = 'column'
@@ -16,6 +16,6 @@ export const datColumnReducerConfig: ReducerConfig = {
 }
 
 
-export const datColumnReducers = new CrudReducerFactory(datFeatureKey, { [datColumnFeature]: datColumnReducerConfig }).createReducers();
+export const datColumnReducers = createModelReducers(datFeatureKey, datColumnFeature, datColumnReducerConfig)
 
 

@@ -6,8 +6,9 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { of } from 'rxjs';
 import { catchError, mergeMap, startWith } from 'rxjs/operators';
 import { IAppState } from '../state.model';
+import { getActiveProjectId } from '../ui/active-project/active-project.selectors';
 import { LoadingBarActions } from '../ui/loading-bar/loading-bar.actions';
-import { NotificationsAPIActions } from '../ui/notification/notifications.actions';
+import { notificationActions } from '../ui/notification/notification.actions';
 import { paginationObjectActions, schemaModifierActions, schemaObjectActions } from './data.actions';
 import { infStatementActions } from './inf/statement/inf-statement.actions';
 
@@ -17,7 +18,6 @@ import { infStatementActions } from './inf/statement/inf-statement.actions';
 export class DataEffects {
 
   constructor(
-    private notificationActions: NotificationsAPIActions,
     private actions$: Actions<FluxStandardAction<any, any>>,
     private store: Store<IAppState>
   ) { }
@@ -66,7 +66,7 @@ export class DataEffects {
   loadPaginationObject$ = createEffect(() => this.actions$.pipe(
     ofType(paginationObjectActions.load),
     mergeMap((action) => action.payload.pipe(
-      concatLatestFrom(() => this.store.select((s) => s.activeProject?.pk_project)),
+      concatLatestFrom(() => this.store.select(getActiveProjectId)),
       mergeMap(([data, pkProject]) => {
         const pageLoadedActions = data.subfieldPages.map(p => infStatementActions.loadPageSucceededAction(
           p.paginatedStatements, p.count, p.req.page, pkProject
@@ -87,11 +87,13 @@ export class DataEffects {
   errorActions(error: HttpErrorResponse) {
     return [
       LoadingBarActions.REMOVE_JOB(),
-      this.notificationActions.addToast({
-        type: 'error',
-        options: {
-          title: error.name,
-          msg: error.message
+      notificationActions.add({
+        toast: {
+          type: 'error',
+          options: {
+            title: error.name,
+            msg: error.message
+          }
         }
       })
     ]

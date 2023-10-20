@@ -1,4 +1,4 @@
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datNamespaceFeature = 'namespace'
@@ -15,6 +15,6 @@ export const datNamespaceReducerConfig: ReducerConfig = {
   ]
 }
 
-export const datNamespaceReducers = new CrudReducerFactory(datFeatureKey, { [datNamespaceFeature]: datNamespaceReducerConfig }).createReducers();
+export const datNamespaceReducers = createModelReducers(datFeatureKey, datNamespaceFeature, datNamespaceReducerConfig)
 
 

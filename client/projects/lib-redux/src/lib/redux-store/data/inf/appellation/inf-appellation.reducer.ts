@@ -1,4 +1,4 @@
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { infFeatureKey } from "../inf.feature.key";
 
 export const infAppellationFeature = 'appellation'
@@ -13,6 +13,6 @@ export const infAppellationReducerConfig: ReducerConfig = {
 }
 
 
-export const infAppellationReducers = new CrudReducerFactory(infFeatureKey, { [infAppellationFeature]: infAppellationReducerConfig }).createReducers();
+export const infAppellationReducers = createModelReducers(infFeatureKey, infAppellationFeature, infAppellationReducerConfig)
 
 

@@ -4,6 +4,7 @@ import { InfLanguage } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { dataFeatureKey } from '../../data.feature.key';
+import { DataState } from '../../data.model';
 import { InfState } from "../inf.models";
 import { InfLanguageFacade } from './inf-language.facade';
 import { infLanguageReducers } from './inf-language.reducer';
@@ -15,7 +16,7 @@ describe('InfLanguage Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ inf: infLanguageReducers })),
+        StoreModule.forFeature<DataState>(dataFeatureKey, combineReducers({ inf: combineReducers({ language: infLanguageReducers }) }))
       ],
       providers: [InfLanguageFacade]
     })

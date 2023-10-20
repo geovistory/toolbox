@@ -1,5 +1,5 @@
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
-import { ByPk } from '../../../public-api';
+import { ByPk } from '../../../_lib/ByPk';
 
 
 export interface ProClassFieldConfigSlice {

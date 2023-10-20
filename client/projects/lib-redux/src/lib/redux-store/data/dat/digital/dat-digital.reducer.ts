@@ -1,5 +1,5 @@
 import { DatDigital } from '@kleiolab/lib-sdk-lb4';
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datDigitalFeature = 'digital'
@@ -28,6 +28,6 @@ export const datDigitalReducerConfig: ReducerConfig = {
 }
 
 
-export const datDigitalReducers = new CrudReducerFactory(datFeatureKey, { [datDigitalFeature]: datDigitalReducerConfig }).createReducers();
+export const datDigitalReducers = createModelReducers(datFeatureKey, datDigitalFeature, datDigitalReducerConfig)
 
 

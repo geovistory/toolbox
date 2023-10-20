@@ -15,7 +15,7 @@ describe('DatDigital Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: datDigitalReducers })),
+        StoreModule.forFeature(dataFeatureKey, combineReducers({ dat: combineReducers({ digital: datDigitalReducers }) }))
       ],
       providers: [DatDigitalFacade]
     })

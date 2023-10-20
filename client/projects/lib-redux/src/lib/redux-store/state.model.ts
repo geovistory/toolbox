@@ -1,9 +1,8 @@
 import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { DataState } from './data/data.model';
 import { SucceedActionMeta } from './data/_lib/crud-actions-factory';
-import { AccountState } from './ui/account/account.model';
-import { ActiveProjectState } from './ui/active-project/active-project.models';
-import { LoadingBarState } from './ui/loading-bar/loading-bar.models';
+import { UiState } from './ui/ui.models';
+import { ByPk } from './_lib/ByPk';
 
 
 export interface InfObject {
@@ -42,17 +41,11 @@ export interface PaginationObject {
 }
 
 export interface IAppState {
-  account?: AccountState,
-  // backoffice?: Backoffice,
-  loadingBar?: LoadingBarState,
   data?: DataState
-  activeProject?: ActiveProjectState
+  ui?: UiState
+
   pending?: ByPk<boolean>
   resolved?: ByPk<SucceedActionMeta<any>>
 }
 
-// generic interfaces used by different store modules
-export interface ByPk<T> {
-  [pk: string]: T
-}
 

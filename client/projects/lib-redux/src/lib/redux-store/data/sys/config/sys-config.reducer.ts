@@ -1,4 +1,4 @@
-import { CrudReducerFactory, ReducerConfig } from '../../_lib/crud-reducer-factory';
+import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { sysFeatureKey } from "../sys.feature.key";
 
 export const sysConfigFeature = 'config'
@@ -9,5 +9,5 @@ export const sysConfigReducerConfig: ReducerConfig = {
   }
 }
 
-export const sysConfigReducers = new CrudReducerFactory(sysFeatureKey, { [sysConfigFeature]: sysConfigReducerConfig }).createReducers();
+export const sysConfigReducers = createModelReducers(sysFeatureKey, sysConfigFeature, sysConfigReducerConfig)
 
