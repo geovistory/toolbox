@@ -1,34 +1,25 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { IAppState } from '../../state.model';
-import { uiFeatureKey } from '../ui.feature.key';
 import { AccountActions } from './account.actions';
 import { AccountFacade } from './account.facade';
-import { accountReducer, initialAccountState } from './account.reducers';
+import { AccountModule } from './account.module';
 
-describe('LoadingBar Facade', () => {
+describe('Account Facade', () => {
   let facade: AccountFacade;
   let store: Store<IAppState>;
 
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(
-          uiFeatureKey,
-          combineReducers({ account: accountReducer }),
-          { initialState: { account: initialAccountState } }
-        ),
-      ],
-      providers: [AccountFacade]
-    })
-    class CustomFeatureModule { }
-
-    @NgModule({
-      imports: [
-        StoreModule.forRoot({}),
-        CustomFeatureModule
+        StoreModule.forRoot(),
+        EffectsModule.forRoot(),
+        AccountModule,
+        HttpClientModule
       ]
     })
     class RootModule { }

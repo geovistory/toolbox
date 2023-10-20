@@ -1,5 +1,5 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { NotificationsAPIEpics } from '@kleiolab/lib-redux';
+import { NotificationAPIEpics } from '@kleiolab/lib-redux';
 import { Message, MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { Subject } from 'rxjs';
@@ -8,15 +8,15 @@ import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-notifications',
-  templateUrl: './notifications.component.html',
-  styleUrls: ['./notifications.component.css']
+  templateUrl: './notification.component.html',
+  styleUrls: ['./notification.component.css']
 })
-export class NotificationsComponent implements OnDestroy {
+export class NotificationComponent implements OnDestroy {
   destroy$ = new Subject<boolean>();
   @ViewChild(Toast) toast: Toast;
   constructor(
     private messageService: MessageService,
-    not: NotificationsAPIEpics) {
+    not: NotificationAPIEpics) {
     let id = 0;
     not.notificationChannel$
       .pipe(takeUntil(this.destroy$))

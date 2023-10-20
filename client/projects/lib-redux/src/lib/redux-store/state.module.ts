@@ -5,8 +5,8 @@ import { StoreModule } from '@ngrx/store';
 import { StateEffects } from './state.effects';
 import { IAppState } from './state.model';
 import { AccountEffects } from './ui/account/account.effects';
-import { ActiveProjectEpics } from './ui/activeProject/active-project.epics';
-import { NotificationsAPIEpics } from './ui/epics/notifications.epics';
+import { ActiveProjectEffects } from './ui/active-project/active-project.effects';
+import { UiModule } from './ui/ui.module';
 
 export const APP_INITIAL_STATE = new InjectionToken<IAppState>('app.INITIAL_STATE');
 
@@ -19,17 +19,15 @@ export function apiConfigFactory(): Configuration {
 
 @NgModule({
   imports: [
+    UiModule,
     StoreModule.forRoot(),
     EffectsModule.forRoot(
-      NotificationsAPIEpics,
-      ActiveProjectEpics,
+      ActiveProjectEffects,
       AccountEffects,
       // important: this needs to be the last epic
       StateEffects)
   ],
-  providers: [
-
-  ]
+  providers: []
 })
 export class StateModule {
 

@@ -4,8 +4,8 @@ import { Actions, createEffect } from '@ngrx/effects';
 import { ofType } from 'redux-observable';
 import { of } from 'rxjs';
 import { catchError, first, mergeMap, startWith } from 'rxjs/operators';
-import { NotificationsAPIActions } from '../actions/notifications.actions';
-import { LoadingBarActions } from '../loadingBar/loading-bar.actions';
+import { LoadingBarActions } from '../loading-bar/loading-bar.actions';
+import { notificationActions } from '../notification/notification.actions';
 import { AccountAction, AccountActions } from './account.actions';
 
 
@@ -25,9 +25,11 @@ export class AccountEffects {
       )),
       catchError(error => of(
         LoadingBarActions.REMOVE_JOB(),
-        this.notificationActions.addToast({
-          type: 'error',
-          options: { title: error }
+        notificationActions.add({
+          toast: {
+            type: 'error',
+            options: { title: error }
+          }
         })
       )),
       startWith(LoadingBarActions.ADD_JOB())
@@ -37,7 +39,6 @@ export class AccountEffects {
   )
   constructor(
     private accountDataApi: AccountDataService,
-    private notificationActions: NotificationsAPIActions,
     private actions$: Actions<AccountAction>,
   ) { }
 }

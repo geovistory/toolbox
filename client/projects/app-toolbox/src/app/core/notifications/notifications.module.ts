@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { NotificationsComponent } from './components/notifications.component';
+import { NotificationComponent } from './components/notification.component';
 
 
 @NgModule({
@@ -15,7 +15,7 @@ import { NotificationsComponent } from './components/notifications.component';
     ToastModule
   ],
   providers: [MessageService],
-  declarations: [NotificationsComponent],
-  exports: [NotificationsComponent]
+  declarations: [NotificationComponent],
+  exports: [NotificationComponent]
 })
-export class NotificationsModule { }
+export class NotificationModule { }

@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+import { Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { IAppState } from '../../state.model';
-import { uiFeatureKey } from '../ui.feature.key';
 import { ActiveProjectFacade } from './active-project.facade';
 import { Panel } from './active-project.models';
-import { activeProjectReducer, initialActiveProjectState } from './active-project.reducer';
+import { ActiveProjectModule } from './active-project.module';
 
 describe('ActiveProject Facade', () => {
   let facade: ActiveProjectFacade;
@@ -15,20 +15,9 @@ describe('ActiveProject Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(
-          uiFeatureKey,
-          combineReducers({ activeProject: activeProjectReducer }),
-          { initialState: { activeProject: initialActiveProjectState } }
-        ),
-      ],
-      providers: [ActiveProjectFacade]
-    })
-    class CustomFeatureModule { }
-
-    @NgModule({
-      imports: [
-        StoreModule.forRoot({}),
-        CustomFeatureModule
+        StoreModule.forRoot(),
+        EffectsModule.forRoot(),
+        ActiveProjectModule
       ]
     })
     class RootModule { }
@@ -42,6 +31,10 @@ describe('ActiveProject Facade', () => {
   it('should init with focusedPanel 0 ', async () => {
     const res = await firstValueFrom(facade.focusedPanel$)
     expect(res).toBe(0)
+  });
+  it('should init with panels = [] ', async () => {
+    const res = await firstValueFrom(facade.panels$)
+    expect(res).toEqual([])
   });
 
   it('should reduce and select projectId ', async () => {
@@ -164,17 +157,32 @@ describe('ActiveProject Facade', () => {
     expect(res2.component).toEqual('analysis')
   });
 
-  it('should close tab ', async () => {
+  it('should close tab', async () => {
+    const panel: Panel = {
+      id: 11,
+      tabs: [
+        { active: true, component: 'text', icon: 'text', },
+        { active: true, component: 'text', icon: 'text', }
+      ],
+    }
+    facade.setPanels([panel], 12, 13, 1)
+    const res = await firstValueFrom(facade.panels$)
+    expect(res[0].tabs.length).toEqual(2)
+    facade.closeTab(0, 0)
+    const res2 = await firstValueFrom(facade.panels$)
+    expect(res2[0].tabs.length).toEqual(1)
+  });
+  it('should close empty panel', async () => {
     const panel: Panel = {
       id: 11,
       tabs: [{ active: true, component: 'text', icon: 'text', }],
     }
-    facade.setPanels([panel], 12, 13, 1)
+    facade.setPanels([panel], 12, 13, 0)
     const res = await firstValueFrom(facade.panels$)
-    expect(res[0].tabs.length).toEqual(1)
+    expect(res.length).toEqual(1)
     facade.closeTab(0, 0)
     const res2 = await firstValueFrom(facade.panels$)
-    expect(res2[0].tabs.length).toEqual(0)
+    expect(res2.length).toEqual(0)
   });
 
   it('should close panel ', async () => {
@@ -205,7 +213,7 @@ describe('ActiveProject Facade', () => {
         { active: true, component: 'table', icon: 'table', }
       ],
     }
-    facade.setPanels([panel], 12, 13, 1)
+    facade.setPanels([panel], 12, 13, 0)
     // move table tab to the left
     facade.splitPanel(0, 1, 0)
 

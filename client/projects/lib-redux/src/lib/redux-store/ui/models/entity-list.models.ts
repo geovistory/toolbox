@@ -1,13 +1,13 @@
-import { List } from './list';
+// import { List } from './list';
 
-export class Information {
+// export class Information {
 
-  // search results
-  items?: List;
+//   // search results
+//   items?: List;
 
-  loading?: boolean;
+//   loading?: boolean;
 
-  constructor(data?: Information) {
-    Object.assign(this, data);
-  }
-}
+//   constructor(data?: Information) {
+//     Object.assign(this, data);
+//   }
+// }

@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
 import { take, toArray } from 'rxjs/operators';
 import { IAppState } from '../../state.model';
-import { uiFeatureKey } from '../ui.feature.key';
 import { LoadingBarFacade } from './loading-bar.facade';
-import { initialState, loadingBarReducer } from './loading-bar.reducer';
+import { LoadingBarModule } from './loading-bar.module';
 
 describe('LoadingBar Facade', () => {
   let facade: LoadingBarFacade;
@@ -15,20 +14,8 @@ describe('LoadingBar Facade', () => {
   beforeEach(() => {
     @NgModule({
       imports: [
-        StoreModule.forFeature(
-          uiFeatureKey,
-          combineReducers({ loadingBar: loadingBarReducer }),
-          { initialState: { loadingBar: initialState } }
-        ),
-      ],
-      providers: [LoadingBarFacade]
-    })
-    class CustomFeatureModule { }
-
-    @NgModule({
-      imports: [
         StoreModule.forRoot({}),
-        CustomFeatureModule
+        LoadingBarModule
       ]
     })
     class RootModule { }

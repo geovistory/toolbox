@@ -1,3 +1,5 @@
+import { createActionGroup, props } from '@ngrx/store';
+
 export class ToastOptions {
   title: string;
   msg?: string;
@@ -7,18 +9,18 @@ export class ToastOptions {
   onAdd?: Function;
   onRemove?: Function;
 }
+
 // Interface of this slice of store
-export interface NotificationsI {
+export interface Toast {
   type: 'info' | 'success' | 'error' | 'warn';
+  uid?: string,
   options: ToastOptions;
 }
 
-// Class of this slice of store
-export class Notifications implements NotificationsI {
-  type: 'info' | 'success' | 'error' | 'warn';
-  options: ToastOptions;
-
-  constructor(data?: NotificationsI) {
-    Object.assign(this, data);
+export const notificationActions = createActionGroup({
+  source: 'Notification',
+  events: {
+    'Add': props<{ toast: Toast }>(),
+    'Remove': props<{ uid: string }>()
   }
-}
+})

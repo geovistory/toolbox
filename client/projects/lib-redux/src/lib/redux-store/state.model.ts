@@ -2,8 +2,8 @@ import { DatDigital, InfAppellation, InfDimension, InfLangString, InfLanguage, I
 import { DataState } from './data/data.model';
 import { SucceedActionMeta } from './data/_lib/crud-actions-factory';
 import { AccountState } from './ui/account/account.model';
-import { ActiveProjectState } from './ui/activeProject/active-project.models';
-import { LoadingBarState } from './ui/loadingBar/loading-bar.models';
+import { ActiveProjectState } from './ui/active-project/active-project.models';
+import { LoadingBarState } from './ui/loading-bar/loading-bar.models';
 
 
 export interface InfObject {

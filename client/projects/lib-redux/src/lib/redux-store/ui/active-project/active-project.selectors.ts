@@ -2,7 +2,7 @@ import { createSelector } from '@ngrx/store';
 import { getUiState } from '../ui.selectors';
 
 
-const getActiveProjectState = createSelector(getUiState, s => s.activeProject)
+export const getActiveProjectState = createSelector(getUiState, s => s.activeProject)
 
 export const getActiveProjectId = createSelector(getActiveProjectState, s => s.pk_project);
 export const getFocusedPanel = createSelector(getActiveProjectState, s => s.focusedPanel);
