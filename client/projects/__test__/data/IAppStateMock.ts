@@ -3,10 +3,12 @@ import { ProjectDetailMock } from './ProjectDetailMock';
 
 export namespace IAppStateMock {
   export const stateProject1: IAppState = {
-    activeProject: ProjectDetailMock.project1,
+    ui: { activeProject: ProjectDetailMock.project1 },
+    data: {}
   }
   export const stateDefaultConfigProject: IAppState = {
-    activeProject: ProjectDetailMock.defaultConfigProject,
+    ui: { activeProject: ProjectDetailMock.defaultConfigProject },
+    data: {}
   }
 
 }

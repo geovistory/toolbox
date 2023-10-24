@@ -2,8 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { InfStatement, ProInfoProjRel, SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
-import { EffectsModule } from '@ngrx/effects';
-import { Store, StoreModule } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 import { keys } from 'ramda';
 import { firstValueFrom } from 'rxjs';
 import { StateFacade } from './state.facade';
@@ -18,8 +17,6 @@ describe('State Facade', () => {
     @NgModule({
       imports: [
         SdkLb4Module,
-        StoreModule.forRoot(),
-        EffectsModule.forRoot(),
         StateModule,
         HttpClientModule
       ]
@@ -61,6 +58,17 @@ describe('State Facade', () => {
     facade.data.inf.language.upsertSucceeded([{ pk_entity: 123, notes: 'German' }], '')
     const res = await firstValueFrom(facade.activeProjectLanguage$)
     expect(res.notes).toBe('German')
+  });
+
+
+  it('should reduce and select app state', async () => {
+    facade.setState({
+      data: { war: { entity_preview: { by_project_id__pk_entity: { 'a': { fk_class: 1, project_id: 1 } } } } },
+      ui: { account: { account: { email: 'bar' } }, activeProject: {}, loadingBar: {}, notifications: [] }
+    })
+    const res = await firstValueFrom(facade.state$)
+    expect(res.ui.account.account.email).toBe('bar')
+    expect(res.data.war.entity_preview.by_project_id__pk_entity.a.fk_class).toBe(1)
   });
 
 

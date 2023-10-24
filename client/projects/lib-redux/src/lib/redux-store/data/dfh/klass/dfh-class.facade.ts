@@ -16,8 +16,8 @@ export class DfhClassFacade extends CrudFacade<DfhClass> {
   constructor(protected store: Store<IAppState>) {
     super(store, dfhClassActions)
   }
-  getDfhClass = {
-    byPkClass$: (pkClass: number) => this.store.select(getDfhClass.byPkClass$(pkClass)),
-    byBasicType$: (basicType: number) => this.store.select(getDfhClass.byBasicType$(basicType)),
+  select = {
+    byPkClass: (pkClass: number) => this.store.select(getDfhClass.byPkClass$(pkClass)),
+    byBasicType: (basicType: number) => this.store.select(getDfhClass.byBasicType$(basicType)),
   }
 }

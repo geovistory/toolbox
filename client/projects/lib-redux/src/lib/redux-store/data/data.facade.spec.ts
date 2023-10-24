@@ -10,7 +10,7 @@ import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguag
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { firstValueFrom } from 'rxjs';
 import { IAppState } from '../state.model';
-import { schemaModifierActions } from './data.actions';
+import { schemaModifierActions, setDataState } from './data.actions';
 import { DataFacade } from './data.facade';
 import { DataModule } from './data.module';
 
@@ -57,7 +57,7 @@ describe('Data Facade', () => {
     // });
     it('should put klasses into store', async () => {
       store.dispatch(schemaModifierActions.succeeded({ payload: { positive: GvSchemaObjectMock.basicClassesAndProperties } }))
-      const res = await firstValueFrom(facade.dfh.dfhClass.dfhClass$)
+      const res = await firstValueFrom(facade.dfh.klass.dfhClass$)
       expect(Object.keys(res).length).toBeGreaterThan(0);
     });
   })
@@ -69,5 +69,13 @@ describe('Data Facade', () => {
     expect(res.pk_entity).toEqual(11)
   })
 
+
+
+  it('should set the entire data state', async () => {
+    store.dispatch(setDataState({ data: { inf: { appellation: { by_pk_entity: { 1: { fk_class: 123 } } } } } }))
+    const res = await firstValueFrom(facade.inf.appellation.getAppellation.byPkEntity$(1))
+
+    expect(res.fk_class).toEqual(123)
+  })
 
 });

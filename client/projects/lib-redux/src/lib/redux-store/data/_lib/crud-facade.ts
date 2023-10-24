@@ -21,8 +21,8 @@ export class CrudFacade<Model> {
     const addPending = U.uuid()
     this.store.dispatch(this.actions.loadAction(suffix, addPending, pk))
     return {
-      pending$: this.store.select((s) => s?.pending?.[addPending]),
-      resolved$: this.store.select<SucceedActionMeta<Model>>(s => s.resolved?.[addPending]),
+      pending$: this.store.select((s) => s?.data?.pending?.[addPending]),
+      resolved$: this.store.select<SucceedActionMeta<Model>>(s => s?.data?.resolved?.[addPending]),
       key: addPending
     };
   }
@@ -38,8 +38,8 @@ export class CrudFacade<Model> {
     const addPending = U.uuid();
     this.store.dispatch(this.actions.upsertAction(items, addPending, pk))
     return {
-      pending$: this.store.select((s) => s?.pending?.[addPending]),
-      resolved$: this.store.select<SucceedActionMeta<Model>>(s => s.resolved?.[addPending]),
+      pending$: this.store.select((s) => s?.data?.pending?.[addPending]),
+      resolved$: this.store.select<SucceedActionMeta<Model>>(s => s?.data?.resolved?.[addPending]),
       key: addPending
     };
   }
@@ -64,8 +64,8 @@ export class CrudFacade<Model> {
     const addPending = U.uuid();
     this.store.dispatch(this.actions.deleteAction(items, addPending, pk))
     return {
-      pending$: this.store.select((s) => s?.pending?.[addPending]),
-      resolved$: this.store.select<SucceedActionMeta<Model>>(s => s.resolved?.[addPending]).pipe(filter(x => !!x)),
+      pending$: this.store.select((s) => s?.data?.pending?.[addPending]),
+      resolved$: this.store.select<SucceedActionMeta<Model>>(s => s?.data?.resolved?.[addPending]).pipe(filter(x => !!x)),
       key: addPending
     };
   }

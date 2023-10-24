@@ -4,8 +4,8 @@ import { LoadingBarState } from './loading-bar/loading-bar.models';
 import { NotificationState } from './notification/notification.models';
 
 export interface UiState {
-  account: AccountState,
-  loadingBar: LoadingBarState,
-  activeProject: ActiveProjectState,
-  notifications: NotificationState,
+  account?: AccountState,
+  loadingBar?: LoadingBarState,
+  activeProject?: ActiveProjectState,
+  notifications?: NotificationState,
 }

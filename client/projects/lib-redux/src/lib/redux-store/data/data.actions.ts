@@ -1,6 +1,7 @@
 import type { GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
-import { createActionGroup, props } from '@ngrx/store';
+import { createAction, createActionGroup, props } from '@ngrx/store';
 import type { Observable } from 'rxjs';
+import { DataState } from './data.model';
 
 export const schemaObjectActions = createActionGroup({
   source: 'GV_SCHEMA_OBJECT',
@@ -24,4 +25,8 @@ export const schemaModifierActions = createActionGroup({
   }
 })
 
+/**
+ * Set the entire data state
+ */
+export const setDataState = createAction('Set Data State', props<{ data: DataState }>())
 

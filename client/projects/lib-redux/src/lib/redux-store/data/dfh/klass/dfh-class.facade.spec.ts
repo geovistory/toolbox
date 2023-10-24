@@ -43,9 +43,9 @@ describe('DfhClass Facade', () => {
   it('should reduce and find item ', async () => {
     const a: DfhClass = { pk_class: 11, parent_classes: [], ancestor_classes: [], basic_type: 22 };
     facade.loadSucceeded([a], "")
-    const res = await firstValueFrom(facade.getDfhClass.byPkClass$(11))
+    const res = await firstValueFrom(facade.select.byPkClass(11))
     expect(res).toEqual(a)
-    const res2 = await firstValueFrom(facade.getDfhClass.byBasicType$(22))
+    const res2 = await firstValueFrom(facade.select.byBasicType(22))
     expect(res2).toEqual({ 11: a })
   });
 

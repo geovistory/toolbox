@@ -4,6 +4,7 @@ import { SocketsModule } from '@kleiolab/lib-sockets';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { DataModule } from './data/data.module';
+import { ConfigurationPipesService } from './queries/configuration/configuration-pipes.service';
 import { StateEffects } from './state.effects';
 import { IAppState } from './state.model';
 import { UiModule } from './ui/ui.module';
@@ -25,7 +26,9 @@ export function apiConfigFactory(): Configuration {
     EffectsModule.forRoot(StateEffects),
     SocketsModule
   ],
-  providers: []
+  providers: [
+    ConfigurationPipesService
+  ]
 })
 export class StateModule {
 
@@ -36,7 +39,7 @@ export class StateModule {
     @Optional() @Inject(APP_INITIAL_STATE) initialState?: IAppState
   ) {
     const errors: string[] = []
-    if (parentModule) errors.push('ReduxModule is already loaded. Import in your base AppModule only.');
+    if (parentModule) errors.push('StateModule is already loaded. Import in your base AppModule only.');
     if (!sdkLb4) errors.push('You need to import the SdkLb4Module in your AppModule!');
     if (errors.length) throw new Error(errors.join('\n'));
     if (!initialState) initialState = {

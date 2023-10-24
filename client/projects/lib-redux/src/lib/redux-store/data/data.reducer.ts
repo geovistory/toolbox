@@ -4,14 +4,16 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { composeReducers } from '../_lib/composeReducers';
 import { datDefinitions } from './dat/dat.config';
 import { datReducers } from './dat/dat.reducers';
-import { schemaModifierActions } from './data.actions';
+import { schemaModifierActions, setDataState } from './data.actions';
 import { DataState } from './data.model';
 import { dfhDefinitions } from './dfh/dfh.config';
 import { dfhReducers } from './dfh/dfh.reducers';
 import { infDefinitions } from './inf/inf.config';
 import { infReducers } from './inf/inf.reducers';
+import { pendingReducers } from './pending/pending.reducers';
 import { proDefinitions } from './pro/pro.config';
 import { proReducers } from './pro/pro.reducers';
+import { resolvedReducers } from './resolved/resolved.reducers';
 import { sysDefinitions } from './sys/sys.config';
 import { sysReducers } from './sys/sys.reducers';
 import { tabReducers } from './tab/sys.reducers';
@@ -46,7 +48,10 @@ const dataRootReducers = createReducer({},
       }
     }
     return state;
-  }))
+  }),
+  // set the entire data state
+  on(setDataState, (_, action) => action.data)
+)
 
 
 
@@ -106,10 +111,6 @@ function removeModels(schemaData: any, schemaDef: ReducerConfigCollection, schem
       schemaState = {
         ...schemaState,
         [modelName]: deleteItemsFromState(modelDef, modelState, modelData),
-        // pkEntityModelMap: {
-        //   ...schemaState.pkEntityModelMap,
-        //   ...addToEntityModelMap(modelData, modelName)
-        // }
       }
 
     }
@@ -126,6 +127,8 @@ export const dataReducer = composeReducers<DataState>(
     pro: proReducers,
     sys: sysReducers,
     tab: tabReducers,
-    war: warReducers
+    war: warReducers,
+    pending: pendingReducers,
+    resolved: resolvedReducers
   })
 )

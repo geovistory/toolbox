@@ -46,6 +46,13 @@ export class ActiveProjectPipesService {
     })
 
 
+    // dispatch a method to put the EntityPreview to the store
+    this.entityPreviewSocket.fromEvent<WarEntityPreview>('entityPreview').subscribe(data => {
+      state.data.war.entityPreview.loadSucceeded([data], '');
+    });
+
+
+
   }
 
 

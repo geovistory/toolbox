@@ -9,9 +9,9 @@ import { DfhPropertyFacade } from './property/dfh-property.facade';
 })
 export class DfhFacade {
   constructor(
-    public dfhClass: DfhClassFacade,
-    public dfhProperty: DfhPropertyFacade,
-    public dfhProfile: DfhProfileFacade,
-    public dfhLabel: DfhLabelFacade,
+    public klass: DfhClassFacade,
+    public property: DfhPropertyFacade,
+    public profile: DfhProfileFacade,
+    public label: DfhLabelFacade,
   ) { }
 }

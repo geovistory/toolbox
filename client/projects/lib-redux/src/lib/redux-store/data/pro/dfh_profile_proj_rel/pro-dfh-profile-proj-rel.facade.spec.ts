@@ -49,7 +49,7 @@ describe('ProDfhProfileProjRel Facade', () => {
     facade.loadSucceeded([a1, a2, a3, a4], "")
     const res = await firstValueFrom(facade.getDfhProfileProjRel.byFkProjectFkClass$(457, 123))
     expect(res).toEqual(a4)
-    const res2 = await firstValueFrom(facade.getDfhProfileProjRel.byFkProjectEnabledInEntities$(456, true))
+    const res2 = await firstValueFrom(facade.getDfhProfileProjRel.byFkProjectEnabled$(456, true))
     expect(res2).toEqual({ '456_123': a1, '456_125': a3 })
   });
 

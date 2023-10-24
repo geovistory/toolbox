@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { IAppState } from '../../../public-api';
 import { CrudFacade } from '../../_lib/crud-facade';
 import { dfhPropertyActions } from './dfh-property.actions';
-import { getDfhProperty, indexState } from './dfh-property.selectors';
+import { byPropertyState, getDfhProperty, indexState } from './dfh-property.selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,7 @@ import { getDfhProperty, indexState } from './dfh-property.selectors';
 export class DfhPropertyFacade extends CrudFacade<DfhProperty> {
 
   dfhProperty$ = this.store.select(indexState);
+  byPropertyIndexed$ = this.store.select(byPropertyState)
 
   constructor(protected store: Store<IAppState>) {
     super(store, dfhPropertyActions)

@@ -24,7 +24,7 @@ export class ProDfhProfileProjRelFacade extends CrudFacade<ProDfhProfileProjRel>
     byFkProject$: (fkProject: number) =>
       this.store.select(getDfhProfileProjRel.byFkProject(fkProject)),
 
-    byFkProjectEnabledInEntities$: (fkProject: number, enabled: boolean) =>
+    byFkProjectEnabled$: (fkProject: number, enabled: boolean) =>
       this.store.select(getDfhProfileProjRel.byFkProjectEnabled(fkProject, enabled))
   };
 }

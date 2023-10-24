@@ -5,11 +5,12 @@ import { DataEffects } from './data.effects';
 import { DataFacade } from './data.facade';
 import { dataFeatureKey } from './data.feature.key';
 import { dataReducer } from './data.reducer';
+import { ResolvedEffects } from './resolved/resolved.effects';
 
 @NgModule({
   imports: [
     StoreModule.forFeature(dataFeatureKey, dataReducer),
-    EffectsModule.forFeature(DataEffects)
+    EffectsModule.forFeature(DataEffects, ResolvedEffects)
   ],
   providers: [
     DataFacade,
