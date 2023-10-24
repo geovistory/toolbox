@@ -22,8 +22,10 @@ import { schemaModifierActions } from '../../data/data.actions';
 import { StateFacade } from '../../state.facade';
 import { IAppState } from '../../state.model';
 import { StateModule } from '../../state.module';
-import { ConfigurationPipesService, DisplayType, SectionName } from './configuration-pipes.service';
+import { ConfigurationPipesService } from './configuration-pipes.service';
+import { DisplayType } from "./models/DisplayType";
 import { Field } from './models/Field';
+import { SectionName } from "./models/SectionName";
 
 describe('ConfigurationPipeService', () => {
   let service: ConfigurationPipesService;

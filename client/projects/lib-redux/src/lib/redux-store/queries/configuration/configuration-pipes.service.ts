@@ -1,69 +1,26 @@
 
 import { Injectable } from '@angular/core';
 import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
-import { ClassConfig, DfhClass, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, InfLanguage, ProClassFieldConfig, ProDfhClassProjRel, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { ClassConfig, DfhClass, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, InfLanguage, ProClassFieldConfig, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { StateFacade } from '../../state.facade';
 import { PipeCache } from '../PipeCache';
+import { AddMenuClassItem } from './models/AddMenuClassItem';
+import { DfhClassEnriched } from './models/DfhClassEnriched';
+import { DfhClassEnrichedWithLabel } from './models/DfhClassEnrichedWithLabel';
+import { DisplayType } from './models/DisplayType';
 import { Field } from './models/Field';
 import { GvFieldTargets } from './models/FieldTargets';
+import { HasTypePropertyInfo } from './models/HasTypePropertyInfo';
+import { SectionName } from './models/SectionName';
 import { SpecialFieldType } from './models/SpecialFieldType';
 import { Subfield } from './models/Subfield';
-
-export enum DisplayType { form = 'form', view = 'view' }
-// export type SectionNameType = keyof Sections
-export enum SectionName {
-  basic = 'basic',
-  timeSpan = 'timeSpan',
-  metadata = 'metadata',
-  specific = 'specific',
-  linkedEntities = 'linkedEntities',
-  linkedSources = 'linkedSources',
-  simpleForm = 'simpleForm'
-}
-
-
-// this is the
-export type TableName = 'appellation' | 'language' | 'place' | 'time_primitive' | 'lang_string' | 'dimension' | 'resource'
-
-export interface DfhPropertyStatus extends DfhProperty {
-  // true, if removed from all profiles of the current project
-  removedFromAllProfiles: boolean
-}
+import { TableName } from './models/TableName';
 
 type LabelOrigin = 'of project in project lang' | 'of default project in project lang' | 'of default project in english' | 'of ontome in project lang' | 'of ontome in english'
-
-export interface HasTypePropertyInfo {
-  typedClass: number;
-  hasTypeProperty: number;
-  isOutgoing: boolean;
-  typeClass: number;
-}
-
-
-export interface AddMenuClassItem {
-  typedClass: DfhClassEnrichedWithLabel;
-  hasTypeProperty: number;
-  isOutgoing: boolean;
-  typeClass: number;
-}
-
-
-export interface DfhClassEnrichedWithLabel extends DfhClassEnriched {
-  classLabel: string
-}
-export interface DfhClassEnriched {
-  icon: ClassConfig.IconEnum,
-  detailPage: ClassConfig.DetailPageEnum,
-  belongsToCategory: SysConfigClassCategoryBelonging;
-  dfhClass: DfhClass;
-  classConfig: ClassConfig;
-  restrictedToOtherProjects?: boolean; // in case of a platform vocabulary class managed by another project
-  projectRel?: ProDfhClassProjRel;
-}
 
 @Injectable({
   providedIn: 'root'

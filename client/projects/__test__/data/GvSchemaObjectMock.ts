@@ -9,7 +9,7 @@ import { SysConfigValueMock } from './auto-gen/gvDB/SysConfigValueMock';
 
 /**
  * Objects to feed the client redux store with mockdata
- * be it for testing pipes (lib-queries) or sanboxes (app-toolbox)
+ * be it for testing pipes (lib-redux) or sanboxes (app-toolbox)
  */
 export namespace GvSchemaObjectMock {
 

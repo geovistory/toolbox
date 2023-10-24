@@ -1,5 +1,4 @@
-import { infTimePrimToTimePrimWithCal } from '@kleiolab/lib-queries';
-import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
+import { InfTimePrimitive, StatementWithTarget, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { InfAppellationMock } from './auto-gen/gvDB/InfAppellationMock';
 import { InfDimensionMock } from './auto-gen/gvDB/InfDimensionMock';
 import { InfLangStringMock } from './auto-gen/gvDB/InfLangStringMock';
@@ -10,6 +9,14 @@ import { InfStatementMock } from './auto-gen/gvDB/InfStatementMock';
 import { InfTimePrimitiveMock } from './auto-gen/gvDB/InfTimePrimitiveMock';
 import { ProInfoProjRelMock } from './auto-gen/gvDB/ProInfoProjRelMock';
 import { WarEntityPreviewMock } from './auto-gen/gvDB/WarEntityPreviewMock';
+
+function infTimePrimToTimePrimWithCal(infTimePrim: InfTimePrimitive): TimePrimitiveWithCal {
+  return {
+    julianDay: infTimePrim.julian_day,
+    duration: infTimePrim.duration,
+    calendar: infTimePrim.calendar,
+  }
+}
 
 export namespace StatementWithTargetMock {
   export const appeTeEnHasAppeVtWithTarget: StatementWithTarget = {

@@ -1,6 +1,6 @@
 import { DfhConfig } from '@kleiolab/lib-config';
-import { Profiles } from '@kleiolab/lib-queries';
 import { DfhClass, DfhLabel, DfhProperty, GvPositiveSchemaObject, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
+import { Profiles } from 'projects/lib-redux/src/lib/redux-store/queries/configuration/models/Profiles';
 import { concat, mergeDeepWith } from 'ramda';
 import { DfhApiPropertyMock } from '../data/auto-gen/gvDB/DfhApiPropertyMock';
 import { NewDfhApiClass, NewDfhApiProperty, OntomeProfileMock } from '../data/auto-gen/gvDB/local-model.helpers';

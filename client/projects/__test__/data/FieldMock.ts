@@ -1,5 +1,8 @@
 import { SysConfig } from '@kleiolab/lib-config';
-import { Field, FieldBase, FieldTargetClass, SpecialFieldType } from '@kleiolab/lib-queries';
+import { Field } from '@kleiolab/lib-redux/lib/redux-store/queries/configuration/models/Field';
+import { FieldBase } from '@kleiolab/lib-redux/lib/redux-store/queries/configuration/models/FieldBase';
+import { FieldTargetClass } from '@kleiolab/lib-redux/lib/redux-store/queries/configuration/models/FieldTargetClass';
+import { SpecialFieldType } from '@kleiolab/lib-redux/lib/redux-store/queries/configuration/models/SpecialFieldType';
 import { GvFieldTargetViewType, GvSubentitFieldPageReq, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClassMock';
 import { DfhApiPropertyMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiPropertyMock';
@@ -157,7 +160,7 @@ export namespace FieldMock {
   export const placeHasType: Field = createField(
     DfhApiClassMock.EN_363_GEO_PLACE,
     DfhApiPropertyMock.EN_1110_HAS_GEO_PLACE_TYPE,
-    [{ class: DfhApiClassMock.EN_364_GEO_PLACE_TYPE, viewType: { typeItem: 'true' }, formControlType: { typeItem: 'true' } }],
+    [{ class: DfhApiClassMock.EN_364_GEO_PLACE_TYPE, viewType: { entityPreview: 'true' }, formControlType: { entity: 'true' } }],
     true,
     'has-type'
   )
