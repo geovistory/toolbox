@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { SectionName } from '@kleiolab/lib-queries';
+import { SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/public-api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';

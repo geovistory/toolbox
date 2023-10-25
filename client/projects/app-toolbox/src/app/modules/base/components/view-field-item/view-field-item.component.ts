@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { C_53_TYPE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
@@ -49,6 +49,7 @@ export class ViewFieldItemComponent implements OnInit {
 
   itemType: ViewFieldItemType
   constructor(
+    private state: StateFacade,
     private ap: ActiveProjectPipesService,
     private p: ActiveProjectService,
     private baseModals: BaseModalsService,
@@ -171,7 +172,7 @@ export class ViewFieldItemComponent implements OnInit {
 
 
   async remove() {
-    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise();
 
     if (this.field.identityDefiningForSource) {
       return await this.displayNotRemovableWarning();
@@ -216,7 +217,7 @@ export class ViewFieldItemComponent implements OnInit {
 
 
   async displayNotRemovableWarning() {
-    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise();
     const pkEntity = this?.fieldBody?.source?.fkInfo;
     if (pkEntity) {
       const ep = await this.ap.streamEntityPreview(pkEntity, true, pkProject).pipe(first()).toPromise();

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, Input, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
@@ -29,6 +29,7 @@ export class EntityFieldComponent implements OnInit {
   page$: Observable<FieldPage>
   constructor(
     private p: ActiveProjectPipesService,
+    private state: StateFacade,
     private i: InformationPipesService,
     private pag: PaginationService,
     private dialog: MatDialog,
@@ -70,7 +71,7 @@ export class EntityFieldComponent implements OnInit {
   }
 
   private registerUpdateListener(targets: GvFieldTargets, page: GvFieldPage) {
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       const req: GvFieldPageReq = {
         pkProject,
         targets,

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
-import { ControlValueAccessor, UntypedFormArray, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from "@kleiolab/lib-queries";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormArray } from '@angular/forms';
+import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from "@kleiolab/lib-redux";
 import { QueryFilter, QueryFilterData } from "@kleiolab/lib-sdk-lb4";
 import { U } from "@kleiolab/lib-utils";
 import { values } from 'd3';

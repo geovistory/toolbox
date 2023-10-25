@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ProConfig } from '@kleiolab/lib-config';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { ProProject } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 

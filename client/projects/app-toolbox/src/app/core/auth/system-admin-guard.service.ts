@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { StateFacade } from "@kleiolab/lib-redux/public-api";
+import { StateFacade } from "@kleiolab/lib-redux";
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { ActiveAccountService } from '../active-account/active-account.service';

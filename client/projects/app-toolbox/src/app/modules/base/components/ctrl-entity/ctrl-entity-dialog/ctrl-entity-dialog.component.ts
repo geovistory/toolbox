@@ -1,11 +1,9 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActiveProjectPipesService, ConfigurationPipesService, WarSelector } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
-import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfResource, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
+import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfResource } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { EditModeService } from '../../../services/edit-mode.service';
@@ -75,13 +73,10 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
 
   constructor(
     private state: StateFacade,
-    private p: ActiveProjectService,
     private ap: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
     public dialogRef: MatDialogRef<CtrlEntityDialogComponent, CtrlEntityModel>,
     @Inject(MAT_DIALOG_DATA) public data: CtrlEntityDialogData,
-    private warSelector: WarSelector,
-    private entityPreviewApi: WarEntityPreviewControllerService,
   ) {
 
     // input checking
@@ -154,7 +149,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     // add to the WS stream and fetch repo and project version
     this.ap.streamEntityPreview(d.pkEntity)
 
-    this.selectedInProject$ = this.warSelector.entity_preview$.by_project_id__pk_entity$.key(this.pkProject + '_' + d.pkEntity).pipe(
+    this.selectedInProject$ = this.state.data.war.entityPreview.getEntityPreview.byProjectIdPkEntity$(this.pkProject, d.pkEntity).pipe(
       filter(item => !!item),
       map(item => item.project_id !== 0),
       startWith(false)

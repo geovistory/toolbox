@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-queries';
+import { ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-redux';
 import { AnalysisDefinition, QueryDefinition } from '@kleiolab/lib-sdk-lb4';
 import { FormArrayFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';

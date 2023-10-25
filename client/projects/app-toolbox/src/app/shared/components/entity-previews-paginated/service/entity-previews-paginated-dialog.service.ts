@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { first } from 'rxjs/operators';
 import { EntityPreviewsPaginatedDialogComponent, EntityPreviewsPaginatedDialogData } from '../entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
 

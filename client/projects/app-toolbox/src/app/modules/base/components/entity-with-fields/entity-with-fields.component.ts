@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@angular/core';
-import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';

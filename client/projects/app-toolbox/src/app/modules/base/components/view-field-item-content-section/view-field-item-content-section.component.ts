@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional } from '@angular/core';
-import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { C_218_EXPRESSION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';

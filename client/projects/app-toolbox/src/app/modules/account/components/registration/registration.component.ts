@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { AccountService, SignupRequest, SignupValidationError } from '@kleiolab/lib-sdk-lb4';
 import { first } from 'rxjs/operators';
 

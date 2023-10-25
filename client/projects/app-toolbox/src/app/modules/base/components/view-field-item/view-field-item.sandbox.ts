@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
-import { APP_INITIAL_STATE } from '@kleiolab/lib-redux/public-api';
+import { ActiveProjectPipesService, APP_INITIAL_STATE } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';

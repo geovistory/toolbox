@@ -1,6 +1,5 @@
 import { Component, HostBinding } from '@angular/core';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable } from 'rxjs';

@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MapAndTimeContFormArrayFactory } from '../map-and-time-cont-form/map-and-time-cont-form.component';
+import { ClassAndTypeSelectModel } from "@kleiolab/lib-redux";
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
-import { Observable, of } from 'rxjs';
-import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
-import { first } from 'rxjs/operators';
 import { FilterDefinition } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';
+import { Observable, of } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { TableFormService } from '../../table/table-form/table-form.service';
+import { MapAndTimeContFormArrayFactory } from '../map-and-time-cont-form/map-and-time-cont-form.component';
 
 @Component({
   selector: 'gv-map-and-time-cont-form-array',

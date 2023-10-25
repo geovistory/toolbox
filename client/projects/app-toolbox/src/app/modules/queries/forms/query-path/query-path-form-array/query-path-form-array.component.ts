@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { InformationPipesService } from '@kleiolab/lib-queries';
+import { InformationPipesService } from '@kleiolab/lib-redux';
 import { QueryPathSegment } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { map, mergeMap, switchMap } from 'rxjs/operators';
-import { QueryPathFormArrayFactory, classesSegmentConfig, propertiesSegmentConfig } from '../query-path-form/query-path-form.component';
+import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory } from '../query-path-form/query-path-form.component';
 
 @Component({
   selector: 'gv-query-path-form-array',

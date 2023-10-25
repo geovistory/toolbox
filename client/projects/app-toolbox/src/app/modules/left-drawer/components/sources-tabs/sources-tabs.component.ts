@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
-import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ListService } from '../../services/list.service';
 

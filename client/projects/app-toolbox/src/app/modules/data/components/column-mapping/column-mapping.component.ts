@@ -1,8 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
@@ -40,9 +38,7 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
 
   constructor(
     public c: ConfigurationPipesService,
-    private p: ActiveProjectService,
     private state: StateFacade,
-    private sys: SysSelector,
   ) { }
 
   ngOnDestroy(): void {
@@ -103,7 +99,7 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
   getIcon$(pkClass: number): Observable<'PeIt' | 'VOT' | 'TeEn'> {
     return combineLatest([
       this.c.pipeClassesEnabledByProjectProfiles(),
-      this.sys.config$.main$
+      this.state.data.sys.config.sysConfig$
     ]).pipe(
       map(([classes, config]) => {
         const basicType = classes.find(c => c.pk_class == pkClass)?.basic_type;

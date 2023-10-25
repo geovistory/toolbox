@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Field } from '@kleiolab/lib-queries';
+import { Field } from '@kleiolab/lib-redux';
 import { InfTimePrimitive } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { EditModeService } from '../../services/edit-mode.service';

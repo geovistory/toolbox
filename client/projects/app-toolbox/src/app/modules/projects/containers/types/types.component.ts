@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, DisplayType, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ActiveProjectPipesService, ConfigurationPipesService, DisplayType, Field, InformationBasicPipesService, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { InformationPipesService } from '@kleiolab/lib-queries';
+import { InformationPipesService } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageScope, GvFieldSourceEntity, GvFieldTargetViewType, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { Observable, Subject } from 'rxjs';

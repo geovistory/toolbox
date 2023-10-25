@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ConfigurationPipesService, DisplayType, SectionName } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/public-api';
 import { Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';

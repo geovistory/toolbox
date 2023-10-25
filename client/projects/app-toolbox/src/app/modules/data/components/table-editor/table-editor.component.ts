@@ -2,8 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnInit, Optional } from '@angular/
 import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { DatColumn, FactoidMapping, GetTablePageOptions, InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';

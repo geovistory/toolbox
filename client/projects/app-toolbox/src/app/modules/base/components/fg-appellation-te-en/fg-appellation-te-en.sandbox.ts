@@ -1,6 +1,6 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { GvPositiveSchemaObject, InfLanguage, InfResourceWithRelations, LanguagesService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';

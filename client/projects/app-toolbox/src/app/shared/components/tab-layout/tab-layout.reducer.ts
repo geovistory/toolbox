@@ -1,4 +1,4 @@
-import { TabBase } from "@kleiolab/lib-redux/public-api";
+import { TabBase } from "@kleiolab/lib-redux";
 import { Action } from 'redux';
 import { TabBaseAPIAction } from './tab-layout';
 import { TabLayoutAcitons } from './tab-layout.actions';

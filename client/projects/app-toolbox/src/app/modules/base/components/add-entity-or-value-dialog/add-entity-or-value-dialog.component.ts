@@ -1,8 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActiveProjectPipesService, ConfigurationPipesService, SysSelector, WarSelector } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier, InfData, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
@@ -75,9 +74,7 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
     private c: ConfigurationPipesService,
     public dialogRef: MatDialogRef<AddEntityOrValueDialogComponent, CreateEntityEvent>,
     @Inject(MAT_DIALOG_DATA) public data: AddEntityOrValueDialogData,
-    private warSelector: WarSelector,
     private state: StateFacade,
-    private sys: SysSelector,
   ) {
     // input checking
     if (!data.pkClass) throw new Error('You must provide classAndTypePk to this dialog')
@@ -106,7 +103,7 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
     )
 
     // if it is a value, we don't need the addList
-    this.sys.config$.main$.pipe(takeUntil(this.destroy$)).subscribe(config => {
+    this.state.data.sys.config.sysConfig$.pipe(takeUntil(this.destroy$)).subscribe(config => {
       const configOfClass = config.classes[this.pkClass]
       if (configOfClass && configOfClass.valueObjectType) return this.sliderView = SliderEnum.center
       else this.sliderView = SliderEnum.left
@@ -132,7 +129,7 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
     // add to the WS stream and fetch repo and project version
     this.ap.streamEntityPreview(d.pkEntity)
 
-    this.selectedInProject$ = this.warSelector.entity_preview$.by_project_id__pk_entity$.key(this.pkProject + '_' + d.pkEntity).pipe(
+    this.selectedInProject$ = this.state.data.war.entityPreview.getEntityPreview.byProjectIdPkEntity$(this.pkProject, d.pkEntity).pipe(
       filter(item => !!item),
       map(item => item.project_id !== 0),
       startWith(false)

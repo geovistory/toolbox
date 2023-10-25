@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldProperty, InfData, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
@@ -132,7 +132,7 @@ export class CtrlEntityComponent implements OnDestroy,
   constructor(@Optional() @Self() public ngControl: NgControl,
     private dialog: MatDialog,
     public ap: ActiveProjectPipesService,
-    public s: SchemaSelectorsService,
+    private state: StateFacade,
     private c: ConfigurationPipesService) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -152,7 +152,7 @@ export class CtrlEntityComponent implements OnDestroy,
       }
       else if (val && (val.resource)) {
         return combineLatest(
-          this.s.dfh$.class$.by_pk_class$.key(this.pkClass),
+          this.state.data.dfh.klass.select.byPkClass(this.pkClass),
           this.c.pipeClassLabel(this.pkClass)
         ).pipe(
           map(([klass, label]) => {

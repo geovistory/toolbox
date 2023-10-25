@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatementWithRelations, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
 import { Observable, Subject } from 'rxjs';
@@ -47,7 +47,6 @@ export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewIni
 
   constructor(
     public c: ConfigurationPipesService,
-    private s: SchemaSelectorsService,
     public dialogRef: MatDialogRef<CtrlValueDialogComponent, CtrlValueDialogResult>,
     @Inject(MAT_DIALOG_DATA) public data: CtrlValueDialogData
   ) {

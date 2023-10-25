@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import getUrls from 'get-urls';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';

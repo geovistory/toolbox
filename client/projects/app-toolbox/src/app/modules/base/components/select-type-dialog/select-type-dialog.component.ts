@@ -1,7 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActiveProjectPipesService, Field, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ActiveProjectPipesService, Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, InfStatementWithRelations, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
@@ -51,11 +50,10 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: SelectTypeDialogData,
     private ap: ActiveProjectPipesService,
     public dialogRef: MatDialogRef<SelectTypeDialogComponent, boolean>,
-    private schema: SchemaSelectorsService
   ) { }
 
   ngOnInit() {
-    const allOptions$ = this.schema.inf$.resource$.by_fk_class_key$(this.data.targetClass).pipe(
+    const allOptions$ = this.state.data.inf.resource.getResource.byFkClass$(this.data.targetClass).pipe(
       switchMap(r => combineLatestOrEmpty(
         values(r).map(resource => this.ap.streamEntityPreview(resource.pk_entity).pipe(
           map<WarEntityPreview, Option>(preview => ({
@@ -86,7 +84,7 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
    */
   async upsertSelected(targetEntity: number) {
     this.loading$.next(true)
-    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise()
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise()
 
     // create the statement to add
     const newStmt = this.prepareNewStatement(targetEntity);
@@ -125,7 +123,7 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
   }
 
   private async triggerPageReloads(fkInfo: number, field: Field) {
-    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise()
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise()
     const fieldId: WarFieldChangeId = fieldToWarFieldChangeId(pkProject, { fkInfo }, field.property, field.isOutgoing);
     this.paginationService.reloadPagesOfField(fieldId);
   }
@@ -147,7 +145,7 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
   }
 
   private async removeOriginalStatement() {
-    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise();
     if (this.data?.originalStatement?.statement?.pk_entity) {
       await this.state.data.removeEntityFromProject(
         pkProject,

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from 'projects/app-toolbox/src/app/ontome-ids';
@@ -124,7 +123,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit, OnDestroy {
 
   private createGvFieldPageReq(): Observable<GvFieldPageReq> {
     return combineLatest([
-      this.p.pkProject$,
+      this.state.pkProject$,
       this.c.pipeTargetTypesOfClass(this.pkMappedClass, undefined, undefined, undefined, true)
     ])
       .pipe(map(([pkProject, targetTypeOfClass]) => {

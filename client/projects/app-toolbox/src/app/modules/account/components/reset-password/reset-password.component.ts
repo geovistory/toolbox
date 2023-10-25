@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { AccountService, ResetPasswordRequest } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';

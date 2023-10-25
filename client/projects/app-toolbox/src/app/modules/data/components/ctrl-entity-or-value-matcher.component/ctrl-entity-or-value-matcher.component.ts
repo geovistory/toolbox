@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { SysSelector } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
@@ -33,14 +32,13 @@ export class CtrlEntityOrValueMatcherComponent implements OnInit, OnDestroy {
 
   constructor(
     public p: ActiveProjectService,
-    private sys: SysSelector,
     private state: StateFacade,
     private dialog: MatDialog,
   ) { }
 
   ngOnInit(): void {
     this.isEntity$ = combineLatest([
-      this.sys.config$.main$,
+      this.state.data.sys.config.sysConfig$,
       this.klass$
     ]).pipe(
       map(([config, klass]) => {

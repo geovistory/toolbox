@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
-import { Field } from '@kleiolab/lib-queries';
+import { Field } from '@kleiolab/lib-redux';
 import { FormArrayChild, ParentFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
 import { first } from 'rxjs/operators';

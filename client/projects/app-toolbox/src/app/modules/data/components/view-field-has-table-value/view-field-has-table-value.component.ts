@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, ImportTableResponse, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { P_1879_HAS_VALUE_ID } from 'projects/app-toolbox/src/app/ontome-ids';

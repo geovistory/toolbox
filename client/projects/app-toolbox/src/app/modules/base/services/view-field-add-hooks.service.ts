@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ActiveProjectPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { filter, first, map } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../core/active-project/active-project.service';

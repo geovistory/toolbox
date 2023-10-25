@@ -5,10 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { ApiProfile } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { flatten, indexBy, uniqBy } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
@@ -45,10 +43,8 @@ export class OntomeProfilesListComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private state: StateFacade,
-    private p: ActiveProjectService,
     private c: ConfigurationPipesService,
     private dialog: MatDialog,
-    private sys$: SysSelector
   ) { }
 
   ngOnInit() {
@@ -92,7 +88,7 @@ export class OntomeProfilesListComponent implements OnInit {
   }
 
   async getOntoMeProjects(): Promise<number[]> {
-    return combineLatest([this.state.pkProject$, this.sys$.config$.main$])
+    return combineLatest([this.state.pkProject$, this.state.data.sys.config.sysConfig$])
       .pipe(
         map(([pkProject, sysConfig]) => {
           const ontomeProjectIds = []

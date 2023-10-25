@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { UntypedFormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, SysSelector, TableName } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SectionName, StateFacade, TableName } from '@kleiolab/lib-redux';
 import { GvFieldProperty, GvFieldSourceEntity, InfAppellation, InfData, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, Section, SysConfigFormCtrlType, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, TimeSpanResult, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
@@ -201,9 +201,8 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
   constructor(
     private formFactoryService: FormFactoryService,
     private c: ConfigurationPipesService,
-    private ss: SchemaSelectorsService,
+    private state: StateFacade,
     private ap: ActiveProjectPipesService,
-    private sys: SysSelector,
   ) { }
 
   ngOnInit() {
@@ -212,7 +211,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
 
     this.c.pipeClassLabel(this.pkClass).subscribe(label => this.classLabel = label);
 
-    this.isValue$ = this.sys.config$.main$.pipe(map(config => config.classes[this.pkClass]?.valueObjectType))
+    this.isValue$ = this.state.data.sys.config.sysConfig$.pipe(map(config => config.classes[this.pkClass]?.valueObjectType))
 
     if (this.initVal$) {
       this.initVal$.subscribe(b => {
@@ -368,7 +367,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
       this._initVal$,
       // freezing bug log
       // .pipe(tap(x => console.log('aaa _initVal$'))),
-      this.ss.dfh$.class$.by_pk_class$.key(pkClass),
+      this.state.data.dfh.klass.select.byPkClass(pkClass),
       // freezing bug log
       // .pipe(tap(x => console.log('aaa by_pk_class$'))),
       this.c.pipeTargetTypesOfClass(pkClass),
@@ -578,7 +577,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     }
 
     return combineLatest([
-      this.ss.dfh$.class$.by_pk_class$.key(arrayConfig.data.pkClass)
+      this.state.data.dfh.klass.select.byPkClass(arrayConfig.data.pkClass)
     ])
       .pipe(
         filter(([klass]) => !!klass),
@@ -866,7 +865,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
 
     // Language Control
     else if (formCtrlType.language) {
-      return this.ap.pipeActiveDefaultLanguage().pipe(map(defaultLanguage => {
+      return this.state.data.getProjectLanguage(this.state.pkProject).pipe(map(defaultLanguage => {
         return initStmts.map((initVal) => this.languageCtrl(
           this.ctrlRequired(field),
           field.label,
@@ -1012,7 +1011,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     else if (formCtrlType.language) {
       return combineLatest([
         this.c.pipeClassLabel(targetClass),
-        this.ap.pipeActiveDefaultLanguage()])
+        this.state.data.getProjectLanguage(this.state.pkProject)])
         .pipe(map(([label, defaultLanguage]) => [this.languageCtrl(
           true,
           '',

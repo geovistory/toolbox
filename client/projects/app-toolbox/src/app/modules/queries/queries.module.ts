@@ -2,7 +2,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ConfigurationPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-redux';
 import { AngularSplitModule } from 'angular-split';
 import { TableModule } from 'primeng/table';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';

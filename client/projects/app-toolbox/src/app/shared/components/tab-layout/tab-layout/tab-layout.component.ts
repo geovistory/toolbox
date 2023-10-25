@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ContentChildren, OnDestroy, OnInit, QueryList } from '@angular/core';
 import { MatTabGroup } from '@angular/material/tabs';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { IOutputData } from 'angular-split/lib/interface';
 import { Subject } from 'rxjs';
 import { TabLayoutService } from '../tab-layout.service';
@@ -18,6 +19,7 @@ export class TabLayoutComponent implements OnInit, OnDestroy {
 
   constructor(
     protected ref: ChangeDetectorRef,
+    private state: StateFacade,
     public service: TabLayoutService) { }
 
   ngOnInit(): void {

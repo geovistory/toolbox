@@ -3,7 +3,7 @@ import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } fro
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '@kleiolab/lib-queries';
+import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '@kleiolab/lib-redux';
 import { TimeSpanUtil } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { Field } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellation, InfResourceWithRelations, InfStatementWithRelations, ProjectDataService, QuillDoc, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ReplaceStatementInFieldRequest } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/replaceStatementInFieldRequest';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';

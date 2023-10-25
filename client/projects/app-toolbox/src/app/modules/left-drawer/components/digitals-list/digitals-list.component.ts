@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { map } from 'rxjs/operators';
 import { ListService } from '../../services/list.service';

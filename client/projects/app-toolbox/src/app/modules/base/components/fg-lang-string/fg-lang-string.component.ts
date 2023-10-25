@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellation, InfLangString, InfLangStringWithRelations, InfLanguage, QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';

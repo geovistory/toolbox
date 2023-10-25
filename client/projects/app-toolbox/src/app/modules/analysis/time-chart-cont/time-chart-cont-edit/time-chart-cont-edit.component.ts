@@ -1,8 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux';
+import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisTimeChartRequest, AnalysisTimeChartResponse } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CursorInfo } from 'projects/app-toolbox/src/app/modules/timeline/components/timeline-chart/timeline-chart.component';

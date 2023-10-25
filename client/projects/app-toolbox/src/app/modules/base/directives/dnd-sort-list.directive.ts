@@ -1,5 +1,5 @@
 import { Directive, EventEmitter, Input, Output } from '@angular/core';
-import { Field } from '@kleiolab/lib-queries';
+import { Field } from '@kleiolab/lib-redux';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { first } from 'rxjs/operators';
 import { ViewFieldBodyComponent } from '../components/view-field-body/view-field-body.component';

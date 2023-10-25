@@ -1,6 +1,6 @@
 // TODO DELETE UNUSED
 import { FormArray, FormGroup } from '@angular/forms';
-import { ByPk } from '@kleiolab/lib-redux/public-api';
+import { ByPk } from '@kleiolab/lib-redux';
 import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 
 export interface LabelGeneratorSettings {

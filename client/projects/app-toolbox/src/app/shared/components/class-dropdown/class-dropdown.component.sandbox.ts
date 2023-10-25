@@ -1,4 +1,4 @@
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { DfhClass } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { Observable, of } from 'rxjs';

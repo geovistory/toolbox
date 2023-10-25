@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { ImportTable, ImportTableControllerService, ImportTableResponse, InfLanguage, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';

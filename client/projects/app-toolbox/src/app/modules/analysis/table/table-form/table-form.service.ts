@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ClassAndTypeSelectModel, ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ClassAndTypeSelectModel, ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { AnalysisDefinition, ColDef, QueryFilter, QueryPathSegment } from '@kleiolab/lib-sdk-lb4';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
 import { classOrTypeRequiredValidator } from 'projects/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';

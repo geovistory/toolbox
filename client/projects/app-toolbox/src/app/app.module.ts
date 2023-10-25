@@ -7,7 +7,7 @@ import { MatFormFieldDefaultOptions, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@ang
 import { MatIconRegistry } from '@angular/material/icon';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { StateModule } from '@kleiolab/lib-redux/public-api';
+import { StateModule } from '@kleiolab/lib-redux';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsConfig, SocketsModule, SOCKETS_CONFIG } from '@kleiolab/lib-sockets';
 import { DndModule } from '@suez/ngx-dnd';

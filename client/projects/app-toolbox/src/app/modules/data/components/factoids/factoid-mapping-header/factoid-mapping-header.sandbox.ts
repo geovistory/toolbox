@@ -1,4 +1,4 @@
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { DfhClass } from '@kleiolab/lib-sdk-lb4/public-api';
 import { sandboxOf } from 'angular-playground';
 import { ClassDropdownModule } from 'projects/app-toolbox/src/app/shared/components/class-dropdown/class-dropdown.module';

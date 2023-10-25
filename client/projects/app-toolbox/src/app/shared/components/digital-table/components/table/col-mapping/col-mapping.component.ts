@@ -2,11 +2,9 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatRadioChange } from '@angular/material/radio';
-import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { TableService, UnMapCheckResponse } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
@@ -52,8 +50,6 @@ export class ColMappingComponent implements OnInit, OnDestroy {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { colLabel: string, pkColumn: number, mapping: ColumnMapping, pkCells: Array<number> },
-    private p: ActiveProjectService,
-    private sys: SysSelector,
     private state: StateFacade,
     private tableAPI: TableService,
     public c: ConfigurationPipesService,
@@ -81,7 +77,7 @@ export class ColMappingComponent implements OnInit, OnDestroy {
             item
           }))
         ))))
-    ), this.sys.config$.main$]).pipe(
+    ), this.state.data.sys.config.sysConfig$]).pipe(
       map(([items, config]) => {
         const specialClasses: Array<ClassOption> = [];
         const normalClasses: Array<ClassOption> = [];

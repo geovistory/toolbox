@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';

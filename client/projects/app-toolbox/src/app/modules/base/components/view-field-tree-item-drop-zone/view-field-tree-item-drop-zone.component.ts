@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
-import { Field } from '@kleiolab/lib-queries';
+import { Field } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { DndDropEvent } from 'ngx-drag-drop';
 import { BehaviorSubject, Subject } from 'rxjs';

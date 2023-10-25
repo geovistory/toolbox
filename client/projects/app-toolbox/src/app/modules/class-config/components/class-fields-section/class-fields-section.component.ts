@@ -1,8 +1,7 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ConfigurationPipesService, DisplayType, Field, SectionName, StateFacade } from '@kleiolab/lib-redux';
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { TableRowReorderEvent } from 'primeng/table';
 import { values } from 'ramda';

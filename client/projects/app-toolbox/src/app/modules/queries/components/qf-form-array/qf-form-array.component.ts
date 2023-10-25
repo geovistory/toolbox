@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationBasicPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from '@kleiolab/lib-queries';
+import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationBasicPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from '@kleiolab/lib-redux';
 import { FormArrayConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormArrayConfig';
 import { equals } from 'ramda';
 import { Observable, Subject } from 'rxjs';

@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { IAppState } from '@kleiolab/lib-redux/public-api';
+import { IAppState } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { AuthModule } from 'projects/app-toolbox/src/app/core/auth/auth.module';

@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { ConfigurationPipesService, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ConfigurationPipesService, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { C_456_CHUNK_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from 'projects/app-toolbox/src/app/ontome-ids';

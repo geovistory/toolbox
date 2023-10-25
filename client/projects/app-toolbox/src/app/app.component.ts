@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
 
 @Component({

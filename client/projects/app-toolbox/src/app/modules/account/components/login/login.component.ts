@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { first } from 'rxjs/operators';
 

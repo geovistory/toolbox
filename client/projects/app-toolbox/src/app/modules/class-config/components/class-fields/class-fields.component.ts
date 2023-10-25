@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Field, SectionName } from '@kleiolab/lib-queries';
+import { Field, SectionName } from '@kleiolab/lib-redux';
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
 

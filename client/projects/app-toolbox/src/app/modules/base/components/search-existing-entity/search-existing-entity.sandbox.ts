@@ -1,4 +1,4 @@
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { WareEntityPreviewPage, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';

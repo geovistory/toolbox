@@ -1,7 +1,7 @@
 
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { CtrlTimeSpanDialogResult, Field, FieldTargetClass } from '@kleiolab/lib-queries';
+import { CtrlTimeSpanDialogResult, Field, FieldTargetClass } from '@kleiolab/lib-redux';
 import { InfAppellation, InfLangString, InfLanguage, InfPlace, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { keys, values } from 'ramda';

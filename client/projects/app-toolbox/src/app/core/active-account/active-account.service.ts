@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { AccountService, LoginRequest, LoginResponse, PubAccount, PubRole } from '@kleiolab/lib-sdk-lb4';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';

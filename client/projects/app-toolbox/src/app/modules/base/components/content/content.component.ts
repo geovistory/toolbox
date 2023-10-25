@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/public-api';
 import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { Observable } from 'rxjs';

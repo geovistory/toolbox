@@ -1,6 +1,6 @@
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit, Pipe, PipeTransform } from '@angular/core';
-import { ClassAndTypeSelectModel } from '@kleiolab/lib-queries';
+import { ClassAndTypeSelectModel } from '@kleiolab/lib-redux';
 import { ColDef } from '@kleiolab/lib-sdk-lb4';
 import { FormControlFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-control-factory';
 import { FilterDefinition } from 'projects/app-toolbox/src/app/modules/queries/components/query-filter/query-filter.component';

@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
-import { subfieldIdToString } from '@kleiolab/lib-redux/lib/redux-store/data/_lib/subfieldIdToString';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { Field, StateFacade, subfieldIdToString } from '@kleiolab/lib-redux';
 import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, WarFieldChange, WarFieldChangeAddToStream, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { FieldChangeSocket } from '@kleiolab/lib-sockets';
 import { indexBy } from 'ramda';
@@ -49,7 +47,6 @@ export class PaginationService {
   reloadQueue$: Observable<{ loader: Loader, pageIdString: string }[]>
 
   constructor(
-    private ap: ActiveProjectPipesService,
     private state: StateFacade,
     private fieldChangeSocket: FieldChangeSocket
   ) {
@@ -83,7 +80,7 @@ export class PaginationService {
     // server so that they will be streamed. This is important for
     // when connection was lost.
     this.fieldChangeSocket.fromEvent('reconnect').subscribe(disconnect => {
-      this.ap.pkProject$.pipe(first()).subscribe(pkProject => {
+      this.state.pkProject$.pipe(first()).subscribe(pkProject => {
         const addMsg: WarFieldChangeAddToStream = {
           pkProject,
           fieldIds: []

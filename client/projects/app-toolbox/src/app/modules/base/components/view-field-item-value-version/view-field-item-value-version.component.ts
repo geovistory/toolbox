@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
+import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { ProjectDataService } from '@kleiolab/lib-sdk-lb4';
 import { ReplaceStatementInFieldRequest } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/replaceStatementInFieldRequest';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
@@ -24,10 +24,10 @@ export class ViewFieldItemValueVersionComponent {
   constructor(
     public itemComponent: ViewFieldItemComponent,
     public bodyComponent: ViewFieldBodyComponent,
-    private ap: ActiveProjectPipesService,
     private projectData: ProjectDataService,
     private dialog: MatDialog,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    private state: StateFacade
   ) { }
   ngOnInit(): void {
     this.ordNum = this.itemComponent.item.ordNum
@@ -35,7 +35,7 @@ export class ViewFieldItemValueVersionComponent {
     this.showOntoInfo$ = this.itemComponent.showOntoInfo$
   }
   switchToStatement() {
-    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
       const data: ProgressDialogData = {
         title: 'Switching Version',

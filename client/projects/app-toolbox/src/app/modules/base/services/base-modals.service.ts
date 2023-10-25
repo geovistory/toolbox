@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { Field } from '@kleiolab/lib-queries';
+import { Field } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4/public-api';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';

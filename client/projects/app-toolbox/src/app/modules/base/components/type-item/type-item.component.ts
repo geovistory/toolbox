@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { ActiveProjectPipesService, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, InfStatement, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -33,7 +32,6 @@ export class TypeItemComponent implements OnInit {
   loading: boolean;
   assigningValue: boolean
   constructor(
-    private ap: ActiveProjectPipesService,
     private i: InformationPipesService,
     private fb: UntypedFormBuilder,
     private pag: PaginationService,
@@ -57,7 +55,7 @@ export class TypeItemComponent implements OnInit {
     if (this.isOutgoing == undefined) throw new Error('You must provide a isOutgoing')
     if (this.loadOnInit == undefined) this.loadOnInit = true
 
-    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       const fieldPage: GvFieldPage = {
         isOutgoing: this.isOutgoing,
         property: { fkProperty: this.pkProperty },
@@ -135,7 +133,7 @@ export class TypeItemComponent implements OnInit {
   }
 
   onSubmit() {
-    combineLatest(this.hasTypeStmt$, this.ap.pkProject$).pipe(
+    combineLatest(this.hasTypeStmt$, this.state.pkProject$).pipe(
       first(),
       takeUntil(this.destroy$)
     ).subscribe(([statement, fk_project]) => {

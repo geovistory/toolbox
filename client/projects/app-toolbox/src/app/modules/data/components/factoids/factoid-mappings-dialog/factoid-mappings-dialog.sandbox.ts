@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { DfhClass, DigitalFactoidMapping, FactoidControllerService, FactoidMapping } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';

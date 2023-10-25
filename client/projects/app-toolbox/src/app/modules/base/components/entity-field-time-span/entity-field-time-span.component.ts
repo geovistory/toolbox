@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { TimeSpanUtil } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -22,14 +22,12 @@ export class EntityFieldTimeSpanComponent implements OnInit {
 
   isEmpty$ = new BehaviorSubject(true)
   constructor(
-    private p: ActiveProjectPipesService,
+    private state: StateFacade,
     private pag: PaginationService,
-    private ref: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
-    this.p.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
-
+    this.state.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
       const reqs = DfhConfig.PROPERTY_PKS_WHERE_TIME_PRIMITIVE_IS_RANGE.map(
         fkProperty => {
           const req: GvFieldPageReq = {

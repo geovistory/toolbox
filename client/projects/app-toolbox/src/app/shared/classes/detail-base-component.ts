@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Component, HostListener, Input, OnDestroy, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabGroup } from '@angular/material/tabs';
-import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { IOutputData } from 'angular-split/lib/interface';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
@@ -94,8 +93,8 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     this.tabLayout.t.setTabLoading(true);
 
 
-    this.scope$ = this.ap.pkProject$.pipe(first(), map(pkProject => ({ inProject: pkProject })));
-    this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    this.scope$ = this.state.pkProject$.pipe(first(), map(pkProject => ({ inProject: pkProject })));
+    this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       this.state.data.loadInfResource(this.pkEntity, pkProject)
         .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
           this.tabLayout.t.setTabLoading(false);
@@ -104,8 +103,6 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     });
 
     this.tabLayout.t.setLayoutMode('left-only');
-
-
 
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true);
     this.title$ = this.i.pipeLabelOfEntity(this.pkEntity);

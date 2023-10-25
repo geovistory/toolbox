@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { ByPk } from '@kleiolab/lib-redux/src/lib/redux-store/_lib/ByPk';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';

@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'd3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';

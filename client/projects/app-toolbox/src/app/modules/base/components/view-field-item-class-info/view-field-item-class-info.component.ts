@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Optional } from '@angular/core';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { InfResource, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { READ_ONLY } from '../../tokens/READ_ONLY';

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { InfLanguage, LanguagesService, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { GvAuthService } from 'projects/app-toolbox/src/app/core/auth/auth.service';
 import { Observable } from 'rxjs';

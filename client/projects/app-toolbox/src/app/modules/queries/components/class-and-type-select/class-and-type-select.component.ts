@@ -1,7 +1,7 @@
 import { Component, Directive, Input, OnInit, Optional, Self } from '@angular/core';
 import { AbstractControl, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { ClassAndTypeNode, ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-queries';
+import { ClassAndTypeNode, ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-redux';
 import { AbstractChecklistControl } from 'projects/app-toolbox/src/app/shared/components/checklist-control/classes/abstract-checklist-control';
 import { ChecklistControlService, NestedNode } from 'projects/app-toolbox/src/app/shared/components/checklist-control/services/checklist-control.service';
 import { equals } from 'ramda';

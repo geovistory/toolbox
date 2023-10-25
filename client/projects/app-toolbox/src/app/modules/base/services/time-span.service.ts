@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, InformationPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldId, InfStatement, InfStatementWithRelations, StatementWithTarget, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals } from 'ramda';

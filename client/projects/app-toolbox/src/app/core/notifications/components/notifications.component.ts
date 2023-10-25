@@ -1,6 +1,6 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { Toast as Notfication } from '@kleiolab/lib-redux/lib/redux-store/ui/notification/notification.actions';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { Message, MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { difference } from 'ramda';

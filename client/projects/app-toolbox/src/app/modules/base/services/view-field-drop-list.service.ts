@@ -1,7 +1,6 @@
 import { CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable } from '@angular/core';
-import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldId, GvFieldPageScope, GvFieldSourceEntity, InfStatement, InfStatementWithRelations, ProjectDataService, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
@@ -19,7 +18,6 @@ export class ViewFieldDropListService {
 
 
   constructor(
-    private ap: ActiveProjectPipesService,
     private state: StateFacade,
     private projectDataService: ProjectDataService
   ) { }
@@ -101,7 +99,7 @@ export class ViewFieldDropListService {
     statement: InfStatement,
 
   ) {
-    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise();
 
     // remove the statement from project
     await this.state.data.removeInfEntitiesFromProject([statement.pk_entity], pkProject).pipe(first()).toPromise();
@@ -180,7 +178,7 @@ export class ViewFieldDropListService {
   ) {
     const fieldId: GvFieldId = fieldToFieldId(field, source, scope)
 
-    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise();
 
     await this.projectDataService.ordNumControllerChangeOrder({
       fieldId,

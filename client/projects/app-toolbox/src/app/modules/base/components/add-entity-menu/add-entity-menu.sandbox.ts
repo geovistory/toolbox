@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { GvPositiveSchemaObject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';

@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SysConfig } from '@kleiolab/lib-config';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 

@@ -1,8 +1,8 @@
 
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { QueriesFacade, StateFacade } from '@kleiolab/lib-redux';
 import { DfhClassEnriched } from '@kleiolab/lib-redux/lib/queries/configuration/models/DfhClassEnriched';
-import { QueriesFacade, StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ClassConfig, GvPositiveSchemaObject, InfAppellation, ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';

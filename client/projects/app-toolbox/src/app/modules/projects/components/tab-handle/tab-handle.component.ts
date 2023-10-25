@@ -1,7 +1,7 @@
 
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { PanelTab } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project.models';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ClassConfig } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';

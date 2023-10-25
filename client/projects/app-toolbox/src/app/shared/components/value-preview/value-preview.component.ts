@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfTimePrimitive, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { GregorianDateTime, JulianDateTime } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
@@ -31,8 +31,7 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
 
   constructor(
     private ap: ActiveProjectPipesService,
-    private s: SchemaSelectorsService,
-  ) { }
+    private state: StateFacade) { }
 
   ngOnInit() {
     if (this.vot?.dimension || this.value?.dimension) {
@@ -43,7 +42,7 @@ export class ValuePreviewComponent implements OnInit, OnDestroy {
     };
 
     if (this.vot?.langString || this.value?.langString) {
-      this.s.inf$.language$.by_pk_entity$.key((this.value?.langString).fk_language)
+      this.state.data.inf.language.getLanguage.byPkEntity$((this.value?.langString).fk_language)
         .subscribe(language => this.pkLanguage = language ? language.pk_language : '');
     }
   }

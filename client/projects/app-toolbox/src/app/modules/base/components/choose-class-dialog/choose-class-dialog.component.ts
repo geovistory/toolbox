@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { indexBy, sortBy } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
 import { first, map } from 'rxjs/operators';

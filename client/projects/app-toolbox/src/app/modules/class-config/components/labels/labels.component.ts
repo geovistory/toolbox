@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -36,18 +36,18 @@ export class LabelsComponent implements OnInit {
 
   constructor(
     private c: ConfigurationPipesService,
-    private a: ActiveProjectPipesService,
+    private state: StateFacade
   ) {
   }
 
   ngOnInit() {
-    this.languageIsEnglish$ = this.a.pipeActiveDefaultLanguage().pipe(
+    this.languageIsEnglish$ = this.state.data.getProjectLanguage(this.state.pkProject).pipe(
       map(lang => lang.pk_entity === 18889)
     )
-    this.languageLabel$ = this.a.pipeActiveDefaultLanguage().pipe(
+    this.languageLabel$ = this.state.data.getProjectLanguage(this.state.pkProject).pipe(
       map(lang => lang.notes)
     )
-    const textProperties$ = this.a.pipeActiveDefaultLanguage().pipe(
+    const textProperties$ = this.state.data.getProjectLanguage(this.state.pkProject).pipe(
       switchMap(language => this.c.pipeLabels({
         pkClass: this.fkClass,
         fkProperty: this.fkProperty,

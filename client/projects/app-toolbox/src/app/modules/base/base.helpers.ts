@@ -1,5 +1,5 @@
 import { QueryList } from '@angular/core';
-import { Field, FieldBase, GvFieldTargets } from '@kleiolab/lib-queries';
+import { Field, FieldBase, GvFieldTargets } from '@kleiolab/lib-redux';
 import { GvFieldId, GvFieldPage, GvFieldPageScope, GvFieldProperty, GvFieldTargetViewType, InfData, StatementWithTarget, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/gvFieldSourceEntity';
 import { values } from 'd3';

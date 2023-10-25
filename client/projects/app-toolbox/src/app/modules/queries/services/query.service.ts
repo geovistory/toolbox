@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
 import { DfhConfig } from "@kleiolab/lib-config";
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { PropertySelectModel } from "@kleiolab/lib-queries";
-import { PropertyOption } from "@kleiolab/lib-queries";
+import { PropertyOption, PropertySelectModel } from "@kleiolab/lib-redux";
 import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
 import { U } from "@kleiolab/lib-utils";
+import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

@@ -1,10 +1,10 @@
 import { ChangeDetectorRef } from '@angular/core';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { PanelTab } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project.models';
 import { TabLayoutMode } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project/tab-layout.models';
 import { IOutputData } from 'angular-split/lib/interface';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Subject } from 'rxjs';
-import { TabLayoutAcitons } from './tab-layout.actions';
 
 
 type Payload = PanelTab<any>;
@@ -33,13 +33,11 @@ export class TabLayout {
   activated$ = new Subject<void>();
 
   constructor(
-    public uiId: string, public ref: ChangeDetectorRef, public destroy$: Subject<boolean>
-  ) {
-    // this.layoutMode$.pipe(takeUntil(this.destroy$)).subscribe(mode => {
-    //   this.layoutMode = mode;
-    //   this.setSplitSize(mode)
-    // })
-  }
+    private state: StateFacade,
+    public uiId: string,
+    public ref: ChangeDetectorRef,
+    public destroy$: Subject<boolean>
+  ) { }
 
   setSplitSize(mode: TabLayoutMode) {
     if (mode == 'left-only') {
@@ -91,55 +89,20 @@ export class TabLayout {
     else if (this.layoutMode === 'left-only') this.setLayoutMode('both')
   }
 
-  /**
-   * END
-   * Stuff for handling split area rendering
-   */
+  setTabTitle(title: string) {
+    this.state.ui.activeProject.setTabTitle(this.uiId, title)
+  }
 
+  setLayoutMode(mode: TabLayoutMode) {
+    this.state.ui.activeProject.setTabLayoutMode(this.uiId, mode)
+  }
 
-  /*********************************************************************
-  *  Set tab title
-  *********************************************************************/
-  setTabTitle = (tabTitle: string): TabBaseAPIAction => ({
-    type: TabLayoutAcitons.SET_TAB_TITLE,
-    meta: { tabTitle },
-    payload: null,
-  });
+  setTabLoading(loading: boolean) {
+    this.state.ui.activeProject.setTabLoading(this.uiId, loading)
+  }
 
-  /*********************************************************************
-  *  Set tab tooltip
-  *********************************************************************/
-  setTabTooltip = (tabTooltip: string): TabBaseAPIAction => ({
-    type: TabLayoutAcitons.SET_TAB_TOOLTIP,
-    meta: { tabTooltip },
-    payload: null,
-  });
+  setTabTooltip(tooltip: string) {
+    this.state.ui.activeProject.setTabTooltip(this.uiId, tooltip)
+  }
 
-  /*********************************************************************
-  *  Set tab loading
-  *********************************************************************/
-  setTabLoading = (loading: boolean): TabBaseAPIAction => ({
-    type: TabLayoutAcitons.SET_TAB_LOADING,
-    meta: { loading },
-    payload: null,
-  });
-
-  /*********************************************************************
-  *  Set right panel state
-  *********************************************************************/
-  setLayoutMode = (layoutMode: TabLayoutMode): TabBaseAPIAction => ({
-    type: TabLayoutAcitons.SET_LAYOUT_MODE,
-    meta: { layoutMode: layoutMode },
-    payload: null,
-  });
-
-
-  /*********************************************************************
-  *  Method to distroy the slice of store
-  *********************************************************************/
-  destroy = (): TabBaseAPIAction => ({
-    type: TabLayoutAcitons.DESTROY,
-    meta: null,
-    payload: null
-  })
 }

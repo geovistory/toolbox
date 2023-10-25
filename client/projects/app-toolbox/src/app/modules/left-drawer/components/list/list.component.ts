@@ -1,6 +1,6 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { EntitySearchHit, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { WarEntityPreview } from 'projects/lib-sdk-lb4/src/public-api';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
@@ -45,15 +45,15 @@ export class ListComponent implements OnInit, OnDestroy {
   entityType: 'teEn' | 'peIt' | undefined;
 
   constructor(
-    private ap: ActiveProjectPipesService,
     private entityPreviewApi: WarEntityPreviewControllerService,
-    private listService: ListService
+    private listService: ListService,
+    private state: StateFacade
   ) { }
 
   ngOnInit() {
 
     combineLatest([
-      this.ap.pkProject$,
+      this.state.pkProject$,
       this.listService.pkAllowedClasses$,
       this.listService.entityType$
     ]).pipe(

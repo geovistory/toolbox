@@ -1,8 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { Field } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';

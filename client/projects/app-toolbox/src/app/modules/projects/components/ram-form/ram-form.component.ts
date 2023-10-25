@@ -1,8 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ActiveProjectPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellation, InfLangString, InfStatement, InfStatementWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -45,7 +44,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     // Set default language for exact reference form control
-    this.ap.pipeActiveDefaultLanguage().pipe(first(l => !!l), takeUntil(this.destroy$)).subscribe((language) => {
+    this.state.data.getProjectLanguage(this.state.pkProject).pipe(first(l => !!l), takeUntil(this.destroy$)).subscribe((language) => {
       this.referenceCtrl.setValue({ language, fk_language: language.pk_entity })
     })
 

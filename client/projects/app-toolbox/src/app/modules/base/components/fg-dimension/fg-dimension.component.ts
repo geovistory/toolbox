@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { InfDimension } from '@kleiolab/lib-sdk-lb4';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';

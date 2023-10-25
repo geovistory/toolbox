@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';

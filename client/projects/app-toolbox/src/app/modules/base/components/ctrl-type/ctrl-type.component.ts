@@ -3,7 +3,7 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, Optional, Output
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { ActiveProjectPipesService, InformationBasicPipesService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, InformationBasicPipesService } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4/public-api';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';

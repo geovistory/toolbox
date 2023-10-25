@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfigurationPipesService, Field } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, Field } from '@kleiolab/lib-redux';
 import { InfResourceWithRelations, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { P_1864_HAS_VALUE_VERSION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { Observable } from 'rxjs';

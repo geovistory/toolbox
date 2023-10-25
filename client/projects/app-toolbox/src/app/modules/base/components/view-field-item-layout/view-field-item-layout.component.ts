@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Field } from '@kleiolab/lib-queries';
+import { Field } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, StatementWithTarget } from '@kleiolab/lib-sdk-lb4/public-api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';

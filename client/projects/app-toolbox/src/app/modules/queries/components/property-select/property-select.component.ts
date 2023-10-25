@@ -1,8 +1,8 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, UntypedFormControl, UntypedFormGroup, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, NgControl, NG_VALIDATORS, UntypedFormControl, UntypedFormGroup, Validator, ValidatorFn } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { PropertyOption, PropertySelectModel } from '@kleiolab/lib-queries';
+import { PropertyOption, PropertySelectModel } from '@kleiolab/lib-redux';
 import { QueryFilter } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';

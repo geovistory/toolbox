@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
-import { Field, FieldTargetClass } from '@kleiolab/lib-queries';
+import { Field, FieldTargetClass } from '@kleiolab/lib-redux';
 import { equals, values } from 'ramda';
 import { first } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';

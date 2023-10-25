@@ -1,4 +1,4 @@
-import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { DfhClass } from '@kleiolab/lib-sdk-lb4/public-api';
 import { sandboxOf } from 'angular-playground';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';

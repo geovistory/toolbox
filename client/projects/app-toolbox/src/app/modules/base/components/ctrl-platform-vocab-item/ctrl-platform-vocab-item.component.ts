@@ -3,7 +3,7 @@ import { Component, ElementRef, EventEmitter, Input, OnDestroy, Optional, Output
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
-import { ActiveProjectPipesService, InformationBasicPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { ActiveProjectPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
@@ -104,8 +104,7 @@ export class CtrlPlatformVocabItemComponent implements OnDestroy, ControlValueAc
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     public ap: ActiveProjectPipesService,
-    private b: InformationBasicPipesService,
-    private schema: SchemaSelectorsService
+    private state: StateFacade
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -123,7 +122,7 @@ export class CtrlPlatformVocabItemComponent implements OnDestroy, ControlValueAc
         map(preview => preview.entity_label)
       ))
     )
-    const allOptions$ = this.schema.inf$.resource$.by_fk_class_key$(this.pkTypeClass, false).pipe(
+    const allOptions$ = this.state.data.inf.resource.getResource.byFkClass$(this.pkTypeClass).pipe(
       switchMap(r => combineLatestOrEmpty(
         values(r).map(resource => this.ap.streamEntityPreview(resource.pk_entity).pipe(
           map<WarEntityPreview, Option>(preview => ({

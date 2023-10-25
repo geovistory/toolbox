@@ -1,4 +1,4 @@
-import { ConfigurationPipesService, DisplayType, SectionName } from '@kleiolab/lib-queries';
+import { ConfigurationPipesService, DisplayType, SectionName } from '@kleiolab/lib-redux';
 import { sandboxOf } from 'angular-playground';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
@@ -65,7 +65,7 @@ export default sandboxOf(FactoidPropertyDisplayComponent, {
         <gv-factoid-property-display [pkProperty]="2"></gv-factoid-property-display>
     </div>
     <br/>
-    
+
     <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">with disabled properties</span>
     <div style="display:flex;flex-direction:row;justify-content:center">
         <gv-factoid-property-display [disabledProperties]="[2]"></gv-factoid-property-display>

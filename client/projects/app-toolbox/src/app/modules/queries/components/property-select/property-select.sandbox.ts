@@ -1,13 +1,12 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { PropertyOption, propertyOptionFieldKey } from "@kleiolab/lib-redux";
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
 import { QueriesModule } from '../../queries.module';
 import { PropertySelectComponent } from './property-select.component';
-import { PropertyOption } from "@kleiolab/lib-queries";
-import { propertyOptionFieldKey } from "@kleiolab/lib-queries";
 
 
 const options$ = new BehaviorSubject(null)

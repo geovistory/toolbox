@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { Subject } from 'rxjs';
 import { EntityLabelConfigDialogComponent, EntityLabelConfigDialogData } from '../entity-label-config-dialog/entity-label-config-dialog.component';
 

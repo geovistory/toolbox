@@ -1,18 +1,16 @@
-import { Component, Input, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { DfhConfig } from "@kleiolab/lib-config";
+import { ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-redux';
+import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
+import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
 import { FormFactoryComponent } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
 import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from "projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig";
-import { FormFactory } from "projects/app-toolbox/src/app/modules/form-factory/core/form-factory";
-import { DfhConfig } from "@kleiolab/lib-config";
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../table/table-form/table-form.component';
 import { TableFormArrayData, TableFormService } from '../../table/table-form/table-form.service';
-import { ClassAndTypeSelectModel } from "@kleiolab/lib-queries";
-import { InformationPipesService } from "@kleiolab/lib-queries";
-import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisTableRequest } from "@kleiolab/lib-sdk-lb4";
 // TODO Change
 
 export type MapAndTimeContFormArrayFactory = TableFormArrayFactory

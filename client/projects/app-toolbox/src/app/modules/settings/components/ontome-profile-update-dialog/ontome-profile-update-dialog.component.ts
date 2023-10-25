@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { OntoMeControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
-import { Field } from '@kleiolab/lib-queries';
+import { Field } from '@kleiolab/lib-redux';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4/public-api';
 import { DndDropEvent } from 'ngx-drag-drop';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';

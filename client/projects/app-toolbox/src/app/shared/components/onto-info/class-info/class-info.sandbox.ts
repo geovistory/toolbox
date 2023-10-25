@@ -1,4 +1,4 @@
-import { APP_INITIAL_STATE } from '@kleiolab/lib-redux/public-api';
+import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';

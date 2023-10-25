@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { AddMenuClassOrTypeItem } from '@kleiolab/lib-queries';
+import { AddMenuClassOrTypeItem } from '@kleiolab/lib-redux';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AddEntityMenuComponent } from '../add-entity-menu/add-entity-menu.component';
