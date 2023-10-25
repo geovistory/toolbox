@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { P_1864_HAS_VALUE_VERSION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
@@ -61,8 +61,8 @@ export class TextDetail2Component
     ap: ActiveProjectPipesService,
     i: InformationPipesService,
     b: InformationBasicPipesService,
+    state: StateFacade,
     truncatePipe: TruncatePipe,
-    dataService: ReduxMainService,
     public editMode: EditModeService,
     public tabLayout: TabLayoutService,
   ) {
@@ -74,7 +74,7 @@ export class TextDetail2Component
       i,
       b,
       truncatePipe,
-      dataService,
+      state,
       editMode,
       tabLayout
     )

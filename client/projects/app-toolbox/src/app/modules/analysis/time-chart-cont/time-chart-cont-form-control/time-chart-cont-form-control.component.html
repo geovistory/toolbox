@@ -1,8 +1,8 @@
 <mat-form-field *ngIf="formControlFactory.config?.data.type=='lineLabel'" class="w-100" appearance="outline">
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
 
-  <input matInput [formControl]="formControlFactory.control" [required]="formControlFactory.config?.required" />
-  <mat-error *ngIf="formControlFactory.control.hasError('required')">
+  <input matInput [formControl]="formControlFactory.formControl" [required]="formControlFactory.config?.required" />
+  <mat-error *ngIf="formControlFactory.formControl.hasError('required')">
     Please enter a value
   </mat-error>
 </mat-form-field>

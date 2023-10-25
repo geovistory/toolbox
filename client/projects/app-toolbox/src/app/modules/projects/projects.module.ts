@@ -28,11 +28,9 @@ import { RamFormComponent } from './components/ram-form/ram-form.component';
 import { TabBodyComponent } from './components/tab-body/tab-body.component';
 import { TabHandleComponent } from './components/tab-handle/tab-handle.component';
 import { ProjectCreateComponent } from './containers/project-create/project-create.component';
-import { ProjectDashboardComponent } from './containers/project-dashboard/project-dashboard.component';
 import { ProjectEditPanelComponent } from './containers/project-edit-panel/project-edit-panel.component';
 import { ProjectEditComponent } from './containers/project-edit/project-edit.component';
 import { ProjectListComponent } from './containers/project-list/project-list.component';
-import { ProjectSettingsDataAPIActions } from './containers/project-settings-data/api/project-settings-data.actions';
 import { ProjectSettingsDataComponent } from './containers/project-settings-data/project-settings-data.component';
 import { TypesComponent } from './containers/types/types.component';
 import { OnActivateTabDirective } from './directives/on-activate-tab.directive';
@@ -73,7 +71,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
   ],
   declarations: [
     ProjectCreateComponent,
-    ProjectDashboardComponent,
     ProjectEditComponent,
     ProjectEditPanelComponent,
     ProjectListComponent,
@@ -87,8 +84,6 @@ import { ProjectsRoutingModule } from './projects-routing.module';
     ProjectCardComponent,
   ],
 
-  providers: [
-    ProjectSettingsDataAPIActions,
-  ]
+  providers: []
 })
 export class ProjectsModule { }

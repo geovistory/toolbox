@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ByPk, IAppState, ReducerConfigCollection, SysActions, SysConfigSlice, sysDefinitions, SysRelevantClassSlice, sysRoot } from '@kleiolab/lib-redux';
+import { ByPk, IAppState, ReducerConfigCollection, SysActions, SysConfigSlice, sysDefinitions, SysRelevantClassSlice, sysRoot } from '@kleiolab/lib-redux/public-api';
 import { SysConfigValue, SysSystemRelevantClass } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 

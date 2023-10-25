@@ -3,15 +3,15 @@ import { UntypedFormControl } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { InfAppellationWithRelations, InfLanguage, InfPlace, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
+import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from 'projects/app-toolbox/src/app/modules/form-factory/services/FormNodeConfig';
-import { FormFactoryService } from 'projects/app-toolbox/src/app/modules/form-factory/services/form-factory.service';
-import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
 import { getFirstElementFormQueryList } from '../../base.helpers';
@@ -62,7 +62,7 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
   pkTypeProperty = DfhConfig.PROPERTY_PK_P14_HAS_APPELLATION_FOR_LANGUAGE_TYPE
 
   constructor(
-    private p: ActiveProjectService,
+    private state: StateFacade,
     private ff: FormFactoryService,
     private c: ConfigurationPipesService,
     @Optional() @Inject(CONTAINER_DATA) public injectedData: FgAppellationTeEnInjectData
@@ -154,7 +154,7 @@ export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewI
         }))
     } else if (n.array && n.array.data.type === 'root') {
 
-      return combineLatest([this.initVal$, this.p.defaultLanguage$]).pipe(
+      return combineLatest([this.initVal$, this.state.data.getProjectLanguage(this.state.pkProject)]).pipe(
         map(([initVal, defaultLanguage]) => {
           const o = initVal?.outgoing_statements
           const textStmt = o?.find(s => s.fk_property === DfhConfig.PROPERTY_PK_P13_REFERS_TO_NAME)

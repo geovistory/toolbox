@@ -1,6 +1,5 @@
 // import { ClassConfig } from '../active-project.models';
 
-// export type EntityType = 'teEnt' | 'peIt' | 'other';
 
 
 // // Class of this slice of store

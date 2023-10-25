@@ -1,11 +1,11 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ImportTable, ImportTableControllerService, ImportTableResponse, InfLanguage, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { Cell, Header } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { values } from 'ramda';
@@ -93,18 +93,22 @@ export class ImporterComponent implements OnInit, OnDestroy {
     private importTableSocket: ImportTableSocket,
     private worker: WorkerWrapperService,
     private dialog: MatDialog,
-    private p: ActiveProjectService,
     private a: ActiveAccountService,
+    private state: StateFacade,
     private apiImporter: ImportTableControllerService,
     private dialogRef: MatDialogRef<ImporterComponent, ImporterDialogData>,
     @Inject(MAT_DIALOG_DATA) public data: ImporterDialogData
   ) {
-    this.p.defaultLanguage$.pipe(takeUntil(this.destroy$)).subscribe(defaultLang => this.languageCtrl.setValue(defaultLang))
-    this.p.pkProject$.pipe(takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.p.dat$.namespace$.by_fk_project$.key(pkProject).pipe(takeUntil(this.destroy$)).subscribe(namespacesIdx => {
-        this.namespaces = values(namespacesIdx).sort((a, b) => a.pk_entity - b.pk_entity);
-        this.namespaceCtrl.setValue(this.namespaces[0].pk_entity);
-      })
+    this.pkProject = this.state.pkProject;
+    this.state.data.inf.language.getLanguage.byPkEntity$
+
+    this.state.data.getProjectLanguage(this.pkProject)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(defaultLang => this.languageCtrl.setValue(defaultLang))
+
+    this.state.data.dat.namespace.getNamespace.byFkProject$(this.pkProject).pipe(takeUntil(this.destroy$)).subscribe(namespacesIdx => {
+      this.namespaces = values(namespacesIdx).sort((a, b) => a.pk_entity - b.pk_entity);
+      this.namespaceCtrl.setValue(this.namespaces[0].pk_entity);
     })
   }
 
@@ -114,8 +118,6 @@ export class ImporterComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.reset();
     this.importTableSocket.cleanConnect();
-
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => this.pkProject = pkProject);
   }
 
   /**

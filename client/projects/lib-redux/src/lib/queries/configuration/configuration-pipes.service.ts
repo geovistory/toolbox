@@ -6,7 +6,9 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
-import { StateFacade } from '../../state.facade';
+import { DataFacade } from '../../redux-store/data/data.facade';
+import { UiFacade } from '../../redux-store/ui/ui.facade';
+import { ActiveProjectPipesService } from '../active-project/active-project-pipes.service';
 import { PipeCache } from '../PipeCache';
 import { AddMenuClassItem } from './models/AddMenuClassItem';
 import { DfhClassEnriched } from './models/DfhClassEnriched';
@@ -35,7 +37,9 @@ type LabelOrigin = 'of project in project lang' | 'of default project in project
  */
 export class ConfigurationPipesService extends PipeCache<ConfigurationPipesService> {
   constructor(
-    private state: StateFacade
+    private activeProject: ActiveProjectPipesService,
+    private dataFacade: DataFacade,
+    private uiFacade: UiFacade
   ) { super() }
 
 
@@ -46,10 +50,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   */
   public pipeProfilesEnabledByProject(): Observable<number[]> {
     return combineLatest([
-      this.state.pkProject$,
-      this.state.data.sys.config.sysConfig$.pipe(filter(x => !!x))
+      this.uiFacade.activeProject.projectId$,
+      this.dataFacade.sys.config.sysConfig$.pipe(filter(x => !!x))
     ]).pipe(
-      switchMap(([pkProject, sysConfig]) => this.state.data.pro.dfhProfileProjRel.getDfhProfileProjRel.byFkProjectEnabled$(pkProject, true).pipe(
+      switchMap(([pkProject, sysConfig]) => this.dataFacade.pro.dfhProfileProjRel.getDfhProfileProjRel.byFkProjectEnabled$(pkProject, true).pipe(
         map(projectProfileRels => values(projectProfileRels)
           .filter(rel => rel.enabled)
           .map(rel => rel.fk_profile)
@@ -70,17 +74,17 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     // console.log('pipeFields(' + pkClass + ',' + noNesting + ')');
 
     const obs$ = combineLatest([
-      this.state.data.dfh.property.getDfhProperty.byDomain(pkClass).pipe(map(indexed => values(indexed))),
+      this.dataFacade.dfh.property.getDfhProperty.byDomain(pkClass).pipe(map(indexed => values(indexed))),
       // freezing bug log
       // .pipe(tap(x => console.log('aaa this.s.dfh$.property$.by_has_domain$$'))),
       // pipe ingoing properties
-      this.state.data.dfh.property.getDfhProperty.byRange(pkClass).pipe(map(indexed => values(indexed))),
+      this.dataFacade.dfh.property.getDfhProperty.byRange(pkClass).pipe(map(indexed => values(indexed))),
       // freezing bug log
       // .pipe(tap(x => console.log('aaa  this.s.dfh$.property$.by_has_range$$'))),
       // pipe sys config
-      this.state.data.sys.config.sysConfig$.pipe(filter(x => !!x)),
+      this.dataFacade.sys.config.sysConfig$.pipe(filter(x => !!x)),
       // freezing bug log
-      // .pipe(tap(x => console.log('aaa   this.state.data.sys.config.sysConfig$$'))),
+      // .pipe(tap(x => console.log('aaa   this.dataFacade.sys.config.sysConfig$$'))),
       // pipe enabled profiles
       this.pipeProfilesEnabledByProject(),
       // freezing bug log
@@ -410,7 +414,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
       //          console.log('pppp found fieldLabel: ', [sourceClass, p.pk_property, targetClass, isOutgoing, x])
       //          return x
       //        })),
-      this.state.data.dfh.klass.select.byPkClass(sourceClass)
+      this.dataFacade.dfh.klass.select.byPkClass(sourceClass)
     ])
       .pipe(map(([sourceClassLabel, targetClassLabel, targetTypes, label, dfhClass]
       ) => {
@@ -469,10 +473,10 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     noNesting = false
   ): Observable<{ viewType: GvFieldTargetViewType, formControlType: SysConfigFormCtrlType }> {
     const obs$ = combineLatest([
-      this.state.data.sys.config.sysConfig$.pipe(filter(x => !!x)),
+      this.dataFacade.sys.config.sysConfig$.pipe(filter(x => !!x)),
       // freezing bug log
       // .pipe(tap(x => console.log('aaa .sys$.config$.main$'))),
-      this.state.data.dfh.klass.select.byPkClass(pkClass).pipe(filter(i => !!i)),
+      this.dataFacade.dfh.klass.select.byPkClass(pkClass).pipe(filter(i => !!i)),
       // freezing bug log
       // .pipe(tap(x => console.log('aaa dfh$.class$.by_pk_class$'))),
     ]).pipe(
@@ -594,7 +598,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    *
    */
   pipeFieldConfigs(pkClass: number): Observable<ProClassFieldConfig[]> {
-    const obs$ = this.state.pkProject$.pipe(
+    const obs$ = this.uiFacade.activeProject.projectId$.pipe(
       switchMap((fkProject) => {
 
         const activeProjectkey = {
@@ -606,8 +610,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
           fk_project: ProConfig.PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT
         }
         return combineLatest([
-          this.state.data.pro.classFieldConfig.getClassFieldConfig.byFkClassFkProject$(activeProjectkey),
-          this.state.data.pro.classFieldConfig.getClassFieldConfig.byFkClassFkProject$(defaultProjectkey),
+          this.dataFacade.pro.classFieldConfig.getClassFieldConfig.byFkClassFkProject$(activeProjectkey),
+          this.dataFacade.pro.classFieldConfig.getClassFieldConfig.byFkClassFkProject$(defaultProjectkey),
         ])
           .pipe(
             map(([activeProjectFields, defaultProjectFields]) => {
@@ -631,8 +635,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    */
   pipeClassLabel(pkClass?: number): Observable<string> {
     const obs$ = combineLatest([
-      this.state.pkProject$,
-      this.state.activeProjectLanguage$,
+      this.uiFacade.activeProject.projectId$,
+      this.activeProject.language$,
     ]).pipe(
       switchMap(([fkProject, language]) => this.pipeLabels({ pkClass, fkProject, language, type: 'label' })
         .pipe(
@@ -779,11 +783,11 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   }
 
 
-  pipeProTextProperty = this.state.data.pro.textProperty.getTextProperty.byFks$
+  pipeProTextProperty = this.dataFacade.pro.textProperty.getTextProperty.byFks$
 
 
 
-  pipeDfhLabel = this.state.data.dfh.label.getDfhLabel.byFks
+  pipeDfhLabel = this.dataFacade.dfh.label.getDfhLabel.byFks
 
   /**
    * Delivers best fitting field label for active project
@@ -793,8 +797,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     const fkPropertyRange = isOutgoing ? undefined : fkSource;
     const type = isOutgoing ? 'label' : 'inverse_label'
     const obs$ = combineLatest([
-      this.state.pkProject$,
-      this.state.activeProjectLanguage$
+      this.uiFacade.activeProject.projectId$,
+      this.activeProject.language$
     ]).pipe(
       switchMap(([fkProject, language]) => this.pipeLabels(
         {
@@ -832,8 +836,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    */
   pipeTableNameOfClass(targetClassPk: number): Observable<TableName> {
     const obs$ = combineLatest([
-      this.state.data.sys.config.sysConfig$,
-      this.state.data.dfh.klass.select.byPkClass(targetClassPk)
+      this.dataFacade.sys.config.sysConfig$,
+      this.dataFacade.dfh.klass.select.byPkClass(targetClassPk)
     ]).pipe(
       filter(i => !i.includes(undefined)),
       map(([config, klass]) => {
@@ -870,7 +874,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
  */
   pipeClassesEnabledByProjectProfiles(): Observable<DfhClass[]> {
     const obs$ = combineLatest([
-      this.state.data.dfh.klass.dfhClass$,
+      this.dataFacade.dfh.klass.dfhClass$,
       this.pipeProfilesEnabledByProject()
     ]).pipe(
       map(([classesByPk, enabledProfiles]) => {
@@ -892,11 +896,11 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
    * @returns
    */
   pipeClassesOfProject(): Observable<DfhClassEnriched[]> {
-    const obs$ = this.state.pkProject$.pipe(switchMap(pkProject => {
+    const obs$ = this.uiFacade.activeProject.projectId$.pipe(switchMap(pkProject => {
       return combineLatest([
         this.pipeClassesEnabledByProjectProfiles(),
-        this.state.data.pro.dfhClassProjRel.getDfhClassProjRel.byFkProject$(pkProject),
-        this.state.data.sys.config.sysConfig$.pipe(filter(x => !!x))
+        this.dataFacade.pro.dfhClassProjRel.getDfhClassProjRel.byFkProject$(pkProject),
+        this.dataFacade.sys.config.sysConfig$.pipe(filter(x => !!x))
       ])
         .pipe(map(([dfhClasses, classProjRels, sysConfig]) => {
           const platformVocabConfigs = sysConfig?.platformVocabularies || [];
@@ -1027,7 +1031,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   //     switchMap(pkProject => this.s.pro$.dfh_class_proj_rel$.by_fk_project__enabled_in_entities$.key(pkProject + '_true')
   //       .pipe(
   //         switchMap((cs) => combineLatest(
-  //           values(cs).map(c => this.state.data.dfh.klass.select.byPkClass(c.fk_class).pipe(
+  //           values(cs).map(c => this.dataFacade.dfh.klass.select.byPkClass(c.fk_class).pipe(
   //             filter(item => !!item)
   //           ))
   //         ).pipe(
@@ -1060,7 +1064,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   //   const obs$ = this.s.sys$.system_relevant_class$.by_required_by_sources$.key('true')
   //     .pipe(
   //       switchMap((cs) => combineLatest(
-  //         values(cs).map(c => this.state.data.dfh.klass.select.byPkClass(c.fk_class).pipe(
+  //         values(cs).map(c => this.dataFacade.dfh.klass.select.byPkClass(c.fk_class).pipe(
   //           filter(item => !!item)
   //         ))
   //       ).pipe(
@@ -1131,7 +1135,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
   pipeAddMenuClassItem(enrichedClasses: DfhClassEnrichedWithLabel[]): Observable<AddMenuClassItem[]> {
 
-    const obs$ = this.state.data.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
+    const obs$ = this.dataFacade.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
       map((allHasTypeProps) => {
         const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
         return enrichedClasses.map(enrichedClass => ({
@@ -1146,7 +1150,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
   pipeTypeAndTypedClassesOfTypedClasses(pkTypedClasses: number[]): Observable<HasTypePropertyInfo[]> {
 
-    const obs$ = this.state.data.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
+    const obs$ = this.dataFacade.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
       map((allHasTypeProps) => {
         const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
         return pkTypedClasses.map(pk => ({
@@ -1160,7 +1164,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   }
 
   // pipeTypeClassOfTypedClass(pkTypedClass): Observable<number> {
-  //   const obs$ = this.state.data.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
+  //   const obs$ = this.dataFacade.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
   //     map((allHasTypeProps) => {
   //       const byDomain = indexBy(k => k.has_domain.toString(), values(allHasTypeProps));
   //       return byDomain[pkTypedClass] ? byDomain[pkTypedClass].has_range : undefined
@@ -1170,7 +1174,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
   pipeTypedClassesOfTypeClasses(pkTypeClasses: number[]): Observable<number[]> {
 
-    const obs$ = this.state.data.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
+    const obs$ = this.dataFacade.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
       map((allHasTypeProps) => {
         const byDomain = indexBy(k => k.has_range.toString(), values(allHasTypeProps));
         return pkTypeClasses.map(pk => byDomain[pk] ? byDomain[pk].has_domain : undefined)
@@ -1181,7 +1185,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
 
 
   pipeTypePropertyOfTypedClass(pkTypedClass): Observable<number> {
-    const obs$ = this.state.data.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
+    const obs$ = this.dataFacade.dfh.property.getDfhProperty.byHasTypeSubproperty(true).pipe(
       map((allHasTypeProps) => {
         const typeProp = values(allHasTypeProps).find(p => p.has_domain === pkTypedClass)
         return typeProp ? typeProp.pk_property : undefined;
@@ -1191,7 +1195,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   }
 
   pipeTargetClassesOfProperties(pkProperties: number[], isOutgoing: boolean): Observable<number[]> {
-    const obs$ = this.state.data.dfh.property.byPropertyIndexed$.pipe(
+    const obs$ = this.dataFacade.dfh.property.byPropertyIndexed$.pipe(
       map(x => {
         if (!pkProperties || !pkProperties.length) return [];
 
@@ -1225,8 +1229,8 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   //     return of('source')
   //   }
   //   const obs$ = combineLatest([
-  //     this.state.data.sys.config.sysConfig$,
-  //     this.state.data.dfh.klass.select.byPkClass(pkClass)
+  //     this.dataFacade.sys.config.sysConfig$,
+  //     this.dataFacade.dfh.klass.select.byPkClass(pkClass)
   //   ]).pipe(
   //     filter(i => !i.includes(undefined)),
   //     map(([config, klass]) => {

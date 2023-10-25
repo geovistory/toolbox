@@ -1,7 +1,7 @@
-import { ValidationService } from './validation.service';
-import { Directive, Input, NgModule, forwardRef, Attribute } from '@angular/core';
-import { NG_VALIDATORS, Validator, UntypedFormGroup, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { Directive, forwardRef, Input, NgModule } from '@angular/core';
+import { AbstractControl, NG_VALIDATORS, UntypedFormGroup, Validator } from '@angular/forms';
+import { ValidationService } from './validation.service';
 
 
 @Directive({

@@ -3,7 +3,6 @@ import { UntypedFormArray } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SchemaSelectorsService, SectionName, SysSelector, TableName } from '@kleiolab/lib-queries';
-import { SchemaService } from '@kleiolab/lib-redux';
 import { GvFieldProperty, GvFieldSourceEntity, InfAppellation, InfData, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, Section, SysConfigFormCtrlType, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, TimeSpanResult, U } from '@kleiolab/lib-utils';
 import { ValidationService } from 'projects/app-toolbox/src/app/core/validation/validation.service';
@@ -203,8 +202,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     private formFactoryService: FormFactoryService,
     private c: ConfigurationPipesService,
     private ss: SchemaSelectorsService,
-    public ap: ActiveProjectPipesService,
-    public s1: SchemaService,
+    private ap: ActiveProjectPipesService,
     private sys: SysSelector,
   ) { }
 

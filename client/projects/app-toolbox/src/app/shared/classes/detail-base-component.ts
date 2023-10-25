@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, HostListener, Input, OnDestroy, QueryList
 import { MatDialog } from '@angular/material/dialog';
 import { MatTabGroup } from '@angular/material/tabs';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { IOutputData } from 'angular-split/lib/interface';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
@@ -57,8 +57,8 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     if (this.dialog.openDialogs.length > 0) {
       return;
     }
-    const focusedPanelIndex = await this.p.focusedPanel$.pipe(first()).toPromise();
-    const panels = await this.p.panels$.pipe(first()).toPromise();
+    const focusedPanelIndex = await this.state.ui.activeProject.focusedPanel$.pipe(first()).toPromise();
+    const panels = await this.state.ui.activeProject.panels$.pipe(first()).toPromise();
     const focusedPanelId = panels[focusedPanelIndex]?.id;
     if (this.tab.panelId !== focusedPanelId) {
       return;
@@ -84,7 +84,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
     private i: InformationPipesService,
     private b: InformationBasicPipesService,
     private truncatePipe: TruncatePipe,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     public editMode: EditModeService,
     public tabLayout: TabLayoutService
   ) { }
@@ -96,7 +96,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
 
     this.scope$ = this.ap.pkProject$.pipe(first(), map(pkProject => ({ inProject: pkProject })));
     this.ap.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.dataService.loadInfResource(this.pkEntity, pkProject)
+      this.state.data.loadInfResource(this.pkEntity, pkProject)
         .pipe(first(), takeUntil(this.destroy$)).subscribe(loaded => {
           this.tabLayout.t.setTabLoading(false);
         });
@@ -137,7 +137,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
   }
 
   closeTab() {
-    this.p.closeTab(this.tab.panelIndex, this.tab.tabIndex)
+    this.state.ui.activeProject.closeTab(this.tab.panelIndex, this.tab.tabIndex)
   }
 
   onSplitAreaDragEnd(e: IOutputData) {

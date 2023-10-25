@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { values } from 'ramda';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
@@ -16,10 +16,10 @@ export class OntoPropertyInfoComponent implements OnInit {
   label$: Observable<string>
   ontomeUrl = SysConfig.ONTOME_URL
 
-  constructor(public p: ActiveProjectService) { }
+  constructor(private state: StateFacade) { }
 
   ngOnInit() {
-    const property$ = this.p.dfh$.property$.by_pk_property$.key(this.pkProperty).pipe(filter(i => !!i));
+    const property$ = this.state.data.dfh.property.getDfhProperty.byProperty(this.pkProperty).pipe(filter(i => !!i));
     this.label$ = property$.pipe(map((c) => {
       return values(c)[0].identifier_in_namespace
     }))

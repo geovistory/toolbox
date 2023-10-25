@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ByPk, IAppState, ReducerConfigCollection, WarActions, warDefinitions, warRoot } from '@kleiolab/lib-redux';
+import { ByPk, IAppState, ReducerConfigCollection, WarActions, warDefinitions, warRoot } from '@kleiolab/lib-redux/public-api';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { toString } from 'ramda';
 import { Observable } from 'rxjs';

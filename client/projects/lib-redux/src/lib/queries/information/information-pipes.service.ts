@@ -5,8 +5,8 @@ import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq } from 'ramda';
 import { combineLatest, empty, iif, Observable, of } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-import { StateFacade } from '../../state.facade';
-import { ActiveProjectPipesService } from '../active-project-pipes.service';
+import { DataFacade } from '../../redux-store/data/data.facade';
+import { ActiveProjectPipesService } from '../active-project/active-project-pipes.service';
 import { ConfigurationPipesService } from '../configuration/configuration-pipes.service';
 import { AddMenuClassItem } from '../configuration/models/AddMenuClassItem';
 import { FieldPage } from '../configuration/models/FieldPage';
@@ -47,7 +47,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
     private b: InformationBasicPipesService,
     private p: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
-    private state: StateFacade
+    private dataFacade: DataFacade
   ) { super() }
 
 
@@ -61,8 +61,8 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
     else {
       // get the statments of that page
       return combineLatest([
-        this.state.data.inf.statement.getPageCount$(page),
-        this.state.data.inf.statement.getPage$(page)]
+        this.dataFacade.inf.statement.getPageCount$(page),
+        this.dataFacade.inf.statement.getPage$(page)]
       ).pipe(
         map(([count, statements]) => ({ count, statements }))
       )
@@ -94,8 +94,8 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
    */
   pipeTypeOfEntity(pkEntity: number, hasTypeProperty: number, isOutgoing: boolean): Observable<InfStatement> {
     return (isOutgoing ?
-      this.state.data.inf.statement.getMany.by_subject_and_property$({ fk_property: hasTypeProperty, fk_subject_info: pkEntity }) :
-      this.state.data.inf.statement.getMany.by_object_and_property$({ fk_property: hasTypeProperty, fk_object_info: pkEntity })
+      this.dataFacade.inf.statement.getMany.by_subject_and_property$({ fk_property: hasTypeProperty, fk_subject_info: pkEntity }) :
+      this.dataFacade.inf.statement.getMany.by_object_and_property$({ fk_property: hasTypeProperty, fk_object_info: pkEntity })
     )
       .pipe(map(items => {
         if (!items || items.length < 1) return undefined;
@@ -237,7 +237,7 @@ export class InformationPipesService extends PipeCache<InformationPipesService> 
 
   // @cache({ refCount: false })
   pipePropertyOptionsFormClasses(classes: number[]): Observable<PropertyOption[]> {
-    const obs$ = combineLatestOrEmpty(classes.map(pkClass => this.state.data.dfh.klass.select.byPkClass(pkClass).pipe(
+    const obs$ = combineLatestOrEmpty(classes.map(pkClass => this.dataFacade.dfh.klass.select.byPkClass(pkClass).pipe(
       map(c => c.basic_type === 9),
       switchMap(isTeEn => this.c.pipeFields(pkClass)
         .pipe(

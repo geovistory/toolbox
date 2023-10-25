@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { ReduxModule } from '@kleiolab/lib-redux';
+import { ReduxModule } from '@kleiolab/lib-redux/public-api';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
 import { SocketsModule } from '@kleiolab/lib-sockets';
 import { DateTimeModule } from '@kleiolab/lib-utils';

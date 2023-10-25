@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { TestBed } from '@angular/core/testing';
-import { IAppState, SchemaService } from '@kleiolab/lib-redux';
+import { IAppState, SchemaService } from '@kleiolab/lib-redux/public-api';
 import { GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
 import { moduleImports } from 'projects/lib-queries/src/__tests__/helpers/module-imports';
 import { setAppState } from 'projects/lib-queries/src/__tests__/helpers/set-app-state';

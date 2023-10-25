@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ConfigurationPipesService, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { C_456_CHUNK_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
@@ -34,7 +34,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
   pinnedItems$: Observable<ViewFieldAnnotationItemData[]>
 
   constructor(
-    private p: ActiveProjectService,
+    private state: StateFacade,
     private pag: PaginationService,
     private i: InformationPipesService,
     private c: ConfigurationPipesService,
@@ -144,12 +144,12 @@ export class ViewFieldAnnotationsComponent implements OnInit {
       })
     )
 
-    return combineLatest([this.p.pkProject$, refersToTargets$])
+    return refersToTargets$
       .pipe(
         first(),
-        map(([pkProject, refersToTargets]) => {
+        map((refersToTargets) => {
           return {
-            pkProject,
+            pkProject: this.state.pkProject,
             targets: {
               [C_933_ANNOTATION_IN_TEXT_ID]: {
 

@@ -254,5 +254,38 @@ describe('ActiveProject Facade', () => {
     expect(res2).toBe(0)
   });
 
+  it('should set reduce and select tab title', async () => {
+    facade.setTabTitle('tab1', 'my-title')
+    const res = await firstValueFrom(facade.getTabTitle('tab1'))
+    expect(res).toBe('my-title')
+  });
+
+  it('should set reduce and select tab tooltip', async () => {
+    facade.setTabTooltip('tab1', 'my-tooltip')
+    const res = await firstValueFrom(facade.getTabTooltip('tab1'))
+    expect(res).toBe('my-tooltip')
+  });
+
+  it('should set reduce and select tab loading', async () => {
+    facade.setTabLoading('tab1', true)
+    const res = await firstValueFrom(facade.getTabLoading('tab1'))
+    expect(res).toBe(true)
+  });
+
+  it('should set reduce and select tab layout mode', async () => {
+    facade.setTabLayoutMode('tab1', 'left-only')
+    const res = await firstValueFrom(facade.getTabLayoutMode('tab1'))
+    expect(res).toBe('left-only')
+  });
+
+  it('should set reduce and select changing class proj rel', async () => {
+    facade.setChangingClassProjRel(123, true)
+    facade.setChangingClassProjRel(456, false)
+    const res = await firstValueFrom(facade.getChangingClassProjRel(123))
+    expect(res).toBe(true)
+    const res2 = await firstValueFrom(facade.getChangingClassProjRel(456))
+    expect(res2).toBe(false)
+  });
+
 
 })

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { first } from 'rxjs/operators';
-import { EntityPreviewsPaginatedDialogData, EntityPreviewsPaginatedDialogComponent } from '../entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
+import { EntityPreviewsPaginatedDialogComponent, EntityPreviewsPaginatedDialogData } from '../entity-previews-paginated-dialog/entity-previews-paginated-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class EntityPreviewsPaginatedDialogService {
 
   constructor(
     private dialog: MatDialog,
-    private p: ActiveProjectService
+    private state: StateFacade
   ) { }
 
   open(
@@ -21,7 +21,7 @@ export class EntityPreviewsPaginatedDialogService {
     paragraphs?: string[]
   ) {
     if (ofProjectPreferred) {
-      this.p.pkProject$.pipe(first()).subscribe(pkProject => {
+      this.state.pkProject$.pipe(first()).subscribe(pkProject => {
         this._open(pkProject, pkEntities, title, paragraphs)
       })
     }

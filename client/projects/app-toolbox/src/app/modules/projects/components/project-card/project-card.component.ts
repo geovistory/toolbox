@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ProConfig } from '@kleiolab/lib-config';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ProProject } from '@kleiolab/lib-sdk-lb4';
-import { ActiveAccountPipes } from 'projects/lib-queries/src/lib/queries/services/active-account-pipes.service';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -25,17 +25,17 @@ export class ProjectCardComponent implements OnInit {
   btn2Label$: Observable<string>
   btn2Url$: Observable<string>
 
-  constructor(private p: ActiveAccountPipes) {
+  constructor(private state: StateFacade) {
   }
 
   ngOnInit(): void {
-    this.projectLanugageLabel$ = this.p.getProjectLanguageLabel(this.project); // inf.lang getLangLabel
-    this.projectLabel$ = this.p.getProjectLabel(this.project.pk_entity); // pro.project
-    this.projectDescription$ = this.p.getProjectDescription(this.project.pk_entity);
-    this.btn1Label$ = this.p.getProjectBtn1Label(this.project.pk_entity);
-    this.btn1Url$ = this.p.getProjectBtn1Url(this.project.pk_entity);
-    this.btn2Label$ = this.p.getProjectBtn2Label(this.project.pk_entity);
-    this.btn2Url$ = this.p.getProjectBtn2Url(this.project.pk_entity);
+    this.projectLanugageLabel$ = this.state.data.getProjectLanguageLabel(this.project.pk_entity);
+    this.projectLabel$ = this.state.data.pro.textProperty.getProjectLabel(this.project.pk_entity);
+    this.projectDescription$ = this.state.data.pro.textProperty.getProjectDescription(this.project.pk_entity);
+    this.btn1Label$ = this.state.data.pro.textProperty.getProjectBtn1Label(this.project.pk_entity);
+    this.btn1Url$ = this.state.data.pro.textProperty.getProjectBtn1Url(this.project.pk_entity);
+    this.btn2Label$ = this.state.data.pro.textProperty.getProjectBtn2Label(this.project.pk_entity);
+    this.btn2Url$ = this.state.data.pro.textProperty.getProjectBtn2Url(this.project.pk_entity);
   }
 
 }

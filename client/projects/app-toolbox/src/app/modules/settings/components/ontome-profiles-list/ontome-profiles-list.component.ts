@@ -6,6 +6,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ApiProfile } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { flatten, indexBy, uniqBy } from 'ramda';
@@ -43,6 +44,7 @@ export class OntomeProfilesListComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
+    private state: StateFacade,
     private p: ActiveProjectService,
     private c: ConfigurationPipesService,
     private dialog: MatDialog,
@@ -90,7 +92,7 @@ export class OntomeProfilesListComponent implements OnInit {
   }
 
   async getOntoMeProjects(): Promise<number[]> {
-    return combineLatest([this.p.pkProject$, this.sys$.config$.main$])
+    return combineLatest([this.state.pkProject$, this.sys$.config$.main$])
       .pipe(
         map(([pkProject, sysConfig]) => {
           const ontomeProjectIds = []
@@ -105,7 +107,7 @@ export class OntomeProfilesListComponent implements OnInit {
   }
 
   async activate(item: ProfileItem) {
-    const pkProject = await this.p.pkProject$.pipe(first()).toPromise()
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise()
     const data: OntomeProfileActivationReportDialogData = {
       pkProject,
       profileId: item.profileId,

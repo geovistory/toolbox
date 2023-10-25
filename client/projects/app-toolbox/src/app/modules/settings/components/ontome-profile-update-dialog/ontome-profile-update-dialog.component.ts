@@ -1,10 +1,9 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { OntoMeControllerService } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 export interface OntomeProfileUpdateDialogData {
   profileId: number
   profileLabel: string
@@ -26,8 +25,7 @@ export class OntomeProfileUpdateDialogComponent implements OnInit, OnDestroy {
   constructor(public dialogRef: MatDialogRef<OntomeProfileUpdateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: OntomeProfileUpdateDialogData,
     private ontomeService: OntoMeControllerService,
-    private dataService: ReduxMainService,
-    private p: ActiveProjectService
+    private state: StateFacade
   ) { }
 
   ngOnInit() {
@@ -41,13 +39,10 @@ export class OntomeProfileUpdateDialogComponent implements OnInit, OnDestroy {
         succes => {
           this.updating = false
           this.updated = true
-          this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-            this.dataService.loadDfhProfilesOfProject(pkProject);
-            this.dataService.loadDfhPropertiesOfProject(pkProject);
-            this.dataService.loadDfhClassesOfProject(pkProject);
-            this.dataService.loadDfhLabelsOfProject(pkProject);
-          })
-
+          this.state.data.loadDfhProfilesOfProject(this.state.pkProject);
+          this.state.data.loadDfhPropertiesOfProject(this.state.pkProject);
+          this.state.data.loadDfhClassesOfProject(this.state.pkProject);
+          this.state.data.loadDfhLabelsOfProject(this.state.pkProject);
         },
         error => {
           this.updating = false

@@ -1,8 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { OntoMeControllerService } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 export interface OntomeProfileActivationReportDialogData {
@@ -26,8 +25,7 @@ export class OntomeProfileActivationReportDialogComponent implements OnInit, OnD
   constructor(public dialogRef: MatDialogRef<OntomeProfileActivationReportDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: OntomeProfileActivationReportDialogData,
     private ontomeService: OntoMeControllerService,
-    private dataService: ReduxMainService,
-    private p: ActiveProjectService
+    private state: StateFacade
   ) { }
 
   ngOnInit() {
@@ -42,12 +40,12 @@ export class OntomeProfileActivationReportDialogComponent implements OnInit, OnD
           this.activating = false
           this.activated = true
 
-          this.dataService.loadDfhProfilesOfProject(this.data.pkProject);
-          this.dataService.loadDfhPropertiesOfProject(this.data.pkProject);
-          this.dataService.loadDfhClassesOfProject(this.data.pkProject);
-          this.dataService.loadDfhLabelsOfProject(this.data.pkProject);
-          this.dataService.loadProjectClassRelations(this.data.pkProject);
-          this.dataService.loadProjectProfileRelations(this.data.pkProject);
+          this.state.data.loadDfhProfilesOfProject(this.data.pkProject);
+          this.state.data.loadDfhPropertiesOfProject(this.data.pkProject);
+          this.state.data.loadDfhClassesOfProject(this.data.pkProject);
+          this.state.data.loadDfhLabelsOfProject(this.data.pkProject);
+          this.state.data.loadProjectClassRelations(this.data.pkProject);
+          this.state.data.loadProjectProfileRelations(this.data.pkProject);
         },
         error => {
           this.activating = false

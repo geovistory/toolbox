@@ -62,6 +62,28 @@ export class DataEffects {
   ))
 
   /**
+ * Epic for loading GvSchemaModifiers
+ * - it subscribes to the given observable (payload), which usually triggers a REST API call
+ * - on success it stores the GvSchemaObject
+ * - else it toasts an error message
+ */
+  loadSchemaModifierWithMapper$ = createEffect(() => this.actions$.pipe(
+    ofType(schemaModifierActions.loadWithMapper),
+    mergeMap((action) => action.data$.pipe(
+      mergeMap(data => {
+        const schemaModifier = action.mapper(data);
+        return of(
+          schemaModifierActions.succeeded({ payload: schemaModifier }),
+          LoadingBarActions.REMOVE_JOB()
+        )
+      }),
+      catchError((error: HttpErrorResponse) => of(...this.errorActions(error))),
+      startWith(LoadingBarActions.ADD_JOB()),
+    ))
+  ))
+
+
+  /**
   * Epic for loading GvPaginationObjects
   * - it subscribes to the given observable (payload), which usually triggers a REST API call
   * - on success it stores the GvPaginationObject

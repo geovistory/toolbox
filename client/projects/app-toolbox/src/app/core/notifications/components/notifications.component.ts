@@ -1,35 +1,42 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { NotificationAPIEpics } from '@kleiolab/lib-redux';
+import { Toast as Notfication } from '@kleiolab/lib-redux/lib/redux-store/ui/notification/notification.actions';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { Message, MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
+import { difference } from 'ramda';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 
 @Component({
   selector: 'gv-notifications',
-  templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.css']
+  templateUrl: './notifications.component.html',
+  styleUrls: ['./notifications.component.css']
 })
 export class NotificationComponent implements OnDestroy {
   destroy$ = new Subject<boolean>();
   @ViewChild(Toast) toast: Toast;
   constructor(
     private messageService: MessageService,
-    not: NotificationAPIEpics) {
+    state: StateFacade
+  ) {
     let id = 0;
-    not.notificationChannel$
+    let lastState: Notfication[] = [];
+    state.ui.notifications.toasts$
       .pipe(takeUntil(this.destroy$))
       .subscribe(n => {
-        const message: Message = {
-          closable: false,
-          id: id++,
-          severity: n.type,
-          summary: n.options.title,
-          detail: n.options.msg,
-          life: 3000
-        }
-        this.messageService.add(message)
+        difference(n, lastState).forEach(newToast => {
+          const message: Message = {
+            closable: false,
+            id: id++,
+            severity: newToast.type,
+            summary: newToast.options.title,
+            detail: newToast.options.msg,
+            life: newToast.options.timeout ?? 3000
+          }
+          this.messageService.add(message)
+        })
+        lastState = n;
       })
   }
 

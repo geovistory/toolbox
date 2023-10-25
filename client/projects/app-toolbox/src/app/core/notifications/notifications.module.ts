@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
-import { NotificationComponent } from './components/notification.component';
+import { NotificationComponent } from './components/notifications.component';
 
 
 @NgModule({

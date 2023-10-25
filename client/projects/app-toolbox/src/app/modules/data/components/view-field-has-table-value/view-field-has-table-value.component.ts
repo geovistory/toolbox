@@ -1,6 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, ImportTableResponse, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { P_1879_HAS_VALUE_ID } from 'projects/app-toolbox/src/app/ontome-ids';
@@ -32,7 +32,7 @@ export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
   pkHasValuePk = P_1879_HAS_VALUE_ID
   constructor(
     public fieldApi: SubfieldPageControllerService,
-    public dataApi: ReduxMainService,
+    private state: StateFacade,
     public projectData: ProjectDataService,
     public dialog: MatDialog,
     public p: ActiveProjectService,
@@ -88,9 +88,9 @@ export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
 
   async openImportDialog() {
 
-    const pkProject = await this.p.pkProject$.pipe(first()).toPromise()
+    const pkProject = this.state.pkProject;
     const apiCall = (response: ImportTableResponse) => {
-      const a$ = this.dataApi.upsertInfStatementsWithRelations(
+      const a$ = this.state.data.upsertInfStatementsWithRelations(
         pkProject,
         [{
           fk_object_data: response.fk_digital,

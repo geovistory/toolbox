@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { IAppState } from '../../../public-api';
 import { CrudFacade } from '../../_lib/crud-facade';
 import { dfhLabelActions } from './dfh-label.actions';
-import { getDfhLabel, indexState } from './dfh-label.selectors';
+import { byProfileState, getDfhLabel, indexState } from './dfh-label.selectors';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,7 @@ import { getDfhLabel, indexState } from './dfh-label.selectors';
 export class DfhLabelFacade extends CrudFacade<DfhLabel> {
 
   dfhLabel$ = this.store.select(indexState);
+  dfhLabelByProfile$ = this.store.select(byProfileState);
 
   constructor(protected store: Store<IAppState>) {
     super(store, dfhLabelActions)

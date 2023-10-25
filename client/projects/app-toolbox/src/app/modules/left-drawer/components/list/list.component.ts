@@ -1,11 +1,9 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
-import { IAppState } from '@kleiolab/lib-redux';
 import { EntitySearchHit, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
-import { NgRedux } from '@ngrx/store';
 import { WarEntityPreview } from 'projects/lib-sdk-lb4/src/public-api';
-import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ListService } from '../../services/list.service';
 
@@ -42,7 +40,6 @@ export class ListComponent implements OnInit, OnDestroy {
   searchString = '';
   errorMessages: any;
 
-  selectingEntities$: Observable<boolean>;
   projectId: number;
 
   entityType: 'teEn' | 'peIt' | undefined;
@@ -50,14 +47,8 @@ export class ListComponent implements OnInit, OnDestroy {
   constructor(
     private ap: ActiveProjectPipesService,
     private entityPreviewApi: WarEntityPreviewControllerService,
-    public ngRedux: NgRedux<IAppState>,
     private listService: ListService
-  ) {
-
-    // listen to selecting entities for annotation
-    this.selectingEntities$ = ngRedux.select<boolean>(['sources', 'edit', 'annotationPanel', 'edit', 'selectingEntities']);
-
-  }
+  ) { }
 
   ngOnInit() {
 

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, InformationPipesService } from '@kleiolab/lib-queries';
-import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldId, InfStatement, InfStatementWithRelations, StatementWithTarget, TimePrimitiveWithCal, WarEntityPreviewTimeSpan } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals } from 'ramda';
@@ -29,8 +29,7 @@ export class TimeSpanService {
     public p: ActiveProjectService,
     public t: InformationPipesService,
     private dialog: MatDialog,
-    private inf: InfActions,
-    private dataService: ReduxMainService,
+    private state: StateFacade
   ) { }
 
   openModal(item: TimeSpanData, fkTeEn: number) {
@@ -50,8 +49,10 @@ export class TimeSpanService {
 
   }
   onSave = (item: TimeSpanData, fkTeEn: number) => (n: CtrlTimeSpanDialogResult) => {
-    return this.p.pkProject$.pipe(
+    return this.state.pkProject$.pipe(
       mergeMap((pkProject) => {
+
+
         const o = this.createOldData(item)
         const toUpsert: InfStatement[] = [];
         let toDelete: InfStatement[] = [];
@@ -85,8 +86,8 @@ export class TimeSpanService {
         })
 
         return combineLatest(
-          toUpsert.length > 0 ? this.dataService.upsertInfStatementsWithRelations(pkProject, toUpsert) : of(true),
-          toDelete.length > 0 ? this.dataService.removeInfEntitiesFromProject(toDelete.map(i => i.pk_entity), pkProject) : of(true)
+          toUpsert.length > 0 ? this.state.data.upsertInfStatementsWithRelations(pkProject, toUpsert) : of(true),
+          toDelete.length > 0 ? this.state.data.removeInfEntitiesFromProject(toDelete.map(i => i.pk_entity), pkProject) : of(true)
         )
 
       }),

@@ -1,4 +1,4 @@
-import { IAppState } from '@kleiolab/lib-redux';
+import { IAppState } from '@kleiolab/lib-redux/public-api';
 import { ProjectDetailMock } from './ProjectDetailMock';
 
 export namespace IAppStateMock {

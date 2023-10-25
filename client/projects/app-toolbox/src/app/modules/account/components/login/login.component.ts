@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingBarActions } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
 import { first } from 'rxjs/operators';
 
@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     private activeAccountService: ActiveAccountService,
     private route: ActivatedRoute,
     private router: Router,
-    private loadingBarActions: LoadingBarActions,
+    private state: StateFacade,
   ) { }
 
   ngOnInit() {
@@ -64,16 +64,16 @@ export class LoginComponent implements OnInit {
   }
 
   startLoading() {
-    this.loadingBarActions.addJob()
+    this.state.ui.loadingBar.addJob()
     this.loading = true;
   }
 
   stopLoading() {
-    this.loadingBarActions.removeJob()
+    this.state.ui.loadingBar.removeJob()
   }
 
   completeLoading() {
     this.loading = false;
-    this.loadingBarActions.removeJob()
+    this.state.ui.loadingBar.removeJob()
   }
 }

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@an
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellation, InfResourceWithRelations, InfStatementWithRelations, ProjectDataService, QuillDoc, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { ReplaceStatementInFieldRequest } from '@kleiolab/lib-sdk-lb4/lib/sdk-lb4/model/replaceStatementInFieldRequest';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -58,7 +58,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
 
   constructor(
     public fieldApi: SubfieldPageControllerService,
-    public dataApi: ReduxMainService,
+    public state: StateFacade,
     public projectData: ProjectDataService,
     public dialog: MatDialog,
     public p: ActiveProjectService,
@@ -259,7 +259,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
 
   private async saveAnnotationCallback() {
 
-    const req = await combineLatest([this.p.pkProject$, this.p.ramTarget$.pipe(filter(x => !!x))])
+    const req = await combineLatest([this.state.pkProject$, this.p.ramTarget$.pipe(filter(x => !!x))])
       .pipe(
         map(([pkProject, target]) => {
           const annotation: InfResourceWithRelations = {
@@ -285,7 +285,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
       )
       .toPromise()
 
-    return this.dataApi.upsertInfResourcesWithRelations(req.pkProject, [req.annotation])
+    return this.state.data.upsertInfResourcesWithRelations(req.pkProject, [req.annotation])
       .pipe(first())
       .toPromise()
   }

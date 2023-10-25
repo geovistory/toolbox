@@ -1,11 +1,10 @@
 
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { IAppState, PanelTab, TabBase } from '@kleiolab/lib-redux';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { PanelTab } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project.models';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ClassConfig } from '@kleiolab/lib-sdk-lb4';
-import { NgRedux } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
-import { delay, map } from 'rxjs/operators';
 
 @Component({
   selector: 'gv-tab-handle',
@@ -27,23 +26,17 @@ export class TabHandleComponent implements OnInit, OnDestroy {
   colorClass: string
 
   constructor(
-    private ngRedux: NgRedux<IAppState>,
     public p: ActiveProjectService,
-    private ref: ChangeDetectorRef
+    private state: StateFacade
   ) { }
 
   ngOnInit() {
-
-    const x$ = this.ngRedux.select<TabBase>(['activeProject', 'tabLayouts', this.tab.path[2]])
-      .pipe(delay(0))
-    this.title$ = x$.pipe(map(x => x?.tabTitle ?? ''))
-    this.tooltip$ = x$.pipe(map(x => x?.tabTooltip ?? ''))
-    this.loading$ = x$.pipe(
-      map(x => x?.loading === true ? true : false))
-
+    const tabId = this.tab.path[2];
+    this.title$ = this.state.ui.activeProject.getTabTitle(tabId)
+    this.tooltip$ = this.state.ui.activeProject.getTabTooltip(tabId)
+    this.loading$ = this.state.ui.activeProject.getTabLoading(tabId)
     this.svgIcon = `gv:outlined-gv-${this.tab.icon}`;
     this.colorClass = this.getColorClass()
-
   }
   getColorClass() {
     switch (this.tab.icon) {

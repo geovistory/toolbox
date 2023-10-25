@@ -1,14 +1,18 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { AnalysisTabData, IAppState, NotificationsAPIActions, ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { AnalysisService as LbAnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
-import { NgRedux } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ErrorDialogComponent, ErrorDialogData } from 'projects/app-toolbox/src/app/shared/components/error-dialog/error-dialog.component';
-import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { catchError, first, switchMap, tap } from 'rxjs/operators';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/dialog-create/dialog-create.component';
+
+export interface AnalysisTabData {
+  pkEntity?: number;
+  fkAnalysisType?: number;
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -25,9 +29,7 @@ export class GvAnalysisService<I, O> {
     public analysisApi: LbAnalysisService,
     private dialog: MatDialog,
     private p: ActiveProjectService,
-    private not: NotificationsAPIActions,
-    private dataService: ReduxMainService,
-    private ngRedux: NgRedux<IAppState>
+    private state: StateFacade,
   ) { }
 
 
@@ -100,7 +102,7 @@ export class GvAnalysisService<I, O> {
     d.afterClosed().pipe(first()).subscribe((dialogResult) => {
       if (dialogResult) {
 
-        this.p.pkProject$.pipe(first()).subscribe(pkProject => {
+        this.state.pkProject$.pipe(first()).subscribe(pkProject => {
           this.saving = true;
           const proAnalysis: ProAnalysis = {
             fk_analysis_type: this.fkAnalysisType,
@@ -112,13 +114,13 @@ export class GvAnalysisService<I, O> {
           this.upsert(proAnalysis, pkProject)
             .subscribe((data) => {
               this.saving = false;
-              this.ngRedux.dispatch(this.not.addToast({
+              this.state.ui.notifications.addToast({
                 type: 'success',
                 options: {
                   title: 'Success',
                   msg: `Analysis has been saved. Name: '${data.pro.analysis[0].name}'`
                 }
-              }))
+              })
               this.pkEntity = data.pro.analysis[0].pk_entity;
               pkEntity$.next(data.pro.analysis[0].pk_entity)
               // dialog.close();
@@ -154,7 +156,7 @@ export class GvAnalysisService<I, O> {
    */
   callSaveApi(analysis_definition: I) {
 
-    this.p.pro$.analysis$.by_pk_entity$.key(this.pkEntity.toString())
+    this.state.data.pro.analysis.getAnalysis.byPkEntity$(this.pkEntity)
       .pipe(first())
       .subscribe(proAnalysis => {
         this.saving = true;
@@ -165,13 +167,13 @@ export class GvAnalysisService<I, O> {
         this.upsert(proAnalysis, proAnalysis.fk_project)
           .subscribe((data) => {
             this.saving = false;
-            this.ngRedux.dispatch(this.not.addToast({
+            this.state.ui.notifications.addToast({
               type: 'success',
               options: {
                 title: 'Success',
                 msg: `Analysis has been saved.`
               }
-            }))
+            })
           }, error => {
             this.saving = false;
 
@@ -201,7 +203,7 @@ export class GvAnalysisService<I, O> {
    */
   callCopyApi(analysis_definition: I): Observable<number> {
     const pkEntity$ = new Subject<number>();
-    this.p.pro$.analysis$.by_pk_entity$.key(this.pkEntity.toString())
+    this.state.data.pro.analysis.getAnalysis.byPkEntity$(this.pkEntity)
       .pipe(first())
       .subscribe(currentData => {
 
@@ -227,16 +229,16 @@ export class GvAnalysisService<I, O> {
             } as ProAnalysis;
             this.upsert(proAnalysis, currentData.fk_project).subscribe((data) => {
               this.saving = false;
-              this.ngRedux.dispatch(this.not.addToast({
+              this.state.ui.notifications.addToast({
                 type: 'success',
                 options: {
                   title: 'Success',
                   msg: `Analysis has been saved. Name: '${data.pro.analysis[0].name}'`
                 }
-              }))
+              })
               // this.pkEntity = data.pro.analysis[0].pk_entity;
               // pkEntity$.next(data.pro.analysis[0].pk_entity)
-              this.p.addTab<AnalysisTabData>({
+              this.state.ui.activeProject.addTab<AnalysisTabData>({
                 active: true,
                 component: 'analysis',
                 icon: 'analysis',
@@ -280,7 +282,7 @@ export class GvAnalysisService<I, O> {
    * @param analysis_definition
    */
   callRenameApi(analysis_definition: I) {
-    this.p.pro$.analysis$.by_pk_entity$.key(this.pkEntity.toString())
+    this.state.data.pro.analysis.getAnalysis.byPkEntity$(this.pkEntity)
       .pipe(first())
       .subscribe(currentData => {
         const dialogData: DialogCreateData = {
@@ -304,13 +306,13 @@ export class GvAnalysisService<I, O> {
             this.upsert(proAnalysis, currentData.fk_project)
               .subscribe((data) => {
                 this.saving = false;
-                this.ngRedux.dispatch(this.not.addToast({
+                this.state.ui.notifications.addToast({
                   type: 'success',
                   options: {
                     title: 'Success',
                     msg: `Analysis has been saved. Name: '${data.pro.analysis[0].name}'`
                   }
-                }))
+                })
               }, error => {
                 this.saving = false;
 
@@ -334,7 +336,7 @@ export class GvAnalysisService<I, O> {
 
 
   private upsert(proAnalysis: ProAnalysis, pkProject: number) {
-    return this.dataService.upsertProjectAnalisis(pkProject, [proAnalysis])
+    return this.state.data.upsertProjectAnalisis(pkProject, [proAnalysis])
   }
 
   /**
@@ -356,20 +358,20 @@ export class GvAnalysisService<I, O> {
     d.afterClosed().pipe(first()).subscribe((dialogResult) => {
       if (dialogResult) {
 
-        this.p.pro$.analysis$.by_pk_entity$.key(this.pkEntity.toString())
+        this.state.data.pro.analysis.getAnalysis.byPkEntity$(this.pkEntity)
           .pipe(first())
           .subscribe(proAnalysis => {
             this.saving = true;
-            this.dataService.deleteProjectAnalisis(proAnalysis.fk_project, [proAnalysis.pk_entity])
+            this.state.data.deleteProjectAnalisis(proAnalysis.fk_project, [proAnalysis.pk_entity])
               .pipe(first(x => !!x)).subscribe((deleted) => {
                 this.saving = false;
-                this.ngRedux.dispatch(this.not.addToast({
+                this.state.ui.notifications.addToast({
                   type: 'success',
                   options: {
                     title: 'Success',
                     msg: `Analysis has been deleted.`
                   }
-                }))
+                })
 
               }, error => {
                 this.saving = false;
@@ -400,7 +402,7 @@ export class GvAnalysisService<I, O> {
 
   callRunApi(apiCall: (fkProject: number) => Observable<O>) {
     this.loading = true;
-    this.p.pkProject$.pipe(switchMap(fkProject => apiCall(fkProject)))
+    this.state.pkProject$.pipe(switchMap(fkProject => apiCall(fkProject)))
       .subscribe((r: O) => {
         this.results$.next(r);
         this.loading = false;
@@ -426,7 +428,7 @@ export class GvAnalysisService<I, O> {
   }
 
   callDownloadApi<DownloadResult>(apiCall: (fkProject: number) => Observable<DownloadResult>) {
-    return this.p.pkProject$
+    return this.state.pkProject$
       .pipe(first(pkProject => !!pkProject))
       .pipe(
         tap(() => this.loading = true),

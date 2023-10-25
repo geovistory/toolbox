@@ -13,6 +13,9 @@ export const getRefiningChunk = createSelector(getActiveProjectState, s => s.ref
 export const getCreatingMentioning = createSelector(getActiveProjectState, s => s.creatingMentioning);
 export const getMentioningsFocusedInText = createSelector(getActiveProjectState, s => s.mentioningsFocusedInText);
 export const getMentioningsFocusedInTable = createSelector(getActiveProjectState, s => s.mentioningsFocusedInTable);
+export const getChangingClassProjRelState = createSelector(getActiveProjectState, s => s?.changingClassProjRel)
+
+const getTabLayouts = createSelector(getActiveProjectState, s => s?.tabLayouts)
 
 
 export const getPanel = (panelIndex: number) => createSelector(getPanels, s => s?.[panelIndex]);
@@ -21,3 +24,10 @@ export const getTab = (panelIndex: number, tabIndex: number) =>
 export const isActiveTab = (panelIndex: number, tabIndex: number) =>
   createSelector(getTab(panelIndex, tabIndex), s => s?.active);
 
+export const getTabLayout = (id: string) => createSelector(getTabLayouts, s => s?.[id])
+export const getTabLayoutTitle = (id: string) => createSelector(getTabLayout(id), s => s?.tabTitle)
+export const getTabLayoutLoading = (id: string) => createSelector(getTabLayout(id), s => s?.loading)
+export const getTabLayoutMode = (id: string) => createSelector(getTabLayout(id), s => s?.layoutMode)
+export const getTabLayoutTooltip = (id: string) => createSelector(getTabLayout(id), s => s?.tabTooltip)
+
+export const getChangingClassProjRel = (classId: number) => createSelector(getChangingClassProjRelState, s => s?.[classId])

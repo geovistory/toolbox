@@ -1,5 +1,5 @@
 import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { StateFacade } from '@kleiolab/lib-redux';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { Subject } from 'rxjs';
@@ -31,7 +31,7 @@ export class AnalysisLayoutComponent implements OnInit, OnDestroy {
 
   constructor(
     ts: TabLayoutService,
-    p: ActiveProjectService,
+    private state: StateFacade,
     public a: GvAnalysisService<any, any>
   ) {
     this.t = ts.t;
@@ -43,7 +43,7 @@ export class AnalysisLayoutComponent implements OnInit, OnDestroy {
         if (!pk) this.t.setTabTitle('New Analysis *')
       }),
       filter(pk => !!pk),
-      switchMap(pkAnalysis => p.pro$.analysis$.by_pk_entity$.key(pkAnalysis.toString())),
+      switchMap(pkAnalysis => state.data.pro.analysis.getAnalysis.byPkEntity$(pkAnalysis)),
       takeUntil(this.destroy$)
     ).subscribe(proAnalysis => {
       if (proAnalysis === undefined) {

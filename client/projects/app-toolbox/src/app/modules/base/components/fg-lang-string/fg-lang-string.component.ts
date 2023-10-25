@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { InfAppellation, InfLangString, InfLangStringWithRelations, InfLanguage, QuillDoc } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
@@ -37,8 +37,8 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
 
 
   constructor(
-    private p: ActiveProjectService,
     private ff: FormFactoryService,
+    private state: StateFacade,
     private c: ConfigurationPipesService,
     @Optional() @Inject(CONTAINER_DATA) public injectedData: FgLangStringInjectData
   ) {
@@ -64,11 +64,11 @@ export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, 
       })
     }
     // Ensure the language is set
-    this.initVal$ = combineLatest(this.initVal$, this.p.defaultLanguage$).pipe(
+    this.initVal$ = combineLatest(this.initVal$, this.state.data.getProjectLanguage(this.state.pkProject)).pipe(
       switchMap(([initVal, defaultLang]) => {
         // if a fk_language is provied, get the language object
         if (initVal && initVal.fk_language) {
-          return this.p.inf$.language$.by_pk_entity$.key(initVal.fk_language).pipe(
+          return this.state.data.inf.language.getLanguage.byPkEntity$(initVal.fk_language).pipe(
             map(language => {
               return {
                 ...initVal,

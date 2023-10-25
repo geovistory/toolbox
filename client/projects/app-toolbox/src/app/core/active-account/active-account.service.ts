@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AccountActions, IAppState } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { AccountService, LoginRequest, LoginResponse, PubAccount, PubRole } from '@kleiolab/lib-sdk-lb4';
-import { NgRedux } from '@ngrx/store';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { GvAuthService, GvAuthToken } from '../auth/auth.service';
@@ -16,9 +15,8 @@ export class ActiveAccountService {
 
   constructor(
     private authService: GvAuthService,
-    private accountActions: AccountActions,
-    private ngRedux: NgRedux<IAppState>,
     private lb4AccountApi: AccountService,
+    private state: StateFacade
   ) {
 
     this.updateAccount()
@@ -30,7 +28,7 @@ export class ActiveAccountService {
 
   updateAccount() {
     this.account = this.authService.getCurrentUserData();
-    this.ngRedux.dispatch(this.accountActions.accountUpdated(this.account));
+    this.state.ui.account.loginSucceeded(this.account);
     this.userObs$.next(this.account);
   }
 
@@ -50,8 +48,8 @@ export class ActiveAccountService {
   }
 
   loadAccountRoles(): Observable<PubRole[]> {
-    this.ngRedux.dispatch(this.accountActions.loadRoles(this.authService.getCurrentUserData().id))
-    return this.ngRedux.select<PubRole[]>(['account', 'roles'])
+    this.state.ui.account.loadRoles(this.authService.getCurrentUserData().id);
+    return this.state.ui.account.roles$;
   }
 
 
@@ -59,6 +57,7 @@ export class ActiveAccountService {
     const s$ = new Subject<LoginResponse>();
     // send credentials to server
 
+    // TODO: move this logic to lib-redux
     this.lb4AccountApi.accountControllerLogin(credentials)
       .subscribe(
         result => {
@@ -73,7 +72,7 @@ export class ActiveAccountService {
 
           this.authService.setToken(gvAuthToken);
           this.updateAccount()
-          this.ngRedux.dispatch(this.accountActions.loginSucceeded(result.user));
+          this.state.ui.account.loginSucceeded(result.user);
           s$.next(result)
           s$.complete()
         },
@@ -89,6 +88,6 @@ export class ActiveAccountService {
   logout() {
     this.authService.clear();
     this.updateAccount();
-    this.ngRedux.dispatch(this.accountActions.accountUpdated(this.authService.getCurrentUserData()));
+    this.state.ui.account.loginSucceeded(this.authService.getCurrentUserData());
   }
 }

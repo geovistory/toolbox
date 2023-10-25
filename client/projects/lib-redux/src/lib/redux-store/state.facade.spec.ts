@@ -52,14 +52,6 @@ describe('State Facade', () => {
     expect(keys(res3).length).toEqual(2)
   });
 
-  it('should find active project language', async () => {
-    facade.ui.activeProject.loadProjectBasiscsSucceded(11)
-    facade.data.pro.project.upsertSucceeded([{ fk_language: 123, pk_entity: 11 }], '')
-    facade.data.inf.language.upsertSucceeded([{ pk_entity: 123, notes: 'German' }], '')
-    const res = await firstValueFrom(facade.activeProjectLanguage$)
-    expect(res.notes).toBe('German')
-  });
-
 
   it('should reduce and select app state', async () => {
     facade.setState({

@@ -3,7 +3,7 @@ import { InfStatement, InfTimePrimitive, TimePrimitiveWithCal } from '@kleiolab/
 import { TimeSpanUtil } from '@kleiolab/lib-utils';
 import { BehaviorSubject, combineLatest, merge, Observable, pipe } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { InfFacade } from '../data/inf/inf.facade';
+import { InfFacade } from '../redux-store/data/inf/inf.facade';
 
 
 

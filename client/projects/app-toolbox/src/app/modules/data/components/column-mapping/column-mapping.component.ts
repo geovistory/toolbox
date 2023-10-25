@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -40,6 +41,7 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
   constructor(
     public c: ConfigurationPipesService,
     private p: ActiveProjectService,
+    private state: StateFacade,
     private sys: SysSelector,
   ) { }
 
@@ -51,11 +53,11 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // everythings is already in the store, because we only can access this component AFTER loading the table)
 
-    const columns$ = this.p.dat$.column$.by_fk_digital$.key(this.pkTable).pipe(map(c => values(c)));
+    const columns$ = this.state.data.dat.column.getColumn.byFkDigital$(this.pkTable).pipe(map(c => values(c)));
 
     const mappings$ = columns$.pipe(
       switchMap(cols => combineLatest(
-        cols.map(c => this.p.dat$.class_column_mapping$.by_fk_column$.key(c.pk_entity).pipe(
+        cols.map(c => this.state.data.dat.classColumnMapping.getClassColumnMapping.byFkColumn$(c.pk_entity).pipe(
           map(m => values(m)[0])
         ))
       ))
@@ -69,7 +71,7 @@ export class ColumnMappingComponent implements OnInit, OnDestroy {
         mappings
           .filter(m => !!m)
           .filter(m => classes?.some(c => c == m.fk_class))
-          .map(m => this.p.dat$.text_property$.by_fk_entity__fk_system_type$.key(m.fk_column + '_' + 3295)
+          .map(m => this.state.data.dat.textProperty.getTextProperty.byFkEntityAndSysType$(m.fk_column, 3295)
             .pipe(map(tp => ({
               columnName: values(tp)[0]?.string,
               pkColumn: m.fk_column,

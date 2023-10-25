@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
-import { IAppState, PanelTab } from '@kleiolab/lib-redux';
+import { IAppState, PanelTab } from '@kleiolab/lib-redux/public-api';
 import { ProjectDataService, ProProject, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';

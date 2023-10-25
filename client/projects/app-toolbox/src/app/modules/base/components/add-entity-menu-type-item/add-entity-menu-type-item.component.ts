@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { AddMenuClassOrTypeItem } from 'projects/lib-queries/src';
+import { AddMenuClassOrTypeItem } from '@kleiolab/lib-redux/lib/queries/information/models/AddMenuClassOrTypeItem';
 import { AddEntityMenuComponent } from '../add-entity-menu/add-entity-menu.component';
 
 @Component({

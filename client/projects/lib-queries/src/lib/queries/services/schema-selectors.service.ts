@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState } from '@kleiolab/lib-redux';
+import { IAppState } from '@kleiolab/lib-redux/public-api';
 import { distinctUntilChanged, filter } from 'rxjs/operators';
 import { InfSelector } from '../../../../../lib-redux/src/lib/redux-store/data/inf/inf.selectors';
 import { DatSelector } from '../selectors/dat.service';

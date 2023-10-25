@@ -4,7 +4,6 @@ import { SocketsModule } from '@kleiolab/lib-sockets';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { DataModule } from './data/data.module';
-import { ConfigurationPipesService } from './queries/configuration/configuration-pipes.service';
 import { StateEffects } from './state.effects';
 import { IAppState } from './state.model';
 import { UiModule } from './ui/ui.module';
@@ -26,9 +25,7 @@ export function apiConfigFactory(): Configuration {
     EffectsModule.forRoot(StateEffects),
     SocketsModule
   ],
-  providers: [
-    ConfigurationPipesService
-  ]
+  providers: []
 })
 export class StateModule {
 

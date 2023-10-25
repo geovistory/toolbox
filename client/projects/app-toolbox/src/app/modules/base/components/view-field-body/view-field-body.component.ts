@@ -2,8 +2,8 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, ViewChild } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig } from '@kleiolab/lib-config';
-import { ActiveProjectPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { Field } from '@kleiolab/lib-queries';
+import { QueriesFacade, StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -76,9 +76,8 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     public dndGlobal: GvDndGlobalService,
     private p: ActiveProjectService,
     private pag: PaginationService,
-    private i: InformationPipesService,
-    private ap: ActiveProjectPipesService,
-    private dataApi: ReduxMainService,
+    private state: StateFacade,
+    private queries: QueriesFacade,
     public viewFieldDropListService: ViewFieldDropListService,
     @Optional() private itemCountService: ViewFieldItemCountSumService,
     public editMode: EditModeService,
@@ -117,7 +116,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     const pagination$ = combineLatest([
       this.limit$,
       this.offset$,
-      this.ap.pkProject$
+      this.state.pkProject$
     ]).pipe(shareReplay({ refCount: true, bufferSize: 1 }));
     const nextPage$ = new Subject()
     const until$ = merge(nextPage$, this.destroy$);
@@ -162,7 +161,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
         }
       }),
       // Piping from store
-      switchMap(([limit, offset]) => this.i.pipeFieldPage(
+      switchMap(([limit, offset]) => this.queries.information.pipeFieldPage(
         fieldToFieldPage(this.field, this.source, this.scope, limit, offset),
         fieldToGvFieldTargets(this.field),
         this.field.isTimeSpanShortCutField
@@ -200,7 +199,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
 
 
   private loadFieldCount(until$: Observable<unknown>) {
-    this.ap.pkProject$.pipe(first()).subscribe(pkProject => {
+    this.state.pkProject$.pipe(first()).subscribe(pkProject => {
       this.pag.addPageLoaderFromField(pkProject, this.field, this.source, 0, 0, until$, this.scope);
     });
   }
@@ -232,7 +231,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
    */
   add() {
     this.adding$.next(true)
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+    this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
       // the selected pks
       const pkStatements: number[] = this.selection.selected;
       const statementsWT = values(this.selected)
@@ -246,7 +245,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
           const pkEntity = s.target.entity.resource.pk_entity
 
           // create api call
-          return this.dataApi.addEntityToProject(pkProject, pkEntity)
+          return this.state.data.addEntityToProject(pkProject, pkEntity)
         })
 
       // prepare entity project rels for the statement pointing to target entity
@@ -268,7 +267,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
         .subscribe(pending => {
 
           // add the statements pointing to these entities to project
-          this.dataApi.upsertInfoProjectRelations(pkProject, projRels)
+          this.state.data.upsertInfoProjectRelations(pkProject, projRels)
             .pipe(
               first(),
               takeUntil(this.destroy$)

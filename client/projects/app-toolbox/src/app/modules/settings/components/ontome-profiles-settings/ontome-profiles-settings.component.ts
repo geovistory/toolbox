@@ -2,7 +2,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { DfhProfile } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { GvAnalysisService } from 'projects/app-toolbox/src/app/modules/analysis/services/analysis.service';
@@ -10,7 +10,7 @@ import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-la
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { values } from 'ramda';
 import { combineLatest, Observable, Subject } from 'rxjs';
-import { filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
 import { OntomeProfileDeactivationReportDialogComponent, OntomeProfileDeactivationReportDialogData } from '../ontome-profile-deactivation-report-dialog/ontome-profile-deactivation-report-dialog.component';
 import { OntomeProfileUpdateDialogComponent, OntomeProfileUpdateDialogData } from '../ontome-profile-update-dialog/ontome-profile-update-dialog.component';
@@ -62,7 +62,7 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
     public ref: ChangeDetectorRef,
     public p: ActiveProjectService,
     public tabLayout: TabLayoutService,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     private dialog: MatDialog
   ) { }
 
@@ -70,17 +70,12 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
     this.t = this.tabLayout.t
     this.t.setTabTitle('Ontome Profiles')
 
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.pkProject = pkProject;
-      this.dataService.loadProjectProfileRelations(pkProject);
-    })
+    this.pkProject = this.state.pkProject;
+    this.state.data.loadProjectProfileRelations(this.pkProject);
 
-    this.dataSource$ = combineLatest([
-      this.p.pkProject$,
-      this.p.sys$.config$.main$
-    ]).pipe(
-      switchMap(([pkProject, sysConfig]) => this.p.pro$.dfh_profile_proj_rel$.by_fk_project__enabled$
-        .key(pkProject + '_true').pipe(
+    this.dataSource$ =
+      this.state.data.sys.config.sysConfig$.pipe(
+        switchMap((sysConfig) => this.state.data.pro.dfhProfileProjRel.getDfhProfileProjRel.byFkProjectEnabled$(this.pkProject, true).pipe(
           switchMap((rels) => {
             const enabledProfiles = [
               ...values(rels).map(rel => ({ id: rel.fk_profile, required: false })),
@@ -107,18 +102,18 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
             }))
           })
         )
-      ))
+        ))
 
   }
 
   pipeProfile(profileId: number): Observable<DfhProfile> {
-    return this.p.dfh$.profile$.by_pk_profile$.key(profileId).pipe(
+    return this.state.data.dfh.profile.getDfhProfile.byProfile(profileId).pipe(
       filter(x => !!x)
     )
   }
 
   pipeProfileLabel(profileId: number): Observable<string> {
-    return this.p.dfh$.label$.by_fk_profile__type$.key(profileId + '_label').pipe(
+    return this.state.data.dfh.label.getDfhLabel.byProfile(profileId, 'label').pipe(
       map((labels) => {
         const dfhLabel = values(labels).find(label => label.language === 'en')
         return dfhLabel ? dfhLabel.label : '[no english label]'
@@ -127,7 +122,7 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
   }
 
   pipeProfileScopeNote(profileId: number): Observable<string> {
-    return this.p.dfh$.label$.by_fk_profile__type$.key(profileId + '_definition').pipe(
+    return this.state.data.dfh.label.getDfhLabel.byProfile(profileId, 'definition').pipe(
       map((labels) => {
         const dfhLabel = values(labels).find(label => label.language === 'en')
         return dfhLabel ? dfhLabel.label : '[no english label]'

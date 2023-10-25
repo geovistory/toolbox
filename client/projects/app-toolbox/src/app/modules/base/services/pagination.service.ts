@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
-import { ReduxMainService, subfieldIdToString } from '@kleiolab/lib-redux';
+import { subfieldIdToString } from '@kleiolab/lib-redux/lib/redux-store/data/_lib/subfieldIdToString';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, WarFieldChange, WarFieldChangeAddToStream, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { FieldChangeSocket } from '@kleiolab/lib-sockets';
 import { indexBy } from 'ramda';
@@ -49,7 +50,7 @@ export class PaginationService {
 
   constructor(
     private ap: ActiveProjectPipesService,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     private fieldChangeSocket: FieldChangeSocket
   ) {
     this.loadQueue$ = this.addLoader$
@@ -289,7 +290,7 @@ export class PaginationService {
     this.reloadQueue$.subscribe((items) => {
       const reqs = items.map(item => item.loader.req)
       const options = indexBy((i) => i.pageIdString, items)
-      this.dataService.loadFieldPage(reqs).pipe(first()).subscribe(
+      this.state.data.loadFieldPage(reqs).pipe(first()).subscribe(
         res => {
           res.subfieldPages.forEach(fieldpage => {
             const { pageIdString } = this.parseFieldPageRequest(fieldpage.req)
@@ -311,7 +312,7 @@ export class PaginationService {
     this.loadQueue$.subscribe((items) => {
       const reqs = items.map(item => item.loader.req)
       const options = indexBy((i) => i.pageIdString, items)
-      this.dataService.loadFieldPage(reqs).pipe(first()).subscribe(
+      this.state.data.loadFieldPage(reqs).pipe(first()).subscribe(
         res => {
           res.subfieldPages.forEach(fieldpage => {
             const { pageIdString } = this.parseFieldPageRequest(fieldpage.req)
@@ -323,37 +324,6 @@ export class PaginationService {
                 isUpToDateUntil: new Date(res.subfieldPages[0].validFor)
               })
             }
-
-            // fieldpage.paginatedStatements.forEach(stmt => {
-            //   const e = stmt.target?.entity?.resource;
-            //   if (e) {
-            //     const source: GvFieldSourceEntity = { fkInfo: e.pk_entity };
-            //     const fkClass = e.fk_class;
-
-            //     const targetType = fieldpage.req.targets[fkClass]
-
-            //     if (targetType?.nestedResource?.length) {
-            //       const subreqs = targetType.nestedResource
-            //       const scope = fieldpage.req.page.scope.notInProject ? { inRepo: true } : fieldpage.req.page.scope
-            //       subreqs.forEach(subReq => {
-            //         if (!subReq.page.isCircular) { }
-            //         const { isCircular, ...p } = subReq.page
-            //         const page: GvFieldPage = {
-            //           ...p,
-            //           scope,
-            //           source
-            //         };
-            //         const targets = subReq.targets;
-            //         const r: GvFieldPageReq = {
-            //           page,
-            //           targets,
-            //           pkProject: fieldpage.req.pkProject
-            //         }
-            //         this.addPageLoader(r, item.takeUntil$, false)
-            //       })
-            //     }
-            //   }
-            // })
           })
 
         }

@@ -4,6 +4,7 @@
   "dependencies": {
     "tslib": "^2.0.0"
   },
+  "main": "dist/lib-redux/index.d.ts",
   "peerDependencies": {
     "@angular/common": "^8.2.14",
     "@angular/core": "^8.2.14",

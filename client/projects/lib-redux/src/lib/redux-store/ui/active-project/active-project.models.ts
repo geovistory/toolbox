@@ -54,10 +54,7 @@ export interface PanelTab<D> {
 //     // stateSettings?: StateSettings
 //   }
 // }
-// export interface AnalysisTabData {
-//   pkEntity?: number;
-//   fkAnalysisType?: number;
-// }
+
 // export interface TabData {
 //   pkEntity?: number;
 //   // classAndTypePk?: ClassAndTypePk;
@@ -77,13 +74,6 @@ export interface PanelTab<D> {
 //   // }
 // }
 
-// export interface RamSource {
-//   pkEntity?: number,
-//   annotation?: {
-//     textChunk: InfAppellation,
-//     pkEntityOfText: number
-//   };
-// }
 
 export interface ActiveProjectState {
 
@@ -149,6 +139,8 @@ export interface ActiveProjectState {
   // Array of pk_entities of mentionings (a.k.a. statements of property "is mentioned in")
   // that are focused by click on mentioning in a list/table view
   mentioningsFocusedInTable?: number[]
+
+  changingClassProjRel?: { [classId: number]: boolean }
 
 }
 

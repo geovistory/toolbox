@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LoadingBarActions } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { AccountService, SignupRequest, SignupValidationError } from '@kleiolab/lib-sdk-lb4';
 import { first } from 'rxjs/operators';
 
@@ -26,7 +26,7 @@ export class RegistrationComponent {
 
   constructor(
     private accountApi: AccountService,
-    private loadingBarActions: LoadingBarActions,
+    private state: StateFacade,
   ) { }
 
   register() {
@@ -64,14 +64,14 @@ export class RegistrationComponent {
 
 
   startLoading() {
-    this.loadingBarActions.addJob()
+    this.state.ui.loadingBar.addJob()
     this.loading = true;
   }
   stopLoading() {
-    this.loadingBarActions.removeJob()
+    this.state.ui.loadingBar.removeJob()
   }
   completeLoading() {
     this.loading = false;
-    this.loadingBarActions.removeJob()
+    this.state.ui.loadingBar.removeJob()
   }
 }

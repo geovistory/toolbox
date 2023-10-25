@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SysSelector } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
@@ -33,6 +34,7 @@ export class CtrlEntityOrValueMatcherComponent implements OnInit, OnDestroy {
   constructor(
     public p: ActiveProjectService,
     private sys: SysSelector,
+    private state: StateFacade,
     private dialog: MatDialog,
   ) { }
 
@@ -80,12 +82,12 @@ export class CtrlEntityOrValueMatcherComponent implements OnInit, OnDestroy {
 
             if (!this.isEntity)  // if it is a value, we fetch the value from the store
               combineLatest([
-                this.p.inf$.lang_string$.by_pk_entity$.key(result.pkEntity),
-                this.p.inf$.appellation$.by_pk_entity$.key(result.pkEntity),
-                this.p.inf$.time_primitive$.by_pk_entity$.key(result.pkEntity),
-                this.p.inf$.place$.by_pk_entity$.key(result.pkEntity),
-                this.p.inf$.language$.by_pk_entity$.key(result.pkEntity),
-                this.p.inf$.dimension$.by_pk_entity$.key(result.pkEntity)
+                this.state.data.inf.langString.getLangString.byPkEntity$(result.pkEntity),
+                this.state.data.inf.appellation.getAppellation.byPkEntity$(result.pkEntity),
+                this.state.data.inf.timePrimitive.getTimePrimitive.byPkEntity$(result.pkEntity),
+                this.state.data.inf.place.getPlace.byPkEntity$(result.pkEntity),
+                this.state.data.inf.language.getLanguage.byPkEntity$(result.pkEntity),
+                this.state.data.inf.dimension.getDimension.byPkEntity$(result.pkEntity)
               ]).pipe(takeUntil(this.destroy$)).subscribe(([langString, appellation, timePrimitive, place, language, dimension]) => {
                 this.value$.next({ langString, appellation, timePrimitive, place, language, dimension })
               })

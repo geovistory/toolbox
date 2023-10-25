@@ -1,7 +1,7 @@
 import { CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldId, GvFieldPageScope, GvFieldSourceEntity, InfStatement, InfStatementWithRelations, ProjectDataService, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
@@ -20,7 +20,7 @@ export class ViewFieldDropListService {
 
   constructor(
     private ap: ActiveProjectPipesService,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     private projectDataService: ProjectDataService
   ) { }
 
@@ -104,7 +104,7 @@ export class ViewFieldDropListService {
     const pkProject = await this.ap.pkProject$.pipe(first()).toPromise();
 
     // remove the statement from project
-    await this.dataService.removeInfEntitiesFromProject([statement.pk_entity], pkProject).pipe(first()).toPromise();
+    await this.state.data.removeInfEntitiesFromProject([statement.pk_entity], pkProject).pipe(first()).toPromise();
 
     // use old statement to create a new statement connected to this source
     let newStatement: InfStatementWithRelations;
@@ -129,7 +129,7 @@ export class ViewFieldDropListService {
         entity_version_project_rels: [{ ord_num_of_domain: targetPosition }]
       };
     }
-    this.dataService.upsertInfStatementsWithRelations(pkProject, [newStatement]);
+    this.state.data.upsertInfStatementsWithRelations(pkProject, [newStatement]);
   }
 
 

@@ -1,9 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { AnalysisMapResponse } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisMapRequest } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
+import { StateFacade } from '@kleiolab/lib-redux';
+import { AnalysisDefinition, AnalysisMapRequest, AnalysisMapResponse } from "@kleiolab/lib-sdk-lb4";
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -26,13 +24,13 @@ export class MapAndTimeContEditComponent implements OnInit, OnDestroy {
   initVal$: Observable<AnalysisDefinition>
 
   constructor(
-    p: ActiveProjectService,
+    private state: StateFacade,
     public a: GvAnalysisService<AnalysisMapRequest, AnalysisMapResponse>,
     private ts: TabLayoutService
   ) {
 
     if (this.a.pkEntity) {
-      this.initVal$ = p.pro$.analysis$.by_pk_entity$.key(this.a.pkEntity.toString()).pipe(
+      this.initVal$ = state.data.pro.analysis.getAnalysis.byPkEntity$(this.a.pkEntity).pipe(
         map(i => i.analysis_definition),
       )
     }

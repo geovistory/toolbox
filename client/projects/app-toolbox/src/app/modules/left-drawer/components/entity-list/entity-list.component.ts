@@ -1,5 +1,6 @@
 import { Component, HostBinding, OnDestroy } from '@angular/core';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Subject } from 'rxjs';
@@ -24,6 +25,7 @@ export class EntityListComponent implements OnDestroy {
 
   constructor(
     public p: ActiveProjectService,
+    private state: StateFacade,
     private c: ConfigurationPipesService,
     listService: ListService
   ) {
@@ -45,7 +47,7 @@ export class EntityListComponent implements OnDestroy {
 
 
   startCreate() {
-    this.p.setListType('')
+    this.state.ui.activeProject.setListType('')
   }
 
   ngOnDestroy() {

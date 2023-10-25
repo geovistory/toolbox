@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { InformationBasicPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -37,7 +37,7 @@ export class EntityCardWrapperComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     public p: ActiveProjectService,
     @Optional() private parentProjectEditComponent: ProjectEditComponent,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     private b: InformationBasicPipesService,
     @Inject(READ_ONLY) public readonly: boolean,
 
@@ -61,7 +61,7 @@ export class EntityCardWrapperComponent implements OnInit {
   }
 
   private initPkClass(pkEntity: number) {
-    this.dataService.loadInfResource(pkEntity, this.pkProject);
+    this.state.data.loadInfResource(pkEntity, this.pkProject);
     this.pkClass$ = this.b.pipeClassOfEntity(pkEntity);
   }
 

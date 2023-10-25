@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, SysSelector, WarSelector } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier, InfData, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
@@ -76,7 +76,7 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
     public dialogRef: MatDialogRef<AddEntityOrValueDialogComponent, CreateEntityEvent>,
     @Inject(MAT_DIALOG_DATA) public data: AddEntityOrValueDialogData,
     private warSelector: WarSelector,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     private sys: SysSelector,
   ) {
     // input checking
@@ -96,7 +96,7 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
     );
 
     // pkProject
-    this.p.pkProject$.pipe(takeUntil(this.destroy$))
+    this.state.pkProject$.pipe(takeUntil(this.destroy$))
       .subscribe(n => this.pkProject = n);
 
     // create the source for the gv-entity-card
@@ -210,13 +210,11 @@ export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
 
     this.loading$.next(true);
 
-    const pkProject = await this.ap.pkProject$.pipe(first()).toPromise()
-
-    // insteadOfCreationCallback, if provided and return
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise()
 
     const value = f.formFactory.formGroupFactory.valueChanges$.value
 
-    this.dataService.upsertInfData(pkProject, value).pipe(takeUntil(this.destroy$))
+    this.state.data.upsertInfData(pkProject, value).pipe(takeUntil(this.destroy$))
       .subscribe((res: GvSchemaModifier) => {
         const inf = res.positive.inf;
         const mainPkEntity = (inf.resource ?? inf.statement ?? inf.appellation ?? inf.place ?? inf.dimension ?? inf.time_primitive ?? inf.lang_string ?? inf.language)[0].pk_entity

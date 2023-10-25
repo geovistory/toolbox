@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LoadingBarActions } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { InfLanguage, LanguagesService, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { GvAuthService } from 'projects/app-toolbox/src/app/core/auth/auth.service';
 import { Observable } from 'rxjs';
@@ -34,13 +34,13 @@ export class ProjectCreateComponent implements OnInit {
     private projectApi: ProjectConfigurationService,
     private languageApi: LanguagesService,
     private authService: GvAuthService,
-    private loadingBarActions: LoadingBarActions,
+    private state: StateFacade
   ) {
 
   }
 
   ngOnInit() {
-    this.loadingBarActions.addJob()
+    this.state.ui.loadingBar.addJob()
     const userLang = navigator.language.split('-')[0].split('_')[0];
 
     this.languageApi.findLanguagesControllerFind({ 'where': { 'iso6391': userLang } })
@@ -53,17 +53,17 @@ export class ProjectCreateComponent implements OnInit {
           } catch (e) {
             // TODO error handling
           }
-          this.loadingBarActions.removeJob()
+          this.state.ui.loadingBar.removeJob()
         },
         error => {
-          this.loadingBarActions.removeJob()
+          this.state.ui.loadingBar.removeJob()
         },
       );
   }
 
 
   request() {
-    this.loadingBarActions.addJob()
+    this.state.ui.loadingBar.addJob()
     this.createBtnDisabled = true;
 
     this.errorMessages = {};
@@ -79,13 +79,13 @@ export class ProjectCreateComponent implements OnInit {
         data => {
           this.createBtnDisabled = false;
           this.router.navigate(['../'], { relativeTo: this.activatedRoute })
-          this.loadingBarActions.removeJob()
+          this.state.ui.loadingBar.removeJob()
         },
         error => {
           // TODO: Alert
           this.errorMessages = error.error.details.messages;
           this.createBtnDisabled = false;
-          this.loadingBarActions.removeJob()
+          this.state.ui.loadingBar.removeJob()
         },
       );
   }

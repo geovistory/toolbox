@@ -1,56 +1,33 @@
 
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, ConfigurationPipesService, DatSelector, DfhClassEnriched, DfhSelector, InfSelector, ProSelector, ShouldPauseService, SysSelector, TabSelector } from '@kleiolab/lib-queries';
-import { ActiveProjectActions, IAppState, InfActions, ListType, Panel, PanelTab, ProjectDetail, RamSource, ReduxMainService } from '@kleiolab/lib-redux';
-import { ClassConfig, DatNamespace, GvPositiveSchemaObject, InfLanguage, ProProject } from '@kleiolab/lib-sdk-lb4';
+import { DfhClassEnriched } from '@kleiolab/lib-redux/lib/queries/configuration/models/DfhClassEnriched';
+import { QueriesFacade, StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ClassConfig, GvPositiveSchemaObject, InfAppellation, ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
-import { NgRedux } from '@ngrx/store';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
-import { values } from 'ramda';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, combineLatest, timer } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, timer } from 'rxjs';
+import { first, takeUntil } from 'rxjs/operators';
 import { TableDetailConfig } from '../../modules/data/components/table-detail/table-detail.component';
 import { TextDetail2Config } from '../../modules/data/components/text-detail2/text-detail2.component';
 import { EntityDetailConfig } from '../../modules/information/containers/entity-detail/entity-detail.component';
 
 
 
+export interface RamSource {
+  pkEntity?: number,
+  annotation?: {
+    textChunk: InfAppellation,
+    pkEntityOfText: number
+  };
+}
 
 
 
 @Injectable()
 export class ActiveProjectService {
   project: ProProject;
-
-  public activeProject$: Observable<ProjectDetail>;
-  public defaultLanguage$: Observable<InfLanguage>;
-  public pkProject$: Observable<number>;
-  public panels$: Observable<Panel[]>
-  public uiIdSerial$: Observable<number>;
-  public panelSerial$: Observable<number>;
-  public focusedPanel$: Observable<number>;
-  public list$: Observable<ListType>; // type of list displayed in left panel
-  public creatingMentioning$: Observable<boolean>;
-  // public typesByPk$: Observable<TypesByPk>
-  public datNamespaces$: Observable<DatNamespace[]>
-  public initializingProject$: Observable<boolean>;
-
-  // emits true if no toolbox panel is opened
-  public dashboardVisible$: Observable<boolean>;
-
-
-  // classPksEnabledInEntities$: Observable<number[]>
-
-  // object with pk_entity as key of classes where projRel is changing
-  changingClassProjRel: { [key: number]: boolean } = {}
-  changingSystemRelevantClass: { [key: number]: boolean } = {}
-
-  inf$: InfSelector;
-  dat$: DatSelector;
-  tab$: TabSelector;
-  pro$: ProSelector;
 
   /***************************************************************
    * Ram (Refers to, Annotated in, Mentioned in)
@@ -70,66 +47,13 @@ export class ActiveProjectService {
   requestedEntityPreviews: { [pkEntity: number]: boolean } = {}
   ramOnSaveCallback = async (): Promise<any> => { };
 
-  get state(): ProjectDetail {
-    return this.ngRedux.getState().activeProject;
-  }
 
   constructor(
-    private ngRedux: NgRedux<IAppState>,
-    private actions: ActiveProjectActions,
+    private queries: QueriesFacade,
+    private state: StateFacade,
     private entityPreviewSocket: EntityPreviewSocket,
-    private ap: ActiveProjectPipesService,
     public dialog: MatDialog,
-    public dfh$: DfhSelector,
-    public sys$: SysSelector,
-    public inf: InfActions,
-    public shouldPause: ShouldPauseService,
-    private c: ConfigurationPipesService,
-    private dataService: ReduxMainService
-  ) {
-    this.activeProject$ = ngRedux.select<ProjectDetail>(['activeProject']);
-    this.pkProject$ = ngRedux.select<number>(['activeProject', 'pk_project']).pipe(
-      filter(p => p !== undefined),
-      distinctUntilChanged((x, y) => {
-        return x === y
-      })
-    );
-    this.initializingProject$ = ngRedux.select<boolean>(['activeProject', 'initializingProject']);
-    this.defaultLanguage$ = ap.pipeActiveDefaultLanguage();
-    this.panels$ = ngRedux.select<Panel[]>(['activeProject', 'panels']);
-    this.uiIdSerial$ = ngRedux.select<number>(['activeProject', 'uiIdSerial']);
-    this.panelSerial$ = ngRedux.select<number>(['activeProject', 'panelSerial']);
-    this.focusedPanel$ = ngRedux.select<number>(['activeProject', 'focusedPanel']);
-    this.list$ = ngRedux.select<ListType>(['activeProject', 'list']);
-    // this.typesByPk$ = ngRedux.select<TypesByPk>(['activeProject', 'typesByPk']);
-    this.creatingMentioning$ = ngRedux.select<boolean>(['activeProject', 'creatingMentioning']);
-
-
-    this.inf$ = new InfSelector(ngRedux, this.pkProject$);
-    this.dat$ = new DatSelector(ngRedux);
-    this.pro$ = new ProSelector(ngRedux);
-    this.tab$ = new TabSelector(ngRedux);
-
-    this.initializingProject$.subscribe(bool => {
-      this.shouldPause.shouldPause$.next(bool)
-    })
-
-    this.datNamespaces$ = this.pkProject$.pipe(
-      mergeMap(pro => this.dat$.namespace$.by_fk_project$.key(pro)),
-      map(byPk => values(byPk))
-    )
-
-    // emits true if no toolbox panel is opened
-    this.dashboardVisible$ = combineLatest(
-      ngRedux.select<ProjectDetail>(['information']),
-      ngRedux.select<ProjectDetail>(['sources'])
-    ).pipe(
-      map(items => items.filter(item => (!!item && Object.keys(item).length > 0)).length === 0),
-      distinctUntilChanged()
-    )
-
-
-  }
+  ) { }
 
 
   /************************************************************************************
@@ -144,10 +68,12 @@ export class ActiveProjectService {
    * @param id pk_project
    */
   initProject(id) {
-    const state = this.ngRedux.getState();
-    if (!state.activeProject || state.activeProject.pk_project != id) {
-      this.dataService.loadProjectBasics(id).pipe(first()).subscribe(
-        () => { this.ngRedux.dispatch(this.actions.loadProjectBasiscsSucceded(id)) }
+    const state = this.state.getState();
+    if (!state?.ui.activeProject || state?.ui.activeProject.pk_project != id) {
+      this.state.data.loadProjectBasics(id).pipe(first()).subscribe(
+        () => {
+          this.state.ui.activeProject.loadProjectBasiscsSucceded(id)
+        }
       )
     }
   }
@@ -160,15 +86,15 @@ export class ActiveProjectService {
    * @param id pk_project
    */
   initProjectConfigData(id) {
-    const state = this.ngRedux.getState();
-    if (!state.activeProject || state.activeProject.pk_project != id || !state.activeProject.configDataInitialized) {
-      this.dataService.loadProjectConfiguration(id)
+    const state = this.state.getState()
+    if (!state?.ui.activeProject || state?.ui.activeProject.pk_project != id) {
+      this.state.data.loadProjectConfiguration(id)
     }
   }
 
   closeProject() {
     this.entityPreviewSocket.emit('leaveProjectRoom');
-    this.ngRedux.dispatch(this.actions.destroy())
+    this.state.setState({ data: {}, ui: {} })
   }
 
 
@@ -177,11 +103,11 @@ export class ActiveProjectService {
   ************************************************************************************/
 
   removeEntityFromProject(pkEntity: number, cb?: (schemaObject: GvPositiveSchemaObject) => any) {
-    this.pkProject$.pipe(first()).subscribe(pkProject => {
+    this.state.pkProject$.pipe(first()).subscribe(pkProject => {
       const timer$ = timer(200)
 
       // this.s.store(this.s.api.removeEntityFromProject(pkProject, pkEntity), pkProject)
-      const call$ = this.dataService.removeEntityFromProject(pkProject, pkEntity);
+      const call$ = this.state.data.removeEntityFromProject(pkProject, pkEntity);
       let dialogRef;
       timer$.pipe(takeUntil(call$)).subscribe(() => {
         const data: ProgressDialogData = {
@@ -201,10 +127,10 @@ export class ActiveProjectService {
 
   addEntityToProject(pkEntity: number, cb?: (schemaObject: GvPositiveSchemaObject) => any): Observable<GvPositiveSchemaObject> {
     const s$ = new Subject<GvPositiveSchemaObject>()
-    this.pkProject$.pipe(first()).subscribe(pkProject => {
+    this.state.pkProject$.pipe(first()).subscribe(pkProject => {
       const timer$ = timer(200)
       // const call$ = this.s.store(this.s.api.addEntityToProject(pkProject, pkEntity), pkProject)
-      const call$ = this.dataService.addEntityToProject(pkProject, pkEntity);
+      const call$ = this.state.data.addEntityToProject(pkProject, pkEntity);
       let dialogRef;
       timer$.pipe(takeUntil(call$)).subscribe(() => {
         const data: ProgressDialogData = {
@@ -261,53 +187,15 @@ export class ActiveProjectService {
 
 
 
-  /************************************************************************************
-  * Layout -- Tabs
-  ************************************************************************************/
-  setPanels(panels: Panel[], uiIdSerial: number, panelSerial: number, focusedPanel: number) {
-    this.ngRedux.dispatch(this.actions.setPanels(panels, uiIdSerial, panelSerial, focusedPanel))
-  }
-  // List (left panel) modifications
-  setListType(list: ListType) {
-    this.ngRedux.dispatch(this.actions.setListType(list))
-  }
-  // Tab modifications
-  activateTab(panelIndex: number, tabIndex: number) {
-    this.ngRedux.dispatch(this.actions.activateTab(panelIndex, tabIndex))
-  }
-  moveTab(previousPanelIndex: number, currentPanelIndex: number, previousTabIndex: number, currentTabIndex: number) {
-    this.ngRedux.dispatch(this.actions.moveTab(previousPanelIndex, currentPanelIndex, previousTabIndex, currentTabIndex))
-  }
-  closeTab(panelIndex: number, tabIndex: number) {
-    this.ngRedux.dispatch(this.actions.closeTab(panelIndex, tabIndex))
-  }
-  addTab<D>(tab: PanelTab<D>) {
-    this.ngRedux.dispatch(this.actions.addTab(tab))
-  }
-  focusPanel(panelIndex: number) {
-    this.ngRedux.dispatch(this.actions.focusPanel(panelIndex))
-  }
-  splitPanel(previousPanelIndex: number, tabIndex: number, currentPanelIndex: number) {
-    this.ngRedux.dispatch(this.actions.splitPanel(previousPanelIndex, tabIndex, currentPanelIndex))
-  }
 
-  // Tab data selections
-  getTabTitle(path: string[]): Observable<string> {
-    return this.ngRedux.select<string>([...['activeProject', 'tabLayouts', path[2]], 'tabTitle']);
-  }
-  getTabTooltip(path: string[]): Observable<string> {
-    return this.ngRedux.select<string>([...['activeProject', 'tabLayouts', path[2]], 'tabTooltip']);
-  }
-  getTabLoading(path: string[]): Observable<boolean> {
-    return this.ngRedux.select<boolean>([...['activeProject', 'tabLayouts', path[2]], 'loading']);
-  }
+
   addEntityTabWithoutClass(pkEntity: number) {
-    this.ap.streamEntityPreview(pkEntity).pipe(first(x => !!x)).subscribe(x => {
+    this.queries.activeProject.streamEntityPreview(pkEntity).pipe(first(x => !!x)).subscribe(x => {
       this.addEntityTab(x.pk_entity, x.fk_class)
     })
   }
   addEntityTab(pkEntity: number, pkClass: number) {
-    this.c.pipeClassEnriched(pkClass).pipe(first(x => !!x)).subscribe(classEnriched => {
+    this.queries.configuration.pipeClassEnriched(pkClass).pipe(first(x => !!x)).subscribe(classEnriched => {
 
       if (classEnriched.detailPage === ClassConfig.DetailPageEnum.Entity) {
         this._addEntityTab(pkEntity, classEnriched)
@@ -323,7 +211,7 @@ export class ActiveProjectService {
   }
 
   private addText2Tab(pkEntity: number) {
-    this.addTab<TextDetail2Config>({
+    this.state.ui.activeProject.addTab<TextDetail2Config>({
       active: true,
       component: 'text',
       icon: 'text',
@@ -335,7 +223,7 @@ export class ActiveProjectService {
   }
 
   addTableTab(pkEntity: number, fkRow?: number) {
-    this.addTab<TableDetailConfig>({
+    this.state.ui.activeProject.addTab<TableDetailConfig>({
       active: true,
       component: 'table',
       icon: 'table',
@@ -372,7 +260,7 @@ export class ActiveProjectService {
         // showLinkedSources: true
       }
     }
-    this.addTab<EntityDetailConfig>({
+    this.state.ui.activeProject.addTab<EntityDetailConfig>({
       active: true,
       component: classEnriched.detailPage,
       icon: classEnriched.icon,
@@ -382,17 +270,6 @@ export class ActiveProjectService {
   }
 
 
-  // addTextTab(pkEntity: number) {
-  //   this.addTab({
-  //     active: true,
-  //     component: 'text-detail',
-  //     icon: 'text',
-  //     data: {
-  //       pkEntity: pkEntity
-  //     },
-  //     pathSegment: 'textDetails'
-  //   })
-  // }
   /************************************************************************************
   * Layout -- Modals
   ************************************************************************************/
@@ -416,13 +293,13 @@ export class ActiveProjectService {
       paragraphs: ['Are you sure?'],
 
     }
-    const pkProject = await this.pkProject$.pipe(first()).toPromise()
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise()
 
     const dialog = this.dialog.open(ConfirmDialogComponent, { data })
     const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
 
     if (confirmed) {
-      await this.dataService.removeEntityFromProject(pkProject, pkEntity)
+      await this.state.data.removeEntityFromProject(pkProject, pkEntity)
         .pipe(first(success => !!success)).toPromise()
     }
 
@@ -463,16 +340,16 @@ export class ActiveProjectService {
       ],
 
     }
-    const pkProject = await this.pkProject$.pipe(first()).toPromise()
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise()
 
     const dialog = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(ConfirmDialogComponent, { data })
     const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
 
     if (confirmed) {
-      await this.dataService.removeEntityFromProject(pkProject, pkEntity)
+      await this.state.data.removeEntityFromProject(pkProject, pkEntity)
         .pipe(first(success => !!success)).toPromise()
 
-      await this.dataService.removeInfEntitiesFromProject([pkStatement], pkProject)
+      await this.state.data.removeInfEntitiesFromProject([pkStatement], pkProject)
         .pipe(first(success => !!success)).toPromise()
 
     }
@@ -524,7 +401,7 @@ export class ActiveProjectService {
       title: 'Remove relation',
       paragraphs
     }
-    const pkProject = await this.pkProject$.pipe(first()).toPromise()
+    const pkProject = await this.state.pkProject$.pipe(first()).toPromise()
 
     const dialog = this.dialog.open<ConfirmDialogComponent, ConfirmDialogData, boolean>(
       ConfirmDialogComponent,
@@ -533,7 +410,7 @@ export class ActiveProjectService {
     const confirmed = await dialog.afterClosed().pipe(first()).toPromise()
 
     if (confirmed) {
-      await this.dataService.removeInfEntitiesFromProject([pkStatement], pkProject)
+      await this.state.data.removeInfEntitiesFromProject([pkStatement], pkProject)
         .pipe(first(success => !!success)).toPromise()
     }
 

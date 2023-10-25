@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IAppState, SchemaService } from '@kleiolab/lib-redux';
+import { IAppState, SchemaService } from '@kleiolab/lib-redux/public-api';
 import { GvPositiveSchemaObject, InfLanguage, ProProject, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { equals } from 'ramda';

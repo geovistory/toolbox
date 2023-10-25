@@ -1,4 +1,4 @@
-import { FieldPage } from 'projects/lib-redux/src/lib/redux-store/queries/configuration/models/FieldPage';
+import { FieldPage } from 'projects/lib-redux/src/lib/queries/configuration/models/FieldPage';
 import { StatementWithTargetMock } from './StatementWithTargetMock';
 
 export namespace FieldPageMock {

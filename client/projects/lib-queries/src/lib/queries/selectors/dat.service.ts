@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ByPk, datDefinitions, datRoot, IAppState, ReducerConfigCollection } from '@kleiolab/lib-redux';
+import { ByPk, datDefinitions, datRoot, IAppState, ReducerConfigCollection } from '@kleiolab/lib-redux/public-api';
 import { DatChunk, DatClassColumnMapping, DatColumn, DatDigital, DatNamespace, DatTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { latestVersion } from '@kleiolab/lib-utils';
 import { Observable } from 'rxjs';

@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, Field, InformationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { InfActions } from '@kleiolab/lib-redux';
+import { Field } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
@@ -43,11 +42,7 @@ export class ViewFieldComponent implements OnInit {
   showHeader$ = new BehaviorSubject(true)
   showAddButton$: Observable<boolean>
   constructor(
-    public i: InformationPipesService,
-    public p: ActiveProjectService,
-    public s: SchemaSelectorsService,
-    public ap: ActiveProjectPipesService,
-    public inf: InfActions,
+    private state: StateFacade,
     public dialog: MatDialog,
     private addHooks: ViewFieldAddHooksService,
     public nodeService: ViewFieldTreeNodeService,
@@ -74,10 +69,9 @@ export class ViewFieldComponent implements OnInit {
     if (this.field.isSpecialField === 'time-span') {
       this.itemsCount$ = of(1);
     } else {
-      this.itemsCount$ = this.s.inf$.statement$.pagination$
-        .pipeCount(fieldToFieldId(this.field, this.source, this.scope)).pipe(
-          shareReplay({ refCount: true, bufferSize: 1 })
-        )
+      this.itemsCount$ = this.state.data.inf.statement.getPageCount$(fieldToFieldId(this.field, this.source, this.scope)).pipe(
+        shareReplay({ refCount: true, bufferSize: 1 })
+      )
     }
     this.targetClassLabels = values(this.field.targets)
       .filter(c => !c.removedFromAllProfiles)

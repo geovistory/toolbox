@@ -1,6 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ClassAndTypePk, InformationPipesService } from '@kleiolab/lib-queries';
 import { AddMenuClassOrTypeItem } from '@kleiolab/lib-queries/lib/queries/models/AddMenuClassOrTypeItem';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { InfResourceWithRelations, SysConfigClassCategoryBelonging } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -38,13 +39,11 @@ export class AddEntityMenuComponent implements OnInit, OnDestroy {
   data$: Observable<AddMenuClassOrTypeItem[]>
 
   constructor(
+    private state: StateFacade,
     private i: InformationPipesService,
     public p: ActiveProjectService,
     private m: BaseModalsService,
-
   ) { }
-
-  // private _transformer =
 
   ngOnInit() {
     if (!this.enabledIn) throw new Error('You must provide enabledIn input');
@@ -75,7 +74,7 @@ export class AddEntityMenuComponent implements OnInit, OnDestroy {
   onSelect(d: ClassAndTypePk) {
     this.select.emit(d)
 
-    this.p.setListType('')
+    this.state.ui.activeProject.setListType('')
 
     const initVal: InfResourceWithRelations = {
       fk_class: d.pkClass

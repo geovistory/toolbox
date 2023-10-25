@@ -1,5 +1,6 @@
 import { AfterViewChecked, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ColumnNames, InfLanguage, TableConfig, TableConfigCol } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { clone, values } from 'ramda';
@@ -55,6 +56,7 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: TableConfigDialogData,
     private dialogRef: MatDialogRef<TableConfigDialogComponent>,
+    private state: StateFacade,
     private p: ActiveProjectService,
   ) { }
 
@@ -64,10 +66,10 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
   }
 
   ngOnInit() {
-    this.p.defaultLanguage$.subscribe(lang => this.defaultLanguage = lang);
+    this.state.data.getProjectLanguage(this.state.pkProject).pipe(takeUntil(this.destroy$)).subscribe(lang => this.defaultLanguage = lang);
 
     // listen to config changes
-    this.tableConfig$ = this.p.pro$.table_config$.by_fk_digital$.key(this.data.pkDigital + '').pipe(
+    this.tableConfig$ = this.state.data.pro.tableConfig.getTableConfig.byFkDigital$(this.data.pkDigital).pipe(
       filter(x => x !== undefined),
       map(ptc => values(ptc)),
       map(ptc => ptc[0] ? ptc[0].config : undefined)
@@ -78,8 +80,8 @@ export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewC
     this.aggregated$ = combineLatest([
       this.filter$,
       this.tableConfig$,
-      this.p.dat$.text_property$.by_pk_entity$.all$.pipe(map(textPropByPk => values(textPropByPk))),
-      this.p.dat$.column$.by_pk_entity$.all$.pipe(map(columnByPk => values(columnByPk)))
+      this.state.data.dat.textProperty.pkEntityIndex$.pipe(map(textPropByPk => values(textPropByPk))),
+      this.state.data.dat.column.pkEntityIndex$.pipe(map(columnByPk => values(columnByPk)))
     ]).pipe(
       map(([aFilter, config, textProperties, columns]) => {
         this.columns = config.columns

@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { AccountService, ProProject } from '@kleiolab/lib-sdk-lb4';
-import { ActiveAccountPipes } from 'projects/lib-queries/src/lib/queries/services/active-account-pipes.service';
-import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/schema/reduxMain.service';
 import { Observable } from 'rxjs';
 
 
@@ -20,11 +19,10 @@ export class ProjectListComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     private accountService: AccountService,
-    accountPipes: ActiveAccountPipes
   ) {
-    this.projects$ = accountPipes.getProjectsLatestFirst();
+    this.projects$ = state.data.pro.project.latestFirst$;
   }
 
   ngOnInit() {
@@ -34,7 +32,7 @@ export class ProjectListComponent implements OnInit {
   }
 
   getProjects() {
-    this.dataService.loadProjectsOfAccount();
+    this.state.data.loadProjectsOfAccount();
 
     this.accountService.accountControllerWhoAmI().toPromise().catch(
       (error) => {

@@ -2,6 +2,7 @@ import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/c
 import { UntypedFormControl } from '@angular/forms';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisTimeChartRequest, AnalysisTimeChartResponse } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CursorInfo } from 'projects/app-toolbox/src/app/modules/timeline/components/timeline-chart/timeline-chart.component';
@@ -45,11 +46,12 @@ export class TimeChartContEditComponent implements OnInit, OnDestroy {
     public a: GvAnalysisService<AnalysisTimeChartRequest, AnalysisTimeChartResponse>,
     private ts: TabLayoutService,
     p: ActiveProjectService,
+    private state: StateFacade,
     private pagEntDialog: EntityPreviewsPaginatedDialogService
 
   ) {
     if (this.a.pkEntity) {
-      this.initVal$ = p.pro$.analysis$.by_pk_entity$.key(this.a.pkEntity.toString()).pipe(
+      this.initVal$ = this.state.data.pro.analysis.getAnalysis.byPkEntity$(this.a.pkEntity).pipe(
         map(i => i.analysis_definition),
         map((def) => ({ lines: def.lines ?? [] }))
       )

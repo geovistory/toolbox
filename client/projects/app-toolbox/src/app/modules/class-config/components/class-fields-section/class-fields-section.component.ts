@@ -2,10 +2,9 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { TableRowReorderEvent } from 'primeng/table';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
@@ -41,8 +40,7 @@ export class ClassFieldsSectionComponent implements OnInit, OnDestroy {
 
   constructor(
     private c: ConfigurationPipesService,
-    private p: ActiveProjectService,
-    private dataApi: ReduxMainService,
+    private state: StateFacade,
     private dialog: MatDialog
   ) { }
 
@@ -125,7 +123,7 @@ export class ClassFieldsSectionComponent implements OnInit, OnDestroy {
         return item;
       }) as ProClassFieldConfig[]
 
-      this.dataApi.upsertClassFieldConfig(this.fkProject, reordered)
+      this.state.data.upsertClassFieldConfig(this.fkProject, reordered)
         .pipe(first(p => !!p), takeUntil(this.destroy$)).subscribe(() => {
           this.reordering = false
         })

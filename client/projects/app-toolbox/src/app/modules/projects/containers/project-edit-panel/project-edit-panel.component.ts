@@ -1,20 +1,14 @@
-import { Component, OnInit, OnChanges, Input, Output, HostBinding, EventEmitter } from '@angular/core';
 import {
-  trigger,
-  state,
-  style,
-  animate,
-  transition,
-  keyframes
+  animate, keyframes, state,
+  style, transition, trigger
 } from '@angular/animations';
-
-import { addOffset } from './addOffset';
+import { Component, EventEmitter, HostBinding, Input, OnChanges, OnInit, Output } from '@angular/core';
 
 const animationTime = '300ms ease-in-out';
 
 // Style of state 0 => collapsed
 const s0 = {
-  position:'absolute',
+  position: 'absolute',
   'z-index': 1001,
   height: 'calc(100vh - 56px)',
   width: '2rem',
@@ -222,24 +216,24 @@ const s100 = {
         display: 'none'
       })),
       transition('s50 => s0',
-      animate(animationTime, keyframes([
-        style({
-          offset: 0
-        }),
-        style({
-          display: 'none',
-          offset: 1
-        })
-      ])))
+        animate(animationTime, keyframes([
+          style({
+            offset: 0
+          }),
+          style({
+            display: 'none',
+            offset: 1
+          })
+        ])))
     ]),
     trigger('expandButton', [
-      state('s50', style({display: 'none'})),
-      state('s0', style({display: 'block'})),
+      state('s50', style({ display: 'none' })),
+      state('s0', style({ display: 'block' })),
       transition('s50 => s0',
-      animate(animationTime, keyframes([
-        style({display: 'none', offset: 0}),
-        style({display: 'block', offset: 1})
-      ])))
+        animate(animationTime, keyframes([
+          style({ display: 'none', offset: 0 }),
+          style({ display: 'block', offset: 1 })
+        ])))
     ])
   ]
 })
@@ -256,29 +250,29 @@ export class ProjectEditPanelComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.state = this.stateInput;
   }
-  ngOnChanges(){
+  ngOnChanges() {
     this.state = this.stateInput;
   }
 
 
-  goToState0(){
-    if(this.state !== 's0'){
+  goToState0() {
+    if (this.state !== 's0') {
       this.state = 's0';
       this.goToState0Start.emit();
     }
   }
-  goToState50(){
-    if(this.state !== 's50'){
+  goToState50() {
+    if (this.state !== 's50') {
       this.state = 's50';
       this.goToState50Start.emit();
     }
   }
-  goToState100(){
-    if(this.state !== 's100'){
+  goToState100() {
+    if (this.state !== 's100') {
       this.state = 's100';
     }
   }
-  expand(){
+  expand() {
     this.goToState50()
   }
 

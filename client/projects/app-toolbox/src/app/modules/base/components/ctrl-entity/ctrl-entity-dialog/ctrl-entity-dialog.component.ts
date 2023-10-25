@@ -2,6 +2,7 @@ import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, WarSelector } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfResource, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
@@ -73,6 +74,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   @ViewChild(FormCreateDataComponent, { static: true }) createEntity: FormCreateDataComponent;
 
   constructor(
+    private state: StateFacade,
     private p: ActiveProjectService,
     private ap: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
@@ -101,8 +103,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     );
 
     // pkProject
-    this.p.pkProject$.pipe(takeUntil(this.destroy$))
-      .subscribe(n => this.pkProject = n);
+    this.pkProject = this.state.pkProject;
 
     // create the source for the gv-entity-card
     this.source$ = this.selectedPkEntity$.pipe(

@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ByPk, IAppState, ReducerConfigCollection, TabActions, tabDefinitions, tabRoot } from '@kleiolab/lib-redux';
+import { ByPk, IAppState, ReducerConfigCollection, TabActions, tabDefinitions, tabRoot } from '@kleiolab/lib-redux/public-api';
 import { TabCell } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 

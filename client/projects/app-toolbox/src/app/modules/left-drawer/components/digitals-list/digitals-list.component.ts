@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { map } from 'rxjs/operators';
 import { ListService } from '../../services/list.service';
@@ -14,6 +15,7 @@ export class DigitalsListComponent {
   constructor(
     private c: ConfigurationPipesService,
     public p: ActiveProjectService,
+    public state: StateFacade,
     listService: ListService
   ) {
     listService.pkAllowedClasses$ = this.c.pipeClassesOfProject().pipe(

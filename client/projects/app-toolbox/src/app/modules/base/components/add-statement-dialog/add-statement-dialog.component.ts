@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, FieldTargetClass, WarSelector } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageReq, GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfStatementWithRelations, StatementWithTarget, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
@@ -92,7 +92,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     public dialogRef: MatDialogRef<AddStatementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: AddStatementDialogData,
     public paginationApi: SubfieldPageControllerService,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     private paginationService: PaginationService,
     private warSelector: WarSelector
   ) {
@@ -110,7 +110,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     }
 
     // for the already existing statements
-    this.scope$ = this.p.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
+    this.scope$ = this.state.pkProject$.pipe(map(pkProject => ({ notInProject: pkProject })))
 
     // assign init value for the form
 
@@ -146,7 +146,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     );
 
     // pkProject
-    this.p.pkProject$.pipe(takeUntil(this.destroy$))
+    this.state.pkProject$.pipe(takeUntil(this.destroy$))
       .subscribe(n => this.pkProject = n);
 
     // create the source for the gv-entity-card
@@ -157,7 +157,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
 
     // get count from rest api first
     this.alreadyHas$ =
-      combineLatest([this.p.pkProject$, this.next$]).pipe(
+      combineLatest([this.state.pkProject$, this.next$]).pipe(
         // first(),
         switchMap(([pkProject, next]) => {
           if (next) return of(0);
@@ -283,7 +283,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
       // we need to await this, because, if the user saves without modifying the
       // form, the upsert function below will use the existing statement and add
       // it again to the project. For this reason, remove must be done before upsert
-      await this.dataService.removeEntityFromProject(
+      await this.state.data.removeEntityFromProject(
         this.pkProject,
         this.data.toBeReplaced.statement.pk_entity
       ).pipe(first()).toPromise()
@@ -293,7 +293,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
         [{ ord_num_of_range: this.data.toBeReplaced.ordNum }] :
         [{ ord_num_of_domain: this.data.toBeReplaced.ordNum }]
     }
-    await this.dataService.upsertInfStatementsWithRelations(this.pkProject, [s])
+    await this.state.data.upsertInfStatementsWithRelations(this.pkProject, [s])
       .pipe(first()).toPromise();
 
     this.onSaved();

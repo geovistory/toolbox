@@ -2,17 +2,15 @@ import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } f
 import { MatDialog } from '@angular/material/dialog';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, DisplayType, Field, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
-import { IAppState, InfActions, SchemaService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
-import { NgRedux } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ViewSectionsDialogComponent, ViewSectionsDialogData } from 'projects/app-toolbox/src/app/modules/base/components/view-sections-dialog/view-sections-dialog.component';
 import { BaseModalsService } from 'projects/app-toolbox/src/app/modules/base/services/base-modals.service';
 import { PaginationService } from 'projects/app-toolbox/src/app/modules/base/services/pagination.service';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
-import { ReduxMainService } from 'projects/lib-redux/src/lib/redux-store/state-schema/schema/reduxMain.service';
 import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { fieldToFieldPage, fieldToGvFieldTargets } from '../../../base/base.helpers';
@@ -58,20 +56,17 @@ export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInte
   t: TabLayout;
 
   constructor(
-    public ngRedux: NgRedux<IAppState>,
     public p: ActiveProjectService,
     public ap: ActiveProjectPipesService,
-    public inf: InfActions,
     public dialog: MatDialog,
     public ref: ChangeDetectorRef,
     public c: ConfigurationPipesService,
     public b: InformationBasicPipesService,
     public i: InformationPipesService,
     private pag: PaginationService,
-    public s: SchemaService,
     private m: BaseModalsService,
-    private dataService: ReduxMainService,
     public tabLayout: TabLayoutService,
+    private state: StateFacade
   ) {
   }
 
@@ -119,10 +114,9 @@ export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInte
     //   )
     // )
 
-    const itemsCache: { [pkEntity: number]: boolean } = {};
 
-    this.items$ = combineLatest(this.p.pkProject$, appeAndDefFields$, this.p.defaultLanguage$, this.typePks$).pipe(
-      switchMap(([pkProject, appeAndDefFields, defaultLanguage, typePks]) => combineLatestOrEmpty(
+    this.items$ = combineLatest(this.state.pkProject$, appeAndDefFields$, this.typePks$).pipe(
+      switchMap(([pkProject, appeAndDefFields, typePks]) => combineLatestOrEmpty(
         typePks.map(pkEntity => {
           const scope: GvFieldPageScope = { inProject: pkProject };
           const source: GvFieldSourceEntity = { fkInfo: pkEntity }
@@ -201,9 +195,9 @@ export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInte
 
       .subscribe(result => {
         if (result.action === 'added' || result.action === 'created') {
-          this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+          this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
             // this.s.store(this.s.api.typeOfProject(pkProject, result.pkEntity), pkProject)
-            this.dataService.loadInfResource(result.pkEntity, pkProject)
+            this.state.data.loadInfResource(result.pkEntity, pkProject)
           })
         } else if (result.action === 'alreadyInProjectClicked') {
           this.edit(result.pkEntity)
@@ -218,7 +212,7 @@ export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInte
    * @param pkEntity
    */
   edit(pkEntity: number) {
-    this.p.pkProject$.pipe(first()).subscribe(pkProject => {
+    this.state.pkProject$.pipe(first()).subscribe(pkProject => {
 
       const data: ViewSectionsDialogData = {
         scope: { inProject: pkProject },

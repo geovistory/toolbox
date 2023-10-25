@@ -1,6 +1,6 @@
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { ByPk, DfhActions, DfhClassSlice, dfhDefinitions, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice, dfhRoot, IAppState, ReducerConfigCollection } from '@kleiolab/lib-redux';
+import { ByPk, DfhActions, DfhClassSlice, dfhDefinitions, DfhLabelSlice, DfhProfileSlice, DfhPropertySlice, dfhRoot, IAppState, ReducerConfigCollection } from '@kleiolab/lib-redux/public-api';
 import { DfhClass, DfhLabel, DfhProfile, DfhProperty } from '@kleiolab/lib-sdk-lb4';
 import { empty, Observable } from 'rxjs';
 import { switchMap } from 'rxjs/operators';

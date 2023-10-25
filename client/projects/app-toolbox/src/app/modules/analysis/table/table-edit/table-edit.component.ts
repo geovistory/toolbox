@@ -1,9 +1,7 @@
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { SysConfig } from "@kleiolab/lib-config";
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
-import { AnalysisTableResponse } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisTableRequest } from "@kleiolab/lib-sdk-lb4";
-import { QueryDefinition } from "@kleiolab/lib-sdk-lb4";
+import { StateFacade } from '@kleiolab/lib-redux';
+import { AnalysisTableRequest, AnalysisTableResponse, QueryDefinition } from "@kleiolab/lib-sdk-lb4";
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -29,10 +27,10 @@ export class TableEditComponent implements OnInit, OnDestroy {
   constructor(
     public a: GvAnalysisService<AnalysisTableRequest, AnalysisTableResponse>,
     private ts: TabLayoutService,
-    p: ActiveProjectService
+    private state: StateFacade
   ) {
     if (this.a.pkEntity) {
-      this.initVal$ = p.pro$.analysis$.by_pk_entity$.key(this.a.pkEntity.toString()).pipe(
+      this.initVal$ = state.data.pro.analysis.getAnalysis.byPkEntity$(this.a.pkEntity).pipe(
         map(i => i.analysis_definition),
         map((def) => def.queryDefinition)
       )

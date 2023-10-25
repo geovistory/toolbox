@@ -1,5 +1,6 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { FactoidControllerService, FactoidMapping } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { first } from 'rxjs/operators';
@@ -25,12 +26,13 @@ export class FactoidMappingsDialogComponent implements OnInit {
     public dialogRef: MatDialogRef<FactoidMappingsDialogData, Array<FactoidMapping>>,
     @Inject(MAT_DIALOG_DATA) public data: FactoidMappingsDialogData,
     private p: ActiveProjectService,
+    private state: StateFacade,
     private factoidAPI: FactoidControllerService,
   ) { }
 
   ngOnInit(): void {
     this.pkTable = this.data.pkTable;
-    this.p.pkProject$.pipe(first()).subscribe(pkProject => this.pkProject = pkProject)
+    this.pkProject = this.state.pkProject;
 
     this.factoidAPI.factoidControllerGetDigitalFactoidMapping(this.pkProject + '', this.pkTable)
       .pipe(first()).subscribe(dfm => this.fms = dfm?.mappings ?? [])

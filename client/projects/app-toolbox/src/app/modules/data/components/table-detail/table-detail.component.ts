@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { DetailBaseComponent } from 'projects/app-toolbox/src/app/shared/classes/detail-base-component';
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
@@ -37,7 +37,7 @@ export class TableDetailComponent
     i: InformationPipesService,
     b: InformationBasicPipesService,
     truncatePipe: TruncatePipe,
-    dataService: ReduxMainService,
+    state: StateFacade,
     public editMode: EditModeService,
     public tabLayout: TabLayoutService
   ) {
@@ -49,7 +49,7 @@ export class TableDetailComponent
       i,
       b,
       truncatePipe,
-      dataService,
+      state,
       editMode,
       tabLayout
     )

@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
-import { combineLatest } from 'rxjs';
 import { filter, first, map } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../core/active-project/active-project.service';
 import { C_933_ANNOTATION_IN_TEXT_ID, C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../ontome-ids';
@@ -19,7 +18,7 @@ export class ViewFieldAddHooksService {
   constructor(
     private p: ActiveProjectService,
     private pp: ActiveProjectPipesService,
-    public dataApi: ReduxMainService,
+    private state: StateFacade,
     private dialog: MatDialog,
     private dialogs: BaseModalsService
   ) { }
@@ -106,9 +105,9 @@ export class ViewFieldAddHooksService {
 
   }
   private async onSaveAnnotationCallback(fieldSource: GvFieldSourceEntity): Promise<any> {
-    const req = await combineLatest([this.p.pkProject$, this.p.ramSource$.pipe(filter(x => !!x))])
+    const req = await this.p.ramSource$.pipe(filter(x => !!x))
       .pipe(
-        map(([pkProject, ramSource]) => {
+        map((ramSource) => {
           const annotation: InfResourceWithRelations = {
             fk_class: C_933_ANNOTATION_IN_TEXT_ID,
             outgoing_statements: [
@@ -126,13 +125,13 @@ export class ViewFieldAddHooksService {
               }
             ]
           }
-          return { pkProject, annotation }
+          return { pkProject: this.state.pkProject, annotation }
         }),
         first(),
       )
       .toPromise()
 
-    return this.dataApi.upsertInfResourcesWithRelations(req.pkProject, [req.annotation])
+    return this.state.data.upsertInfResourcesWithRelations(req.pkProject, [req.annotation])
       .pipe(first())
       .toPromise()
   }

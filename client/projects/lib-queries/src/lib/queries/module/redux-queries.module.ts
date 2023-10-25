@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule, Optional, SkipSelf } from '@angular/core';
-import { ReduxModule } from '@kleiolab/lib-redux';
+import { ReduxModule } from '@kleiolab/lib-redux/public-api';
 
 
 

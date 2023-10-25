@@ -3,13 +3,13 @@ import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatRadioChange } from '@angular/material/radio';
 import { ConfigurationPipesService, SysSelector } from '@kleiolab/lib-queries';
-import { SchemaService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { TableService, UnMapCheckResponse } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../confirm-dialog/confirm-dialog.component';
 import { ColumnMapping } from '../table.component';
 
@@ -54,7 +54,7 @@ export class ColMappingComponent implements OnInit, OnDestroy {
     @Inject(MAT_DIALOG_DATA) public data: { colLabel: string, pkColumn: number, mapping: ColumnMapping, pkCells: Array<number> },
     private p: ActiveProjectService,
     private sys: SysSelector,
-    private s: SchemaService,
+    private state: StateFacade,
     private tableAPI: TableService,
     public c: ConfigurationPipesService,
     private dialog: MatDialog
@@ -64,14 +64,13 @@ export class ColMappingComponent implements OnInit, OnDestroy {
     this.selectedClass = this.data.mapping ? this.data.mapping.fkClass : -1;
 
     // fetch pkProject
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.pkProject = pkProject;
-    })
+    this.pkProject = this.state.pkProject
 
     // fetch pkNamespace
-    this.p.datNamespaces$.pipe(first(), takeUntil(this.destroy$)).subscribe(namespaces => {
-      this.pkNamespace = namespaces.length ? namespaces[0].pk_entity : 0;
-    });
+    this.state.data.dat.namespace.getNamespace.byFkProject$(this.pkProject)
+      .pipe(first(), map(n => values(n)), takeUntil(this.destroy$)).subscribe(namespaces => {
+        this.pkNamespace = namespaces.length ? namespaces[0].pk_entity : 0;
+      });
 
     // get the classes
     this.classes$ = combineLatest([this.c.pipeClassesOfProject().pipe(
@@ -184,14 +183,10 @@ export class ColMappingComponent implements OnInit, OnDestroy {
   }
 
   deleteColumnMapping() {
-    const result = this.tableAPI
-      .tableControllerUnMapColumn(this.pkNamespace, { pkColumn: this.data.mapping.pkColumn, deleteAll: true })
-      .pipe(shareReplay());
-    this.s.modifyGvSchema(result, this.pkProject);
+    this.state.data.unmapTableColumn(this.pkNamespace, { pkColumn: this.data.mapping.pkColumn, deleteAll: true })
   }
 
   createColumnMapping() {
-    const result = this.tableAPI.tableControllerMapColumn(this.pkNamespace, { pkClass: this.selectedClass, pkColumn: this.data.pkColumn });
-    this.s.storeGv(result, this.pkProject);
+    this.state.data.mapTableColumn(this.pkNamespace, { pkClass: this.selectedClass, pkColumn: this.data.pkColumn })
   }
 }

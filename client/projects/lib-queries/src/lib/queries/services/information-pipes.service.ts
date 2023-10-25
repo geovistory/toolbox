@@ -1,7 +1,7 @@
 
 import { NgRedux } from '@angular-redux/store';
 import { Injectable } from '@angular/core';
-import { IAppState } from '@kleiolab/lib-redux';
+import { IAppState } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPage, InfStatement, SysConfigClassCategoryBelonging, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc, TimePrimitivePipe, TimeSpanPipe } from '@kleiolab/lib-utils';
 import { equals, flatten, uniq, values } from 'ramda';

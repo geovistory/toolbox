@@ -21,6 +21,7 @@ export const schemaModifierActions = createActionGroup({
   source: 'GV_SCHEMA_MODIFIER',
   events: {
     'Load': props<{ meta: { addPending: string }, payload: Observable<GvSchemaModifier> }>(),
+    'LoadWithMapper': props<{ meta: { addPending: string }, data$: Observable<any>, mapper: (data: any) => GvSchemaModifier }>(),
     'Succeeded': props<{ payload: GvSchemaModifier }>(),
   }
 })

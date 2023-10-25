@@ -39,13 +39,15 @@
           *ngIf="element?.belongsToCategory?.entities  && element.showInAddMenu && !element.restrictedToOtherProjects"
           (click)="$event.stopPropagation()"
           (change)="element.enabled_in_entities ? disableClass(element) : enableClass(element)"
-          [checked]="element.enabled_in_entities" [hidden]="p.changingClassProjRel[element.pkClass]">
+          [checked]="element.enabled_in_entities"
+          [hidden]="state.ui.activeProject.getChangingClassProjRel(element.pkClass) | async">
         </mat-checkbox>
         <mat-checkbox
           *ngIf="!(element?.belongsToCategory?.entities) && element.showInAddMenu && !element.restrictedToOtherProjects"
           [disabled]="true" [checked]="true">
         </mat-checkbox>
-        <mat-spinner *ngIf="p.changingClassProjRel[element.pkClass]" [diameter]="20" color="accent"></mat-spinner>
+        <mat-spinner *ngIf="state.ui.activeProject.getChangingClassProjRel(element.pkClass) | async" [diameter]="20"
+          color="accent"></mat-spinner>
       </td>
     </ng-container>
 

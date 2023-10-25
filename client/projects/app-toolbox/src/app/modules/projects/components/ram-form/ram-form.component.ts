@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { InfAppellation, InfLangString, InfStatement, InfStatementWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -39,7 +39,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
     public p: ActiveProjectService,
     public ap: ActiveProjectPipesService,
     public ref: ChangeDetectorRef,
-    private dataService: ReduxMainService
+    private state: StateFacade
   ) { }
 
   ngOnInit() {
@@ -177,7 +177,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
     }
     else {
 
-      combineLatest(this.p.pkProject$, this.ramFormValue$)
+      combineLatest(this.state.pkProject$, this.ramFormValue$)
         .pipe(
           first(),
           takeUntil(this.destroy$)
@@ -186,7 +186,7 @@ export class RamFormComponent implements OnInit, OnDestroy {
           ([pkProject, val]) => {
             this.saving = true;
             if (!!val) {
-              this.dataService.upsertInfStatementsWithRelations(pkProject, [val])
+              this.state.data.upsertInfStatementsWithRelations(pkProject, [val])
                 .pipe(first(res => !!res), takeUntil(this.destroy$)).subscribe(
                   success => {
                     this.saving = false;

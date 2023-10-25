@@ -1,7 +1,6 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { SchemaService } from '@kleiolab/lib-redux';
-import { FactoidControllerService, FactoidEntity, FactoidStatement, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { FactoidEntity, FactoidStatement, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { ValueObjectTypeName } from 'projects/app-toolbox/src/app/shared/components/digital-table/components/table/table.component';
 import { InfValueObject } from 'projects/app-toolbox/src/app/shared/components/value-preview/value-preview.component';
@@ -34,17 +33,13 @@ export class FactoidListComponent implements OnInit, OnDestroy {
 
   constructor(
     public p: ActiveProjectService,
-    private ap: ActiveProjectPipesService,
-    private factoidService: FactoidControllerService,
     public ref: ChangeDetectorRef,
-    public c: ConfigurationPipesService,
-    private sss: SchemaSelectorsService,
-    private s: SchemaService,
+    public state: StateFacade
   ) {
   }
 
   ngOnInit() {
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => this.pkProject = pkProject);
+    this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => this.pkProject = pkProject);
     this.askForFactoids();
   }
 
@@ -62,10 +57,8 @@ export class FactoidListComponent implements OnInit, OnDestroy {
   askForFactoids() {
     this.factoidsEntities = [];
     this.loading = true;
-    this.factoidService
-      .factoidControllerFactoidsFromEntity(this.pkProject + '', this.pkEntity + '', this.pageSize + '', this.pageIndex + '')
+    this.state.data.getFactoids(this.pkProject, this.pkEntity, this.pageSize, this.pageIndex)
       .pipe(first(), takeUntil(this.destroy$)).subscribe(resp => {
-        this.s.storeSchemaObjectGv(resp.schemaObject, this.pkProject);
         this.totalLength = resp.totalLength;
         this.factoidsEntities = resp.factoidEntities;
         this.loading = false;
@@ -79,8 +72,8 @@ export class FactoidListComponent implements OnInit, OnDestroy {
 
   getVOT$(bodyStatement: FactoidStatement): Observable<SysConfigValueObjectType> {
     return combineLatest([
-      this.p.dfh$.property$.by_pk_property$.key(bodyStatement.fkProperty),
-      this.p.sys$.config$.main$
+      this.state.data.dfh.property.getDfhProperty.byProperty(bodyStatement.fkProperty),
+      this.state.data.sys.config.sysConfig$
     ]).pipe(
       map(([byPk_property, config]) => {
         if (!byPk_property) return undefined;
@@ -93,22 +86,26 @@ export class FactoidListComponent implements OnInit, OnDestroy {
 
   getValueVOT$(bodyStatement: FactoidStatement, isDefault?: boolean): Observable<InfValueObject> {
     if (bodyStatement.vot == ValueObjectTypeName.appellation) {
-      return this.p.inf$.appellation$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ appellation: value })))
+      return this.state.data.inf.appellation.getAppellation.byPkEntity$(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ appellation: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.place) {
-      return this.p.inf$.place$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ place: value })))
+      return this.state.data.inf.place.getPlace.byPkEntity$(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ place: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.dimension) {
-      return this.p.inf$.dimension$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ dimension: value })))
+      return this.state.data.inf.dimension.getDimension.byPkEntity$(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ dimension: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.langString) {
-      return this.p.inf$.lang_string$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ langString: value })))
+      return this.state.data.inf.langString.getLangString.byPkEntity$(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ langString: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.language) {
-      return this.p.inf$.language$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ language: value })))
+      return this.state.data.inf.language.getLanguage.byPkEntity$(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ language: value })))
     }
     if (bodyStatement.vot == ValueObjectTypeName.timePrimitive) {
-      return this.p.inf$.time_primitive$.by_pk_entity$.key(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ timePrimitive: value })))
+      return this.state.data.inf.timePrimitive.getTimePrimitive.byPkEntity$(isDefault ? bodyStatement.fkDefault : bodyStatement.pkEntity).pipe(switchMap(value => of({ timePrimitive: value })))
     }
+  }
+
+  pipeClassLabel(classId: number) {
+    return this.state.data.dfh.label.getDfhLabel.byClass(classId, 'label')
   }
 }

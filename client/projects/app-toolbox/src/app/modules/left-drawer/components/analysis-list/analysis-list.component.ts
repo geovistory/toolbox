@@ -2,12 +2,13 @@ import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
-import { AnalysisTabData, SchemaService } from '@kleiolab/lib-redux';
-import { AnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
+import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'd3';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { map, takeUntil } from 'rxjs/operators';
+import { AnalysisTabData } from '../../../analysis/services/analysis.service';
 
 @Component({
   selector: 'gv-analysis-list',
@@ -30,35 +31,34 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(
     public p: ActiveProjectService,
-    private s: SchemaService,
-    private analysisApi: AnalysisService) { }
+    private state: StateFacade,
+  ) { }
 
   ngOnInit() {
+    const pkProject = this.state.pkProject;
 
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.s.storeGv(this.analysisApi.analysisControllerOfProject(pkProject), pkProject)
+    this.state.data.getProjectAnalisis(pkProject)
 
-      this.items$ = this.p.pro$.analysis$.by_pk_entity$.all$.pipe(
-        map(all => values(all).filter(analysis => analysis.fk_project === pkProject))
-      )
-      combineLatest(
-        this.items$,
-        this.filter$,
-        this.showDetails$
-      ).pipe(takeUntil(this.destroy$)).subscribe(([items, filterValue, showDetails]) => {
-        const term = filterValue.trim().toLowerCase();
-        const filtered = items.filter(item => {
-          if (item.name.toLowerCase().search(term) > -1) return true
-          if (showDetails) {
-            if (item.pk_entity.toString().search(term) > -1) return true
-            if (!!item.description) {
-              if (item.description.toString().search(term) > -1) return true
-            }
+    this.items$ = this.state.data.pro.analysis.analysesByPkEntity$.pipe(
+      map(all => values(all).filter(analysis => analysis.fk_project === pkProject))
+    )
+    combineLatest(
+      this.items$,
+      this.filter$,
+      this.showDetails$
+    ).pipe(takeUntil(this.destroy$)).subscribe(([items, filterValue, showDetails]) => {
+      const term = filterValue.trim().toLowerCase();
+      const filtered = items.filter(item => {
+        if (item.name.toLowerCase().search(term) > -1) return true
+        if (showDetails) {
+          if (item.pk_entity.toString().search(term) > -1) return true
+          if (!!item.description) {
+            if (item.description.toString().search(term) > -1) return true
           }
-          return false
-        })
-        this.dataSource.data = filtered;
+        }
+        return false
       })
+      this.dataSource.data = filtered;
     })
     this.sort.active = 'name'
     this.sort.direction = 'asc'
@@ -79,7 +79,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   newTimelineContinuous() {
-    this.p.addTab<AnalysisTabData>({
+    this.state.ui.activeProject.addTab<AnalysisTabData>({
       active: true,
       component: 'analysis',
       icon: 'analysis',
@@ -92,7 +92,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   newTable() {
-    this.p.addTab<AnalysisTabData>({
+    this.state.ui.activeProject.addTab<AnalysisTabData>({
       active: true,
       component: 'analysis',
       icon: 'analysis',
@@ -103,7 +103,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
   newMapAndTimeCont() {
-    this.p.addTab<AnalysisTabData>({
+    this.state.ui.activeProject.addTab<AnalysisTabData>({
       active: true,
       component: 'analysis',
       icon: 'analysis',
@@ -115,7 +115,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   open(item: ProAnalysis) {
-    this.p.addTab<AnalysisTabData>({
+    this.state.ui.activeProject.addTab<AnalysisTabData>({
       active: true,
       component: 'analysis',
       icon: 'analysis',

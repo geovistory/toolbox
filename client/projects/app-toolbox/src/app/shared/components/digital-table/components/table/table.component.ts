@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GetTablePageOptions, SysConfigValue, SysConfigValueObjectType, TabCell, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { EditModeService } from 'projects/app-toolbox/src/app/modules/base/services/edit-mode.service';
@@ -126,6 +127,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
   constructor(
     public p: ActiveProjectService,
+    private state: StateFacade,
     private dialog: MatDialog,
     private tableAPI: TableService,
     public editMode: EditModeService
@@ -157,7 +159,7 @@ export class TableComponent implements OnInit, OnDestroy {
     if (this.sortBy$) this.sortBy$.pipe(takeUntil(this.destroy$)).subscribe(sort => this.curSort = sort);
 
     // fetch the config
-    this.p.sys$.config$.main$.subscribe(config => this.config = config)
+    this.state.data.sys.config.sysConfig$.pipe(takeUntil(this.destroy$)).subscribe(config => this.config = config)
   }
 
 

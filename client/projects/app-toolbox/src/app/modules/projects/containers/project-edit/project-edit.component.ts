@@ -3,16 +3,14 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
-import { ListType, PanelTab } from '@kleiolab/lib-redux';
+import { ListType, PanelTab } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project.models';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BasicService } from 'projects/app-toolbox/src/app/core/basic/basic.service';
-import { ActiveAccountPipes } from 'projects/lib-queries/src/lib/queries/services/active-account-pipes.service';
 import { indexBy } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
-
-
 
 
 export interface TabBody<M> extends PanelTab<M> {
@@ -57,16 +55,16 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     public p: ActiveProjectService,
-    private a: ActiveAccountPipes,
+    public state: StateFacade,
     private activatedRoute: ActivatedRoute,
     basic: BasicService, // this initiates the question if geolocalization is allowed
   ) {
 
     this.projectId = parseInt(this.activatedRoute.snapshot.params['pkActiveProject']);
-    this.btn1Label$ = this.a.getProjectBtn1Label(this.projectId);
-    this.btn1Url$ = this.a.getProjectBtn1Url(this.projectId);
-    this.btn2Label$ = this.a.getProjectBtn2Label(this.projectId);
-    this.btn2Url$ = this.a.getProjectBtn2Url(this.projectId);
+    this.btn1Label$ = this.state.data.pro.textProperty.getProjectBtn1Label(this.projectId);
+    this.btn1Url$ = this.state.data.pro.textProperty.getProjectBtn1Url(this.projectId);
+    this.btn2Label$ = this.state.data.pro.textProperty.getProjectBtn2Label(this.projectId);
+    this.btn2Url$ = this.state.data.pro.textProperty.getProjectBtn2Url(this.projectId);
 
     // const storagePrefix = 'Geovistory-Panels-Project-';
 
@@ -84,7 +82,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // // Subscribe to the panels until just before the project edit is destroyed
     // combineLatest(
-    //   this.p.panels$, this.p.uiIdSerial$, this.p.panelSerial$, this.p.focusedPanel$
+    //   this.state.ui.activeProject.panels$, this.p.uiIdSerial$, this.p.panelSerial$, this.p.focusedPanel$
     // ).pipe(takeUntil(this.beforeDestroy$)).subscribe(([panels, uiIdSerial, panelSerial, focusedPanel]) => {
     //   // Set the panels in local storage
     //   this.sdkStorage.set(storagePrefix + this.projectId, { panels, uiIdSerial, panelSerial, focusedPanel })
@@ -93,7 +91,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
     this.p.initProject(this.projectId);
     this.p.initProjectConfigData(this.projectId);
 
-    this.allTabs$ = this.p.panels$.pipe(map(panels => {
+    this.allTabs$ = this.state.ui.activeProject.panels$.pipe(map(panels => {
       let allTabs: TabBody<any>[] = []
       panels.forEach((panel, panelIndex) => {
         allTabs = [...allTabs, ...[...panel.tabs].map((tab, tabIndex) => {
@@ -117,7 +115,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
 
   }
   ngOnInit(): void {
-    this.projectLabel$ = this.a.getProjectLabel(this.projectId)
+    this.projectLabel$ = this.state.data.pro.textProperty.getProjectLabel(this.projectId)
   }
 
   ngAfterViewInit() {
@@ -128,7 +126,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
       })
 
     this.list._closedStream.pipe(takeUntil(this.destroy$)).subscribe(e => {
-      this.p.setListType('')
+      this.state.ui.activeProject.setListType('')
     })
   }
 
@@ -161,13 +159,13 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   setList(list: ListType) {
-    this.p.list$.pipe(first(), takeUntil(this.destroy$)).subscribe(previousList => {
+    this.state.ui.activeProject.listType$.pipe(first(), takeUntil(this.destroy$)).subscribe(previousList => {
       if (previousList === list || list === '') {
         // close the drawe
         this.list.close()
       } else {
         // open the panel
-        this.p.setListType(list)
+        this.state.ui.activeProject.setListType(list)
       }
     })
   }
@@ -175,7 +173,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
 
   dropTab(event: CdkDragDrop<number>) {
     // .data contains the panelIndex
-    this.p.moveTab(
+    this.state.ui.activeProject.moveTab(
       event.previousContainer.data,
       event.container.data,
       event.previousIndex,
@@ -184,12 +182,12 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
 
   splitPanel(newPanelIndex: number, event: CdkDragDrop<any>) {
     // .data contains the panelIndex
-    this.p.splitPanel(event.item.data.panelIndex, event.item.data.tabIndex, newPanelIndex);
+    this.state.ui.activeProject.splitPanel(event.item.data.panelIndex, event.item.data.tabIndex, newPanelIndex);
   }
 
   ngOnDestroy() {
     this.beforeDestroy$.next(true)
-    this.p.closeProject()
+    this.state.ui.activeProject.destroy()
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }

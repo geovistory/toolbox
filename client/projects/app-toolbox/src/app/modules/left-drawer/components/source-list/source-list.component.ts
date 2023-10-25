@@ -1,4 +1,5 @@
 import { Component, HostBinding, OnDestroy } from '@angular/core';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Subject } from 'rxjs';
@@ -22,6 +23,7 @@ export class SourceListComponent implements OnDestroy {
 
   constructor(
     public p: ActiveProjectService,
+    private state: StateFacade
   ) {
   }
 
@@ -30,7 +32,7 @@ export class SourceListComponent implements OnDestroy {
   }
 
   startCreate() {
-    this.p.setListType('')
+    this.state.ui.activeProject.setListType('')
   }
 
   ngOnDestroy() {

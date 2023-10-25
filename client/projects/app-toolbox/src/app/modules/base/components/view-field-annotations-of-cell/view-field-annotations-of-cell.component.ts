@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from 'projects/app-toolbox/src/app/ontome-ids';
@@ -51,7 +51,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit, OnDestroy {
     private i: InformationPipesService,
     private p: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     private dialog: MatDialog,
     public tableComponent: TableComponent,
     @Optional() private tableDetailComponent?: TableDetailComponent,
@@ -221,7 +221,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit, OnDestroy {
       ]
     }
 
-    return this.dataService.upsertInfResourcesWithRelations(this.pkProject, [annotation])
+    return this.state.data.upsertInfResourcesWithRelations(this.pkProject, [annotation])
       .pipe(first())
       .toPromise()
   }

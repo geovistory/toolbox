@@ -1,7 +1,7 @@
+import { TabBase } from "@kleiolab/lib-redux/public-api";
 import { Action } from 'redux';
 import { TabBaseAPIAction } from './tab-layout';
 import { TabLayoutAcitons } from './tab-layout.actions';
-import { TabBase } from "@kleiolab/lib-redux";
 
 const INITIAL_STATE = new TabBase();
 

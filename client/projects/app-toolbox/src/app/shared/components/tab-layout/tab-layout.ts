@@ -1,12 +1,10 @@
 import { ChangeDetectorRef } from '@angular/core';
-import { PanelTab, TabLayoutMode } from '@kleiolab/lib-redux';
-import { dispatch, select, WithSubStore } from '@ngrx/store';
+import { PanelTab } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project.models';
+import { TabLayoutMode } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project/tab-layout.models';
 import { IOutputData } from 'angular-split/lib/interface';
 import { FluxStandardAction } from 'flux-standard-action';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 import { TabLayoutAcitons } from './tab-layout.actions';
-import { tabBaseReducer } from './tab-layout.reducer';
 
 
 type Payload = PanelTab<any>;
@@ -18,20 +16,13 @@ interface MetaData {
 };
 export type TabBaseAPIAction = FluxStandardAction<Payload, MetaData>;
 
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: tabBaseReducer
-})
 export class TabLayout {
 
-  // pase path of this component
-  basePath: string[];
 
   /**
    * Stuff for handling split area rendering
    * START
    */
-  @select() layoutMode$: Observable<TabLayoutMode>;
   layoutMode: TabLayoutMode;
   defaultSizeRight = 32;
   splitSizeLeft: number;
@@ -41,14 +32,14 @@ export class TabLayout {
 
   activated$ = new Subject<void>();
 
-  constructor(public uiId: string, public ref: ChangeDetectorRef, public destroy$: Subject<boolean>) {
-    this.basePath = ['activeProject', 'tabLayouts', this.uiId]
-    this.layoutMode$.pipe(takeUntil(this.destroy$)).subscribe(mode => {
-      this.layoutMode = mode;
-      this.setSplitSize(mode)
-    })
+  constructor(
+    public uiId: string, public ref: ChangeDetectorRef, public destroy$: Subject<boolean>
+  ) {
+    // this.layoutMode$.pipe(takeUntil(this.destroy$)).subscribe(mode => {
+    //   this.layoutMode = mode;
+    //   this.setSplitSize(mode)
+    // })
   }
-  getBasePath = () => this.basePath;
 
   setSplitSize(mode: TabLayoutMode) {
     if (mode == 'left-only') {
@@ -109,7 +100,6 @@ export class TabLayout {
   /*********************************************************************
   *  Set tab title
   *********************************************************************/
-  @dispatch()
   setTabTitle = (tabTitle: string): TabBaseAPIAction => ({
     type: TabLayoutAcitons.SET_TAB_TITLE,
     meta: { tabTitle },
@@ -119,7 +109,6 @@ export class TabLayout {
   /*********************************************************************
   *  Set tab tooltip
   *********************************************************************/
-  @dispatch()
   setTabTooltip = (tabTooltip: string): TabBaseAPIAction => ({
     type: TabLayoutAcitons.SET_TAB_TOOLTIP,
     meta: { tabTooltip },
@@ -129,7 +118,6 @@ export class TabLayout {
   /*********************************************************************
   *  Set tab loading
   *********************************************************************/
-  @dispatch()
   setTabLoading = (loading: boolean): TabBaseAPIAction => ({
     type: TabLayoutAcitons.SET_TAB_LOADING,
     meta: { loading },
@@ -139,7 +127,6 @@ export class TabLayout {
   /*********************************************************************
   *  Set right panel state
   *********************************************************************/
-  @dispatch()
   setLayoutMode = (layoutMode: TabLayoutMode): TabBaseAPIAction => ({
     type: TabLayoutAcitons.SET_LAYOUT_MODE,
     meta: { layoutMode: layoutMode },
@@ -150,7 +137,6 @@ export class TabLayout {
   /*********************************************************************
   *  Method to distroy the slice of store
   *********************************************************************/
-  @dispatch()
   destroy = (): TabBaseAPIAction => ({
     type: TabLayoutAcitons.DESTROY,
     meta: null,

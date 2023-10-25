@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AccountDataService, AnalysisService, ContentTreeService, DataModelService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, ProTextProperty, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { AccountDataService, AnalysisService, ColumnNames, ContentTreeService, DataModelService, FactoidControllerService, GvFieldPageReq, GvPaginationObject, GvPositiveSchemaObject, GvSchemaModifier, InfData, InfResourceWithRelations, InfStatementWithRelations, MapColumnBody, ProAnalysis, ProClassFieldConfig, ProDfhClassProjRel, ProInfoProjRel, ProjectConfigurationService, ProjectDataService, ProTextProperty, SubfieldPageControllerService, TableService, UnmapColumnBody } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { Store } from '@ngrx/store';
 import { FluxStandardAction } from 'flux-standard-action';
@@ -8,6 +8,7 @@ import { shareReplay } from 'rxjs/operators';
 import { IAppState } from '../state.model';
 import { DatFacade } from './dat/dat.facade';
 import { paginationObjectActions, schemaModifierActions, schemaObjectActions } from './data.actions';
+import { getProjectLangugage, getProjectLangugageLabel } from './data.selectors';
 import { DfhFacade } from './dfh/dfh.facade';
 import { InfFacade } from './inf/inf.facade';
 import { ProFacade } from './pro/pro.facade';
@@ -42,6 +43,8 @@ export class DataFacade {
     private analysisApi: AnalysisService,
     private dataModelApi: DataModelService,
     private accountDataApi: AccountDataService,
+    private factoidApi: FactoidControllerService,
+    private tableApi: TableService,
     private contentTree: ContentTreeService,
     private pag: SubfieldPageControllerService,
     private store: Store<IAppState>
@@ -169,11 +172,11 @@ export class DataFacade {
     return this.loadGvSchemaObject(call$)
   }
 
-
   addEntityToProject(pkProject: number, pkEntity: number): Observable<GvPositiveSchemaObject> {
     const call$ = this.projectDataApi.addOrRemoveEntityControllerAddEntityToProject(pkProject, pkEntity)
     return this.loadGvSchemaObject(call$)
   }
+
   removeEntityFromProject(pkProject: number, pkEntity: number): Observable<GvPositiveSchemaObject> {
     const call$ = this.projectDataApi.addOrRemoveEntityControllerRemoveEntityFromProject(pkProject, pkEntity)
     return this.loadGvSchemaObject(call$)
@@ -224,8 +227,40 @@ export class DataFacade {
     return this.loadGvSchemaObject(call$)
   }
 
+  getProjectAnalisis(pkProject: number): Observable<GvPositiveSchemaObject> {
+    const call$ = this.analysisApi.analysisControllerOfProject(pkProject)
+    return this.loadGvSchemaObject(call$)
+  }
 
+  getFactoids(pkProject: number, pkEntity: number, pageSize: number, pageIndex: number) {
+    const call$ = this.factoidApi.factoidControllerFactoidsFromEntity(pkProject + '', pkEntity + '', pageSize + '', pageIndex + '')
+    return this.loadGvSchemaWithMapper(call$, (data) => ({ positive: data.schemaObject }))
+  }
 
+  unmapTableColumn(namespaceId: number, config: UnmapColumnBody) {
+    const call$ = this.tableApi.tableControllerUnMapColumn(namespaceId, config)
+    return this.loadGvSchemaModifier(call$)
+  }
+
+  mapTableColumn(namespaceId: number, config: MapColumnBody) {
+    const call$ = this.tableApi.tableControllerMapColumn(namespaceId, config)
+    return this.loadGvSchemaObject(call$)
+  }
+
+  getTableColumns(pkProject: number, pkDigital: number) {
+    const call$ = this.tableApi.tableControllerGetTableColumns(pkProject, pkDigital)
+    return this.loadGvSchemaObject(call$)
+  }
+
+  getTableConfig(pkProject: number, pkDataEntity: number) {
+    const call$ = this.tableApi.tableControllerGetTableConfig(pkProject, pkDataEntity)
+    return this.loadGvSchemaModifier(call$)
+  }
+
+  updateTableColumn(pkProject: number, pkDigital: number, accountId?: number, fkLanguage?: number, columnNames?: ColumnNames) {
+    const call$ = this.tableApi.tableControllerUpdateColumn(pkProject, pkDigital, accountId, fkLanguage, columnNames)
+    return this.loadGvSchemaModifier(call$)
+  }
 
   /**
    * Dispatch action to load GvSchemaObject from extarnal Api
@@ -240,6 +275,29 @@ export class DataFacade {
     this.store.dispatch(schemaObjectActions.load({
       meta: { addPending },
       payload: $,
+    }))
+    return $
+  }
+
+  /**
+ * Dispatch action to load data from external Api. The returned data can be of any
+ * format. As a second parameter, pass in a mapper function, that maps the returned
+ * data to a GvSchemaModifier which can be reduced into data state.
+ *
+ * @param data$ Pass in the api call. Don't subscribe to the call, since otherwise
+ *                we'll end up with two subscriptions and thus two api calls
+ * @param mapper function mapping the returned data to a GvSchemaModifier
+ */
+  private loadGvSchemaWithMapper<M>(
+    data$: Observable<M>,
+    mapper: (data: M) => GvSchemaModifier
+  ) {
+    const addPending = U.uuid()
+    const $ = data$.pipe(shareReplay())
+    this.store.dispatch(schemaModifierActions.loadWithMapper({
+      meta: { addPending },
+      data$: $,
+      mapper
     }))
     return $
   }
@@ -276,6 +334,14 @@ export class DataFacade {
       payload: $
     }))
     return $
+  }
+
+  getProjectLanguage(projectId: number) {
+    return this.store.select(getProjectLangugage(projectId));
+  }
+
+  getProjectLanguageLabel(projectId: number) {
+    return this.store.select(getProjectLangugageLabel(projectId));
   }
 
 }

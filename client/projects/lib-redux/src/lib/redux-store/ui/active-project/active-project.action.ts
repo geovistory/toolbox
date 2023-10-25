@@ -1,5 +1,7 @@
+import { createActionGroup, emptyProps, props } from '@ngrx/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { ActiveProjectState, ListType, Panel, PanelTab } from './active-project.models';
+import { TabLayoutMode } from './active-project/tab-layout.models';
 
 export interface ActiveProjectMeta {
 
@@ -204,3 +206,21 @@ export class ActiveProjectActions {
     }
   }
 }
+
+export const tabLayoutActions = createActionGroup({
+  source: 'Tab Layout',
+  events: {
+    'Set Tab Title': props<{ tabId: string, title: string }>(),
+    'Set Tab Tooltip': props<{ tabId: string, tooltip: string }>(),
+    'Set Tab Loading': props<{ tabId: string, loading: boolean }>(),
+    'Set Layout Mode': props<{ tabId: string, mode: TabLayoutMode }>(),
+    'Destroy': emptyProps,
+  }
+})
+
+export const classSettings = createActionGroup({
+  source: 'Class Settings',
+  events: {
+    'Set Changing Class Proj Rel': props<{ classId: number, projectRelationIsChanging: boolean }>(),
+  }
+})

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { EntitySearchHit, SearchExistingRelatedStatement, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals } from 'ramda';
@@ -82,6 +83,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   constructor(
     private entityPreviewApi: WarEntityPreviewControllerService,
     private p: ActiveProjectService,
+    private state: StateFacade,
     private c: ConfigurationPipesService
   ) { }
 
@@ -96,7 +98,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
 
 
     // reset the page on each change of pkProject, searchString and/or scope if we are not on page 1
-    const filterParams$ = combineLatest([this.p.pkProject$, this.searchString$.pipe(debounceTime(400)), this.scope$]).pipe(
+    const filterParams$ = combineLatest([this.searchString$.pipe(debounceTime(400)), this.scope$]).pipe(
       tap(() => { if (this.page$.value !== 1) this.page$.next(1) })
     )
 
@@ -105,7 +107,6 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
       debounceTime(0),
       distinctUntilChanged(equals), // because of filterParams$ and page$ can both emit at the same time (see l.86)
       map(([params, page]) => ({
-        pkProject: params[0],
         searchString: params[1],
         scope: params[2],
         page
@@ -115,9 +116,9 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
     // the api call
     const page$ = params$.pipe(
       tap(() => this.loading$.next(true)),
-      switchMap(({ pkProject, searchString, page, scope }) => {
+      switchMap(({ searchString, page, scope }) => {
         const req: WarEntityPreviewSearchExistingReq = {
-          projectId: pkProject,
+          projectId: this.state.pkProject,
           searchString: searchString.trim(),
           pkClasses: [this.pkClass],
           limit: this.limit,

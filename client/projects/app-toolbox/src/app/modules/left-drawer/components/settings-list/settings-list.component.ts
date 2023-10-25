@@ -1,5 +1,6 @@
 import { Component, HostBinding } from '@angular/core';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { Observable } from 'rxjs';
@@ -22,6 +23,7 @@ export class SettingsListComponent {
 
   constructor(
     private p: ActiveProjectService,
+    private state: StateFacade,
     private c: ConfigurationPipesService
   ) {
 
@@ -92,7 +94,7 @@ export class SettingsListComponent {
   }
 
   openOntomeProfileSettings() {
-    this.p.addTab({
+    this.state.ui.activeProject.addTab({
       active: true,
       component: 'ontome-profiles-settings',
       icon: 'settings',
@@ -101,7 +103,7 @@ export class SettingsListComponent {
   }
 
   openClassesSettings() {
-    this.p.addTab({
+    this.state.ui.activeProject.addTab({
       active: true,
       component: 'classes-settings',
       icon: 'settings',
@@ -110,7 +112,7 @@ export class SettingsListComponent {
   }
 
   openContrVocabSettings(pkClass) {
-    this.p.addTab({
+    this.state.ui.activeProject.addTab({
       active: true,
       component: 'contr-vocab-settings',
       icon: 'settings',

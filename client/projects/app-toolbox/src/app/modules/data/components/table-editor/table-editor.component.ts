@@ -3,7 +3,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PageEvent } from '@angular/material/paginator';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { SchemaService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { DatColumn, FactoidMapping, GetTablePageOptions, InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { ActiveAccountService } from 'projects/app-toolbox/src/app/core/active-account';
@@ -12,7 +12,7 @@ import { Cell, Header, Row, TableSort } from 'projects/app-toolbox/src/app/share
 import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from 'projects/app-toolbox/src/app/shared/components/info-dialog/info-dialog.component';
 import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { FactoidMappingsDialogComponent, FactoidMappingsDialogData } from '../factoids/factoid-mappings-dialog/factoid-mappings-dialog.component';
 import { TableConfigDialogComponent, TableConfigDialogData, TableConfigDialogResult } from '../table-config-dialog/table-config-dialog.component';
@@ -79,7 +79,7 @@ export class TableEditorComponent implements OnInit {
     public ref: ChangeDetectorRef,
     private p: ActiveProjectService,
     private tableAPI: TableService,
-    private s: SchemaService,
+    private state: StateFacade,
     private c: ConfigurationPipesService,
     private a: ActiveAccountService,
     private dialog: MatDialog,
@@ -89,16 +89,13 @@ export class TableEditorComponent implements OnInit {
 
   ngOnInit(): void {
     this.filterOnRow = this?.tableDetailComponenent?.tab.data.filterOnRow;
-
+    this.pkProject = this.state.pkProject;
     // get the table columns and the table config and put everything in the store
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-      this.s.storeGv(this.tableAPI.tableControllerGetTableColumns(pkProject, this.pkEntity), pkProject);
-      this.s.modifyGvSchema(this.tableAPI.tableControllerGetTableConfig(pkProject, this.pkEntity, this.a.account.id), pkProject)
-      this.pkProject = pkProject
-    })
+    this.state.data.getTableColumns(this.pkProject, this.pkEntity)
+    this.state.data.getTableConfig(this.pkProject, this.pkEntity)
 
     // listen to config changes
-    this.tableConfig$ = this.p.pro$.table_config$.by_fk_digital$.key(this.pkEntity + '').pipe(
+    this.tableConfig$ = this.state.data.pro.tableConfig.getTableConfig.byFkDigital$(this.pkEntity).pipe(
       filter(x => x !== undefined),
       map(ptc => values(ptc)),
       map(ptc => ptc[0] ? ptc[0].config : undefined)
@@ -111,7 +108,6 @@ export class TableEditorComponent implements OnInit {
     const settings$ = combineLatest([
       this.pageSize$,
       this.pageIndex$,
-      this.p.pkProject$,
       this.sortBy$,
       this.sortDirection$,
       this.filters$,
@@ -126,19 +122,18 @@ export class TableEditorComponent implements OnInit {
       switchMap(([
         pageSize,
         pageIndex,
-        pkProject,
         sortBy,
         sortDirection,
         filters,
         config,
         reload
-      ]) => this.tableAPI.tableControllerGetTablePage(pkProject, this.pkEntity, {
+      ]) => this.tableAPI.tableControllerGetTablePage(this.pkProject, this.pkEntity, {
         limit: pageSize,
         offset: pageSize * pageIndex,
         columns: config.columns.map(tc => tc.fkColumn + ''),
         sortBy,
         sortDirection,
-        filters: this.filters$.value,
+        filters: filters,
         filterOnRow: this.filterOnRow
       })),
       tap((res) => { this.loading = false; }),
@@ -151,7 +146,7 @@ export class TableEditorComponent implements OnInit {
     // get only the DatColumn that will be displayed (in the right order)
     this.columns$ = combineLatest([
       this.tableConfig$,
-      this.p.dat$.column$.by_fk_digital$.key(this.pkEntity)
+      this.state.data.dat.column.getColumn.byFkDigital$(this.pkEntity)
     ]).pipe(
       // only forward if we have the datColumns AND the config
       // (avoid timing issue when first this.columns$ fires and not yet textProperties)
@@ -172,8 +167,8 @@ export class TableEditorComponent implements OnInit {
       switchMap(columns => combineLatestOrEmpty(
         columns.map(
           col => combineLatest([
-            this.p.dat$.text_property$.by_fk_entity__fk_system_type$.key(col.pk_entity + '_' + 3295),
-            this.p.dat$.class_column_mapping$.by_fk_column$.key(col.pk_entity),
+            this.state.data.dat.textProperty.getTextProperty.byFkEntityAndSysType$(col.pk_entity, 3295),
+            this.state.data.dat.classColumnMapping.getClassColumnMapping.byFkColumn$(col.pk_entity),
           ]).pipe(
             map(([textProperties, classColumnMappings]) => {
               const textProps = values(textProperties)
@@ -192,7 +187,7 @@ export class TableEditorComponent implements OnInit {
                 header.mapping = {
                   fkClass: mapping.fk_class,
                   className: this.c.pipeClassLabel(mapping.fk_class),
-                  icon: this.p.dfh$.class$.by_pk_class$.key(mapping.fk_class).pipe(
+                  icon: this.state.data.dfh.klass.select.byPkClass(mapping.fk_class).pipe(
                     map(dfhClass => dfhClass ?
                       dfhClass.basic_type == DfhConfig.PK_SYSTEM_TYPE_PERSISTENT_ITEM || dfhClass.basic_type == 30 ? 'peIt' : 'teEn'
                       : 'peIt')
@@ -248,7 +243,7 @@ export class TableEditorComponent implements OnInit {
     );
 
     // get the default language
-    this.p.defaultLanguage$.subscribe(lang => this.defaultLanguage = lang);
+    this.state.data.getProjectLanguage(this.pkProject).subscribe(lang => this.defaultLanguage = lang);
   }
 
 
@@ -288,9 +283,7 @@ export class TableEditorComponent implements OnInit {
       })
       .afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
         if (!result) return;
-        this.s.modifyGvSchema(this.tableAPI.tableControllerUpdateColumn(
-          this.pkProject, this.pkEntity, this.a.account.id, this.defaultLanguage.pk_entity, result.cols)
-          , this.pkProject);
+        this.state.data.updateTableColumn(this.pkProject, this.pkEntity, this.a.account.id, this.defaultLanguage.pk_entity, result.cols)
       });
   }
   factoidMapping() {

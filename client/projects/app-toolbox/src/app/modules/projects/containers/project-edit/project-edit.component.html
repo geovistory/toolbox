@@ -22,22 +22,22 @@
 
       <div class="rounded-0 d-block">
         <button class="gv-nav-btn mat-typography d-flex flex-column align-items-center justify-content-center"
-          [ngClass]="{active:(p.list$ | async)==='sources'}" (click)="setList('sources')">
+          [ngClass]="{active:(state.ui.activeProject.listType$ | async)==='sources'}" (click)="setList('sources')">
           <div class="fa-2x gv-icon gv-icon-source gv-sources-primary-color"></div>
           <div>Sources</div>
         </button>
         <button class="gv-nav-btn mat-typography d-flex flex-column align-items-center justify-content-center"
-          [ngClass]="{active:(p.list$ | async)==='entities'}" (click)="setList('entities')">
+          [ngClass]="{active:(state.ui.activeProject.listType$ | async)==='entities'}" (click)="setList('entities')">
           <div class="fa-2x gv-icon gv-icon-entity gv-entities-primary-color"></div>
           <div>Entities</div>
         </button>
         <button class="gv-nav-btn mat-typography d-flex flex-column align-items-center justify-content-center"
-          [ngClass]="{active:(p.list$ | async)==='digitals'}" (click)="setList('digitals')">
+          [ngClass]="{active:(state.ui.activeProject.listType$ | async)==='digitals'}" (click)="setList('digitals')">
           <mat-icon [svgIcon]="'gv:outlined-gv-digitals'" class="gv-digitals-primary-color"></mat-icon>
           <div>Digitals</div>
         </button>
         <button class="gv-nav-btn mat-typography d-flex flex-column align-items-center justify-content-center"
-          [ngClass]="{active:(p.list$ | async)==='analysis'}" (click)="setList('analysis')">
+          [ngClass]="{active:(state.ui.activeProject.listType$ | async)==='analysis'}" (click)="setList('analysis')">
           <div class="fa-2x gv-icon gv-icon-visual gv-analysis-primary-color"></div> Analysis
         </button>
       </div>
@@ -45,7 +45,7 @@
 
       <div class="rounded-0 d-block mt-auto">
         <button class="gv-nav-btn mat-typography d-flex flex-column align-items-center justify-content-center"
-          [ngClass]="{active:(p.list$ | async)==='settings'}" (click)="setList('settings')">
+          [ngClass]="{active:(state.ui.activeProject.listType$ | async)==='settings'}" (click)="setList('settings')">
           <div class="fa fa-2x fa-cogs mat-text-secondary"></div> Settings
         </button>
       </div>
@@ -56,23 +56,25 @@
     <mat-drawer-container style="flex-grow: 1; flex-basis:100%;" [hasBackdrop]="false">
 
       <!-- List of Sources, Entities … -->
-      <mat-drawer class="gv-drawer-list" #list mode="side" [opened]="(p.list$ | async) !== ''" style="width: 300px;">
+      <mat-drawer class="gv-drawer-list" #list mode="side" [opened]="(state.ui.activeProject.listType$ | async) !== ''"
+        style="width: 300px;">
         <button mat-icon-button style="position:absolute; right: 0; top: 50%; z-index: 2000" (click)="list.close()"
           (positionChanged)="setList('')">
           <mat-icon class="mat-text-secondary" svgIcon="chevron-left"></mat-icon>
         </button>
-        <gv-digitals-list [hidden]="(p.list$ | async) !== 'digitals'"></gv-digitals-list>
-        <gv-source-list [hidden]="(p.list$ | async) !== 'sources'"></gv-source-list>
-        <gv-entity-list [hidden]="(p.list$ | async) !== 'entities'"></gv-entity-list>
-        <gv-analysis-list *ngIf="(p.list$ | async) === 'analysis'" class="h-100 gv-flex-fh"></gv-analysis-list>
-        <gv-settings-list [hidden]="(p.list$ | async) !== 'settings'"></gv-settings-list>
+        <gv-digitals-list [hidden]="(state.ui.activeProject.listType$ | async) !== 'digitals'"></gv-digitals-list>
+        <gv-source-list [hidden]="(state.ui.activeProject.listType$ | async) !== 'sources'"></gv-source-list>
+        <gv-entity-list [hidden]="(state.ui.activeProject.listType$ | async) !== 'entities'"></gv-entity-list>
+        <gv-analysis-list *ngIf="(state.ui.activeProject.listType$ | async) === 'analysis'"
+          class="h-100 gv-flex-fh"></gv-analysis-list>
+        <gv-settings-list [hidden]="(state.ui.activeProject.listType$ | async) !== 'settings'"></gv-settings-list>
       </mat-drawer>
 
       <!-- Container for Tabs … -->
       <mat-drawer-content class="gv-pe-tab-container d-flex" cdkDropListGroup>
         <div class="gv-pe-upper">
 
-          <div *ngIf="(p.panels$ | async)?.length === 0"
+          <div *ngIf="(state.ui.activeProject.panels$ | async)?.length === 0"
             class="no-panels gv-flex-fh justify-content-center align-items-center p-3">
             <div class="mat-headline-4 mb-1 mat-text-grey-400">
               Your Project
@@ -88,11 +90,12 @@
 
           <!-- Tab Handles -->
           <as-split class="gv-split-style" [direction]="'horizontal'" [gutterSize]="1"
-            *ngIf="(p.panels$ | async)?.length > 0">
-            <as-split-area [size]="(100 / (p.panels$ | async)?.length )"
-              *ngFor="let panel of (p.panels$ | async); let i = index; trackBy:trackByFn"
-              class="gv-panel-for-tabs gv-grow-1 gv-flex-fh" style="overflow: hidden;" (mousedown)="p.focusPanel(i)"
-              [ngClass]="{'focus': ((p.focusedPanel$|async ) === i) }">
+            *ngIf="(state.ui.activeProject.panels$ | async)?.length > 0">
+            <as-split-area [size]="(100 / (state.ui.activeProject.panels$ | async)?.length )"
+              *ngFor="let panel of (state.ui.activeProject.panels$ | async); let i = index; trackBy:trackByFn"
+              class="gv-panel-for-tabs gv-grow-1 gv-flex-fh" style="overflow: hidden;"
+              (mousedown)="state.ui.activeProject.focusPanel(i)"
+              [ngClass]="{'focus': ((state.ui.activeProject.focusedPanel$|async ) === i) }">
 
               <div>
                 <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal"
@@ -101,10 +104,11 @@
                   <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box"
                     [cdkDragData]="{'panelIndex': i, 'tabIndex': j}" [ngClass]="{'active': tab.active }"
                     (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()" [tab]="tab"
-                    (activateTab)="p.activateTab(i,j)" (closeTab)="p.closeTab(i,j)"></gv-tab-handle>
+                    (activateTab)="state.ui.activeProject.setActiveTab(i,j)"
+                    (closeTab)="state.ui.activeProject.closeTab(i,j)"></gv-tab-handle>
 
                 </div>
-                <!-- <button (click)="p.addTab()">Split</button> -->
+                <!-- <button (click)="state.ui.activeProject.addTab()">Split</button> -->
               </div>
 
               <div class="panel-body gv-flex-fh mat-bg-gray-100">
@@ -148,24 +152,26 @@
 
 
             <gv-entity-detail class="gv-flex-fh" *ngIf="tab.component=='entity'" [tab]="tab"
-              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+              (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-entity-detail>
 
             <gv-analysis-detail class="gv-flex-fh" *ngIf="tab.component=='analysis'"
               [fkAnalysisType]="tab.data?.fkAnalysisType" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
-              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+              (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-analysis-detail>
 
             <gv-project-settings-data class="gv-flex-fh" *ngIf="tab.component=='classes-settings'" [basePath]="tab.path"
-              (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+              (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-project-settings-data>
 
             <gv-ontome-profiles-settings class="gv-flex-fh" *ngIf="tab.component=='ontome-profiles-settings'"
-              [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
+              [basePath]="tab.path" (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c
+              [onActivateTab]="c">
             </gv-ontome-profiles-settings>
 
             <gv-types class="gv-flex-fh" *ngIf="tab.component=='contr-vocab-settings'" [pkClass]="tab.data.pkClass"
-              [basePath]="tab.path" (close)="p.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c"></gv-types>
+              [basePath]="tab.path" (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c
+              [onActivateTab]="c"></gv-types>
 
           </gv-tab-body>
         </div>

@@ -10,20 +10,26 @@ import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { MockPaginatedStatementsControllerService } from 'projects/__test__/mock-services/MockPaginatedStatementsControllerService';
 import { firstValueFrom } from 'rxjs';
 import { take, toArray } from 'rxjs/operators';
-import { schemaModifierActions } from '../../data/data.actions';
-import { StateFacade } from '../../state.facade';
-import { IAppState } from '../../state.model';
-import { StateModule } from '../../state.module';
+import { schemaModifierActions, setDataState } from '../../redux-store/data/data.actions';
+import { DataFacade } from '../../redux-store/data/data.facade';
+import { IAppState } from '../../redux-store/state.model';
+import { StateModule } from '../../redux-store/state.module';
+import { setUiState } from '../../redux-store/ui/ui.actions';
+
 import { FieldPage } from '../configuration/models/FieldPage';
 import { InformationPipesService } from './information-pipes.service';
 
 describe('InformationPipesService', () => {
   let store: Store<IAppState>;
   let service: InformationPipesService;
-  let facade: StateFacade;
+  let facade: DataFacade;
 
   const storeSchemaObjectGv = (positive: GvPositiveSchemaObject, projectId: number) => {
     store.dispatch(schemaModifierActions.succeeded({ payload: { positive } }))
+  }
+  const setState = (state: IAppState) => {
+    store.dispatch(setUiState({ ui: state.ui }));
+    store.dispatch(setDataState({ data: state.data }));
   }
 
   beforeEach(() => {
@@ -48,7 +54,7 @@ describe('InformationPipesService', () => {
     TestBed.configureTestingModule({ imports: [RootModule] });
 
     service = TestBed.inject(InformationPipesService);
-    facade = TestBed.inject(StateFacade);
+    facade = TestBed.inject(DataFacade);
     store = TestBed.inject(Store);
   });
 
@@ -62,9 +68,9 @@ describe('InformationPipesService', () => {
   describe('.pipeFieldPage()', () => {
     it('should return subfield page for subfieldType appellation', async () => {
       // seeding data
-      facade.setState(IAppStateMock.stateProject1)
+      setState(IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.appeTeEnRefersToName
-      facade.data.loadFieldPage([req])
+      facade.loadFieldPage([req])
 
       // using pipe
       const actual = await firstValueFrom(service.pipeFieldPage(req.page, req.targets, false))
@@ -75,9 +81,9 @@ describe('InformationPipesService', () => {
     });
     it('should return subfield page for subfieldType place', (done) => {
       // seeding data
-      facade.setState(IAppStateMock.stateProject1)
+      setState(IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.madridsPresenceWasAtPlace
-      facade.data.loadFieldPage([req])
+      facade.loadFieldPage([req])
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -94,9 +100,9 @@ describe('InformationPipesService', () => {
     });
     it('should return subfield page for subfieldType dimension', (done) => {
       // seeding data
-      facade.setState(IAppStateMock.stateProject1)
+      setState(IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.journyeHasDuration
-      facade.data.loadFieldPage([req])
+      facade.loadFieldPage([req])
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -114,9 +120,9 @@ describe('InformationPipesService', () => {
 
     it('should return subfield page for subfieldType langString', (done) => {
       // seeding data
-      facade.setState(IAppStateMock.stateProject1)
+      setState(IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.manifSingletonHasShortTitleMurderer
-      facade.data.loadFieldPage([req])
+      facade.loadFieldPage([req])
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -134,9 +140,9 @@ describe('InformationPipesService', () => {
 
     it('should return subfield page for subfieldType language', (done) => {
       // seeding data
-      facade.setState(IAppStateMock.stateProject1)
+      setState(IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.appeTeEnUsedInLanguage
-      facade.data.loadFieldPage([req])
+      facade.loadFieldPage([req])
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -153,9 +159,9 @@ describe('InformationPipesService', () => {
     });
     it('should return subfield page for subfieldType timePrimitive', (done) => {
       // seeding data
-      facade.setState(IAppStateMock.stateProject1)
+      setState(IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.shipVoyageAtSomeTimeWithin
-      facade.data.loadFieldPage([req])
+      facade.loadFieldPage([req])
 
       // using pipe
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
@@ -173,9 +179,9 @@ describe('InformationPipesService', () => {
 
     it('should return subfield page for subfieldType temporalEntity', (done) => {
       // seeding data
-      facade.setState(IAppStateMock.stateProject1)
+      setState(IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.person1HasAppeTeEn
-      facade.data.loadFieldPage([req])
+      facade.loadFieldPage([req])
       storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, 0)
       storeSchemaObjectGv(GvSchemaObjectMock.project1, 0)
       storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, 0)
@@ -200,9 +206,9 @@ describe('InformationPipesService', () => {
 
   it('should return subfield page for subfieldType entityPreview', (done) => {
     // seeding data
-    facade.setState(IAppStateMock.stateProject1)
+    setState(IAppStateMock.stateProject1)
     const req = GvFieldPageReqMock.appeTeEnRefersToName
-    facade.data.loadFieldPage([req])
+    facade.loadFieldPage([req])
 
     // using pipe
     const q$ = service.pipeFieldPage(req.page, req.targets, false)

@@ -6,23 +6,19 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { EntityType, IAppState, ProjectSettingsData, ReduxMainService, RootEpics } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { ProDfhClassProjRel, SysConfigClassCategoryBelonging, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { NgRedux, ObservableStore, WithSubStore, select } from '@ngrx/store';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
-import { SubstoreComponent } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from 'projects/app-toolbox/src/app/modules/class-config/components/class-config-dialog/class-config-dialog.component';
 import { DetailContentComponent } from 'projects/app-toolbox/src/app/shared/components/detail-content/detail-content.component';
 import { TabLayout } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from 'projects/app-toolbox/src/app/shared/components/tab-layout/tab-layout.service';
 import { HighlightPipe } from 'projects/app-toolbox/src/app/shared/pipes/highlight/highlight.pipe';
 import { equals, indexBy, keys, values } from 'ramda';
-import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
-import { ProjectSettingsDataAPIActions } from './api/project-settings-data.actions';
-import { projectSettingsDataReducer } from './api/project-settings-data.reducer';
 
 interface Profile {
   label: string,
@@ -65,14 +61,8 @@ export interface ClassItem {
   enabled_in_entities?: boolean
 }
 
+export type EntityType = 'teEnt' | 'peIt' | 'other';
 
-
-
-
-@WithSubStore({
-  basePathMethodName: 'getBasePath',
-  localReducer: projectSettingsDataReducer
-})
 @Component({
   selector: 'gv-project-settings-data',
   templateUrl: './project-settings-data.component.html',
@@ -87,8 +77,7 @@ export interface ClassItem {
     matExpansionAnimations.indicatorRotate,
   ],
 })
-export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
-  implements OnInit, OnDestroy, SubstoreComponent, TabLayoutComponentInterface {
+export class ProjectSettingsDataComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
   @HostBinding('class.gv-flex-fh') flexFh = true;
   @ViewChild(MatSort, { static: true }) sort: MatSort;
   @ViewChild(DetailContentComponent, { static: true }) detailContentComponent: DetailContentComponent;
@@ -96,14 +85,11 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  // local store of this component
-  localStore: ObservableStore<ProjectSettingsData>;
-
   // path to the substore
   @Input() basePath;
 
   // select observables of substore properties
-  @select() loading$: Observable<boolean>;
+  loading$: Observable<boolean>;
 
   items$: Observable<ClassItem[]>;
 
@@ -162,9 +148,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
   ontomeURL = SysConfig.ONTOME_URL;
 
   constructor(
-    protected rootEpics: RootEpics,
-    private dataApi: ReduxMainService,
-    protected ngRedux: NgRedux<IAppState>,
+    public state: StateFacade,
     private highilghtPipe: HighlightPipe,
     public p: ActiveProjectService,
     public ref: ChangeDetectorRef,
@@ -172,10 +156,6 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
     private c: ConfigurationPipesService,
     public tabLayout: TabLayoutService,
   ) {
-    super();
-    // this.ngRedux.select<ProjectDetail>('activeProject').takeUntil(this.destroy$).subscribe(p => this.project = p)
-    // this.ngRedux.select<string>(['activeProject', 'labels', '0', 'label']).takeUntil(this.destroy$).subscribe(p => this.projectLabel = p)
-
     this.filteredItems$.pipe(takeUntil(this.destroy$)).subscribe(items => {
       this.dataSource.data = items;
     })
@@ -184,19 +164,18 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
   getBasePath = () => this.basePath;
 
   ngOnInit() {
-    this.localStore = this.ngRedux.configureSubStore(this.basePath, projectSettingsDataReducer);
 
     this.t = this.tabLayout.t;
-    this.dataApi.loadProjectProfileRelations(this.p.state.pk_project);
+    this.state.data.loadProjectProfileRelations(this.state.pkProject);
 
     const classesEnabledByProfiles$ = this.c.pipeClassesEnabledByProjectProfiles()
 
     this.items$ = combineLatest([
       classesEnabledByProfiles$,
-      this.p.dfh$.label$.by_fk_profile__type$.all$,
+      this.state.data.dfh.label.dfhLabelByProfile$,
       this.c.pipeProfilesEnabledByProject(),
       this.c.pipeTypeClassesEnabledByProjectProfiles(),
-      this.p.sys$.config$.main$
+      this.state.data.sys.config.sysConfig$
     ])
       .pipe(
         switchMap(([
@@ -206,8 +185,7 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
             // Pipe all related informations for each class
             dfhClasses.map(dfhClass => combineLatest([
               this.c.pipeClassLabel(dfhClass.pk_class),
-              this.p.pro$.dfh_class_proj_rel$.by_fk_project__fk_class$
-                .key(this.p.state.pk_project + '_' + dfhClass.pk_class),
+              this.state.data.pro.dfhClassProjRel.getDfhClassProjRel.byFkProjectFkClass$(this.state.pkProject, dfhClass.pk_class),
 
             ])
               .pipe(
@@ -303,7 +281,6 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
   }
 
   ngOnDestroy() {
-    this.destroy();
     this.destroy$.next(true);
     this.destroy$.unsubscribe();
   }
@@ -453,45 +430,33 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
   }
 
   private toggleClass(classItem: ClassItem, enabledInEntities: boolean) {
-    this.p.changingClassProjRel[classItem.pkClass] = true;
+    this.state.ui.activeProject.setChangingClassProjRel(classItem.pkClass, true)
 
     const projRel: ProDfhClassProjRel = {
       pk_entity: (classItem.projRel || { pk_entity: undefined }).pk_entity,
       fk_class: classItem.pkClass,
-      fk_project: this.p.state.pk_project,
+      fk_project: this.state.pkProject,
       enabled_in_entities: enabledInEntities
     }
-    this.dataApi.upsertProjectClassRelations(this.p.state.pk_project, [projRel])
+    this.state.data.upsertProjectClassRelations(this.state.pkProject, [projRel])
       .pipe(takeUntil(this.destroy$)).subscribe(resolved => {
-        if (resolved) this.p.changingClassProjRel[classItem.pkClass] = false;
+        if (resolved) this.state.ui.activeProject.setChangingClassProjRel(classItem.pkClass, false)
       })
   }
 
 
   openControlledVocab(classItem: ClassItem) {
-    this.p.addTab({
+    this.state.ui.activeProject.addTab({
       active: true,
       component: 'contr-vocab-settings',
       icon: 'settings',
       pathSegment: 'contrVocabSettings',
       data: { pkClass: classItem.pkClass }
     })
-    // this.c.pipeTypeClassOfTypedClass(classItem.pkClass)
-    //   .pipe(first((d) => (!!d)), takeUntil(this.destroy$)).subscribe((pkClass) => {
-
-    //     this.p.addTab({
-    //       active: true,
-    //       component: 'contr-vocab-settings',
-    //       icon: 'settings',
-    //       pathSegment: 'contrVocabSettings',
-    //       data: { pkClass }
-    //     })
-
-    //   })
   }
 
   openClassConfig(classItem: ClassItem) {
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(fkProject => {
+    this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(fkProject => {
       const data: ClassConfigDialogData = {
         fkAppContext: 45,
         fkClass: classItem.pkClass,
@@ -507,19 +472,6 @@ export class ProjectSettingsDataComponent extends ProjectSettingsDataAPIActions
     })
   }
 
-  // toggleSystemRelevantClassBool(classItem: ClassItem, col: string) {
-  //   this.p.changingSystemRelevantClass[classItem.pkClass] = true;
-
-  //   this.p.sys$.system_relevant_class.upsert([
-  //     {
-  //       ...classItem.systemRelevantClass,
-  //       fk_class: classItem.pkClass,
-  //       [col]: !classItem.systemRelevantClass ? true : !classItem.systemRelevantClass[col]
-  //     }
-  //   ]).resolved$.pipe(takeUntil(this.destroy$)).subscribe((resolved) => {
-  //     if (resolved) this.p.changingSystemRelevantClass[classItem.pkClass] = false;
-  //   });
-  // }
 }
 
 

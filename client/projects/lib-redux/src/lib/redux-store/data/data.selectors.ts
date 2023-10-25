@@ -1,5 +1,11 @@
-import { createFeatureSelector } from '@ngrx/store';
-import { dataFeatureKey } from './data.feature.key';
-import { DataState } from './data.model';
+import { createSelector } from '@ngrx/store';
+import { getLanguageByPkEntityState } from './inf/language/inf-language.selectors';
+import { getProjectByPkEntity } from './pro/project/pro-project.selectors';
 
-export const getDataState = createFeatureSelector<DataState>(dataFeatureKey);
+export const getProjectLangugage = (projectId: number) =>
+  createSelector(getProjectByPkEntity(projectId), getLanguageByPkEntityState, (project, langguages) => langguages?.[project.fk_language])
+
+
+export const getProjectLangugageLabel = (projectId: number) =>
+  createSelector(getProjectByPkEntity(projectId), getLanguageByPkEntityState, (project, langguages) => langguages?.[project.fk_language]?.notes)
+

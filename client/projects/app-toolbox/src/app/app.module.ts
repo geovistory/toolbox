@@ -3,15 +3,13 @@ import { HttpClientModule } from '@angular/common/http';
 import localeDeCh from '@angular/common/locales/de-CH';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material/form-field';
+import { MatFormFieldDefaultOptions, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MatIconRegistry } from '@angular/material/icon';
 import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReduxQueriesModule } from '@kleiolab/lib-queries';
-import { ReduxModule } from '@kleiolab/lib-redux';
+import { StateModule } from '@kleiolab/lib-redux/public-api';
 import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
-import { SOCKETS_CONFIG, SocketsConfig, SocketsModule } from '@kleiolab/lib-sockets';
-import { StoreModule } from '@ngrx/store';
+import { SocketsConfig, SocketsModule, SOCKETS_CONFIG } from '@kleiolab/lib-sockets';
 import { DndModule } from '@suez/ngx-dnd';
 import { AngularSplitModule } from 'angular-split';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
@@ -22,12 +20,11 @@ import { SystemAdminGuard } from 'projects/app-toolbox/src/app/core/auth/system-
 import { BasicModule } from 'projects/app-toolbox/src/app/core/basic/basic.module';
 import { CookiesModule } from 'projects/app-toolbox/src/app/core/cookies/cookies.module';
 import { MaterialModule } from 'projects/app-toolbox/src/app/core/material/material.module';
-import { RepoModule } from 'projects/app-toolbox/src/app/core/repo/repo.module';
 import { environment } from 'projects/app-toolbox/src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { lb4SdkConfigurationProvider } from './core/auth/auth.module';
-import { NotificationsModule } from './core/notifications/notifications.module';
+import { NotificationModule } from './core/notifications/notifications.module';
 import { ValidationDirectivesModule } from './core/validation/validation.directives';
 import { AccountModule } from './modules/account/account.module';
 import { BackofficeModule } from './modules/backoffice/backoffice.module';
@@ -68,7 +65,6 @@ registerLocaleData(localeDeCh);
 
 
     // other thid party modules
-    StoreModule.forRoot(),
     AngularSplitModule,
     CookiesModule.forRoot(),
     DndModule.forRoot(),
@@ -80,14 +76,11 @@ registerLocaleData(localeDeCh);
 
     // @kleiolab/lib-* modules
     SdkLb4Module,
-    ReduxModule, // .forRoot(),
-    ReduxQueriesModule,
-    NotificationsModule,
+    StateModule,
 
     // own modules (@kleiolab/app-toolbox)
     AppRoutingModule,
     BasicModule,
-    RepoModule,
     ProjectsModule,
     BackofficeModule,
     PassiveLinkModule,
@@ -98,7 +91,8 @@ registerLocaleData(localeDeCh);
     UserFeedbackModule,
     LoadingBarModule,
     ClassDropdownModule,
-    CommentMenuModule
+    CommentMenuModule,
+    NotificationModule
   ],
   providers: [
     ActiveAccountService,

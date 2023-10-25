@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { ActiveProjectPipesService, GvFieldTargets, InformationPipesService } from '@kleiolab/lib-queries';
-import { InfActions, ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPage, GvFieldPageReq, InfStatement, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { combineLatest, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
@@ -33,12 +33,11 @@ export class TypeItemComponent implements OnInit {
   loading: boolean;
   assigningValue: boolean
   constructor(
-    private dataService: ReduxMainService,
     private ap: ActiveProjectPipesService,
-    private inf: InfActions,
     private i: InformationPipesService,
     private fb: UntypedFormBuilder,
-    private pag: PaginationService
+    private pag: PaginationService,
+    private state: StateFacade
   ) {
     this.formGroup = this.fb.group({
       'typeCtrl': new UntypedFormControl()
@@ -167,7 +166,7 @@ export class TypeItemComponent implements OnInit {
               is_in_project: false
             }]
           }
-          const call$ = this.dataService.removeInfEntitiesFromProject([oldStatement.pk_entity], fk_project)
+          const call$ = this.state.data.removeInfEntitiesFromProject([oldStatement.pk_entity], fk_project)
           calls$.push(call$);
         }
 
@@ -182,7 +181,7 @@ export class TypeItemComponent implements OnInit {
             fk_property: this.pkProperty,
             entity_version_project_rels: [{ is_in_project: true }]
           }
-          const call$ = this.dataService.upsertInfStatementsWithRelations(fk_project, [newStmt])
+          const call$ = this.state.data.upsertInfStatementsWithRelations(fk_project, [newStmt])
           calls$.push(call$);
         }
 

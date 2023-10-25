@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingBarActions } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { AccountService, ResetPasswordRequest } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
@@ -31,7 +31,7 @@ export class ResetPasswordComponent implements OnInit {
     protected http: HttpClient,
     private route: ActivatedRoute,
     private accountApi: AccountService,
-    private loadingBarActions: LoadingBarActions,
+    private state: StateFacade,
   ) {
   }
 
@@ -72,14 +72,14 @@ export class ResetPasswordComponent implements OnInit {
       );
   }
   startLoading() {
-    this.loadingBarActions.addJob()
+    this.state.ui.loadingBar.addJob()
     this.loading = true;
   }
   stopLoading() {
-    this.loadingBarActions.removeJob()
+    this.state.ui.loadingBar.removeJob()
   }
   completeLoading() {
     this.loading = false;
-    this.loadingBarActions.removeJob()
+    this.state.ui.loadingBar.removeJob()
   }
 }

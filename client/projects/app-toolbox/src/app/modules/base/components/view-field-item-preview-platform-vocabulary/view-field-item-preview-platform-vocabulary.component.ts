@@ -1,11 +1,9 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { ActiveProjectPipesService, Field } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { Field } from '@kleiolab/lib-queries';
 import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { BaseModalsService } from '../../services/base-modals.service';
 import { EditModeService } from '../../services/edit-mode.service';
-import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
@@ -30,9 +28,6 @@ export class ViewFieldItemPreviewPlatformVocabularyComponent implements OnInit {
     @Optional() @Inject(READ_ONLY) public readonly: boolean,
     public editMode: EditModeService,
     private dialogs: BaseModalsService,
-    private dataService: ReduxMainService,
-    private ap: ActiveProjectPipesService,
-    private paginationService: PaginationService,
   ) { }
 
   ngOnInit(): void {

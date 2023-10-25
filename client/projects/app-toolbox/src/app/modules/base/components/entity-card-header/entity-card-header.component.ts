@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, ConfigurationPipesService } from '@kleiolab/lib-queries';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
@@ -31,6 +32,7 @@ export class EntityCardHeaderComponent implements OnInit {
   constructor(
     public editMode: EditModeService,
     private p: ActiveProjectService,
+    private state: StateFacade,
     private ap: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
     private dialog: MatDialog,
@@ -53,7 +55,7 @@ export class EntityCardHeaderComponent implements OnInit {
   }
 
   openClassConfig() {
-    combineLatest([this.p.pkProject$, this.fkClass$]).pipe(
+    combineLatest([this.state.pkProject$, this.fkClass$]).pipe(
       first(([pro, kla]) => !!pro && !!kla),
     ).subscribe(
       ([pro, kla]) => {

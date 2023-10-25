@@ -1,28 +1,31 @@
 import { Injectable } from '@angular/core';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
+import { Store } from '@ngrx/store';
 import { equals } from 'ramda';
 import { combineLatest, Observable } from 'rxjs';
 import { distinctUntilChanged, filter, map } from 'rxjs/operators';
-import { StateFacade } from '../state.facade';
+import { StateFacade } from '../../redux-store/state.facade';
+import { IAppState } from '../../redux-store/state.model';
+import { getActiveProjectLanguage, getActiveProjectNamespaces } from './active-project.selectors';
 
 // TODO: The methods of this service are quite divers and should be located at different places
 @Injectable({
   providedIn: 'root'
 })
 export class ActiveProjectPipesService {
-  public pkProject$: Observable<number>;
 
   requestedEntityPreviews: { [pkEntity: number]: boolean } = {}
 
+  language$ = this.store.select(getActiveProjectLanguage)
+  namespaces$ = this.store.select(getActiveProjectNamespaces)
 
   constructor(
+    private store: Store<IAppState>,
     private state: StateFacade,
     private entityPreviewSocket: EntityPreviewSocket,
 
   ) {
-    // TODO: Delete in favor of state.ui.activeProject.projectId$;
-    this.pkProject$ = state.ui.activeProject.projectId$;
 
 
 

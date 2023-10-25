@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field, SchemaSelectorsService } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldSourceEntity, InfStatementWithRelations, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
@@ -44,7 +44,7 @@ export class SelectPlatformVocabItemDialogComponent implements OnInit, OnDestroy
   filter$ = new BehaviorSubject<string>('')
 
   constructor(
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     private paginationService: PaginationService,
     @Inject(MAT_DIALOG_DATA) public data: SelectPlatformVocabItemDialogData,
     private ap: ActiveProjectPipesService,
@@ -93,7 +93,7 @@ export class SelectPlatformVocabItemDialogComponent implements OnInit, OnDestroy
       // we need to await this, because, if the user saves without modifying the
       // form, the upsert function below will use the existing statement and add
       // it again to the project. For this reason, remove must be done before upsert
-      await this.dataService.removeEntityFromProject(
+      await this.state.data.removeEntityFromProject(
         pkProject,
         this.data.originalStatement.statement.pk_entity
       ).pipe(first()).toPromise()
@@ -105,7 +105,7 @@ export class SelectPlatformVocabItemDialogComponent implements OnInit, OnDestroy
     }
 
     // upsert new statement
-    await this.dataService.upsertInfStatementsWithRelations(pkProject, [newStmt])
+    await this.state.data.upsertInfStatementsWithRelations(pkProject, [newStmt])
       .pipe(first()).toPromise();
 
     this.triggerPageReloads(pkProject, this.data.source.fkInfo, this.data.field)

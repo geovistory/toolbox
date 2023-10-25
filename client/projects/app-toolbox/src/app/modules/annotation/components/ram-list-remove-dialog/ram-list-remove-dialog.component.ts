@@ -2,7 +2,7 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field } from '@kleiolab/lib-queries';
-import { ReduxMainService } from '@kleiolab/lib-redux';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
@@ -32,7 +32,7 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
   showOntoInfo$ = new BehaviorSubject(false)
   constructor(
     public p: ActiveProjectService,
-    private dataService: ReduxMainService,
+    private state: StateFacade,
     public dialogRef: MatDialogRef<RamListRemoveDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: RamListRemoveDialogData,
   ) {
@@ -44,14 +44,14 @@ export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
 
   onRemove() {
     combineLatest(
-      this.p.inf$.statement$.by_subject_and_property$({
+      this.state.data.inf.statement.getMany.by_subject_and_property$({
         fk_property_of_property: DfhConfig.P_O_P_GEOV_HAS_REFERENCE,
         fk_subject_info: this.data.statement.pk_entity
       }),
-      this.p.pkProject$
+      this.state.pkProject$
     ).pipe(first()).subscribe(([references, pkProject]) => {
 
-      this.dataService.removeInfEntitiesFromProject([this.data.statement.pk_entity, ...references.map(r => r.pk_entity)], pkProject)
+      this.state.data.removeInfEntitiesFromProject([this.data.statement.pk_entity, ...references.map(r => r.pk_entity)], pkProject)
         .pipe(takeUntil(this.destroy$)).subscribe(
           res => {
             if (res) this.dialogRef.close()

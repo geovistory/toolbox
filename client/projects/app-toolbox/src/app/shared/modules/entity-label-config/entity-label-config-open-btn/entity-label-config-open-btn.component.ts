@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { EntityLabelConfigDialogData, EntityLabelConfigDialogComponent } from '../entity-label-config-dialog/entity-label-config-dialog.component';
-import { ActiveProjectService } from "projects/app-toolbox/src/app/core/active-project/active-project.service";
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { Subject } from 'rxjs';
-import { first, takeUntil } from 'rxjs/operators';
+import { EntityLabelConfigDialogComponent, EntityLabelConfigDialogData } from '../entity-label-config-dialog/entity-label-config-dialog.component';
 
 @Component({
   selector: 'gv-entity-label-config-open-btn',
@@ -14,27 +13,26 @@ export class EntityLabelConfigOpenBtnComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
   @Input() fkClass: number
   constructor(private dialog: MatDialog,
-    private p: ActiveProjectService) { }
+    private state: StateFacade,
+  ) { }
 
   ngOnInit() {
     if (!this.fkClass) console.error('You must provide a fkClass.')
   }
   open() {
-    this.p.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
 
-      const dialogData: EntityLabelConfigDialogData = {
-        fkProject: pkProject,
-        fkClass: this.fkClass
-      }
-      const d = this.dialog.open<EntityLabelConfigDialogComponent, EntityLabelConfigDialogData>(
-        EntityLabelConfigDialogComponent,
-        {
-          data: dialogData,
-          height: 'calc(100% - 30px)',
-          width: '850px',
-          maxWidth: '100%',
-        })
-    })
+    const dialogData: EntityLabelConfigDialogData = {
+      fkProject: this.state.pkProject,
+      fkClass: this.fkClass
+    }
+    const d = this.dialog.open<EntityLabelConfigDialogComponent, EntityLabelConfigDialogData>(
+      EntityLabelConfigDialogComponent,
+      {
+        data: dialogData,
+        height: 'calc(100% - 30px)',
+        width: '850px',
+        maxWidth: '100%',
+      })
   }
   ngOnDestroy() {
     this.destroy$.next(true);

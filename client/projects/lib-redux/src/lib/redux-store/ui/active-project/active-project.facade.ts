@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core'
 import { Store } from '@ngrx/store'
-import { ActiveProjectActions } from './active-project.action'
+import { ActiveProjectActions, classSettings, tabLayoutActions } from './active-project.action'
 import { ListType, Panel, PanelTab } from './active-project.models'
-import { getActiveProjectId, getCreatingMentioning, getFocusedPanel, getListType, getMentioningsFocusedInTable, getMentioningsFocusedInText, getPanels, getRefiningChunk, getTab, isActiveTab } from './active-project.selectors'
+import { getActiveProjectId, getChangingClassProjRel, getCreatingMentioning, getFocusedPanel, getListType, getMentioningsFocusedInTable, getMentioningsFocusedInText, getPanels, getRefiningChunk, getTab, getTabLayoutLoading, getTabLayoutMode, getTabLayoutTitle, getTabLayoutTooltip, isActiveTab } from './active-project.selectors'
+import { TabLayoutMode } from './active-project/tab-layout.models'
 
 @Injectable({
   providedIn: 'root'
@@ -45,9 +46,41 @@ export class ActiveProjectFacade {
     this.store.dispatch(ActiveProjectActions.setMentioningsFocusedInText(mentioningsFocusedInText))
   setMentioningsFocusedInTable = (mentioningsFocusedInTable: number[]) =>
     this.store.dispatch(ActiveProjectActions.setMentioningsFocusedInTable(mentioningsFocusedInTable))
+  // Tab data selections
+  setTabTitle(tabId: string, title: string) {
+    return this.store.dispatch(tabLayoutActions.setTabTitle({ tabId, title }))
+  }
+  setTabTooltip(tabId: string, tooltip: string) {
+    return this.store.dispatch(tabLayoutActions.setTabTooltip({ tabId, tooltip }))
+  }
+  setTabLoading(tabId: string, loading: boolean) {
+    return this.store.dispatch(tabLayoutActions.setTabLoading({ tabId, loading }))
+  }
+  setTabLayoutMode(tabId: string, mode: TabLayoutMode) {
+    return this.store.dispatch(tabLayoutActions.setLayoutMode({ tabId, mode }))
+  }
+  setChangingClassProjRel(classId: number, projectRelationIsChanging: boolean) {
+    return this.store.dispatch(classSettings.setChangingClassProjRel({ classId, projectRelationIsChanging }))
+  }
   destroy = () => this.store.dispatch(ActiveProjectActions.destroy())
-
 
   getTab$ = (panelIndex: number, tabIndex: number) => this.store.select(getTab(panelIndex, tabIndex))
   getIsActiveTab$ = (panelIndex: number, tabIndex: number) => this.store.select(isActiveTab(panelIndex, tabIndex))
+
+  // Tab data selections
+  getTabTitle(id: string) {
+    return this.store.select(getTabLayoutTitle(id))
+  }
+  getTabTooltip(id: string) {
+    return this.store.select(getTabLayoutTooltip(id))
+  }
+  getTabLoading(id: string) {
+    return this.store.select(getTabLayoutLoading(id))
+  }
+  getTabLayoutMode(id: string) {
+    return this.store.select(getTabLayoutMode(id))
+  }
+  getChangingClassProjRel(classId: number) {
+    return this.store.select(getChangingClassProjRel(classId))
+  }
 }

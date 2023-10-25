@@ -1,8 +1,8 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
+import { StateFacade } from '@kleiolab/lib-redux/public-api';
 import { InfDimension } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { CONTAINER_DATA } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-child-factory';
 import { FormFactory } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from 'projects/app-toolbox/src/app/modules/form-factory/core/form-factory.models';
@@ -40,7 +40,7 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
 
 
   constructor(
-    private p: ActiveProjectService,
+    private state: StateFacade,
     private ff: FormFactoryService,
     @Optional() @Inject(CONTAINER_DATA) public injectedData: FgDimensionInjectData
   ) {
@@ -57,7 +57,7 @@ export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, F
 
     // if (!this.pkClassOfDimension) throw new Error('this.pkClassOfDimension is missing')
 
-    this.pkClassOfMeasurementUnit$ = this.p.sys$.config$.main$.pipe(
+    this.pkClassOfMeasurementUnit$ = this.state.data.sys.config.sysConfig$.pipe(
       filter(c => !!c),
       map(config => {
         const classConfig = config.classes[this.pkClassOfDimension]

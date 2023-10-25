@@ -1,4 +1,4 @@
-import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
+import { APP_INITIAL_STATE } from '@kleiolab/lib-redux/public-api';
 import { GvFieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
 import { InitStateModule } from 'projects/app-toolbox/src/app/shared/components/init-state/init-state.module';
