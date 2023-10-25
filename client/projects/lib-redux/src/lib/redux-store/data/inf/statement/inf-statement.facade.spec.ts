@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { InfStatement } from '@kleiolab/lib-sdk-lb4';
+import { GvFieldPage, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import { GvPaginationObjectMock } from 'projects/__test__/data/auto-gen/api-responses/GvPaginationObjectMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
@@ -97,12 +97,23 @@ describe('InfStatement Facade', () => {
         store.dispatch(infStatementActions.loadPageSucceededAction(
           p.paginatedStatements, p.count, p.req.page, ProProjectMock.PROJECT_1.pk_entity
         )))
+      console.log(await firstValueFrom(store.select(s => s)))
 
       const page = serverResponseMock.subfieldPages[0].req.page
       const paginationInfo = await firstValueFrom(facade.getPage.page(page));
       expect(paginationInfo.count).toEqual(1)
       expect(paginationInfo.loading['0_7']).toEqual(false)
       expect(keys(paginationInfo.rows).length).toEqual(1)
+    });
+
+    it('should return empty page', async () => {
+      const page: GvFieldPage = { isOutgoing: true, property: { fkProperty: 1 }, scope: { inProject: 123 }, source: { fkInfo: 2 }, limit: 5, offset: 0 }
+      store.dispatch(infStatementActions.loadPageSucceededAction(
+        [], 0, page, 123
+      ))
+      console.log(await firstValueFrom(store.select(s => s)))
+      const res = await firstValueFrom(facade.getPage$(page));
+      expect(res.length).toEqual(0)
     });
   })
 

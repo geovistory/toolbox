@@ -1,4 +1,4 @@
-import { GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
+import { GvNegativeSchemaObject, GvPositiveSchemaObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
 import { combineReducers, createReducer, on } from '@ngrx/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { composeReducers } from '../_lib/composeReducers';
@@ -44,7 +44,7 @@ const dataRootReducers = createReducer({},
     if (action.payload.negative) {
       state = {
         ...state,
-        ...loopOverSchemaNames(state, action.payload.positive, removeModels)
+        ...loopOverSchemaNames(state, action.payload.negative, removeModels)
       }
     }
     return state;
@@ -55,12 +55,12 @@ const dataRootReducers = createReducer({},
 
 
 
-function loopOverSchemaNames(state: DataState, positive: GvPositiveSchemaObject, cb: (schemaData: any, schemaDef: ReducerConfigCollection, schemaState: any) => any) {
+function loopOverSchemaNames(state: DataState, schemaObject: GvPositiveSchemaObject | GvNegativeSchemaObject, cb: (schemaData: any, schemaDef: ReducerConfigCollection, schemaState: any) => any) {
 
-  Object.keys(positive).forEach(schemaName => {
+  Object.keys(schemaObject).forEach(schemaName => {
     const schemaDef: ReducerConfigCollection = definitions[schemaName];
     if (schemaDef) {
-      const schemaData = positive[schemaName];
+      const schemaData = schemaObject[schemaName];
       const schemaState = state[schemaName] || {}
       state = {
         ...state,

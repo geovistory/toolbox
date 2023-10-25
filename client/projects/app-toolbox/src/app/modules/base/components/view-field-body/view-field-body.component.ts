@@ -5,7 +5,6 @@ import { DfhConfig } from '@kleiolab/lib-config';
 import { Field, QueriesFacade, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
 import { delay, distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -73,7 +72,6 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   sortListId: string
   constructor(
     public dndGlobal: GvDndGlobalService,
-    private p: ActiveProjectService,
     private pag: PaginationService,
     private state: StateFacade,
     private queries: QueriesFacade,

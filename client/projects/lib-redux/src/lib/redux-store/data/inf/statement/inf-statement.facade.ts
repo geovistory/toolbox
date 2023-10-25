@@ -119,7 +119,7 @@ export class InfStatementFacade extends CrudFacade<InfStatement> {
           for (let i = start; i < end; i++) {
             obs$.push(this.getPage.pageRow(page, i))
           }
-          return combineLatestOrEmpty(obs$)
+          return combineLatestOrEmpty(obs$).pipe(map((rows) => rows.filter(row => !!row)))
         })
       )
   }
