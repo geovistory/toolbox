@@ -1,0 +1,129 @@
+{
+  "name": "app-toolbox",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "gv",
+  "sourceRoot": "apps/app-toolbox/src",
+  "tags": [],
+  "targets": {
+    "preserve": {
+      "command": "node scripts/preserve.js"
+    },
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/apps/app-toolbox",
+        "index": "apps/app-toolbox/src/index.html",
+        "main": "apps/app-toolbox/src/main.ts",
+        "polyfills": [
+          "zone.js"
+        ],
+        "tsConfig": "apps/app-toolbox/tsconfig.app.json",
+        "scripts": [
+          "node_modules/cesium/Build/Cesium/Cesium.js"
+        ],
+        "assets": [
+          "apps/app-toolbox/src/assets",
+          {
+            "glob": "**/*",
+            "input": "node_modules/cesium/Build/Cesium",
+            "output": "./assets/cesium"
+          },
+          {
+            "glob": "mdi.svg",
+            "input": "node_modules/@mdi/angular-material",
+            "output": "./assets/mdi"
+          }
+        ],
+        "styles": [
+          "apps/app-toolbox/src/styles.scss",
+          "geovistory-font/dist/Geovistory.css",
+          "node_modules/font-awesome/css/font-awesome.css",
+          "node_modules/quill/dist/quill.bubble.css",
+          "node_modules/quill/dist/quill.snow.css",
+          "node_modules/cesium/Build/Cesium/Widgets/widgets.css"
+        ],
+        "webWorkerTsConfig": "apps/app-toolbox/tsconfig.worker.json"
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "dependsOn": [
+        "preserve"
+      ],
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "app-toolbox:build:production"
+        },
+        "development": {
+          "browserTarget": "app-toolbox:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "app-toolbox:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/app-toolbox/**/*.ts",
+          "apps/app-toolbox/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "apps/app-toolbox/jest.config.ts",
+        "passWithNoTests": true,
+        "webWorkerTsConfig": "apps/app-toolbox/tsconfig.worker.json"
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  }
+}
