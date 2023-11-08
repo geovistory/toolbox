@@ -4,11 +4,11 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, HostBinding, OnDestr
 import { MatDrawer } from '@angular/material/sidenav';
 import { ActivatedRoute } from '@angular/router';
 import { ListType, PanelTab, StateFacade } from '@kleiolab/lib-redux';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { BasicService } from '../../../../core/basic/basic.service';
 import { indexBy } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { BasicService } from '../../../../core/basic/basic.service';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
 
 
@@ -45,7 +45,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
   panelBodies$ = new BehaviorSubject<PanelBodyDirective[]>([]);
 
   projectId: number;
-  projectLabel$: Observable<String>;
+  projectLabel$: Observable<string>;
 
   btn1Label$: Observable<string>
   btn1Url$: Observable<string>

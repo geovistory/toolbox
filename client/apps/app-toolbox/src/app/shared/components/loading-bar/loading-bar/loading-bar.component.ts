@@ -1,18 +1,18 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ProgressBarMode } from '@angular/material/progress-bar';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'gv-loading-bar',
   templateUrl: './loading-bar.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadingBarComponent implements OnInit {
-  visible = false;
-  mode: ProgressBarMode;
-  value: number;
+  visible$ = new BehaviorSubject(false);
+  mode$ = new BehaviorSubject<ProgressBarMode>('indeterminate');
+  value$ = new BehaviorSubject(0);
   @Input() jobs$: Observable<number>;
   jobs = 0;
-  constructor() { }
   ngOnInit() {
     if (!this.jobs$) throw new Error('@Input() jobs$ must be defined.');
     let lastJobs = 0;
@@ -26,18 +26,18 @@ export class LoadingBarComponent implements OnInit {
   complete() {
     for (let i = 0; i <= 100; i = i + 10) {
       setTimeout(() => {
-        this.mode = 'determinate';
-        this.value = i;
+        this.mode$.next('determinate');
+        this.value$.next(i);
         if (i === 100) {
           setTimeout(() => {
-            if (this.jobs === 0) this.visible = false;
+            if (this.jobs === 0) this.visible$.next(false);
           }, 300);
         }
       }, i * 4);
     }
   }
   start() {
-    this.visible = true;
-    this.mode = 'indeterminate';
+    this.visible$.next(true);
+    this.mode$.next('indeterminate');
   }
 }

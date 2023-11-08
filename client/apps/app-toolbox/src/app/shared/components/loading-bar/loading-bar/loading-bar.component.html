@@ -1,2 +1,2 @@
-<mat-progress-bar id="loading-bar" [ngClass]="{'is-visible':visible}" [mode]="mode" [value]="value"
+<mat-progress-bar id="loading-bar" [ngClass]="{'is-visible':visible$|async}" [mode]="mode$|async" [value]="value$|async"
   [matTooltip]="'running jobs: ' + (jobs$|async)"></mat-progress-bar>
