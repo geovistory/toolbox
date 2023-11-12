@@ -124,6 +124,55 @@
           "codeCoverage": true
         }
       }
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "apps/app-toolbox/.storybook",
+        "browserTarget": "app-toolbox:build",
+        "compodoc": false
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": [
+        "{options.outputDir}"
+      ],
+      "options": {
+        "outputDir": "dist/storybook/app-toolbox",
+        "configDir": "apps/app-toolbox/.storybook",
+        "browserTarget": "app-toolbox:build",
+        "compodoc": false
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "test-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "test-storybook -c apps/app-toolbox/.storybook --url=http://localhost:4400"
+      }
+    },
+    "static-storybook": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "app-toolbox:build-storybook",
+        "staticFilePath": "dist/storybook/app-toolbox"
+      },
+      "configurations": {
+        "ci": {
+          "buildTarget": "app-toolbox:build-storybook:ci"
+        }
+      }
     }
   }
 }

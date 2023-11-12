@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { AccountService, LoginRequest, LoginResponse, PubAccount, PubRole } from '@kleiolab/lib-sdk-lb4';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { GvAuthService, GvAuthToken } from '../auth/auth.service';
 
 
 @Injectable()
 export class ActiveAccountService {
-  public userObs$ = new ReplaySubject<PubAccount>();
+  public userObs$: Observable<PubAccount>;
 
   account: PubAccount;
   redirectUrl: string;
@@ -20,6 +20,7 @@ export class ActiveAccountService {
   ) {
 
     this.updateAccount()
+    this.userObs$ = this.state.ui.account.account$
   }
 
   getAccount() {
@@ -29,7 +30,6 @@ export class ActiveAccountService {
   updateAccount() {
     this.account = this.authService.getCurrentUserData();
     this.state.ui.account.loginSucceeded(this.account);
-    this.userObs$.next(this.account);
   }
 
   isLoggedIn() {

@@ -3,26 +3,26 @@ import { HttpClientModule } from '@angular/common/http';
 import localeDeCh from '@angular/common/locales/de-CH';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldDefaultOptions, MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { MatIconRegistry } from '@angular/material/icon';
-import { BrowserModule, DomSanitizer } from '@angular/platform-browser';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material/form-field';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StateModule } from '@kleiolab/lib-redux';
-import { SdkLb4Module } from '@kleiolab/lib-sdk-lb4';
-import { SocketsConfig, SocketsModule, SOCKETS_CONFIG } from '@kleiolab/lib-sockets';
+import { SOCKETS_CONFIG, SocketsConfig, SocketsModule } from '@kleiolab/lib-sockets';
 import { DndModule } from '@suez/ngx-dnd';
 import { AngularSplitModule } from 'angular-split';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { environment } from '../environments/environment';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { ActiveAccountService } from './core/active-account';
 import { AuthGuard } from './core/auth/auth-guard.service';
+import { lb4SdkConfigurationProvider } from './core/auth/auth.module';
 import { GvAuthService } from './core/auth/auth.service';
 import { SystemAdminGuard } from './core/auth/system-admin-guard.service';
 import { BasicModule } from './core/basic/basic.module';
 import { CookiesModule } from './core/cookies/cookies.module';
+import { MatIconRegistryModule } from './core/material/material-icon-registry.module';
 import { MaterialModule } from './core/material/material.module';
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { lb4SdkConfigurationProvider } from './core/auth/auth.module';
 import { NotificationModule } from './core/notifications/notifications.module';
 import { ValidationDirectivesModule } from './core/validation/validation.directives';
 import { AccountModule } from './modules/account/account.module';
@@ -34,7 +34,6 @@ import { ClassDropdownModule } from './shared/components/class-dropdown/class-dr
 import { CommentMenuModule } from './shared/components/comment-menu/comment-menu.module';
 import { LoadingBarModule } from './shared/components/loading-bar/loading-bar.module';
 import { KeysModule } from './shared/pipes/keys.module';
-import { environment } from '../environments/environment';
 
 // TODO: check if this can stay.
 const socketIoConfig: SocketIoConfig = { url: environment.apiUrl, options: {} };
@@ -61,6 +60,7 @@ registerLocaleData(localeDeCh);
     ReactiveFormsModule,
     HttpClientModule,
     MaterialModule,
+    MatIconRegistryModule,
 
 
 
@@ -75,7 +75,6 @@ registerLocaleData(localeDeCh);
     SocketIoModule.forRoot(socketIoConfig),
 
     // @kleiolab/lib-* modules
-    SdkLb4Module,
     StateModule,
 
     // own modules (@kleiolab/app-toolbox)
@@ -114,8 +113,5 @@ registerLocaleData(localeDeCh);
   bootstrap: [AppComponent]
 })
 export class AppModule {
-  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
-    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(environment.assetsUrl + '/assets/mdi/mdi.svg'));
-    matIconRegistry.addSvgIconSetInNamespace('gv', domSanitizer.bypassSecurityTrustResourceUrl(environment.assetsUrl + '/assets/gv-icons.svg'));
-  }
+
 }

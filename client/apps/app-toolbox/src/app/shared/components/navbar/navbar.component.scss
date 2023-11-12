@@ -2,39 +2,15 @@
   flex: 1 1 auto;
 }
 
-// Navbar (main)
-// #nav {
-//   // .breadcrumb {
-//   //   padding: 0.25rem 0.75rem;
-//   //   margin-bottom: 0;
-//   // }
-
-//   #userDropdown {
-//     i {
-//       font-size: 1.3rem;
-//     }
-//   }
-
-//   #userDropdown::after {
-//     display: none;
-//   }
-
-//   #userIconBig {
-//     font-size: 3rem;
-//     color: $gray-300;
-//     margin-top: 1rem;
-//   }
-// }
 #userIconBig {
   font-size: 3rem;
-  // color: $gray-300;
   margin-top: 1rem;
 }
 
 .gv-nv-dropdown-item {
   display: block;
   width: 100%;
-  padding: 0.25rem 1.5rem;
+  padding: 0.25rem 0.25rem;
   clear: both;
   font-weight: 400;
   text-align: center;
@@ -53,4 +29,8 @@
 
 .gv-nv-feedback-btn {
   margin-right: 2.4rem;
+}
+
+.account-email {
+  padding: 0.5rem 0.5rem;
 }

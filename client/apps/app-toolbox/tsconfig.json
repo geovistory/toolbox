@@ -11,9 +11,7 @@
     "allowSyntheticDefaultImports": true
   },
   "files": [],
-  "include": [
-    "src/**/*.d.ts"
-  ],
+  "include": ["src/**/*.d.ts"],
   "references": [
     {
       "path": "./tsconfig.app.json"
@@ -23,6 +21,9 @@
     },
     {
       "path": "./tsconfig.editor.json"
+    },
+    {
+      "path": "./.storybook/tsconfig.json"
     }
   ],
   "extends": "../../tsconfig.base.json",

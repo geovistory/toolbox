@@ -44,7 +44,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   openFeedbackDialog(): void {
- this.dialog.open(FeedbackDialogComponent, {
+    this.dialog.open(FeedbackDialogComponent, {
       width: '470px',
       data: {}
     });

@@ -1,11 +1,11 @@
 /* SystemJS module definition */
-declare var module: NodeModule;
+declare let module: NodeModule;
 interface NodeModule {
   id: string;
 }
-declare var Cesium;
+declare let Cesium;
 
-interface CesiumJulianDate  {
+interface CesiumJulianDate {
   dayNumber: number;
   secondsOfDay: number;
 }

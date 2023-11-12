@@ -1,10 +1,9 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { StateFacade } from '@kleiolab/lib-redux';
-import { Toast as Notfication } from '@kleiolab/lib-redux';
+import { Toast as Notfication, StateFacade } from '@kleiolab/lib-redux';
 import { Message, MessageService } from 'primeng/api';
 import { Toast } from 'primeng/toast';
 import { difference } from 'ramda';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 
@@ -16,9 +15,10 @@ import { takeUntil } from 'rxjs/operators';
 export class NotificationComponent implements OnDestroy {
   destroy$ = new Subject<boolean>();
   @ViewChild(Toast) toast: Toast;
+  text$ = new BehaviorSubject('A')
   constructor(
     private messageService: MessageService,
-    state: StateFacade
+    public state: StateFacade
   ) {
     let id = 0;
     let lastState: Notfication[] = [];

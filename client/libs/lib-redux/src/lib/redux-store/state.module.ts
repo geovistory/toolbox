@@ -20,6 +20,7 @@ export function apiConfigFactory(): Configuration {
 
 @NgModule({
   imports: [
+    SdkLb4Module,
     UiModule,
     DataModule,
     StoreModule.forRoot(),
@@ -27,19 +28,16 @@ export function apiConfigFactory(): Configuration {
     EffectsModule.forRoot(StateEffects),
     SocketsModule
   ],
-  providers: []
 })
 export class StateModule {
 
 
   constructor(
     @Optional() @SkipSelf() parentModule?: StateModule,
-    @Optional() sdkLb4?: SdkLb4Module,
     @Optional() @Inject(APP_INITIAL_STATE) initialState?: IAppState
   ) {
     const errors: string[] = []
     if (parentModule) errors.push('StateModule is already loaded. Import in your base AppModule only.');
-    if (!sdkLb4) errors.push('You need to import the SdkLb4Module in your AppModule!');
     if (errors.length) throw new Error(errors.join('\n'));
     if (!initialState) initialState = {
       ui: {
