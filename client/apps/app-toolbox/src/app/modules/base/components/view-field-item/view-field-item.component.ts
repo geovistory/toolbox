@@ -15,6 +15,17 @@ import { ViewFieldDropListService } from '../../services/view-field-drop-list.se
 import { EditTextDialogComponent, EditTextDialogData } from '../edit-text-dialog/edit-text-dialog.component';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { VIEW_FIELD_ITEM_TYPE } from './VIEW_FIELD_ITEM_TYPE';
+import { ViewFieldItemContentSectionComponent } from '../view-field-item-content-section/view-field-item-content-section.component';
+import { ViewFieldItemValueVersionComponent } from '../view-field-item-value-version/view-field-item-value-version.component';
+import { ViewFieldItemValueComponent } from '../view-field-item-value/view-field-item-value.component';
+import { ViewFieldItemCellComponent } from '../view-field-item-cell/view-field-item-cell.component';
+import { ViewFieldItemTimePrimitiveComponent } from '../view-field-item-time-primitive/view-field-item-time-primitive.component';
+import { ViewFieldItemNestedComponent } from '../view-field-item-nested/view-field-item-nested.component';
+import { ViewFieldItemPreviewHasTypeComponent } from '../view-field-item-preview-has-type/view-field-item-preview-has-type.component';
+import { ViewFieldItemPreviewPlatformVocabularyComponent } from '../view-field-item-preview-platform-vocabulary/view-field-item-preview-platform-vocabulary.component';
+import { ViewFieldItemPreviewComponent } from '../view-field-item-preview/view-field-item-preview.component';
+import { NgIf } from '@angular/common';
+import { ViewFieldItemLayoutComponent } from '../view-field-item-layout/view-field-item-layout.component';
 export type ViewFieldItemTypeFn = (field: Field, stmtWT: StatementWithTarget) => ViewFieldItemType | undefined
 export type ViewFieldItemType =
   'preview' // a normal entity, that can be in the project or not
@@ -28,10 +39,12 @@ export type ViewFieldItemType =
   | 'content-tree';
 
 @Component({
-  selector: 'gv-view-field-item',
-  templateUrl: './view-field-item.component.html',
-  styleUrls: ['./view-field-item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-view-field-item',
+    templateUrl: './view-field-item.component.html',
+    styleUrls: ['./view-field-item.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [ViewFieldItemLayoutComponent, NgIf, ViewFieldItemPreviewComponent, ViewFieldItemPreviewPlatformVocabularyComponent, ViewFieldItemPreviewHasTypeComponent, ViewFieldItemNestedComponent, ViewFieldItemTimePrimitiveComponent, ViewFieldItemCellComponent, ViewFieldItemValueComponent, ViewFieldItemValueVersionComponent, ViewFieldItemContentSectionComponent]
 })
 export class ViewFieldItemComponent implements OnInit {
   destroy$ = new Subject<boolean>();

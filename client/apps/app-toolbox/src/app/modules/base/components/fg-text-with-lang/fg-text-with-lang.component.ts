@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellationWithRelations, InfLanguage, InfResourceWithRelations, InfStatementWithRelations, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { CONTAINER_DATA } from '../../../../modules/form-factory/core/form-child-factory';
@@ -16,6 +16,8 @@ import { openClose } from '../../../information/shared/animations';
 import { getFirstElementFormQueryList } from '../../base.helpers';
 import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgIf } from '@angular/common';
 
 type FgTextWithLangConfig = FormNodeConfig<any, any, any, any>
 export interface FgTextWithLangInjectData extends FormFactoryCompontentInjectData<Observable<InfResourceWithRelations>> {
@@ -24,10 +26,12 @@ export interface FgTextWithLangInjectData extends FormFactoryCompontentInjectDat
   stringFieldPlaceholder: string // label of the field where user enters text
 }
 @Component({
-  selector: 'gv-fg-text-with-lang',
-  templateUrl: './fg-text-with-lang.component.html',
-  styleUrls: ['./fg-text-with-lang.component.scss'],
-  animations: [openClose]
+    selector: 'gv-fg-text-with-lang',
+    templateUrl: './fg-text-with-lang.component.html',
+    styleUrls: ['./fg-text-with-lang.component.scss'],
+    animations: [openClose],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlAppellationComponent, CtrlLanguageComponent, MatTooltipModule]
 })
 export class FgTextWithLangComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

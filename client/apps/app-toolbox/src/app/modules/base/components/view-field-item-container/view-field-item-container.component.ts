@@ -1,7 +1,7 @@
 import { Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
 import { Field } from '@kleiolab/lib-redux';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
-import { DndDropEvent } from 'ngx-drag-drop';
+import { DndDropEvent, DndDropzoneDirective } from 'ngx-drag-drop';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GvDndSortListDirective } from '../../directives/dnd-sort-list.directive';
@@ -9,6 +9,7 @@ import { DndDropPosition, GvDndGlobalService, ItemData, TreeItem } from '../../s
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { NgStyle, NgIf, NgTemplateOutlet, AsyncPipe } from '@angular/common';
 export const canDrop = (field: Field, stmt: StatementWithTarget) => map<TreeItem | false, boolean>((dragStmt) => {
   // item can't be dropped here if...
 
@@ -39,9 +40,11 @@ export function getDragDataFromEvent(event: DndDropEvent): ItemData {
 }
 
 @Component({
-  selector: 'gv-view-field-item-container',
-  templateUrl: './view-field-item-container.component.html',
-  styleUrls: ['./view-field-item-container.component.scss']
+    selector: 'gv-view-field-item-container',
+    templateUrl: './view-field-item-container.component.html',
+    styleUrls: ['./view-field-item-container.component.scss'],
+    standalone: true,
+    imports: [NgStyle, NgIf, NgTemplateOutlet, DndDropzoneDirective, AsyncPipe]
 })
 export class ViewFieldItemContainerComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

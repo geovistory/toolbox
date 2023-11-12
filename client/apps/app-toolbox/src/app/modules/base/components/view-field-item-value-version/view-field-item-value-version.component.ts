@@ -1,19 +1,27 @@
-import { Component } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { ProjectDataService, ReplaceStatementInFieldRequest } from '@kleiolab/lib-sdk-lb4';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../../shared/components/progress-dialog/progress-dialog.component';
-import { BehaviorSubject, combineLatest, Observable, of, Subject, timer } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import { catchError, first, map, takeUntil } from 'rxjs/operators';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
+import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../../shared/components/progress-dialog/progress-dialog.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 @Component({
   selector: 'gv-view-field-item-value-version',
   templateUrl: './view-field-item-value-version.component.html',
-  styleUrls: ['./view-field-item-value-version.component.scss']
+  styleUrls: ['./view-field-item-value-version.component.scss'],
+  standalone: true,
+  imports: [forwardRef(() => ViewFieldItemContainerComponent), OntoInfoModule, NgIf, MatMenuModule, MatIconModule, MatButtonModule, AsyncPipe]
 })
 export class ViewFieldItemValueVersionComponent {
   destroy$ = new Subject<boolean>();

@@ -221,23 +221,22 @@ const baseModules = [
 ]
 
 @NgModule({
-  imports: baseModules,
-  declarations: components,
-  providers: [
-    PaginationService,
-    TimeSpanService,
-    ValidationService,
-    BaseModalsService,
-    ViewFieldAddHooksService,
-    ViewFieldTreeNodeService,
-    ViewFieldDropListService,
-    ViewFieldItemCountSumService,
-    GvDndGlobalService,
-    EditModeService
-  ],
-  exports: [
-    ...components,
-    ...baseModules
-  ]
+    imports: [...baseModules, ...components],
+    providers: [
+        PaginationService,
+        TimeSpanService,
+        ValidationService,
+        BaseModalsService,
+        ViewFieldAddHooksService,
+        ViewFieldTreeNodeService,
+        ViewFieldDropListService,
+        ViewFieldItemCountSumService,
+        GvDndGlobalService,
+        EditModeService
+    ],
+    exports: [
+        ...components,
+        ...baseModules
+    ]
 })
 export class BaseModule { }

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { UntypedFormArray } from '@angular/forms';
+import { UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SectionName, StateFacade, TableName } from '@kleiolab/lib-redux';
@@ -26,6 +26,9 @@ import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
 import { FgTextWithLangComponent, FgTextWithLangInjectData } from '../fg-text-with-lang/fg-text-with-lang.component';
 import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
+import { MatButtonModule } from '@angular/material/button';
+import { FormGroupComponent } from '../form-group/form-group.component';
+import { NgIf, AsyncPipe } from '@angular/common';
 export interface FormArrayData {
   pkClass?: number
   // customCtrlLabel?: string
@@ -116,9 +119,11 @@ export interface FieldSection {
   pipeFields?: (pkClass: number) => Observable<Field[]>
 }
 @Component({
-  selector: 'gv-form-create-data',
-  templateUrl: './form-create-data.component.html',
-  styleUrls: ['./form-create-data.component.scss']
+    selector: 'gv-form-create-data',
+    templateUrl: './form-create-data.component.html',
+    styleUrls: ['./form-create-data.component.scss'],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, FormGroupComponent, MatButtonModule, AsyncPipe]
 })
 export class FormCreateDataComponent implements OnInit, OnDestroy {
 

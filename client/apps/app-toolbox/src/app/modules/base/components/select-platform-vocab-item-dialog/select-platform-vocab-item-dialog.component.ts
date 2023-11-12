@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, InfStatementWithRelations, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
@@ -10,6 +10,11 @@ import { fieldToWarFieldChangeId } from '../../base.helpers';
 import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { NgStyle, NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
 
 export interface SelectPlatformVocabItemDialogData {
 
@@ -28,13 +33,15 @@ interface Option {
   label: string
 }
 @Component({
-  selector: 'gv-select-platform-vocab-item-dialog',
-  templateUrl: './select-platform-vocab-item-dialog.component.html',
-  styleUrls: ['./select-platform-vocab-item-dialog.component.scss'],
-  providers: [
-    EditModeService,
-    { provide: READ_ONLY, useValue: true }
-  ]
+    selector: 'gv-select-platform-vocab-item-dialog',
+    templateUrl: './select-platform-vocab-item-dialog.component.html',
+    styleUrls: ['./select-platform-vocab-item-dialog.component.scss'],
+    providers: [
+        EditModeService,
+        { provide: READ_ONLY, useValue: true }
+    ],
+    standalone: true,
+    imports: [MatDividerModule, NgStyle, MatDialogModule, MatListModule, NgFor, MatButtonModule, NgIf, MatProgressSpinnerModule, AsyncPipe]
 })
 export class SelectPlatformVocabItemDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

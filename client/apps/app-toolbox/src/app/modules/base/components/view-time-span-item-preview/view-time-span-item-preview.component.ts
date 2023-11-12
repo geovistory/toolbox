@@ -6,12 +6,17 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { Observable, Subject } from 'rxjs';
 import { map, shareReplay, takeUntil } from 'rxjs/operators';
 import { TimeSpanData, TimeSpanFieldPages } from '../../services/time-span.service';
+import { DateTimeModule } from '../../../../../../../../libs/lib-utils/src/lib/date-time/date-time.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'gv-view-time-span-item-preview',
-  templateUrl: './view-time-span-item-preview.component.html',
-  styleUrls: ['./view-time-span-item-preview.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-view-time-span-item-preview',
+    templateUrl: './view-time-span-item-preview.component.html',
+    styleUrls: ['./view-time-span-item-preview.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, MatProgressSpinnerModule, AsyncPipe, DateTimeModule]
 })
 export class ViewTimeSpanItemPreviewComponent implements OnInit {
   destroy$ = new Subject<boolean>();

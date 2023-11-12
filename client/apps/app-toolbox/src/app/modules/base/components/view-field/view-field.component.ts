@@ -12,15 +12,20 @@ import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.se
 import { ChooseClassDialogComponent, ChooseClassDialogData, ChooseClassDialogReturn } from '../choose-class-dialog/choose-class-dialog.component';
 import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+import { AsyncPipe } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
+import { ViewFieldHeaderComponent } from '../view-field-header/view-field-header.component';
 
 @Component({
-  selector: 'gv-view-field',
-  templateUrl: './view-field.component.html',
-  styleUrls: ['./view-field.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    ViewFieldTreeNodeService
-  ]
+    selector: 'gv-view-field',
+    templateUrl: './view-field.component.html',
+    styleUrls: ['./view-field.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        ViewFieldTreeNodeService
+    ],
+    standalone: true,
+    imports: [ViewFieldHeaderComponent, MatDividerModule, ViewFieldBodyComponent, AsyncPipe]
 })
 export class ViewFieldComponent implements OnInit {
 

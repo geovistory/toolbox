@@ -5,12 +5,17 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldComponent } from '../view-field/view-field.component';
+import { EntityFieldTimeSpanComponent } from '../entity-field-time-span/entity-field-time-span.component';
+import { EntityFieldComponent } from '../entity-field/entity-field.component';
+import { NgFor, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'gv-entity-with-fields',
-  templateUrl: './entity-with-fields.component.html',
-  styleUrls: ['./entity-with-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-entity-with-fields',
+    templateUrl: './entity-with-fields.component.html',
+    styleUrls: ['./entity-with-fields.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgFor, EntityFieldComponent, EntityFieldTimeSpanComponent, AsyncPipe]
 })
 export class EntityWithFieldsComponent implements OnInit {
   destroy$ = new Subject<boolean>();

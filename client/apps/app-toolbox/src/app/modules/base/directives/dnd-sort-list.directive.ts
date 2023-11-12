@@ -21,7 +21,8 @@ type LocalEvent = DndSortListDropEvent & {
 }
 
 @Directive({
-  selector: '[gvDndSortList]',
+    selector: '[gvDndSortList]',
+    standalone: true,
 })
 export class GvDndSortListDirective {
   @Input('gvDndSortList') data!: { items: TreeItem[], field: Field, id: string }

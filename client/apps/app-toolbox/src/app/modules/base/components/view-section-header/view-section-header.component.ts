@@ -3,10 +3,11 @@ import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 import { ViewSectionBodyComponent } from '../view-section-body/view-section-body.component';
 
 @Component({
-  selector: 'gv-view-section-header',
-  templateUrl: './view-section-header.component.html',
-  styleUrls: ['./view-section-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'gv-view-section-header',
+    templateUrl: './view-section-header.component.html',
+    styleUrls: ['./view-section-header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
 })
 export class ViewSectionHeaderComponent implements OnInit {
 

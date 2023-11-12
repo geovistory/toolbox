@@ -7,14 +7,19 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { openClose } from '../../../information/shared/animations';
 import { EditModeService } from '../../services/edit-mode.service';
+import { ViewFieldComponent } from '../view-field/view-field.component';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { OpenCloseModule } from '../../../../shared/directives/open-close/open-close.module';
 
 
 @Component({
-  selector: 'gv-view-section-body',
-  templateUrl: './view-section-body.component.html',
-  styleUrls: ['./view-section-body.component.scss'],
-  animations: [openClose],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-view-section-body',
+    templateUrl: './view-section-body.component.html',
+    styleUrls: ['./view-section-body.component.scss'],
+    animations: [openClose],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [OpenCloseModule, NgIf, NgFor, ViewFieldComponent, AsyncPipe]
 })
 export class ViewSectionBodyComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

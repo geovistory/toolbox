@@ -1,6 +1,6 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { AbstractControl, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AbstractControl, UntypedFormBuilder, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { indexBy, mapObjIndexed, omit, values } from 'ramda';
@@ -9,6 +9,13 @@ import { debounceTime, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { FormPart, MergeDef } from './FormPart';
 import { ByPk } from '@kleiolab/lib-utils';
 import { ValidationService } from '../../../../../core/validation/validation.service';
+import { CtrlTimePrimitiveComponent } from '../../ctrl-time-primitive/ctrl-time-primitive.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { ExistenceTimeHelpComponent } from '../existence-time-help/existence-time-help.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 export type ExTimeModalMode = 'one-date' | 'begin-end' | 'advanced';
 export type ExTimeHelpMode = 'hidden' | 'short' | 'long';
@@ -36,9 +43,11 @@ interface F {
 }
 
 @Component({
-  selector: 'gv-ctrl-time-span-dialog',
-  templateUrl: './ctrl-time-span-dialog.component.html',
-  styleUrls: ['./ctrl-time-span-dialog.component.scss']
+    selector: 'gv-ctrl-time-span-dialog',
+    templateUrl: './ctrl-time-span-dialog.component.html',
+    styleUrls: ['./ctrl-time-span-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogModule, NgIf, MatButtonModule, MatIconModule, MatTabsModule, ExistenceTimeHelpComponent, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlTimePrimitiveComponent, AsyncPipe]
 })
 export class CtrlTimeSpanDialogComponent implements OnInit, OnDestroy {
 

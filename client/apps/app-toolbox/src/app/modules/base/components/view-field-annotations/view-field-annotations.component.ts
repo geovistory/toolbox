@@ -9,16 +9,23 @@ import { TextDetail2Component } from '../../../data/components/text-detail2/text
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
+import { ViewFieldAnnotationItemComponent } from '../view-field-annotation-item/view-field-annotation-item.component';
+import { NgFor, AsyncPipe } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 export interface ViewFieldAnnotationItemData {
   hasAnnotation: StatementWithTarget;
   hasSpot: StatementWithTarget[];
   refersTo: StatementWithTarget[];
 }
 @Component({
-  selector: 'gv-view-field-annotations',
-  templateUrl: './view-field-annotations.component.html',
-  styleUrls: ['./view-field-annotations.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-view-field-annotations',
+    templateUrl: './view-field-annotations.component.html',
+    styleUrls: ['./view-field-annotations.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatIconModule, MatButtonModule, MatDividerModule, NgFor, ViewFieldAnnotationItemComponent, AsyncPipe]
 })
 export class ViewFieldAnnotationsComponent implements OnInit {
 

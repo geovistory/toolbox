@@ -10,13 +10,20 @@ import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.componen
 import { FgPlaceComponent } from '../fg-place/fg-place.component';
 import { ChildComponents } from '../form-control/form-control.component';
 import { FormCreateDataComponent, FormField, LocalFormArrayFactory } from '../form-create-data/form-create-data.component';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgIf, NgFor } from '@angular/common';
 export interface TargetClassOption { label: string, pkClass: number }
 
 @Component({
-  selector: 'gv-form-field-header',
-  templateUrl: './form-field-header.component.html',
-  styleUrls: ['./form-field-header.component.scss'],
-  animations: [openClose]
+    selector: 'gv-form-field-header',
+    templateUrl: './form-field-header.component.html',
+    styleUrls: ['./form-field-header.component.scss'],
+    animations: [openClose],
+    standalone: true,
+    imports: [NgIf, MatTooltipModule, MatDividerModule, MatIconModule, MatMenuModule, NgFor]
 })
 export class FormFieldHeaderComponent implements OnInit {
 

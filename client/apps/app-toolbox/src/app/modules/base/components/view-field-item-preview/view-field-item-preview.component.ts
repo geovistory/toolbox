@@ -1,15 +1,22 @@
-import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, Inject, OnInit, Optional, forwardRef } from '@angular/core';
 import { Field } from '@kleiolab/lib-redux';
 import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
+import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
 import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
+import { ViewFieldItemClassInfoComponent } from '../view-field-item-class-info/view-field-item-class-info.component';
+import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
+import { ViewFieldItemEntityMenuComponent } from '../view-field-item-entity-menu/view-field-item-entity-menu.component';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 @Component({
   selector: 'gv-view-field-item-preview',
   templateUrl: './view-field-item-preview.component.html',
-  styleUrls: ['./view-field-item-preview.component.scss']
+  styleUrls: ['./view-field-item-preview.component.scss'],
+  standalone: true,
+  imports: [forwardRef(() => ViewFieldItemContainerComponent), ViewFieldItemClassInfoComponent, EntityPreviewModule, NgIf, ViewFieldItemEntityMenuComponent, AsyncPipe]
 })
 export class ViewFieldItemPreviewComponent implements OnInit {
   resource: InfResourceWithRelations;

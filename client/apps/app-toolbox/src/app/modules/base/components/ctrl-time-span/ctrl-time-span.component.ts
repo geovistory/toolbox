@@ -8,14 +8,23 @@ import { TimeSpanUtil } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CtrlTimeSpanDialogComponent } from './ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { DateTimeModule } from '../../../../../../../../libs/lib-utils/src/lib/date-time/date-time.module';
+import { MatInputModule } from '@angular/material/input';
+import { NgIf } from '@angular/common';
 
 export type CtrlTimeSpanModel = CtrlTimeSpanDialogResult
 
 @Component({
-  selector: 'gv-ctrl-time-span',
-  templateUrl: './ctrl-time-span.component.html',
-  styleUrls: ['./ctrl-time-span.component.css'],
-  providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimeSpanComponent }],
+    selector: 'gv-ctrl-time-span',
+    templateUrl: './ctrl-time-span.component.html',
+    styleUrls: ['./ctrl-time-span.component.css'],
+    providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimeSpanComponent }],
+    standalone: true,
+    imports: [
+        NgIf,
+        MatInputModule,
+        DateTimeModule,
+    ],
 })
 export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlTimeSpanModel> {
   static nextId = 0;

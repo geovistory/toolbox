@@ -2,12 +2,15 @@ import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { MatSelect, MatSelectChange } from '@angular/material/select';
+import { MatSelect, MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { ActiveProjectPipesService, InformationBasicPipesService } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
 
 type CtrlModel = number // pk_entity of type (persistent item)
 interface Option {
@@ -15,10 +18,19 @@ interface Option {
   label: string
 }
 @Component({
-  selector: 'gv-ctrl-type',
-  templateUrl: './ctrl-type.component.html',
-  styleUrls: ['./ctrl-type.component.css'],
-  providers: [{ provide: MatFormFieldControl, useExisting: CtrlTypeComponent }],
+    selector: 'gv-ctrl-type',
+    templateUrl: './ctrl-type.component.html',
+    styleUrls: ['./ctrl-type.component.css'],
+    providers: [{ provide: MatFormFieldControl, useExisting: CtrlTypeComponent }],
+    standalone: true,
+    imports: [
+        MatSelectModule,
+        MatDividerModule,
+        NgFor,
+        MatOptionModule,
+        NgIf,
+        AsyncPipe,
+    ],
 })
 export class CtrlTypeComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;

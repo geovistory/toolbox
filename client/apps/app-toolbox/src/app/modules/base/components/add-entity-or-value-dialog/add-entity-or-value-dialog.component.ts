@@ -8,8 +8,14 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
-import { SeachExistingEntityMoreEvent } from '../search-existing-entity/search-existing-entity.component';
-import { SliderEnum } from '../slider/slider.component';
+import { SeachExistingEntityMoreEvent, SearchExistingEntityComponent } from '../search-existing-entity/search-existing-entity.component';
+import { SliderEnum, SliderComponent } from '../slider/slider.component';
+import { EntityCardComponent } from '../entity-card/entity-card.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { HbfPanelComponent } from '../hbf-panel/hbf-panel.component';
 
 
 export interface AddEntityOrValueDialogData {
@@ -33,12 +39,14 @@ export interface CreateEntityEvent {
 }
 
 @Component({
-  selector: 'gv-add-entity-or-value-dialog.component',
-  templateUrl: './add-entity-or-value-dialog.component.html',
-  styleUrls: ['./add-entity-or-value-dialog.component.scss'],
-  providers: [
-    { provide: READ_ONLY, useValue: true }
-  ]
+    selector: 'gv-add-entity-or-value-dialog.component',
+    templateUrl: './add-entity-or-value-dialog.component.html',
+    styleUrls: ['./add-entity-or-value-dialog.component.scss'],
+    providers: [
+        { provide: READ_ONLY, useValue: true }
+    ],
+    standalone: true,
+    imports: [SliderComponent, HbfPanelComponent, FormCreateDataComponent, MatButtonModule, NgIf, MatProgressSpinnerModule, SearchExistingEntityComponent, MatTabsModule, NgFor, EntityCardComponent, AsyncPipe]
 })
 export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();

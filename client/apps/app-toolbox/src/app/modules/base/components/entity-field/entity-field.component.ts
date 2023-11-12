@@ -9,12 +9,20 @@ import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
+import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { PassiveLinkModule } from '../../../../shared/directives/passive-link/passive-link.module';
+import { FieldLabelComponent } from '../field-label/field-label.component';
+import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'gv-entity-field',
-  templateUrl: './entity-field.component.html',
-  styleUrls: ['./entity-field.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-entity-field',
+    templateUrl: './entity-field.component.html',
+    styleUrls: ['./entity-field.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, OntoInfoModule, FieldLabelComponent, PassiveLinkModule, MatTooltipModule, NgFor, EntityPreviewModule, AsyncPipe]
 })
 export class EntityFieldComponent implements OnInit {
   destroy$ = new Subject<boolean>();

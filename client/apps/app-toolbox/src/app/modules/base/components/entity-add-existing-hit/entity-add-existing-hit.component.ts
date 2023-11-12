@@ -1,4 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgClass } from '@angular/common';
 
 
 export interface EntityAddExistingHit {
@@ -16,9 +20,11 @@ export interface EntityAddExistingHit {
 
 
 @Component({
-  selector: 'gv-entity-add-existing-hit',
-  templateUrl: './entity-add-existing-hit.component.html',
-  styleUrls: ['./entity-add-existing-hit.component.scss']
+    selector: 'gv-entity-add-existing-hit',
+    templateUrl: './entity-add-existing-hit.component.html',
+    styleUrls: ['./entity-add-existing-hit.component.scss'],
+    standalone: true,
+    imports: [NgClass, MatTooltipModule, MatChipsModule, MatButtonModule]
 })
 export class EntityAddExistingHitComponent implements OnInit {
 

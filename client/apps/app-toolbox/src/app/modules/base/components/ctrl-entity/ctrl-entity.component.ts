@@ -9,18 +9,28 @@ import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
+import { MatInputModule } from '@angular/material/input';
+import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 export interface CtrlEntityModel extends InfData {
   pkEntity?: number, // if pkEntity, an entity has been selected on the right side
 }
 
 @Component({
-  selector: 'gv-ctrl-entity',
-  templateUrl: './ctrl-entity.component.html',
-  styleUrls: ['./ctrl-entity.component.css'],
-  providers: [{
-    provide: MatFormFieldControl, useExisting: CtrlEntityComponent
-  }],
+    selector: 'gv-ctrl-entity',
+    templateUrl: './ctrl-entity.component.html',
+    styleUrls: ['./ctrl-entity.component.css'],
+    providers: [{
+            provide: MatFormFieldControl, useExisting: CtrlEntityComponent
+        }],
+    standalone: true,
+    imports: [
+        NgIf,
+        EntityPreviewModule,
+        MatInputModule,
+        AsyncPipe,
+    ],
 })
 export class CtrlEntityComponent implements OnDestroy,
   ControlValueAccessor,

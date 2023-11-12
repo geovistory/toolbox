@@ -5,15 +5,24 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { InfAppellation, QuillDoc, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
 import { QuillEditComponent } from '../../../../modules/quill/quill-edit/quill-edit.component';
+import { MatInputModule } from '@angular/material/input';
+import { QuillModule } from '../../../quill/quill.module';
+import { NgClass, NgIf } from '@angular/common';
 
 export type CtrlAppellationModel = InfAppellation;
 
 @Component({
-  selector: 'gv-ctrl-appellation',
-  templateUrl: './ctrl-appellation.component.html',
-  styleUrls: ['./ctrl-appellation.component.scss'],
-  providers: [{ provide: MatFormFieldControl, useExisting: CtrlAppellationComponent }],
-
+    selector: 'gv-ctrl-appellation',
+    templateUrl: './ctrl-appellation.component.html',
+    styleUrls: ['./ctrl-appellation.component.scss'],
+    providers: [{ provide: MatFormFieldControl, useExisting: CtrlAppellationComponent }],
+    standalone: true,
+    imports: [
+        NgClass,
+        QuillModule,
+        NgIf,
+        MatInputModule,
+    ],
 })
 export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlAppellationModel> {
   static nextId = 0;

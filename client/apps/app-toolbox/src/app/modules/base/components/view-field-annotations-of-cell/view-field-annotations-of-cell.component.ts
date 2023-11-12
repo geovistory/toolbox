@@ -1,17 +1,23 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Optional } from '@angular/core';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit, Optional, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
+import { first, map, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../ontome-ids';
 import { TableComponent } from '../../../../shared/components/digital-table/components/table/table.component';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { TableDetailComponent } from '../../../data/components/table-detail/table-detail.component';
 import { statemenTargetToInfData } from '../../base.helpers';
 import { PaginationService } from '../../services/pagination.service';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from '../ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
+import { ViewFieldAnnotationsOfCellItemComponent } from '../view-field-annotations-of-cell-item/view-field-annotations-of-cell-item.component';
 export interface ViewFieldAnnotationOfCellItemData {
   hasAnnotation: StatementWithTarget;
   refersTo: StatementWithTarget[];
@@ -20,7 +26,9 @@ export interface ViewFieldAnnotationOfCellItemData {
   selector: 'gv-view-field-annotations-of-cell',
   templateUrl: './view-field-annotations-of-cell.component.html',
   styleUrls: ['./view-field-annotations-of-cell.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, MatProgressSpinnerModule, NgFor, forwardRef(() => ViewFieldAnnotationsOfCellItemComponent), MatButtonModule, MatMenuModule, MatIconModule, AsyncPipe]
 })
 export class ViewFieldAnnotationsOfCellComponent implements OnInit, OnDestroy {
 

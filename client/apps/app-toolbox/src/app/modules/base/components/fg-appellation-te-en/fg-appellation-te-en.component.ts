@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellationWithRelations, InfLanguage, InfPlace, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
@@ -17,6 +17,9 @@ import { getFirstElementFormQueryList } from '../../base.helpers';
 import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 type FgAppellationTeEnNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInjectData<Observable<InfResourceWithRelations>> {
@@ -24,10 +27,12 @@ export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInject
   pkClass: number
 }
 @Component({
-  selector: 'gv-fg-appellation-te-en',
-  templateUrl: './fg-appellation-te-en.component.html',
-  styleUrls: ['./fg-appellation-te-en.component.scss'],
-  animations: [openClose]
+    selector: 'gv-fg-appellation-te-en',
+    templateUrl: './fg-appellation-te-en.component.html',
+    styleUrls: ['./fg-appellation-te-en.component.scss'],
+    animations: [openClose],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlAppellationComponent, MatButtonModule, MatIconModule, CtrlLanguageComponent, CtrlTypeComponent, AsyncPipe]
 })
 export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

@@ -5,11 +5,18 @@ import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../ontome-ids';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
-  selector: 'gv-view-field-item-entity-menu',
-  templateUrl: './view-field-item-entity-menu.component.html',
-  styleUrls: ['./view-field-item-entity-menu.component.scss']
+    selector: 'gv-view-field-item-entity-menu',
+    templateUrl: './view-field-item-entity-menu.component.html',
+    styleUrls: ['./view-field-item-entity-menu.component.scss'],
+    standalone: true,
+    imports: [MatMenuModule, NgIf, MatIconModule, MatDividerModule, MatButtonModule, AsyncPipe]
 })
 export class ViewFieldItemEntityMenuComponent implements OnInit {
   field: Field

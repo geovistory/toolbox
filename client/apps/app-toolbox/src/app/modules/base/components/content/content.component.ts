@@ -1,15 +1,22 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnInit, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
-import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from '../../../../ontome-ids';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from '../../../../ontome-ids';
+import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
 import { BaseModalsService } from '../../services/base-modals.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
-import { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
+import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
-import { ViewFieldDisplayMode, VIEW_FIELD_DISPLAY_MODE } from '../view-field/VIEW_FIELD_DISPLAY_MODE';
+import type { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
+import { VIEW_FIELD_DISPLAY_MODE, ViewFieldDisplayMode } from '../view-field/VIEW_FIELD_DISPLAY_MODE';
 const itemTypeProvider: ViewFieldItemTypeFn = (f, s) => {
   if ([C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID].includes(s.targetClass)) {
     return 'content-tree'
@@ -34,7 +41,11 @@ const displayMode: ViewFieldDisplayMode = 'tree'
     ViewFieldTreeNodeService,
     { provide: VIEW_FIELD_ITEM_TYPE, useValue: itemTypeProvider },
     { provide: VIEW_FIELD_DISPLAY_MODE, useValue: displayMode }
-  ]
+  ],
+  standalone: true,
+  imports: [NgIf, MatMenuModule, NgFor, MatIconModule, OntoInfoModule, MatButtonModule, MatDividerModule,
+    forwardRef(() => ViewFieldBodyComponent),
+    AsyncPipe]
 })
 export class ContentComponent implements OnInit {
   @Input() source: GvFieldSourceEntity

@@ -3,15 +3,19 @@ import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EditModeService } from '../../services/edit-mode.service';
+import { ViewSectionsComponent } from '../view-sections/view-sections.component';
+import { EntityCardHeaderComponent } from '../entity-card-header/entity-card-header.component';
 
 /**
  * This component is a standalone view for an entity
  */
 @Component({
-  selector: 'gv-entity-card',
-  templateUrl: './entity-card.component.html',
-  styleUrls: ['./entity-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-entity-card',
+    templateUrl: './entity-card.component.html',
+    styleUrls: ['./entity-card.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [EntityCardHeaderComponent, ViewSectionsComponent]
 })
 export class EntityCardComponent implements OnInit {
   @Input() source: GvFieldSourceEntity

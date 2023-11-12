@@ -1,13 +1,19 @@
 import { SelectionModel } from '@angular/cdk/collections';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, ViewChild } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field, QueriesFacade, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, ProInfoProjRel, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { DndDraggableDirective } from 'ngx-drag-drop';
 import { equals, values } from 'ramda';
-import { BehaviorSubject, combineLatest, merge, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, merge } from 'rxjs';
 import { delay, distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { OpenCloseModule } from '../../../../shared/directives/open-close/open-close.module';
 import { openClose } from '../../../information/shared/animations';
 import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { GvDndSortListDirective } from '../../directives/dnd-sort-list.directive';
@@ -16,6 +22,8 @@ import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
 import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
+import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
+import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 
 
 @Component({
@@ -26,7 +34,9 @@ import { ViewFieldItemCountSumService } from '../../services/view-field-item-cou
   animations: [openClose],
   providers: [
     ViewFieldDropListService
-  ]
+  ],
+  standalone: true,
+  imports: [OpenCloseModule, NgClass, NgIf, MatPaginatorModule, MatDividerModule, GvDndSortListDirective, ViewFieldItemContainerComponent, NgFor, DndDraggableDirective, ViewFieldItemComponent, MatButtonModule, MatProgressSpinnerModule, AsyncPipe]
 })
 export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

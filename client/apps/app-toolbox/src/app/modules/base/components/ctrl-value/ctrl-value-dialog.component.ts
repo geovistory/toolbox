@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfStatementWithRelations, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { InfValueObject } from '../../../../shared/components/value-preview/value-preview.component';
@@ -9,6 +9,12 @@ import { map, switchMap, takeUntil } from 'rxjs/operators';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from '../fg-place/fg-place.component';
+import { MatButtonModule } from '@angular/material/button';
+import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
+import { CtrlTimePrimitiveComponent } from '../ctrl-time-primitive/ctrl-time-primitive.component';
+import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 
 export interface CtrlValueDialogData {
@@ -23,9 +29,11 @@ export type CtrlValueDialogResult = Partial<InfStatementWithRelations>
 export interface ClassAndTypePk { pkClass: number, pkType: number };
 
 @Component({
-  selector: 'gv-ctrl-value-dialog',
-  templateUrl: './ctrl-value-dialog.component.html',
-  styleUrls: ['./ctrl-value-dialog.component.scss']
+    selector: 'gv-ctrl-value-dialog',
+    templateUrl: './ctrl-value-dialog.component.html',
+    styleUrls: ['./ctrl-value-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogModule, NgIf, FgPlaceComponent, FgLangStringComponent, FgDimensionComponent, MatFormFieldModule, CtrlAppellationComponent, FormsModule, ReactiveFormsModule, CtrlTimePrimitiveComponent, CtrlLanguageComponent, MatButtonModule, AsyncPipe]
 })
 export class CtrlValueDialogComponent implements OnDestroy, OnInit, AfterViewInit {
 

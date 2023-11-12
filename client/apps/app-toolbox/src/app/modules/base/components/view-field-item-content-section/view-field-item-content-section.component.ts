@@ -1,9 +1,16 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional } from '@angular/core';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
-import { C_218_EXPRESSION_ID } from '../../../../ontome-ids';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { C_218_EXPRESSION_ID } from '../../../../ontome-ids';
+import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
 import { BaseModalsService } from '../../services/base-modals.service';
 import { GvDndGlobalService } from '../../services/dnd-global.service';
 import { EditModeService } from '../../services/edit-mode.service';
@@ -11,7 +18,13 @@ import { ViewFieldItemCountSumService } from '../../services/view-field-item-cou
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { AddButton, pipeAddButtons } from '../content/content.component';
+import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+import { ViewFieldItemClassInfoComponent } from '../view-field-item-class-info/view-field-item-class-info.component';
+import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
+import { ViewFieldItemEntityMenuComponent } from '../view-field-item-entity-menu/view-field-item-entity-menu.component';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldTreeItemDropZoneComponent } from '../view-field-tree-item-drop-zone/view-field-tree-item-drop-zone.component';
+
 @Component({
   selector: 'gv-view-field-item-content-section',
   templateUrl: './view-field-item-content-section.component.html',
@@ -20,7 +33,9 @@ import { ViewFieldItemComponent } from '../view-field-item/view-field-item.compo
   providers: [
     ViewFieldTreeNodeService,
     ViewFieldItemCountSumService
-  ]
+  ],
+  standalone: true,
+  imports: [ViewFieldItemContainerComponent, NgClass, NgIf, MatButtonModule, MatIconModule, ViewFieldItemClassInfoComponent, EntityPreviewModule, ViewFieldItemEntityMenuComponent, MatDividerModule, NgFor, MatMenuModule, OntoInfoModule, ViewFieldTreeItemDropZoneComponent, forwardRef(() => ViewFieldBodyComponent), AsyncPipe]
 })
 export class ViewFieldItemContentSectionComponent implements OnInit {
   resource: InfResourceWithRelations;

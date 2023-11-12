@@ -1,20 +1,29 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Optional, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellation, InfResourceWithRelations, InfStatementWithRelations, ProjectDataService, QuillDoc, ReplaceStatementInFieldRequest, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
+import { equals } from 'ramda';
+import { BehaviorSubject, Observable, Subject, combineLatest, of, timer } from 'rxjs';
+import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../ontome-ids';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { GvButtonsModule } from '../../../../shared/components/gv-buttons/gv-buttons.module';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../../shared/components/progress-dialog/progress-dialog.component';
-import { equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of, Subject, timer } from 'rxjs';
-import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
 import { DeltaI, Op, Ops } from '../../../quill/quill.models';
+import { QuillModule } from '../../../quill/quill.module';
 import { ConfirmHook, EditModeService } from '../../services/edit-mode.service';
-import { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
+import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
+import type { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
 interface QuillDocLoader {
   loading: boolean,
   error: boolean,
@@ -28,7 +37,10 @@ const itemTypeProvider: ViewFieldItemTypeFn = (f, s) => 'valueVersion'
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: VIEW_FIELD_ITEM_TYPE, useValue: itemTypeProvider },
-  ]
+  ],
+  standalone: true,
+  imports: [NgIf, MatProgressSpinnerModule, MatButtonModule, QuillModule, MatTooltipModule, MatIconModule, GvButtonsModule, MatMenuModule,
+    forwardRef(() => ViewFieldBodyComponent), AsyncPipe]
 })
 export class ViewFieldHasValueVersionComponent implements OnInit {
   destroy$ = new Subject<boolean>();

@@ -1,10 +1,13 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
-import { ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
+import { ControlValueAccessor, UntypedFormControl, NgControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { InfLanguage, QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil, tap } from 'rxjs/operators';
+import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
+import { NgIf } from '@angular/common';
+import { QuillModule } from '../../../quill/quill.module';
 
 interface CtrlModel {
   fk_class?: number
@@ -17,10 +20,18 @@ interface CtrlModel {
 }
 
 @Component({
-  selector: 'gv-ctrl-text-property',
-  templateUrl: './ctrl-text-property.component.html',
-  styleUrls: ['./ctrl-text-property.component.css'],
-  providers: [{ provide: MatFormFieldControl, useExisting: CtrlTextPropertyComponent }],
+    selector: 'gv-ctrl-text-property',
+    templateUrl: './ctrl-text-property.component.html',
+    styleUrls: ['./ctrl-text-property.component.css'],
+    providers: [{ provide: MatFormFieldControl, useExisting: CtrlTextPropertyComponent }],
+    standalone: true,
+    imports: [
+        QuillModule,
+        NgIf,
+        CtrlLanguageComponent,
+        FormsModule,
+        ReactiveFormsModule,
+    ],
 })
 export class CtrlTextPropertyComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
 

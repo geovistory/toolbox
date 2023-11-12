@@ -7,20 +7,23 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ProjectEditComponent } from '../../../projects/containers/project-edit/project-edit.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
+import { EntityCardComponent } from '../entity-card/entity-card.component';
 
 /**
  * This component prepares the configuration data and parameters
  * needed for the gv-entity-card
  */
 @Component({
-  selector: 'gv-entity-card-wrapper',
-  templateUrl: './entity-card-wrapper.component.html',
-  styleUrls: ['./entity-card-wrapper.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    EditModeService,
-    { provide: READ_ONLY, useValue: true }
-  ]
+    selector: 'gv-entity-card-wrapper',
+    templateUrl: './entity-card-wrapper.component.html',
+    styleUrls: ['./entity-card-wrapper.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    providers: [
+        EditModeService,
+        { provide: READ_ONLY, useValue: true }
+    ],
+    standalone: true,
+    imports: [EntityCardComponent]
 })
 export class EntityCardWrapperComponent implements OnInit {
   pkProject: number;

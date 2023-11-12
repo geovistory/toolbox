@@ -1,12 +1,16 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { TimeSpanData, TimeSpanService } from '../../services/time-span.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'gv-view-time-span-item-edit-btn',
-  templateUrl: './view-time-span-item-edit-btn.component.html',
-  styleUrls: ['./view-time-span-item-edit-btn.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-view-time-span-item-edit-btn',
+    templateUrl: './view-time-span-item-edit-btn.component.html',
+    styleUrls: ['./view-time-span-item-edit-btn.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatButtonModule, MatIconModule]
 })
 export class ViewTimeSpanItemEditBtnComponent implements OnInit {
   @Input() timeSpanData: TimeSpanData
