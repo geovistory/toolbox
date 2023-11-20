@@ -29,7 +29,7 @@ export class MockPaginationControllerForSandboxes {
   subfieldPageControllerLoadSubfieldPages(gvLoadSubfieldPageReqs?: GvFieldPageReq[]): Observable<GvPaginationObject> {
     this.resetIdBase();
     console.log('REST API called: subfieldPageControllerLoadSubfieldPage')
-    return of(this.handleRequests(gvLoadSubfieldPageReqs)) //.pipe(delay(250))
+    return of(this.handleRequests(gvLoadSubfieldPageReqs))
 
   }
   private resetIdBase() {

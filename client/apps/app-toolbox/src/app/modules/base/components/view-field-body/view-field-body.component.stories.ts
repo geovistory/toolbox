@@ -11,6 +11,7 @@ import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
 import { BehaviorSubject } from 'rxjs';
 import { playInject } from '../../../../../../.storybook/playInject';
+import { sleep } from '../../../../../../.storybook/sleep';
 import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { MaterialModule } from '../../../../core/material/material.module';
 import { temporalEntityListDefaultLimit } from '../../base.helpers';
@@ -39,18 +40,8 @@ type Story = StoryObj<ViewFieldBodyComponent>;
 const projectId = ProProjectMock.PROJECT_1.pk_entity;
 const inProjectScope: GvFieldPageScope = { inProject: projectId }
 
-export const Primary: Story = {
-  args: {
-    showBodyOnInit: false,
-    limit: temporalEntityListDefaultLimit,
-    noPagination: false,
-    hideNoItemsInfo: false,
-    showBody$: new BehaviorSubject(false),
-    dividerPosition: 'bottom',
-  },
-};
 
-export const Heading: Story = {
+export const stringObject: Story = {
   args: {
     showBodyOnInit: false,
     limit: temporalEntityListDefaultLimit,
@@ -68,6 +59,7 @@ export const Heading: Story = {
     const canvas = within(canvasElement);
     const facade = await playInject(canvasElement, StateFacade);
     facade.ui.activeProject.loadProjectBasiscsSucceded(projectId)
-    expect(canvas.getByText(/jack the foo 5000/gi)).toBeTruthy();
+    await sleep(100)
+    expect(canvas.getByText(/Jack the foo 5000/i)).toBeTruthy();
   },
 };

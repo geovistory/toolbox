@@ -79,7 +79,7 @@ export const LoggedInOpenMenuLongEmail: Story = {
     const menuTrigger = canvas.getByTestId('menu-trigger');
     await userEvent.click(menuTrigger)
     const cdkOverlay = getCdkOverlayCanvas(canvasElement);
-    expect(cdkOverlay.getByText(/laura@meier.org/gi)).toBeTruthy();
+    expect(cdkOverlay.getByText(/laura-with-a-longlonglonglong-email@meier.org/gi)).toBeTruthy();
   },
 };
 
