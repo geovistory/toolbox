@@ -18,6 +18,7 @@ import { PaginationService } from '../../services/pagination.service';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from '../ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { ViewFieldAnnotationsOfCellItemComponent } from '../view-field-annotations-of-cell-item/view-field-annotations-of-cell-item.component';
+import { ViewFieldAnnotationsOfCellService } from './view-field-annotations-of-cell.service';
 export interface ViewFieldAnnotationOfCellItemData {
   hasAnnotation: StatementWithTarget;
   refersTo: StatementWithTarget[];
@@ -26,6 +27,7 @@ export interface ViewFieldAnnotationOfCellItemData {
   selector: 'gv-view-field-annotations-of-cell',
   templateUrl: './view-field-annotations-of-cell.component.html',
   styleUrls: ['./view-field-annotations-of-cell.component.scss'],
+  providers: [ViewFieldAnnotationsOfCellService],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [NgIf, MatProgressSpinnerModule, NgFor, forwardRef(() => ViewFieldAnnotationsOfCellItemComponent), MatButtonModule, MatMenuModule, MatIconModule, AsyncPipe]
@@ -61,9 +63,9 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit, OnDestroy {
     private state: StateFacade,
     private dialog: MatDialog,
     public tableComponent: TableComponent,
+    fiewFieldAnnotationsOfCellService: ViewFieldAnnotationsOfCellService,
     @Optional() private tableDetailComponent?: TableDetailComponent,
-
-  ) { }
+  ) { fiewFieldAnnotationsOfCellService.registerComponent(this) }
 
   ngOnInit(): void {
     const errors: string[] = []

@@ -49,7 +49,7 @@ export interface AddStatementDialogData {
     { provide: READ_ONLY, useValue: true }
   ],
   standalone: true,
-  imports: [NgIf, forwardRef(() => ViewFieldBodyComponent), MatIconModule, MatDividerModule, SliderComponent, HbfPanelComponent, FormCreateDataComponent, MatButtonModule, MatProgressSpinnerModule, SearchExistingEntityComponent, MatTabsModule, EntityCardComponent, AsyncPipe]
+  imports: [NgIf, forwardRef(() => ViewFieldBodyComponent), MatIconModule, MatDividerModule, SliderComponent, HbfPanelComponent, forwardRef(() => FormCreateDataComponent), MatButtonModule, MatProgressSpinnerModule, SearchExistingEntityComponent, MatTabsModule, forwardRef(() => EntityCardComponent), AsyncPipe]
 })
 export class AddStatementDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

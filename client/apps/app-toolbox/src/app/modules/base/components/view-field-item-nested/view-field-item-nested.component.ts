@@ -10,7 +10,7 @@ import { EntityWithFieldsComponent } from '../entity-with-fields/entity-with-fie
 import { ViewFieldItemClassInfoComponent } from '../view-field-item-class-info/view-field-item-class-info.component';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
 import { ViewFieldItemEntityMenuComponent } from '../view-field-item-entity-menu/view-field-item-entity-menu.component';
-import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
 @Component({
   selector: 'gv-view-field-item-nested',
@@ -32,18 +32,18 @@ export class ViewFieldItemNestedComponent implements OnInit {
   expanded$ = new BehaviorSubject(true)
 
   constructor(
-    public itemComponent: ViewFieldItemComponent,
+    public item: ViewFieldItemService,
     public editMode: EditModeService
   ) { }
 
 
   ngOnInit(): void {
-    this.resource = this.itemComponent.item.target.entity.resource
-    this.projRel = this.itemComponent.item.projRel
-    this.ordNum = this.itemComponent.item.ordNum
-    this.field = this.itemComponent.field
-    this.showOntoInfo$ = this.itemComponent.showOntoInfo$
-    this.scope = this.itemComponent.scope
+    this.resource = this.item.component.item.target.entity.resource
+    this.projRel = this.item.component.item.projRel
+    this.ordNum = this.item.component.item.ordNum
+    this.field = this.item.component.field
+    this.showOntoInfo$ = this.item.component.showOntoInfo$
+    this.scope = this.item.component.scope
   }
 
 

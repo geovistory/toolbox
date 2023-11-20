@@ -9,7 +9,7 @@ import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldItemClassInfoComponent } from '../view-field-item-class-info/view-field-item-class-info.component';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
 import { ViewFieldItemEntityMenuComponent } from '../view-field-item-entity-menu/view-field-item-entity-menu.component';
-import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
 @Component({
   selector: 'gv-view-field-item-preview',
@@ -25,7 +25,7 @@ export class ViewFieldItemPreviewComponent implements OnInit {
   showOntoInfo$: Observable<boolean>
 
   constructor(
-    public itemComponent: ViewFieldItemComponent,
+    public item: ViewFieldItemService,
     @Optional() @Inject(READ_ONLY) public readonly: boolean,
     public editMode: EditModeService
   ) { }
@@ -33,14 +33,14 @@ export class ViewFieldItemPreviewComponent implements OnInit {
   ngOnInit(): void {
     const errors: string[] = []
 
-    if (!this.itemComponent.field) errors.push('field is required.');
-    if (!this.itemComponent.item) errors.push('item is required.');
+    if (!this.item.component.field) errors.push('field is required.');
+    if (!this.item.component.item) errors.push('item is required.');
     if (errors.length) throw new Error(errors.join('\n'));
 
-    this.resource = this.itemComponent.item.target.entity.resource
-    this.ordNum = this.itemComponent.item.ordNum
-    this.field = this.itemComponent.field
-    this.showOntoInfo$ = this.itemComponent.showOntoInfo$
+    this.resource = this.item.component.item.target.entity.resource
+    this.ordNum = this.item.component.item.ordNum
+    this.field = this.item.component.field
+    this.showOntoInfo$ = this.item.component.showOntoInfo$
   }
 
 }

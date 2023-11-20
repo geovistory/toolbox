@@ -1,5 +1,5 @@
 import { EventEmitter } from '@angular/core';
-import { Granularity } from './classes/date-time-commons';
+import type { Granularity } from './classes/date-time-commons';
 import { GregorianDateTime, JulianDateTime } from './public-api';
 
 

@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
-import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
 @Component({
   selector: 'gv-view-field-item-time-primitive',
@@ -26,14 +26,14 @@ export class ViewFieldItemTimePrimitiveComponent {
   showOntoInfo$: Observable<boolean>
 
   constructor(
-    public itemComponent: ViewFieldItemComponent,
+    public item: ViewFieldItemService,
     public editMode: EditModeService
   ) { }
   ngOnInit(): void {
-    this.timePrimitive = this.itemComponent.item.target.timePrimitive.infTimePrimitive
-    this.ordNum = this.itemComponent.item.ordNum
-    this.field = this.itemComponent.field
-    this.showOntoInfo$ = this.itemComponent.showOntoInfo$
+    this.timePrimitive = this.item.component.item.target.timePrimitive.infTimePrimitive
+    this.ordNum = this.item.component.item.ordNum
+    this.field = this.item.component.field
+    this.showOntoInfo$ = this.item.component.showOntoInfo$
   }
 
 

@@ -1,15 +1,15 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { MatRadioChange } from '@angular/material/radio';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { TableService, UnMapCheckResponse } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../confirm-dialog/confirm-dialog.component';
-import { ColumnMapping } from '../table.component';
+import type { ColumnMapping } from '../table.component';
 
 interface ClassOption {
   label: string;

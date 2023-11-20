@@ -1,8 +1,8 @@
 <gv-view-field-item-container>
   <span class="loc-left mat-typography">
-    <gv-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
-      [pkClass]="itemComponent.item.targetClass"
-      [classLabel]="field.targets[itemComponent.item.targetClass]?.targetClassLabel" [isFavorite]="ordNum===1">
+    <gv-class-info class="loc-class-info" [showOntoInfo$]="item.component.showOntoInfo$"
+      [pkClass]="item.component.item.targetClass"
+      [classLabel]="field.targets[item.component.item.targetClass]?.targetClassLabel" [isFavorite]="ordNum===1">
     </gv-class-info>
 
     <div class="ellipsis" [matMenuTriggerFor]="appMenu" *ngIf="urls.length != 0">
@@ -12,27 +12,27 @@
           Open {{url}} in new Browser Tab
         </a>
       </mat-menu>
-      {{itemComponent.item.targetLabel}}
+      {{item.component.item.targetLabel}}
     </div>
 
     <div class="ellipsis" *ngIf="urls.length == 0">
-      {{itemComponent.item.targetLabel}}
+      {{item.component.item.targetLabel}}
     </div>
   </span>
 
   <span class="loc-right" *ngIf="editMode.value$|async">
     <mat-menu #appMenu="matMenu">
-      <ng-container *ngIf="itemComponent.item.target.langString">
-        <button mat-menu-item (click)="itemComponent.openEditValueDialog(itemComponent.item)">
+      <ng-container *ngIf="item.component.item.target.langString">
+        <button mat-menu-item (click)="item.component.openEditValueDialog(item.component.item)">
           <mat-icon>edit</mat-icon>
           <span>Edit</span>
         </button>
         <mat-divider></mat-divider>
       </ng-container>
 
-      <ng-container *ngIf="itemComponent.item.target.langString">
+      <ng-container *ngIf="item.component.item.target.langString">
         <button mat-menu-item
-          (click)="itemComponent.openPopup(itemComponent.item.target.langString?.langString?.string)">
+          (click)="item.component.openPopup(item.component.item.target.langString?.langString?.string)">
           <mat-icon svgIcon="arrow-expand-all"></mat-icon>
           <span>Open in popup</span>
         </button>
@@ -40,7 +40,7 @@
       </ng-container>
 
       <div class="dropdown-header">Danger Zone</div>
-      <button mat-menu-item (click)="itemComponent. remove()">
+      <button mat-menu-item (click)="item.component. remove()">
         <mat-icon color="warn">delete</mat-icon>
         <span>Remove</span>
       </button>

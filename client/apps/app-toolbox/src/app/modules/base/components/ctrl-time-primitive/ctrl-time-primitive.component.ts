@@ -1,41 +1,40 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { NgClass, NgIf } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
-import { ControlValueAccessor, UntypedFormBuilder, UntypedFormGroup, NgControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
-import { MatMenuTrigger, MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { CalendarType, Granularity, GregorianDateTime, JulianDateTime, TimePrimitive } from '@kleiolab/lib-utils';
-import { ValidationService } from '../../../../core/validation/validation.service';
+import { CalendarType, DateTimeModule, Granularity, GregorianDateTime, JulianDateTime, TimePrimitive } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { DateTimeModule } from '../../../../../../../../libs/lib-utils/src/lib/date-time/date-time.module';
-import { PassiveLinkModule } from '../../../../shared/directives/passive-link/passive-link.module';
+import { ValidationService } from '../../../../core/validation/validation.service';
 import { ControlMessagesModule } from '../../../../shared/components/control-messages/control-messages.module';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { NgIf, NgClass } from '@angular/common';
+import { PassiveLinkModule } from '../../../../shared/directives/passive-link/passive-link.module';
 
 type CtrlModel = TimePrimitiveWithCal;
 
 @Component({
-    selector: 'gv-ctrl-time-primitive',
-    templateUrl: './ctrl-time-primitive.component.html',
-    styleUrls: ['./ctrl-time-primitive.component.css'],
-    providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimePrimitiveComponent }],
-    standalone: true,
-    imports: [
-        NgIf,
-        NgClass,
-        MatButtonModule,
-        MatIconModule,
-        MatMenuModule,
-        MatFormFieldModule,
-        FormsModule,
-        ReactiveFormsModule,
-        ControlMessagesModule,
-        PassiveLinkModule,
-        DateTimeModule,
-    ],
+  selector: 'gv-ctrl-time-primitive',
+  templateUrl: './ctrl-time-primitive.component.html',
+  styleUrls: ['./ctrl-time-primitive.component.css'],
+  providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimePrimitiveComponent }],
+  standalone: true,
+  imports: [
+    NgIf,
+    NgClass,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ControlMessagesModule,
+    PassiveLinkModule,
+    DateTimeModule,
+  ],
 })
 export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;

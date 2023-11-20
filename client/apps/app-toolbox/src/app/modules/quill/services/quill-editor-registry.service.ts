@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { QuillEditorService } from './quill-editor.service';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
+import type { QuillEditorService } from './quill-editor.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +9,6 @@ import { first } from 'rxjs/operators';
 export class QuillEditorRegistryService {
 
   private registry = new Map<Element, QuillEditorService>()
-  constructor() {
-  }
   registerService(scrollDomElement: Element, service: QuillEditorService, destroy$: Observable<boolean>) {
     this.registry.set(scrollDomElement, service)
     destroy$.pipe(first(x => x == true)).subscribe(() => {

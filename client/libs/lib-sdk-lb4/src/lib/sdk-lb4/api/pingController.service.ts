@@ -23,6 +23,7 @@ import { GvFieldTargetViewType } from '../model/models';
 import { PingResponse } from '../model/models';
 import { ProjectPongRequest } from '../model/models';
 import { ProjectVisibilityOptions } from '../model/models';
+import { PubRoleMapping } from '../model/models';
 import { QuillOperation } from '../model/models';
 import { StatementWithTarget } from '../model/models';
 import { SysConfigFieldDisplay } from '../model/models';
@@ -106,12 +107,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -167,12 +162,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -223,12 +212,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -287,12 +270,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -340,12 +317,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -394,12 +365,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -448,12 +413,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -502,12 +461,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -548,6 +501,54 @@ export class PingControllerService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
+    public pingControllerXPubRoleMapping(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<PubRoleMapping>;
+    public pingControllerXPubRoleMapping(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<PubRoleMapping>>;
+    public pingControllerXPubRoleMapping(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<PubRoleMapping>>;
+    public pingControllerXPubRoleMapping(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<PubRoleMapping>(`${this.configuration.basePath}/PubRoleMapping`,
+            null,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
     public pingControllerXQuillOperation(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<QuillOperation>;
     public pingControllerXQuillOperation(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<QuillOperation>>;
     public pingControllerXQuillOperation(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<QuillOperation>>;
@@ -556,12 +557,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -610,12 +605,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -664,12 +653,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -718,12 +701,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {
@@ -772,12 +749,6 @@ export class PingControllerService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {

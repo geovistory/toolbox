@@ -1,17 +1,16 @@
 
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { QueriesFacade, StateFacade } from '@kleiolab/lib-redux';
-import { DfhClassEnriched } from '@kleiolab/lib-redux';
+import { DfhClassEnriched, QueriesFacade, StateFacade } from '@kleiolab/lib-redux';
 import { ClassConfig, GvPositiveSchemaObject, InfAppellation, ProProject } from '@kleiolab/lib-sdk-lb4';
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ProgressDialogComponent, ProgressDialogData } from '../../shared/components/progress-dialog/progress-dialog.component';
 import { BehaviorSubject, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { TableDetailConfig } from '../../modules/data/components/table-detail/table-detail.component';
-import { TextDetail2Config } from '../../modules/data/components/text-detail2/text-detail2.component';
-import { EntityDetailConfig } from '../../modules/information/containers/entity-detail/entity-detail.component';
+import type { TableDetailConfig } from '../../modules/data/components/table-detail/table-detail.component';
+import type { TextDetail2Config } from '../../modules/data/components/text-detail2/text-detail2.component';
+import type { EntityDetailConfig } from '../../modules/information/containers/entity-detail/entity-detail.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ProgressDialogComponent, ProgressDialogData } from '../../shared/components/progress-dialog/progress-dialog.component';
 
 
 export interface RamSource {

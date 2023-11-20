@@ -12,9 +12,9 @@ import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/co
 import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../../shared/components/progress-dialog/progress-dialog.component';
 import { EditModeService } from '../../services/edit-mode.service';
-import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+import { ViewFieldBodyService } from '../view-field-body/view-field-body.service';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
-import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
 @Component({
   selector: 'gv-view-field-item-value-version',
@@ -29,17 +29,17 @@ export class ViewFieldItemValueVersionComponent {
   field: Field
   showOntoInfo$: Observable<boolean>
   constructor(
-    public itemComponent: ViewFieldItemComponent,
-    public bodyComponent: ViewFieldBodyComponent,
+    public item: ViewFieldItemService,
+    public viewFieldBody: ViewFieldBodyService,
     private projectData: ProjectDataService,
     private dialog: MatDialog,
     public editMode: EditModeService,
     private state: StateFacade
   ) { }
   ngOnInit(): void {
-    this.ordNum = this.itemComponent.item.ordNum
-    this.field = this.itemComponent.field
-    this.showOntoInfo$ = this.itemComponent.showOntoInfo$
+    this.ordNum = this.item.component.item.ordNum
+    this.field = this.item.component.field
+    this.showOntoInfo$ = this.item.component.showOntoInfo$
   }
   switchToStatement() {
     this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
@@ -56,13 +56,13 @@ export class ViewFieldItemValueVersionComponent {
       const timer$ = timer(500)
 
       // Prepare statement
-      const { pk_entity, ...statement } = this.itemComponent.item.statement
+      const { pk_entity, ...statement } = this.item.component.item.statement
       // Prepare the request
       const req: ReplaceStatementInFieldRequest = {
         pkProject: pkProject,
-        isOutgoing: this.itemComponent.field.isOutgoing,
-        property: this.itemComponent.field.property,
-        source: this.bodyComponent.source,
+        isOutgoing: this.item.component.field.isOutgoing,
+        property: this.item.component.field.property,
+        source: this.viewFieldBody.component.source,
         statement
       }
       // Persist the update in the database

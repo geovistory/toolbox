@@ -1,5 +1,5 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit, ViewChild, forwardRef } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, forwardRef } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -77,8 +77,6 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   selectButtonDisabled: boolean;
   selectButtonTooltip: string;
 
-  @ViewChild(FormCreateDataComponent, { static: true }) createEntity: FormCreateDataComponent;
-
   constructor(
     private state: StateFacade,
     private ap: ActiveProjectPipesService,
@@ -141,14 +139,14 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   }
 
   // When user confirms that the form is filled
-  onFormOk() {
-    this.createEntity.submitted = true
+  onFormOk(form: FormCreateDataComponent) {
+    form.submitted = true
 
-    if (this.createEntity.formFactory.formGroup.valid) {
-      const value: InfData = this.createEntity.formFactory.formGroupFactory.valueChanges$.value
+    if (form.formFactory.formGroup.valid) {
+      const value: InfData = form.formFactory.formGroupFactory.valueChanges$.value
       this.dialogRef.close(value)
     } else {
-      const f = this.createEntity.formFactory.formGroup.controls['childControl'] as UntypedFormArray;
+      const f = form.formFactory.formGroup.controls['childControl'] as UntypedFormArray;
       U.recursiveMarkAsTouched(f)
     }
   }

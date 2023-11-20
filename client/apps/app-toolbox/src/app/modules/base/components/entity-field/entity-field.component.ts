@@ -1,28 +1,28 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, Input, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Field, FieldPage, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
+import { PassiveLinkModule } from '../../../../shared/directives/passive-link/passive-link.module';
 import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
-import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
-import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { PassiveLinkModule } from '../../../../shared/directives/passive-link/passive-link.module';
 import { FieldLabelComponent } from '../field-label/field-label.component';
-import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
 
 @Component({
-    selector: 'gv-entity-field',
-    templateUrl: './entity-field.component.html',
-    styleUrls: ['./entity-field.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgIf, OntoInfoModule, FieldLabelComponent, PassiveLinkModule, MatTooltipModule, NgFor, EntityPreviewModule, AsyncPipe]
+  selector: 'gv-entity-field',
+  templateUrl: './entity-field.component.html',
+  styleUrls: ['./entity-field.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, OntoInfoModule, FieldLabelComponent, PassiveLinkModule, MatTooltipModule, NgFor, EntityPreviewModule, AsyncPipe]
 })
 export class EntityFieldComponent implements OnInit {
   destroy$ = new Subject<boolean>();
@@ -36,7 +36,6 @@ export class EntityFieldComponent implements OnInit {
   isCircular = false;
   page$: Observable<FieldPage>
   constructor(
-    private p: ActiveProjectPipesService,
     private state: StateFacade,
     private i: InformationPipesService,
     private pag: PaginationService,

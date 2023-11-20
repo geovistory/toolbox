@@ -58,13 +58,6 @@ export class Configuration {
             this.credentials = {};
         }
 
-        // init default accesstoken credential
-        if (!this.credentials['accesstoken']) {
-            this.credentials['accesstoken'] = () => {
-                return this.apiKeys['accesstoken'] || this.apiKeys['authorization'];
-            };
-        }
-
         // init default jwt credential
         if (!this.credentials['jwt']) {
             this.credentials['jwt'] = () => {

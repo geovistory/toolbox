@@ -2,12 +2,13 @@ import {authenticate} from '@loopback/authentication';
 import {authorize} from '@loopback/authorization';
 import {inject} from '@loopback/context';
 import {model, property} from '@loopback/repository';
-import {get, param, post, Request, requestBody, ResponseObject, RestBindings} from '@loopback/rest';
+import {Request, ResponseObject, RestBindings, get, param, post, requestBody} from '@loopback/rest';
 import {SecurityBindings, UserProfile} from '@loopback/security';
 import {Roles} from '../components/authorization/keys';
 import {TColFilter} from '../components/query/q-table-page';
 import {StatementWithTarget} from '../models/field-response/gv-statement-with-target';
 import {GvFieldTargetViewType} from '../models/field/gv-field-target-view-type';
+import {PubRoleMapping} from '../models/pub-role-mapping.model';
 import {QuillOperation} from '../models/quill-doc/quill-operation.model';
 import {ClassConfig} from '../models/sys-config/sys-config-class-config';
 import {CommunityVisibilityOptionsWithRelations} from '../models/sys-config/sys-config-community-visibility-options';
@@ -219,6 +220,18 @@ export class PingController {
     }
   })
   xStatementWithTarget() { }
+
+  @post('/PubRoleMapping', {
+    responses: {
+      '200': {
+        description: '',
+        content: {'application/json': {schema: {'x-ts-type': PubRoleMapping}}}
+      }
+    }
+  })
+  xPubRoleMapping() { }
+
+
 }
 
 

@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
-import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
 @Component({
   selector: 'gv-view-field-item-value',
@@ -25,14 +25,14 @@ export class ViewFieldItemValueComponent {
   showOntoInfo$: Observable<boolean>
   urls: Array<string> = [];
   constructor(
-    public itemComponent: ViewFieldItemComponent,
+    public item: ViewFieldItemService,
     public editMode: EditModeService
   ) { }
   ngOnInit(): void {
-    this.ordNum = this.itemComponent.item.ordNum
-    this.field = this.itemComponent.field
-    this.showOntoInfo$ = this.itemComponent.showOntoInfo$
-    this.urls = [...getUrls(this.itemComponent.item.targetLabel)]
+    this.ordNum = this.item.component.item.ordNum
+    this.field = this.item.component.field
+    this.showOntoInfo$ = this.item.component.showOntoInfo$
+    this.urls = [...getUrls(this.item.component.item.targetLabel)]
   }
 }
 

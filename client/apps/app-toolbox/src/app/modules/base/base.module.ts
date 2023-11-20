@@ -4,10 +4,19 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { DndModule } from '@suez/ngx-dnd';
 import { DndModule as NgxDndModule } from 'ngx-drag-drop';
+import { MaterialModule } from '../../core/material/material.module';
+import { ValidationService } from '../../core/validation/validation.service';
+import { ControlMessagesModule, PassiveLinkModule } from '../../shared';
+import { EntityPreviewModule } from '../../shared/components/entity-preview/entity-preview.module';
+import { EntityPreviewsPaginatedModule } from '../../shared/components/entity-previews-paginated/entity-previews-paginated.module';
 import { GvButtonsModule } from '../../shared/components/gv-buttons/gv-buttons.module';
+import { OntoInfoModule } from '../../shared/components/onto-info/onto-info.module';
 import { OpenCloseModule } from '../../shared/directives/open-close/open-close.module';
 import { EntityLabelConfigModule } from '../../shared/modules/entity-label-config/entity-label-config.module';
 import { AbbreviateModule } from '../../shared/pipes/abbreviate/abbreviate.module';
+import { KeysModule } from '../../shared/pipes/keys.module';
+import { QuillOpsToStrModule } from '../../shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
+import { TruncateModule } from '../../shared/pipes/truncate/truncate.module';
 import { FormFactoryModule } from '../form-factory/form-factory.module';
 import { QuillModule } from '../quill';
 import { AddEntityMenuClassItemComponent } from './components/add-entity-menu-class-item/add-entity-menu-class-item.component';
@@ -92,7 +101,6 @@ import { ViewTimeSpanSectionBodyComponent } from './components/view-time-span-se
 import { ViewTimeSpanSectionHeaderComponent } from './components/view-time-span-section-header/view-time-span-section-header.component';
 import { ViewTimeSpanSectionComponent } from './components/view-time-span-section/view-time-span-section.component';
 import { GvDndSortListDirective } from './directives/dnd-sort-list.directive';
-import { BaseModalsService } from './services/base-modals.service';
 import { GvDndGlobalService } from './services/dnd-global.service';
 import { EditModeService } from './services/edit-mode.service';
 import { PaginationService } from './services/pagination.service';
@@ -101,15 +109,6 @@ import { ViewFieldAddHooksService } from './services/view-field-add-hooks.servic
 import { ViewFieldDropListService } from './services/view-field-drop-list.service';
 import { ViewFieldItemCountSumService } from './services/view-field-item-count-sum.service';
 import { ViewFieldTreeNodeService } from './services/view-field-tree-node.service';
-import { ValidationService } from '../../core/validation/validation.service';
-import { MaterialModule } from '../../core/material/material.module';
-import { ControlMessagesModule, PassiveLinkModule } from '../../shared';
-import { EntityPreviewModule } from '../../shared/components/entity-preview/entity-preview.module';
-import { EntityPreviewsPaginatedModule } from '../../shared/components/entity-previews-paginated/entity-previews-paginated.module';
-import { OntoInfoModule } from '../../shared/components/onto-info/onto-info.module';
-import { KeysModule } from '../../shared/pipes/keys.module';
-import { QuillOpsToStrModule } from '../../shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
-import { TruncateModule } from '../../shared/pipes/truncate/truncate.module';
 
 const components = [
   TypeItemComponent,
@@ -221,22 +220,21 @@ const baseModules = [
 ]
 
 @NgModule({
-    imports: [...baseModules, ...components],
-    providers: [
-        PaginationService,
-        TimeSpanService,
-        ValidationService,
-        BaseModalsService,
-        ViewFieldAddHooksService,
-        ViewFieldTreeNodeService,
-        ViewFieldDropListService,
-        ViewFieldItemCountSumService,
-        GvDndGlobalService,
-        EditModeService
-    ],
-    exports: [
-        ...components,
-        ...baseModules
-    ]
+  imports: [...baseModules, ...components],
+  providers: [
+    PaginationService,
+    TimeSpanService,
+    ValidationService,
+    ViewFieldAddHooksService,
+    ViewFieldTreeNodeService,
+    ViewFieldDropListService,
+    ViewFieldItemCountSumService,
+    GvDndGlobalService,
+    EditModeService
+  ],
+  exports: [
+    ...components,
+    ...baseModules
+  ]
 })
 export class BaseModule { }

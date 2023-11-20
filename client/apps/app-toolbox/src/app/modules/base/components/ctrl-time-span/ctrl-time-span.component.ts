@@ -1,30 +1,29 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { CtrlTimeSpanDialogData, CtrlTimeSpanDialogResult } from '@kleiolab/lib-redux';
-import { TimeSpanUtil } from '@kleiolab/lib-utils';
+import { DateTimeModule, TimeSpanUtil } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CtrlTimeSpanDialogComponent } from './ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { DateTimeModule } from '../../../../../../../../libs/lib-utils/src/lib/date-time/date-time.module';
-import { MatInputModule } from '@angular/material/input';
-import { NgIf } from '@angular/common';
 
 export type CtrlTimeSpanModel = CtrlTimeSpanDialogResult
 
 @Component({
-    selector: 'gv-ctrl-time-span',
-    templateUrl: './ctrl-time-span.component.html',
-    styleUrls: ['./ctrl-time-span.component.css'],
-    providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimeSpanComponent }],
-    standalone: true,
-    imports: [
-        NgIf,
-        MatInputModule,
-        DateTimeModule,
-    ],
+  selector: 'gv-ctrl-time-span',
+  templateUrl: './ctrl-time-span.component.html',
+  styleUrls: ['./ctrl-time-span.component.css'],
+  providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimeSpanComponent }],
+  standalone: true,
+  imports: [
+    NgIf,
+    MatInputModule,
+    DateTimeModule,
+  ],
 })
 export class CtrlTimeSpanComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlTimeSpanModel> {
   static nextId = 0;

@@ -1,26 +1,26 @@
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
-import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
-import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
-import { EditModeService } from '../../services/edit-mode.service';
-import { ViewFieldAnnotationItemData } from '../view-field-annotations/view-field-annotations.component';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgClass, NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
+import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
+import { EditModeService } from '../../services/edit-mode.service';
+import type { ViewFieldAnnotationItemData } from '../view-field-annotations/view-field-annotations.component';
 
 @Component({
-    selector: 'gv-view-field-annotation-item',
-    templateUrl: './view-field-annotation-item.component.html',
-    styleUrls: ['./view-field-annotation-item.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgClass, NgIf, MatProgressSpinnerModule, NgFor, EntityPreviewModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, AsyncPipe]
+  selector: 'gv-view-field-annotation-item',
+  templateUrl: './view-field-annotation-item.component.html',
+  styleUrls: ['./view-field-annotation-item.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgClass, NgIf, MatProgressSpinnerModule, NgFor, EntityPreviewModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, AsyncPipe]
 })
 export class ViewFieldAnnotationItemComponent implements OnInit {
   @Input() itemData: ViewFieldAnnotationItemData

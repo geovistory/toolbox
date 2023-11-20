@@ -1,24 +1,26 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormArray } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, CtrlTimeSpanDialogResult, DisplayType, Field, SectionName, StateFacade, TableName } from '@kleiolab/lib-redux';
 import { GvFieldProperty, GvFieldSourceEntity, InfAppellation, InfData, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfResourceWithRelations, InfStatement, InfStatementWithRelations, Section, SysConfigFormCtrlType, SysConfigValueObjectType, TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { combineLatestOrEmpty, TimeSpanResult, U } from '@kleiolab/lib-utils';
+import { TimeSpanResult, U, combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { equals, flatten, groupBy, sum, values } from 'ramda';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ValidationService } from '../../../../core/validation/validation.service';
 import { FormArrayFactory } from '../../../../modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from '../../../../modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
 import { FormFactory } from '../../../../modules/form-factory/core/form-factory';
-import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { FormArrayConfig } from '../../../../modules/form-factory/services/FormArrayConfig';
 import { FormNodeConfig } from '../../../../modules/form-factory/services/FormNodeConfig';
+import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { C_53_TYPE_ID, C_54_LANGUAGE_ID } from '../../../../ontome-ids';
 import { InfValueObject } from '../../../../shared/components/value-preview/value-preview.component';
-import { equals, flatten, groupBy, sum, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
+import type { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-appellation-te-en/fg-appellation-te-en.component';
 import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-dimension.component';
@@ -26,9 +28,8 @@ import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
 import { FgTextWithLangComponent, FgTextWithLangInjectData } from '../fg-text-with-lang/fg-text-with-lang.component';
 import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
-import { MatButtonModule } from '@angular/material/button';
 import { FormGroupComponent } from '../form-group/form-group.component';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { FormCreateDataService } from './form-create-data.service';
 export interface FormArrayData {
   pkClass?: number
   // customCtrlLabel?: string
@@ -119,11 +120,12 @@ export interface FieldSection {
   pipeFields?: (pkClass: number) => Observable<Field[]>
 }
 @Component({
-    selector: 'gv-form-create-data',
-    templateUrl: './form-create-data.component.html',
-    styleUrls: ['./form-create-data.component.scss'],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, FormGroupComponent, MatButtonModule, AsyncPipe]
+  selector: 'gv-form-create-data',
+  templateUrl: './form-create-data.component.html',
+  styleUrls: ['./form-create-data.component.scss'],
+  providers: [FormCreateDataService],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, FormGroupComponent, MatButtonModule, AsyncPipe]
 })
 export class FormCreateDataComponent implements OnInit, OnDestroy {
 
@@ -207,7 +209,10 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
     private c: ConfigurationPipesService,
     private state: StateFacade,
     private ap: ActiveProjectPipesService,
-  ) { }
+    formCreateDataServices: FormCreateDataService
+  ) {
+    formCreateDataServices.registerComponent(this)
+  }
 
   ngOnInit() {
 

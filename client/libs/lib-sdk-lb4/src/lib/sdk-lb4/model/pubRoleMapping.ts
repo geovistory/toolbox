@@ -11,13 +11,14 @@
  */
 
 
-export interface SysClassHasTypeProperty { 
-    pk_typed_class?: number;
-    typed_class_label?: string;
-    dfh_pk_property?: number;
-    property_label?: string;
-    pk_type_class?: number;
-    type_class_label?: string;
-    pk_entity?: number;
+export interface PubRoleMapping { 
+    id?: number;
+    /**
+     * The principal type, such as USER, APPLICATION, ROLE, or user model name in case of multiple user models
+     */
+    principalType?: string;
+    principalId?: string;
+    roleId?: number;
+    roleid?: number;
 }
 

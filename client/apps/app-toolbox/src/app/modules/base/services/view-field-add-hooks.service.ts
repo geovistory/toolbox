@@ -6,8 +6,10 @@ import { filter, first, map } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../core/active-project/active-project.service';
 import { C_933_ANNOTATION_IN_TEXT_ID, C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../ontome-ids';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { ViewFieldComponent } from '../components/view-field/view-field.component';
-import { BaseModalsService } from './base-modals.service';
+import type { ViewFieldComponent } from '../components/view-field/view-field.component';
+import { openAddHasType } from '../lib/openAddHasType';
+import { openAddStatementDialogFromField } from '../lib/openAddStatementDialogFromField';
+import { openSelectPlatformVocabItem } from '../lib/openSelectPlatformVocabItem';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +21,6 @@ export class ViewFieldAddHooksService {
     private pp: ActiveProjectPipesService,
     private state: StateFacade,
     private dialog: MatDialog,
-    private dialogs: BaseModalsService
   ) { }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public async beforeChoosingClass(viewFieldComponent: ViewFieldComponent): Promise<() => void | void> {
@@ -58,7 +59,7 @@ export class ViewFieldAddHooksService {
      * Hook for selecting an item from a platform vocabulary
      */
     if (this.pp.getIsPlatformVocabClass(chosenClass)) {
-      return this.dialogs.openSelectPlatformVocabItem(source, field, chosenClass).afterClosed().toPromise()
+      return openSelectPlatformVocabItem(this.dialog, source, field, chosenClass).afterClosed().toPromise()
     }
 
 
@@ -66,10 +67,10 @@ export class ViewFieldAddHooksService {
      * Hook for has type field
      */
     if (field.isSpecialField == 'has-type') {
-      return this.dialogs.openAddHasType(source, field, chosenClass).afterClosed().toPromise()
+      return openAddHasType(this.dialog, source, field, chosenClass).afterClosed().toPromise()
     }
 
-    return this.dialogs.openAddStatementDialogFromField(source, field, chosenClass).afterClosed().toPromise()
+    return openAddStatementDialogFromField(this.dialog, source, field, chosenClass).afterClosed().toPromise()
 
   }
 

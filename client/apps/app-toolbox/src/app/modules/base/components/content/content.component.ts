@@ -1,6 +1,7 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit, forwardRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -10,7 +11,7 @@ import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from '../../../../ontome-ids';
 import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
-import { BaseModalsService } from '../../services/base-modals.service';
+import { openAddStatementDialog } from '../../lib/openAddStatementDialog';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
@@ -65,7 +66,7 @@ export class ContentComponent implements OnInit {
 
   constructor(
     private c: ConfigurationPipesService,
-    private modals: BaseModalsService,
+    private dialog: MatDialog,
     public editMode: EditModeService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
@@ -77,13 +78,15 @@ export class ContentComponent implements OnInit {
     this.isExpressionLike$ = this.pkClass$.pipe(map(id => this.expressionIds.includes(id)))
   }
   openAddStatementDialog(item: AddButton) {
-    this.modals.openAddStatementDialog({
-      field: item.field,
-      hiddenProperty: item.field.property,
-      source: this.source,
-      targetClass: item.targetClass,
-      showAddList: false
-    })
+    openAddStatementDialog(
+      this.dialog,
+      {
+        field: item.field,
+        hiddenProperty: item.field.property,
+        source: this.source,
+        targetClass: item.targetClass,
+        showAddList: false
+      })
   }
 }
 

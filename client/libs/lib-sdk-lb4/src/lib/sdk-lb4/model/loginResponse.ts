@@ -16,8 +16,5 @@ export interface LoginResponse {
     user?: PubAccount;
     lb4Token?: string;
     lb4ExpiresInMs?: number;
-    lb3Token?: string;
-    lb3Ttl?: number;
-    lb3Created?: string;
 }
 

@@ -1,6 +1,7 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, forwardRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -10,7 +11,7 @@ import { InfResourceWithRelations, SysConfigClassCategoryBelonging } from '@klei
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { BaseModalsService } from '../../services/base-modals.service';
+import { openAddEntityDialog } from '../../lib/openAddEntityDialog';
 import { AddEntityMenuClassItemComponent } from '../add-entity-menu-class-item/add-entity-menu-class-item.component';
 
 
@@ -49,7 +50,7 @@ export class AddEntityMenuComponent implements OnInit, OnDestroy {
     private state: StateFacade,
     private i: InformationPipesService,
     public p: ActiveProjectService,
-    private m: BaseModalsService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -92,12 +93,14 @@ export class AddEntityMenuComponent implements OnInit, OnDestroy {
         fk_object_info: d.pkType
       }]
     }
-    this.m.openAddEntityDialog({
-      pkClass: d.pkClass,
-      initVal
-    }).subscribe(result => {
-      this.p.addEntityTab(result.pkEntity, result.pkClass)
-    })
+    openAddEntityDialog(
+      this.dialog,
+      {
+        pkClass: d.pkClass,
+        initVal
+      }).subscribe(result => {
+        this.p.addEntityTab(result.pkEntity, result.pkClass)
+      })
 
   }
 

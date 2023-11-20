@@ -1,6 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Optional, Output, ViewChild, forwardRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -24,6 +24,7 @@ import { ViewFieldDropListService } from '../../services/view-field-drop-list.se
 import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldBodyService } from './view-field-body.service';
 
 
 @Component({
@@ -33,10 +34,11 @@ import { ViewFieldItemComponent } from '../view-field-item/view-field-item.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [openClose],
   providers: [
+    ViewFieldBodyService,
     ViewFieldDropListService
   ],
   standalone: true,
-  imports: [OpenCloseModule, NgClass, NgIf, MatPaginatorModule, MatDividerModule, GvDndSortListDirective, ViewFieldItemContainerComponent, NgFor, DndDraggableDirective, ViewFieldItemComponent, MatButtonModule, MatProgressSpinnerModule, AsyncPipe]
+  imports: [OpenCloseModule, NgClass, NgIf, MatPaginatorModule, MatDividerModule, forwardRef(() => GvDndSortListDirective), ViewFieldItemContainerComponent, NgFor, DndDraggableDirective, ViewFieldItemComponent, MatButtonModule, MatProgressSpinnerModule, AsyncPipe]
 })
 export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -88,7 +90,9 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
     public viewFieldDropListService: ViewFieldDropListService,
     @Optional() private itemCountService: ViewFieldItemCountSumService,
     public editMode: EditModeService,
+    viewFieldBodyService: ViewFieldBodyService
   ) {
+    viewFieldBodyService.registerComponent(this);
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
     this.offset$ = combineLatest([this.limit$, this.pageIndex$]).pipe(
       map(([limit, pageIndex]) => limit * pageIndex)

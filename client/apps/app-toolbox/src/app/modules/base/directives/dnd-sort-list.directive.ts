@@ -2,7 +2,7 @@ import { Directive, EventEmitter, Input, Output } from '@angular/core';
 import { Field } from '@kleiolab/lib-redux';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { first } from 'rxjs/operators';
-import { ViewFieldBodyComponent } from '../components/view-field-body/view-field-body.component';
+import { ViewFieldBodyService } from '../components/view-field-body/view-field-body.service';
 import { DndDropPosition, GvDndGlobalService, ItemData, TreeItem } from '../services/dnd-global.service';
 import { ViewFieldDropListService } from '../services/view-field-drop-list.service';
 
@@ -21,8 +21,8 @@ type LocalEvent = DndSortListDropEvent & {
 }
 
 @Directive({
-    selector: '[gvDndSortList]',
-    standalone: true,
+  selector: '[gvDndSortList]',
+  standalone: true,
 })
 export class GvDndSortListDirective {
   @Input('gvDndSortList') data!: { items: TreeItem[], field: Field, id: string }
@@ -33,9 +33,7 @@ export class GvDndSortListDirective {
   constructor(
     private dndGlobal: GvDndGlobalService,
     private service: ViewFieldDropListService,
-    private currentVfb: ViewFieldBodyComponent) {
-
-  }
+    private currentVfb: ViewFieldBodyService) { }
 
 
   async onDrop(event: DndSortListDropEvent) {
@@ -51,7 +49,7 @@ export class GvDndSortListDirective {
 
     // retrieve current index (where the item should be in future)
     let currentIndex: number;
-    const items = await this.currentVfb.items$.pipe(first()).toPromise()
+    const items = await this.currentVfb.component.items$.pipe(first()).toPromise()
     const receiverIndex = items.indexOf(event.receiver.data)
 
     // if the position is center, we inform the parent comonent and do nothing
@@ -70,13 +68,13 @@ export class GvDndSortListDirective {
 
     console.log(`
     dropped ${event.droppedData.item.statement.pk_entity} from position ${previousIndex}
-    in list ${this.currentVfb.field.label}
+    in list ${this.currentVfb.component.field.label}
     at ${event.receiver.position} of ${event.receiver.data.statement.pk_entity} to position ${currentIndex}
     `)
 
     if (sameContainer) {
       const updated = await this.service.moveInSameField(
-        this.currentVfb,
+        this.currentVfb.component,
         previousIndex,
         currentIndex,
         event.droppedData.item.statement.pk_entity
@@ -87,7 +85,7 @@ export class GvDndSortListDirective {
       const updated = await this.service.moveBetweenFields(
         previousVfb,
         previousIndex,
-        this.currentVfb,
+        this.currentVfb.component,
         currentIndex,
         event.droppedData.item,
       )
