@@ -43,9 +43,9 @@
 
 
 <mat-menu #moveTo="matMenu">
-  <button mat-menu-item (click)="itemComponent.movePosition(1)">1 (Mark as favorite)</button>
-  <button mat-menu-item (click)="itemComponent.movePosition(2)">2</button>
-  <button mat-menu-item (click)="itemComponent.movePosition(3)">3</button>
+  <button mat-menu-item (click)="item.component.movePosition(1)">1 (Mark as favorite)</button>
+  <button mat-menu-item (click)="item.component.movePosition(2)">2</button>
+  <button mat-menu-item (click)="item.component.movePosition(3)">3</button>
 </mat-menu>
 
 <button mat-icon-button [matMenuTriggerFor]="appMenu" class="ml-auto">
