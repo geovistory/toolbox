@@ -4,16 +4,16 @@ import { GvFieldPage, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { Store, StoreModule, combineReducers } from '@ngrx/store';
 import { keys } from 'ramda';
 import { firstValueFrom } from 'rxjs';
+import { GvPaginationObjectMock } from '../../../../_helpers/data/auto-gen/api-responses/GvPaginationObjectMock';
+import { ProProjectMock } from '../../../../_helpers/data/auto-gen/gvDB/ProProjectMock';
 import { IAppState } from '../../../public-api';
 import { dataFeatureKey } from '../../data.feature.key';
 import { DataState } from '../../data.model';
 import { infStatementActions } from './inf-statement.actions';
 import { InfStatementFacade } from './inf-statement.facade';
 import { infStatementReducers } from './inf-statement.reducer';
-import { GvPaginationObjectMock } from '../../../../_helpers/data/auto-gen/api-responses/GvPaginationObjectMock';
-import { ProProjectMock } from '../../../../_helpers/data/auto-gen/gvDB/ProProjectMock';
 
-describe('InfStatement Facade', () => {
+fdescribe('InfStatement Facade', () => {
   let facade: InfStatementFacade;
   let store: Store<IAppState>;
 

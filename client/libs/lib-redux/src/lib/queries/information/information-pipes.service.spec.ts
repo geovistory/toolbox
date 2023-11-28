@@ -3,13 +3,13 @@ import { NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { GvPositiveSchemaObject, SdkLb4Module, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Store } from '@ngrx/store';
-import { GvFieldPageReqMock } from '../../_helpers/data/auto-gen/api-requests/GvFieldPageReq';
+import { firstValueFrom } from 'rxjs';
+import { take, toArray } from 'rxjs/operators';
 import { FieldPageMock } from '../../_helpers/data/FieldPageMock';
 import { GvSchemaObjectMock } from '../../_helpers/data/GvSchemaObjectMock';
 import { IAppStateMock } from '../../_helpers/data/IAppStateMock';
+import { GvFieldPageReqMock } from '../../_helpers/data/auto-gen/api-requests/GvFieldPageReq';
 import { MockPaginatedStatementsControllerService } from '../../_helpers/mock-services/MockPaginatedStatementsControllerService';
-import { firstValueFrom } from 'rxjs';
-import { take, toArray } from 'rxjs/operators';
 import { schemaModifierActions, setDataState } from '../../redux-store/data/data.actions';
 import { DataFacade } from '../../redux-store/data/data.facade';
 import { IAppState } from '../../redux-store/state.model';
@@ -148,7 +148,7 @@ describe('InformationPipesService', () => {
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
       // testing pipe
-      const expectedSequence: FieldPage[] = [FieldPageMock.appeTeEnUsedInLanguage]
+      const expectedSequence: FieldPage[] = [FieldPageMock.appeTeEnUsedInLanguageFieldPage]
       q$.pipe(take(1), toArray())
         .subscribe(
           actualSequence => {
@@ -167,7 +167,7 @@ describe('InformationPipesService', () => {
       const q$ = service.pipeFieldPage(req.page, req.targets, false)
 
       // testing pipe
-      const expectedSequence: FieldPage[] = [FieldPageMock.shipVoyageAtSomeTimeWithin]
+      const expectedSequence: FieldPage[] = [FieldPageMock.shipVoyageAtSomeTimeWithinFielPage]
       q$.pipe(take(1), toArray())
         .subscribe(
           actualSequence => {

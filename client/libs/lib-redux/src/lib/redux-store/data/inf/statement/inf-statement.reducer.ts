@@ -1,7 +1,9 @@
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
+import { composeReducers } from '../../../_lib/composeReducers';
 import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { infFeatureKey } from "../inf.feature.key";
+import { createPaginationReducers } from './_lib/pagination.reducers';
 
 export const infStatementFeature = 'statement'
 export const infStatementReducerConfig: ReducerConfig = {
@@ -37,7 +39,11 @@ export const infStatementReducerConfig: ReducerConfig = {
 }
 
 
-export const infStatementReducers = createModelReducers(infFeatureKey, infStatementFeature, infStatementReducerConfig)
+export const infStatementReducers = composeReducers(
+  createPaginationReducers(infFeatureKey, infStatementFeature, infStatementReducerConfig),
+  createModelReducers(infFeatureKey, infStatementFeature, infStatementReducerConfig)
+)
+
 
 
 

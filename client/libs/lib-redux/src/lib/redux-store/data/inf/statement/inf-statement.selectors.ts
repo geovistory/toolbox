@@ -1,9 +1,9 @@
 import { GvFieldId, GvFieldPage } from '@kleiolab/lib-sdk-lb4';
 import { createSelector } from '@ngrx/store';
-import { getFromTo } from '../../_lib/crud-reducer-factory';
-import { subfieldIdToString } from '../../_lib/subfieldIdToString';
 import { getInfState } from '../inf.selectors';
-import { indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty, InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks } from './inf-statement.reducer';
+import { getFromTo } from './_lib/getFromTo';
+import { subfieldIdToString } from './_lib/subfieldIdToString';
+import { InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty } from './inf-statement.reducer';
 
 export const getStatementState = createSelector(getInfState, s => s?.statement);
 

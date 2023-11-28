@@ -7,12 +7,12 @@ import { EffectsModule } from '@ngrx/effects';
 import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { firstValueFrom, of, shareReplay } from 'rxjs';
+import { InfLanguageMock } from '../../_helpers/data/auto-gen/gvDB/InfLanguageMock';
+import { GvSchemaObjectMock } from '../../_helpers/data/GvSchemaObjectMock';
 import { IAppState } from '../state.model';
 import { schemaModifierActions, setDataState } from './data.actions';
 import { DataFacade } from './data.facade';
 import { DataModule } from './data.module';
-import { InfLanguageMock } from '../../_helpers/data/auto-gen/gvDB/InfLanguageMock';
-import { GvSchemaObjectMock } from '../../_helpers/data/GvSchemaObjectMock';
 
 
 describe('Data Facade', () => {

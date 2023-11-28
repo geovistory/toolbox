@@ -263,7 +263,7 @@ export class DataFacade {
   }
 
   /**
-   * Dispatch action to load GvSchemaObject from extarnal Api
+   * Dispatch action to load GvSchemaObject from external Api
    * @param apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
    *                we'll end up with two subscriptions and thus two api calls
    */
@@ -303,7 +303,7 @@ export class DataFacade {
   }
 
   /**
-   * Dispatch action to load GvSchemaModifier from extarnal Api
+   * Dispatch action to load GvSchemaModifier from external Api
    * @param apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
    *                we'll end up with two subscriptions and thus two api calls
    */
@@ -320,7 +320,7 @@ export class DataFacade {
   }
 
   /**
-   * Dispatch action to load GvPaginationObject from extarnal Api
+   * Dispatch action to load GvPaginationObject from external Api
    * @param apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
    *                we'll end up with two subscriptions and thus two api calls
    */

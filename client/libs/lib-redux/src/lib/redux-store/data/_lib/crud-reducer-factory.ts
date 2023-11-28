@@ -1,7 +1,5 @@
 import { FluxStandardAction } from 'flux-standard-action';
 import { equals, indexBy, omit, values } from 'ramda';
-import { LoadPageMeta, LoadPageSucceededMeta } from './crud-actions-factory';
-import { subfieldIdToString } from './subfieldIdToString';
 
 export const PR_ENTITY_MODEL_MAP = 'pkEntityModelMap'
 export interface EntityModelAndClass<ModelName> {
@@ -32,19 +30,7 @@ export interface Meta<Model> { items: Model[], pk?: number }
 
 export const by = (name: string) => 'by_' + name;
 
-export const paginateBy = 'by_subfield_page'
 
-export function getFromTo(limit: number, offset: number) {
-  return getStart(limit, offset) + '_' + getEnd(limit, offset);
-}
-
-export function getEnd(limit: number, offset: number) {
-  return getStart(limit, offset) + limit;
-}
-
-export function getStart(limit: number, offset: number) {
-  return offset;
-}
 
 const updatingBy = (name: string) => 'updating_' + by(name);
 const deletingBy = (name: string) => 'deleting_' + by(name);
@@ -96,23 +82,6 @@ function isFacetteByPk<Payload, Model>(config: ReducerConfig, action: FluxStanda
   else return false;
 }
 
-
-
-function groupBy(items: any[], groupByFn: (item) => string, indexByFn: (item) => string) {
-  const groups = {}
-  items.forEach(item => {
-    // if the group by key is not possible to create, the item won't be added to the index
-    const groupKey = getGroupKeyOfItem(groupByFn, item);
-
-    if (groupKey) {
-      const indexKey = indexByFn(item);
-      groups[groupKey] = { ...groups[groupKey], ...{ [indexKey]: item } }
-    }
-  })
-  return groups;
-}
-
-
 /**
  * Creates object where the key returned by the configured indexByFn
  */
@@ -129,53 +98,6 @@ function indexKeyObject<Payload, Model>(action: FluxStandardAction<Payload, { it
     })
     .map(item => config.indexBy.indexByFn(item)));
 }
-
-
-/**
- * Creates an map for pk_entity -> modelName on the level of the schema:
- * example:
- */
-// private createEntityModelMapReducers(modelName): Reducer<unknown, FluxStandardAction<Payload, Meta<Model>>> {
-//   const actionPrefix = actionPrefix;
-//   const reducer = (state = {}, action: FluxStandardAction<Payload, Meta<Model>>) => {
-//     const modelPath = actionPrefix + '.' + modelName;
-
-//     if (!action || !action.meta || !action.meta.items || !action.meta.items.length) return state;
-//     const items = action.meta.items;
-
-//     switch (action.type) {
-//       case modelPath + '::LOAD_SUCCEEDED':
-//       case modelPath + '::UPSERT_SUCCEEDED':
-//         const idx = addToEntityModelMap<Model>(items, modelName);
-//         state = {
-//           ...state,
-//           ...idx
-//         }
-//         break;
-
-//       case modelPath + '::DELETE_SUCCEEDED':
-//       case modelPath + '::REMOVE_SUCCEEDED':
-//         const pkEntities = []
-//         for (let i = 0; i < items.length; i++) {
-//           const item = items[i] as any;
-//           if (item.pk_entity) {
-//             pkEntities.push(item.pk_entity);
-//           }
-//         }
-//         state = omit(pkEntities, state)
-//         break;
-
-//       default:
-//         break;
-//     }
-//     return state;
-//   };
-//   return reducer;
-// }
-
-
-
-
 
 
 export function addToEntityModelMap<Model>(items: Model[], modelName: any) {
@@ -197,7 +119,7 @@ export function getGroupKeyOfItem(groupByFn: (item: any) => string, item: any): 
   try {
     groupKey = groupByFn(item);
   } catch (error) {
-
+    // console.warn(error)
   }
   return groupKey;
 }
@@ -449,80 +371,6 @@ export function createModelReducers<S>(actionPrefix: string, modelName: string, 
         ...innerState,
         ...omit([by(config.indexBy.keyInStore)], innerState),
         loading: false
-      }));
-
-    }
-
-
-    else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE') {
-      const meta = action.meta as any as LoadPageMeta;
-      const key = subfieldIdToString(meta.page)
-      const fromTo = getFromTo(meta.page.limit, meta.page.offset);
-
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
-        [paginateBy]: {
-          ...innerState[paginateBy],
-          [key]: {
-            ...(innerState[paginateBy] || {})[key],
-            loading: {
-              ...((innerState[paginateBy] || {})[key] || {}).loading,
-              [fromTo]: true
-            }
-          }
-        }
-      }));
-    }
-    else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_FAILED') {
-      const meta = action.meta as any as LoadPageMeta;
-
-      const key = subfieldIdToString(meta.page)
-      const fromTo = getFromTo(meta.page.limit, meta.page.offset);
-
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
-        [paginateBy]: {
-          ...innerState[paginateBy],
-          [key]: {
-            ...(innerState[paginateBy] || {})[key],
-            loading: {
-              ...((innerState[paginateBy] || {})[key] || {}).loading,
-              [fromTo]: false
-            }
-          }
-        }
-      }));
-    }
-
-    else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_SUCCEEDED') {
-      const meta = action.meta as any as LoadPageSucceededMeta;
-      const key = subfieldIdToString(meta.page)
-      const fromTo = getFromTo(meta.page.limit, meta.page.offset);
-      const start = getStart(meta.page.limit, meta.page.offset);
-
-      const rows = {}
-      if (meta.statements) {
-        meta.statements.forEach((stmt, i) => {
-          rows[start + i] = stmt;
-        })
-      }
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
-        [paginateBy]: {
-          ...innerState[paginateBy],
-          [key]: {
-            ...(innerState[paginateBy] || {})[key],
-            count: meta.count || 0,
-            rows: {
-              ...((innerState[paginateBy] || {})[key] || {}).rows,
-              ...rows
-            },
-            loading: {
-              ...((innerState[paginateBy] || {})[key] || {}).loading,
-              [fromTo]: false
-            }
-          }
-        }
       }));
 
     }
