@@ -6,7 +6,7 @@
   </ol>
 </gv-navbar>
 
-<div *ngIf="!(account)" class="container mt-5">
+<div *ngIf="!(account)" class="container mt-5 mat-typography">
   <div class="row">
     <div class="col text-center">
       <h1>
@@ -35,10 +35,11 @@
   </div>
 </div>
 
-<div *ngIf="account" class="container mt-5">
+<div *ngIf="account" class="container mt-5 mat-typography">
   <div id="userDashboard" class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-3">
+        <mat-icon svgIcon="account-circle"></mat-icon>
         <i id="userImage" class="d-none d-sm-none d-md-block fa fa-user-circle pull-right" aria-hidden="true"></i>
       </div>
       <div class="col-md-9">
