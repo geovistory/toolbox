@@ -7,7 +7,7 @@ export const proClassFieldConfgByProjectAndClassKey = (d: Partial<ProClassFieldC
   return `${d.fk_project || null}_${fk_class || null}`;
 };
 export const proClassFieldConfigFeature = 'class_field_config'
-export const proClassFieldConfigReducerConfig: ReducerConfig = {
+export const proClassFieldConfigReducerConfig: ReducerConfig<ProClassFieldConfig> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item) => item.pk_entity.toString()

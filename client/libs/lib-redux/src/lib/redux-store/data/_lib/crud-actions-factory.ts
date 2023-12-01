@@ -117,33 +117,4 @@ export class CrudActionsFactory<Model> {
     return action;
   }
 
-
-  loadPageAction(page: GvFieldPage, pk?: number) {
-    const action: FluxStandardAction<Payload, LoadPageMeta> = ({
-      type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE',
-      meta: { page, pk },
-      payload: null,
-    })
-    return action;
-  }
-
-  loadPageSucceededAction(statements: StatementWithTarget[], count: number, page: GvFieldPage, pk?: number) {
-    const action: FluxStandardAction<Payload, LoadPageSucceededMeta> = ({
-      type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_SUCCEEDED',
-      meta: { page, statements, count, pk },
-      payload: null,
-    })
-    return action;
-  }
-
-  loadPageFailedAction(page: GvFieldPage, pk?: number) {
-    const action: FluxStandardAction<Payload, LoadPageMeta> = ({
-      type: this.actionPrefix + '.' + this.modelName + '::LOAD_PAGE_FAILED',
-      meta: { page, pk },
-      payload: null,
-    })
-    return action;
-  }
-
-
 }

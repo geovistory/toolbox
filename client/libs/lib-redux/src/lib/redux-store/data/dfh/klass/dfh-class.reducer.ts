@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { dfhFeatureKey } from "../dfh.feature.key";
 
 export const dfhClassFeature = 'klass'
-export const dfhClassReducerConfig: ReducerConfig = {
+export const dfhClassReducerConfig: ReducerConfig<DfhClass> = {
   indexBy: {
     keyInStore: 'pk_class',
     indexByFn: (item: DfhClass) => item.pk_class.toString(),

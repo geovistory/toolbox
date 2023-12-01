@@ -1,8 +1,9 @@
+import { ProProject } from '@kleiolab/lib-sdk-lb4';
 import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { proFeatureKey } from "../pro.feature.key";
 
 export const proProjectFeature = 'project'
-export const proProjectReducerConfig: ReducerConfig = {
+export const proProjectReducerConfig: ReducerConfig<ProProject> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item) => {

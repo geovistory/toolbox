@@ -2,6 +2,7 @@ import { GvNegativeSchemaObject, GvPositiveSchemaObject, GvSchemaModifier } from
 import { combineReducers, createReducer, on } from '@ngrx/store';
 import { FluxStandardAction } from 'flux-standard-action';
 import { composeReducers } from '../_lib/composeReducers';
+import { deleteItemsFromState, mergeItemsInState } from './_lib/crud-reducer-factory';
 import { datDefinitions } from './dat/dat.config';
 import { datReducers } from './dat/dat.reducers';
 import { schemaModifierActions, setDataState } from './data.actions';
@@ -20,17 +21,18 @@ import { tabReducers } from './tab/sys.reducers';
 import { tabDefinitions } from './tab/tab.config';
 import { warDefinitions } from './war/war.config';
 import { warReducers } from './war/war.reducers';
-import { deleteItemsFromState, mergeItemsInState, ReducerConfigCollection } from './_lib/crud-reducer-factory';
 
-const definitions = {
-  dat: datDefinitions,
-  dfh: dfhDefinitions,
-  inf: infDefinitions,
-  pro: proDefinitions,
-  sys: sysDefinitions,
-  tab: tabDefinitions,
-  war: warDefinitions,
+class Definitions {
+  dat = new datDefinitions();
+  dfh = new dfhDefinitions();
+  inf = new infDefinitions();
+  pro = new proDefinitions();
+  sys = new sysDefinitions();
+  tab = new tabDefinitions();
+  war = new warDefinitions();
 }
+
+const definitions = new Definitions();
 
 const dataRootReducers = createReducer({},
   on(schemaModifierActions.succeeded, (state: DataState = {}, action: FluxStandardAction<GvSchemaModifier>) => {
@@ -55,10 +57,10 @@ const dataRootReducers = createReducer({},
 
 
 
-function loopOverSchemaNames(state: DataState, schemaObject: GvPositiveSchemaObject | GvNegativeSchemaObject, cb: (schemaData: any, schemaDef: ReducerConfigCollection, schemaState: any) => any) {
+function loopOverSchemaNames(state: DataState, schemaObject: GvPositiveSchemaObject | GvNegativeSchemaObject, cb: (schemaData: any, schemaDef: Definitions, schemaState: any) => any) {
 
   Object.keys(schemaObject).forEach(schemaName => {
-    const schemaDef: ReducerConfigCollection = definitions[schemaName];
+    const schemaDef = definitions[schemaName];
     if (schemaDef) {
       const schemaData = schemaObject[schemaName];
       const schemaState = state[schemaName] || {}
@@ -79,7 +81,7 @@ function loopOverSchemaNames(state: DataState, schemaObject: GvPositiveSchemaObj
 }
 
 
-function addModels(schemaData: any, schemaDef: ReducerConfigCollection, schemaState: any) {
+function addModels(schemaData: any, schemaDef: Definitions, schemaState: any) {
   Object.keys(schemaData).forEach(modelName => {
     const modelDef = schemaDef[modelName];
     const modelData = schemaData[modelName];
@@ -88,10 +90,6 @@ function addModels(schemaData: any, schemaDef: ReducerConfigCollection, schemaSt
       schemaState = {
         ...schemaState,
         [modelName]: mergeItemsInState(modelDef, modelState, modelData),
-        // pkEntityModelMap: {
-        //   ...schemaState.pkEntityModelMap,
-        //   ...addToEntityModelMap(modelData, modelName)
-        // }
       }
 
     }
@@ -102,7 +100,7 @@ function addModels(schemaData: any, schemaDef: ReducerConfigCollection, schemaSt
 
 
 
-function removeModels(schemaData: any, schemaDef: ReducerConfigCollection, schemaState: any) {
+function removeModels(schemaData: any, schemaDef: Definitions, schemaState: any) {
   Object.keys(schemaData).forEach(modelName => {
     const modelDef = schemaDef[modelName];
     const modelData = schemaData[modelName];

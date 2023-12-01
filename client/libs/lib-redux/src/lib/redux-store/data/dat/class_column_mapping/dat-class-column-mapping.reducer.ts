@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datClassColumnMappingFeature = 'class_column_mapping'
-export const datClassColumnMappingReducerConfig: ReducerConfig = {
+export const datClassColumnMappingReducerConfig: ReducerConfig<DatClassColumnMapping> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item) => item.pk_entity.toString()

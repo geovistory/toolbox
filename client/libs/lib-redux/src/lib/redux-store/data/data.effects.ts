@@ -12,7 +12,7 @@ import { getActiveProjectId } from '../ui/active-project/active-project.selector
 import { LoadingBarActions } from '../ui/loading-bar/loading-bar.actions';
 import { notificationActions } from '../ui/notification/notification.actions';
 import { paginationObjectActions, schemaModifierActions, schemaObjectActions } from './data.actions';
-import { infStatementActions } from './inf/statement/inf-statement.actions';
+import { paginationActions } from './inf/statement/pagination/pagination.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -94,11 +94,10 @@ export class DataEffects {
     mergeMap((action) => action.payload.pipe(
       concatLatestFrom(() => this.store.select(getActiveProjectId)),
       mergeMap(([data, pkProject]) => {
-        const pageLoadedActions = data.subfieldPages.map(p => infStatementActions.loadPageSucceededAction(
-          p.paginatedStatements, p.count, p.req.page, pkProject
-        ))
+        const pages = data.subfieldPages.map(p => ({ statements: p.paginatedStatements, count: p.count, page: p.req.page, pk: pkProject }))
+        const pagesLoadedAction = paginationActions.loadPagesSucceeded({ pages })
         return of(
-          ...pageLoadedActions,
+          pagesLoadedAction,
           LoadingBarActions.REMOVE_JOB()
         )
       }),

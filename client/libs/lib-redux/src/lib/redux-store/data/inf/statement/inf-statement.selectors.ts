@@ -1,9 +1,9 @@
 import { GvFieldId, GvFieldPage } from '@kleiolab/lib-sdk-lb4';
 import { createSelector } from '@ngrx/store';
 import { getInfState } from '../inf.selectors';
-import { getFromTo } from './_lib/getFromTo';
-import { subfieldIdToString } from './_lib/subfieldIdToString';
 import { InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks, indexStatementByObject, indexStatementByObjectProperty, indexStatementBySubject, indexStatementBySubjectProperty } from './inf-statement.reducer';
+import { getFromTo } from './pagination/getFromTo';
+import { subfieldIdToString } from './pagination/subfieldIdToString';
 
 export const getStatementState = createSelector(getInfState, s => s?.statement);
 

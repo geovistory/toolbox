@@ -1,8 +1,9 @@
+import { DatNamespace } from '@kleiolab/lib-sdk-lb4';
 import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datNamespaceFeature = 'namespace'
-export const datNamespaceReducerConfig: ReducerConfig = {
+export const datNamespaceReducerConfig: ReducerConfig<DatNamespace> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item) => item.pk_entity.toString()

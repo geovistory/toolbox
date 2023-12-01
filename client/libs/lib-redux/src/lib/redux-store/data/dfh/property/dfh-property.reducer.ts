@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { dfhFeatureKey } from "../dfh.feature.key";
 
 export const dfhPropertyFeature = 'property'
-export const dfhPropertyReducerConfig: ReducerConfig = {
+export const dfhPropertyReducerConfig: ReducerConfig<DfhProperty> = {
   indexBy: {
     keyInStore: 'pk_property__has_domain__has_range',
     indexByFn: (item: DfhProperty) => item.pk_property + '_' + item.has_domain + '_' + item.has_range

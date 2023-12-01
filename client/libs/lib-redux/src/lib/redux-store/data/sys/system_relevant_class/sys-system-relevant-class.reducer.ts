@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { sysFeatureKey } from "../sys.feature.key";
 
 export const sysSystemRelevantClassFeature = 'system_relevant_class'
-export const sysSystemRelevantClassReducerConfig: ReducerConfig = {
+export const sysSystemRelevantClassReducerConfig: ReducerConfig<SysSystemRelevantClass> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item) => {

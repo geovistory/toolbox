@@ -4,7 +4,7 @@ import { dfhFeatureKey } from "../dfh.feature.key";
 
 export const dfhLabelByFksKey = (item: Partial<DfhLabel>) => `${item.type || null}_${item.language || null}_${item.fk_class || null}_${item.fk_profile || null}_${item.fk_property || null}_${item.fk_project || null}`;
 export const dfhLabelFeature = 'label'
-export const dfhLabelReducerConfig: ReducerConfig = {
+export const dfhLabelReducerConfig: ReducerConfig<DfhLabel> = {
   indexBy: {
     keyInStore: 'fks',
     indexByFn: dfhLabelByFksKey

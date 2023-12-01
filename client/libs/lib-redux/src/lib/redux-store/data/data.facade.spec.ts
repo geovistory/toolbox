@@ -1,22 +1,28 @@
 import { HttpClientModule } from '@angular/common/http';
 import { isDevMode, NgModule } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
+import { GvPaginationObject, GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
 import { SocketsModule } from '@kleiolab/lib-sockets';
 import { EffectsModule } from '@ngrx/effects';
 import { Store, StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { firstValueFrom, of, shareReplay } from 'rxjs';
+import { GvFieldPageReqMock } from '../../_helpers/data/auto-gen/api-requests/GvFieldPageReq';
+import { GvPaginationObjectMock } from '../../_helpers/data/auto-gen/api-responses/GvPaginationObjectMock';
 import { InfLanguageMock } from '../../_helpers/data/auto-gen/gvDB/InfLanguageMock';
+import { ProProjectMock } from '../../_helpers/data/auto-gen/gvDB/ProProjectMock';
 import { GvSchemaObjectMock } from '../../_helpers/data/GvSchemaObjectMock';
 import { IAppState } from '../state.model';
-import { schemaModifierActions, setDataState } from './data.actions';
+import { UiFacade } from '../ui/ui.facade';
+import { UiModule } from '../ui/ui.module';
+import { paginationObjectActions, schemaModifierActions, setDataState } from './data.actions';
 import { DataFacade } from './data.facade';
 import { DataModule } from './data.module';
 
 
 describe('Data Facade', () => {
   let facade: DataFacade;
+  let uiFacade: UiFacade;
   let store: Store<IAppState>;
 
   beforeEach(() => {
@@ -27,6 +33,7 @@ describe('Data Facade', () => {
         StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode() }),
         EffectsModule.forRoot(),
         DataModule,
+        UiModule,
         SocketsModule
       ]
     })
@@ -35,6 +42,8 @@ describe('Data Facade', () => {
     TestBed.configureTestingModule({ imports: [RootModule] });
 
     facade = TestBed.inject(DataFacade);
+    uiFacade = TestBed.inject(UiFacade);
+
     store = TestBed.inject(Store);
   });
   describe('> Schema Modifier Load Succeeded >', () => {
@@ -71,6 +80,23 @@ describe('Data Facade', () => {
       }))
       const res = await firstValueFrom(facade.inf.appellation.getAppellation.byPkEntity$(123))
       expect(res.string).toEqual('A')
+    })
+
+    it('should load pagination results', async () => {
+      // set project
+      uiFacade.activeProject.loadProjectBasiscsSucceded(ProProjectMock.PROJECT_1.pk_entity);
+
+      const apiCall$ = of<GvPaginationObject>(GvPaginationObjectMock.personHasAppeTeEn)
+      const addPending = 'id123'
+      const $ = apiCall$.pipe(shareReplay())
+      store.dispatch(paginationObjectActions.load({
+        meta: { addPending },
+        payload: $
+      }))
+      const p1 = await firstValueFrom(facade.inf.statement.getPage$({ ...GvFieldPageReqMock.person1HasAppeTeEn.page, isOutgoing: false },))
+      const p2 = await firstValueFrom(facade.inf.statement.getPage$({ ...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1 }));
+      expect(p1.length).toEqual(1)
+      expect(p2.length).toEqual(1)
     })
 
   })

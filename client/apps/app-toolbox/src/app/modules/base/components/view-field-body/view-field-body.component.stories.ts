@@ -297,6 +297,6 @@ export const Standalone: Story = {
     })
     facade.data.addSchemaModifier({ positive: GvSchemaObjectMock.sysConfig })
     await sleep(100)
-    expect(canvas.getByText(/Adamo di Melchiorre/i)).toBeTruthy();
+    expect(canvas.getByText(/Target Label/i)).toBeTruthy();
   },
 };

@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { infFeatureKey } from "../inf.feature.key";
 
 export const infDimensionFeature = 'dimension'
-export const infDimensionReducerConfig: ReducerConfig = {
+export const infDimensionReducerConfig: ReducerConfig<InfDimension> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item: InfDimension) => {

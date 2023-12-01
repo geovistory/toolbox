@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datDigitalFeature = 'digital'
-export const datDigitalReducerConfig: ReducerConfig = {
+export const datDigitalReducerConfig: ReducerConfig<DatDigital> = {
   equals: (newItem: DatDigital, oldItem: DatDigital) => {
     if (!oldItem.quill_doc && newItem.quill_doc) return false;
     return (
