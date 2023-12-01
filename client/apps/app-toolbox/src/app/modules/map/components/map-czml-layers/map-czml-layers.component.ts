@@ -1,10 +1,7 @@
-/// <reference path="../../../../../../../../node_modules/@types/cesium/index.d.ts" />
-declare var Cesium;
 
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import { BoundingSphere, JulianDate } from 'cesium';
-import { CzmlDataSource } from '../../../../core';
-import { combineLatest, from, Observable, Subject } from 'rxjs';
+import { BoundingSphere, Cartesian3, Math as CesiumMath, CzmlDataSource, HeadingPitchRange, JulianDate, Viewer } from 'cesium';
+import { Observable, Subject, combineLatest, from } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
 import { CzmlPacket } from '../../map.models';
 import { CesiumService } from '../../services/cesium.service';
@@ -24,7 +21,7 @@ export interface MapLayer {
 export class MapCzmlLayersComponent implements AfterViewInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
-  viewer: Cesium.Viewer;
+  viewer: Viewer;
 
   @Input() data$: Observable<MapLayers>
   @Input() julianSecondOfCursor$: Observable<number>
@@ -36,7 +33,7 @@ export class MapCzmlLayersComponent implements AfterViewInit, OnDestroy {
 
   @Output() objectClicked = new EventEmitter()
 
-  dataSources: Cesium.CzmlDataSource[];
+  dataSources: CzmlDataSource[];
 
   constructor(private cs: CesiumService) { }
 
@@ -96,13 +93,13 @@ export class MapCzmlLayersComponent implements AfterViewInit, OnDestroy {
 
 
   private zoomToEntities() {
-    const zoomOptions: Cesium.HeadingPitchRange = {
+    const zoomOptions: HeadingPitchRange = {
       heading: 0,
-      pitch: -Cesium.Math.PI_OVER_TWO,
+      pitch: -CesiumMath.PI_OVER_TWO,
       range: 0
     };
-    // let entities: Cesium.Entity[] = []
-    let positions: Cesium.Cartesian3[] = [];
+    // let entities: Entity[] = []
+    let positions: Cartesian3[] = [];
     const randomDate = new JulianDate(2700000, 0);
     this.dataSources.map(dataSource => {
       // entities = [...entities, ...dataSource.entities.values]

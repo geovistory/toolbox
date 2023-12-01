@@ -48,6 +48,11 @@ Have a look at the [Nx Console extensions](https://nx.dev/nx-console). It provid
 
 For debugging Jest tests in VSCode have a look at [Jest Runner](https://marketplace.visualstudio.com/items?itemName=firsttris.vscode-jest-runner).
 
+## Troubleshooting
+
+Whenever you deal with circular dependencies, consider using madge. To find circular dependencies in folder './foo' run:
+`npx madge --circular --extensions ts ./foo`
+
 ## Ready to deploy?
 
 Just run `nx build app-toolbox` to build the application. The build artifacts will be stored in the `dist/` directory, ready to be deployed.
