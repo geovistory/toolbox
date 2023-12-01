@@ -13,6 +13,7 @@ import { playInject } from '../../../../../.storybook/playInject';
 import { ActiveAccountService } from '../../../core/active-account';
 import { GvAuthService } from '../../../core/auth/auth.service';
 import { GvInternalStorage } from '../../../core/cookies/cookies.module';
+import { MatIconRegistryModule } from '../../../core/material/material-icon-registry.module';
 import { MaterialModule } from '../../../core/material/material.module';
 import { NavbarModule } from '../../../shared';
 import { HomeRoutingModule } from '../home-routing.module';
@@ -27,6 +28,7 @@ const meta: Meta<HomeComponent> = {
 
         importProvidersFrom(
           RouterModule.forRoot([]),
+          MatIconRegistryModule,
           StateModule,
           CommonModule,
           NavbarModule,
