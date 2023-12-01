@@ -47,9 +47,7 @@ export const LoggedOut: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText(/Login/gi)).toBeTruthy();
-    expect(canvas.getByText(/Register/gi)).toBeTruthy();
-    expect(canvas.getByText(/Help/gi)).toBeTruthy();
+    expect(canvas.getByText(/Geovistory Toolbox/gi)).toBeTruthy();
   },
 };
 

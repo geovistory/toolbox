@@ -1,14 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
 /* Track */
 
-@use "sass:map";
-@use "node_modules/@angular/material" as mat;
-@use "node_modules/@angular/material/core/theming/palette" as mat-palettes;
+@use 'sass:map';
+@use 'node_modules/@angular/material' as mat;
+@use 'node_modules/@angular/material/core/theming/palette' as mat-palettes;
 @include mat.core();
 
-$font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
-  Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-  "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+  'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !default;
 
 /************************************************************************************
 ** INCLUDE MATERIAL THEME
@@ -178,13 +178,13 @@ $font-size-sm: 0.75rem;
   .gv-search-hit-is-in-project {
     font-size: $font-size-sm;
     margin-left: 1rem;
-    color: theme-color("success");
+    color: theme-color('success');
   }
 
   .gv-search-hit-project-count {
     font-size: $font-size-sm;
     margin-left: 1rem;
-    color: theme-color("secondary");
+    color: theme-color('secondary');
   }
 
   .gv-search-hit-header {
@@ -194,14 +194,14 @@ $font-size-sm: 0.75rem;
     font-size: $font-size-sm;
 
     .gv-search-hit-property b {
-      color: theme-color("success");
+      color: theme-color('success');
     }
 
     .gv-search-hit-property:not(:first-child) {
     }
 
     .gv-search-hit-property:not(:first-child)::before {
-      content: "•";
+      content: '•';
       margin-left: 0.4rem;
       margin-right: 0.4rem;
     }
@@ -211,6 +211,12 @@ $font-size-sm: 0.75rem;
 /**
 * Generic stuff
 */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
 
 body {
   margin: 0;
@@ -345,7 +351,7 @@ $gv-color-selected: #00ffff;
 }
 
 .gv-highlight {
-  color: theme-color("success");
+  color: theme-color('success');
   font-weight: 600;
 }
 
@@ -992,7 +998,7 @@ gv-timeline-table {
   }
 
   .separator-line {
-    stroke: theme-color("dark");
+    stroke: theme-color('dark');
   }
 
   .cover-rect {
@@ -1000,17 +1006,17 @@ gv-timeline-table {
   }
 
   .no-data-text {
-    fill: theme-color("secondary");
+    fill: theme-color('secondary');
     font-size: $font-size-sm;
   }
 
   .cursor-handle {
-    fill: theme-color("primary");
+    fill: theme-color('primary');
     stroke: $white; // fill-opacity: .8;
   }
 
   .cursor-line {
-    stroke: theme-color("primary");
+    stroke: theme-color('primary');
     stroke-width: 2;
   }
 
@@ -1572,39 +1578,39 @@ $mat-color-secondary-text: mat.get-color-from-palette(
   color: rgba(black, 0.87);
 }
 
-$color-ids: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, "A100", "A200",
-  "A400", "A700";
+$color-ids: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 'A100', 'A200',
+  'A400', 'A700';
 
 .mat-bg-grey-100-on-hover:hover {
   background-color: map_get($gv-grey-palette, 100);
-  $contrast-map: map_get($gv-grey-palette, "contrast");
+  $contrast-map: map_get($gv-grey-palette, 'contrast');
   color: map_get($contrast-map, 100);
 }
 
 .mat-bg-accent-50-on-hover:hover {
   background-color: map_get($app-accent, 50);
-  $contrast-map: map_get($app-accent, "contrast");
+  $contrast-map: map_get($app-accent, 'contrast');
   color: map_get($contrast-map, 50);
 }
 
 @mixin mat-bg($palette, $prefix, $id) {
   .mat-bg-#{$prefix}-#{$id} {
     background-color: map_get($palette, $id);
-    $contrast-map: map_get($palette, "contrast");
+    $contrast-map: map_get($palette, 'contrast');
     color: map_get($contrast-map, $id);
   }
 }
 
 @each $id in $color-ids {
-  @include mat-bg($gv-grey-palette, "grey", $id);
+  @include mat-bg($gv-grey-palette, 'grey', $id);
 }
 
 @each $id in $color-ids {
-  @include mat-bg($app-primary, "primary", $id);
+  @include mat-bg($app-primary, 'primary', $id);
 }
 
 @each $id in $color-ids {
-  @include mat-bg($app-accent, "accent", $id);
+  @include mat-bg($app-accent, 'accent', $id);
 }
 
 @mixin mat-text($palette, $prefix, $id) {
@@ -1613,7 +1619,7 @@ $color-ids: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, "A100", "A200",
   }
 }
 @each $id in $color-ids {
-  @include mat-text($gv-grey-palette, "grey", $id);
+  @include mat-text($gv-grey-palette, 'grey', $id);
 }
 
 /*
@@ -1811,7 +1817,7 @@ a.mat-menu-item > mat-icon {
   $foreground: map-get($theme, foreground);
 
   .p-datatable {
-    background: mat.get-color-from-palette($background, "card");
+    background: mat.get-color-from-palette($background, 'card');
 
     .p-datatable-table {
       border-collapse: separate;
@@ -2365,14 +2371,14 @@ gv-project-card {
   }
 }
 
-@import "~jsoneditor/dist/jsoneditor.min.css";
+@import '~jsoneditor/dist/jsoneditor.min.css';
 
-@import "./styles/utils.scss";
-@import "./styles/spacing.scss";
-@import "./styles/forms.scss";
-@import "./styles/coloring.scss";
-@import "./styles/grid.scss";
-@import "./styles/breadcrumb.scss";
-@import "./styles/typography.scss";
-@import "./styles/badge.scss";
-@import "./styles/alert.scss";
+@import './styles/utils.scss';
+@import './styles/spacing.scss';
+@import './styles/forms.scss';
+@import './styles/coloring.scss';
+@import './styles/grid.scss';
+@import './styles/breadcrumb.scss';
+@import './styles/typography.scss';
+@import './styles/badge.scss';
+@import './styles/alert.scss';
