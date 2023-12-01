@@ -1,10 +1,7 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatButton } from '@angular/material/button';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 
-export interface FeedbackDialogData {
-
-}
 @Component({
   selector: 'gv-feedback-dialog',
   templateUrl: './feedback-dialog.component.html',
@@ -14,8 +11,7 @@ export class FeedbackDialogComponent {
   @ViewChild('btnRef', { static: true }) buttonRef: MatButton;
 
   constructor(
-    public dialogRef: MatDialogRef<FeedbackDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: FeedbackDialogData) { }
+    public dialogRef: MatDialogRef<FeedbackDialogComponent>) { }
 
   onCloseClick(): void {
     this.dialogRef.close();
