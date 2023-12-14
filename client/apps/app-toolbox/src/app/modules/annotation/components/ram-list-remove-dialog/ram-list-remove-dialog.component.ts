@@ -1,11 +1,17 @@
+import { NgIf } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfStatement } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ViewFieldComponent } from '../../../base/components/view-field/view-field.component';
 import { fieldAtReferencePoP } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 export interface RamListRemoveDialogData {
 
@@ -20,7 +26,9 @@ export interface RamListRemoveDialogData {
 @Component({
   selector: 'gv-ram-list-remove-dialog',
   templateUrl: './ram-list-remove-dialog.component.html',
-  styleUrls: ['./ram-list-remove-dialog.component.scss']
+  styleUrls: ['./ram-list-remove-dialog.component.scss'],
+  standalone: true,
+  imports: [MatDialogModule, NgIf, EntityPreviewComponent, MatIconModule, MatDividerModule, ViewFieldComponent, MatButtonModule]
 })
 export class RamListRemoveDialogComponent implements OnInit, OnDestroy {
 

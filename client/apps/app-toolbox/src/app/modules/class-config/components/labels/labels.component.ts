@@ -3,11 +3,15 @@ import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { AsyncPipe } from '@angular/common';
+import { PropertyLabelTableComponent } from '../property-label-table/property-label-table.component';
 
 @Component({
-  selector: 'gv-labels',
-  templateUrl: './labels.component.html',
-  styleUrls: ['./labels.component.scss']
+    selector: 'gv-labels',
+    templateUrl: './labels.component.html',
+    styleUrls: ['./labels.component.scss'],
+    standalone: true,
+    imports: [PropertyLabelTableComponent, AsyncPipe]
 })
 export class LabelsComponent implements OnInit {
 

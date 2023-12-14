@@ -4,10 +4,10 @@ import { ProgressDialogComponent } from './progress-dialog.component';
 import { MaterialModule } from '../../../core/material/material.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MaterialModule
-  ],
-  declarations: [ProgressDialogComponent]
+    imports: [
+        CommonModule,
+        MaterialModule,
+        ProgressDialogComponent
+    ]
 })
 export class ProgressDialogModule { }

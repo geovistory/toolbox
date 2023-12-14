@@ -22,9 +22,6 @@
           "zone.js"
         ],
         "tsConfig": "apps/app-toolbox/tsconfig.app.json",
-        "scripts": [
-          "node_modules/cesium/Build/Cesium/Cesium.js"
-        ],
         "assets": [
           "apps/app-toolbox/src/assets",
           {
@@ -45,8 +42,7 @@
           "node_modules/quill/dist/quill.bubble.css",
           "node_modules/quill/dist/quill.snow.css",
           "node_modules/cesium/Build/Cesium/Widgets/widgets.css"
-        ],
-        "webWorkerTsConfig": "apps/app-toolbox/tsconfig.worker.json"
+        ]
       },
       "configurations": {
         "production": {
@@ -54,7 +50,7 @@
             {
               "type": "initial",
               "maximumWarning": "500kb",
-              "maximumError": "1mb"
+              "maximumError": "1.5mb"
             },
             {
               "type": "anyComponentStyle",

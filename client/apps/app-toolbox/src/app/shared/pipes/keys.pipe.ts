@@ -1,6 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({ name: 'keys' })
+@Pipe({
+    name: 'keys',
+    standalone: true
+})
 export class KeysPipe implements PipeTransform {
   transform<T>(value: { [key: string]: T }, args?: string[]): { key: string, value: T }[] {
     const keys = [];

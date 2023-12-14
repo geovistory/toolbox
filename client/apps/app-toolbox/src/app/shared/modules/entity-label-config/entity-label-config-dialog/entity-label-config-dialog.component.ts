@@ -1,11 +1,19 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { LabelPart, LabelPartField, ProEntityLabelConfig, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../components/confirm-dialog/confirm-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 export interface EntityLabelConfigDialogData {
   fkProject: number,
   fkClass: number
@@ -19,9 +27,11 @@ interface FieldId { fkProperty: number, isOutgoing: boolean }
 
 
 @Component({
-  selector: 'gv-entity-label-config-dialog',
-  templateUrl: './entity-label-config-dialog.component.html',
-  styleUrls: ['./entity-label-config-dialog.component.scss']
+    selector: 'gv-entity-label-config-dialog',
+    templateUrl: './entity-label-config-dialog.component.html',
+    styleUrls: ['./entity-label-config-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogModule, NgIf, MatProgressSpinnerModule, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, MatSelectModule, MatOptionModule, MatInputModule, MatButtonModule, MatIconModule, AsyncPipe]
 })
 export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

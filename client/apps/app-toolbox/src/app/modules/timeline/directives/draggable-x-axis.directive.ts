@@ -4,8 +4,9 @@ import { D3Service } from '../shared/d3.service';
 import { XAxisDefinition } from '../models/x-axis-definition';
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
-  selector: '[draggableXAxis]'
+    // tslint:disable-next-line:directive-selector
+    selector: '[draggableXAxis]',
+    standalone: true
 })
 export class DraggableXAxisDirective implements OnInit {
 

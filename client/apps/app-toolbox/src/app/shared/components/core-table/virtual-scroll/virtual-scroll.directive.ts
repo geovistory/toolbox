@@ -14,14 +14,15 @@ import { CoreTableDataSource } from '../data-source';
 import { CoreTableVirtualScrollStrategy } from './virtual-scroll.strategy';
 
 @Directive({
-  selector: 'cdk-virtual-scroll-viewport[coreTableVirtualScroll]',
-  providers: [
-    {
-      provide: VIRTUAL_SCROLL_STRATEGY,
-      useFactory: (scroll: CoreTableFixedVirtualScrollDirective) => scroll.scrollStrategy,
-      deps: [forwardRef(() => CoreTableFixedVirtualScrollDirective)],
-    },
-  ],
+    selector: 'cdk-virtual-scroll-viewport[coreTableVirtualScroll]',
+    providers: [
+        {
+            provide: VIRTUAL_SCROLL_STRATEGY,
+            useFactory: (scroll: CoreTableFixedVirtualScrollDirective) => scroll.scrollStrategy,
+            deps: [forwardRef(() => CoreTableFixedVirtualScrollDirective)],
+        },
+    ],
+    standalone: true,
 })
 export class CoreTableFixedVirtualScrollDirective
   implements AfterViewInit, OnChanges, OnDestroy {

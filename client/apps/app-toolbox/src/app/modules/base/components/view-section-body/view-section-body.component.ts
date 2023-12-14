@@ -5,8 +5,9 @@ import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kle
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { OpenCloseModule } from '../../../../shared/directives/open-close/open-close.module';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+
+import { OpenCloseContainerDirective } from '../../../../shared/directives/open-close/open-close-container.directive';
 import { openClose } from '../../../information/shared/animations';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldComponent } from '../view-field/view-field.component';
@@ -19,7 +20,7 @@ import { ViewFieldComponent } from '../view-field/view-field.component';
   animations: [openClose],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [OpenCloseModule, NgIf, NgFor, forwardRef(() => ViewFieldComponent), AsyncPipe]
+  imports: [OpenCloseContainerDirective, NgIf, NgFor, forwardRef(() => ViewFieldComponent), AsyncPipe]
 })
 export class ViewSectionBodyComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

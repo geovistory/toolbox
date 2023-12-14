@@ -3,11 +3,11 @@ import { NgModule } from '@angular/core';
 import { AbbreviatePipe } from './abbreviate.pipe';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  providers: [AbbreviatePipe],
-  declarations: [AbbreviatePipe],
-  exports: [AbbreviatePipe]
+    imports: [
+        CommonModule,
+        AbbreviatePipe
+    ],
+    providers: [AbbreviatePipe],
+    exports: [AbbreviatePipe]
 })
 export class AbbreviateModule { }

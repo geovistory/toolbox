@@ -7,11 +7,25 @@ import { Observable, of, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GvAnalysisService } from '../../services/analysis.service';
 import { TableFormComponent } from '../table-form/table-form.component';
+import { AsyncPipe } from '@angular/common';
+import { ResultTableComponent } from '../../../queries/components/result-table/result-table.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { AnalysisLayoutComponent } from '../../components/analysis-layout/analysis-layout.component';
 
 @Component({
-  selector: 'gv-table-edit',
-  templateUrl: './table-edit.component.html',
-  styleUrls: ['./table-edit.component.scss'],
+    selector: 'gv-table-edit',
+    templateUrl: './table-edit.component.html',
+    styleUrls: ['./table-edit.component.scss'],
+    standalone: true,
+    imports: [
+        AnalysisLayoutComponent,
+        TableFormComponent,
+        MatButtonModule,
+        MatTooltipModule,
+        ResultTableComponent,
+        AsyncPipe,
+    ],
 })
 export class TableEditComponent implements OnInit, OnDestroy {
   @HostBinding('class.gv-flex-fh') flexFh = true;

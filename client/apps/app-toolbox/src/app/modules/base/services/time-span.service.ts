@@ -6,8 +6,8 @@ import { GvFieldId, InfStatement, InfStatementWithRelations, StatementWithTarget
 import { equals } from 'ramda';
 import { combineLatest, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../shared/services/active-project.service';
 import { CtrlTimeSpanDialogComponent } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
-import { ActiveProjectService } from '../../../core/active-project/active-project.service';
 
 export interface TimeSpanFieldPages {
   fieldId: GvFieldId;

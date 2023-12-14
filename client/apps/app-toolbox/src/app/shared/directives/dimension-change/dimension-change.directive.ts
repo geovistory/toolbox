@@ -8,7 +8,8 @@ export interface DimensionChangeEvent extends Event {
   dimensions: { width: number, height: number }
 }
 @Directive({
-  selector: '[gvDimensionChange]'
+    selector: '[gvDimensionChange]',
+    standalone: true
 })
 export class DimensionChangeDirective implements OnInit, OnDestroy {
 

@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
 
 
 export interface InfoDialogData {
@@ -9,9 +10,11 @@ export interface InfoDialogData {
 export type InfoDialogReturn = undefined;
 
 @Component({
-  selector: 'gv-info-dialog',
-  templateUrl: './info-dialog.component.html',
-  styleUrls: ['./info-dialog.component.scss']
+    selector: 'gv-info-dialog',
+    templateUrl: './info-dialog.component.html',
+    styleUrls: ['./info-dialog.component.scss'],
+    standalone: true,
+    imports: [MatDialogModule, MatButtonModule]
 })
 export class InfoDialogComponent {
 

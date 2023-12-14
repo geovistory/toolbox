@@ -1,17 +1,26 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { ImportTable, ImportTableControllerService, ImportTableResponse, InfLanguage, TColFilter } from '@kleiolab/lib-sdk-lb4';
 import { ImportTableSocket } from '@kleiolab/lib-sockets';
-import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
-import { ActiveAccountService } from '../../../../core/active-account';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { Cell, Header } from '../../../../shared/components/digital-table/components/table/table.component';
+import { FileSystemFileEntry, NgxFileDropEntry, NgxFileDropModule } from 'ngx-file-drop';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { WorkBook } from 'xlsx/types';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { Cell, Header, TableComponent } from '../../../../shared/components/digital-table/components/table/table.component';
+import { ActiveAccountService } from '../../../../shared/services/active-account.service';
+import { CtrlLanguageComponent } from '../../../base/components/ctrl-language/ctrl-language.component';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 
 export interface ImporterDialogData {
@@ -26,7 +35,9 @@ export interface ImporterColFilter {
 @Component({
   selector: 'gv-importer',
   templateUrl: './importer.component.html',
-  styleUrls: ['./importer.component.scss']
+  styleUrls: ['./importer.component.scss'],
+  standalone: true,
+  imports: [MatDialogModule, NgIf, NgxFileDropModule, MatButtonModule, MatFormFieldModule, MatIconModule, MatInputModule, MatSelectModule, NgFor, MatOptionModule, MatProgressBarModule, TableComponent, FormsModule, ReactiveFormsModule, CtrlLanguageComponent, AsyncPipe]
 })
 export class ImporterComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

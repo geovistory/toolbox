@@ -1,13 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { WarEntityPreviewControllerService } from "@kleiolab/lib-sdk-lb4";
 
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { MatDividerModule } from '@angular/material/divider';
+import { EntityPreviewComponent } from '../entity-preview/entity-preview.component';
+import { MatListModule } from '@angular/material/list';
+import { NgIf, NgFor } from '@angular/common';
 
 @Component({
-  selector: 'gv-entity-previews-paginated',
-  templateUrl: './entity-previews-paginated.component.html',
-  styleUrls: ['./entity-previews-paginated.component.scss']
+    selector: 'gv-entity-previews-paginated',
+    templateUrl: './entity-previews-paginated.component.html',
+    styleUrls: ['./entity-previews-paginated.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatPaginatorModule, MatListModule, NgFor, EntityPreviewComponent, MatDividerModule]
 })
 export class EntityPreviewsPaginatedComponent implements OnInit {
 

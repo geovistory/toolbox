@@ -10,7 +10,7 @@ import { AddMenuClassOrTypeItem, ClassAndTypePk, InformationPipesService, StateF
 import { InfResourceWithRelations, SysConfigClassCategoryBelonging } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { openAddEntityDialog } from '../../lib/openAddEntityDialog';
 import { AddEntityMenuClassItemComponent } from '../add-entity-menu-class-item/add-entity-menu-class-item.component';
 

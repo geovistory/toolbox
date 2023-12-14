@@ -3,9 +3,10 @@ import { D3Service } from '../../shared/d3.service';
 import { XAxisDefinition } from '../../models/x-axis-definition';
 
 @Component({
-  selector: '[xAxisVisual]',
-  templateUrl: './x-axis.component.html',
-  styleUrls: ['./x-axis.component.scss']
+    selector: '[xAxisVisual]',
+    templateUrl: './x-axis.component.html',
+    styleUrls: ['./x-axis.component.scss'],
+    standalone: true
 })
 export class XAxisComponent implements OnChanges {
 

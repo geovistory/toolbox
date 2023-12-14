@@ -8,7 +8,17 @@ import { apply, equals, keys, values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
 import { CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue } from '../../map.models';
-import { MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
+import { MapLayer, MapLayers, MapCzmlLayersComponent } from '../map-czml-layers/map-czml-layers.component';
+import { TimelineChartComponent } from '../../../timeline/components/timeline-chart/timeline-chart.component';
+import { PassiveLinkDirective } from '../../../../shared/directives/passive-link/passive-link.directive';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { MatCardModule } from '@angular/material/card';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { AngularSplitModule } from 'angular-split';
 
 export interface MapAndTimeContLayer {
   data_lookups: { [key: string]: number[] }[]
@@ -73,9 +83,11 @@ export const pointDisplayOptions: PointDisplayOption[] = [
 ]
 
 @Component({
-  selector: 'gv-map-and-time-cont',
-  templateUrl: './map-and-time-cont.component.html',
-  styleUrls: ['./map-and-time-cont.component.scss']
+    selector: 'gv-map-and-time-cont',
+    templateUrl: './map-and-time-cont.component.html',
+    styleUrls: ['./map-and-time-cont.component.scss'],
+    standalone: true,
+    imports: [AngularSplitModule, MapCzmlLayersComponent, MatButtonModule, MatTooltipModule, MatMenuModule, MatIconModule, NgFor, NgIf, MatCardModule, EntityPreviewComponent, PassiveLinkDirective, TimelineChartComponent, AsyncPipe]
 })
 export class MapAndTimeContComponent implements OnInit {
 

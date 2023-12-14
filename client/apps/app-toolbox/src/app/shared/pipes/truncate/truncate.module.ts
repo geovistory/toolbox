@@ -3,11 +3,11 @@ import { CommonModule } from '@angular/common';
 import { TruncatePipe } from './truncate.pipe';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  providers: [TruncatePipe],
-  declarations: [TruncatePipe],
-  exports: [TruncatePipe]
+    imports: [
+        CommonModule,
+        TruncatePipe
+    ],
+    providers: [TruncatePipe],
+    exports: [TruncatePipe]
 })
 export class TruncateModule { }

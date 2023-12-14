@@ -3,9 +3,10 @@ import { Cursor } from '../../models/cursor';
 import { D3Service } from '../../shared/d3.service';
 
 @Component({
-  selector: '[cursorLineVisual]',
-  templateUrl: './cursor-line-visual.component.html',
-  styleUrls: ['./cursor-line-visual.component.scss']
+    selector: '[cursorLineVisual]',
+    templateUrl: './cursor-line-visual.component.html',
+    styleUrls: ['./cursor-line-visual.component.scss'],
+    standalone: true
 })
 export class CursorLineVisualComponent implements DoCheck {
 

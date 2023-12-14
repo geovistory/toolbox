@@ -11,8 +11,9 @@ import { CalendarType, DateTimeModule, Granularity, GregorianDateTime, JulianDat
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ValidationService } from '../../../../core/validation/validation.service';
-import { ControlMessagesModule } from '../../../../shared/components/control-messages/control-messages.module';
-import { PassiveLinkModule } from '../../../../shared/directives/passive-link/passive-link.module';
+import { ControlMessagesComponent } from '../../../../shared/components/control-messages/control-messages.component';
+
+
 
 type CtrlModel = TimePrimitiveWithCal;
 
@@ -31,9 +32,8 @@ type CtrlModel = TimePrimitiveWithCal;
     MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
-    ControlMessagesModule,
-    PassiveLinkModule,
     DateTimeModule,
+    ControlMessagesComponent
   ],
 })
 export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {

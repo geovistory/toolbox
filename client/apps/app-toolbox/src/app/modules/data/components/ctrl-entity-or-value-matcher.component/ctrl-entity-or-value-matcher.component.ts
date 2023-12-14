@@ -1,17 +1,23 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { InfValueObject } from '../../../../shared/components/value-preview/value-preview.component';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { InfValueObject, ValuePreviewComponent } from '../../../../shared/components/value-preview/value-preview.component';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateEntityEvent } from '../../../base/components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 
 @Component({
   selector: 'gv-ctrl-entity-or-value-matcher',
   templateUrl: './ctrl-entity-or-value-matcher.component.html',
-  styleUrls: ['./ctrl-entity-or-value-matcher.component.scss']
+  styleUrls: ['./ctrl-entity-or-value-matcher.component.scss'],
+  standalone: true,
+  imports: [NgIf, MatFormFieldModule, MatInputModule, EntityPreviewComponent, ValuePreviewComponent, AsyncPipe]
 })
 export class CtrlEntityOrValueMatcherComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

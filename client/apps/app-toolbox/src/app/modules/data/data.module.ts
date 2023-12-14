@@ -9,12 +9,12 @@ import { AnnotationModule } from '../../modules/annotation/annotation.module';
 import { DigitalTableModule } from '../../shared/components/digital-table/digital-table.module';
 import { ClassDropdownModule } from '../../shared/components/class-dropdown/class-dropdown.module';
 import { CommentMenuModule } from '../../shared/components/comment-menu/comment-menu.module';
-import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
+
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
 import { InfoDialogModule } from '../../shared/components/info-dialog/info-dialog.module';
-import { TabBaseModule } from '../../shared/components/tab-layout/tab-layout.module';
+
 import { ValuePreviewModule } from '../../shared/components/value-preview/value-preview.module';
-import { CopyClipboardModule } from '../../shared/directives/copy-clipboard/copy-clipboard.module';
+
 import { BaseModule } from '../base/base.module';
 import { QuillModule } from '../quill';
 import { ColumnMappingComponent } from './components/column-mapping/column-mapping.component';
@@ -33,13 +33,12 @@ import { TextDetail2Component } from './components/text-detail2/text-detail2.com
 import { ViewFieldHasTableValueComponent } from './components/view-field-has-table-value/view-field-has-table-value.component';
 
 @NgModule({
-  imports: [
+    imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     QuillModule,
     AngularSplitModule,
-    DetailContentModule,
     DetailTopBarModule,
     AnnotationModule,
     MaterialModule,
@@ -47,15 +46,13 @@ import { ViewFieldHasTableValueComponent } from './components/view-field-has-tab
     NgxFileDropModule,
     BaseModule,
     DragDropModule,
-    CopyClipboardModule,
     InfoDialogModule,
     CommentMenuModule,
     ClassDropdownModule,
     ValuePreviewModule,
-    TabBaseModule
-  ],
-  providers: [],
-  declarations: [TextDetail2Component, TableEditorComponent, ViewFieldHasTableValueComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, FactoidPropertyMappingComponent, FactoidMappingHeaderComponent, FactoidMappingBodyComponent, FactoidMappingComponent, FactoidMappingsDialogComponent,],
-  exports: [TextDetail2Component, TableEditorComponent, TableDetailComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, FactoidPropertyMappingComponent, FactoidMappingHeaderComponent, FactoidMappingBodyComponent, FactoidMappingComponent, FactoidMappingsDialogComponent,],
+    TextDetail2Component, TableEditorComponent, ViewFieldHasTableValueComponent, TableDetailComponent, ImporterComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, FactoidPropertyMappingComponent, FactoidMappingHeaderComponent, FactoidMappingBodyComponent, FactoidMappingComponent, FactoidMappingsDialogComponent
+],
+    providers: [],
+    exports: [TextDetail2Component, TableEditorComponent, TableDetailComponent, TableConfigDialogComponent, FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, FactoidPropertyMappingComponent, FactoidMappingHeaderComponent, FactoidMappingBodyComponent, FactoidMappingComponent, FactoidMappingsDialogComponent,],
 })
 export class DataModule { }

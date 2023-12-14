@@ -3,12 +3,18 @@ import { ProConfig } from '@kleiolab/lib-config';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { ProProject } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
+import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { NgClass, NgIf, AsyncPipe } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
-  selector: 'gv-project-card',
-  templateUrl: './project-card.component.html',
-  styleUrls: ['./project-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-project-card',
+    templateUrl: './project-card.component.html',
+    styleUrls: ['./project-card.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatCardModule, NgClass, MatButtonModule, RouterLink, NgIf, AsyncPipe]
 })
 export class ProjectCardComponent implements OnInit {
   @Input() project: ProProject

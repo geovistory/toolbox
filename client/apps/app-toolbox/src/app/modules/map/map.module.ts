@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { AngularSplitModule } from 'angular-split';
 import { MaterialModule } from '../../core/material/material.module';
-import { PassiveLinkModule } from '../../shared';
+
 import { EntityPreviewModule } from '../../shared/components/entity-preview/entity-preview.module';
 import { EntityPreviewsPaginatedModule } from '../../shared/components/entity-previews-paginated/entity-previews-paginated.module';
 import { TimelineModule } from '../timeline/timeline.module';
@@ -15,16 +15,15 @@ const components = [
 ]
 
 @NgModule({
-  declarations: components,
-  exports: components,
-  imports: [
+    exports: components,
+    imports: [
     CommonModule,
     TimelineModule,
     AngularSplitModule,
     EntityPreviewsPaginatedModule,
-    PassiveLinkModule,
     EntityPreviewModule,
-    MaterialModule
-  ]
+    MaterialModule,
+    ...components
+]
 })
 export class MapModule { }

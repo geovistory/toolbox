@@ -6,13 +6,13 @@ import { MaterialModule } from '../../../core/material/material.module';
 import { CommentMenuComponent } from './comment-menu.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MaterialModule
-  ],
-  declarations: [CommentMenuComponent],
-  exports: [CommentMenuComponent]
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule,
+        MaterialModule,
+        CommentMenuComponent
+    ],
+    exports: [CommentMenuComponent]
 })
 export class CommentMenuModule { }

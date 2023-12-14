@@ -7,8 +7,7 @@ import { TruncateModule } from '../../pipes/truncate/truncate.module';
 import { ValuePreviewComponent } from './value-preview.component';
 
 @NgModule({
-  imports: [CommonModule, DndModule, MatMenuModule, MatIconModule, TruncateModule],
-  declarations: [ValuePreviewComponent],
-  exports: [ValuePreviewComponent]
+    imports: [CommonModule, DndModule, MatMenuModule, MatIconModule, TruncateModule, ValuePreviewComponent],
+    exports: [ValuePreviewComponent]
 })
 export class ValuePreviewModule { }

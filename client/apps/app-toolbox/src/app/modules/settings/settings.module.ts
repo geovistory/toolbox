@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MaterialModule } from '../../core/material/material.module';
-import { DetailContentModule } from '../../shared/components/detail-content/detail-content.module';
+
 import { DetailTopBarModule } from '../../shared/components/detail-top-bar/detail-top-bar.module';
 import { ActivationReportItemsTableComponent } from './components/activation-report-items-table/activation-report-items-table.component';
 import { DeactivationReportItemsTableComponent } from './components/deactivation-report-items-table/deactivation-report-items-table.component';
@@ -18,7 +18,15 @@ import { OntomeProfilesSettingsComponent } from './components/ontome-profiles-se
 
 
 @NgModule({
-  declarations: [
+    exports: [
+        OntomeProfilesSettingsComponent,
+        OntomeProfilesListComponent
+    ],
+    imports: [
+    CommonModule,
+    FormsModule,
+    DetailTopBarModule,
+    MaterialModule,
     OntomeProfilesSettingsComponent,
     OntomeProfilesListComponent,
     OntomeProfilesListDialogComponent,
@@ -29,17 +37,6 @@ import { OntomeProfilesSettingsComponent } from './components/ontome-profiles-se
     OntomeProfileDeactivationReportDialogComponent,
     OntomeProfileDeactivationReportComponent,
     OntomeProfileUpdateDialogComponent
-  ],
-  exports: [
-    OntomeProfilesSettingsComponent,
-    OntomeProfilesListComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    DetailTopBarModule,
-    DetailContentModule,
-    MaterialModule
-  ]
+]
 })
 export class SettingsModule { }

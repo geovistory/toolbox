@@ -11,6 +11,9 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../table/table-form/table-form.component';
 import { TableFormArrayData, TableFormService } from '../../table/table-form/table-form.service';
+import { MapAndTimeContFormGroupComponent } from '../map-and-time-cont-form-group/map-and-time-cont-form-group.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 // TODO Change
 
 export type MapAndTimeContFormArrayFactory = TableFormArrayFactory
@@ -18,9 +21,11 @@ export type MapAndTimeContFormControlFactory = TableFormControlFactory
 export type MapAndTimeContFormGroupFactory = TableFormGroupFactory
 
 @Component({
-  selector: 'gv-map-and-time-cont-form',
-  templateUrl: './map-and-time-cont-form.component.html',
-  styleUrls: ['./map-and-time-cont-form.component.scss']
+    selector: 'gv-map-and-time-cont-form',
+    templateUrl: './map-and-time-cont-form.component.html',
+    styleUrls: ['./map-and-time-cont-form.component.scss'],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, MapAndTimeContFormGroupComponent]
 })
 export class MapAndTimeContFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

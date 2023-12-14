@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'gv-toggle-btn',
-  templateUrl: './toggle-btn.component.html',
-  styleUrls: ['./toggle-btn.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-toggle-btn',
+    templateUrl: './toggle-btn.component.html',
+    styleUrls: ['./toggle-btn.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [AsyncPipe]
 })
 export class ToggleBtnComponent implements OnInit {
 

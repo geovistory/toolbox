@@ -1,18 +1,23 @@
+import { NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { SysConfig } from '@kleiolab/lib-config';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { Subject } from 'rxjs';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { Subject } from 'rxjs';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
+import { MapAndTimeContEditComponent } from '../../map-and-time-cont/map-and-time-cont-edit/map-and-time-cont-edit.component';
 import { GvAnalysisService } from '../../services/analysis.service';
+import { TableEditComponent } from '../../table/table-edit/table-edit.component';
+import { TimeChartContEditComponent } from '../../time-chart-cont/time-chart-cont-edit/time-chart-cont-edit.component';
 
 @Component({
   selector: 'gv-analysis-detail',
   templateUrl: './analysis-detail.component.html',
   styleUrls: ['./analysis-detail.component.scss'],
-  providers: [GvAnalysisService]
-
+  providers: [GvAnalysisService],
+  standalone: true,
+  imports: [NgIf, TimeChartContEditComponent, TableEditComponent, MapAndTimeContEditComponent]
 })
 export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
   t: TabLayout;

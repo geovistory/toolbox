@@ -1,13 +1,17 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, ImportTableResponse, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { P_1879_HAS_VALUE_ID } from '../../../../ontome-ids';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { catchError, first, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
+import { P_1879_HAS_VALUE_ID } from '../../../../ontome-ids';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { ImporterComponent, ImporterDialogData } from '../importer/importer.component';
+import { TableEditorComponent } from '../table-editor/table-editor.component';
 interface PkTableValueLoader {
   loading: boolean,
   error: boolean,
@@ -17,7 +21,9 @@ interface PkTableValueLoader {
 @Component({
   selector: 'gv-view-field-has-table-value',
   templateUrl: './view-field-has-table-value.component.html',
-  styleUrls: ['./view-field-has-table-value.component.scss']
+  styleUrls: ['./view-field-has-table-value.component.scss'],
+  standalone: true,
+  imports: [NgIf, MatProgressSpinnerModule, MatButtonModule, TableEditorComponent, AsyncPipe]
 })
 export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

@@ -7,6 +7,12 @@ import { ChecklistControlService, NestedNode } from '../../../../shared/componen
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTreeModule } from '@angular/material/tree';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { MatMenuModule } from '@angular/material/menu';
 
 
 export interface NodeData {
@@ -17,13 +23,15 @@ export interface NodeData {
 export type ControlModel = ClassAndTypeSelectModel;
 
 @Component({
-  selector: 'gv-class-and-type-select',
-  templateUrl: './class-and-type-select.component.html',
-  styleUrls: ['./class-and-type-select.component.scss'],
-  providers: [
-    ChecklistControlService,
-    { provide: MatFormFieldControl, useExisting: ClassAndTypeSelectComponent }
-  ]
+    selector: 'gv-class-and-type-select',
+    templateUrl: './class-and-type-select.component.html',
+    styleUrls: ['./class-and-type-select.component.scss'],
+    providers: [
+        ChecklistControlService,
+        { provide: MatFormFieldControl, useExisting: ClassAndTypeSelectComponent }
+    ],
+    standalone: true,
+    imports: [MatMenuModule, NgIf, MatTreeModule, MatButtonModule, MatCheckboxModule, MatIconModule, AsyncPipe]
 })
 export class ClassAndTypeSelectComponent
   extends AbstractChecklistControl<NodeData, ControlModel>
@@ -136,8 +144,9 @@ export function classOrTypeRequiredValidator(): ValidatorFn {
 }
 
 @Directive({
-  selector: '[gvClassOrTypeRequired]',
-  providers: [{ provide: NG_VALIDATORS, useExisting: ClassOrTypeRequiredValidatorDirective, multi: true }]
+    selector: '[gvClassOrTypeRequired]',
+    providers: [{ provide: NG_VALIDATORS, useExisting: ClassOrTypeRequiredValidatorDirective, multi: true }],
+    standalone: true
 })
 export class ClassOrTypeRequiredValidatorDirective implements Validator {
   validate(control: AbstractControl): { [key: string]: any } | null {

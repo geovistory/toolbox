@@ -6,12 +6,12 @@ import { DetailTopBarComponent } from './detail-top-bar.component';
 import { RightPanelBtnComponent } from './right-panel-btn/right-panel-btn.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FlexLayoutModule,
-    MaterialModule
-  ],
-  declarations: [DetailTopBarComponent, RightPanelBtnComponent],
-  exports: [DetailTopBarComponent, RightPanelBtnComponent]
+    imports: [
+        CommonModule,
+        FlexLayoutModule,
+        MaterialModule,
+        DetailTopBarComponent, RightPanelBtnComponent
+    ],
+    exports: [DetailTopBarComponent, RightPanelBtnComponent]
 })
 export class DetailTopBarModule { }

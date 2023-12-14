@@ -8,8 +8,8 @@ import { Store } from '@ngrx/store';
 import { applicationConfig, moduleMetadata, type Meta, type StoryObj } from '@storybook/angular';
 import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
+import { MessageService } from 'primeng/api';
 import { playInject } from '../../../../../.storybook/playInject';
-import { NotificationModule as LocalNotificationModule } from '../notifications.module';
 import { NotificationComponent } from './notifications.component';
 
 
@@ -18,10 +18,11 @@ const meta: Meta<NotificationComponent> = {
   title: 'NotificationComponent',
   decorators: [
     moduleMetadata({
-      imports: [HttpClientModule, LocalNotificationModule, NotificationModule],
+      imports: [HttpClientModule, NotificationModule],
     }),
     applicationConfig({
       providers: [Store,
+        MessageService,
         provideAnimations(),
         importProvidersFrom(
           StateModule,

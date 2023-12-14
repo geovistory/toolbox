@@ -3,9 +3,10 @@ import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 import { QuillService } from '../quill.service';
 
 @Component({
-  selector: 'gv-quill-view',
-  templateUrl: './quill-view.component.html',
-  styleUrls: ['./quill-view.component.scss']
+    selector: 'gv-quill-view',
+    templateUrl: './quill-view.component.html',
+    styleUrls: ['./quill-view.component.scss'],
+    standalone: true
 })
 export class QuillViewComponent implements OnChanges {
   @Input() contents: QuillDoc;

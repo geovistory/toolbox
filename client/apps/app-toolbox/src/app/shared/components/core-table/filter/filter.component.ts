@@ -6,17 +6,35 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
-import { MatInput } from '@angular/material/input';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatMenuTrigger, MatMenuModule } from '@angular/material/menu';
 import { merge, Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { MatIconModule } from '@angular/material/icon';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor, NgIf } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'core-table-filter',
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'core-table-filter',
+    templateUrl: './filter.component.html',
+    styleUrls: ['./filter.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        MatMenuModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
+        NgFor,
+        MatOptionModule,
+        NgIf,
+        MatInputModule,
+        MatIconModule,
+    ],
 })
 export class CoreTableFilterComponent implements AfterViewInit {
   @Output() change: Observable<(text: string) => boolean>;

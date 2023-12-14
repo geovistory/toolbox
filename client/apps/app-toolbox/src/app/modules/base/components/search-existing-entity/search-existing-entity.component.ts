@@ -1,22 +1,22 @@
+import { AsyncPipe, NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { EntitySearchHit, SearchExistingRelatedStatement, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { EntityAddExistingHit, EntityAddExistingHitComponent } from '../entity-add-existing-hit/entity-add-existing-hit.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatListModule } from '@angular/material/list';
-import { NgIf, NgFor, NgStyle, AsyncPipe } from '@angular/common';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { HbfPanelComponent } from '../hbf-panel/hbf-panel.component';
 
 export interface DisableIfHasStatement {
@@ -48,11 +48,11 @@ export interface SeachExistingEntityMoreEvent {
 }
 
 @Component({
-    selector: 'gv-search-existing-entity',
-    templateUrl: './search-existing-entity.component.html',
-    styleUrls: ['./search-existing-entity.component.scss'],
-    standalone: true,
-    imports: [HbfPanelComponent, MatFormFieldModule, MatInputModule, FormsModule, MatSelectModule, MatOptionModule, NgIf, MatListModule, NgFor, EntityAddExistingHitComponent, MatDividerModule, MatButtonModule, NgStyle, MatIconModule, MatPaginatorModule, AsyncPipe]
+  selector: 'gv-search-existing-entity',
+  templateUrl: './search-existing-entity.component.html',
+  styleUrls: ['./search-existing-entity.component.scss'],
+  standalone: true,
+  imports: [HbfPanelComponent, MatFormFieldModule, MatInputModule, FormsModule, MatSelectModule, MatOptionModule, NgIf, MatListModule, NgFor, EntityAddExistingHitComponent, MatDividerModule, MatButtonModule, NgStyle, MatIconModule, MatPaginatorModule, AsyncPipe]
 })
 export class SearchExistingEntityComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -135,7 +135,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
           pkClasses: [this.pkClass],
           limit: this.limit,
           page: page,
-          relatedStatement: !!this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined,
+          relatedStatement: this.disableIfHasStatement ? this.disableIfHasStatement.relatedStatement : undefined,
           scope
         }
         return this.entityPreviewApi.warEntityPreviewControllerSearchExisting(req);

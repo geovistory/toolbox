@@ -6,6 +6,7 @@ export interface AccountActionMeta {
   accountId?: number;
   accountRoles?: PubRole[];
   account?: PubAccount;
+  cb?: () => any
 };
 export type AccountAction = FluxStandardAction<AccountState, AccountActionMeta>;
 
@@ -55,11 +56,11 @@ export class AccountActions {
   }
 
   // Roles of the account, used to check permissions
-  static loadRoles(accountId: number): AccountAction {
+  static loadRoles(accountId: number, cb?: () => any): AccountAction {
     return {
       type: AccountActions.LOAD_ROLES,
       payload: null,
-      meta: { accountId }
+      meta: { accountId, cb }
     };
   }
 

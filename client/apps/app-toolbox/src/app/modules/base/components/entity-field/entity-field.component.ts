@@ -9,7 +9,7 @@ import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
 import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
-import { PassiveLinkModule } from '../../../../shared/directives/passive-link/passive-link.module';
+
 import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
@@ -22,7 +22,7 @@ import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dia
   styleUrls: ['./entity-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, OntoInfoModule, FieldLabelComponent, PassiveLinkModule, MatTooltipModule, NgFor, EntityPreviewModule, AsyncPipe]
+  imports: [NgIf, OntoInfoModule, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewModule, AsyncPipe]
 })
 export class EntityFieldComponent implements OnInit {
   destroy$ = new Subject<boolean>();

@@ -9,12 +9,12 @@ import { OntoPropertyInfoComponent } from './onto-property-info/onto-property-in
 
 const comonents = [OntoClassInfoComponent, OntoPropertyInfoComponent, ClassInfoComponent]
 @NgModule({
-  declarations: comonents,
-  exports: comonents,
-  imports: [
-    CommonModule,
-    MatTooltipModule,
-    MatIconModule
-  ]
+    exports: comonents,
+    imports: [
+        CommonModule,
+        MatTooltipModule,
+        MatIconModule,
+        ...comonents
+    ]
 })
 export class OntoInfoModule { }

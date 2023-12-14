@@ -12,10 +12,11 @@ import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellati
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../ontome-ids';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { GvButtonsModule } from '../../../../shared/components/gv-buttons/gv-buttons.module';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+
+import { ToggleBtnComponent } from '../../../../shared/components/gv-buttons/components/toggle-btn/toggle-btn.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../../shared/components/progress-dialog/progress-dialog.component';
 import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
 import { DeltaI, Op, Ops } from '../../../quill/quill.models';
@@ -39,8 +40,8 @@ const itemTypeProvider: ViewFieldItemTypeFn = (f, s) => 'valueVersion'
     { provide: VIEW_FIELD_ITEM_TYPE, useValue: itemTypeProvider },
   ],
   standalone: true,
-  imports: [NgIf, MatProgressSpinnerModule, MatButtonModule, QuillModule, MatTooltipModule, MatIconModule, GvButtonsModule, MatMenuModule,
-    forwardRef(() => ViewFieldBodyComponent), AsyncPipe]
+  imports: [NgIf, MatProgressSpinnerModule, MatButtonModule, QuillModule, MatTooltipModule, MatIconModule, MatMenuModule,
+    forwardRef(() => ViewFieldBodyComponent), AsyncPipe, ToggleBtnComponent]
 })
 export class ViewFieldHasValueVersionComponent implements OnInit {
   destroy$ = new Subject<boolean>();

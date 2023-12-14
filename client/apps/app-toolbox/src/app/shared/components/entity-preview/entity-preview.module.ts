@@ -9,8 +9,7 @@ import { OntoInfoModule } from '../onto-info/onto-info.module';
 import { EntityPreviewComponent } from './entity-preview.component';
 
 @NgModule({
-  imports: [CommonModule, DndModule, DateTimeModule, MatMenuModule, MatIconModule, TruncateModule, OntoInfoModule],
-  declarations: [EntityPreviewComponent],
-  exports: [EntityPreviewComponent]
+    imports: [CommonModule, DndModule, DateTimeModule, MatMenuModule, MatIconModule, TruncateModule, OntoInfoModule, EntityPreviewComponent],
+    exports: [EntityPreviewComponent]
 })
 export class EntityPreviewModule { }

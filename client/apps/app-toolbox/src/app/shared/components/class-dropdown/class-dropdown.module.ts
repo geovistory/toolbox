@@ -6,13 +6,13 @@ import { MaterialModule } from '../../../core/material/material.module';
 import { ClassDropdownComponent } from './class-dropdown.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatDialogModule,
-    MatButtonModule,
-    MaterialModule
-  ],
-  declarations: [ClassDropdownComponent],
-  exports: [ClassDropdownComponent]
+    imports: [
+        CommonModule,
+        MatDialogModule,
+        MatButtonModule,
+        MaterialModule,
+        ClassDropdownComponent
+    ],
+    exports: [ClassDropdownComponent]
 })
 export class ClassDropdownModule { }

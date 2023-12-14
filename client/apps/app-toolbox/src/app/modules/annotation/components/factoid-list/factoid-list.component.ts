@@ -1,13 +1,23 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { FactoidEntity, FactoidStatement, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { ValueObjectTypeName } from '../../../../shared/components/digital-table/components/table/table.component';
-import { InfValueObject } from '../../../../shared/components/value-preview/value-preview.component';
-import { QuillOpsToStrPipe } from '../../../../shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { values } from 'ramda';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { ValueObjectTypeName } from '../../../../shared/components/digital-table/components/table/table.component';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { InfValueObject, ValuePreviewComponent } from '../../../../shared/components/value-preview/value-preview.component';
+import { QuillOpsToStrPipe } from '../../../../shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { FieldLabelComponent } from '../../../base/components/field-label/field-label.component';
 
 
 @Component({
@@ -16,7 +26,9 @@ import { first, map, switchMap, takeUntil } from 'rxjs/operators';
   styleUrls: ['./factoid-list.component.scss'],
   providers: [
     QuillOpsToStrPipe
-  ]
+  ],
+  standalone: true,
+  imports: [MatGridListModule, MatPaginatorModule, NgIf, MatButtonModule, MatIconModule, MatProgressSpinnerModule, MatDividerModule, NgFor, FieldLabelComponent, MatTooltipModule, EntityPreviewComponent, ValuePreviewComponent, AsyncPipe]
 })
 export class FactoidListComponent implements OnInit, OnDestroy {
 

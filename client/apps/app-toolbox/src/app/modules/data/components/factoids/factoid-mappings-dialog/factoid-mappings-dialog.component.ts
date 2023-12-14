@@ -1,9 +1,12 @@
+import { NgFor } from '@angular/common';
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { FactoidControllerService, FactoidMapping } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../../core/active-project/active-project.service';
 import { first } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../../shared/services/active-project.service';
+import { FactoidMappingComponent } from '../factoid-mapping/factoid-mapping.component';
 
 export interface FactoidMappingsDialogData {
   pkTable: number
@@ -12,7 +15,9 @@ export interface FactoidMappingsDialogData {
 @Component({
   selector: 'gv-factoid-mappings-dialog',
   templateUrl: './factoid-mappings-dialog.component.html',
-  styleUrls: ['./factoid-mappings-dialog.component.scss']
+  styleUrls: ['./factoid-mappings-dialog.component.scss'],
+  standalone: true,
+  imports: [MatButtonModule, NgFor, FactoidMappingComponent, MatDialogModule]
 })
 export class FactoidMappingsDialogComponent implements OnInit {
 
@@ -68,9 +73,9 @@ export class FactoidMappingsDialogComponent implements OnInit {
 
   checkValid() {
     this.valid = true
-    for (let fm of this.fms) {
+    for (const fm of this.fms) {
       if (!fm.pkClass) this.valid = false;
-      for (let fpm of fm.properties) {
+      for (const fpm of fm.properties) {
         if (!fpm.pkProperty) this.valid = false;
         if (!fpm.pkColumn) this.valid = false;
       }

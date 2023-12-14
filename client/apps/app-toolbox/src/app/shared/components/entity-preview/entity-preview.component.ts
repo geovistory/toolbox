@@ -1,15 +1,24 @@
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { DndModule } from '@suez/ngx-dnd';
 import getUrls from 'get-urls';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../core/active-project/active-project.service';
+import { TimeSpanPipe } from '../../../../../../../libs/lib-utils/src/lib/date-time/pipes/time-span.pipe';
+import { TruncatePipe } from '../../pipes/truncate/truncate.pipe';
+import { ActiveProjectService } from '../../services/active-project.service';
+import { ClassInfoComponent } from '../onto-info/class-info/class-info.component';
 
 @Component({
   selector: 'gv-entity-preview',
   templateUrl: './entity-preview.component.html',
-  styleUrls: ['./entity-preview.component.scss']
+  styleUrls: ['./entity-preview.component.scss'],
+  standalone: true,
+  imports: [NgIf, ClassInfoComponent, DndModule, MatMenuModule, MatIconModule, NgFor, NgTemplateOutlet, TimeSpanPipe, TruncatePipe]
 })
 export class EntityPreviewComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

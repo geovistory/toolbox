@@ -1,11 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntitySearchHit, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { NgIf } from '@angular/common';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { PassiveLinkDirective } from '../../../../shared/directives/passive-link/passive-link.directive';
+import { DndModule } from '@suez/ngx-dnd';
 
 
 @Component({
-  selector: 'gv-entity-search-hit',
-  templateUrl: './entity-search-hit.component.html',
-  styleUrls: ['./entity-search-hit.component.scss']
+    selector: 'gv-entity-search-hit',
+    templateUrl: './entity-search-hit.component.html',
+    styleUrls: ['./entity-search-hit.component.scss'],
+    standalone: true,
+    imports: [DndModule, PassiveLinkDirective, EntityPreviewComponent, NgIf]
 })
 export class EntitySearchHitComponent implements OnInit {
 

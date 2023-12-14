@@ -5,6 +5,23 @@ import { CoreTable } from '../../../../shared/components/core-table/table';
 import { RangeChangeEvent, TemporalExtent, TimeLineData, TimeLineRow, Timeline, TimelineOptions } from '../../models/timeline';
 import { Zoomer } from '../../models/zoomer';
 import { D3Service } from '../../shared/d3.service';
+import { ZoomSliderComponent } from '../zoom-slider/zoom-slider.component';
+import { CursorLineVisualComponent } from '../cursor-line-visual/cursor-line-visual.component';
+import { TeEntVisualComponent } from '../te-ent-visual/te-ent-visual.component';
+import { DraggableXAxisDirective } from '../../directives/draggable-x-axis.directive';
+import { CursorHeaderVisualComponent } from '../cursor-header-visual/cursor-header-visual.component';
+import { XAxisComponent } from '../x-axis/x-axis.component';
+import { RangeEmitterOnMouseDownDirective } from '../../directives/range-emitter-on-mouse-down.directive';
+import { NgIf, AsyncPipe } from '@angular/common';
+import { DimensionChangeDirective } from '../../../../shared/directives/dimension-change/dimension-change.directive';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableModule } from '@angular/material/table';
+import { CoreTableFixedVirtualScrollDirective } from '../../../../shared/components/core-table/virtual-scroll/virtual-scroll.directive';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 
 interface TimeLineTableRow extends TimeLineRow {
   index: number
@@ -12,9 +29,11 @@ interface TimeLineTableRow extends TimeLineRow {
 
 
 @Component({
-  selector: 'gv-timeline-table',
-  templateUrl: './timeline-table.component.html',
-  styleUrls: ['./timeline-table.component.scss']
+    selector: 'gv-timeline-table',
+    templateUrl: './timeline-table.component.html',
+    styleUrls: ['./timeline-table.component.scss'],
+    standalone: true,
+    imports: [CdkVirtualScrollViewport, CoreTableFixedVirtualScrollDirective, MatTableModule, MatSortModule, MatButtonModule, MatTooltipModule, MatIconModule, EntityPreviewComponent, DimensionChangeDirective, NgIf, RangeEmitterOnMouseDownDirective, XAxisComponent, CursorHeaderVisualComponent, DraggableXAxisDirective, TeEntVisualComponent, CursorLineVisualComponent, ZoomSliderComponent, AsyncPipe]
 })
 export class TimelineTableComponent extends CoreTable<TimeLineTableRow> implements OnDestroy {
 

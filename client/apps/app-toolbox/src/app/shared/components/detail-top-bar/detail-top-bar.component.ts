@@ -1,9 +1,16 @@
 import { Component, OnInit, HostBinding, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { ExtendedModule } from '@angular/flex-layout/extended';
+import { NgStyle, NgIf } from '@angular/common';
+import { FlexModule } from '@angular/flex-layout/flex';
 
 @Component({
-  selector: 'gv-detail-top-bar',
-  templateUrl: './detail-top-bar.component.html',
-  styleUrls: ['./detail-top-bar.component.scss']
+    selector: 'gv-detail-top-bar',
+    templateUrl: './detail-top-bar.component.html',
+    styleUrls: ['./detail-top-bar.component.scss'],
+    standalone: true,
+    imports: [FlexModule, NgStyle, ExtendedModule, NgIf, MatButtonModule, MatIconModule]
 })
 export class DetailTopBarComponent implements OnInit {
 

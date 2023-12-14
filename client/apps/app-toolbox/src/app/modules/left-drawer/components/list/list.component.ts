@@ -1,16 +1,26 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginatorModule } from '@angular/material/paginator';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { EntitySearchHit, WarEntityPreview, WarEntityPreviewControllerService } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ListService } from '../../services/list.service';
+import { MatDividerModule } from '@angular/material/divider';
+import { EntitySearchHitComponent } from '../entity-search-hit/entity-search-hit.component';
+import { NgFor, NgIf, AsyncPipe, DecimalPipe } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 @Component({
-  selector: 'gv-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css']
+    selector: 'gv-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.css'],
+    standalone: true,
+    imports: [MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, MatIconModule, NgFor, EntitySearchHitComponent, NgIf, MatDividerModule, MatPaginatorModule, AsyncPipe, DecimalPipe]
 })
 export class ListComponent implements OnInit, OnDestroy {
 

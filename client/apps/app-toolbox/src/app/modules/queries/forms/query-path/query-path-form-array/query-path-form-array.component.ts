@@ -4,11 +4,18 @@ import { QueryPathSegment } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { map, mergeMap, switchMap } from 'rxjs/operators';
 import { classesSegmentConfig, propertiesSegmentConfig, QueryPathFormArrayFactory } from '../query-path-form/query-path-form.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { QueryPathFormControlComponent } from '../query-path-form-control/query-path-form-control.component';
+import { MatIconModule } from '@angular/material/icon';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
-  selector: 'gv-query-path-form-array',
-  templateUrl: './query-path-form-array.component.html',
-  styleUrls: ['./query-path-form-array.component.scss']
+    selector: 'gv-query-path-form-array',
+    templateUrl: './query-path-form-array.component.html',
+    styleUrls: ['./query-path-form-array.component.scss'],
+    standalone: true,
+    imports: [NgFor, MatIconModule, NgIf, QueryPathFormControlComponent, MatButtonModule, MatTooltipModule]
 })
 export class QueryPathFormArrayComponent implements OnInit {
   @Input() formArrayFactory: QueryPathFormArrayFactory;

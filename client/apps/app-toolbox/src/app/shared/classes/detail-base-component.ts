@@ -4,14 +4,14 @@ import { MatTabGroup } from '@angular/material/tabs';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { IOutputData } from 'angular-split/lib/interface';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../core/active-project/active-project.service';
 import { EditModeService } from '../../modules/base/services/edit-mode.service';
-import { TabBody } from '../../modules/projects/containers/project-edit/project-edit.component';
 import { TabLayoutComponentInterface } from '../../modules/projects/directives/on-activate-tab.directive';
+import { TabBody } from '../../pages/project/project-edit/project-edit.component';
 import { TabLayoutService } from '../components/tab-layout/tab-layout.service';
 import { TruncatePipe } from '../pipes/truncate/truncate.pipe';
+import { ActiveProjectService } from '../services/active-project.service';
 
 interface ConfigBase { pkEntity: number }
 

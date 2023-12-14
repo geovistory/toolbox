@@ -2,12 +2,21 @@ import { Component, DoCheck, Input } from '@angular/core';
 import { TimeSpanUtil } from "@kleiolab/lib-utils";
 import Color from 'color';
 import { Timeline } from '../../models/timeline';
+import { InnerVisualComponent } from '../inner-visual/inner-visual.component';
+import { RightInnerVisualComponent } from '../right-inner-visual/right-inner-visual.component';
+import { LeftInnerVisualComponent } from '../left-inner-visual/left-inner-visual.component';
+import { OuterVisualComponent } from '../outer-visual/outer-visual.component';
+import { RightOuterVisualComponent } from '../right-outer-visual/right-outer-visual.component';
+import { LeftOuterVisualComponent } from '../left-outer-visual/left-outer-visual.component';
+import { NgIf } from '@angular/common';
 
 
 @Component({
-  selector: '[existenceTimeVisual]',
-  templateUrl: './existence-time-visual.component.html',
-  styleUrls: ['./existence-time-visual.component.scss']
+    selector: '[existenceTimeVisual]',
+    templateUrl: './existence-time-visual.component.html',
+    styleUrls: ['./existence-time-visual.component.scss'],
+    standalone: true,
+    imports: [NgIf, LeftOuterVisualComponent, RightOuterVisualComponent, OuterVisualComponent, LeftInnerVisualComponent, RightInnerVisualComponent, InnerVisualComponent]
 })
 export class ExistenceTimeVisualComponent implements DoCheck {
 

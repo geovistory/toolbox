@@ -2,7 +2,8 @@ import { Directive, Input, ElementRef, ComponentFactoryResolver, ViewContainerRe
 import { CdkPortalOutlet } from '@angular/cdk/portal';
 
 @Directive({
-  selector: '[gvPanelBody]'
+    selector: '[gvPanelBody]',
+    standalone: true
 })
 export class PanelBodyDirective extends CdkPortalOutlet {
   @Input() gvPanelId: number;

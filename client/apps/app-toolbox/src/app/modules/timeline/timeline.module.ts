@@ -3,12 +3,12 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { MaterialModule } from '../../core/material/material.module';
-import { PassiveLinkModule } from '../../shared';
+
 import { CoreTableFilterModule } from '../../shared/components/core-table/filter/filter.module';
 import { CoreTableMenuModule } from '../../shared/components/core-table/menu/menu.module';
 import { CoreTableVirtualScrollModule } from '../../shared/components/core-table/virtual-scroll/virtual-scroll.module';
 import { EntityPreviewModule } from '../../shared/components/entity-preview/entity-preview.module';
-import { DimensionChangeModule } from '../../shared/directives/dimension-change/dimension-change.module';
+
 import { ChartLineVisualComponent } from './components/chart-line-visual/chart-line-visual.component';
 import { CursorHeaderVisualComponent } from './components/cursor-header-visual/cursor-header-visual.component';
 import { CursorLineVisualComponent } from './components/cursor-line-visual/cursor-line-visual.component';
@@ -32,19 +32,15 @@ import { WrapTextDirective } from './directives/wrap-text.directive';
 import { D3Service } from './shared/d3.service';
 
 @NgModule({
-  imports: [
+    imports: [
     CommonModule,
-    DimensionChangeModule,
     DateTimeModule,
     CoreTableFilterModule,
     CoreTableMenuModule,
     CoreTableVirtualScrollModule,
     ScrollingModule,
     EntityPreviewModule,
-    PassiveLinkModule,
-    MaterialModule
-  ],
-  declarations: [
+    MaterialModule,
     PointComponent,
     DraggableXAxisDirective,
     XAxisComponent,
@@ -65,14 +61,14 @@ import { D3Service } from './shared/d3.service';
     CursorLineVisualComponent,
     ChartLineVisualComponent,
     ZoomSliderComponent
-  ],
-  providers: [
-    D3Service,
-    DatePipe
-  ],
-  exports: [
-    TimelineChartComponent,
-    TimelineTableComponent
-  ]
+],
+    providers: [
+        D3Service,
+        DatePipe
+    ],
+    exports: [
+        TimelineChartComponent,
+        TimelineTableComponent
+    ]
 })
 export class TimelineModule { }

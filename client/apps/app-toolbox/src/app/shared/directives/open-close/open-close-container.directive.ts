@@ -3,7 +3,8 @@ import {
   ContentChild,
   Directive,
   HostBinding,
-  Input
+  Input,
+  OnInit
 } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { delay, takeUntil, tap } from 'rxjs/operators';
@@ -11,14 +12,15 @@ import { OpenCloseChildDirective } from './open-close-child.directive';
 
 @Directive({
   selector: '[gvOpenCloseContainer]',
+  standalone: true,
 })
-export class OpenCloseContainerDirective {
+export class OpenCloseContainerDirective implements OnInit {
   destroy$ = new Subject<boolean>();
 
   @Input() isOpen$: Observable<boolean>;
-  @Input() @HostBinding('style.transition.ms') duration: number = 300;
-  @HostBinding('style.height') height: string = '0px';
-  @HostBinding('style.overflow') overflow: string = 'hidden';
+  @Input() @HostBinding('style.transition.ms') duration = 300;
+  @HostBinding('style.height') height = '0px';
+  @HostBinding('style.overflow') overflow = 'hidden';
 
   @ContentChild(OpenCloseChildDirective) child: OpenCloseChildDirective;
 

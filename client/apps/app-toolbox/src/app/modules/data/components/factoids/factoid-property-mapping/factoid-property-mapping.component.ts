@@ -1,14 +1,21 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { FactoidMapping, FactoidPropertyMapping } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../../core/active-project/active-project.service';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { CommentMenuComponent } from '../../../../../shared/components/comment-menu/comment-menu.component';
+import { ActiveProjectService } from '../../../../../shared/services/active-project.service';
+import { ColumnMappingComponent } from '../../column-mapping/column-mapping.component';
+import { CtrlEntityOrValueMatcherComponent } from '../../ctrl-entity-or-value-matcher.component/ctrl-entity-or-value-matcher.component';
+import { FactoidPropertyDisplayComponent } from '../factoid-property-display/factoid-property-display.component';
 
 @Component({
   selector: 'gv-factoid-property-mapping',
   templateUrl: './factoid-property-mapping.component.html',
-  styleUrls: ['./factoid-property-mapping.component.scss']
+  styleUrls: ['./factoid-property-mapping.component.scss'],
+  standalone: true,
+  imports: [FactoidPropertyDisplayComponent, ColumnMappingComponent, CtrlEntityOrValueMatcherComponent, CommentMenuComponent, MatIconModule]
 })
 export class FactoidPropertyMappingComponent implements OnInit, OnDestroy {
 

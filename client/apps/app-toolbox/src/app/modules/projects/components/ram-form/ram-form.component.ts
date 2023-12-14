@@ -1,11 +1,20 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellation, InfLangString, InfStatement, InfStatementWithRelations, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { QuillOpsToStrPipe } from '../../../../shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
+import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { CtrlTextPropertyComponent } from '../../../base/components/ctrl-text-property/ctrl-text-property.component';
 
 
 /**
@@ -17,7 +26,9 @@ import { ActiveProjectService } from '../../../../core/active-project/active-pro
 @Component({
   selector: 'gv-ram-form',
   templateUrl: './ram-form.component.html',
-  styleUrls: ['./ram-form.component.scss']
+  styleUrls: ['./ram-form.component.scss'],
+  standalone: true,
+  imports: [NgIf, MatIconModule, MatButtonModule, MatProgressSpinnerModule, DndModule, MatFormFieldModule, CtrlTextPropertyComponent, FormsModule, ReactiveFormsModule, AsyncPipe, TruncatePipe, QuillOpsToStrPipe]
 })
 export class RamFormComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

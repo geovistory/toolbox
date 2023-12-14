@@ -13,7 +13,8 @@ import { DndDraggableDirective } from 'ngx-drag-drop';
 import { equals, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest, merge } from 'rxjs';
 import { delay, distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { OpenCloseModule } from '../../../../shared/directives/open-close/open-close.module';
+
+import { OpenCloseContainerDirective } from '../../../../shared/directives/open-close/open-close-container.directive';
 import { openClose } from '../../../information/shared/animations';
 import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { GvDndSortListDirective } from '../../directives/dnd-sort-list.directive';
@@ -38,7 +39,7 @@ import { ViewFieldBodyService } from './view-field-body.service';
     ViewFieldDropListService
   ],
   standalone: true,
-  imports: [OpenCloseModule, NgClass, NgIf, MatPaginatorModule, MatDividerModule, forwardRef(() => GvDndSortListDirective), ViewFieldItemContainerComponent, NgFor, DndDraggableDirective, ViewFieldItemComponent, MatButtonModule, MatProgressSpinnerModule, AsyncPipe]
+  imports: [OpenCloseContainerDirective, NgClass, NgIf, MatPaginatorModule, MatDividerModule, forwardRef(() => GvDndSortListDirective), ViewFieldItemContainerComponent, NgFor, DndDraggableDirective, ViewFieldItemComponent, MatButtonModule, MatProgressSpinnerModule, AsyncPipe]
 })
 export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

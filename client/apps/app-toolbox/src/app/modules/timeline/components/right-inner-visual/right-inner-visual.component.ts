@@ -6,9 +6,10 @@ import { Timeline } from '../../models/timeline';
 import { D3Service } from '../../shared/d3.service';
 
 @Component({
-  selector: '[rightInnerVisual]',
-  templateUrl: './right-inner-visual.component.html',
-  styleUrls: ['./right-inner-visual.component.scss']
+    selector: '[rightInnerVisual]',
+    templateUrl: './right-inner-visual.component.html',
+    styleUrls: ['./right-inner-visual.component.scss'],
+    standalone: true
 })
 export class RightInnerVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
 

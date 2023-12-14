@@ -1,10 +1,16 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FactoidMapping, FactoidPropertyMapping } from '@kleiolab/lib-sdk-lb4';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { FactoidPropertyMappingComponent } from '../factoid-property-mapping/factoid-property-mapping.component';
+import { NgFor } from '@angular/common';
 
 @Component({
-  selector: 'gv-factoid-mapping-body',
-  templateUrl: './factoid-mapping-body.component.html',
-  styleUrls: ['./factoid-mapping-body.component.scss']
+    selector: 'gv-factoid-mapping-body',
+    templateUrl: './factoid-mapping-body.component.html',
+    styleUrls: ['./factoid-mapping-body.component.scss'],
+    standalone: true,
+    imports: [NgFor, FactoidPropertyMappingComponent, MatButtonModule, MatIconModule]
 })
 export class FactoidMappingBodyComponent {
 

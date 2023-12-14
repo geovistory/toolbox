@@ -1,9 +1,14 @@
 import { Component, HostBinding, OnDestroy } from '@angular/core';
+import { MatDividerModule } from '@angular/material/divider';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { Subject } from 'rxjs';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { AddEntityMenuComponent } from '../../../base/components/add-entity-menu/add-entity-menu.component';
 import { ListService } from '../../services/list.service';
+import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';
+import { ListComponent } from '../list/list.component';
+import { SourcesTabsComponent } from '../sources-tabs/sources-tabs.component';
 
 
 @Component({
@@ -12,7 +17,9 @@ import { ListService } from '../../services/list.service';
   styleUrls: ['./source-list.component.scss'],
   providers: [
     ListService
-  ]
+  ],
+  standalone: true,
+  imports: [ListDrawerHeaderComponent, AddEntityMenuComponent, SourcesTabsComponent, MatDividerModule, ListComponent]
 })
 export class SourceListComponent implements OnDestroy {
 

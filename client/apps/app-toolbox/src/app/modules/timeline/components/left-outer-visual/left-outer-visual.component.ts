@@ -6,9 +6,10 @@ import { TimePrimitiveVisual } from '../../models/time-primitive-visual';
 import { Timeline } from '../../models/timeline';
 
 @Component({
-  selector: '[leftOuterVisual]',
-  templateUrl: './left-outer-visual.component.html',
-  styleUrls: ['./left-outer-visual.component.scss']
+    selector: '[leftOuterVisual]',
+    templateUrl: './left-outer-visual.component.html',
+    styleUrls: ['./left-outer-visual.component.scss'],
+    standalone: true
 })
 export class LeftOuterVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
 

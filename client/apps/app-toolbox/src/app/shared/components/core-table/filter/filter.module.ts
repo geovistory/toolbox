@@ -7,12 +7,12 @@ import { CoreTableFilterComponent } from './filter.component';
 const components = [CoreTableFilterComponent];
 
 @NgModule({
-  declarations: components,
-  exports: components,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MaterialModule
-  ],
+    exports: components,
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        MaterialModule,
+        ...components
+    ],
 })
 export class CoreTableFilterModule { }

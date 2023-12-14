@@ -13,12 +13,12 @@ const components = [
   TimeColSignalComponent
 ]
 @NgModule({
-  imports: [
-    CommonModule,
-    MatTooltipModule,
-    MatIconModule
-  ],
-  declarations: components,
-  exports: components
+    imports: [
+        CommonModule,
+        MatTooltipModule,
+        MatIconModule,
+        ...components
+    ],
+    exports: components
 })
 export class GvHelperComponentsModule { }

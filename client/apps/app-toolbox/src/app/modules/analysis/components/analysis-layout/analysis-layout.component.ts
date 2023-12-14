@@ -5,11 +5,21 @@ import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-l
 import { Subject } from 'rxjs';
 import { filter, first, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { GvAnalysisService } from '../../services/analysis.service';
+import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
+import { AngularSplitModule } from 'angular-split';
+import { NgIf, NgClass, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'gv-analysis-layout',
-  templateUrl: './analysis-layout.component.html',
-  styleUrls: ['./analysis-layout.component.scss']
+    selector: 'gv-analysis-layout',
+    templateUrl: './analysis-layout.component.html',
+    styleUrls: ['./analysis-layout.component.scss'],
+    standalone: true,
+    imports: [NgIf, AngularSplitModule, NgClass, DetailTopBarComponent, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, DetailContentComponent, AsyncPipe]
 })
 export class AnalysisLayoutComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

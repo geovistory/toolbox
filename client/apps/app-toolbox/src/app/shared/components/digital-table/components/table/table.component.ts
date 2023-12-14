@@ -1,13 +1,28 @@
+import { TextFieldModule } from '@angular/cdk/text-field';
+import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { StateFacade } from '@kleiolab/lib-redux';
-import { GetTablePageOptions, SysConfigValue, SysConfigValueObjectType, TabCell, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../../core/active-project/active-project.service';
-import { EditModeService } from '../../../../../modules/base/services/edit-mode.service';
+import { GetTablePageOptions, SysConfigValue, SysConfigValueObjectType, TColFilter, TabCell, TableService } from '@kleiolab/lib-sdk-lb4';
+import { SharedModule } from 'primeng/api';
+import { TableModule } from 'primeng/table';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
+import { ViewFieldAnnotationsOfCellComponent } from '../../../../../modules/base/components/view-field-annotations-of-cell/view-field-annotations-of-cell.component';
+import { EditModeService } from '../../../../../modules/base/services/edit-mode.service';
+import { CopyClipboardDirective } from '../../../../directives/copy-clipboard/copy-clipboard.directive';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { NumberDialogComponent, NumberDialogData, NumberDialogReturn } from '../../../number-dialog/number-dialog.component';
+import { ColFilterNumericComponent } from './col-filter-numeric/col-filter-numeric.component';
+import { ColFilterTextComponent } from './col-filter-text/col-filter-text.component';
 import { ColMappingComponent } from './col-mapping/col-mapping.component';
 
 export interface TableSort {
@@ -66,6 +81,28 @@ export interface TableColFilter {
   selector: 'gv-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
+  standalone: true,
+  imports: [
+    NgIf,
+    MatProgressSpinnerModule,
+    TableModule,
+    NgClass,
+    SharedModule,
+    NgFor,
+    MatIconModule,
+    CopyClipboardDirective,
+    MatTooltipModule,
+    ColFilterTextComponent,
+    ColFilterNumericComponent,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    NgStyle,
+    MatMenuModule,
+    TextFieldModule,
+    ViewFieldAnnotationsOfCellComponent,
+    AsyncPipe,
+  ],
 })
 export class TableComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

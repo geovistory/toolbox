@@ -10,18 +10,23 @@ import { QuillNodeHandler } from '../quill-node-handler';
 import { DeltaI, Op, Ops } from '../quill.models';
 import { createEnterHandle } from '../quill.service';
 import { QuillEditorService } from '../services/quill-editor.service';
+import { NgIf, NgClass, AsyncPipe } from '@angular/common';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
 
 // the array of numbers are the pk_entities of the chunks
 export interface IndexedCharids<M> { [charid: number]: M }
 export type ChunksPks = number[]
 
 @Component({
-  selector: 'gv-quill-edit',
-  templateUrl: './quill-edit.component.html',
-  styleUrls: ['./quill-edit.component.scss'],
-  providers: [
-    QuillEditorService
-  ]
+    selector: 'gv-quill-edit',
+    templateUrl: './quill-edit.component.html',
+    styleUrls: ['./quill-edit.component.scss'],
+    providers: [
+        QuillEditorService
+    ],
+    standalone: true,
+    imports: [MatDividerModule, MatTooltipModule, NgIf, NgClass, AsyncPipe]
 })
 export class QuillEditComponent implements OnInit, OnChanges, OnDestroy {
 

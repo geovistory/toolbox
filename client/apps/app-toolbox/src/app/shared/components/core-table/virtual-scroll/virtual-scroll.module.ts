@@ -4,7 +4,7 @@ import { CoreTableFixedVirtualScrollDirective } from './virtual-scroll.directive
 const components = [CoreTableFixedVirtualScrollDirective];
 
 @NgModule({
-  declarations: components,
-  exports: components,
+    imports: [...components],
+    exports: components,
 })
 export class CoreTableVirtualScrollModule {}

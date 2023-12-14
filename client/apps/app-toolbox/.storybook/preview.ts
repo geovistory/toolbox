@@ -1,6 +1,30 @@
+const url = 'http://localhost:4400';
 window['env'] = {
   ...window['env'],
-  apiUrl: 'http://localhost:4400',
-  assetsUrl: 'http://localhost:4400',
+  apiUrl: url,
+  assetsUrl: url,
   apiVersion: 'lb3-api'
 }
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule, importProvidersFrom } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Preview, applicationConfig } from '@storybook/angular';
+
+@NgModule({
+  imports: [
+    HttpClientModule
+  ]
+})
+export class MatIconRegistryModule {
+  constructor(matIconRegistry: MatIconRegistry, domSanitizer: DomSanitizer) {
+    matIconRegistry.addSvgIconSet(domSanitizer.bypassSecurityTrustResourceUrl(url + '/assets/mdi/mdi.svg'));
+    matIconRegistry.addSvgIconSetInNamespace('gv', domSanitizer.bypassSecurityTrustResourceUrl(url + '/assets/gv-icons.svg'));
+  }
+}
+
+const preview: Preview = {
+  decorators: [applicationConfig({ providers: [importProvidersFrom(MatIconRegistryModule)] })],
+};
+
+export default preview;

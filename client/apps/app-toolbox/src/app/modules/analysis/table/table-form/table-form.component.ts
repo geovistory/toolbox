@@ -17,6 +17,9 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
 import { TableFormArrayData, TableFormService } from './table-form.service';
+import { TableFormGroupComponent } from '../table-form-group/table-form-group.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 
 export interface TableFormGroupData {
@@ -41,10 +44,12 @@ export type TableFormChildFactory = FormChildFactory<TableFormChildData>;
 
 
 @Component({
-  selector: 'gv-table-form',
-  templateUrl: './table-form.component.html',
-  styleUrls: ['./table-form.component.scss'],
-  providers: [TableFormService]
+    selector: 'gv-table-form',
+    templateUrl: './table-form.component.html',
+    styleUrls: ['./table-form.component.scss'],
+    providers: [TableFormService],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, TableFormGroupComponent]
 })
 export class TableFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

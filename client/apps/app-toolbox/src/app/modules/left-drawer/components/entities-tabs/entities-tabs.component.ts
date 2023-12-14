@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ListService } from '../../services/list.service';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @Component({
-  selector: 'gv-entities-tabs',
-  templateUrl: './entities-tabs.component.html',
-  styleUrls: ['./entities-tabs.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-entities-tabs',
+    templateUrl: './entities-tabs.component.html',
+    styleUrls: ['./entities-tabs.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatTabsModule]
 })
 export class EntitiesTabsComponent implements OnDestroy {
 

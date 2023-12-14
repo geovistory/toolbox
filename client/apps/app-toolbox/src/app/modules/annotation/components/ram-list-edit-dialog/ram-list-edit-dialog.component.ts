@@ -1,9 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field, FieldBase } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { ViewFieldComponent } from '../../../base/components/view-field/view-field.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 export interface RamListEditDialogData {
 
   // the root statement of the dialog
@@ -56,10 +61,18 @@ export const fieldAtReferencePoP: Field = {
 }
 
 @Component({
-  selector: 'gv-ram-list-edit-dialog',
-  templateUrl: './ram-list-edit-dialog.component.html',
-  styleUrls: ['./ram-list-edit-dialog.component.scss'],
-
+    selector: 'gv-ram-list-edit-dialog',
+    templateUrl: './ram-list-edit-dialog.component.html',
+    styleUrls: ['./ram-list-edit-dialog.component.scss'],
+    standalone: true,
+    imports: [
+        MatDialogModule,
+        EntityPreviewComponent,
+        MatIconModule,
+        MatDividerModule,
+        ViewFieldComponent,
+        MatButtonModule,
+    ],
 })
 export class RamListEditDialogComponent implements OnInit {
 

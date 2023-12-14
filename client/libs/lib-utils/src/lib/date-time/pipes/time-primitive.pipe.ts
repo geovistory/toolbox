@@ -4,7 +4,8 @@ import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { TimePrimitive } from '../classes/time-primitive';
 
 @Pipe({
-  name: 'timePrimitive'
+    name: 'timePrimitive',
+    standalone: true
 })
 export class TimePrimitivePipe implements PipeTransform {
 

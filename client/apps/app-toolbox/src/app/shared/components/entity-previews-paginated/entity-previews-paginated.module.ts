@@ -9,13 +9,13 @@ import { EntityPreviewsPaginatedDialogService } from './service/entity-previews-
 
 
 @NgModule({
-  providers: [EntityPreviewsPaginatedDialogService],
-  declarations: [EntityPreviewsPaginatedComponent, EntityPreviewsPaginatedDialogComponent],
-  exports: [EntityPreviewsPaginatedComponent, EntityPreviewsPaginatedDialogComponent],
-  imports: [
-    CommonModule,
-    EntityPreviewModule,
-    MaterialModule
-  ]
+    providers: [EntityPreviewsPaginatedDialogService],
+    exports: [EntityPreviewsPaginatedComponent, EntityPreviewsPaginatedDialogComponent],
+    imports: [
+        CommonModule,
+        EntityPreviewModule,
+        MaterialModule,
+        EntityPreviewsPaginatedComponent, EntityPreviewsPaginatedDialogComponent
+    ]
 })
 export class EntityPreviewsPaginatedModule { }

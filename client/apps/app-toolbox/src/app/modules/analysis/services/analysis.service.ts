@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisService as LbAnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../core/active-project/active-project.service';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { catchError, first, switchMap, tap } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ErrorDialogComponent, ErrorDialogData } from '../../../shared/components/error-dialog/error-dialog.component';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { catchError, first, switchMap, tap } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../shared/services/active-project.service';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/dialog-create/dialog-create.component';
 
 export interface AnalysisTabData {

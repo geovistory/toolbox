@@ -5,8 +5,9 @@ import { ValidationService } from './validation.service';
 
 
 @Directive({
-  selector: '[validAppellation]',
-  providers: [{ provide: NG_VALIDATORS, useExisting: AppellationValidatorDirective, multi: true }]
+    selector: '[validAppellation]',
+    providers: [{ provide: NG_VALIDATORS, useExisting: AppellationValidatorDirective, multi: true }],
+    standalone: true
 })
 export class AppellationValidatorDirective implements Validator {
   @Input() validAppellation: { [key: string]: UntypedFormGroup }
@@ -17,8 +18,9 @@ export class AppellationValidatorDirective implements Validator {
 }
 
 @Directive({
-  selector: '[gvNoInvalidChildren]',
-  providers: [{ provide: NG_VALIDATORS, useExisting: NoInvalidChildrenDirective, multi: true }]
+    selector: '[gvNoInvalidChildren]',
+    providers: [{ provide: NG_VALIDATORS, useExisting: NoInvalidChildrenDirective, multi: true }],
+    standalone: true
 })
 export class NoInvalidChildrenDirective implements Validator {
   @Input() gvNoInvalidChildren: { [key: string]: UntypedFormGroup }
@@ -28,13 +30,14 @@ export class NoInvalidChildrenDirective implements Validator {
 }
 
 @Directive({
-  selector: '[validateEqual]',
-  providers: [
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => EqualValidator), multi: true
-    }
-  ]
+    selector: '[validateEqual]',
+    providers: [
+        {
+            provide: NG_VALIDATORS,
+            useExisting: forwardRef(() => EqualValidator), multi: true
+        }
+    ],
+    standalone: true
 })
 export class EqualValidator implements Validator {
 
@@ -78,10 +81,10 @@ const directives = [
 ]
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  declarations: directives,
-  exports: directives
+    imports: [
+        CommonModule,
+        ...directives
+    ],
+    exports: directives
 })
 export class ValidationDirectivesModule { }

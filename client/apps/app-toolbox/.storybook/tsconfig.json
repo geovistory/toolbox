@@ -15,6 +15,6 @@
     "../src/**/*.stories.mdx",
     "*.js",
     "*.ts",
-    "../src/**/*.d.ts"
+    "../src/**/*.d.ts",
   ]
 }

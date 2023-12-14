@@ -4,6 +4,7 @@ import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, Inf
 import { GregorianDateTime, JulianDateTime } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
+import { NgIf } from '@angular/common';
 
 export interface InfValueObject {
   appellation?: InfAppellation;
@@ -15,9 +16,11 @@ export interface InfValueObject {
 }
 
 @Component({
-  selector: 'gv-value-preview',
-  templateUrl: './value-preview.component.html',
-  styleUrls: ['./value-preview.component.scss']
+    selector: 'gv-value-preview',
+    templateUrl: './value-preview.component.html',
+    styleUrls: ['./value-preview.component.scss'],
+    standalone: true,
+    imports: [NgIf]
 })
 export class ValuePreviewComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

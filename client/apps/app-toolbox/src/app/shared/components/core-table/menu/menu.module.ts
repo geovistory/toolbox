@@ -5,8 +5,7 @@ import { CoreTableMenuComponent } from './menu.component';
 const components = [CoreTableMenuComponent];
 
 @NgModule({
-  declarations: components,
-  exports: components,
-  imports: [MaterialModule],
+    exports: components,
+    imports: [MaterialModule, ...components],
 })
 export class CoreTableMenuModule { }

@@ -17,6 +17,6 @@ export class AccountFacade {
 
   loginSucceeded = (account: PubAccount) => this.store.dispatch(AccountActions.loginSucceeded(account))
 
-  loadRoles = (accountId: number) => this.store.dispatch(AccountActions.loadRoles(accountId))
+  loadRoles = (accountId: number, cb?: () => any) => this.store.dispatch(AccountActions.loadRoles(accountId, cb))
 
 }

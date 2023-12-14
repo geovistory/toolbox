@@ -10,11 +10,10 @@ import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
 import { getCdkOverlayCanvas } from '../../../../../.storybook/getCdkOverlayCanvas';
 import { playInject } from '../../../../../.storybook/playInject';
-import { ActiveAccountService } from '../../../core/active-account';
-import { GvAuthService } from '../../../core/auth/auth.service';
 import { GvInternalStorage } from '../../../core/cookies/cookies.module';
-import { MatIconRegistryModule } from '../../../core/material/material-icon-registry.module';
 import { MaterialModule } from '../../../core/material/material.module';
+import { ActiveAccountService } from '../../../shared/services/active-account.service';
+import { GvAuthService } from '../../services/auth.service';
 
 const meta: Meta<NavbarComponent> = {
   component: NavbarComponent,
@@ -24,7 +23,6 @@ const meta: Meta<NavbarComponent> = {
       imports: [
         CommonModule,
         MaterialModule,
-        MatIconRegistryModule,
       ],
       providers: [ActiveAccountService, GvAuthService, GvInternalStorage]
     }),

@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { IAppState, StateFacade } from '@kleiolab/lib-redux';
-import { ActiveProjectService } from '../../../core/active-project/active-project.service';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { ActiveProjectService } from '../../services/active-project.service';
 
 
 

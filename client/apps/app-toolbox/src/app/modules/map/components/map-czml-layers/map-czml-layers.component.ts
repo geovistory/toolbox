@@ -13,10 +13,11 @@ export interface MapLayer {
 }
 
 @Component({
-  selector: 'gv-map-czml-layers',
-  templateUrl: './map-czml-layers.component.html',
-  styleUrls: ['./map-czml-layers.component.scss'],
-  providers: [CesiumService]
+    selector: 'gv-map-czml-layers',
+    templateUrl: './map-czml-layers.component.html',
+    styleUrls: ['./map-czml-layers.component.scss'],
+    providers: [CesiumService],
+    standalone: true
 })
 export class MapCzmlLayersComponent implements AfterViewInit, OnDestroy {
 

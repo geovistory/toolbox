@@ -4,6 +4,11 @@ import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { values } from 'ramda';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { MatIconModule } from '@angular/material/icon';
+import { MatOptionModule } from '@angular/material/core';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 
 interface MappedColumn {
   pkColumn: number;
@@ -14,9 +19,11 @@ interface MappedColumn {
 }
 
 @Component({
-  selector: 'gv-column-mapping',
-  templateUrl: './column-mapping.component.html',
-  styleUrls: ['./column-mapping.component.scss']
+    selector: 'gv-column-mapping',
+    templateUrl: './column-mapping.component.html',
+    styleUrls: ['./column-mapping.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule, MatIconModule, AsyncPipe]
 })
 export class ColumnMappingComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

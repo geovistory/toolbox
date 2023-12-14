@@ -1,13 +1,21 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { SysConfig } from '@kleiolab/lib-config';
 import { AnalysisDefinition, AnalysisTableCellValue, AnalysisTableExportRequest, AnalysisTableRequest, AnalysisTableResponse, ColDef, QueryDefinition, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { saveAs } from 'file-saver';
-import { Table, TableLazyLoadEvent } from 'primeng/table';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { GvAnalysisService } from '../../../../modules/analysis/services/analysis.service';
+import { SharedModule } from 'primeng/api';
+import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
+import { GvAnalysisService } from '../../../../modules/analysis/services/analysis.service';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { EntitiesDialogData, ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 import { ResultingValuesDialogComponent, ValuesDialogData } from '../resulting-values-dialog/resulting-values-dialog.component';
 
@@ -36,7 +44,9 @@ interface PageLoadRes {
 @Component({
   selector: 'gv-result-table',
   templateUrl: './result-table.component.html',
-  styleUrls: ['./result-table.component.scss']
+  styleUrls: ['./result-table.component.scss'],
+  standalone: true,
+  imports: [NgIf, TableModule, SharedModule, MatDividerModule, MatButtonModule, MatMenuModule, MatIconModule, NgFor, MatProgressBarModule, EntityPreviewComponent, AsyncPipe]
 })
 export class ResultTableComponent implements OnInit, AfterViewInit, OnDestroy {
   destroy$ = new Subject<boolean>();

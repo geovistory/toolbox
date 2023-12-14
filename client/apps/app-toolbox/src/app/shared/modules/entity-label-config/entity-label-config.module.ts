@@ -8,17 +8,15 @@ import { MaterialModule } from '../../../core/material/material.module';
 
 
 @NgModule({
-  declarations: [
-    EntityLabelConfigDialogComponent,
-    EntityLabelConfigOpenBtnComponent
-  ],
-  exports: [
-    EntityLabelConfigOpenBtnComponent
-  ],
-  imports: [
-    CommonModule,
-    MaterialModule,
-    ReactiveFormsModule,
-  ]
+    exports: [
+        EntityLabelConfigOpenBtnComponent
+    ],
+    imports: [
+        CommonModule,
+        MaterialModule,
+        ReactiveFormsModule,
+        EntityLabelConfigDialogComponent,
+        EntityLabelConfigOpenBtnComponent,
+    ]
 })
 export class EntityLabelConfigModule { }

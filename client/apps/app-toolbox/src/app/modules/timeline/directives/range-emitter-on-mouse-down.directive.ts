@@ -3,8 +3,9 @@ import { D3Service } from '../shared/d3.service';
 import { RangeChangeEvent } from '../models/timeline';
 
 @Directive({
-  // tslint:disable-next-line:directive-selector
-  selector: '[rangeEmitterOnMouseDown]'
+    // tslint:disable-next-line:directive-selector
+    selector: '[rangeEmitterOnMouseDown]',
+    standalone: true
 })
 export class RangeEmitterOnMouseDownDirective implements OnInit {
 

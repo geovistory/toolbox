@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormArray } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from "@kleiolab/lib-redux";
 import { QueryFilter, QueryFilterData } from "@kleiolab/lib-sdk-lb4";
 import { U } from "@kleiolab/lib-utils";
@@ -18,6 +18,8 @@ import { equals } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { QueryFilterService } from './query-filter.service';
+import { QfFormGroupComponent } from '../qf-form-group/qf-form-group.component';
+import { NgIf } from '@angular/common';
 
 export type ClassFilterCondition = 'IS' | 'IS NOT' | 'ENTITY_LABEL_CONTAINS';
 export type SubgroupOperator = 'AND' | 'OR';
@@ -147,16 +149,18 @@ export interface QueryFilterInjectData {
 
 
 @Component({
-  selector: 'gv-query-filter',
-  templateUrl: './query-filter.component.html',
-  styleUrls: ['./query-filter.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => QueryFilterComponent),
-      multi: true
-    }
-  ]
+    selector: 'gv-query-filter',
+    templateUrl: './query-filter.component.html',
+    styleUrls: ['./query-filter.component.scss'],
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => QueryFilterComponent),
+            multi: true
+        }
+    ],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, QfFormGroupComponent]
 })
 export class QueryFilterComponent implements OnInit, OnDestroy, AfterViewInit, ControlValueAccessor, FormFactoryComponent {
 

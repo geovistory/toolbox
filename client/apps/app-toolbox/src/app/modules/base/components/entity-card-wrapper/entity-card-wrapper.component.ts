@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional } from '@a
 import { ActivatedRoute } from '@angular/router';
 import { InformationBasicPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ProjectEditComponent } from '../../../projects/containers/project-edit/project-edit.component';
+import { ProjectEditComponent } from '../../../../pages/project/project-edit/project-edit.component';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { EntityCardComponent } from '../entity-card/entity-card.component';
@@ -14,16 +14,16 @@ import { EntityCardComponent } from '../entity-card/entity-card.component';
  * needed for the gv-entity-card
  */
 @Component({
-    selector: 'gv-entity-card-wrapper',
-    templateUrl: './entity-card-wrapper.component.html',
-    styleUrls: ['./entity-card-wrapper.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    providers: [
-        EditModeService,
-        { provide: READ_ONLY, useValue: true }
-    ],
-    standalone: true,
-    imports: [EntityCardComponent]
+  selector: 'gv-entity-card-wrapper',
+  templateUrl: './entity-card-wrapper.component.html',
+  styleUrls: ['./entity-card-wrapper.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    EditModeService,
+    { provide: READ_ONLY, useValue: true }
+  ],
+  standalone: true,
+  imports: [EntityCardComponent]
 })
 export class EntityCardWrapperComponent implements OnInit {
   pkProject: number;

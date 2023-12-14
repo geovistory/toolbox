@@ -1,18 +1,24 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { OntoMeControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { OntomeProfileDeactivationReportComponent } from '../ontome-profile-deactivation-report/ontome-profile-deactivation-report.component';
+import { NgIf } from '@angular/common';
 export interface OntomeProfileDeactivationReportDialogData {
   pkProject: number
   profileId: number
   profileLabel: string
 }
 @Component({
-  selector: 'gv-ontome-profile-deactivation-report-dialog',
-  templateUrl: './ontome-profile-deactivation-report-dialog.component.html',
-  styleUrls: ['./ontome-profile-deactivation-report-dialog.component.scss']
+    selector: 'gv-ontome-profile-deactivation-report-dialog',
+    templateUrl: './ontome-profile-deactivation-report-dialog.component.html',
+    styleUrls: ['./ontome-profile-deactivation-report-dialog.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatDialogModule, OntomeProfileDeactivationReportComponent, MatProgressSpinnerModule, MatButtonModule]
 })
 export class OntomeProfileDeactivationReportDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
