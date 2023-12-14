@@ -4,12 +4,11 @@ import { AccessDeniedComponent } from './access-denied.component';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
+import { provideRouter } from '@angular/router';
 import { StateModule } from '@kleiolab/lib-redux';
 import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
 import { GvInternalStorage } from '../../../../core/cookies/cookies.module';
-import { MaterialModule } from '../../../../core/material/material.module';
-import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 import { ActiveAccountService } from '../../../../shared/services/active-account.service';
 import { GvAuthService } from '../../../../shared/services/auth.service';
 
@@ -18,15 +17,13 @@ const meta: Meta<AccessDeniedComponent> = {
   title: 'AccessDeniedComponent',
   decorators: [
     moduleMetadata({
-      declarations: [NavbarComponent],
       imports: [
         CommonModule,
-        MaterialModule
       ],
       providers: [ActiveAccountService, GvAuthService, GvInternalStorage]
     }),
     applicationConfig({
-      providers: [importProvidersFrom(StateModule, HttpClientModule)],
+      providers: [importProvidersFrom(StateModule, HttpClientModule), provideRouter([])],
     }),
   ]
 };

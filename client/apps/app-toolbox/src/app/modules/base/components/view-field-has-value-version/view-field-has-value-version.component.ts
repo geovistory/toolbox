@@ -18,7 +18,7 @@ import { ActiveProjectService } from '../../../../shared/services/active-project
 
 import { ToggleBtnComponent } from '../../../../shared/components/gv-buttons/components/toggle-btn/toggle-btn.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../../shared/components/progress-dialog/progress-dialog.component';
-import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
+import { TextDetail2Service } from '../../../data/components/text-detail2/text-detail2.service';
 import { DeltaI, Op, Ops } from '../../../quill/quill.models';
 import { QuillModule } from '../../../quill/quill.module';
 import { ConfirmHook, EditModeService } from '../../services/edit-mode.service';
@@ -73,7 +73,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     public projectData: ProjectDataService,
     public dialog: MatDialog,
     public p: ActiveProjectService,
-    @Optional() public textDetailComponent: TextDetail2Component,
+    @Optional() public textDetail: TextDetail2Service,
     public editMode: EditModeService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
@@ -332,24 +332,24 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
 
   onQuillDocChange(q: QuillDoc) {
     this.newQuillDoc = q
-    if (this.textDetailComponent) this.textDetailComponent.quillDocUpdated(q)
+    if (this.textDetail?.component) this.textDetail.component.quillDocUpdated(q)
   }
   textNodeMouseenter(chunkPks: number[]) {
-    if (this.textDetailComponent) {
+    if (this.textDetail?.component) {
       if (this.annotationsVisible$.value) {
-        this.textDetailComponent.annotationsToHighlightInList$.next(chunkPks)
+        this.textDetail.component.annotationsToHighlightInList$.next(chunkPks)
       }
     }
   }
   textNodeMouseleave() {
-    if (this.textDetailComponent) {
-      this.textDetailComponent.annotationsToHighlightInList$.next([])
+    if (this.textDetail?.component) {
+      this.textDetail.component.annotationsToHighlightInList$.next([])
     }
   }
 
   onNodeClicked(e: number[]) {
-    if (this.textDetailComponent) {
-      this.textDetailComponent.annotationsPinnedInList$.next(e)
+    if (this.textDetail?.component) {
+      this.textDetail.component.annotationsPinnedInList$.next(e)
     }
   }
 

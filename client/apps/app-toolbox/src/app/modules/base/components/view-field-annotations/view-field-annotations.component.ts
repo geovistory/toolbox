@@ -1,31 +1,31 @@
+import { AsyncPipe, NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 import { ConfigurationPipesService, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { C_456_CHUNK_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../ontome-ids';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
+import { C_456_CHUNK_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../ontome-ids';
+import { TextDetail2Service } from '../../../data/components/text-detail2/text-detail2.service';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { ViewFieldAnnotationItemComponent } from '../view-field-annotation-item/view-field-annotation-item.component';
-import { NgFor, AsyncPipe } from '@angular/common';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 export interface ViewFieldAnnotationItemData {
   hasAnnotation: StatementWithTarget;
   hasSpot: StatementWithTarget[];
   refersTo: StatementWithTarget[];
 }
 @Component({
-    selector: 'gv-view-field-annotations',
-    templateUrl: './view-field-annotations.component.html',
-    styleUrls: ['./view-field-annotations.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [MatIconModule, MatButtonModule, MatDividerModule, NgFor, ViewFieldAnnotationItemComponent, AsyncPipe]
+  selector: 'gv-view-field-annotations',
+  templateUrl: './view-field-annotations.component.html',
+  styleUrls: ['./view-field-annotations.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatIconModule, MatButtonModule, MatDividerModule, NgFor, ViewFieldAnnotationItemComponent, AsyncPipe]
 })
 export class ViewFieldAnnotationsComponent implements OnInit {
 
@@ -44,7 +44,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
     private pag: PaginationService,
     private i: InformationPipesService,
     private c: ConfigurationPipesService,
-    public textDetailComponent: TextDetail2Component,
+    public textDetail: TextDetail2Service,
     public editMode: EditModeService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
@@ -107,7 +107,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
       shareReplay({ refCount: true, bufferSize: 1 }),
     )
 
-    this.items$ = combineLatest([unsorted$, this.textDetailComponent.characterPositionMap$]).pipe(
+    this.items$ = combineLatest([unsorted$, this.textDetail.component.characterPositionMap$]).pipe(
       map(([unsorted, positions]) => {
         const getPositon = (stmts: StatementWithTarget[]): number =>
           positions[stmts?.[0]?.target?.appellation?.quill_doc?.ops?.[0]?.attributes?.charid]
@@ -117,7 +117,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
       }),
       shareReplay({ refCount: true, bufferSize: 1 }),
     )
-    this.pinnedItems$ = combineLatest([this.items$, this.textDetailComponent.annotationsPinnedInList$]).pipe(
+    this.pinnedItems$ = combineLatest([this.items$, this.textDetail.component.annotationsPinnedInList$]).pipe(
       map(([items, pinned]) => items.filter(item => pinned.includes(item.hasAnnotation.target.entity.resource.pk_entity)))
     )
 
@@ -209,7 +209,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
         })
       }
     })
-    this.textDetailComponent.annotatedCharsMap$.next(annotatedCharsMap);
+    this.textDetail.component.annotatedCharsMap$.next(annotatedCharsMap);
   }
   ngOnDestroy() {
     this.destroy$.next(true);

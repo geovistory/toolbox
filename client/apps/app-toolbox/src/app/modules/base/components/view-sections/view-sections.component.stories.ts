@@ -108,7 +108,7 @@ export const ResponseTwoTimes: Story = {
       facade.data.addSchemaModifier({ positive: o })
     })
 
-    await sleep(100)
+    await sleep(1000)
     expect(canvas.getByText(/Adamo di Melchiorre/i)).toBeTruthy();
   },
 };

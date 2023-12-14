@@ -21,6 +21,7 @@ import { ViewSectionsComponent } from '../../../base/components/view-sections/vi
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { slideInOut } from '../../../information/shared/animations';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
+import { TextDetail2Service } from './text-detail2.service';
 
 export interface TextDetail2Config {
   pkEntity: number
@@ -33,6 +34,7 @@ export interface TextDetail2Config {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     EditModeService,
+    TextDetail2Service
   ],
   standalone: true,
   imports: [TabLayoutComponent, EntityCardHeaderComponent, MatDividerModule, NgIf, ViewFieldHasValueVersionComponent, MatTabsModule, MatIconModule, ViewFieldAnnotationsComponent, ViewSectionsComponent, AsyncPipe]
@@ -75,6 +77,7 @@ export class TextDetail2Component
     truncatePipe: TruncatePipe,
     public override editMode: EditModeService,
     public override tabLayout: TabLayoutService,
+    textDetailService: TextDetail2Service
   ) {
     super(
       p,
@@ -88,6 +91,7 @@ export class TextDetail2Component
       editMode,
       tabLayout
     )
+    textDetailService.registerComponent(this)
   }
   ngOnInit(): void {
     this.initialize()

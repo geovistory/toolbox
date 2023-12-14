@@ -1,7 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -18,7 +18,7 @@ import { FeedbackDialogComponent } from '../feedback-dialog/feedback-dialog.comp
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, NgIf, RouterLink, MatMenuModule, MatIconModule, MatDividerModule]
+  imports: [MatToolbarModule, MatButtonModule, NgIf, RouterLink, MatMenuModule, MatIconModule, MatDividerModule, MatDialogModule]
 })
 export class NavbarComponent implements OnInit, OnDestroy {
 

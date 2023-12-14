@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
 import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
 import { ActiveProjectService } from '../../../../shared/services/active-project.service';
-import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
+import { TextDetail2Service } from '../../../data/components/text-detail2/text-detail2.service';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import type { ViewFieldAnnotationItemData } from '../view-field-annotations/view-field-annotations.component';
@@ -29,7 +29,7 @@ export class ViewFieldAnnotationItemComponent implements OnInit {
   deleting$ = new BehaviorSubject(false)
 
   constructor(
-    public textEditComponent: TextDetail2Component,
+    public textEdit: TextDetail2Service,
     public p: ActiveProjectService,
     public editMode: EditModeService
   ) {
@@ -37,7 +37,7 @@ export class ViewFieldAnnotationItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.highlight$ = this.textEditComponent.annotationsToHighlightInList$.pipe(
+    this.highlight$ = this.textEdit.component.annotationsToHighlightInList$.pipe(
       map(annotations => {
         return annotations.includes(this.itemData.hasAnnotation.target.entity.resource.pk_entity)
       }),
@@ -52,10 +52,10 @@ export class ViewFieldAnnotationItemComponent implements OnInit {
     if (ops) {
       ops.forEach(op => { chars[op.attributes.charid] = true; })
     }
-    this.textEditComponent.charsToHighlight$.next(chars)
+    this.textEdit.component.charsToHighlight$.next(chars)
   }
   onMouseleave() {
-    this.textEditComponent.charsToHighlight$.next({})
+    this.textEdit.component.charsToHighlight$.next({})
   }
 
   openEntity() {

@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 import { StateFacade, StateModule } from '@kleiolab/lib-redux';
 import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
@@ -27,7 +28,8 @@ const meta: Meta<NavbarComponent> = {
       providers: [ActiveAccountService, GvAuthService, GvInternalStorage]
     }),
     applicationConfig({
-      providers: [importProvidersFrom(StateModule, HttpClientModule), provideAnimations()],
+      providers: [importProvidersFrom(StateModule, HttpClientModule), provideAnimations(), provideRouter([]),
+      ],
     }),
   ]
 };
