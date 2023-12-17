@@ -14,7 +14,7 @@ import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
 import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
-import { EntityLabelConfigModule } from '../../../../shared/modules/entity-label-config/entity-label-config.module';
+import { EntityLabelConfigOpenBtnComponent } from '../../../../shared/modules/entity-label-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
 import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
@@ -26,7 +26,7 @@ import { READ_ONLY } from '../../tokens/READ_ONLY';
   templateUrl: './entity-card-header.component.html',
   styleUrls: ['./entity-card-header.component.scss'],
   standalone: true,
-  imports: [NgIf, OntoInfoModule, DndModule, MatTooltipModule, MatButtonToggleModule, MatIconModule, MatButtonModule, MatMenuModule, MatSlideToggleModule, MatDividerModule, EntityLabelConfigModule, AsyncPipe]
+  imports: [NgIf, OntoInfoModule, DndModule, MatTooltipModule, MatButtonToggleModule, MatIconModule, MatButtonModule, MatMenuModule, MatSlideToggleModule, MatDividerModule, EntityLabelConfigOpenBtnComponent, AsyncPipe]
 })
 export class EntityCardHeaderComponent implements OnInit {
 
