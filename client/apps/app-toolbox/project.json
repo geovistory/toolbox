@@ -127,7 +127,13 @@
         "port": 4400,
         "configDir": "apps/app-toolbox/.storybook",
         "browserTarget": "app-toolbox:build",
-        "compodoc": false
+        "compodoc": true,
+        "compodocArgs": [
+          "-e",
+          "json",
+          "-d",
+          "apps/app-toolbox"
+        ]
       },
       "configurations": {
         "ci": {
@@ -144,7 +150,13 @@
         "outputDir": "dist/storybook/app-toolbox",
         "configDir": "apps/app-toolbox/.storybook",
         "browserTarget": "app-toolbox:build",
-        "compodoc": false
+        "compodoc": true,
+        "compodocArgs": [
+          "-e",
+          "json",
+          "-d",
+          "apps/app-toolbox"
+        ]
       },
       "configurations": {
         "ci": {

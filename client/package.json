@@ -55,6 +55,7 @@
     "@angular/cli": "~16.2.0",
     "@angular/compiler-cli": "~16.2.0",
     "@angular/language-service": "~16.2.0",
+    "@compodoc/compodoc": "^1.1.23",
     "@mdi/angular-material": "^4.7.95",
     "@nx/eslint": "17.0.2",
     "@nx/eslint-plugin": "17.0.2",

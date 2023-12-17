@@ -11,7 +11,10 @@ const config: StorybookConfig = {
     { from: '../src/assets', to: '/assets' },
     { from: '../../../node_modules/@mdi/angular-material/mdi.svg', to: '/assets/mdi/mdi.svg' }
   ],
-
+  docs: {
+    autodocs: true,
+    defaultName: 'Docs',
+  },
 };
 
 export default config;
