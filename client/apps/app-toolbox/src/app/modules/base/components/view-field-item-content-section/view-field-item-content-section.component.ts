@@ -10,7 +10,7 @@ import { GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations } from 
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { C_218_EXPRESSION_ID } from '../../../../ontome-ids';
-import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
 import { openAddStatementDialog } from '../../lib/openAddStatementDialog';
 import { GvDndGlobalService } from '../../services/dnd-global.service';
@@ -36,7 +36,7 @@ import { ViewFieldTreeItemDropZoneComponent } from '../view-field-tree-item-drop
     ViewFieldItemCountSumService
   ],
   standalone: true,
-  imports: [ViewFieldItemContainerComponent, NgClass, NgIf, MatButtonModule, MatIconModule, ViewFieldItemClassInfoComponent, EntityPreviewModule, ViewFieldItemEntityMenuComponent, MatDividerModule, NgFor, MatMenuModule, OntoInfoModule, ViewFieldTreeItemDropZoneComponent, forwardRef(() => ViewFieldBodyComponent), AsyncPipe]
+  imports: [ViewFieldItemContainerComponent, NgClass, NgIf, MatButtonModule, MatIconModule, ViewFieldItemClassInfoComponent, EntityPreviewComponent, ViewFieldItemEntityMenuComponent, MatDividerModule, NgFor, MatMenuModule, OntoInfoModule, ViewFieldTreeItemDropZoneComponent, forwardRef(() => ViewFieldBodyComponent), AsyncPipe]
 })
 export class ViewFieldItemContentSectionComponent implements OnInit {
   resource: InfResourceWithRelations;

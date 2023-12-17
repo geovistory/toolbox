@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Field } from '@kleiolab/lib-redux';
 import { InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 import { openSelectPlatformVocabItem } from '../../lib/openSelectPlatformVocabItem';
 import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
@@ -23,7 +23,7 @@ import { ViewFieldItemService } from '../view-field-item/view-field-item.service
     { provide: READ_ONLY, useValue: true }
   ],
   standalone: true,
-  imports: [forwardRef(() => ViewFieldItemContainerComponent), ViewFieldItemClassInfoComponent, EntityPreviewModule, NgIf, MatButtonModule, MatIconModule, AsyncPipe]
+  imports: [forwardRef(() => ViewFieldItemContainerComponent), ViewFieldItemClassInfoComponent, EntityPreviewComponent, NgIf, MatButtonModule, MatIconModule, AsyncPipe]
 })
 export class ViewFieldItemPreviewPlatformVocabularyComponent implements OnInit {
   resource: InfResourceWithRelations;

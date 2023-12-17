@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { TableComponent } from '../../../../shared/components/digital-table/components/table/table.component';
-import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import type { ViewFieldAnnotationOfCellItemData } from '../view-field-annotations-of-cell/view-field-annotations-of-cell.component';
 import { ViewFieldAnnotationsOfCellService } from '../view-field-annotations-of-cell/view-field-annotations-of-cell.service';
@@ -18,7 +18,7 @@ import { ViewFieldAnnotationsOfCellService } from '../view-field-annotations-of-
   templateUrl: './view-field-annotations-of-cell-item.component.html',
   styleUrls: ['./view-field-annotations-of-cell-item.component.scss'],
   standalone: true,
-  imports: [NgFor, NgIf, EntityPreviewModule, MatTooltipModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, AsyncPipe, DateTimeModule]
+  imports: [NgFor, NgIf, EntityPreviewComponent, MatTooltipModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, AsyncPipe, DateTimeModule]
 })
 export class ViewFieldAnnotationsOfCellItemComponent {
   @Input() item: ViewFieldAnnotationOfCellItemData

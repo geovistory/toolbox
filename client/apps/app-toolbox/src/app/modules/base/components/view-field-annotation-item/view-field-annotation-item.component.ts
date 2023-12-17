@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
-import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { TextDetail2Service } from '../../../data/components/text-detail2/text-detail2.service';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
@@ -20,7 +20,7 @@ import type { ViewFieldAnnotationItemData } from '../view-field-annotations/view
   styleUrls: ['./view-field-annotation-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgClass, NgIf, MatProgressSpinnerModule, NgFor, EntityPreviewModule, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, AsyncPipe]
+  imports: [NgClass, NgIf, MatProgressSpinnerModule, NgFor, EntityPreviewComponent, MatButtonModule, MatMenuModule, MatIconModule, MatDividerModule, AsyncPipe]
 })
 export class ViewFieldAnnotationItemComponent implements OnInit {
   @Input() itemData: ViewFieldAnnotationItemData

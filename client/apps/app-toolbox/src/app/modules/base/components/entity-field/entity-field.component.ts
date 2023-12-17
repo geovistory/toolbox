@@ -7,7 +7,7 @@ import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } fr
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { EntityPreviewModule } from '../../../../shared/components/entity-preview/entity-preview.module';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
 
 import { EditModeService } from '../../services/edit-mode.service';
@@ -22,7 +22,7 @@ import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dia
   styleUrls: ['./entity-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, OntoInfoModule, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewModule, AsyncPipe]
+  imports: [NgIf, OntoInfoModule, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewComponent, AsyncPipe]
 })
 export class EntityFieldComponent implements OnInit {
   destroy$ = new Subject<boolean>();
