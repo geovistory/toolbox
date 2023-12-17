@@ -1,9 +1,9 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Ops } from '../../../modules/quill';
+import { Ops } from '../../../modules/quill/quill.models';
 
 @Pipe({
-    name: 'quillOpsToStr',
-    standalone: true
+  name: 'quillOpsToStr',
+  standalone: true
 })
 export class QuillOpsToStrPipe implements PipeTransform {
 
