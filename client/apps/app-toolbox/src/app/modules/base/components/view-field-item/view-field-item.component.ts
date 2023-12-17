@@ -45,7 +45,7 @@ export type ViewFieldItemType =
   styleUrls: ['./view-field-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  providers: [ViewFieldItemService],
+  providers: [ViewFieldItemService, TruncatePipe],
   imports: [ViewFieldItemLayoutComponent, NgIf, ViewFieldItemPreviewComponent, ViewFieldItemPreviewPlatformVocabularyComponent, ViewFieldItemPreviewHasTypeComponent, ViewFieldItemNestedComponent, ViewFieldItemTimePrimitiveComponent, ViewFieldItemCellComponent, ViewFieldItemValueComponent, ViewFieldItemValueVersionComponent, ViewFieldItemContentSectionComponent]
 })
 export class ViewFieldItemComponent implements OnInit {

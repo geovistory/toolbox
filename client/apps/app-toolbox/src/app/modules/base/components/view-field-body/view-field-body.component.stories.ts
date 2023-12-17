@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { FieldMock, GvSchemaObjectMock, InfLanguageMock, InfResourceMock, MockPaginationControllerForSandboxes, ProProjectMock, StateFacade, StateModule } from '@kleiolab/lib-redux';
 import { GvFieldPageReq, GvFieldPageScope, GvPaginationObject, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
@@ -13,7 +14,6 @@ import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { playInject } from '../../../../../../.storybook/playInject';
 import { sleep } from '../../../../../../.storybook/sleep';
-import { MaterialModule } from '../../../../core/material/material.module';
 import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { temporalEntityListDefaultLimit } from '../../base.helpers';
 import { response1 } from './testing/response1';
@@ -29,7 +29,7 @@ const meta: Meta<ViewFieldBodyComponent> = {
       provideAnimations(),
       importProvidersFrom(
         DndModule.forRoot(),
-        MaterialModule,
+        MatDialogModule,
         StateModule,
         EffectsModule.forRoot(),
         SocketsModule,

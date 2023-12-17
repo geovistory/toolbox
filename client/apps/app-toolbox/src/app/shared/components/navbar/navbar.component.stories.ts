@@ -12,7 +12,6 @@ import { userEvent, within } from '@storybook/testing-library';
 import { getCdkOverlayCanvas } from '../../../../../.storybook/getCdkOverlayCanvas';
 import { playInject } from '../../../../../.storybook/playInject';
 import { GvInternalStorage } from '../../../core/cookies/cookies.module';
-import { MaterialModule } from '../../../core/material/material.module';
 import { ActiveAccountService } from '../../../shared/services/active-account.service';
 import { GvAuthService } from '../../services/auth.service';
 
@@ -23,7 +22,6 @@ const meta: Meta<NavbarComponent> = {
     moduleMetadata({
       imports: [
         CommonModule,
-        MaterialModule,
       ],
       providers: [ActiveAccountService, GvAuthService, GvInternalStorage]
     }),

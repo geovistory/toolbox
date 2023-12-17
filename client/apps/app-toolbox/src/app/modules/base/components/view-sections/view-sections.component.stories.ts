@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { importProvidersFrom } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { GvSchemaObjectMock, InfLanguageMock, InfResourceMock, MockPaginationControllerForSandboxes, PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, PROFILE_16_INTERACTIONS_S_2022_02_09, PROFILE_20_PHYSICAL_MAN_MA_2022_01_18, PROFILE_5_GEOVISTORY_BASI_2022_01_18, PROFILE_8_MARITIME_HISTOR_2022_01_18, ProInfoProjRelMock, StateFacade, StateModule, SysConfigValueMock, WarEntityPreviewMock } from '@kleiolab/lib-redux';
 import { createCrmAsGvPositiveSchema } from '@kleiolab/lib-redux/lib/_helpers/transformers';
@@ -14,7 +15,6 @@ import { DndModule } from '@suez/ngx-dnd';
 import { Observable, of } from 'rxjs';
 import { playInject } from '../../../../../../.storybook/playInject';
 import { sleep } from '../../../../../../.storybook/sleep';
-import { MaterialModule } from '../../../../core/material/material.module';
 import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { response1 } from './testing/response1';
 import { response2 } from './testing/response2';
@@ -28,8 +28,8 @@ const meta: Meta<ViewSectionsComponent> = {
       ActiveProjectService,
       provideAnimations(),
       importProvidersFrom(
+        MatDialogModule,
         DndModule.forRoot(),
-        MaterialModule,
         StateModule,
         EffectsModule.forRoot(),
         SocketsModule,

@@ -14,7 +14,6 @@ import { SocketIoConfig } from 'ngx-socket-io';
 import { MessageService } from 'primeng/api';
 import { AppComponent } from './app/app.component';
 import { CookiesModule } from './app/core/cookies/cookies.module';
-import { MaterialModule } from './app/core/material/material.module';
 import { APP_ROUTES } from './app/pages/root/root.routes';
 import { ActiveAccountService } from './app/shared/services/active-account.service';
 import { AuthGuard } from './app/shared/services/auth-guard.service';
@@ -58,7 +57,7 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(
       // angular modules
       // CommonModule, BrowserModule, FormsModule, ReactiveFormsModule,
-      MaterialModule,
+      // MaterialModule,
       // // other thid party modules
       // AngularSplitModule,
       CookiesModule.forRoot(),

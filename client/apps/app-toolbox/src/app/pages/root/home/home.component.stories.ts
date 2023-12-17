@@ -11,7 +11,6 @@ import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
 import { playInject } from '../../../../../.storybook/playInject';
 import { GvInternalStorage } from '../../../core/cookies/cookies.module';
-import { MaterialModule } from '../../../core/material/material.module';
 import { ActiveAccountService } from '../../../shared/services/active-account.service';
 import { GvAuthService } from '../../../shared/services/auth.service';
 
@@ -27,7 +26,6 @@ const meta: Meta<HomeComponent> = {
           RouterModule.forRoot([]),
           StateModule,
           CommonModule,
-          MaterialModule,
         ),
 
         provideAnimations(),

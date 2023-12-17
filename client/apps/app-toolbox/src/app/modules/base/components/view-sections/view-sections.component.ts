@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
 import { ConfigurationPipesService, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable, Subject } from 'rxjs';
@@ -14,7 +15,7 @@ import { ViewTimeSpanSectionComponent } from '../view-time-span-section/view-tim
   styleUrls: ['./view-sections.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [ViewTimeSpanSectionComponent, ViewSectionComponent]
+  imports: [ViewTimeSpanSectionComponent, ViewSectionComponent, MatDialogModule]
 })
 export class ViewSectionsComponent implements OnInit {
   destroy$ = new Subject<boolean>();
