@@ -9,7 +9,7 @@ import { ProjectDataService, ReplaceStatementInFieldRequest } from '@kleiolab/li
 import { BehaviorSubject, Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import { catchError, first, map, takeUntil } from 'rxjs/operators';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../../shared/components/progress-dialog/progress-dialog.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldBodyService } from '../view-field-body/view-field-body.service';
@@ -21,7 +21,7 @@ import { ViewFieldItemService } from '../view-field-item/view-field-item.service
   templateUrl: './view-field-item-value-version.component.html',
   styleUrls: ['./view-field-item-value-version.component.scss'],
   standalone: true,
-  imports: [forwardRef(() => ViewFieldItemContainerComponent), OntoInfoModule, NgIf, MatMenuModule, MatIconModule, MatButtonModule, AsyncPipe]
+  imports: [forwardRef(() => ViewFieldItemContainerComponent), ClassInfoComponent, NgIf, MatMenuModule, MatIconModule, MatButtonModule, AsyncPipe]
 })
 export class ViewFieldItemValueVersionComponent {
   destroy$ = new Subject<boolean>();

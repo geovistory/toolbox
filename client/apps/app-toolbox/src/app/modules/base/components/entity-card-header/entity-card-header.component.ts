@@ -13,7 +13,7 @@ import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
-import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
 import { EntityLabelConfigOpenBtnComponent } from '../../../../shared/modules/entity-label-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
 import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../shared/services/active-project.service';
@@ -26,7 +26,7 @@ import { READ_ONLY } from '../../tokens/READ_ONLY';
   templateUrl: './entity-card-header.component.html',
   styleUrls: ['./entity-card-header.component.scss'],
   standalone: true,
-  imports: [NgIf, OntoInfoModule, DndModule, MatTooltipModule, MatButtonToggleModule, MatIconModule, MatButtonModule, MatMenuModule, MatSlideToggleModule, MatDividerModule, EntityLabelConfigOpenBtnComponent, AsyncPipe]
+  imports: [NgIf, ClassInfoComponent, DndModule, MatTooltipModule, MatButtonToggleModule, MatIconModule, MatButtonModule, MatMenuModule, MatSlideToggleModule, MatDividerModule, EntityLabelConfigOpenBtnComponent, AsyncPipe]
 })
 export class EntityCardHeaderComponent implements OnInit {
 

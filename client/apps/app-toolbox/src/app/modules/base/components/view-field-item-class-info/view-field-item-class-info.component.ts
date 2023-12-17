@@ -5,7 +5,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { InfResource, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
@@ -16,7 +16,7 @@ import { ViewFieldItemService } from '../view-field-item/view-field-item.service
   styleUrls: ['./view-field-item-class-info.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatMenuModule, MatIconModule, NgIf, OntoInfoModule, AsyncPipe]
+  imports: [MatMenuModule, MatIconModule, NgIf, ClassInfoComponent, AsyncPipe]
 })
 export class ViewFieldItemClassInfoComponent implements OnInit {
   @Input() showOntoInfo$: Observable<boolean>

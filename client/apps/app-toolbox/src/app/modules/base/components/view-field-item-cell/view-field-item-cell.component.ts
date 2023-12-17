@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { Field } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
-import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
 import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
@@ -16,7 +16,7 @@ import { ViewFieldItemService } from '../view-field-item/view-field-item.service
   templateUrl: './view-field-item-cell.component.html',
   styleUrls: ['./view-field-item-cell.component.scss'],
   standalone: true,
-  imports: [forwardRef(() => ViewFieldItemContainerComponent), OntoInfoModule, NgIf, MatMenuModule, MatIconModule, MatDividerModule, MatButtonModule, AsyncPipe]
+  imports: [forwardRef(() => ViewFieldItemContainerComponent), ClassInfoComponent, NgIf, MatMenuModule, MatIconModule, MatDividerModule, MatButtonModule, AsyncPipe]
 })
 export class ViewFieldItemCellComponent {
   ordNum?: number;

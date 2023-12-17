@@ -8,8 +8,8 @@ import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
-import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
-
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
+import { OntoPropertyInfoComponent } from '../../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
@@ -22,7 +22,7 @@ import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dia
   styleUrls: ['./entity-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, OntoInfoModule, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewComponent, AsyncPipe]
+  imports: [NgIf, ClassInfoComponent, OntoPropertyInfoComponent, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewComponent, AsyncPipe]
 })
 export class EntityFieldComponent implements OnInit {
   destroy$ = new Subject<boolean>();

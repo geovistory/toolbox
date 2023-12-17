@@ -10,7 +10,7 @@ import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from '../../../../ontome-ids';
-import { OntoInfoModule } from '../../../../shared/components/onto-info/onto-info.module';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
 import { openAddStatementDialog } from '../../lib/openAddStatementDialog';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
@@ -18,6 +18,7 @@ import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.compo
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
 import type { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
 import { VIEW_FIELD_DISPLAY_MODE, ViewFieldDisplayMode } from '../view-field/VIEW_FIELD_DISPLAY_MODE';
+
 const itemTypeProvider: ViewFieldItemTypeFn = (f, s) => {
   if ([C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID].includes(s.targetClass)) {
     return 'content-tree'
@@ -44,7 +45,7 @@ const displayMode: ViewFieldDisplayMode = 'tree'
     { provide: VIEW_FIELD_DISPLAY_MODE, useValue: displayMode }
   ],
   standalone: true,
-  imports: [NgIf, MatMenuModule, NgFor, MatIconModule, OntoInfoModule, MatButtonModule, MatDividerModule,
+  imports: [NgIf, MatMenuModule, NgFor, MatIconModule, ClassInfoComponent, MatButtonModule, MatDividerModule,
     forwardRef(() => ViewFieldBodyComponent),
     AsyncPipe]
 })
