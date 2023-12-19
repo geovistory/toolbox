@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { CoreTable } from '../../../../shared/components/core-table/table';
 import { Observable, of } from 'rxjs';
 import { delay, exhaustMap, filter, map, tap } from 'rxjs/operators';
+import { CoreTable } from '../../../../shared/components/core-table/table';
 
 export interface Example {
   id: number;
@@ -33,7 +33,7 @@ export class ExampleTableComponent extends CoreTable<Example> {
     this.columns = ['id', 'name', 'actions']
   }
 
-  onInit() {
+  override onInit() {
     this.offset$ = this.viewport.renderedRangeStream.pipe(
       map(() => -this.viewport.getOffsetToRenderedContentStart())
     );

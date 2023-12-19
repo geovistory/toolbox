@@ -15,6 +15,9 @@ import { FormNodeConfig } from "../../../../../modules/form-factory/services/For
 import { FormFactoryService } from '../../../../../modules/form-factory/services/form-factory.service';
 import { classOrTypeRequiredValidator } from '../../../../../modules/queries/components/class-and-type-select/class-and-type-select.component';
 import { propertiesRequiredValidator } from '../../../../../modules/queries/components/property-select/property-select.component';
+import { QueryPathFormGroupComponent } from '../query-path-form-group/query-path-form-group.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 
 export interface QueryPathFormArrayData {
   type: 'root'
@@ -133,9 +136,11 @@ export interface QueryPathInjectData {
 }
 
 @Component({
-  selector: 'gv-query-path-form',
-  templateUrl: './query-path-form.component.html',
-  styleUrls: ['./query-path-form.component.scss']
+    selector: 'gv-query-path-form',
+    templateUrl: './query-path-form.component.html',
+    styleUrls: ['./query-path-form.component.scss'],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, QueryPathFormGroupComponent]
 })
 export class QueryPathFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

@@ -4,7 +4,8 @@ import { TimeSpanUtil } from '../classes/time-span-util';
 import { TimePrimitivePipe } from './time-primitive.pipe';
 
 @Pipe({
-  name: 'timeSpan'
+    name: 'timeSpan',
+    standalone: true
 })
 export class TimeSpanPipe implements PipeTransform {
 

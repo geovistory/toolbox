@@ -13,6 +13,9 @@ import { FormNodeConfig } from '../../../../modules/form-factory/services/FormNo
 import { QueryFilterComponent, QueryFilterInjectData } from '../../../../modules/queries/components/query-filter/query-filter.component';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { TimeChartContFormGroupComponent } from '../time-chart-cont-form-group/time-chart-cont-form-group.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgIf } from '@angular/common';
 export interface TimeChartContInput {
   lines: TimeChartContLine[]
 }
@@ -139,9 +142,11 @@ export const lineControlConfigs = (initVal: LineControlInitVal): TccFormNodeConf
 ])
 
 @Component({
-  selector: 'gv-time-chart-cont-form',
-  templateUrl: './time-chart-cont-form.component.html',
-  styleUrls: ['./time-chart-cont-form.component.scss']
+    selector: 'gv-time-chart-cont-form',
+    templateUrl: './time-chart-cont-form.component.html',
+    styleUrls: ['./time-chart-cont-form.component.scss'],
+    standalone: true,
+    imports: [NgIf, FormsModule, ReactiveFormsModule, TimeChartContFormGroupComponent]
 })
 export class TimeChartContFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

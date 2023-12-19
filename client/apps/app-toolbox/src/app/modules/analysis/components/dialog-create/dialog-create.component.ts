@@ -1,6 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { UntypedFormGroup, UntypedFormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { NgIf } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 export interface DialogCreateData {
   title: string
   okBtnText: string
@@ -14,9 +18,11 @@ export interface DialogCreateResult {
   description?: string
 }
 @Component({
-  selector: 'gv-dialog-create',
-  templateUrl: './dialog-create.component.html',
-  styleUrls: ['./dialog-create.component.scss']
+    selector: 'gv-dialog-create',
+    templateUrl: './dialog-create.component.html',
+    styleUrls: ['./dialog-create.component.scss'],
+    standalone: true,
+    imports: [MatDialogModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgIf, MatButtonModule]
 })
 export class DialogCreateComponent {
 

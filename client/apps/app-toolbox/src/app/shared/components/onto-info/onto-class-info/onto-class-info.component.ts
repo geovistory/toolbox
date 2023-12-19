@@ -3,11 +3,14 @@ import { SysConfig } from '@kleiolab/lib-config';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'gv-onto-class-info',
-  templateUrl: './onto-class-info.component.html',
-  styleUrls: ['./onto-class-info.component.scss']
+    selector: 'gv-onto-class-info',
+    templateUrl: './onto-class-info.component.html',
+    styleUrls: ['./onto-class-info.component.scss'],
+    standalone: true,
+    imports: [AsyncPipe]
 })
 export class OntoClassInfoComponent implements OnInit {
   @Input() pkClass: number;

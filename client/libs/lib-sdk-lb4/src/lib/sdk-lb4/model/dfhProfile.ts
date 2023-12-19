@@ -12,7 +12,7 @@
 
 
 export interface DfhProfile { 
-    pk_profile: number;
+    pk_profile?: number;
     owned_by_project?: number;
     is_ongoing_forced_publication?: boolean;
     date_profile_published?: string;

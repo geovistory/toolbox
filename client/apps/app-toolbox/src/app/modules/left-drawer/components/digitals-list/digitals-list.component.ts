@@ -1,13 +1,18 @@
 import { Component } from '@angular/core';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { map } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { AddEntityMenuComponent } from '../../../base/components/add-entity-menu/add-entity-menu.component';
 import { ListService } from '../../services/list.service';
+import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';
+import { ListComponent } from '../list/list.component';
 
 @Component({
   selector: 'gv-digitals-list',
   templateUrl: './digitals-list.component.html',
-  styleUrls: ['./digitals-list.component.scss']
+  styleUrls: ['./digitals-list.component.scss'],
+  standalone: true,
+  imports: [ListDrawerHeaderComponent, AddEntityMenuComponent, ListComponent]
 })
 export class DigitalsListComponent {
 

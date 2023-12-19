@@ -96,12 +96,6 @@ export class BackofficeService {
         let headers = this.defaultHeaders;
 
         let credential: string | undefined;
-        // authentication (accesstoken) required
-        credential = this.configuration.lookupCredential('accesstoken');
-        if (credential) {
-            headers = headers.set('authorization', credential);
-        }
-
         // authentication (jwt) required
         credential = this.configuration.lookupCredential('jwt');
         if (credential) {

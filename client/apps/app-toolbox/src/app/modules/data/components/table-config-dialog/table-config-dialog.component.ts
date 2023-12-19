@@ -1,11 +1,21 @@
+import { CdkDrag, CdkDragPlaceholder, CdkDropList } from '@angular/cdk/drag-drop';
+import { NgFor, NgIf, NgStyle } from '@angular/common';
 import { AfterViewChecked, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { ColumnNames, InfLanguage, TableConfig, TableConfigCol } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { clone, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 
 export interface TableConfigDialogData {
   pkDigital: number
@@ -25,7 +35,9 @@ export interface DisplayColumn {
 @Component({
   selector: 'gv-table-config-dialog',
   templateUrl: './table-config-dialog.component.html',
-  styleUrls: ['./table-config-dialog.component.scss']
+  styleUrls: ['./table-config-dialog.component.scss'],
+  standalone: true,
+  imports: [MatDialogModule, MatFormFieldModule, NgStyle, MatInputModule, NgIf, CdkDropList, NgFor, CdkDrag, CdkDragPlaceholder, MatCheckboxModule, FormsModule, MatRadioModule, MatIconModule, MatTooltipModule, MatButtonModule]
 })
 export class TableConfigDialogComponent implements OnInit, OnDestroy, AfterViewChecked {
   destroy$ = new Subject<boolean>();

@@ -1,16 +1,22 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { InfResource, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
-import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
 
 @Component({
   selector: 'gv-view-field-item-class-info',
   templateUrl: './view-field-item-class-info.component.html',
   styleUrls: ['./view-field-item-class-info.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [MatMenuModule, MatIconModule, NgIf, ClassInfoComponent, AsyncPipe]
 })
 export class ViewFieldItemClassInfoComponent implements OnInit {
   @Input() showOntoInfo$: Observable<boolean>
@@ -25,7 +31,7 @@ export class ViewFieldItemClassInfoComponent implements OnInit {
   preview$: Observable<WarEntityPreview>
 
   constructor(
-    public itemComponent: ViewFieldItemComponent,
+    public item: ViewFieldItemService,
     private ap: ActiveProjectPipesService,
     @Optional() @Inject(READ_ONLY) public readonly: boolean
   ) { }

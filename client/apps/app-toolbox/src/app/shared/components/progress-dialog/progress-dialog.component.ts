@@ -1,7 +1,9 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { auditTime, takeUntil } from 'rxjs/operators';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 export type ProgressMode = 'determinate' | 'indeterminate' | 'buffer' | 'query';
 export interface ProgressDialogData {
@@ -20,11 +22,17 @@ export interface ProgressDialogData {
 
 
 @Component({
-  selector: 'gv-progress-dialog',
-  templateUrl: './progress-dialog.component.html',
-  styleUrls: ['./progress-dialog.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-
+    selector: 'gv-progress-dialog',
+    templateUrl: './progress-dialog.component.html',
+    styleUrls: ['./progress-dialog.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [
+        NgIf,
+        MatDialogModule,
+        MatProgressBarModule,
+        AsyncPipe,
+    ],
 })
 export class ProgressDialogComponent implements OnInit, OnDestroy {
 

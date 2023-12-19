@@ -1,7 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActiveProjectService } from "../../../../core/active-project/active-project.service";
+import { NgFor } from '@angular/common';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { ActiveProjectService } from "../../../../shared/services/active-project.service";
 
 export interface EntitiesDialogData {
   entityPreviews: WarEntityPreview[];
@@ -9,7 +12,9 @@ export interface EntitiesDialogData {
 @Component({
   selector: 'gv-resulting-entities-dialog',
   templateUrl: './resulting-entities-dialog.component.html',
-  styleUrls: ['./resulting-entities-dialog.component.scss']
+  styleUrls: ['./resulting-entities-dialog.component.scss'],
+  standalone: true,
+  imports: [MatListModule, NgFor, EntityPreviewComponent]
 })
 export class ResultingEntitiesDialogComponent {
 

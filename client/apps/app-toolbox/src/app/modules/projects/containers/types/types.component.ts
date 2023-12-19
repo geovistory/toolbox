@@ -1,18 +1,26 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatLineModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, ConfigurationPipesService, DisplayType, Field, InformationBasicPipesService, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ViewSectionsDialogComponent, ViewSectionsDialogData } from '../../../../modules/base/components/view-sections-dialog/view-sections-dialog.component';
-import { BaseModalsService } from '../../../../modules/base/services/base-modals.service';
 import { PaginationService } from '../../../../modules/base/services/pagination.service';
+import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
+import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { fieldToFieldPage, fieldToGvFieldTargets } from '../../../base/base.helpers';
+import { openAddEntityDialog } from '../../../base/lib/openAddEntityDialog';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
 
 interface TypeItem {
@@ -30,6 +38,19 @@ interface TypeItem {
   selector: 'gv-types',
   templateUrl: './types.component.html',
   styleUrls: ['./types.component.css'],
+  standalone: true,
+  imports: [
+    DetailTopBarComponent,
+    DetailContentComponent,
+    MatButtonModule,
+    MatIconModule,
+    NgIf,
+    MatListModule,
+    MatDividerModule,
+    NgFor,
+    MatLineModule,
+    AsyncPipe,
+  ],
 })
 export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
   @HostBinding('class.gv-flex-fh') flexFh = true;
@@ -63,7 +84,6 @@ export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInte
     public b: InformationBasicPipesService,
     public i: InformationPipesService,
     private pag: PaginationService,
-    private m: BaseModalsService,
     public tabLayout: TabLayoutService,
     private state: StateFacade
   ) {
@@ -188,20 +208,19 @@ export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInte
   */
   onAddOrCreate() {
 
-    this.m.openAddEntityDialog({
-      pkClass: this.pkClass
+    openAddEntityDialog(
+      this.dialog,
+      { pkClass: this.pkClass }
+    ).subscribe(result => {
+      if (result.action === 'added' || result.action === 'created') {
+        this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
+          // this.s.store(this.s.api.typeOfProject(pkProject, result.pkEntity), pkProject)
+          this.state.data.loadInfResource(result.pkEntity, pkProject)
+        })
+      } else if (result.action === 'alreadyInProjectClicked') {
+        this.edit(result.pkEntity)
+      }
     })
-
-      .subscribe(result => {
-        if (result.action === 'added' || result.action === 'created') {
-          this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(pkProject => {
-            // this.s.store(this.s.api.typeOfProject(pkProject, result.pkEntity), pkProject)
-            this.state.data.loadInfResource(result.pkEntity, pkProject)
-          })
-        } else if (result.action === 'alreadyInProjectClicked') {
-          this.edit(result.pkEntity)
-        }
-      })
   }
 
 

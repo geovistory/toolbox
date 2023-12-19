@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
-import { ViewFieldBodyComponent } from '../components/view-field-body/view-field-body.component';
+import type { ViewFieldBodyComponent } from '../components/view-field-body/view-field-body.component';
 export type TreeItem = StatementWithTarget
 export type DndDropPosition = 'start' | 'end';
 export interface ItemData {
@@ -16,8 +16,6 @@ export class GvDndGlobalService {
   isDragging$ = new BehaviorSubject<TreeItem | false>(false)
 
   registeredViewFieldBodies: { [id: string]: ViewFieldBodyComponent } = {}
-
-  constructor() { }
 
   registerAndGetId(vfb: ViewFieldBodyComponent) {
     const id = `_${GvDndGlobalService._id++}`

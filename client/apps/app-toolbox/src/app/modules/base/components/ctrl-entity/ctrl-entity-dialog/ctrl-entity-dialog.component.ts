@@ -1,15 +1,21 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, Inject, OnDestroy, OnInit, forwardRef } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfResource } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
+import { EntityCardComponent } from '../../entity-card/entity-card.component';
 import { FormCreateDataComponent } from '../../form-create-data/form-create-data.component';
-import { DisableIfHasStatement, SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../../search-existing-entity/search-existing-entity.component';
+import { HbfPanelComponent } from '../../hbf-panel/hbf-panel.component';
+import { DisableIfHasStatement, SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent, SearchExistingEntityComponent } from '../../search-existing-entity/search-existing-entity.component';
+import { SliderComponent } from '../../slider/slider.component';
 import { CtrlEntityModel } from '../ctrl-entity.component';
 
 export interface CtrlEntityDialogData {
@@ -37,7 +43,9 @@ export interface CreateOrAddEntityEvent {
   providers: [
     EditModeService,
     { provide: READ_ONLY, useValue: true }
-  ]
+  ],
+  standalone: true,
+  imports: [SliderComponent, HbfPanelComponent, forwardRef(() => FormCreateDataComponent), MatButtonModule, NgIf, SearchExistingEntityComponent, MatTabsModule, EntityCardComponent, AsyncPipe]
 })
 export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();
@@ -68,8 +76,6 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   source$: Observable<GvFieldSourceEntity>;
   selectButtonDisabled: boolean;
   selectButtonTooltip: string;
-
-  @ViewChild(FormCreateDataComponent, { static: true }) createEntity: FormCreateDataComponent;
 
   constructor(
     private state: StateFacade,
@@ -133,14 +139,14 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   }
 
   // When user confirms that the form is filled
-  onFormOk() {
-    this.createEntity.submitted = true
+  onFormOk(form: FormCreateDataComponent) {
+    form.submitted = true
 
-    if (this.createEntity.formFactory.formGroup.valid) {
-      const value: InfData = this.createEntity.formFactory.formGroupFactory.valueChanges$.value
+    if (form.formFactory.formGroup.valid) {
+      const value: InfData = form.formFactory.formGroupFactory.valueChanges$.value
       this.dialogRef.close(value)
     } else {
-      const f = this.createEntity.formFactory.formGroup.controls['childControl'] as UntypedFormArray;
+      const f = form.formFactory.formGroup.controls['childControl'] as UntypedFormArray;
       U.recursiveMarkAsTouched(f)
     }
   }

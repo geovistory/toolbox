@@ -1,13 +1,17 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
 import { DeactivationReportItem } from '@kleiolab/lib-sdk-lb4';
+import { MatIconModule } from '@angular/material/icon';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'gv-deactivation-report-items-table',
-  templateUrl: './deactivation-report-items-table.component.html',
-  styleUrls: ['./deactivation-report-items-table.component.scss']
+    selector: 'gv-deactivation-report-items-table',
+    templateUrl: './deactivation-report-items-table.component.html',
+    styleUrls: ['./deactivation-report-items-table.component.scss'],
+    standalone: true,
+    imports: [MatTableModule, NgIf, MatIconModule, MatPaginatorModule]
 })
 export class DeactivationReportItemsTableComponent implements OnInit {
 

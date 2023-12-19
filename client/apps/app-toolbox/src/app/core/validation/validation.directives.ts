@@ -1,12 +1,12 @@
-import { CommonModule } from '@angular/common';
-import { Directive, forwardRef, Input, NgModule } from '@angular/core';
+import { Directive, forwardRef, Input } from '@angular/core';
 import { AbstractControl, NG_VALIDATORS, UntypedFormGroup, Validator } from '@angular/forms';
 import { ValidationService } from './validation.service';
 
 
 @Directive({
   selector: '[validAppellation]',
-  providers: [{ provide: NG_VALIDATORS, useExisting: AppellationValidatorDirective, multi: true }]
+  providers: [{ provide: NG_VALIDATORS, useExisting: AppellationValidatorDirective, multi: true }],
+  standalone: true
 })
 export class AppellationValidatorDirective implements Validator {
   @Input() validAppellation: { [key: string]: UntypedFormGroup }
@@ -18,7 +18,8 @@ export class AppellationValidatorDirective implements Validator {
 
 @Directive({
   selector: '[gvNoInvalidChildren]',
-  providers: [{ provide: NG_VALIDATORS, useExisting: NoInvalidChildrenDirective, multi: true }]
+  providers: [{ provide: NG_VALIDATORS, useExisting: NoInvalidChildrenDirective, multi: true }],
+  standalone: true
 })
 export class NoInvalidChildrenDirective implements Validator {
   @Input() gvNoInvalidChildren: { [key: string]: UntypedFormGroup }
@@ -34,12 +35,13 @@ export class NoInvalidChildrenDirective implements Validator {
       provide: NG_VALIDATORS,
       useExisting: forwardRef(() => EqualValidator), multi: true
     }
-  ]
+  ],
+  standalone: true
 })
 export class EqualValidator implements Validator {
 
-  @Input('validateEqual') public validateEqual: string
-  @Input('reverse') public reverse: string
+  @Input() public validateEqual: string
+  @Input() public reverse: string
 
   constructor() { }
 
@@ -49,9 +51,9 @@ export class EqualValidator implements Validator {
   }
   validate(c: AbstractControl): { [key: string]: any } {
     // self value
-    let v = c.value;
+    const v = c.value;
     // control value
-    let e = c.root.get(this.validateEqual);
+    const e = c.root.get(this.validateEqual);
 
     // value not equal
     if (e && v !== e.value && !this.isReverse) return {
@@ -69,19 +71,3 @@ export class EqualValidator implements Validator {
     return null;
   }
 }
-
-
-const directives = [
-  NoInvalidChildrenDirective,
-  EqualValidator,
-  AppellationValidatorDirective
-]
-
-@NgModule({
-  imports: [
-    CommonModule
-  ],
-  declarations: directives,
-  exports: directives
-})
-export class ValidationDirectivesModule { }

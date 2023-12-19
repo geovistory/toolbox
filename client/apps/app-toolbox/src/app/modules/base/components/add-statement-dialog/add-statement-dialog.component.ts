@@ -1,16 +1,26 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, Inject, OnDestroy, OnInit, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, FieldTargetClass, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageReq, GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfStatementWithRelations, StatementWithTarget, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId, statemenTargetToInfData } from '../../base.helpers';
 import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
+import { EntityCardComponent } from '../entity-card/entity-card.component';
 import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
-import { SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent } from '../search-existing-entity/search-existing-entity.component';
+import { HbfPanelComponent } from '../hbf-panel/hbf-panel.component';
+import { SeachExistingEntityConfirmEvent, SeachExistingEntityMoreEvent, SearchExistingEntityComponent } from '../search-existing-entity/search-existing-entity.component';
+import { SliderComponent } from '../slider/slider.component';
+import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 
 export interface AddStatementDialogData {
   field: Field;
@@ -37,7 +47,9 @@ export interface AddStatementDialogData {
   providers: [
     EditModeService,
     { provide: READ_ONLY, useValue: true }
-  ]
+  ],
+  standalone: true,
+  imports: [NgIf, forwardRef(() => ViewFieldBodyComponent), MatIconModule, MatDividerModule, SliderComponent, HbfPanelComponent, forwardRef(() => FormCreateDataComponent), MatButtonModule, MatProgressSpinnerModule, SearchExistingEntityComponent, MatTabsModule, forwardRef(() => EntityCardComponent), AsyncPipe]
 })
 export class AddStatementDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

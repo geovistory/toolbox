@@ -1,10 +1,20 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService, SectionName, StateFacade } from '@kleiolab/lib-redux';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
+import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
+import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
+import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { FactoidListComponent } from '../../../annotation/components/factoid-list/factoid-list.component';
+import { ContentComponent } from '../../../base/components/content/content.component';
+import { EntityCardHeaderComponent } from '../../../base/components/entity-card-header/entity-card-header.component';
+import { ViewSectionComponent } from '../../../base/components/view-section/view-section.component';
+import { ViewSectionsComponent } from '../../../base/components/view-sections/view-sections.component';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
 import { slideInOut } from '../../shared/animations';
@@ -27,7 +37,9 @@ export interface EntityDetailConfig {
   styleUrls: ['./entity-detail.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [EditModeService]
+  providers: [EditModeService],
+  standalone: true,
+  imports: [TabLayoutComponent, EntityCardHeaderComponent, MatDividerModule, NgIf, ViewSectionsComponent, MatTabsModule, MatIconModule, ContentComponent, ViewSectionComponent, FactoidListComponent, AsyncPipe]
 })
 export class EntityDetailComponent
   extends DetailBaseComponent<EntityDetailConfig>

@@ -1,10 +1,14 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, forwardRef } from '@angular/core';
+import { MatDividerModule } from '@angular/material/divider';
 import { SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
+import { ViewSectionBodyComponent } from '../view-section-body/view-section-body.component';
+import { ViewSectionHeaderComponent } from '../view-section-header/view-section-header.component';
 
 @Component({
   selector: 'gv-view-section',
@@ -13,9 +17,11 @@ import { ViewFieldItemCountSumService } from '../../services/view-field-item-cou
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     ViewFieldItemCountSumService
-  ]
+  ],
+  standalone: true,
+  imports: [NgIf, ViewSectionHeaderComponent, MatDividerModule, forwardRef(() => ViewSectionBodyComponent), AsyncPipe]
 })
-export class ViewSectionComponent implements OnInit {
+export class ViewSectionComponent {
 
   @Input() source: GvFieldSourceEntity
   @Input() pkClass$: Observable<number>
@@ -31,9 +37,6 @@ export class ViewSectionComponent implements OnInit {
     public editMode: EditModeService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
-  }
-
-  ngOnInit(): void {
   }
 
 }

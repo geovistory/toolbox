@@ -1,13 +1,18 @@
+import { AsyncPipe, NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActiveProjectPipesService, Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, InfStatementWithRelations, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { fieldToWarFieldChangeId } from '../../base.helpers';
-import { BaseModalsService } from '../../services/base-modals.service';
+import { openAddStatementDialogFromField } from '../../lib/openAddStatementDialogFromField';
 import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
@@ -35,7 +40,9 @@ interface Option {
   providers: [
     EditModeService,
     { provide: READ_ONLY, useValue: true }
-  ]
+  ],
+  standalone: true,
+  imports: [MatDividerModule, NgStyle, MatDialogModule, MatListModule, NgFor, MatButtonModule, NgIf, MatProgressSpinnerModule, AsyncPipe]
 })
 export class SelectTypeDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -46,7 +53,7 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
   constructor(
     private state: StateFacade,
     private paginationService: PaginationService,
-    private dialogs: BaseModalsService,
+    private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public data: SelectTypeDialogData,
     private ap: ActiveProjectPipesService,
     public dialogRef: MatDialogRef<SelectTypeDialogComponent, boolean>,
@@ -131,7 +138,8 @@ export class SelectTypeDialogComponent implements OnInit, OnDestroy {
   async openAdvancedDialog() {
     this.loading$.next(true)
 
-    const dataModified = await this.dialogs.openAddStatementDialogFromField(
+    const dataModified = await openAddStatementDialogFromField(
+      this.dialog,
       this.data.source,
       this.data.field,
       this.data.targetClass,

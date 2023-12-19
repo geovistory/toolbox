@@ -1,17 +1,31 @@
-import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional } from '@angular/core';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
-import { C_218_EXPRESSION_ID } from '../../../../ontome-ids';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BaseModalsService } from '../../services/base-modals.service';
+import { C_218_EXPRESSION_ID } from '../../../../ontome-ids';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
+import { openAddStatementDialog } from '../../lib/openAddStatementDialog';
 import { GvDndGlobalService } from '../../services/dnd-global.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldItemCountSumService } from '../../services/view-field-item-count-sum.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { AddButton, pipeAddButtons } from '../content/content.component';
-import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+import { ViewFieldItemClassInfoComponent } from '../view-field-item-class-info/view-field-item-class-info.component';
+import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
+import { ViewFieldItemEntityMenuComponent } from '../view-field-item-entity-menu/view-field-item-entity-menu.component';
+import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
+import { ViewFieldTreeItemDropZoneComponent } from '../view-field-tree-item-drop-zone/view-field-tree-item-drop-zone.component';
+
 @Component({
   selector: 'gv-view-field-item-content-section',
   templateUrl: './view-field-item-content-section.component.html',
@@ -20,7 +34,9 @@ import { ViewFieldItemComponent } from '../view-field-item/view-field-item.compo
   providers: [
     ViewFieldTreeNodeService,
     ViewFieldItemCountSumService
-  ]
+  ],
+  standalone: true,
+  imports: [ViewFieldItemContainerComponent, NgClass, NgIf, MatButtonModule, MatIconModule, ViewFieldItemClassInfoComponent, EntityPreviewComponent, ViewFieldItemEntityMenuComponent, MatDividerModule, NgFor, MatMenuModule, ClassInfoComponent, ViewFieldTreeItemDropZoneComponent, forwardRef(() => ViewFieldBodyComponent), AsyncPipe]
 })
 export class ViewFieldItemContentSectionComponent implements OnInit {
   resource: InfResourceWithRelations;
@@ -52,10 +68,10 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
   dragover$ = new BehaviorSubject(false)
 
   constructor(
-    public itemComponent: ViewFieldItemComponent,
+    public item: ViewFieldItemService,
     public nodeService: ViewFieldTreeNodeService,
     private c: ConfigurationPipesService,
-    private modals: BaseModalsService,
+    private dialog: MatDialog,
     public itemCountService: ViewFieldItemCountSumService,
     public dndGlobal: GvDndGlobalService,
     @Optional() @Inject(READ_ONLY) public readonly: boolean,
@@ -65,22 +81,22 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.resource = this.itemComponent.item.target.entity.resource
-    this.ordNum = this.itemComponent.item.ordNum
-    this.field = this.itemComponent.field
+    this.resource = this.item.component.item.target.entity.resource
+    this.ordNum = this.item.component.item.ordNum
+    this.field = this.item.component.field
     this.classLabel = this.field.targets[this.resource.fk_class]?.targetClassLabel
-    this.showOntoInfo$ = this.itemComponent.showOntoInfo$
+    this.showOntoInfo$ = this.item.component.showOntoInfo$
 
 
     this.sectionSource = { fkInfo: this.resource.pk_entity }
     this.sectionPkClass$ = of(this.resource.fk_class)
-    this.sectionScope = this.itemComponent.scope
+    this.sectionScope = this.item.component.scope
 
-    this.isExpression = this.itemComponent.item.targetClass === C_218_EXPRESSION_ID
+    this.isExpression = this.item.component.item.targetClass === C_218_EXPRESSION_ID
     // if (this.isExpression) this.hideTreeNodeAndFieldHeader()
     if (this.isExpression) this.showBody$.next(true);
 
-    this.fields$ = this.c.pipeSection(this.itemComponent.item.targetClass, DisplayType.view, this.sectionSection)
+    this.fields$ = this.c.pipeSection(this.item.component.item.targetClass, DisplayType.view, this.sectionSection)
     this.addButtons$ = this.fields$.pipe(pipeAddButtons)
 
   }
@@ -100,13 +116,15 @@ export class ViewFieldItemContentSectionComponent implements OnInit {
   }
 
   openAddStatementDialog(item: AddButton) {
-    this.modals.openAddStatementDialog({
-      field: item.field,
-      hiddenProperty: item.field.property,
-      source: this.sectionSource,
-      targetClass: item.targetClass,
-      showAddList: false
-    })
+    openAddStatementDialog(
+      this.dialog,
+      {
+        field: item.field,
+        hiddenProperty: item.field.property,
+        source: this.sectionSource,
+        targetClass: item.targetClass,
+        showAddList: false
+      })
   }
 }
 

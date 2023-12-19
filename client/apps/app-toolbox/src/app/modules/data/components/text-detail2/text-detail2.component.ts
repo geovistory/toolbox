@@ -1,17 +1,27 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationBasicPipesService, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { debounceTime, map, switchMap } from 'rxjs/operators';
 import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../ontome-ids';
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
+import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
 import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { debounceTime, map, switchMap } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { EntityCardHeaderComponent } from '../../../base/components/entity-card-header/entity-card-header.component';
+import { ViewFieldAnnotationsComponent } from '../../../base/components/view-field-annotations/view-field-annotations.component';
+import { ViewFieldHasValueVersionComponent } from '../../../base/components/view-field-has-value-version/view-field-has-value-version.component';
+import { ViewSectionsComponent } from '../../../base/components/view-sections/view-sections.component';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { slideInOut } from '../../../information/shared/animations';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
+import { TextDetail2Service } from './text-detail2.service';
 
 export interface TextDetail2Config {
   pkEntity: number
@@ -24,7 +34,10 @@ export interface TextDetail2Config {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     EditModeService,
-  ]
+    TextDetail2Service
+  ],
+  standalone: true,
+  imports: [TabLayoutComponent, EntityCardHeaderComponent, MatDividerModule, NgIf, ViewFieldHasValueVersionComponent, MatTabsModule, MatIconModule, ViewFieldAnnotationsComponent, ViewSectionsComponent, AsyncPipe]
 })
 export class TextDetail2Component
   extends DetailBaseComponent<TextDetail2Config>
@@ -64,6 +77,7 @@ export class TextDetail2Component
     truncatePipe: TruncatePipe,
     public override editMode: EditModeService,
     public override tabLayout: TabLayoutService,
+    textDetailService: TextDetail2Service
   ) {
     super(
       p,
@@ -77,6 +91,7 @@ export class TextDetail2Component
       editMode,
       tabLayout
     )
+    textDetailService.registerComponent(this)
   }
   ngOnInit(): void {
     this.initialize()

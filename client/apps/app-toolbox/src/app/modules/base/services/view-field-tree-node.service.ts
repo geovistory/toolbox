@@ -1,8 +1,10 @@
 import { Inject, Injectable, Optional, SkipSelf } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ViewFieldDisplayMode, VIEW_FIELD_DISPLAY_MODE } from '../components/view-field/VIEW_FIELD_DISPLAY_MODE';
+import { VIEW_FIELD_DISPLAY_MODE, ViewFieldDisplayMode } from '../components/view-field/VIEW_FIELD_DISPLAY_MODE';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class ViewFieldTreeNodeService {
   indentation$ = new BehaviorSubject(0);
   displayMode: ViewFieldDisplayMode = 'flat'

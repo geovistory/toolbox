@@ -12,7 +12,7 @@
 
 
 export interface DfhLabel { 
-    type: string;
+    type?: string;
     label?: string;
     language?: string;
     fk_profile?: number;

@@ -1,7 +1,8 @@
 import { Directive, Input, HostListener } from '@angular/core';
 
 @Directive({
-  selector: '[href].gv-passive-link'
+    selector: '[href].gv-passive-link',
+    standalone: true
 })
 
 export class PassiveLinkDirective {

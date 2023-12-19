@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { infFeatureKey } from "../inf.feature.key";
 
 export const infLanguageFeature = 'language'
-export const infLanguageReducerConfig: ReducerConfig = {
+export const infLanguageReducerConfig: ReducerConfig<InfLanguage> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item: InfLanguage) => {

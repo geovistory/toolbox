@@ -1,7 +1,6 @@
 import { GvFieldPage, GvFieldPageReq, GvPaginationObject, GvSubfieldPageInfo, InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfResource, InfStatement, InfTimePrimitive, ProInfoProjRel, StatementTargetDimension, StatementTargetEntity, StatementTargeTimePrimitive, StatementTargetLangString, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { concat, keys, mergeDeepWith, values } from 'ramda';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { delay } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { createStatementWithTarget } from '../data/auto-gen/api-responses/GvPaginationObjectMock';
 import { CalendarType } from '../data/auto-gen/enums/CalendarType';
 import { DfhApiClassMock } from '../data/auto-gen/gvDB/DfhApiClassMock';
@@ -30,7 +29,7 @@ export class MockPaginationControllerForSandboxes {
   subfieldPageControllerLoadSubfieldPages(gvLoadSubfieldPageReqs?: GvFieldPageReq[]): Observable<GvPaginationObject> {
     this.resetIdBase();
     console.log('REST API called: subfieldPageControllerLoadSubfieldPage')
-    return new BehaviorSubject(this.handleRequests(gvLoadSubfieldPageReqs)).pipe(delay(250))
+    return of(this.handleRequests(gvLoadSubfieldPageReqs))
 
   }
   private resetIdBase() {

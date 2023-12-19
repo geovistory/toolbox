@@ -4,29 +4,33 @@ const pathMappings = [
   {
     fromPathMock: __dirname + '/../src/__tests__/helpers/data/gvDB/',
     toPathMock:
-      __dirname + '/../../client/projects/__test__/data/auto-gen/gvDB',
+      __dirname +
+      '/../../client/libs/lib-redux/src/lib/_helpers/data/auto-gen/gvDB',
   },
   {
     fromPathMock: __dirname + '/../src/__tests__/helpers/data/api-requests/',
     toPathMock:
-      __dirname + '/../../client/projects/__test__/data/auto-gen/api-requests',
+      __dirname +
+      '/../../client/libs/lib-redux/src/lib/_helpers/data/auto-gen/api-requests',
   },
   {
     fromPathMock: __dirname + '/../src/__tests__/helpers/data/api-responses/',
     toPathMock:
-      __dirname + '/../../client/projects/__test__/data/auto-gen/api-responses',
+      __dirname +
+      '/../../client/libs/lib-redux/src/lib/_helpers/data/auto-gen/api-responses',
   },
   {
     fromPathMock: __dirname + '/../src/__tests__/helpers/data/ontome-profiles/',
     toPathMock:
       __dirname +
-      '/../../client/projects/__test__/data/auto-gen/ontome-profiles',
+      '/../../client/libs/lib-redux/src/lib/_helpers/data/auto-gen/ontome-profiles',
   },
   /** COPY ENUM FILES */
   {
     fromPathMock: __dirname + '/../src/models/enums',
     toPathMock:
-      __dirname + '/../../client/projects/__test__/data/auto-gen/enums',
+      __dirname +
+      '/../../client/libs/lib-redux/src/lib/_helpers/data/auto-gen/enums',
   },
 ];
 
@@ -106,12 +110,12 @@ function autoGenFiles(from, to, type) {
     content = changeImportEnumsToSdk(content);
     content = changeImportModelToSdk(content);
     content = changeImportOntomeIds(content);
-    // content = treatEnum(
-    //   content,
-    //   'ColDef',
-    //   'ColDefDefaultType',
-    //   "'${param}' as ColDef.DefaultTypeEnum",
-    // );
+    content = treatEnum(
+      content,
+      'ColDef',
+      'ColDefDefaultType',
+      "'${param}' as ColDef.DefaultTypeEnum",
+    );
     // content = treatEnum(
     //   content,
     //   'TimePrimitiveWithCal',
@@ -175,7 +179,7 @@ function changeImportOntomeIds(content) {
     ) {
       line = line.replace(
         line.substring(line.indexOf('from ') + 5),
-        "'../../../../app-toolbox/src/app/ontome-ids';",
+        "'../ontome-ids';",
       );
     }
     return line;

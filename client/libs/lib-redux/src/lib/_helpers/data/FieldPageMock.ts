@@ -25,11 +25,11 @@ export const manifSingletonHasShortTitleMurderer: FieldPage = {
   statements: [StatementWithTargetMock.manifSingletonHasShortTitleMurderer]
 }
 
-export const appeTeEnUsedInLanguage: FieldPage = {
+export const appeTeEnUsedInLanguageFieldPage: FieldPage = {
   count: 1,
   statements: [StatementWithTargetMock.appeTeEnUsedInLanguage]
 }
-export const shipVoyageAtSomeTimeWithin: FieldPage = {
+export const shipVoyageAtSomeTimeWithinFielPage: FieldPage = {
   count: 1,
   statements: [StatementWithTargetMock.shipVoyageAtSomeTimeWithin]
 }
@@ -41,6 +41,6 @@ export const FieldPageMock = {
   madridsPresenceWasAtPlace,
   journyeHasDuration,
   manifSingletonHasShortTitleMurderer,
-  appeTeEnUsedInLanguage,
-  shipVoyageAtSomeTimeWithin
+  appeTeEnUsedInLanguageFieldPage,
+  shipVoyageAtSomeTimeWithinFielPage
 }

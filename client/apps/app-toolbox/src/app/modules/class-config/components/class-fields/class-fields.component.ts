@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Field, SectionName } from '@kleiolab/lib-redux';
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
+import { ClassFieldsSectionComponent } from '../class-fields-section/class-fields-section.component';
 
 interface FieldConfig extends Field {
   propertyField?: {
@@ -25,9 +26,11 @@ interface FieldConfig extends Field {
   fieldConfig?: ProClassFieldConfig
 }
 @Component({
-  selector: 'gv-class-fields',
-  templateUrl: './class-fields.component.html',
-  styleUrls: ['./class-fields.component.scss']
+    selector: 'gv-class-fields',
+    templateUrl: './class-fields.component.html',
+    styleUrls: ['./class-fields.component.scss'],
+    standalone: true,
+    imports: [ClassFieldsSectionComponent]
 })
 export class ClassFieldsComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

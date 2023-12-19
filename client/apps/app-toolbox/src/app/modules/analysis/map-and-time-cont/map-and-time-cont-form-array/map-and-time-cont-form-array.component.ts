@@ -1,17 +1,27 @@
+import { PortalModule } from '@angular/cdk/portal';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatLineModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatListModule } from '@angular/material/list';
 import { ClassAndTypeSelectModel } from "@kleiolab/lib-redux";
-import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
-import { FilterDefinition } from '../../../../modules/queries/components/query-filter/query-filter.component';
 import { Observable, of } from 'rxjs';
 import { first } from 'rxjs/operators';
+import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
+import { FilterDefinition } from '../../../../modules/queries/components/query-filter/query-filter.component';
 import { TableFormService } from '../../table/table-form/table-form.service';
+import { MapAndTimeContFormControlComponent } from '../map-and-time-cont-form-control/map-and-time-cont-form-control.component';
 import { MapAndTimeContFormArrayFactory } from '../map-and-time-cont-form/map-and-time-cont-form.component';
 
 @Component({
   selector: 'gv-map-and-time-cont-form-array',
   templateUrl: './map-and-time-cont-form-array.component.html',
   styleUrls: ['./map-and-time-cont-form-array.component.scss'],
-  providers: [TableFormService]
+  providers: [TableFormService],
+  standalone: true,
+  imports: [NgIf, MatListModule, MatLineModule, MatDividerModule, NgFor, NgClass, MatButtonModule, MapAndTimeContFormControlComponent, PortalModule, MatFormFieldModule, AsyncPipe]
 })
 export class MapAndTimeContFormArrayComponent implements OnInit {
   @Input() formArrayFactory: MapAndTimeContFormArrayFactory;

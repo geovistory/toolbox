@@ -1,17 +1,25 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, OnInit, Optional } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
-import { PageEvent } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
-import { DatColumn, FactoidMapping, GetTablePageOptions, InfLanguage, TabCell, TabCells, TableConfig, TableRow, TableService, TColFilter } from '@kleiolab/lib-sdk-lb4';
+import { DatColumn, FactoidMapping, GetTablePageOptions, InfLanguage, TColFilter, TabCell, TabCells, TableConfig, TableRow, TableService } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { ActiveAccountService } from '../../../../core/active-account';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { Cell, Header, Row, TableSort } from '../../../../shared/components/digital-table/components/table/table.component';
-import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from '../../../../shared/components/info-dialog/info-dialog.component';
 import { equals, indexBy, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { Cell, Header, Row, TableComponent, TableSort } from '../../../../shared/components/digital-table/components/table/table.component';
+import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from '../../../../shared/components/info-dialog/info-dialog.component';
+import { ActiveAccountService } from '../../../../shared/services/active-account.service';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { FactoidMappingsDialogComponent, FactoidMappingsDialogData } from '../factoids/factoid-mappings-dialog/factoid-mappings-dialog.component';
 import { TableConfigDialogComponent, TableConfigDialogData, TableConfigDialogResult } from '../table-config-dialog/table-config-dialog.component';
@@ -24,7 +32,9 @@ export interface TColFilters {
 @Component({
   selector: 'gv-table-editor',
   templateUrl: './table-editor.component.html',
-  styleUrls: ['./table-editor.component.scss']
+  styleUrls: ['./table-editor.component.scss'],
+  standalone: true,
+  imports: [MatCheckboxModule, FormsModule, MatPaginatorModule, MatButtonModule, MatMenuModule, MatIconModule, MatSlideToggleModule, TableComponent, NgIf, MatCardModule, AsyncPipe]
 })
 export class TableEditorComponent implements OnInit {
   destroy$ = new Subject<boolean>();

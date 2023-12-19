@@ -3,11 +3,15 @@ import { MatSelectChange } from '@angular/material/select';
 import { TColFilter, TColFilterTxt } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-  selector: 'gv-col-filter-text',
-  templateUrl: './col-filter-text.component.html',
-  styleUrls: ['./col-filter-text.component.scss']
+    selector: 'gv-col-filter-text',
+    templateUrl: './col-filter-text.component.html',
+    styleUrls: ['./col-filter-text.component.scss'],
+    standalone: true,
+    imports: [MatFormFieldModule, MatInputModule]
 })
 export class ColFilterTextComponent implements OnInit, OnDestroy {
 

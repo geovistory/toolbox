@@ -1,14 +1,15 @@
+import { AsyncPipe, NgIf, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { Component, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
 import { Field } from '@kleiolab/lib-redux';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
-import { DndDropEvent } from 'ngx-drag-drop';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { DndDropEvent, DndDropzoneDirective } from 'ngx-drag-drop';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GvDndSortListDirective } from '../../directives/dnd-sort-list.directive';
 import { DndDropPosition, GvDndGlobalService, ItemData, TreeItem } from '../../services/dnd-global.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
-import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 export const canDrop = (field: Field, stmt: StatementWithTarget) => map<TreeItem | false, boolean>((dragStmt) => {
   // item can't be dropped here if...
 
@@ -41,7 +42,9 @@ export function getDragDataFromEvent(event: DndDropEvent): ItemData {
 @Component({
   selector: 'gv-view-field-item-container',
   templateUrl: './view-field-item-container.component.html',
-  styleUrls: ['./view-field-item-container.component.scss']
+  styleUrls: ['./view-field-item-container.component.scss'],
+  standalone: true,
+  imports: [NgStyle, NgIf, NgTemplateOutlet, DndDropzoneDirective, AsyncPipe]
 })
 export class ViewFieldItemContainerComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -71,7 +74,7 @@ export class ViewFieldItemContainerComponent implements OnInit, OnDestroy {
     public dndGlobal: GvDndGlobalService,
     @Optional() private parentSortList: GvDndSortListDirective,
     @Optional() @Inject(READ_ONLY) readonly: boolean,
-    @Optional() private itemComponent: ViewFieldItemComponent,
+    @Optional() private itemService: ViewFieldItemService,
 
   ) {
     if (readonly) this.hasDropZones = false
@@ -81,14 +84,14 @@ export class ViewFieldItemContainerComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.hasDropZones) {
-      if (this.itemComponent) {
-        this.field = this.itemComponent.field
-        this.item = this.itemComponent.item
+      if (this.itemService) {
+        this.field = this.itemService.component.field
+        this.item = this.itemService.component.item
       }
       if (!this.field) throw new Error('this.field missing');
       if (!this.item) throw new Error('this.item missing');
       this.dragoverClass$ = this.dragover$.pipe(map(s => `dnd-dragover-${s}`))
-      this.canDrop$ = this.dndGlobal.isDragging$.pipe(canDrop(this.itemComponent.field, this.itemComponent.item))
+      this.canDrop$ = this.dndGlobal.isDragging$.pipe(canDrop(this.itemService.component.field, this.itemService.component.item))
     }
 
     if (this.nodeService.displayMode === 'tree') {
@@ -119,7 +122,7 @@ export class ViewFieldItemContainerComponent implements OnInit, OnDestroy {
     this.parentSortList.onDrop({
       droppedData,
       receiver: {
-        data: this.itemComponent.item,
+        data: this.itemService.component.item,
         position
       }
     })

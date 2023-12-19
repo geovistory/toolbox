@@ -1,8 +1,9 @@
+import { DatColumn } from '@kleiolab/lib-sdk-lb4';
 import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datColumnFeature = 'column'
-export const datColumnReducerConfig: ReducerConfig = {
+export const datColumnReducerConfig: ReducerConfig<DatColumn> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item) => item.pk_entity.toString()

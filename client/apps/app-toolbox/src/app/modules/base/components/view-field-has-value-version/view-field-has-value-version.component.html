@@ -8,8 +8,8 @@
 </div>
 <gv-quill-edit [hidden]="showHistory$|async" *ngIf="!(quillDocLoader$|async).loading && !(quillDocLoader$|async).error"
   class="gv-flex-fh gv-quill-borderless" [quillDoc]="(quillDocLoader$|async).quillDoc"
-  [annotationsVisible$]="annotationsVisible$" [annotatedNodes$]="textDetailComponent?.annotatedCharsMap$"
-  [accentuatedNodes$]="textDetailComponent?.charsToHighlight$" (quillDocChange)="onQuillDocChange($event)"
+  [annotationsVisible$]="annotationsVisible$" [annotatedNodes$]="textDetail?.component?.annotatedCharsMap$"
+  [accentuatedNodes$]="textDetail?.component?.charsToHighlight$" (quillDocChange)="onQuillDocChange($event)"
   (selectedDeltaChange)="selectedDeltaChange($event)" (nodeMouseenter)="textNodeMouseenter($event)"
   (nodeMouseleave)="textNodeMouseleave()" (nodeClick)="onNodeClicked($event)" [readOnly]="!(editMode.value$|async)"
   [showCharIdToggleBtn]=false>

@@ -1,11 +1,22 @@
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit, Pipe, PipeTransform } from '@angular/core';
+import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList } from '@angular/cdk/drag-drop';
+import { PortalModule } from '@angular/cdk/portal';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { Component, Input, Pipe, PipeTransform } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatLineModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 import { ClassAndTypeSelectModel } from '@kleiolab/lib-redux';
 import { ColDef } from '@kleiolab/lib-sdk-lb4';
-import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
-import { FilterDefinition } from '../../../../modules/queries/components/query-filter/query-filter.component';
 import { Observable, of } from 'rxjs';
 import { first, map } from 'rxjs/operators';
+import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
+import { FilterDefinition } from '../../../../modules/queries/components/query-filter/query-filter.component';
+import { TableFormControlComponent } from '../table-form-control/table-form-control.component';
 import { TableFormArrayFactory } from '../table-form/table-form.component';
 import { TableFormService } from '../table-form/table-form.service';
 
@@ -18,7 +29,10 @@ import { TableFormService } from '../table-form/table-form.service';
  *   {{ {defaultType: 'entity_preview'} | coltype }}
  *   formats to: Entity Preview
 */
-@Pipe({ name: 'coltype' })
+@Pipe({
+  name: 'coltype',
+  standalone: true
+})
 export class ColtypePipe implements PipeTransform {
   transform(value: ColDef): string {
     return getLabelForDefaulType(value.defaultType)
@@ -29,16 +43,14 @@ export class ColtypePipe implements PipeTransform {
   selector: 'gv-table-form-array',
   templateUrl: './table-form-array.component.html',
   styleUrls: ['./table-form-array.component.scss'],
-  providers: [ColtypePipe]
+  providers: [ColtypePipe],
+  standalone: true,
+  imports: [NgIf, MatListModule, MatLineModule, MatMenuModule, MatIconModule, MatButtonModule, MatDividerModule, MatFormFieldModule, MatExpansionModule, CdkDropList, NgFor, CdkDrag, CdkDragHandle, NgClass, TableFormControlComponent, PortalModule, AsyncPipe, ColtypePipe]
 })
-export class TableFormArrayComponent implements OnInit {
+export class TableFormArrayComponent {
   @Input() formArrayFactory: TableFormArrayFactory;
 
   constructor(private t: TableFormService) { }
-
-  ngOnInit() {
-    // console.log(this.formArrayFactory.children)
-  }
 
   /**
    * adds a new columnConfig

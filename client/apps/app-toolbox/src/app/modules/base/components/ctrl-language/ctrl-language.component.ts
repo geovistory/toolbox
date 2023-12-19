@@ -1,20 +1,32 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
-import { ControlValueAccessor, UntypedFormControl, NgControl } from '@angular/forms';
-import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
-import { MatInput } from '@angular/material/input';
+import { ControlValueAccessor, UntypedFormControl, NgControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteTrigger, MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInput, MatInputModule } from '@angular/material/input';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { InfLanguage, LanguagesService } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { catchError, debounceTime, distinctUntilChanged, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { MatOptionModule } from '@angular/material/core';
+import { NgFor, AsyncPipe } from '@angular/common';
 
 export type CtrlLanguageModel = InfLanguage;
 
 @Component({
-  selector: 'gv-ctrl-language',
-  templateUrl: './ctrl-language.component.html',
-  styleUrls: ['./ctrl-language.component.css'],
-  providers: [{ provide: MatFormFieldControl, useExisting: CtrlLanguageComponent }],
+    selector: 'gv-ctrl-language',
+    templateUrl: './ctrl-language.component.html',
+    styleUrls: ['./ctrl-language.component.css'],
+    providers: [{ provide: MatFormFieldControl, useExisting: CtrlLanguageComponent }],
+    standalone: true,
+    imports: [
+        MatInputModule,
+        FormsModule,
+        MatAutocompleteModule,
+        ReactiveFormsModule,
+        NgFor,
+        MatOptionModule,
+        AsyncPipe,
+    ],
 })
 export class CtrlLanguageComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlLanguageModel> {
 

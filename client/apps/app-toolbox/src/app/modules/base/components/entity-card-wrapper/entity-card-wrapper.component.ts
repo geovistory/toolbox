@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, Inject, OnInit, Optional } from '@a
 import { ActivatedRoute } from '@angular/router';
 import { InformationBasicPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ProjectEditComponent } from '../../../projects/containers/project-edit/project-edit.component';
+import { ProjectEditComponent } from '../../../../pages/project/project-edit/project-edit.component';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
+import { EntityCardComponent } from '../entity-card/entity-card.component';
 
 /**
  * This component prepares the configuration data and parameters
@@ -20,7 +21,9 @@ import { READ_ONLY } from '../../tokens/READ_ONLY';
   providers: [
     EditModeService,
     { provide: READ_ONLY, useValue: true }
-  ]
+  ],
+  standalone: true,
+  imports: [EntityCardComponent]
 })
 export class EntityCardWrapperComponent implements OnInit {
   pkProject: number;

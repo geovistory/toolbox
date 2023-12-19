@@ -12,13 +12,13 @@
 
 
 export interface DatColumn { 
+    pk_entity?: number;
     fk_digital?: number;
     fk_data_type?: number;
     fk_column_content_type?: number;
     fk_column_relationship_type?: number;
     fk_original_column?: number;
     is_imported?: boolean;
-    pk_entity?: number;
     fk_namespace?: number;
 }
 

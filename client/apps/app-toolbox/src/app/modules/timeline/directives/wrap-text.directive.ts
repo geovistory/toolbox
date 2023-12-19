@@ -2,7 +2,8 @@ import { Directive, Input, ElementRef } from '@angular/core';
 import { D3Service } from '../shared/d3.service';
 
 @Directive({
-  selector: '[wrapText]'
+    selector: '[wrapText]',
+    standalone: true
 })
 export class WrapTextDirective {
 

@@ -1,16 +1,21 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
 import { ConfigurationPipesService, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { EditModeService } from '../../services/edit-mode.service';
+import { ViewSectionComponent } from '../view-section/view-section.component';
+import { ViewTimeSpanSectionComponent } from '../view-time-span-section/view-time-span-section.component';
 
 @Component({
   selector: 'gv-view-sections',
   templateUrl: './view-sections.component.html',
   styleUrls: ['./view-sections.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ViewTimeSpanSectionComponent, ViewSectionComponent, MatDialogModule]
 })
 export class ViewSectionsComponent implements OnInit {
   destroy$ = new Subject<boolean>();

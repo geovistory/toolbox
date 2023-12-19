@@ -1,4 +1,3 @@
-import { GvFieldPage, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
@@ -78,18 +77,4 @@ export class CrudFacade<Model> {
     this.store.dispatch(this.actions.failedAction(error, removePending, pk))
   }
 
-
-  loadPage(page: GvFieldPage, pk?: number): void {
-    this.store.dispatch(this.actions.loadPageAction(page, pk))
-  }
-
-  loadPageSucceeded(statements: StatementWithTarget[], count: number, page: GvFieldPage, pk?: number): void {
-    this.store.dispatch(this.actions.loadPageSucceededAction(statements, count, page, pk))
-  }
-
-
-
-  loadPageFailed(page: GvFieldPage, pk?: number): void {
-    this.store.dispatch(this.actions.loadPageFailedAction(page, pk))
-  }
 }

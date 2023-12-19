@@ -1,14 +1,20 @@
+import { AsyncPipe, NgFor } from '@angular/common';
 import { Component, HostBinding } from '@angular/core';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatListModule } from '@angular/material/list';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { Observable } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';
 
 @Component({
   selector: 'gv-settings-list',
   templateUrl: './settings-list.component.html',
-  styleUrls: ['./settings-list.component.scss']
+  styleUrls: ['./settings-list.component.scss'],
+  standalone: true,
+  imports: [ListDrawerHeaderComponent, MatExpansionModule, NgFor, MatListModule, AsyncPipe]
 })
 export class SettingsListComponent {
 

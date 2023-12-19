@@ -1,22 +1,30 @@
+import { PortalModule } from '@angular/cdk/portal';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 import { Field } from '@kleiolab/lib-redux';
-import { FormArrayChild, ParentFactory } from '../../../../modules/form-factory/core/form-array-factory';
 import { equals, sum } from 'ramda';
 import { first } from 'rxjs/operators';
+import { FormArrayChild, ParentFactory } from '../../../../modules/form-factory/core/form-array-factory';
 import { openClose } from '../../../information/shared/animations';
 import { FgAppellationTeEnComponent } from '../fg-appellation-te-en/fg-appellation-te-en.component';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent } from '../fg-place/fg-place.component';
-import { ChildComponents } from '../form-control/form-control.component';
-import { FormArrayData, FormChildData, FormControlData, FormCreateDataComponent, LocalFormArrayFactory } from '../form-create-data/form-create-data.component';
+import { ChildComponents, FormControlComponent } from '../form-control/form-control.component';
+import type { FormArrayData, FormChildData, FormControlData, LocalFormArrayFactory } from '../form-create-data/form-create-data.component';
+import { FormCreateDataService } from '../form-create-data/form-create-data.service';
+import { FormFieldHeaderComponent } from '../form-field-header/form-field-header.component';
+import { FormSectionHeaderComponent } from '../form-section-header/form-section-header.component';
 
 @Component({
   selector: 'gv-form-array',
   templateUrl: './form-array.component.html',
   styleUrls: ['./form-array.component.scss'],
-  animations: [openClose]
+  animations: [openClose],
+  standalone: true,
+  imports: [NgIf, FormSectionHeaderComponent, FormFieldHeaderComponent, NgFor, NgClass, FormControlComponent, PortalModule, MatIconModule, AsyncPipe]
 })
 export class FormArrayComponent implements OnInit, OnDestroy {
 
@@ -74,7 +82,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private formCreateData: FormCreateDataComponent,
+    private formCreateDataService: FormCreateDataService,
   ) { }
 
   ngOnInit() {
@@ -104,7 +112,7 @@ export class FormArrayComponent implements OnInit, OnDestroy {
 
     // if not available, add a child FormArray containing the controls
     if (!formArrayChild) {
-      const config = this.formCreateData.getFieldItem(field, targetClass, undefined)
+      const config = this.formCreateDataService.component.getFieldItem(field, targetClass, undefined)
       config.array.addOnInit = 0;
       formArrayChild = this.formArrayFactory.prepend(config)
     }

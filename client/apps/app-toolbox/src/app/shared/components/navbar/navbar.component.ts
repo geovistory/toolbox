@@ -1,16 +1,24 @@
+import { NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { Router, RouterLink } from '@angular/router';
 import { PubAccount } from '@kleiolab/lib-sdk-lb4';
 import { Subscription } from 'rxjs';
-import { ActiveAccountService } from '../../../core/active-account';
-import { FeedbackDialogComponent } from '../../../modules/user-feedback/components/feedback-dialog/feedback-dialog.component';
+import { ActiveAccountService } from '../../services/active-account.service';
+import { FeedbackDialogComponent } from '../feedback-dialog/feedback-dialog.component';
 
 
 @Component({
   selector: 'gv-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
+  standalone: true,
+  imports: [MatToolbarModule, MatButtonModule, NgIf, RouterLink, MatMenuModule, MatIconModule, MatDividerModule, MatDialogModule]
 })
 export class NavbarComponent implements OnInit, OnDestroy {
 
@@ -44,7 +52,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   }
 
   openFeedbackDialog(): void {
- this.dialog.open(FeedbackDialogComponent, {
+    this.dialog.open(FeedbackDialogComponent, {
       width: '470px',
       data: {}
     });

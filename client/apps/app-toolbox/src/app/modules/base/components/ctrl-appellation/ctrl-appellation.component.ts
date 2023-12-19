@@ -1,7 +1,9 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { NgClass, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { InfAppellation, QuillDoc, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
 import { QuillEditComponent } from '../../../../modules/quill/quill-edit/quill-edit.component';
@@ -13,7 +15,13 @@ export type CtrlAppellationModel = InfAppellation;
   templateUrl: './ctrl-appellation.component.html',
   styleUrls: ['./ctrl-appellation.component.scss'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlAppellationComponent }],
-
+  standalone: true,
+  imports: [
+    NgClass,
+    NgIf,
+    MatInputModule,
+    QuillEditComponent
+  ],
 })
 export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlAppellationModel> {
   static nextId = 0;

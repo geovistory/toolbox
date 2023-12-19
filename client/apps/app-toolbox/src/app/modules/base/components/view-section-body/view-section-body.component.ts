@@ -1,12 +1,17 @@
-import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, HostBinding, Input, OnDestroy, OnInit, forwardRef } from '@angular/core';
 import { MatTreeNestedDataSource } from '@angular/material/tree';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+
+import { OpenCloseChildDirective } from '../../../../shared/directives/open-close/open-close-child.directive';
+import { OpenCloseContainerDirective } from '../../../../shared/directives/open-close/open-close-container.directive';
 import { openClose } from '../../../information/shared/animations';
 import { EditModeService } from '../../services/edit-mode.service';
+import { ViewFieldComponent } from '../view-field/view-field.component';
 
 
 @Component({
@@ -14,7 +19,9 @@ import { EditModeService } from '../../services/edit-mode.service';
   templateUrl: './view-section-body.component.html',
   styleUrls: ['./view-section-body.component.scss'],
   animations: [openClose],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [OpenCloseContainerDirective, OpenCloseChildDirective, NgIf, NgFor, forwardRef(() => ViewFieldComponent), AsyncPipe]
 })
 export class ViewSectionBodyComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

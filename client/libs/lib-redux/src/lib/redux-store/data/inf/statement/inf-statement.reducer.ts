@@ -1,10 +1,12 @@
 import { InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
+import { composeReducers } from '../../../_lib/composeReducers';
 import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { infFeatureKey } from "../inf.feature.key";
+import { paginationReducer } from './pagination/pagination.reducers';
 
 export const infStatementFeature = 'statement'
-export const infStatementReducerConfig: ReducerConfig = {
+export const infStatementReducerConfig: ReducerConfig<InfStatement> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item: InfStatement) => {
@@ -37,7 +39,11 @@ export const infStatementReducerConfig: ReducerConfig = {
 }
 
 
-export const infStatementReducers = createModelReducers(infFeatureKey, infStatementFeature, infStatementReducerConfig)
+export const infStatementReducers = composeReducers(
+  paginationReducer,
+  createModelReducers(infFeatureKey, infStatementFeature, infStatementReducerConfig)
+)
+
 
 
 

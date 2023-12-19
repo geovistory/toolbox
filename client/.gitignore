@@ -52,3 +52,4 @@ libs/lib-redux/src/lib/_helpers/data/auto-gen/*
 dist/
 report.*json
 documentation
+documentation.json

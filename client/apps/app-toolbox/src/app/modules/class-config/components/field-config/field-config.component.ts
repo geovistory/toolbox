@@ -1,11 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
+import { OntoPropertyInfoComponent } from '../../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
+import { LabelsComponent } from '../labels/labels.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
-  selector: 'gv-field-config',
-  templateUrl: './field-config.component.html',
-  styleUrls: ['./field-config.component.scss']
+    selector: 'gv-field-config',
+    templateUrl: './field-config.component.html',
+    styleUrls: ['./field-config.component.scss'],
+    standalone: true,
+    imports: [MatTabsModule, LabelsComponent, OntoPropertyInfoComponent]
 })
 export class FieldConfigComponent implements OnInit {
   @Input() fkProject: number

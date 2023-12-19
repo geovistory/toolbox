@@ -1,20 +1,29 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnInit, Optional, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellation, InfResourceWithRelations, InfStatementWithRelations, ProjectDataService, QuillDoc, ReplaceStatementInFieldRequest, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { equals } from 'ramda';
+import { BehaviorSubject, Observable, Subject, combineLatest, of, timer } from 'rxjs';
+import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { QuillEditComponent } from '../../../../modules/quill/quill-edit/quill-edit.component';
 import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../ontome-ids';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ToggleBtnComponent } from '../../../../shared/components/gv-buttons/components/toggle-btn/toggle-btn.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../../shared/components/progress-dialog/progress-dialog.component';
-import { equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of, Subject, timer } from 'rxjs';
-import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { TextDetail2Component } from '../../../data/components/text-detail2/text-detail2.component';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { TextDetail2Service } from '../../../data/components/text-detail2/text-detail2.service';
 import { DeltaI, Op, Ops } from '../../../quill/quill.models';
 import { ConfirmHook, EditModeService } from '../../services/edit-mode.service';
-import { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
+import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
+import type { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
 interface QuillDocLoader {
   loading: boolean,
   error: boolean,
@@ -28,7 +37,10 @@ const itemTypeProvider: ViewFieldItemTypeFn = (f, s) => 'valueVersion'
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     { provide: VIEW_FIELD_ITEM_TYPE, useValue: itemTypeProvider },
-  ]
+  ],
+  standalone: true,
+  imports: [NgIf, MatProgressSpinnerModule, MatButtonModule, QuillEditComponent, MatTooltipModule, MatIconModule, MatMenuModule,
+    forwardRef(() => ViewFieldBodyComponent), AsyncPipe, ToggleBtnComponent]
 })
 export class ViewFieldHasValueVersionComponent implements OnInit {
   destroy$ = new Subject<boolean>();
@@ -60,7 +72,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     public projectData: ProjectDataService,
     public dialog: MatDialog,
     public p: ActiveProjectService,
-    @Optional() public textDetailComponent: TextDetail2Component,
+    @Optional() public textDetail: TextDetail2Service,
     public editMode: EditModeService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
@@ -319,24 +331,24 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
 
   onQuillDocChange(q: QuillDoc) {
     this.newQuillDoc = q
-    if (this.textDetailComponent) this.textDetailComponent.quillDocUpdated(q)
+    if (this.textDetail?.component) this.textDetail.component.quillDocUpdated(q)
   }
   textNodeMouseenter(chunkPks: number[]) {
-    if (this.textDetailComponent) {
+    if (this.textDetail?.component) {
       if (this.annotationsVisible$.value) {
-        this.textDetailComponent.annotationsToHighlightInList$.next(chunkPks)
+        this.textDetail.component.annotationsToHighlightInList$.next(chunkPks)
       }
     }
   }
   textNodeMouseleave() {
-    if (this.textDetailComponent) {
-      this.textDetailComponent.annotationsToHighlightInList$.next([])
+    if (this.textDetail?.component) {
+      this.textDetail.component.annotationsToHighlightInList$.next([])
     }
   }
 
   onNodeClicked(e: number[]) {
-    if (this.textDetailComponent) {
-      this.textDetailComponent.annotationsPinnedInList$.next(e)
+    if (this.textDetail?.component) {
+      this.textDetail.component.annotationsPinnedInList$.next(e)
     }
   }
 

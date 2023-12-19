@@ -4,21 +4,19 @@ import { TimePrimitivePipe } from './pipes/time-primitive.pipe';
 import { TimeSpanPipe } from './pipes/time-span.pipe';
 
 @NgModule({
-  imports: [
-    CommonModule,
-  ],
-  providers: [
-    TimePrimitivePipe,
-    TimeSpanPipe,
-    DatePipe
-  ],
-  declarations: [
-    TimeSpanPipe,
-    TimePrimitivePipe,
-  ],
-  exports: [
-    TimeSpanPipe,
-    TimePrimitivePipe,
-  ]
+    imports: [
+        CommonModule,
+        TimeSpanPipe,
+        TimePrimitivePipe,
+    ],
+    providers: [
+        TimePrimitivePipe,
+        TimeSpanPipe,
+        DatePipe
+    ],
+    exports: [
+        TimeSpanPipe,
+        TimePrimitivePipe,
+    ]
 })
 export class DateTimeModule { }

@@ -1,10 +1,18 @@
-import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AddMenuClassOrTypeItem, ClassAndTypePk, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfResourceWithRelations, SysConfigClassCategoryBelonging } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BaseModalsService } from '../../services/base-modals.service';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { openAddEntityDialog } from '../../lib/openAddEntityDialog';
+import { AddEntityMenuClassItemComponent } from '../add-entity-menu-class-item/add-entity-menu-class-item.component';
 
 
 /** Flat node with expandable and level information */
@@ -18,7 +26,9 @@ interface ExampleFlatNode {
 @Component({
   selector: 'gv-add-entity-menu',
   templateUrl: './add-entity-menu.component.html',
-  styleUrls: ['./add-entity-menu.component.scss']
+  styleUrls: ['./add-entity-menu.component.scss'],
+  standalone: true,
+  imports: [MatMenuModule, MatButtonModule, MatTooltipModule, NgIf, MatIconModule, MatDividerModule, NgFor, forwardRef(() => AddEntityMenuClassItemComponent), AsyncPipe]
 })
 export class AddEntityMenuComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -40,7 +50,7 @@ export class AddEntityMenuComponent implements OnInit, OnDestroy {
     private state: StateFacade,
     private i: InformationPipesService,
     public p: ActiveProjectService,
-    private m: BaseModalsService,
+    private dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -83,12 +93,14 @@ export class AddEntityMenuComponent implements OnInit, OnDestroy {
         fk_object_info: d.pkType
       }]
     }
-    this.m.openAddEntityDialog({
-      pkClass: d.pkClass,
-      initVal
-    }).subscribe(result => {
-      this.p.addEntityTab(result.pkEntity, result.pkClass)
-    })
+    openAddEntityDialog(
+      this.dialog,
+      {
+        pkClass: d.pkClass,
+        initVal
+      }).subscribe(result => {
+        this.p.addEntityTab(result.pkEntity, result.pkClass)
+      })
 
   }
 

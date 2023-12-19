@@ -4,14 +4,21 @@ import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgFor, NgIf, AsyncPipe } from '@angular/common';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
 
 interface LocalClass { pkClass: number, label: string, icon: string }
 
 
 @Component({
-  selector: 'gv-class-dropdown',
-  templateUrl: './class-dropdown.component.html',
-  styleUrls: ['./class-dropdown.component.scss']
+    selector: 'gv-class-dropdown',
+    templateUrl: './class-dropdown.component.html',
+    styleUrls: ['./class-dropdown.component.scss'],
+    standalone: true,
+    imports: [MatMenuModule, MatDividerModule, NgFor, NgIf, MatFormFieldModule, MatInputModule, AsyncPipe]
 })
 export class ClassDropdownComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

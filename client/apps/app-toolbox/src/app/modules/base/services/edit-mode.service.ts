@@ -3,14 +3,14 @@ import { BehaviorSubject } from 'rxjs';
 
 export type ConfirmHook = () => Promise<boolean>;
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class EditModeService {
 
   value$ = new BehaviorSubject(false)
 
   beforeSwitchOffHooks: ConfirmHook[] = []
-
-  constructor() { }
 
   /**
    * Nexts the value in value$

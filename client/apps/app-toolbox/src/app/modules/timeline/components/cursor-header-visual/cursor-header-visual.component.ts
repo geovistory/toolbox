@@ -3,9 +3,10 @@ import { Cursor } from '../../models/cursor';
 import { D3Service } from '../../shared/d3.service';
 
 @Component({
-  selector: '[cursorHeaderVisual]',
-  templateUrl: './cursor-header-visual.component.html',
-  styleUrls: ['./cursor-header-visual.component.scss']
+    selector: '[cursorHeaderVisual]',
+    templateUrl: './cursor-header-visual.component.html',
+    styleUrls: ['./cursor-header-visual.component.scss'],
+    standalone: true
 })
 export class CursorHeaderVisualComponent implements DoCheck {
 

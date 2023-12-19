@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AccountDataService } from '@kleiolab/lib-sdk-lb4';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { catchError, first, mergeMap, startWith } from 'rxjs/operators';
+import { catchError, first, mergeMap, startWith, tap } from 'rxjs/operators';
 import { LoadingBarActions } from '../loading-bar/loading-bar.actions';
 import { notificationActions } from '../notification/notification.actions';
 import { AccountAction, AccountActions } from './account.actions';
@@ -22,6 +22,7 @@ export class AccountEffects {
         AccountActions.loadRolesSucceeded(data),
         LoadingBarActions.REMOVE_JOB()
       )),
+      tap(() => action.meta?.cb()),
       catchError(error => of(
         LoadingBarActions.REMOVE_JOB(),
         notificationActions.add({

@@ -1,14 +1,22 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, Input, OnInit, forwardRef } from '@angular/core';
+import { MatDividerModule } from '@angular/material/divider';
 import { ConfigurationPipesService, DisplayType, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
 import { EditModeService } from '../../services/edit-mode.service';
+import { ViewSectionBodyComponent } from '../view-section-body/view-section-body.component';
+import { ViewTimeSpanItemComponent } from '../view-time-span-item/view-time-span-item.component';
+import { ViewTimeSpanSectionBodyComponent } from '../view-time-span-section-body/view-time-span-section-body.component';
+import { ViewTimeSpanSectionHeaderComponent } from '../view-time-span-section-header/view-time-span-section-header.component';
 
 @Component({
   selector: 'gv-view-time-span-section',
   templateUrl: './view-time-span-section.component.html',
-  styleUrls: ['./view-time-span-section.component.scss']
+  styleUrls: ['./view-time-span-section.component.scss'],
+  standalone: true,
+  imports: [NgIf, ViewTimeSpanSectionHeaderComponent, MatDividerModule, forwardRef(() => ViewTimeSpanSectionBodyComponent), ViewTimeSpanItemComponent, forwardRef(() => ViewSectionBodyComponent), AsyncPipe]
 })
 export class ViewTimeSpanSectionComponent implements OnInit {
   @Input() source: GvFieldSourceEntity

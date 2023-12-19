@@ -1,10 +1,17 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTableModule } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { indexBy, sortBy } from 'ramda';
-import { combineLatest, Observable } from 'rxjs';
+import { Observable, combineLatest } from 'rxjs';
 import { first, map } from 'rxjs/operators';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
+
 export interface ChooseClassDialogData {
   title: string;
   pkClasses: number[]
@@ -14,7 +21,9 @@ export type ChooseClassDialogReturn = number
 @Component({
   selector: 'gv-choose-class-dialog',
   templateUrl: './choose-class-dialog.component.html',
-  styleUrls: ['./choose-class-dialog.component.scss']
+  styleUrls: ['./choose-class-dialog.component.scss'],
+  standalone: true,
+  imports: [MatDialogModule, MatTableModule, ClassInfoComponent, MatButtonModule, MatMenuModule, NgIf, MatIconModule, AsyncPipe]
 })
 export class ChooseClassDialogComponent implements OnInit {
 

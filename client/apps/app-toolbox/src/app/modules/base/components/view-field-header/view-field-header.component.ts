@@ -1,15 +1,21 @@
+import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EditModeService } from '../../services/edit-mode.service';
-import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+import type { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 
 
 @Component({
   selector: 'gv-view-field-header',
   templateUrl: './view-field-header.component.html',
   styleUrls: ['./view-field-header.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgStyle, NgClass, NgIf, MatButtonModule, MatIconModule, MatTooltipModule, AsyncPipe]
 })
 export class ViewFieldHeaderComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

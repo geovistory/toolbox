@@ -1,12 +1,18 @@
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { ConfigurationPipesService } from "@kleiolab/lib-redux";
 import { Observable } from 'rxjs';
+import { OntoClassInfoComponent } from '../../../../shared/components/onto-info/onto-class-info/onto-class-info.component';
+import { LabelsComponent } from '../labels/labels.component';
+import { ClassFieldsComponent } from '../class-fields/class-fields.component';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @Component({
-  selector: 'gv-class-config',
-  templateUrl: './class-config.component.html',
-  styleUrls: ['./class-config.component.scss']
+    selector: 'gv-class-config',
+    templateUrl: './class-config.component.html',
+    styleUrls: ['./class-config.component.scss'],
+    standalone: true,
+    imports: [MatTabsModule, ClassFieldsComponent, LabelsComponent, OntoClassInfoComponent]
 })
 export class ClassConfigComponent implements OnInit {
 

@@ -1,7 +1,7 @@
 <ng-template #inner>
-  <span *ngIf="!preview" class="fa fa-pulse fa-spinner"> </span>
+  <span *ngIf="!preview" class="fa fa-pulse fa-spinner" data-testid="spinner"> </span>
 
-  <div class="wrap">
+  <div class="wrap mat-typography">
     <div class="label">
       {{preview?.entity_label | truncate:[truncateLabel]}}
     </div>
@@ -21,8 +21,8 @@
   </div>
 </ng-template>
 
-<div *ngIf="openTabOnClick || urls.length > 0" dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview"
-  class="d-flex" [matMenuTriggerFor]="appMenu">
+<div data-testid="menu-trigger" *ngIf="openTabOnClick || urls.length > 0" dnd-draggable [dragEnabled]="dragEnabled"
+  [dragData]="preview" class="d-flex" [matMenuTriggerFor]="appMenu">
   <mat-menu #appMenu="matMenu">
 
     <!-- Open the entity in new Geovistory tab: (add to project) + open it -->
@@ -49,7 +49,7 @@
   <ng-content></ng-content>
 </div>
 
-<div *ngIf="!openTabOnClick && urls.length == 0" dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview"
+<div *ngIf="!openTabOnClick && urls.length === 0" dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview"
   class="d-flex">
   <ng-container [ngTemplateOutlet]="inner"></ng-container>
   <ng-content></ng-content>

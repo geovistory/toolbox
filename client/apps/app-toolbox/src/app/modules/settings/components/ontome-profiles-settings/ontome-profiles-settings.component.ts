@@ -1,16 +1,21 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { DfhProfile } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { values } from 'ramda';
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { filter, map, switchMap } from 'rxjs/operators';
 import { GvAnalysisService } from '../../../../modules/analysis/services/analysis.service';
+import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
+import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { values } from 'ramda';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
 import { OntomeProfileDeactivationReportDialogComponent, OntomeProfileDeactivationReportDialogData } from '../ontome-profile-deactivation-report-dialog/ontome-profile-deactivation-report-dialog.component';
 import { OntomeProfileUpdateDialogComponent, OntomeProfileUpdateDialogData } from '../ontome-profile-update-dialog/ontome-profile-update-dialog.component';
@@ -36,6 +41,14 @@ export interface ProfileItem {
       state('expanded', style({ height: '*' })),
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
+  ],
+  standalone: true,
+  imports: [
+    DetailTopBarComponent,
+    DetailContentComponent,
+    MatButtonModule,
+    MatTableModule,
+    MatIconModule,
   ],
 })
 export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {

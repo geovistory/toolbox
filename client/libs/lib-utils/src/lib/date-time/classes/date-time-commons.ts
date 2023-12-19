@@ -1,6 +1,6 @@
 import { EventEmitter } from '@angular/core';
 import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { YearMonthDay } from '../interfaces';
+import type { YearMonthDay } from '../interfaces';
 
 export type Granularity = TimePrimitiveWithCal.DurationEnum
 export abstract class DateTimeCommons {

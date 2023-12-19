@@ -1,11 +1,22 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
+import { DndModule } from '@suez/ngx-dnd';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
+import { EntityLabelConfigOpenBtnComponent } from '../../../../shared/modules/entity-label-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
+import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
@@ -13,7 +24,9 @@ import { READ_ONLY } from '../../tokens/READ_ONLY';
 @Component({
   selector: 'gv-entity-card-header',
   templateUrl: './entity-card-header.component.html',
-  styleUrls: ['./entity-card-header.component.scss']
+  styleUrls: ['./entity-card-header.component.scss'],
+  standalone: true,
+  imports: [NgIf, ClassInfoComponent, DndModule, MatTooltipModule, MatButtonToggleModule, MatIconModule, MatButtonModule, MatMenuModule, MatSlideToggleModule, MatDividerModule, EntityLabelConfigOpenBtnComponent, AsyncPipe]
 })
 export class EntityCardHeaderComponent implements OnInit {
 

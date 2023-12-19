@@ -9,7 +9,7 @@
   <mat-divider></mat-divider>
 </ng-container> -->
 
-<gv-view-field-item-container [enableDropZoneEnd$]="enableDropZoneEnd$" [field]="field" [item]="itemComponent.item"
+<gv-view-field-item-container [enableDropZoneEnd$]="enableDropZoneEnd$" [field]="field" [item]="item.component.item"
   [treeExtraPl]="0" [hidden]="hideTreeNodeAndFieldHeader$|async">
   <div class="loc-first-line" [ngClass]="{'mat-bg-grey-100':dragover$|async}">
     <span class="loc-left mat-typography  gv-pointer">
@@ -21,11 +21,11 @@
       <button *ngIf="!(itemCountService.sum$|async)" mat-icon-button [disabled]=true> </button>
 
       <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="showOntoInfo$" [resource]="resource"
-        [isInProject]="itemComponent.item.projRel?.is_in_project" [classLabel]="classLabel" [isFavorite]="false">
+        [isInProject]="item.component.item.projRel?.is_in_project" [classLabel]="classLabel" [isFavorite]="false">
       </gv-view-field-item-class-info>
 
       <gv-entity-preview class="loc-item" [hideClass]="true"
-        [pkEntity]="itemComponent.item.target.entity.resource.pk_entity" [dragEnabled]="false"
+        [pkEntity]="item.component.item.target.entity.resource.pk_entity" [dragEnabled]="false"
         [openTabOnClick]="!readonly" [truncateLabel]="'250'">
       </gv-entity-preview>
       <div class="gv-flex-grow mat-caption mat-text-secondary ml-2" (click)="showBody$.next(!showBody$.value)">
@@ -89,7 +89,7 @@
 
 <!-- ADD A DROPLIST FOR EACH FIELD BODY HERE, WHEN BODY HIDDEN AND DRAG ENABLED -->
 <gv-view-field-tree-item-drop-zone #dz class="loc-central-drop-zone" *ngFor="let field of fields$|async"
-  [dragover$]="dragover$" [field]="field" [source]="{fkInfo:resource.pk_entity}" [item]="itemComponent.item">
+  [dragover$]="dragover$" [field]="field" [source]="{fkInfo:resource.pk_entity}" [item]="item.component.item">
 </gv-view-field-tree-item-drop-zone>
 
 
@@ -98,15 +98,15 @@
 
   <gv-view-field-body #f *ngFor="let field of fields$|async" [showBody$]="showBody$" [dividerPosition]="'top'"
     [hidden]="(!(editMode.value$|async) || field.allSubfieldsRemovedFromAllProfiles) && !(f.itemsCount$ | async)"
-    [field]="field" [showOntoInfo$]="showOntoInfo$" [source]="sectionSource" [scope]="itemComponent.scope" [limit]="100"
-    [hideNoItemsInfo]="true">
+    [field]="field" [showOntoInfo$]="showOntoInfo$" [source]="sectionSource" [scope]="item.component.scope"
+    [limit]="100" [hideNoItemsInfo]="true">
   </gv-view-field-body>
 </ng-container>
 
 
 <!-- DROP ZONE AT BOTTOM OF LIST, IF BODY IS SHOWN, ALLOWS USERS TO MOVE ITEM AFTER THIS ITEM -->
 <gv-view-field-item-container *ngIf="(showBody$|async)&&(itemCountService.sum$|async)" [minHeight]="10"
-  [hasDropZoneStart]="false" [hasDropZoneEnd]="true" [field]="field" [item]="itemComponent.item" [treeExtraPl]="0"
+  [hasDropZoneStart]="false" [hasDropZoneEnd]="true" [field]="field" [item]="item.component.item" [treeExtraPl]="0"
   [hidden]="hideTreeNodeAndFieldHeader$|async">
 </gv-view-field-item-container>
 

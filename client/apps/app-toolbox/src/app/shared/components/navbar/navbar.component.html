@@ -13,7 +13,7 @@
 
     </ng-content>
 
-    <button class="gv-nv-item gv-nv-feedback-btn" mat-flat-button color="accent"
+    <button class="gv-nv-item gv-nv-feedback-btn" mat-flat-button color="accent" data-testid="help-btn"
       (click)="openFeedbackDialog()">Help</button>
 
     <div *ngIf="!account" class="gv-nv-item">
@@ -24,15 +24,15 @@
         [color]="router.isActive('/registration', false) ? 'primary': null">Register</button>
     </div>
     <div *ngIf="account" class="gv-nv-item">
-      <button mat-icon-button [matMenuTriggerFor]="menu">
+      <button mat-icon-button data-testid="menu-trigger" [matMenuTriggerFor]="menu">
         <mat-icon svgIcon="account-circle" color="primary"></mat-icon>
       </button>
       <mat-menu #menu="matMenu">
-        <a class="gv-nv-dropdown-item">
+        <div mat-menu-item [disableRipple]="true" class="gv-nv-dropdown-item">
           <i id="userIconBig" class="fa fa-user-circle mat-text-secondary" aria-hidden="true"></i>
           <div>{{account.username}}</div>
-          <h6 class="dropdown-header">{{account.email}}</h6>
-        </a>
+          <div class="account-email mat-body-2">{{account.email}}</div>
+        </div>
         <mat-divider></mat-divider>
         <div mat-menu-item class="mat-text-secondary">v{{toolboxVersion}}</div>
         <mat-divider></mat-divider>

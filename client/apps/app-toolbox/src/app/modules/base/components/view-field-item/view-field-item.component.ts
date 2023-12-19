@@ -1,20 +1,32 @@
+import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActiveProjectPipesService, Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { first } from 'rxjs/operators';
 import { C_53_TYPE_ID } from '../../../../ontome-ids';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { fieldToWarFieldChangeId } from '../../base.helpers';
-import { BaseModalsService } from '../../services/base-modals.service';
+import { openAddStatementDialog } from '../../lib/openAddStatementDialog';
 import { PaginationService } from '../../services/pagination.service';
 import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
 import { EditTextDialogComponent, EditTextDialogData } from '../edit-text-dialog/edit-text-dialog.component';
-import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+import { ViewFieldBodyService } from '../view-field-body/view-field-body.service';
+import { ViewFieldItemCellComponent } from '../view-field-item-cell/view-field-item-cell.component';
+import { ViewFieldItemContentSectionComponent } from '../view-field-item-content-section/view-field-item-content-section.component';
+import { ViewFieldItemLayoutComponent } from '../view-field-item-layout/view-field-item-layout.component';
+import { ViewFieldItemNestedComponent } from '../view-field-item-nested/view-field-item-nested.component';
+import { ViewFieldItemPreviewHasTypeComponent } from '../view-field-item-preview-has-type/view-field-item-preview-has-type.component';
+import { ViewFieldItemPreviewPlatformVocabularyComponent } from '../view-field-item-preview-platform-vocabulary/view-field-item-preview-platform-vocabulary.component';
+import { ViewFieldItemPreviewComponent } from '../view-field-item-preview/view-field-item-preview.component';
+import { ViewFieldItemTimePrimitiveComponent } from '../view-field-item-time-primitive/view-field-item-time-primitive.component';
+import { ViewFieldItemValueVersionComponent } from '../view-field-item-value-version/view-field-item-value-version.component';
+import { ViewFieldItemValueComponent } from '../view-field-item-value/view-field-item-value.component';
 import { VIEW_FIELD_ITEM_TYPE } from './VIEW_FIELD_ITEM_TYPE';
+import { ViewFieldItemService } from './view-field-item.service';
 export type ViewFieldItemTypeFn = (field: Field, stmtWT: StatementWithTarget) => ViewFieldItemType | undefined
 export type ViewFieldItemType =
   'preview' // a normal entity, that can be in the project or not
@@ -31,7 +43,10 @@ export type ViewFieldItemType =
   selector: 'gv-view-field-item',
   templateUrl: './view-field-item.component.html',
   styleUrls: ['./view-field-item.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  providers: [ViewFieldItemService, TruncatePipe],
+  imports: [ViewFieldItemLayoutComponent, NgIf, ViewFieldItemPreviewComponent, ViewFieldItemPreviewPlatformVocabularyComponent, ViewFieldItemPreviewHasTypeComponent, ViewFieldItemNestedComponent, ViewFieldItemTimePrimitiveComponent, ViewFieldItemCellComponent, ViewFieldItemValueComponent, ViewFieldItemValueVersionComponent, ViewFieldItemContentSectionComponent]
 })
 export class ViewFieldItemComponent implements OnInit {
   destroy$ = new Subject<boolean>();
@@ -52,15 +67,15 @@ export class ViewFieldItemComponent implements OnInit {
     private state: StateFacade,
     private ap: ActiveProjectPipesService,
     private p: ActiveProjectService,
-    private baseModals: BaseModalsService,
     private dialog: MatDialog,
     private truncatePipe: TruncatePipe,
     private paginationService: PaginationService,
+    viewFieldItemService: ViewFieldItemService,
     @Optional() private fieldDropService: ViewFieldDropListService,
     @Optional() @Inject(VIEW_FIELD_ITEM_TYPE) private itemTypeOverride: ViewFieldItemTypeFn,
-    @Optional() public fieldBody: ViewFieldBodyComponent,
+    @Optional() public fieldBody: ViewFieldBodyService,
 
-  ) { }
+  ) { viewFieldItemService.registerComponent(this) }
 
   ngOnInit(): void {
     this.itemType = this.getItemType(this.field, this.item)
@@ -97,14 +112,16 @@ export class ViewFieldItemComponent implements OnInit {
     this.dialog.open(ConfirmDialogComponent, { data })
   }
   openEditValueDialog(initVal: StatementWithTarget) {
-    this.baseModals.openAddStatementDialog({
-      field: this.field,
-      showAddList: false,
-      source: this.fieldBody.source,
-      targetClass: initVal.targetClass,
-      hiddenProperty: {},
-      toBeReplaced: initVal
-    })
+    openAddStatementDialog(
+      this.dialog,
+      {
+        field: this.field,
+        showAddList: false,
+        source: this.fieldBody.component.source,
+        targetClass: initVal.targetClass,
+        hiddenProperty: {},
+        toBeReplaced: initVal
+      })
   }
   openEditTextDialog() {
     const data: EditTextDialogData = {
@@ -163,7 +180,7 @@ export class ViewFieldItemComponent implements OnInit {
   async movePosition(targetOrdNum: number) {
     this.fieldDropService.moveInSameFieldBackend(
       this.field,
-      this.fieldBody.source,
+      this.fieldBody.component.source,
       this.scope,
       targetOrdNum,
       this.item.statement.pk_entity
@@ -206,7 +223,7 @@ export class ViewFieldItemComponent implements OnInit {
       )
     }
 
-    if (reloadNeeded) this.triggerPageReloads(pkProject, this.fieldBody.source.fkInfo, this.field)
+    if (reloadNeeded) this.triggerPageReloads(pkProject, this.fieldBody.component.source.fkInfo, this.field)
     return undefined
   }
 
@@ -218,7 +235,7 @@ export class ViewFieldItemComponent implements OnInit {
 
   async displayNotRemovableWarning() {
     const pkProject = await this.state.pkProject$.pipe(first()).toPromise();
-    const pkEntity = this?.fieldBody?.source?.fkInfo;
+    const pkEntity = this?.fieldBody?.component?.source?.fkInfo;
     if (pkEntity) {
       const ep = await this.ap.streamEntityPreview(pkEntity, true, pkProject).pipe(first()).toPromise();
 
@@ -233,7 +250,7 @@ export class ViewFieldItemComponent implements OnInit {
 
   async getSourceEntityLabel() {
     const classLabel = this.field.sourceClassLabel
-    const ep = await this.ap.streamEntityPreview(this.fieldBody.source.fkInfo).pipe(first()).toPromise()
+    const ep = await this.ap.streamEntityPreview(this.fieldBody.component.source.fkInfo).pipe(first()).toPromise()
     return this.getEntityLabel(classLabel, ep.entity_label)
   }
   async getTargetEntityLabel() {

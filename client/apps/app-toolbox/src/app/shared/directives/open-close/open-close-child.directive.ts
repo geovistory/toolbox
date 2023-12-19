@@ -1,7 +1,8 @@
 import { Directive, ElementRef } from '@angular/core';
 
 @Directive({
-  selector: '[gvOpenCloseChild]'
+    selector: '[gvOpenCloseChild]',
+    standalone: true
 })
 export class OpenCloseChildDirective {
   get height(): number | undefined {

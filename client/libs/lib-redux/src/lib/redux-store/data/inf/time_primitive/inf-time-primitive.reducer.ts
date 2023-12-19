@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { infFeatureKey } from "../inf.feature.key";
 
 export const infTimePrimitiveFeature = 'time_primitive'
-export const infTimePrimitiveReducerConfig: ReducerConfig = {
+export const infTimePrimitiveReducerConfig: ReducerConfig<InfTimePrimitive> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item: InfTimePrimitive) => {

@@ -1,9 +1,9 @@
-import { CdkPortal } from '@angular/cdk/portal';
+import { CdkPortal, PortalModule } from '@angular/cdk/portal';
 import { ChangeDetectorRef, Component, ContentChild, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { combineLatest, Observable, Subject } from 'rxjs';
+import { Observable, Subject, combineLatest } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { getTabBodyKey, ProjectEditComponent, TabBody } from '../../containers/project-edit/project-edit.component';
+import { ProjectEditComponent, TabBody, getTabBodyKey } from '../../../../pages/project/project-edit/project-edit.component';
+import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { OnActivateTabDirective } from '../../directives/on-activate-tab.directive';
 import { PanelBodyDirective } from '../../directives/panel-body.directive';
 
@@ -16,7 +16,9 @@ import { PanelBodyDirective } from '../../directives/panel-body.directive';
   `,
   providers: [
     TabLayoutService
-  ]
+  ],
+  standalone: true,
+  imports: [PortalModule]
 })
 export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   @Input() tab: TabBody<any>;

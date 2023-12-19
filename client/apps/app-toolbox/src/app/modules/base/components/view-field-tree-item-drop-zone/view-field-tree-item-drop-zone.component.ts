@@ -1,18 +1,21 @@
 import { ChangeDetectionStrategy, Component, HostBinding, Input, OnInit } from '@angular/core';
 import { Field } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
-import { DndDropEvent } from 'ngx-drag-drop';
+import { DndDropEvent, DndDropzoneDirective } from 'ngx-drag-drop';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { GvDndGlobalService } from '../../services/dnd-global.service';
 import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
 import { canDrop, getDragDataFromEvent } from '../view-field-item-container/view-field-item-container.component';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'gv-view-field-tree-item-drop-zone',
-  templateUrl: './view-field-tree-item-drop-zone.component.html',
-  styleUrls: ['./view-field-tree-item-drop-zone.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-view-field-tree-item-drop-zone',
+    templateUrl: './view-field-tree-item-drop-zone.component.html',
+    styleUrls: ['./view-field-tree-item-drop-zone.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [NgIf, DndDropzoneDirective, AsyncPipe]
 })
 export class ViewFieldTreeItemDropZoneComponent implements OnInit {
   destroy$ = new Subject<boolean>();

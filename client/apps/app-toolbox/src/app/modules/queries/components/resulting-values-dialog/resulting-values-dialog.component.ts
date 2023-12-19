@@ -1,6 +1,9 @@
+import { NgFor } from '@angular/common';
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ActiveProjectService } from "../../../../core/active-project/active-project.service";
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatListModule } from '@angular/material/list';
+import { ActiveProjectService } from "../../../../shared/services/active-project.service";
 import { ResultTableValue } from '../result-table/result-table.component';
 
 export interface ValuesDialogData {
@@ -9,7 +12,9 @@ export interface ValuesDialogData {
 @Component({
   selector: 'gv-resulting-values-dialog',
   templateUrl: './resulting-values-dialog.component.html',
-  styleUrls: ['./resulting-values-dialog.component.scss']
+  styleUrls: ['./resulting-values-dialog.component.scss'],
+  standalone: true,
+  imports: [MatListModule, NgFor, MatButtonModule]
 })
 export class ResultingValuesDialogComponent {
 

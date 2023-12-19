@@ -1,13 +1,19 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { NgClass, NgIf } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
-import { ControlValueAccessor, UntypedFormBuilder, UntypedFormGroup, NgControl, Validators } from '@angular/forms';
-import { MatFormFieldControl } from '@angular/material/form-field';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { ControlValueAccessor, FormsModule, NgControl, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldControl, MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
-import { CalendarType, Granularity, GregorianDateTime, JulianDateTime, TimePrimitive } from '@kleiolab/lib-utils';
-import { ValidationService } from '../../../../core/validation/validation.service';
+import { CalendarType, DateTimeModule, Granularity, GregorianDateTime, JulianDateTime, TimePrimitive } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ValidationService } from '../../../../core/validation/validation.service';
+import { ControlMessagesComponent } from '../../../../shared/components/control-messages/control-messages.component';
+
+
 
 type CtrlModel = TimePrimitiveWithCal;
 
@@ -16,7 +22,19 @@ type CtrlModel = TimePrimitiveWithCal;
   templateUrl: './ctrl-time-primitive.component.html',
   styleUrls: ['./ctrl-time-primitive.component.css'],
   providers: [{ provide: MatFormFieldControl, useExisting: CtrlTimePrimitiveComponent }],
-
+  standalone: true,
+  imports: [
+    NgIf,
+    NgClass,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatFormFieldModule,
+    FormsModule,
+    ReactiveFormsModule,
+    DateTimeModule,
+    ControlMessagesComponent
+  ],
 })
 export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
   static nextId = 0;

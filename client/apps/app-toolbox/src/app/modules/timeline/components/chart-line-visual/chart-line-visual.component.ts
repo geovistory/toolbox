@@ -64,10 +64,11 @@ export class ChartLineDefinition {
 }
 
 @Component({
-  // tslint:disable-next-line: component-selector
-  selector: '[chartLineVisual]',
-  templateUrl: './chart-line-visual.component.html',
-  styleUrls: ['./chart-line-visual.component.scss']
+    // tslint:disable-next-line: component-selector
+    selector: '[chartLineVisual]',
+    templateUrl: './chart-line-visual.component.html',
+    styleUrls: ['./chart-line-visual.component.scss'],
+    standalone: true
 })
 export class ChartLineVisualComponent implements OnInit, OnChanges {
 

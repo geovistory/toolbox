@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input, OnInit, forwardRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
 import { fieldToFieldId } from '../../base.helpers';
 import { EditModeService } from '../../services/edit-mode.service';
@@ -12,6 +14,8 @@ import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.se
 import { ChooseClassDialogComponent, ChooseClassDialogData, ChooseClassDialogReturn } from '../choose-class-dialog/choose-class-dialog.component';
 import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
+import { ViewFieldHeaderComponent } from '../view-field-header/view-field-header.component';
+import { ViewFieldService } from './view-field.service';
 
 @Component({
   selector: 'gv-view-field',
@@ -19,8 +23,11 @@ import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.compo
   styleUrls: ['./view-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    ViewFieldService,
     ViewFieldTreeNodeService
-  ]
+  ],
+  standalone: true,
+  imports: [ViewFieldHeaderComponent, MatDividerModule, forwardRef(() => ViewFieldBodyComponent), AsyncPipe]
 })
 export class ViewFieldComponent implements OnInit {
 
@@ -36,18 +43,19 @@ export class ViewFieldComponent implements OnInit {
   targetClassLabels: string[]
   @Input() onAddClickHook: () => void
 
-  @ViewChild(ViewFieldBodyComponent) bodyComponent: ViewFieldBodyComponent;
-
   showHeader$ = new BehaviorSubject(true)
+  showBody$ = new BehaviorSubject(false)
   showAddButton$: Observable<boolean>
   constructor(
     private state: StateFacade,
     public dialog: MatDialog,
     private addHooks: ViewFieldAddHooksService,
     public nodeService: ViewFieldTreeNodeService,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    viewFieldService: ViewFieldService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+    viewFieldService.registerComponent(this)
   }
 
 
@@ -95,7 +103,7 @@ export class ViewFieldComponent implements OnInit {
     if (this.field.isSpecialField === 'time-span') {
       return;
     }
-    let hook = await this.addHooks.beforeChoosingClass(this)
+    const hook = await this.addHooks.beforeChoosingClass(this)
     if (hook) return hook();
 
     const targetClasses = getFormTargetClasses(this.field)
@@ -124,7 +132,7 @@ export class ViewFieldComponent implements OnInit {
     }
 
     const dataModified = await this.addHooks.afterChoosingClass(this, targetClass)
-    if (dataModified) this.bodyComponent.showBody$.next(true);
+    if (dataModified) this.showBody$.next(true);
   }
 
 

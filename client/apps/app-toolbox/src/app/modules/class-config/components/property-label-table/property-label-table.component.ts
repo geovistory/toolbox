@@ -1,14 +1,22 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { InfLanguage, ProTextProperty } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'd3';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { either, is, isEmpty, isNil, map as rmap, pipe, reject, when } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { either, is, isEmpty, isNil, pipe, reject, map as rmap, when } from 'ramda';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { CtrlLanguageComponent } from '../../../base/components/ctrl-language/ctrl-language.component';
 interface Row {
 
   textProperty: ProTextProperty
@@ -22,7 +30,9 @@ interface Row {
 @Component({
   selector: 'gv-property-label-table',
   templateUrl: './property-label-table.component.html',
-  styleUrls: ['./property-label-table.component.scss']
+  styleUrls: ['./property-label-table.component.scss'],
+  standalone: true,
+  imports: [FormsModule, ReactiveFormsModule, MatTableModule, NgIf, MatFormFieldModule, MatInputModule, CtrlLanguageComponent, MatButtonModule, MatTooltipModule, MatIconModule, MatProgressSpinnerModule, AsyncPipe]
 })
 export class PropertyLabelTableComponent implements OnInit, OnDestroy {
 

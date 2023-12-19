@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { SysConfig } from "@kleiolab/lib-config";
 
 @Pipe({
-  name: 'analysisIcon'
+    name: 'analysisIcon',
+    standalone: true
 })
 /**
  * Returns name of svgIcon for given fk_analysis_type

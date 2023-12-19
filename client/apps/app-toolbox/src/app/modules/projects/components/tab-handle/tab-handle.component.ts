@@ -1,15 +1,20 @@
 
+import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { PanelTab, StateFacade } from '@kleiolab/lib-redux';
 import { ClassConfig } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { Observable, Subject } from 'rxjs';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 
 @Component({
   selector: 'gv-tab-handle',
   templateUrl: './tab-handle.component.html',
   styleUrls: ['./tab-handle.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, MatIconModule, NgClass, MatTooltipModule, AsyncPipe]
 })
 export class TabHandleComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { proFeatureKey } from "../pro.feature.key";
 
 export const proDfhClassProjRelFeature = 'dfh_class_proj_rel'
-export const proDfhClassProjRelReducerConfig: ReducerConfig = {
+export const proDfhClassProjRelReducerConfig: ReducerConfig<ProDfhClassProjRel> = {
   indexBy: {
     keyInStore: 'fk_project__fk_class',
     indexByFn: (item: ProDfhClassProjRel) => item.fk_project + '_' + item.fk_class

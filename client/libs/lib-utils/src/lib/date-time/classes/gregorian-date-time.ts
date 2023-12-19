@@ -1,5 +1,5 @@
+import type { DateTime } from '../interfaces';
 import { DateTimeCommons, Granularity } from './date-time-commons';
-import { DateTime } from '../interfaces';
 import { JulianDateTime } from './julian-date-time';
 
 

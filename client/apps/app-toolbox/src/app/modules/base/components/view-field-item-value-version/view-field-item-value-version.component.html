@@ -1,20 +1,20 @@
 <gv-view-field-item-container>
   <span class="loc-left mat-typography">
-    <gv-class-info class="loc-class-info" [showOntoInfo$]="itemComponent.showOntoInfo$"
-      [pkClass]="itemComponent.item.targetClass"
-      [classLabel]="field.targets[itemComponent.item.targetClass]?.targetClassLabel" [isFavorite]="ordNum===1">
+    <gv-class-info class="loc-class-info" [showOntoInfo$]="item.component.showOntoInfo$"
+      [pkClass]="item.component.item.targetClass"
+      [classLabel]="field.targets[item.component.item.targetClass]?.targetClassLabel" [isFavorite]="ordNum===1">
     </gv-class-info>
 
     <div class="ellipsis">
-      Version ID: {{itemComponent.item.statement.pk_entity}}
+      Version ID: {{item.component.item.statement.pk_entity}}
     </div>
   </span>
 
   <span class="loc-right" *ngIf="editMode.value$|async">
     <mat-menu #appMenu="matMenu">
 
-      <ng-container *ngIf="itemComponent.item.target.appellation">
-        <button mat-menu-item (click)="itemComponent.openPopup(itemComponent.item.target?.appellation?.string)">
+      <ng-container *ngIf="item.component.item.target.appellation">
+        <button mat-menu-item (click)="item.component.openPopup(item.component.item.target?.appellation?.string)">
           <mat-icon svgIcon="arrow-expand-all"></mat-icon>
           <span>Open in popup</span>
         </button>

@@ -4,6 +4,7 @@ import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from '../../../../on
 import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ListService } from '../../services/list.service';
+import { MatTabsModule } from '@angular/material/tabs';
 
 type Option = {
   value: 'container' | 'content';
@@ -11,10 +12,12 @@ type Option = {
 };
 
 @Component({
-  selector: 'gv-sources-tabs',
-  templateUrl: './sources-tabs.component.html',
-  styleUrls: ['./sources-tabs.component.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-sources-tabs',
+    templateUrl: './sources-tabs.component.html',
+    styleUrls: ['./sources-tabs.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatTabsModule]
 })
 export class SourcesTabsComponent implements OnDestroy {
 

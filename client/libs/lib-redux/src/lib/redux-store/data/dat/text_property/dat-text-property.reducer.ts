@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { datFeatureKey } from "../dat.feature.key";
 
 export const datTextPropertyFeature = 'text_property'
-export const datTextPropertyReducerConfig: ReducerConfig = {
+export const datTextPropertyReducerConfig: ReducerConfig<DatTextProperty> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item) => item.pk_entity.toString()

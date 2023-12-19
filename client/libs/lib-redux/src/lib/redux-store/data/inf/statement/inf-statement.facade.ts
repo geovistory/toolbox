@@ -3,14 +3,12 @@ import { GvFieldId, GvFieldPage, InfStatement, ProInfoProjRel, StatementWithTarg
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { Store } from '@ngrx/store';
 import { values } from 'ramda';
-import { filter, first, map, Observable, of, pipe, switchMap } from 'rxjs';
+import { Observable, filter, first, map, of, pipe, switchMap } from 'rxjs';
+import { ByPk } from '../../../_lib/ByPk';
 import { IAppState } from '../../../public-api';
 import { getActiveProjectId } from '../../../ui/active-project/active-project.selectors';
-import { ByPk } from '../../../_lib/ByPk';
-import { getInfoProjRelByFkProjectPkEntity } from '../../pro/info_proj_rel/pro-info-proj-rel.selectors';
 import { CrudFacade } from '../../_lib/crud-facade';
-import { getFromTo } from '../../_lib/crud-reducer-factory';
-import { subfieldIdToString } from '../../_lib/subfieldIdToString';
+import { getInfoProjRelByFkProjectPkEntity } from '../../pro/info_proj_rel/pro-info-proj-rel.selectors';
 import { infStatementActions } from './inf-statement.actions';
 import { InfStatementObjectAndProperyFks, InfStatementObjectFks, InfStatementSubjectAndProperyFks, InfStatementSubjectFks } from './inf-statement.reducer';
 import { getPage, getPageCount, getPageLoadNeeded, getPageRow, getPageRows, getStatementByObject, getStatementByObjectAndProperty, getStatementByPkEntity, getStatementBySubject, getStatementBySubjectAndProperty, getStatementPkEntityIdxtate } from './inf-statement.selectors';
@@ -122,8 +120,6 @@ export class InfStatementFacade extends CrudFacade<InfStatement> {
       )
   }
   getPageLoadNeeded$ = (page: GvFieldPage, trigger$: Observable<any>): Observable<boolean> => {
-    const key = subfieldIdToString(page)
-    const fromToString = getFromTo(page.limit, page.offset)
     return trigger$.pipe(
       switchMap(() => this.getPage.pageLoadNeeded(page)
         .pipe(

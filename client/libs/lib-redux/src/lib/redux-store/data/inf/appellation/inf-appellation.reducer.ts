@@ -1,8 +1,9 @@
+import { InfAppellation } from '@kleiolab/lib-sdk-lb4';
 import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-factory';
 import { infFeatureKey } from "../inf.feature.key";
 
 export const infAppellationFeature = 'appellation'
-export const infAppellationReducerConfig: ReducerConfig = {
+export const infAppellationReducerConfig: ReducerConfig<InfAppellation> = {
   indexBy: {
     keyInStore: 'pk_entity',
     indexByFn: (item) => {

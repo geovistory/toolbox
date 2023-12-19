@@ -4,11 +4,15 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { values } from 'ramda';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { NgIf, AsyncPipe } from '@angular/common';
 
 @Component({
-  selector: 'gv-onto-property-info',
-  templateUrl: './onto-property-info.component.html',
-  styleUrls: ['./onto-property-info.component.scss']
+    selector: 'gv-onto-property-info',
+    templateUrl: './onto-property-info.component.html',
+    styleUrls: ['./onto-property-info.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatTooltipModule, AsyncPipe]
 })
 export class OntoPropertyInfoComponent implements OnInit {
   @Input() pkProperty: number;

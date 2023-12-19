@@ -1,10 +1,15 @@
 import { Component, HostBinding, OnDestroy } from '@angular/core';
+import { MatDividerModule } from '@angular/material/divider';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { AddEntityMenuComponent } from '../../../base/components/add-entity-menu/add-entity-menu.component';
 import { ListService } from '../../services/list.service';
+import { EntitiesTabsComponent } from '../entities-tabs/entities-tabs.component';
+import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';
+import { ListComponent } from '../list/list.component';
 
 @Component({
   selector: 'gv-entity-list',
@@ -12,7 +17,9 @@ import { ListService } from '../../services/list.service';
   styleUrls: ['./entity-list.component.css'],
   providers: [
     ListService
-  ]
+  ],
+  standalone: true,
+  imports: [ListDrawerHeaderComponent, AddEntityMenuComponent, EntitiesTabsComponent, MatDividerModule, ListComponent]
 })
 export class EntityListComponent implements OnDestroy {
 

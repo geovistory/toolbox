@@ -1,22 +1,34 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
 import { matExpansionAnimations } from '@angular/material/expansion';
-import { MatSort, Sort } from '@angular/material/sort';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { ProDfhClassProjRel, SysConfigClassCategoryBelonging, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { equals, indexBy, keys, values } from 'ramda';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
+import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../../modules/class-config/components/class-config-dialog/class-config-dialog.component';
 import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
+import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
+import { OntoClassInfoComponent } from '../../../../shared/components/onto-info/onto-class-info/onto-class-info.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
+import { EntityLabelConfigOpenBtnComponent } from '../../../../shared/modules/entity-label-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
 import { HighlightPipe } from '../../../../shared/pipes/highlight/highlight.pipe';
-import { equals, indexBy, keys, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
 
 interface Profile {
@@ -74,6 +86,26 @@ export type EntityType = 'teEnt' | 'peIt' | 'other';
       transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
     ]),
     matExpansionAnimations.indicatorRotate,
+  ],
+  standalone: true,
+  imports: [
+    DetailTopBarComponent,
+    MatCheckboxModule,
+    MatInputModule,
+    DetailContentComponent,
+    MatTableModule,
+    MatSortModule,
+    NgIf,
+    MatProgressSpinnerModule,
+    ClassInfoComponent,
+    OntoClassInfoComponent,
+    MatButtonModule,
+    MatMenuModule,
+    NgFor,
+    MatIconModule,
+    MatTooltipModule,
+    EntityLabelConfigOpenBtnComponent,
+    AsyncPipe,
   ],
 })
 export class ProjectSettingsDataComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {

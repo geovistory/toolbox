@@ -1,16 +1,21 @@
+import { AsyncPipe, NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit, Optional } from '@angular/core';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { EditModeService } from '../../services/edit-mode.service';
-import { ViewFieldComponent } from '../view-field/view-field.component';
+import { EntityFieldTimeSpanComponent } from '../entity-field-time-span/entity-field-time-span.component';
+import { EntityFieldComponent } from '../entity-field/entity-field.component';
+import { ViewFieldService } from '../view-field/view-field.service';
 
 @Component({
   selector: 'gv-entity-with-fields',
   templateUrl: './entity-with-fields.component.html',
   styleUrls: ['./entity-with-fields.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgFor, EntityFieldComponent, EntityFieldTimeSpanComponent, AsyncPipe]
 })
 export class EntityWithFieldsComponent implements OnInit {
   destroy$ = new Subject<boolean>();
@@ -29,7 +34,7 @@ export class EntityWithFieldsComponent implements OnInit {
 
   constructor(
     private c: ConfigurationPipesService,
-    @Optional() public parentField: ViewFieldComponent,
+    @Optional() public parentField: ViewFieldService,
     public editMode: EditModeService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
@@ -57,7 +62,7 @@ export class EntityWithFieldsComponent implements OnInit {
 
   isCircular(field: Field): boolean {
     if (this.parentField
-      && this.parentField.field.property.fkProperty === field.property.fkProperty
+      && this.parentField.component.field.property.fkProperty === field.property.fkProperty
       && field.targetMaxQuantity === 1
     ) {
       return true

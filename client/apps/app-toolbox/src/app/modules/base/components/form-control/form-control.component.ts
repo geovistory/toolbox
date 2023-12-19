@@ -1,11 +1,19 @@
+import { NgIf } from '@angular/common';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { Subject } from 'rxjs';
 import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
 import { FormControlConfig } from '../../../../modules/form-factory/services/FormControlConfig';
-import { Subject } from 'rxjs';
+import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlEntityComponent } from '../ctrl-entity/ctrl-entity.component';
+import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
+import { CtrlPlatformVocabItemComponent } from '../ctrl-platform-vocab-item/ctrl-platform-vocab-item.component';
+import { CtrlTimePrimitiveComponent } from '../ctrl-time-primitive/ctrl-time-primitive.component';
 import { CtrlTimeSpanComponent } from '../ctrl-time-span/ctrl-time-span.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
-import { FormControlData, FormCreateDataComponent } from '../form-create-data/form-create-data.component';
+import { FormControlData } from '../form-create-data/form-create-data.component';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 
 export interface ChildComponents {
@@ -17,7 +25,9 @@ export interface ChildComponents {
 @Component({
   selector: 'gv-form-control',
   templateUrl: './form-control.component.html',
-  styleUrls: ['./form-control.component.css']
+  styleUrls: ['./form-control.component.css'],
+  standalone: true,
+  imports: [NgIf, MatFormFieldModule, CtrlAppellationComponent, FormsModule, ReactiveFormsModule, CtrlLanguageComponent, CtrlTimePrimitiveComponent, MatIconModule, CtrlTimeSpanComponent, CtrlEntityComponent, CtrlTypeComponent, CtrlPlatformVocabItemComponent]
 })
 export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -30,12 +40,7 @@ export class FormControlComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public config: FormControlConfig<FormControlData>
 
-
-
-
   entityCtrlDisableStatement: DisableIfHasStatement;
-
-  constructor(private createForm: FormCreateDataComponent) { }
 
   ngOnInit() {
     this.config = this.formControlFactory.config

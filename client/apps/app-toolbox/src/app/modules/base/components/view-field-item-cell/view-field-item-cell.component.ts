@@ -1,26 +1,35 @@
-import { Component } from '@angular/core';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { Component, forwardRef } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { Field } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
 import { EditModeService } from '../../services/edit-mode.service';
-import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
+import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
+import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
 @Component({
   selector: 'gv-view-field-item-cell',
   templateUrl: './view-field-item-cell.component.html',
-  styleUrls: ['./view-field-item-cell.component.scss']
+  styleUrls: ['./view-field-item-cell.component.scss'],
+  standalone: true,
+  imports: [forwardRef(() => ViewFieldItemContainerComponent), ClassInfoComponent, NgIf, MatMenuModule, MatIconModule, MatDividerModule, MatButtonModule, AsyncPipe]
 })
 export class ViewFieldItemCellComponent {
   ordNum?: number;
   field: Field
   showOntoInfo$: Observable<boolean>
   constructor(
-    public itemComponent: ViewFieldItemComponent,
+    public item: ViewFieldItemService,
     public editMode: EditModeService
   ) { }
   ngOnInit(): void {
-    this.ordNum = this.itemComponent.item.ordNum
-    this.field = this.itemComponent.field
-    this.showOntoInfo$ = this.itemComponent.showOntoInfo$
+    this.ordNum = this.item.component.item.ordNum
+    this.field = this.item.component.field
+    this.showOntoInfo$ = this.item.component.showOntoInfo$
   }
 
 }

@@ -1,17 +1,25 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { OntoMeControllerService } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf } from '@angular/common';
 export interface OntomeProfileUpdateDialogData {
   profileId: number
   profileLabel: string
 }
 @Component({
-  selector: 'gv-ontome-profile-update-dialog',
-  templateUrl: './ontome-profile-update-dialog.component.html',
-  styleUrls: ['./ontome-profile-update-dialog.component.scss']
+    selector: 'gv-ontome-profile-update-dialog',
+    templateUrl: './ontome-profile-update-dialog.component.html',
+    styleUrls: ['./ontome-profile-update-dialog.component.scss'],
+    standalone: true,
+    imports: [NgIf, MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatProgressSpinnerModule, MatButtonModule]
 })
 export class OntomeProfileUpdateDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

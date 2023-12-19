@@ -1,9 +1,14 @@
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationBasicPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from '@kleiolab/lib-redux';
-import { FormArrayConfig } from '../../../../modules/form-factory/services/FormArrayConfig';
 import { equals } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
+import { FormArrayConfig } from '../../../../modules/form-factory/services/FormArrayConfig';
+import { QfFormControlComponent } from '../qf-form-control/qf-form-control.component';
 import { QfArraySubgroupInitVal, QfFormArrayData, QfFormArrayFactory, QfFormControlData, QfFormControlFactory, QfFormNodeConfig } from '../query-filter/query-filter.component';
 import { QueryFilterService } from '../query-filter/query-filter.service';
 
@@ -12,7 +17,9 @@ import { QueryFilterService } from '../query-filter/query-filter.service';
 @Component({
   selector: 'gv-qf-form-array',
   templateUrl: './qf-form-array.component.html',
-  styleUrls: ['./qf-form-array.component.scss']
+  styleUrls: ['./qf-form-array.component.scss'],
+  standalone: true,
+  imports: [NgIf, NgFor, QfFormControlComponent, MatButtonModule, MatTooltipModule, MatIconModule, NgClass]
 })
 export class QfFormArrayComponent implements OnInit, OnDestroy {
 

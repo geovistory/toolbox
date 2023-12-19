@@ -6,7 +6,8 @@ import { Pipe, PipeTransform } from '@angular/core';
  * (within an array) 
  */
 @Pipe({
-  name: 'filterByKey'
+    name: 'filterByKey',
+    standalone: true
 })
 export class FilterByKeyPipe implements PipeTransform {
 

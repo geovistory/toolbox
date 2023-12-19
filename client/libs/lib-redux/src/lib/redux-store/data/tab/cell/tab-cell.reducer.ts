@@ -3,7 +3,7 @@ import { createModelReducers, ReducerConfig } from '../../_lib/crud-reducer-fact
 import { tabFeatureKey } from "../tab.feature.key";
 
 export const tabCellFeature = 'cell'
-export const tabCellReducerConfig: ReducerConfig = {
+export const tabCellReducerConfig: ReducerConfig<TabCell> = {
   indexBy: {
     keyInStore: 'pk_cell',
     indexByFn: (item: TabCell) => item.pk_cell.toString()

@@ -5,12 +5,13 @@ import { DfhConfig, ProConfig, SysConfig } from '@kleiolab/lib-config';
 import { ClassConfig, DfhClass, DfhProperty, GvFieldTargetViewType, GvSubentitFieldPageReq, InfLanguage, ProClassFieldConfig, RelatedProfile, SysConfigClassCategoryBelonging, SysConfigFieldDisplay, SysConfigFormCtrlType, SysConfigSpecialFields, SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { flatten, indexBy, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
 import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { filterNullish } from '../../_helpers/filterNullish';
 import { DataFacade } from '../../redux-store/data/data.facade';
 import { UiFacade } from '../../redux-store/ui/ui.facade';
-import { ActiveProjectPipesService } from '../active-project/active-project-pipes.service';
 import { PipeCache } from '../PipeCache';
+import { ActiveProjectPipesService } from '../active-project/active-project-pipes.service';
 import { AddMenuClassItem } from './models/AddMenuClassItem';
 import { DfhClassEnriched } from './models/DfhClassEnriched';
 import { DfhClassEnrichedWithLabel } from './models/DfhClassEnrichedWithLabel';
@@ -22,7 +23,6 @@ import { SectionName } from './models/SectionName';
 import { SpecialFieldType } from './models/SpecialFieldType';
 import { Subfield } from './models/Subfield';
 import { TableName } from './models/TableName';
-import { filterNullish } from '../../_helpers/filterNullish';
 
 type LabelOrigin = 'of project in project lang' | 'of default project in project lang' | 'of default project in english' | 'of ontome in project lang' | 'of ontome in english'
 
@@ -641,7 +641,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
   pipeClassLabel(pkClass?: number): Observable<string> {
     const obs$ = combineLatest([
       this.uiFacade.activeProject.projectId$,
-      this.activeProject.language$,
+      this.activeProject.language$.pipe(filter(l => !!l)),
     ]).pipe(
       switchMap(([fkProject, language]) => this.pipeLabels({ pkClass, fkProject, language, type: 'label' })
         .pipe(
@@ -803,7 +803,7 @@ export class ConfigurationPipesService extends PipeCache<ConfigurationPipesServi
     const type = isOutgoing ? 'label' : 'inverse_label'
     const obs$ = combineLatest([
       this.uiFacade.activeProject.projectId$,
-      this.activeProject.language$
+      this.activeProject.language$.pipe(filter(l => !!l))
     ]).pipe(
       switchMap(([fkProject, language]) => this.pipeLabels(
         {

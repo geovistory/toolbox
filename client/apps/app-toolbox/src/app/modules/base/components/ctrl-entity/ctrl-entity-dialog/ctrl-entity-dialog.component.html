@@ -19,7 +19,7 @@
       <!-- footer -->
       <ng-container footer>
         <button mat-flat-button color="primary"
-          [disabled]="f?.formFactory?.formGroup.invalid && f?.formFactory?.formGroup.touched" (click)="onFormOk()">
+          [disabled]="f?.formFactory?.formGroup.invalid && f?.formFactory?.formGroup.touched" (click)="onFormOk(f)">
           <span>OK</span>
         </button>
 
@@ -41,7 +41,7 @@
       <!-- body -->
       <ng-container body>
         <gv-search-existing-entity class="gv-fh gv-ovf-auto" [pkClass]="(pkClass$ | async)"
-          [searchString$]="searchString$" [mode]="sliderView == 'right' ? 'mode2' : 'mode1'"
+          [searchString$]="searchString$" [mode]="sliderView === 'right' ? 'mode2' : 'mode1'"
           [confirmBtnTextInProject]="'Select'" [confirmBtnTextNotInProject]="'Select'"
           [disableIfHasStatement]="data.disableIfHasStatement" (onConfirm)="onSelectExisting($event)"
           (onMore)="onMoreClick($event)" (onBack)="onBackClick()">

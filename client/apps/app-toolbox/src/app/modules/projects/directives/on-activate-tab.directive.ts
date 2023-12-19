@@ -6,7 +6,8 @@ export interface TabLayoutComponentInterface {
 }
 
 @Directive({
-  selector: '[onActivateTab]'
+    selector: '[onActivateTab]',
+    standalone: true
 })
 export class OnActivateTabDirective {
   @Input('onActivateTab') c: TabLayoutComponentInterface;

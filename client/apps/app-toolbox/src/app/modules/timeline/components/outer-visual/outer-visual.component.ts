@@ -4,9 +4,10 @@ import { Timeline } from '../../models/timeline';
 import { D3Service } from '../../shared/d3.service';
 
 @Component({
-  selector: '[outerVisual]',
-  templateUrl: './outer-visual.component.html',
-  styleUrls: ['./outer-visual.component.scss']
+    selector: '[outerVisual]',
+    templateUrl: './outer-visual.component.html',
+    styleUrls: ['./outer-visual.component.scss'],
+    standalone: true
 })
 export class OuterVisualComponent extends TimePrimitiveVisual implements OnInit, DoCheck {
 

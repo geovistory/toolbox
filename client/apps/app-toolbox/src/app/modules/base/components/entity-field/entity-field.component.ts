@@ -1,20 +1,28 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, Input, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { Field, FieldPage, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
+import { OntoPropertyInfoComponent } from '../../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { PaginationService } from '../../services/pagination.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
+import { FieldLabelComponent } from '../field-label/field-label.component';
 import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
 
 @Component({
   selector: 'gv-entity-field',
   templateUrl: './entity-field.component.html',
   styleUrls: ['./entity-field.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, ClassInfoComponent, OntoPropertyInfoComponent, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewComponent, AsyncPipe]
 })
 export class EntityFieldComponent implements OnInit {
   destroy$ = new Subject<boolean>();
@@ -28,7 +36,6 @@ export class EntityFieldComponent implements OnInit {
   isCircular = false;
   page$: Observable<FieldPage>
   constructor(
-    private p: ActiveProjectPipesService,
     private state: StateFacade,
     private i: InformationPipesService,
     private pag: PaginationService,

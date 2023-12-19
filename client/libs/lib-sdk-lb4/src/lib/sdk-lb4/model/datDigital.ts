@@ -12,12 +12,12 @@
 
 
 export interface DatDigital { 
+    pk_entity?: number;
     entity_version?: number;
     pk_text?: number;
     quill_doc?: object;
     string?: string;
     fk_system_type?: number;
-    pk_entity?: number;
     fk_namespace?: number;
 }
 

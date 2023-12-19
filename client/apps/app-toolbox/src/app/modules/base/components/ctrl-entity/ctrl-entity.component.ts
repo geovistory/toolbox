@@ -1,12 +1,15 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldProperty, InfData, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
 
@@ -21,6 +24,13 @@ export interface CtrlEntityModel extends InfData {
   providers: [{
     provide: MatFormFieldControl, useExisting: CtrlEntityComponent
   }],
+  standalone: true,
+  imports: [
+    NgIf,
+    EntityPreviewComponent,
+    MatInputModule,
+    AsyncPipe,
+  ],
 })
 export class CtrlEntityComponent implements OnDestroy,
   ControlValueAccessor,
@@ -204,7 +214,7 @@ export class CtrlEntityComponent implements OnDestroy,
         }
 
         ).afterClosed().pipe(takeUntil(this.destroy$)).subscribe((result) => {
-          if (!!result) this.value = result
+          if (result) this.value = result
           this.onBlur()
         }
 

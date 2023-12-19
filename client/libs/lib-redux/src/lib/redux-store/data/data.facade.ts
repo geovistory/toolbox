@@ -6,6 +6,7 @@ import { FluxStandardAction } from 'flux-standard-action';
 import { Observable } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { IAppState } from '../state.model';
+import { LoadActionMeta } from './_lib/crud-actions-factory';
 import { DatFacade } from './dat/dat.facade';
 import { paginationObjectActions, schemaModifierActions, schemaObjectActions } from './data.actions';
 import { getProjectLangugage, getProjectLangugageLabel } from './data.selectors';
@@ -15,7 +16,6 @@ import { ProFacade } from './pro/pro.facade';
 import { SysFacade } from './sys/sys.facade';
 import { TabFacade } from './tab/tab.facade';
 import { WarFacade } from './war/war.facade';
-import { LoadActionMeta } from './_lib/crud-actions-factory';
 
 export type GvSchemaObjectAction = FluxStandardAction<Observable<GvPositiveSchemaObject>, LoadActionMeta>;
 export type GvSchemaModifierAction = FluxStandardAction<Observable<GvSchemaModifier>, LoadActionMeta>;
@@ -263,7 +263,7 @@ export class DataFacade {
   }
 
   /**
-   * Dispatch action to load GvSchemaObject from extarnal Api
+   * Dispatch action to load GvSchemaObject from external Api
    * @param apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
    *                we'll end up with two subscriptions and thus two api calls
    */
@@ -303,7 +303,7 @@ export class DataFacade {
   }
 
   /**
-   * Dispatch action to load GvSchemaModifier from extarnal Api
+   * Dispatch action to load GvSchemaModifier from external Api
    * @param apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
    *                we'll end up with two subscriptions and thus two api calls
    */
@@ -320,7 +320,7 @@ export class DataFacade {
   }
 
   /**
-   * Dispatch action to load GvPaginationObject from extarnal Api
+   * Dispatch action to load GvPaginationObject from external Api
    * @param apiCall$ Pass in the api call. Don't subscribe to the call, since otherwise
    *                we'll end up with two subscriptions and thus two api calls
    */
@@ -342,6 +342,23 @@ export class DataFacade {
 
   getProjectLanguageLabel(projectId: number) {
     return this.store.select(getProjectLangugageLabel(projectId));
+  }
+
+
+  /**
+   * For testing purposes only!
+   *
+   * This function will dispatch the action, that will
+   * trigger the reducer to add the given GvSchemaModifier
+   * to the state.
+   *
+   * In production, this action should only be dispached
+   * by data.effects.ts.
+   *
+   * @param payload
+   */
+  addSchemaModifier(payload: GvSchemaModifier) {
+    this.store.dispatch(schemaModifierActions.succeeded({ payload }),)
   }
 
 }

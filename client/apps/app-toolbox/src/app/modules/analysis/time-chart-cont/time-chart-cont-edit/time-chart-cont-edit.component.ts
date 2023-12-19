@@ -1,14 +1,19 @@
+import { NgIf } from '@angular/common';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisTimeChartRequest, AnalysisTimeChartResponse } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { map, startWith } from 'rxjs/operators';
 import { CursorInfo } from '../../../../modules/timeline/components/timeline-chart/timeline-chart.component';
 import { EntityPreviewsPaginatedDialogService } from '../../../../shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { TimelineChartComponent } from '../../../timeline/components/timeline-chart/timeline-chart.component';
+import { AnalysisLayoutComponent } from '../../components/analysis-layout/analysis-layout.component';
 import { GvAnalysisService } from '../../services/analysis.service';
 import { TimeChartContFormComponent, TimeChartContInput } from '../time-chart-cont-form/time-chart-cont-form.component';
 
@@ -16,6 +21,15 @@ import { TimeChartContFormComponent, TimeChartContInput } from '../time-chart-co
   selector: 'gv-time-chart-cont-edit',
   templateUrl: './time-chart-cont-edit.component.html',
   styleUrls: ['./time-chart-cont-edit.component.scss'],
+  standalone: true,
+  imports: [
+    AnalysisLayoutComponent,
+    TimeChartContFormComponent,
+    MatButtonModule,
+    MatTooltipModule,
+    NgIf,
+    TimelineChartComponent,
+  ],
 })
 export class TimeChartContEditComponent implements OnInit, OnDestroy {
   @HostBinding('class.gv-flex-fh') flexFh = true;

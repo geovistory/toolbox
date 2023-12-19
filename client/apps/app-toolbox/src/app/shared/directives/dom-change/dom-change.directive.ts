@@ -1,7 +1,8 @@
 import { Directive, Output, EventEmitter, ElementRef, OnDestroy, Input } from '@angular/core';
 
 @Directive({
-  selector: '[gvDomChange]'
+    selector: '[gvDomChange]',
+    standalone: true
 })
 export class DomChangeDirective implements OnDestroy {
   private changes: MutationObserver;

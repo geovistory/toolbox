@@ -1,6 +1,11 @@
+import { NgFor, NgIf, NgTemplateOutlet } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 export interface GraphPathEntity {
   label: string;
   icon: string;
@@ -27,7 +32,9 @@ export type GraphPathMode = 'mini' | 'small' | 'full';
 @Component({
   selector: 'gv-graph-path',
   templateUrl: './graph-path.component.html',
-  styleUrls: ['./graph-path.component.scss']
+  styleUrls: ['./graph-path.component.scss'],
+  standalone: true,
+  imports: [NgIf, NgTemplateOutlet, NgFor, MatIconModule, MatTooltipModule, MatMenuModule, TruncatePipe]
 })
 export class GraphPathComponent implements OnInit {
   @Input() data: GraphPathSegment[];

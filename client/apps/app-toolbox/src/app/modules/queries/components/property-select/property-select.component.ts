@@ -1,14 +1,17 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { AsyncPipe, NgFor } from '@angular/common';
 import { ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, NgControl, NG_VALIDATORS, UntypedFormControl, UntypedFormGroup, Validator, ValidatorFn } from '@angular/forms';
+import { AbstractControl, ControlValueAccessor, FormsModule, NG_VALIDATORS, NgControl, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validator, ValidatorFn } from '@angular/forms';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 import { PropertyOption, PropertySelectModel } from '@kleiolab/lib-redux';
 import { QueryFilter } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { equals } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 
 export function propertiesRequiredCondition(value): boolean {
   const model: PropertySelectModel = value;
@@ -27,7 +30,8 @@ export function propertiesRequiredValidator(): ValidatorFn {
 
 @Directive({
   selector: '[gvPropertiesRequired]',
-  providers: [{ provide: NG_VALIDATORS, useExisting: PropertiesRequiredValidatorDirective, multi: true }]
+  providers: [{ provide: NG_VALIDATORS, useExisting: PropertiesRequiredValidatorDirective, multi: true }],
+  standalone: true
 })
 export class PropertiesRequiredValidatorDirective implements Validator {
   validate(control: AbstractControl): { [key: string]: any } | null {
@@ -149,6 +153,15 @@ abstract class PropertySelectMatControl implements OnDestroy, ControlValueAccess
   templateUrl: './property-select.component.html',
   styleUrls: ['./property-select.component.scss'],
   providers: [{ provide: MatFormFieldControl, useExisting: PropertySelectComponent }],
+  standalone: true,
+  imports: [
+    MatSelectModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgFor,
+    MatOptionModule,
+    AsyncPipe,
+  ],
 })
 export class PropertySelectComponent extends PropertySelectMatControl implements OnDestroy, OnInit {
 

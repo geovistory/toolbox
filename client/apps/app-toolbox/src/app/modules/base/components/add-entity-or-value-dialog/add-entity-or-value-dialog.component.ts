@@ -1,15 +1,21 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { Component, Inject, OnDestroy, OnInit, ViewChild, forwardRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTabsModule } from '@angular/material/tabs';
 import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier, InfData, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
+import { EntityCardComponent } from '../entity-card/entity-card.component';
 import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
-import { SeachExistingEntityMoreEvent } from '../search-existing-entity/search-existing-entity.component';
-import { SliderEnum } from '../slider/slider.component';
+import { HbfPanelComponent } from '../hbf-panel/hbf-panel.component';
+import { SeachExistingEntityMoreEvent, SearchExistingEntityComponent } from '../search-existing-entity/search-existing-entity.component';
+import { SliderComponent, SliderEnum } from '../slider/slider.component';
 
 
 export interface AddEntityOrValueDialogData {
@@ -38,7 +44,9 @@ export interface CreateEntityEvent {
   styleUrls: ['./add-entity-or-value-dialog.component.scss'],
   providers: [
     { provide: READ_ONLY, useValue: true }
-  ]
+  ],
+  standalone: true,
+  imports: [SliderComponent, HbfPanelComponent, forwardRef(() => FormCreateDataComponent), MatButtonModule, NgIf, MatProgressSpinnerModule, SearchExistingEntityComponent, MatTabsModule, NgFor, EntityCardComponent, AsyncPipe]
 })
 export class AddEntityOrValueDialogComponent implements OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();

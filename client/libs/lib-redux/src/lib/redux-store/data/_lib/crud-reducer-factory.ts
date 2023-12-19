@@ -1,7 +1,5 @@
 import { FluxStandardAction } from 'flux-standard-action';
 import { equals, indexBy, omit, values } from 'ramda';
-import { LoadPageMeta, LoadPageSucceededMeta } from './crud-actions-factory';
-import { subfieldIdToString } from './subfieldIdToString';
 
 export const PR_ENTITY_MODEL_MAP = 'pkEntityModelMap'
 export interface EntityModelAndClass<ModelName> {
@@ -9,20 +7,15 @@ export interface EntityModelAndClass<ModelName> {
   fkClass: number
 }
 
-export interface ReducerConfigCollection {
-  [key: string]: ReducerConfig
-}
-
-export interface ReducerConfig {
+export interface ReducerConfig<Model> {
   // wraps everything in facette named by facetteByPk and grouped by action.meta.pk
-  facetteByPk?: string,
   indexBy?: {
     keyInStore: string;
-    indexByFn: (item) => string;
+    indexByFn: (item: Model) => string;
   },
   groupBy?: {
     keyInStore: string;
-    groupByFn: (item) => string;
+    groupByFn: (item: Model) => string;
   }[],
   equals?: (itemA, itemB) => boolean
 }
@@ -32,91 +25,16 @@ export interface Meta<Model> { items: Model[], pk?: number }
 
 export const by = (name: string) => 'by_' + name;
 
-export const paginateBy = 'by_subfield_page'
 
-export function getFromTo(limit: number, offset: number) {
-  return getStart(limit, offset) + '_' + getEnd(limit, offset);
-}
-
-export function getEnd(limit: number, offset: number) {
-  return getStart(limit, offset) + limit;
-}
-
-export function getStart(limit: number, offset: number) {
-  return offset;
-}
 
 const updatingBy = (name: string) => 'updating_' + by(name);
 const deletingBy = (name: string) => 'deleting_' + by(name);
 const removingBy = (name: string) => 'removing_' + by(name);
 
-function facetteFn<S, Payload, Model>(config: ReducerConfig) {
-  return (action, state: S, cb: (innerState) => any) => {
-    let outerState;
-    ({ outerState, state } = deFacette(config, action, outerState, state));
-    const innerState = cb(state);
-    return enFacette(config, action, innerState, outerState);
-  };
-}
-
-function deFacette<S, Payload, Model>(config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; pk?: number; }>, outerState: any, state: S) {
-  if (isFacetteByPk(config, action)) {
-    // outerState = clone(state);
-    const pk = action.meta.pk || 'repo'
-    // state = !state[config.facetteByPk] ? {} : state[config.facetteByPk][pk] || {};
-    const innerState = !state[config.facetteByPk] ? {} : state[config.facetteByPk][pk] || {};
-    return {
-      outerState: state,
-      state: innerState
-    }
-  }
-  return { outerState, state };
-}
-
-function enFacette<S, Payload, Model>(config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; pk?: number; }>, state: S, outerState: any) {
-  if (isFacetteByPk(config, action)) {
-    const pk = action.meta.pk || 'repo'
-    state = {
-      ...outerState,
-      [config.facetteByPk]: {
-        ...outerState[config.facetteByPk],
-        [pk]: state
-      }
-    };
-  }
-  return state;
-}
-
-
-function isFacetteByPk<Payload, Model>(config: ReducerConfig, action: FluxStandardAction<Payload, { items: Model[]; pk?: number; }>) {
-  if (config.facetteByPk) {
-    if (!action.meta || action.meta.pk === undefined) throw Error('Facette action must provide pk for facette');
-    else return true;
-  }
-  else return false;
-}
-
-
-
-function groupBy(items: any[], groupByFn: (item) => string, indexByFn: (item) => string) {
-  const groups = {}
-  items.forEach(item => {
-    // if the group by key is not possible to create, the item won't be added to the index
-    const groupKey = getGroupKeyOfItem(groupByFn, item);
-
-    if (groupKey) {
-      const indexKey = indexByFn(item);
-      groups[groupKey] = { ...groups[groupKey], ...{ [indexKey]: item } }
-    }
-  })
-  return groups;
-}
-
-
 /**
  * Creates object where the key returned by the configured indexByFn
  */
-function indexKeyObject<Payload, Model>(action: FluxStandardAction<Payload, { items: Model[]; }>, config: ReducerConfig) {
+function indexKeyObject<Payload, Model>(action: FluxStandardAction<Payload, { items: Model[]; }>, config: ReducerConfig<Model>) {
   return indexBy((i) => (i), action.meta.items
     // filter items that are not (yet) indexable. This is normally the case, when creating new items that have no pk yet.
     .filter(item => {
@@ -129,53 +47,6 @@ function indexKeyObject<Payload, Model>(action: FluxStandardAction<Payload, { it
     })
     .map(item => config.indexBy.indexByFn(item)));
 }
-
-
-/**
- * Creates an map for pk_entity -> modelName on the level of the schema:
- * example:
- */
-// private createEntityModelMapReducers(modelName): Reducer<unknown, FluxStandardAction<Payload, Meta<Model>>> {
-//   const actionPrefix = actionPrefix;
-//   const reducer = (state = {}, action: FluxStandardAction<Payload, Meta<Model>>) => {
-//     const modelPath = actionPrefix + '.' + modelName;
-
-//     if (!action || !action.meta || !action.meta.items || !action.meta.items.length) return state;
-//     const items = action.meta.items;
-
-//     switch (action.type) {
-//       case modelPath + '::LOAD_SUCCEEDED':
-//       case modelPath + '::UPSERT_SUCCEEDED':
-//         const idx = addToEntityModelMap<Model>(items, modelName);
-//         state = {
-//           ...state,
-//           ...idx
-//         }
-//         break;
-
-//       case modelPath + '::DELETE_SUCCEEDED':
-//       case modelPath + '::REMOVE_SUCCEEDED':
-//         const pkEntities = []
-//         for (let i = 0; i < items.length; i++) {
-//           const item = items[i] as any;
-//           if (item.pk_entity) {
-//             pkEntities.push(item.pk_entity);
-//           }
-//         }
-//         state = omit(pkEntities, state)
-//         break;
-
-//       default:
-//         break;
-//     }
-//     return state;
-//   };
-//   return reducer;
-// }
-
-
-
-
 
 
 export function addToEntityModelMap<Model>(items: Model[], modelName: any) {
@@ -192,16 +63,16 @@ export function addToEntityModelMap<Model>(items: Model[], modelName: any) {
   return idx;
 }
 
-export function getGroupKeyOfItem(groupByFn: (item: any) => string, item: any): string {
-  let groupKey
+export function getGroupKeyOfItem<Model>(groupByFn: (item: Model) => string, item: Model): string {
+  let groupKey: string
   try {
     groupKey = groupByFn(item);
   } catch (error) {
-
+    return undefined;
   }
   return groupKey;
 }
-export function mergeItemsInState<Model>(config: ReducerConfig, state, items: Model[]) {
+export function mergeItemsInState<Model>(config: ReducerConfig<Model>, state, items: Model[]) {
   const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
   const groups = groupBys.map(i => ({
     groupByKey: by(i.keyInStore),
@@ -275,7 +146,7 @@ export function mergeItemsInState<Model>(config: ReducerConfig, state, items: Mo
   return state;
 }
 
-export function deleteItemsFromState<Model>(config: ReducerConfig, state, items: Model[]) {
+export function deleteItemsFromState<Model>(config: ReducerConfig<Model>, state, items: Model[]) {
   // let state = {}
   const groupBys = !(config.groupBy && config.groupBy.length) ? [] : config.groupBy;
   const groups = groupBys.map(i => ({
@@ -361,169 +232,88 @@ export function deleteItemsFromState<Model>(config: ReducerConfig, state, items:
  * S: Interface of the state (slice of store)
  */
 
-export function createModelReducers<S>(actionPrefix: string, modelName: string, config: ReducerConfig) {
-  const reducer = (state: S, action: FluxStandardAction<any, Meta<any>>) => {
+export function createModelReducers<S, Model>(actionPrefix: string, modelName: string, config: ReducerConfig<Model>) {
+  const reducer = (state: S, action: FluxStandardAction<any, Meta<Model>>) => {
 
     if (!state) state = {} as S;
-    const facette = facetteFn(config)
 
     if (action.type === actionPrefix + '.' + modelName + '::LOAD') {
 
-      state = facette(action, state, (innerState) => ({
-        // TODO refactor this for partial lodings
-        ...omit([by(config.indexBy.keyInStore)], innerState),
+      state = {
+        ...omit([by(config.indexBy.keyInStore)], state) as S,
         loading: true
-      }));
+      }
 
     }
 
     else if (action.type === actionPrefix + '.' + modelName + '::LOAD_SUCCEEDED') {
-      state = facette(action, state, (innerState) => (
-        {
-          ...mergeItemsInState(config, innerState, action.meta.items),
-          loading: false
-        }))
+      state = {
+        ...mergeItemsInState(config, state, action.meta.items),
+        loading: false
+      }
     }
 
 
     else if (action.type === actionPrefix + '.' + modelName + '::UPSERT') {
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
+      state = {
+        ...state,
         [updatingBy(config.indexBy.keyInStore)]: indexKeyObject(action, config)
-      }))
+      }
     }
 
     else if (action.type === actionPrefix + '.' + modelName + '::UPSERT_SUCCEEDED') {
-      state = facette(action, state, (innerState) => ({
-        ...mergeItemsInState(config, innerState, action.meta.items
+      state = {
+        ...mergeItemsInState(config, state, action.meta.items
         ),
         [updatingBy(config.indexBy.keyInStore)]:
-          omit(values(indexKeyObject(action, config)), innerState[updatingBy(config.indexBy.keyInStore)])
-      }))
+          omit(values(indexKeyObject(action, config)), state[updatingBy(config.indexBy.keyInStore)])
+      }
     }
 
     else if (action.type === actionPrefix + '.' + modelName + '::DELETE') {
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
+      state = {
+        ...state,
         [deletingBy(config.indexBy.keyInStore)]: indexKeyObject(action, config)
-      }));
+      };
     }
 
     else if (action.type === actionPrefix + '.' + modelName + '::DELETE_SUCCEEDED') {
 
       const deletingKey = deletingBy(config.indexBy.keyInStore)
-      state = facette(action, state, (innerState) => {
-        innerState = {
-          ...deleteItemsFromState(config, innerState, action.meta.items),
-          [deletingKey]: omit(values(indexKeyObject(action, config)), innerState[deletingBy(config.indexBy.keyInStore)])
-        }
-        if (!Object.keys(innerState[deletingKey]).length) innerState = omit([deletingKey], innerState);
-        return innerState;
-      })
+      state = {
+        ...deleteItemsFromState(config, state, action.meta.items),
+        [deletingKey]: omit(values(indexKeyObject(action, config)), state[deletingBy(config.indexBy.keyInStore)])
+      }
+      if (!Object.keys(state[deletingKey]).length) state = omit([deletingKey], state) as S;
+      return state;
 
     }
 
     else if (action.type === actionPrefix + '.' + modelName + '::REMOVE') {
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
+      state = {
+        ...state,
         [removingBy(config.indexBy.keyInStore)]: indexKeyObject(action, config)
-      }));
+      };
     }
 
     else if (action.type === actionPrefix + '.' + modelName + '::REMOVE_SUCCEEDED') {
 
       const removingKey = removingBy(config.indexBy.keyInStore)
-      state = facette(action, state, (innerState) => {
-        innerState = {
-          ...deleteItemsFromState(config, innerState, action.meta.items),
-          [removingKey]: omit(values(indexKeyObject(action, config)), innerState[removingBy(config.indexBy.keyInStore)])
-        }
-        if (!Object.keys(innerState[removingKey]).length) innerState = omit([removingKey], innerState);
-        return innerState;
-      })
+      state = {
+        ...deleteItemsFromState(config, state, action.meta.items),
+        [removingKey]: omit(values(indexKeyObject(action, config)), state[removingBy(config.indexBy.keyInStore)])
+      }
+      if (!Object.keys(state[removingKey]).length) state = omit([removingKey], state) as S;
+      return state;
     }
 
     else if (action.type === actionPrefix + '.' + modelName + '::FAILED') {
 
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
-        ...omit([by(config.indexBy.keyInStore)], innerState),
+      state = {
+        ...state,
+        ...omit([by(config.indexBy.keyInStore)], state),
         loading: false
-      }));
-
-    }
-
-
-    else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE') {
-      const meta = action.meta as any as LoadPageMeta;
-      const key = subfieldIdToString(meta.page)
-      const fromTo = getFromTo(meta.page.limit, meta.page.offset);
-
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
-        [paginateBy]: {
-          ...innerState[paginateBy],
-          [key]: {
-            ...(innerState[paginateBy] || {})[key],
-            loading: {
-              ...((innerState[paginateBy] || {})[key] || {}).loading,
-              [fromTo]: true
-            }
-          }
-        }
-      }));
-    }
-    else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_FAILED') {
-      const meta = action.meta as any as LoadPageMeta;
-
-      const key = subfieldIdToString(meta.page)
-      const fromTo = getFromTo(meta.page.limit, meta.page.offset);
-
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
-        [paginateBy]: {
-          ...innerState[paginateBy],
-          [key]: {
-            ...(innerState[paginateBy] || {})[key],
-            loading: {
-              ...((innerState[paginateBy] || {})[key] || {}).loading,
-              [fromTo]: false
-            }
-          }
-        }
-      }));
-    }
-
-    else if (action.type === actionPrefix + '.' + modelName + '::LOAD_PAGE_SUCCEEDED') {
-      const meta = action.meta as any as LoadPageSucceededMeta;
-      const key = subfieldIdToString(meta.page)
-      const fromTo = getFromTo(meta.page.limit, meta.page.offset);
-      const start = getStart(meta.page.limit, meta.page.offset);
-
-      const rows = {}
-      if (meta.statements) {
-        meta.statements.forEach((stmt, i) => {
-          rows[start + i] = stmt;
-        })
-      }
-      state = facette(action, state, (innerState) => ({
-        ...innerState,
-        [paginateBy]: {
-          ...innerState[paginateBy],
-          [key]: {
-            ...(innerState[paginateBy] || {})[key],
-            count: meta.count || 0,
-            rows: {
-              ...((innerState[paginateBy] || {})[key] || {}).rows,
-              ...rows
-            },
-            loading: {
-              ...((innerState[paginateBy] || {})[key] || {}).loading,
-              [fromTo]: false
-            }
-          }
-        }
-      }));
+      };
 
     }
 

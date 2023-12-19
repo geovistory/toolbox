@@ -4,12 +4,19 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { IOutputData } from 'angular-split/lib/interface';
 import { Subject } from 'rxjs';
 import { TabLayoutService } from '../tab-layout.service';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { NgClass } from '@angular/common';
+import { AngularSplitModule } from 'angular-split';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
-  selector: 'gv-tab-layout',
-  templateUrl: './tab-layout.component.html',
-  styleUrls: ['./tab-layout.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+    selector: 'gv-tab-layout',
+    templateUrl: './tab-layout.component.html',
+    styleUrls: ['./tab-layout.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: true,
+    imports: [MatDividerModule, AngularSplitModule, NgClass, MatButtonModule, MatIconModule]
 })
 export class TabLayoutComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
