@@ -9,7 +9,7 @@ import { TabLayoutComponentInterface } from '../../../../modules/projects/direct
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { MapAndTimeContEditComponent } from '../../../analysis/map-and-time-cont-edit/map-and-time-cont-edit.component';
+import { MapAndTimeContEditComponent } from '../../../analysis/layout/map-and-time-cont-edit/map-and-time-cont-edit.component';
 
 @Component({
   selector: 'gv-analysis-detail',
