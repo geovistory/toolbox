@@ -1,4 +1,4 @@
-<gv-analysis-layout>
+<gv-analysis-base-layout>
 
   <gv-map-and-time-cont-form analysis-settings #c [initVal$]="initVal$">
     <button mat-flat-button color="primary" (click)="a.runAnalysis()" matTooltip="Create Analysis">Run</button>
@@ -11,4 +11,4 @@
     <gv-map-and-time-cont *ngIf="!a.loading" [data$]="a.results$"></gv-map-and-time-cont>
   </div>
 
-</gv-analysis-layout>
+</gv-analysis-base-layout>

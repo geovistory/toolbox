@@ -15,13 +15,13 @@ import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 
 @Component({
-  selector: 'gv-analysis-layout',
-  templateUrl: './analysis-layout.component.html',
-  styleUrls: ['./analysis-layout.component.scss'],
+  selector: 'gv-analysis-base-layout',
+  templateUrl: './analysis-base-layout.component.html',
+  styleUrls: ['./analysis-base-layout.component.scss'],
   standalone: true,
   imports: [NgIf, AngularSplitModule, NgClass, DetailTopBarComponent, MatButtonModule, MatIconModule, MatMenuModule, MatDividerModule, DetailContentComponent, AsyncPipe]
 })
-export class AnalysisLayoutComponent implements OnInit, OnDestroy {
+export class AnalysisBaseLayoutComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
   @HostBinding('class.gv-flex-fh') flexFh = true;
 

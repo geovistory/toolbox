@@ -11,7 +11,7 @@ import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { MapAndTimeContFormComponent } from '../../forms/map-and-time-cont-form/map-and-time-cont-form.component';
 import { MapAndTimeContComponent } from '../../visualizations/map-and-time-cont/map-and-time-cont.component';
-import { AnalysisLayoutComponent } from '../analysis-layout/analysis-layout.component';
+import { AnalysisBaseLayoutComponent } from '../analysis-base-layout/analysis-base-layout.component';
 
 
 @Component({
@@ -19,7 +19,7 @@ import { AnalysisLayoutComponent } from '../analysis-layout/analysis-layout.comp
   templateUrl: './map-and-time-cont-edit.component.html',
   styleUrls: ['./map-and-time-cont-edit.component.scss'],
   standalone: true,
-  imports: [AnalysisLayoutComponent, MapAndTimeContFormComponent, MatButtonModule, MatTooltipModule, NgIf, MapAndTimeContComponent]
+  imports: [AnalysisBaseLayoutComponent, MapAndTimeContFormComponent, MatButtonModule, MatTooltipModule, NgIf, MapAndTimeContComponent]
 })
 export class MapAndTimeContEditComponent implements OnDestroy {
   @HostBinding('class.gv-flex-fh') flexFh = true;

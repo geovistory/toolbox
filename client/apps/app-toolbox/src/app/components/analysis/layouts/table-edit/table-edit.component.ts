@@ -11,7 +11,7 @@ import { ResultTableComponent } from '../../../../modules/queries/components/res
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TableFormComponent } from '../../forms/table-form/table-form.component';
-import { AnalysisLayoutComponent } from '../analysis-layout/analysis-layout.component';
+import { AnalysisBaseLayoutComponent } from '../analysis-base-layout/analysis-base-layout.component';
 
 @Component({
   selector: 'gv-table-edit',
@@ -19,7 +19,7 @@ import { AnalysisLayoutComponent } from '../analysis-layout/analysis-layout.comp
   styleUrls: ['./table-edit.component.scss'],
   standalone: true,
   imports: [
-    AnalysisLayoutComponent,
+    AnalysisBaseLayoutComponent,
     TableFormComponent,
     MatButtonModule,
     MatTooltipModule,
