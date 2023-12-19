@@ -19,7 +19,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { PassiveLinkDirective } from '../../../../directives/passive-link/passive-link.directive';
 import { AnalysisIconPipe } from '../../../../pipes/analysis-icon/analysis-icon.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
-import { AnalysisTabData } from '../../../analysis/services/analysis.service';
+import { AnalysisTabData } from '../../../../services/analysis.service';
 import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';
 
 @Component({

@@ -8,9 +8,9 @@ import { AnalysisTableRequest, AnalysisTableResponse, QueryDefinition } from "@k
 import { Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AnalysisLayoutComponent } from '../../../../components/analysis/layout/analysis-layout/analysis-layout.component';
+import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { ResultTableComponent } from '../../../queries/components/result-table/result-table.component';
-import { GvAnalysisService } from '../../services/analysis.service';
 import { TableFormComponent } from '../table-form/table-form.component';
 
 @Component({

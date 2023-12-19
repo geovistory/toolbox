@@ -1,19 +1,19 @@
+import { NgIf } from '@angular/common';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DfhConfig } from "@kleiolab/lib-config";
 import { ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-redux';
 import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
+import { equals } from 'ramda';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../../../modules/analysis/table/table-form/table-form.component';
+import { TableFormArrayData, TableFormService } from '../../../../modules/analysis/table/table-form/table-form.service';
 import { FormFactory } from "../../../../modules/form-factory/core/form-factory";
 import { FormFactoryComponent } from '../../../../modules/form-factory/core/form-factory.models';
-import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from "../../../../modules/form-factory/services/FormFactoryConfig";
-import { equals } from 'ramda';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../table/table-form/table-form.component';
-import { TableFormArrayData, TableFormService } from '../../table/table-form/table-form.service';
+import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { MapAndTimeContFormGroupComponent } from '../map-and-time-cont-form-group/map-and-time-cont-form-group.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
 // TODO Change
 
 export type MapAndTimeContFormArrayFactory = TableFormArrayFactory
@@ -21,11 +21,11 @@ export type MapAndTimeContFormControlFactory = TableFormControlFactory
 export type MapAndTimeContFormGroupFactory = TableFormGroupFactory
 
 @Component({
-    selector: 'gv-map-and-time-cont-form',
-    templateUrl: './map-and-time-cont-form.component.html',
-    styleUrls: ['./map-and-time-cont-form.component.scss'],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, MapAndTimeContFormGroupComponent]
+  selector: 'gv-map-and-time-cont-form',
+  templateUrl: './map-and-time-cont-form.component.html',
+  styleUrls: ['./map-and-time-cont-form.component.scss'],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, MapAndTimeContFormGroupComponent]
 })
 export class MapAndTimeContFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();
