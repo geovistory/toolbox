@@ -11,7 +11,7 @@ import { AngularSplitModule } from 'angular-split';
 import { indexBy } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { AnalysisDetailComponent } from '../../../modules/analysis/components/analysis-detail/analysis-detail.component';
+import { AnalysisDetailComponent } from '../../../components/layout/tab-bodies/analysis-detail/analysis-detail.component';
 import { TableDetailComponent } from '../../../modules/data/components/table-detail/table-detail.component';
 import { TextDetail2Component } from '../../../modules/data/components/text-detail2/text-detail2.component';
 import { EntityDetailComponent } from '../../../modules/information/containers/entity-detail/entity-detail.component';

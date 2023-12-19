@@ -8,12 +8,12 @@ import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisTimeChartRequest, AnalysisTimeChartResponse } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
+import { AnalysisLayoutComponent } from '../../../../components/analysis/analysis-layout/analysis-layout.component';
 import { CursorInfo } from '../../../../modules/timeline/components/timeline-chart/timeline-chart.component';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EntityPreviewsPaginatedDialogService } from '../../../../shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TimelineChartComponent } from '../../../timeline/components/timeline-chart/timeline-chart.component';
-import { AnalysisLayoutComponent } from '../../components/analysis-layout/analysis-layout.component';
 import { GvAnalysisService } from '../../services/analysis.service';
 import { TimeChartContFormComponent, TimeChartContInput } from '../time-chart-cont-form/time-chart-cont-form.component';
 

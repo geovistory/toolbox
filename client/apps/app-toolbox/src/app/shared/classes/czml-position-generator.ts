@@ -1,6 +1,6 @@
 /// <reference path="../../../../../../node_modules/@types/cesium/index.d.ts" />
 
-import { CzmlPosition } from '../../modules/map/map.models';
+import { CzmlPosition } from '../../lib/types/map.models';
 import { QueryPoint } from './czml-label-generator';
 
 export interface CzmlPositionGeneratorSettings {

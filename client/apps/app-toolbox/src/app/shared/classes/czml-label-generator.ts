@@ -2,7 +2,7 @@
 
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { TimeSpanUtil } from '@kleiolab/lib-utils';
-import { CzmlLabel } from '../../modules/map/map.models';
+import { CzmlLabel } from '../../lib/types/map.models';
 import { TemporalDistribution } from './statistic-helpers';
 export interface GeoPresence {
   time_span: TimeSpanUtil,

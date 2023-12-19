@@ -3,8 +3,9 @@ import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, O
 import { BoundingSphere, Cartesian3, Math as CesiumMath, CzmlDataSource, HeadingPitchRange, JulianDate, Viewer } from 'cesium';
 import { Observable, Subject, combineLatest, from } from 'rxjs';
 import { switchMap, takeUntil, tap } from 'rxjs/operators';
-import { CzmlPacket } from '../../map.models';
-import { CesiumService } from '../../services/cesium.service';
+import { CzmlPacket } from '../../../../lib/types/map.models';
+import { CesiumService } from '../../../../services/cesium.service';
+
 export interface MapLayers {
   layers: MapLayer[]
 }
@@ -13,11 +14,11 @@ export interface MapLayer {
 }
 
 @Component({
-    selector: 'gv-map-czml-layers',
-    templateUrl: './map-czml-layers.component.html',
-    styleUrls: ['./map-czml-layers.component.scss'],
-    providers: [CesiumService],
-    standalone: true
+  selector: 'gv-map-czml-layers',
+  templateUrl: './map-czml-layers.component.html',
+  styleUrls: ['./map-czml-layers.component.scss'],
+  providers: [CesiumService],
+  standalone: true
 })
 export class MapCzmlLayersComponent implements AfterViewInit, OnDestroy {
 

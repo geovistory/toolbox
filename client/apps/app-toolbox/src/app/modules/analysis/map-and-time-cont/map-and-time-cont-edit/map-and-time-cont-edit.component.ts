@@ -1,25 +1,25 @@
+import { NgIf } from '@angular/common';
 import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { SysConfig } from "@kleiolab/lib-config";
 import { StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisDefinition, AnalysisMapRequest, AnalysisMapResponse } from "@kleiolab/lib-sdk-lb4";
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AnalysisLayoutComponent } from '../../../../components/analysis/analysis-layout/analysis-layout.component';
+import { MapAndTimeContComponent } from '../../../../components/analysis/view/map-and-time-cont/map-and-time-cont.component';
+import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { GvAnalysisService } from '../../services/analysis.service';
 import { MapAndTimeContFormComponent } from '../map-and-time-cont-form/map-and-time-cont-form.component';
-import { MapAndTimeContComponent } from '../../../map/components/map-and-time-cont/map-and-time-cont.component';
-import { NgIf } from '@angular/common';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
-import { AnalysisLayoutComponent } from '../../components/analysis-layout/analysis-layout.component';
 
 
 @Component({
-    selector: 'gv-map-and-time-cont-edit',
-    templateUrl: './map-and-time-cont-edit.component.html',
-    styleUrls: ['./map-and-time-cont-edit.component.scss'],
-    standalone: true,
-    imports: [AnalysisLayoutComponent, MapAndTimeContFormComponent, MatButtonModule, MatTooltipModule, NgIf, MapAndTimeContComponent]
+  selector: 'gv-map-and-time-cont-edit',
+  templateUrl: './map-and-time-cont-edit.component.html',
+  styleUrls: ['./map-and-time-cont-edit.component.scss'],
+  standalone: true,
+  imports: [AnalysisLayoutComponent, MapAndTimeContFormComponent, MatButtonModule, MatTooltipModule, NgIf, MapAndTimeContComponent]
 })
 export class MapAndTimeContEditComponent implements OnInit, OnDestroy {
   @HostBinding('class.gv-flex-fh') flexFh = true;
