@@ -6,9 +6,9 @@ import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview, W
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { C_53_TYPE_ID } from '../../../../ontome-ids';
+import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
 import { fieldToWarFieldChangeId } from '../../base.helpers';
 import { openAddStatementDialog } from '../../lib/openAddStatementDialog';
 import { PaginationService } from '../../services/pagination.service';

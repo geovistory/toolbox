@@ -17,8 +17,8 @@ import { values } from 'd3';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { PassiveLinkDirective } from '../../../../directives/passive-link/passive-link.directive';
+import { AnalysisIconPipe } from '../../../../pipes/analysis-icon/analysis-icon.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
-import { AnalysisIconPipe } from '../../../../shared/pipes/analysis-icon/analysis-icon.pipe';
 import { AnalysisTabData } from '../../../analysis/services/analysis.service';
 import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';
 
@@ -66,7 +66,7 @@ export class AnalysisListComponent implements OnInit, AfterViewInit, OnDestroy {
         if (item.name.toLowerCase().search(term) > -1) return true
         if (showDetails) {
           if (item.pk_entity.toString().search(term) > -1) return true
-          if (!!item.description) {
+          if (item.description) {
             if (item.description.toString().search(term) > -1) return true
           }
         }

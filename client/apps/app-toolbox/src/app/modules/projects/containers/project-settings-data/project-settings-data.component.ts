@@ -20,6 +20,7 @@ import { equals, indexBy, keys, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../../modules/class-config/components/class-config-dialog/class-config-dialog.component';
+import { HighlightPipe } from '../../../../pipes/highlight/highlight.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
 import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
@@ -28,7 +29,6 @@ import { OntoClassInfoComponent } from '../../../../shared/components/onto-info/
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { EntityLabelConfigOpenBtnComponent } from '../../../../shared/modules/entity-label-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
-import { HighlightPipe } from '../../../../shared/pipes/highlight/highlight.pipe';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
 
 interface Profile {

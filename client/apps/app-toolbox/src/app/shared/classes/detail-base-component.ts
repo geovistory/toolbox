@@ -9,9 +9,9 @@ import { first, map, takeUntil } from 'rxjs/operators';
 import { EditModeService } from '../../modules/base/services/edit-mode.service';
 import { TabLayoutComponentInterface } from '../../modules/projects/directives/on-activate-tab.directive';
 import { TabBody } from '../../pages/project/project-edit/project-edit.component';
+import { TruncatePipe } from '../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../services/active-project.service';
 import { TabLayoutService } from '../components/tab-layout/tab-layout.service';
-import { TruncatePipe } from '../pipes/truncate/truncate.pipe';
 
 interface ConfigBase { pkEntity: number }
 

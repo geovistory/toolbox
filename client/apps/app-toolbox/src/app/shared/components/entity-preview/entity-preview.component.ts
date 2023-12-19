@@ -9,8 +9,8 @@ import { DndModule } from '@suez/ngx-dnd';
 import getUrls from 'get-urls';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
-import { TruncatePipe } from '../../pipes/truncate/truncate.pipe';
 import { ClassInfoComponent } from '../onto-info/class-info/class-info.component';
 
 /**
