@@ -7,10 +7,10 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisTableRequest, AnalysisTableResponse, QueryDefinition } from "@kleiolab/lib-sdk-lb4";
 import { Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ResultTableComponent } from '../../../../modules/queries/components/result-table/result-table.component';
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TableFormComponent } from '../../forms/table-form/table-form.component';
+import { ResultTableComponent } from '../../visualizations/result-table/result-table.component';
 import { AnalysisBaseLayoutComponent } from '../analysis-base-layout/analysis-base-layout.component';
 
 @Component({
