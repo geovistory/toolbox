@@ -1,25 +1,25 @@
+import { NgIf } from '@angular/common';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-redux';
 import { AnalysisDefinition, QueryDefinition } from '@kleiolab/lib-sdk-lb4';
+import { equals } from 'ramda';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { FormArrayFactory } from '../../../../modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from '../../../../modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
 import { FormFactory } from '../../../../modules/form-factory/core/form-factory';
 import { FormFactoryComponent } from '../../../../modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from '../../../../modules/form-factory/core/form-group-factory';
-import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from '../../../../modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from '../../../../modules/form-factory/services/FormNodeConfig';
+import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { CtrlClasses, QueryFilterInjectData } from '../../../../modules/queries/components/query-filter/query-filter.component';
 import { QueryPathInjectData } from '../../../../modules/queries/forms/query-path/query-path-form/query-path-form.component';
-import { equals } from 'ramda';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { TableFormArrayData, TableFormService } from '../../../../services/table-form.service';
 import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
-import { TableFormArrayData, TableFormService } from './table-form.service';
 import { TableFormGroupComponent } from '../table-form-group/table-form-group.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
 
 
 export interface TableFormGroupData {
@@ -44,12 +44,12 @@ export type TableFormChildFactory = FormChildFactory<TableFormChildData>;
 
 
 @Component({
-    selector: 'gv-table-form',
-    templateUrl: './table-form.component.html',
-    styleUrls: ['./table-form.component.scss'],
-    providers: [TableFormService],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, TableFormGroupComponent]
+  selector: 'gv-table-form',
+  templateUrl: './table-form.component.html',
+  styleUrls: ['./table-form.component.scss'],
+  providers: [TableFormService],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, TableFormGroupComponent]
 })
 export class TableFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

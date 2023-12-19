@@ -7,13 +7,13 @@ import { AnalysisDefinition } from "@kleiolab/lib-sdk-lb4";
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../../../../modules/analysis/table/table-form/table-form.component';
-import { TableFormArrayData, TableFormService } from '../../../../modules/analysis/table/table-form/table-form.service';
 import { FormFactory } from "../../../../modules/form-factory/core/form-factory";
 import { FormFactoryComponent } from '../../../../modules/form-factory/core/form-factory.models';
 import { FormFactoryConfig } from "../../../../modules/form-factory/services/FormFactoryConfig";
 import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
+import { TableFormArrayData, TableFormService } from '../../../../services/table-form.service';
 import { MapAndTimeContFormGroupComponent } from '../map-and-time-cont-form-group/map-and-time-cont-form-group.component';
+import { TableFormArrayFactory, TableFormChildData, TableFormControlData, TableFormControlFactory, TableFormGroupData, TableFormGroupFactory, TableFormNodeConfig } from '../table-form/table-form.component';
 // TODO Change
 
 export type MapAndTimeContFormArrayFactory = TableFormArrayFactory

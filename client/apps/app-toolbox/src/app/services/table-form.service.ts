@@ -3,11 +3,11 @@ import { ClassAndTypeSelectModel, ConfigurationPipesService } from '@kleiolab/li
 import { AnalysisDefinition, ColDef, QueryFilter, QueryPathSegment } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { classOrTypeRequiredValidator } from '../../../../modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { FilterDefinition, QueryFilterComponent } from '../../../../modules/queries/components/query-filter/query-filter.component';
-import { QueryPathFormComponent } from '../../../../modules/queries/forms/query-path/query-path-form/query-path-form.component';
-import { ValidationService } from '../../../../services/validation.service';
-import { TableFormNodeConfig } from './table-form.component';
+import { TableFormNodeConfig } from '../components/analysis/edit/table-form/table-form.component';
+import { classOrTypeRequiredValidator } from '../modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { FilterDefinition, QueryFilterComponent } from '../modules/queries/components/query-filter/query-filter.component';
+import { QueryPathFormComponent } from '../modules/queries/forms/query-path/query-path-form/query-path-form.component';
+import { ValidationService } from './validation.service';
 
 
 interface PathColumn {

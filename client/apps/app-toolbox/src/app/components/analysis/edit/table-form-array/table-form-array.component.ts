@@ -16,9 +16,9 @@ import { Observable, of } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
 import { FilterDefinition } from '../../../../modules/queries/components/query-filter/query-filter.component';
+import { TableFormService } from '../../../../services/table-form.service';
 import { TableFormControlComponent } from '../table-form-control/table-form-control.component';
 import { TableFormArrayFactory } from '../table-form/table-form.component';
-import { TableFormService } from '../table-form/table-form.service';
 
 /*
  * Returns a column type label for a ColDef
