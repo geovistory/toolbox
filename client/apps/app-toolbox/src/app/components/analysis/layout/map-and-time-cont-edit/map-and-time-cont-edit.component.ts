@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, HostBinding, OnDestroy, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { SysConfig } from "@kleiolab/lib-config";
@@ -9,7 +9,7 @@ import { Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { MapAndTimeContFormComponent } from '../../edit/map-and-time-cont-form/map-and-time-cont-form.component';
+import { MapAndTimeContFormComponent } from '../../forms/map-and-time-cont-form/map-and-time-cont-form.component';
 import { MapAndTimeContComponent } from '../../view/map-and-time-cont/map-and-time-cont.component';
 import { AnalysisLayoutComponent } from '../analysis-layout/analysis-layout.component';
 
@@ -21,7 +21,7 @@ import { AnalysisLayoutComponent } from '../analysis-layout/analysis-layout.comp
   standalone: true,
   imports: [AnalysisLayoutComponent, MapAndTimeContFormComponent, MatButtonModule, MatTooltipModule, NgIf, MapAndTimeContComponent]
 })
-export class MapAndTimeContEditComponent implements OnInit, OnDestroy {
+export class MapAndTimeContEditComponent implements OnDestroy {
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   destroy$ = new Subject<boolean>();
@@ -94,9 +94,6 @@ export class MapAndTimeContEditComponent implements OnInit, OnDestroy {
       }
     })
   }
-
-
-  ngOnInit() { }
 
   ngOnDestroy() {
     this.destroy$.next(true);

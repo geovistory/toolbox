@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 import { ResultTableComponent } from '../../../../modules/queries/components/result-table/result-table.component';
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { TableFormComponent } from '../../edit/table-form/table-form.component';
+import { TableFormComponent } from '../../forms/table-form/table-form.component';
 import { AnalysisLayoutComponent } from '../analysis-layout/analysis-layout.component';
 
 @Component({

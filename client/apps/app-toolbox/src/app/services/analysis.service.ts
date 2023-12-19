@@ -4,7 +4,7 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisService as LbAnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { catchError, first, switchMap, tap } from 'rxjs/operators';
-import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/analysis/edit/dialog-create/dialog-create.component';
+import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/analysis/forms/dialog-create/dialog-create.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../shared/components/confirm-dialog/confirm-dialog.component';
 import { ErrorDialogComponent, ErrorDialogData } from '../shared/components/error-dialog/error-dialog.component';
 import { ActiveProjectService } from './active-project.service';
