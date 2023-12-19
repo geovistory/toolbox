@@ -10,7 +10,7 @@ import { map } from 'rxjs/operators';
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { MapAndTimeContFormComponent } from '../../forms/map-and-time-cont-form/map-and-time-cont-form.component';
-import { MapAndTimeContComponent } from '../../view/map-and-time-cont/map-and-time-cont.component';
+import { MapAndTimeContComponent } from '../../visualizations/map-and-time-cont/map-and-time-cont.component';
 import { AnalysisLayoutComponent } from '../analysis-layout/analysis-layout.component';
 
 

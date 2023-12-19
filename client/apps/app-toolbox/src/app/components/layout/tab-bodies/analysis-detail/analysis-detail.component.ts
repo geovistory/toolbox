@@ -7,8 +7,8 @@ import { ActiveProjectService } from '../../../../services/active-project.servic
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { MapAndTimeContEditComponent } from '../../../analysis/layout/map-and-time-cont-edit/map-and-time-cont-edit.component';
-import { TableEditComponent } from '../../../analysis/layout/table-edit/table-edit.component';
+import { MapAndTimeContEditComponent } from '../../../analysis/layouts/map-and-time-cont-edit/map-and-time-cont-edit.component';
+import { TableEditComponent } from '../../../analysis/layouts/table-edit/table-edit.component';
 import { TimeChartContEditComponent } from '../../../analysis/time-chart-cont/time-chart-cont-edit/time-chart-cont-edit.component';
 
 @Component({
