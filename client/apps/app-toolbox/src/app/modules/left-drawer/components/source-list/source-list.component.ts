@@ -3,7 +3,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { AddEntityMenuComponent } from '../../../base/components/add-entity-menu/add-entity-menu.component';
 import { ListService } from '../../services/list.service';
 import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';

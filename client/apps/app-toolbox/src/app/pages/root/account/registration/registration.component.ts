@@ -5,8 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { AccountService, SignupRequest, SignupValidationError } from '@kleiolab/lib-sdk-lb4';
+import { EqualValidator } from 'apps/app-toolbox/src/app/directives/validation/equal-validator.directive';
 import { first } from 'rxjs/operators';
-import { EqualValidator } from '../../../../core/validation/validation.directives';
 import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 
 

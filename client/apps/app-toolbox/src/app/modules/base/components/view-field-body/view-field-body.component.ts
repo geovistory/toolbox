@@ -15,8 +15,8 @@ import { BehaviorSubject, Observable, Subject, combineLatest, merge } from 'rxjs
 import { delay, distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { MatDialogModule } from '@angular/material/dialog';
-import { OpenCloseChildDirective } from '../../../../shared/directives/open-close/open-close-child.directive';
-import { OpenCloseContainerDirective } from '../../../../shared/directives/open-close/open-close-container.directive';
+import { OpenCloseChildDirective } from '../../../../directives/open-close/open-close-child.directive';
+import { OpenCloseContainerDirective } from '../../../../directives/open-close/open-close-container.directive';
 import { openClose } from '../../../information/shared/animations';
 import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../base.helpers';
 import { GvDndSortListDirective } from '../../directives/dnd-sort-list.directive';

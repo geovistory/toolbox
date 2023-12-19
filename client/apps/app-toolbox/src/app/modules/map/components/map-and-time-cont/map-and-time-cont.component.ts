@@ -1,24 +1,24 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, HostBinding, Input, OnInit } from '@angular/core';
-import { AnalysisMapResponse, AnalysisTimeChartResponse, ChartLine, CzmlSpatialValue, GeoEntityMapAndTimeCont, TimeCzmlValue, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
-import * as d3 from 'd3';
-import { ChartLineDefinition } from '../../../../modules/timeline/components/chart-line-visual/chart-line-visual.component';
-import { CursorInfo } from '../../../../modules/timeline/components/timeline-chart/timeline-chart.component';
-import { EntityPreviewsPaginatedDialogService } from '../../../../shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
-import { apply, equals, keys, values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject } from 'rxjs';
-import { first, map, shareReplay } from 'rxjs/operators';
-import { CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue } from '../../map.models';
-import { MapLayer, MapLayers, MapCzmlLayersComponent } from '../map-czml-layers/map-czml-layers.component';
-import { TimelineChartComponent } from '../../../timeline/components/timeline-chart/timeline-chart.component';
-import { PassiveLinkDirective } from '../../../../shared/directives/passive-link/passive-link.directive';
-import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { NgFor, NgIf, AsyncPipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatButtonModule } from '@angular/material/button';
+import { AnalysisMapResponse, AnalysisTimeChartResponse, ChartLine, CzmlSpatialValue, GeoEntityMapAndTimeCont, TimeCzmlValue, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { AngularSplitModule } from 'angular-split';
+import * as d3 from 'd3';
+import { apply, equals, keys, values } from 'ramda';
+import { BehaviorSubject, Observable, ReplaySubject, combineLatest } from 'rxjs';
+import { first, map, shareReplay } from 'rxjs/operators';
+import { PassiveLinkDirective } from '../../../../directives/passive-link/passive-link.directive';
+import { ChartLineDefinition } from '../../../../modules/timeline/components/chart-line-visual/chart-line-visual.component';
+import { CursorInfo } from '../../../../modules/timeline/components/timeline-chart/timeline-chart.component';
+import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { EntityPreviewsPaginatedDialogService } from '../../../../shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
+import { TimelineChartComponent } from '../../../timeline/components/timeline-chart/timeline-chart.component';
+import { CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue } from '../../map.models';
+import { MapCzmlLayersComponent, MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
 
 export interface MapAndTimeContLayer {
   data_lookups: { [key: string]: number[] }[]
@@ -83,11 +83,11 @@ export const pointDisplayOptions: PointDisplayOption[] = [
 ]
 
 @Component({
-    selector: 'gv-map-and-time-cont',
-    templateUrl: './map-and-time-cont.component.html',
-    styleUrls: ['./map-and-time-cont.component.scss'],
-    standalone: true,
-    imports: [AngularSplitModule, MapCzmlLayersComponent, MatButtonModule, MatTooltipModule, MatMenuModule, MatIconModule, NgFor, NgIf, MatCardModule, EntityPreviewComponent, PassiveLinkDirective, TimelineChartComponent, AsyncPipe]
+  selector: 'gv-map-and-time-cont',
+  templateUrl: './map-and-time-cont.component.html',
+  styleUrls: ['./map-and-time-cont.component.scss'],
+  standalone: true,
+  imports: [AngularSplitModule, MapCzmlLayersComponent, MatButtonModule, MatTooltipModule, MatMenuModule, MatIconModule, NgFor, NgIf, MatCardModule, EntityPreviewComponent, PassiveLinkDirective, TimelineChartComponent, AsyncPipe]
 })
 export class MapAndTimeContComponent implements OnInit {
 

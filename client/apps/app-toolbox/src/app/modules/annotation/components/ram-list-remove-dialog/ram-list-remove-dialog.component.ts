@@ -9,8 +9,8 @@ import { Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { ViewFieldComponent } from '../../../base/components/view-field/view-field.component';
 import { fieldAtReferencePoP } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 export interface RamListRemoveDialogData {

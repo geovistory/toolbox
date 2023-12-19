@@ -8,7 +8,7 @@ import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, ImportTableR
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { catchError, first, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
 import { P_1879_HAS_VALUE_ID } from '../../../../ontome-ids';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { ImporterComponent, ImporterDialogData } from '../importer/importer.component';
 import { TableEditorComponent } from '../table-editor/table-editor.component';

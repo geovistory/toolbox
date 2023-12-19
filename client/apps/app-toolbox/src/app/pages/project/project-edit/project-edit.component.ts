@@ -28,9 +28,9 @@ import { TypesComponent } from '../../../modules/projects/containers/types/types
 import { OnActivateTabDirective } from '../../../modules/projects/directives/on-activate-tab.directive';
 import { PanelBodyDirective } from '../../../modules/projects/directives/panel-body.directive';
 import { OntomeProfilesSettingsComponent } from '../../../modules/settings/components/ontome-profiles-settings/ontome-profiles-settings.component';
+import { ActiveProjectService } from '../../../services/active-project.service';
+import { BasicService } from '../../../services/basic.service';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
-import { ActiveProjectService } from '../../../shared/services/active-project.service';
-import { BasicService } from '../../../shared/services/basic.service';
 
 
 export interface TabBody<M> extends PanelTab<M> {

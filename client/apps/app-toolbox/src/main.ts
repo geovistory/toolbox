@@ -13,12 +13,12 @@ import { SOCKETS_CONFIG, SocketsConfig } from '@kleiolab/lib-sockets';
 import { SocketIoConfig } from 'ngx-socket-io';
 import { MessageService } from 'primeng/api';
 import { AppComponent } from './app/app.component';
-import { CookiesModule } from './app/core/cookies/cookies.module';
 import { APP_ROUTES } from './app/pages/root/root.routes';
-import { ActiveAccountService } from './app/shared/services/active-account.service';
-import { AuthGuard } from './app/shared/services/auth-guard.service';
-import { GvAuthService } from './app/shared/services/auth.service';
-import { SystemAdminGuard } from './app/shared/services/system-admin-guard.service';
+import { ActiveAccountService } from './app/services/active-account.service';
+import { AuthGuard } from './app/services/auth-guard.service';
+import { GvAuthService } from './app/services/auth.service';
+import { CookiesModule } from './app/services/cookies.module';
+import { SystemAdminGuard } from './app/services/system-admin-guard.service';
 import { environment } from './environments/environment';
 
 const socketsConfig: SocketsConfig = { baseUrl: environment.apiUrl, options: { autoConnect: true } };

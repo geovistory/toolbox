@@ -5,10 +5,10 @@ import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kle
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 
-import { OpenCloseChildDirective } from '../../../../shared/directives/open-close/open-close-child.directive';
-import { OpenCloseContainerDirective } from '../../../../shared/directives/open-close/open-close-container.directive';
+import { OpenCloseChildDirective } from '../../../../directives/open-close/open-close-child.directive';
+import { OpenCloseContainerDirective } from '../../../../directives/open-close/open-close-container.directive';
 import { openClose } from '../../../information/shared/animations';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldComponent } from '../view-field/view-field.component';

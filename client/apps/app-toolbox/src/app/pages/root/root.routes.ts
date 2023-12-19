@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from '../../shared/services/auth-guard.service';
-import { SystemAdminGuard } from '../../shared/services/system-admin-guard.service';
+import { AuthGuard } from '../../services/auth-guard.service';
+import { SystemAdminGuard } from '../../services/system-admin-guard.service';
 import { HomeComponent } from './home/home.component';
 
 export const APP_ROUTES: Routes = [

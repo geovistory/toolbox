@@ -4,7 +4,7 @@ import { InformationBasicPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProjectEditComponent } from '../../../../pages/project/project-edit/project-edit.component';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { EntityCardComponent } from '../entity-card/entity-card.component';

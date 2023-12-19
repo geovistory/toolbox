@@ -10,7 +10,6 @@ import { TimeSpanResult, U, combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ValidationService } from '../../../../core/validation/validation.service';
 import { FormArrayFactory } from '../../../../modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from '../../../../modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
@@ -19,6 +18,7 @@ import { FormArrayConfig } from '../../../../modules/form-factory/services/FormA
 import { FormNodeConfig } from '../../../../modules/form-factory/services/FormNodeConfig';
 import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { C_53_TYPE_ID, C_54_LANGUAGE_ID } from '../../../../ontome-ids';
+import { ValidationService } from '../../../../services/validation.service';
 import { InfValueObject } from '../../../../shared/components/value-preview/value-preview.component';
 import type { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';

@@ -15,7 +15,7 @@ import { EntitySearchHit, SearchExistingRelatedStatement, WarEntityPreviewContro
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EntityAddExistingHit, EntityAddExistingHitComponent } from '../entity-add-existing-hit/entity-add-existing-hit.component';
 import { HbfPanelComponent } from '../hbf-panel/hbf-panel.component';
 

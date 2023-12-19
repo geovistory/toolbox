@@ -9,8 +9,8 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { OpenCloseContainerDirective } from '../../../../directives/open-close/open-close-container.directive';
 import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
-import { OpenCloseContainerDirective } from '../../../../shared/directives/open-close/open-close-container.directive';
 
 @Component({
   selector: 'gv-add-entity-menu-class-item',

@@ -9,9 +9,9 @@ import { AnalysisTimeChartRequest, AnalysisTimeChartResponse } from '@kleiolab/l
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { CursorInfo } from '../../../../modules/timeline/components/timeline-chart/timeline-chart.component';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EntityPreviewsPaginatedDialogService } from '../../../../shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { TimelineChartComponent } from '../../../timeline/components/timeline-chart/timeline-chart.component';
 import { AnalysisLayoutComponent } from '../../components/analysis-layout/analysis-layout.component';
 import { GvAnalysisService } from '../../services/analysis.service';

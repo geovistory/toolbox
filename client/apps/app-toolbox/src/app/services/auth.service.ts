@@ -2,7 +2,7 @@
 declare let Object: any;
 import { Inject, Injectable } from '@angular/core';
 import { Configuration, PubAccount } from "@kleiolab/lib-sdk-lb4";
-import { GvInternalStorage } from '../../core/cookies/cookies.module';
+import { GvInternalStorage } from './cookies.module';
 
 export class GvAuthToken {
   lb4Token = ''

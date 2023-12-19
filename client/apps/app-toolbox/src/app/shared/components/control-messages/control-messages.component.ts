@@ -1,15 +1,15 @@
+import { NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
-import { ValidationService } from '../../../core/validation/validation.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgIf } from '@angular/common';
+import { ValidationService } from '../../../services/validation.service';
 
 
 @Component({
-    selector: 'gv-control-messages',
-    templateUrl: './control-messages.component.html',
-    standalone: true,
-    imports: [NgIf, MatFormFieldModule]
+  selector: 'gv-control-messages',
+  templateUrl: './control-messages.component.html',
+  standalone: true,
+  imports: [NgIf, MatFormFieldModule]
 })
 export class ControlMessagesComponent {
   @Input() control: AbstractControl;

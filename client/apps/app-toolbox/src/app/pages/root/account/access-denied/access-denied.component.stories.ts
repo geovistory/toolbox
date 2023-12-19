@@ -8,9 +8,9 @@ import { provideRouter } from '@angular/router';
 import { StateModule } from '@kleiolab/lib-redux';
 import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
-import { GvInternalStorage } from '../../../../core/cookies/cookies.module';
-import { ActiveAccountService } from '../../../../shared/services/active-account.service';
-import { GvAuthService } from '../../../../shared/services/auth.service';
+import { ActiveAccountService } from '../../../../services/active-account.service';
+import { GvAuthService } from '../../../../services/auth.service';
+import { GvInternalStorage } from '../../../../services/cookies.module';
 
 const meta: Meta<AccessDeniedComponent> = {
   component: AccessDeniedComponent,

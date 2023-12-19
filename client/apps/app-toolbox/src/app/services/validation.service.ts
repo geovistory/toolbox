@@ -1,8 +1,27 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, UntypedFormGroup, ValidatorFn } from '@angular/forms';
+import { QuillDoc } from "@kleiolab/lib-sdk-lb4";
 import { TimePrimitive } from '@kleiolab/lib-utils';
+import Ajv, { ErrorObject } from 'ajv';
 import { values } from 'ramda';
-import { isValidQuillDoc } from '../quill-doc-validation/validate-quill-doc';
+import { quillDocSchema } from '../lib/constants/quill-doc.schema';
+
+interface Validated<M> {
+  obj?: M
+  err?: ErrorObject[]
+}
+
+const ajv = new Ajv();
+const validate = ajv.compile(quillDocSchema);
+
+export function isValidQuillDoc(candidate: any): Validated<QuillDoc> {
+  if (validate(candidate) === true) {
+    return { obj: candidate }
+  } else if (validate.errors) {
+    return { err: validate.errors }
+  }
+  return {}
+}
 
 
 @Injectable()

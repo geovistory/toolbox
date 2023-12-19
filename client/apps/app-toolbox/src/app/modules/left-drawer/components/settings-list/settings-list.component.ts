@@ -6,7 +6,7 @@ import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { Observable } from 'rxjs';
 import { delay, map, switchMap } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';
 
 @Component({

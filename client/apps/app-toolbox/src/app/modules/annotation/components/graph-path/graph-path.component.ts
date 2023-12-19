@@ -4,8 +4,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 export interface GraphPathEntity {
   label: string;
   icon: string;

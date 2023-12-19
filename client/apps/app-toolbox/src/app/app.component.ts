@@ -5,7 +5,7 @@ import { RouterOutlet } from '@angular/router';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
-import { NotificationComponent } from './core/notifications/components/notifications.component';
+import { NotificationComponent } from './components/layout/notifications/notifications.component';
 import { LoadingBarComponent } from './shared/components/loading-bar/loading-bar.component';
 
 @Component({

@@ -12,7 +12,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { getCdkOverlayCanvas } from '../../../../../.storybook/getCdkOverlayCanvas';
 import { playInject } from '../../../../../.storybook/playInject';
 import { sleep } from '../../../../../.storybook/sleep';
-import { ActiveProjectService } from '../../services/active-project.service';
+import { ActiveProjectService } from '../../../services/active-project.service';
 import { EntityPreviewComponent } from './entity-preview.component';
 
 const meta: Meta<EntityPreviewComponent> = {

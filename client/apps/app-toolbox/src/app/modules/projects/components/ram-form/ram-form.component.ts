@@ -11,9 +11,9 @@ import { InfAppellation, InfLangString, InfStatement, InfStatementWithRelations,
 import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { QuillOpsToStrPipe } from '../../../../shared/pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { TruncatePipe } from '../../../../shared/pipes/truncate/truncate.pipe';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { CtrlTextPropertyComponent } from '../../../base/components/ctrl-text-property/ctrl-text-property.component';
 
 

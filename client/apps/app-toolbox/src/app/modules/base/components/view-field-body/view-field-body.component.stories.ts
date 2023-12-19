@@ -14,7 +14,7 @@ import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { playInject } from '../../../../../../.storybook/playInject';
 import { sleep } from '../../../../../../.storybook/sleep';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { temporalEntityListDefaultLimit } from '../../base.helpers';
 import { response1 } from './testing/response1';
 import { response2 } from './testing/response2';

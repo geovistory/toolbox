@@ -1,8 +1,8 @@
-import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GvInternalStorage, GVStorage } from './services/storage.swaps';
-import { GvCookieBrowser } from './services/cookie.browser';
-import { GvStorageBrowser } from './services/storage.browser';
+import { ModuleWithProviders, NgModule } from '@angular/core';
+import { GvCookieBrowser } from './cookie.browser';
+import { GvStorageBrowser } from './storage.browser';
+import { GVStorage, GvInternalStorage } from './storage.swaps';
 
 /* tslint:disable */
 
@@ -36,7 +36,7 @@ export class CookiesModule {
     };
   }
 }
-export * from './services/storage.swaps';
-export { GvCookieBrowser as CookieBrowser } from './services/cookie.browser';
-export { GvStorageBrowser as StorageBrowser } from './services/storage.browser';
+export { GvCookieBrowser as CookieBrowser } from './cookie.browser';
+export { GvStorageBrowser as StorageBrowser } from './storage.browser';
+export * from './storage.swaps';
 

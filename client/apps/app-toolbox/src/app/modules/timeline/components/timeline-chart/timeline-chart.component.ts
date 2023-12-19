@@ -1,31 +1,28 @@
-import { DatePipe, NgIf, NgClass, NgFor } from '@angular/common';
+import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { JulianDateTime } from '@kleiolab/lib-utils';
-import { GregorianDateTime } from '@kleiolab/lib-utils';
-import { DimensionChangeEvent, DimensionChangeDirective } from '../../../../shared/directives/dimension-change/dimension-change.directive';
-import { merge, Observable, Subject, combineLatest, BehaviorSubject } from 'rxjs';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatOptionModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { AnalysisTimeChartResponse, ChartLine, ChartLinePoint } from "@kleiolab/lib-sdk-lb4";
+import { GregorianDateTime, JulianDateTime } from '@kleiolab/lib-utils';
+import { BehaviorSubject, Observable, Subject, combineLatest, merge } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import { DimensionChangeDirective, DimensionChangeEvent } from '../../../../directives/dimension-change/dimension-change.directive';
+import { PassiveLinkDirective } from '../../../../directives/passive-link/passive-link.directive';
+import { DraggableXAxisDirective } from '../../directives/draggable-x-axis.directive';
 import { IXAxisDefinition, XAxisDefinition } from '../../models/x-axis-definition';
 import { YAxisDefinition } from '../../models/y-axis-definition';
 import { Zoomer } from '../../models/zoomer';
 import { ChartLineDefinition, ChartLineVisualComponent } from '../chart-line-visual/chart-line-visual.component';
-import { ChartLine } from "@kleiolab/lib-sdk-lb4";
-import { ChartLinePoint } from "@kleiolab/lib-sdk-lb4";
-import { AnalysisTimeChartResponse } from "@kleiolab/lib-sdk-lb4";
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { PassiveLinkDirective } from '../../../../shared/directives/passive-link/passive-link.directive';
-import { MatCardModule } from '@angular/material/card';
-import { ZoomSliderComponent } from '../zoom-slider/zoom-slider.component';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
-import { YAxisComponent } from '../y-axis/y-axis.component';
 import { XAxisComponent } from '../x-axis/x-axis.component';
-import { DraggableXAxisDirective } from '../../directives/draggable-x-axis.directive';
+import { YAxisComponent } from '../y-axis/y-axis.component';
+import { ZoomSliderComponent } from '../zoom-slider/zoom-slider.component';
 export class CursorInfo {
   readonly switchBetweenCalendars = 2299161 * 24 * 60 * 60;
 
@@ -65,11 +62,11 @@ export class CursorInfo {
 }
 
 @Component({
-    selector: 'gv-timeline-chart',
-    templateUrl: './timeline-chart.component.html',
-    styleUrls: ['./timeline-chart.component.scss'],
-    standalone: true,
-    imports: [DimensionChangeDirective, NgIf, DraggableXAxisDirective, XAxisComponent, YAxisComponent, ChartLineVisualComponent, MatButtonModule, MatMenuModule, MatIconModule, MatFormFieldModule, MatSelectModule, NgClass, MatOptionModule, NgFor, MatDividerModule, ZoomSliderComponent, MatCardModule, PassiveLinkDirective, MatTooltipModule]
+  selector: 'gv-timeline-chart',
+  templateUrl: './timeline-chart.component.html',
+  styleUrls: ['./timeline-chart.component.scss'],
+  standalone: true,
+  imports: [DimensionChangeDirective, NgIf, DraggableXAxisDirective, XAxisComponent, YAxisComponent, ChartLineVisualComponent, MatButtonModule, MatMenuModule, MatIconModule, MatFormFieldModule, MatSelectModule, NgClass, MatOptionModule, NgFor, MatDividerModule, ZoomSliderComponent, MatCardModule, PassiveLinkDirective, MatTooltipModule]
 })
 export class TimelineChartComponent implements OnInit, OnDestroy {
 

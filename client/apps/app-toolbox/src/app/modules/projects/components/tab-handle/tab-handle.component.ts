@@ -6,7 +6,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { PanelTab, StateFacade } from '@kleiolab/lib-redux';
 import { ClassConfig } from '@kleiolab/lib-sdk-lb4';
 import { Observable, Subject } from 'rxjs';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 
 @Component({
   selector: 'gv-tab-handle',

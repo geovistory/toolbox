@@ -15,7 +15,7 @@ import { values } from 'd3';
 import { either, is, isEmpty, isNil, pipe, reject, map as rmap, when } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { CtrlLanguageComponent } from '../../../base/components/ctrl-language/ctrl-language.component';
 interface Row {
 

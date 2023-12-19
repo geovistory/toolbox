@@ -17,9 +17,9 @@ import { values } from 'ramda';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { WorkBook } from 'xlsx/types';
+import { ActiveAccountService } from '../../../../services/active-account.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { Cell, Header, TableComponent } from '../../../../shared/components/digital-table/components/table/table.component';
-import { ActiveAccountService } from '../../../../shared/services/active-account.service';
 import { CtrlLanguageComponent } from '../../../base/components/ctrl-language/ctrl-language.component';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 

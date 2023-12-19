@@ -11,7 +11,7 @@ import { U } from '@kleiolab/lib-utils';
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 
 export function propertiesRequiredCondition(value): boolean {
   const model: PropertySelectModel = value;

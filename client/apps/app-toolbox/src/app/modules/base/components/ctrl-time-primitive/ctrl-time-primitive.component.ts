@@ -10,7 +10,7 @@ import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { CalendarType, DateTimeModule, Granularity, GregorianDateTime, JulianDateTime, TimePrimitive } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ValidationService } from '../../../../core/validation/validation.service';
+import { ValidationService } from '../../../../services/validation.service';
 import { ControlMessagesComponent } from '../../../../shared/components/control-messages/control-messages.component';
 
 

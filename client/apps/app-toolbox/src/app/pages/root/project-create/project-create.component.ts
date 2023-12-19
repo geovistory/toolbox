@@ -10,8 +10,8 @@ import { InfLanguage, LanguagesService, ProjectConfigurationService } from '@kle
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { CtrlLanguageComponent } from '../../../modules/base/components/ctrl-language/ctrl-language.component';
+import { GvAuthService } from '../../../services/auth.service';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
-import { GvAuthService } from '../../../shared/services/auth.service';
 
 
 class ProjectLabelDescription {

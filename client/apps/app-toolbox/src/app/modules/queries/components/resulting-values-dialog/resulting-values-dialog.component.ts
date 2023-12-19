@@ -3,7 +3,7 @@ import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
-import { ActiveProjectService } from "../../../../shared/services/active-project.service";
+import { ActiveProjectService } from "../../../../services/active-project.service";
 import { ResultTableValue } from '../result-table/result-table.component';
 
 export interface ValuesDialogData {

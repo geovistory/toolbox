@@ -9,7 +9,7 @@ import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } fro
 import { GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier, InfData, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
 import { EntityCardComponent } from '../entity-card/entity-card.component';
 import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';

@@ -14,8 +14,8 @@ import { Table, TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { GvAnalysisService } from '../../../../modules/analysis/services/analysis.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
-import { ActiveProjectService } from '../../../../shared/services/active-project.service';
 import { EntitiesDialogData, ResultingEntitiesDialogComponent } from '../resulting-entities-dialog/resulting-entities-dialog.component';
 import { ResultingValuesDialogComponent, ValuesDialogData } from '../resulting-values-dialog/resulting-values-dialog.component';
 
