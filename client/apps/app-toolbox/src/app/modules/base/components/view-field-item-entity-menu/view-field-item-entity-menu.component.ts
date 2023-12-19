@@ -8,7 +8,7 @@ import { ConfigurationPipesService, Field } from '@kleiolab/lib-redux';
 import { InfResourceWithRelations, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../ontome-ids';
+import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../lib/constants/ontome-ids';
 import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
 @Component({

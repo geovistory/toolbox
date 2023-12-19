@@ -1,23 +1,23 @@
+import { NgIf } from '@angular/common';
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellationWithRelations, InfLanguage, InfResourceWithRelations, InfStatementWithRelations, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
+import { C_339_STRING_ID, P_1864_HAS_VALUE_VERSION_ID, P_63_HAS_LANGUAGE_ID } from '../../../../lib/constants/ontome-ids';
 import { CONTAINER_DATA } from '../../../../modules/form-factory/core/form-child-factory';
 import { FormFactory } from '../../../../modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../../modules/form-factory/core/form-factory.models';
-import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from '../../../../modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from '../../../../modules/form-factory/services/FormNodeConfig';
-import { C_339_STRING_ID, P_1864_HAS_VALUE_VERSION_ID, P_63_HAS_LANGUAGE_ID } from '../../../../ontome-ids';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { openClose } from '../../../information/shared/animations';
 import { getFirstElementFormQueryList } from '../../base.helpers';
 import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { NgIf } from '@angular/common';
 
 type FgTextWithLangConfig = FormNodeConfig<any, any, any, any>
 export interface FgTextWithLangInjectData extends FormFactoryCompontentInjectData<Observable<InfResourceWithRelations>> {
@@ -26,12 +26,12 @@ export interface FgTextWithLangInjectData extends FormFactoryCompontentInjectDat
   stringFieldPlaceholder: string // label of the field where user enters text
 }
 @Component({
-    selector: 'gv-fg-text-with-lang',
-    templateUrl: './fg-text-with-lang.component.html',
-    styleUrls: ['./fg-text-with-lang.component.scss'],
-    animations: [openClose],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlAppellationComponent, CtrlLanguageComponent, MatTooltipModule]
+  selector: 'gv-fg-text-with-lang',
+  templateUrl: './fg-text-with-lang.component.html',
+  styleUrls: ['./fg-text-with-lang.component.scss'],
+  animations: [openClose],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlAppellationComponent, CtrlLanguageComponent, MatTooltipModule]
 })
 export class FgTextWithLangComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

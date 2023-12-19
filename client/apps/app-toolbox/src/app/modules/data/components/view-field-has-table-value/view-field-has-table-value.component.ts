@@ -7,7 +7,7 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, ImportTableResponse, ProjectDataService, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { catchError, first, map, shareReplay, startWith, switchMap } from 'rxjs/operators';
-import { P_1879_HAS_VALUE_ID } from '../../../../ontome-ids';
+import { P_1879_HAS_VALUE_ID } from '../../../../lib/constants/ontome-ids';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { ImporterComponent, ImporterDialogData } from '../importer/importer.component';

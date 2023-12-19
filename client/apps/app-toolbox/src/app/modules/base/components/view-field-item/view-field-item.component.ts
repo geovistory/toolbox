@@ -5,7 +5,7 @@ import { ActiveProjectPipesService, Field, StateFacade } from '@kleiolab/lib-red
 import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { C_53_TYPE_ID } from '../../../../ontome-ids';
+import { C_53_TYPE_ID } from '../../../../lib/constants/ontome-ids';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';

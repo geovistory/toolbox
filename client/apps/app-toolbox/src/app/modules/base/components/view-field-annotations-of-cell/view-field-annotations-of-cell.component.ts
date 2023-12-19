@@ -10,7 +10,7 @@ import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, Inf
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
-import { C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../ontome-ids';
+import { C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../lib/constants/ontome-ids';
 import { TableComponent } from '../../../../shared/components/digital-table/components/table/table.component';
 import { TableDetailComponent } from '../../../data/components/table-detail/table-detail.component';
 import { statemenTargetToInfData } from '../../base.helpers';

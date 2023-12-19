@@ -9,7 +9,7 @@ import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kle
 import { GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { C_218_EXPRESSION_ID } from '../../../../ontome-ids';
+import { C_218_EXPRESSION_ID } from '../../../../lib/constants/ontome-ids';
 import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
 import { openAddStatementDialog } from '../../lib/openAddStatementDialog';

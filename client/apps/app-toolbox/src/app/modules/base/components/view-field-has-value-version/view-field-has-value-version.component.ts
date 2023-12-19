@@ -12,8 +12,8 @@ import { GvFieldPageScope, GvFieldSourceEntity, GvPaginationObject, InfAppellati
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
+import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../lib/constants/ontome-ids';
 import { QuillEditComponent } from '../../../../modules/quill/quill-edit/quill-edit.component';
-import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../../ontome-ids';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ToggleBtnComponent } from '../../../../shared/components/gv-buttons/components/toggle-btn/toggle-btn.component';

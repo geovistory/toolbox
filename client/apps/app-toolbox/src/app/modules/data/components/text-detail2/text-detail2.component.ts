@@ -8,7 +8,7 @@ import { ActiveProjectPipesService, ConfigurationPipesService, Field, Informatio
 import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
-import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../ontome-ids';
+import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../lib/constants/ontome-ids';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
