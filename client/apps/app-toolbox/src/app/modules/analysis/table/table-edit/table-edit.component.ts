@@ -7,7 +7,7 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisTableRequest, AnalysisTableResponse, QueryDefinition } from "@kleiolab/lib-sdk-lb4";
 import { Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AnalysisLayoutComponent } from '../../../../components/analysis/analysis-layout/analysis-layout.component';
+import { AnalysisLayoutComponent } from '../../../../components/analysis/layout/analysis-layout/analysis-layout.component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { ResultTableComponent } from '../../../queries/components/result-table/result-table.component';
 import { GvAnalysisService } from '../../services/analysis.service';

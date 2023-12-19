@@ -8,11 +8,11 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { AngularSplitModule } from 'angular-split';
 import { Subject } from 'rxjs';
 import { filter, first, switchMap, takeUntil, tap } from 'rxjs/operators';
-import { GvAnalysisService } from '../../../modules/analysis/services/analysis.service';
-import { DetailContentComponent } from '../../../shared/components/detail-content/detail-content.component';
-import { DetailTopBarComponent } from '../../../shared/components/detail-top-bar/detail-top-bar.component';
-import { TabLayout } from '../../../shared/components/tab-layout/tab-layout';
-import { TabLayoutService } from '../../../shared/components/tab-layout/tab-layout.service';
+import { GvAnalysisService } from '../../../../modules/analysis/services/analysis.service';
+import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
+import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
+import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
+import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 
 @Component({
   selector: 'gv-analysis-layout',

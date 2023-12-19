@@ -7,11 +7,11 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { AnalysisDefinition, AnalysisMapRequest, AnalysisMapResponse } from "@kleiolab/lib-sdk-lb4";
 import { Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { AnalysisLayoutComponent } from '../../../../components/analysis/analysis-layout/analysis-layout.component';
-import { MapAndTimeContComponent } from '../../../../components/analysis/view/map-and-time-cont/map-and-time-cont.component';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { GvAnalysisService } from '../../services/analysis.service';
-import { MapAndTimeContFormComponent } from '../map-and-time-cont-form/map-and-time-cont-form.component';
+import { MapAndTimeContFormComponent } from '../../../modules/analysis/map-and-time-cont/map-and-time-cont-form/map-and-time-cont-form.component';
+import { GvAnalysisService } from '../../../modules/analysis/services/analysis.service';
+import { TabLayoutService } from '../../../shared/components/tab-layout/tab-layout.service';
+import { AnalysisLayoutComponent } from '../layout/analysis-layout/analysis-layout.component';
+import { MapAndTimeContComponent } from '../view/map-and-time-cont/map-and-time-cont.component';
 
 
 @Component({
