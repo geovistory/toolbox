@@ -5,10 +5,10 @@ import { Subject } from 'rxjs';
 import { EntityLabelConfigDialogComponent, EntityLabelConfigDialogData } from '../entity-label-config-dialog/entity-label-config-dialog.component';
 
 @Component({
-    selector: 'gv-entity-label-config-open-btn',
-    templateUrl: './entity-label-config-open-btn.component.html',
-    styleUrls: ['./entity-label-config-open-btn.component.scss'],
-    standalone: true
+  selector: 'gv-entity-label-config-open-btn',
+  templateUrl: './entity-label-config-open-btn.component.html',
+  styleUrls: ['./entity-label-config-open-btn.component.scss'],
+  standalone: true
 })
 export class EntityLabelConfigOpenBtnComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

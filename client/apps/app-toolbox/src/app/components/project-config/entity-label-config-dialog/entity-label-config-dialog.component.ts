@@ -1,19 +1,19 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatOptionModule } from '@angular/material/core';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { LabelPart, LabelPartField, ProEntityLabelConfig, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../components/confirm-dialog/confirm-dialog.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule } from '@angular/material/core';
-import { MatSelectModule } from '@angular/material/select';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 export interface EntityLabelConfigDialogData {
   fkProject: number,
   fkClass: number
@@ -27,11 +27,11 @@ interface FieldId { fkProperty: number, isOutgoing: boolean }
 
 
 @Component({
-    selector: 'gv-entity-label-config-dialog',
-    templateUrl: './entity-label-config-dialog.component.html',
-    styleUrls: ['./entity-label-config-dialog.component.scss'],
-    standalone: true,
-    imports: [MatDialogModule, NgIf, MatProgressSpinnerModule, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, MatSelectModule, MatOptionModule, MatInputModule, MatButtonModule, MatIconModule, AsyncPipe]
+  selector: 'gv-entity-label-config-dialog',
+  templateUrl: './entity-label-config-dialog.component.html',
+  styleUrls: ['./entity-label-config-dialog.component.scss'],
+  standalone: true,
+  imports: [MatDialogModule, NgIf, MatProgressSpinnerModule, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, MatSelectModule, MatOptionModule, MatInputModule, MatButtonModule, MatIconModule, AsyncPipe]
 })
 export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

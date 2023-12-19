@@ -19,6 +19,7 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { equals, indexBy, keys, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { EntityLabelConfigOpenBtnComponent } from '../../../../components/project-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../../modules/class-config/components/class-config-dialog/class-config-dialog.component';
 import { HighlightPipe } from '../../../../pipes/highlight/highlight.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
@@ -28,7 +29,6 @@ import { ClassInfoComponent } from '../../../../shared/components/onto-info/clas
 import { OntoClassInfoComponent } from '../../../../shared/components/onto-info/onto-class-info/onto-class-info.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { EntityLabelConfigOpenBtnComponent } from '../../../../shared/modules/entity-label-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
 
 interface Profile {
