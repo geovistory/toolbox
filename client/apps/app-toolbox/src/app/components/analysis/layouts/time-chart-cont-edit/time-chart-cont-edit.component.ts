@@ -13,8 +13,8 @@ import { ActiveProjectService } from '../../../../services/active-project.servic
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { EntityPreviewsPaginatedDialogService } from '../../../../shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { AnalysisLayoutComponent } from '../../layouts/analysis-layout/analysis-layout.component';
-import { TimeChartContFormComponent, TimeChartContInput } from '../time-chart-cont-form/time-chart-cont-form.component';
+import { TimeChartContFormComponent, TimeChartContInput } from '../../forms/time-chart-cont-form/time-chart-cont-form.component';
+import { AnalysisLayoutComponent } from '../analysis-layout/analysis-layout.component';
 
 @Component({
   selector: 'gv-time-chart-cont-edit',

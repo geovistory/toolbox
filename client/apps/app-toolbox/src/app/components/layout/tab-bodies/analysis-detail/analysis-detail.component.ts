@@ -9,7 +9,7 @@ import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { MapAndTimeContEditComponent } from '../../../analysis/layouts/map-and-time-cont-edit/map-and-time-cont-edit.component';
 import { TableEditComponent } from '../../../analysis/layouts/table-edit/table-edit.component';
-import { TimeChartContEditComponent } from '../../../analysis/time-chart-cont/time-chart-cont-edit/time-chart-cont-edit.component';
+import { TimeChartContEditComponent } from '../../../analysis/layouts/time-chart-cont-edit/time-chart-cont-edit.component';
 
 @Component({
   selector: 'gv-analysis-detail',
