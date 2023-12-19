@@ -10,10 +10,10 @@ import { ClassAndTypeSelectModel } from "@kleiolab/lib-redux";
 import { Observable, of } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
-import { FilterDefinition } from '../../../../modules/queries/components/query-filter/query-filter.component';
 import { TableFormService } from '../../../../services/table-form.service';
 import { MapAndTimeContFormControlComponent } from '../map-and-time-cont-form-control/map-and-time-cont-form-control.component';
 import { MapAndTimeContFormArrayFactory } from '../map-and-time-cont-form/map-and-time-cont-form.component';
+import { FilterDefinition } from '../query-filter/query-filter.component';
 
 @Component({
   selector: 'gv-map-and-time-cont-form-array',

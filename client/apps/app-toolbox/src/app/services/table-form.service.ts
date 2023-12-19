@@ -3,10 +3,10 @@ import { ClassAndTypeSelectModel, ConfigurationPipesService } from '@kleiolab/li
 import { AnalysisDefinition, ColDef, QueryFilter, QueryPathSegment } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { classOrTypeRequiredValidator } from '../components/analysis/forms/class-and-type-select/class-and-type-select.component';
+import { FilterDefinition, QueryFilterComponent } from '../components/analysis/forms/query-filter/query-filter.component';
+import { QueryPathFormComponent } from '../components/analysis/forms/query-path/query-path-form/query-path-form.component';
 import { TableFormNodeConfig } from '../components/analysis/forms/table-form/table-form.component';
-import { classOrTypeRequiredValidator } from '../modules/queries/components/class-and-type-select/class-and-type-select.component';
-import { FilterDefinition, QueryFilterComponent } from '../modules/queries/components/query-filter/query-filter.component';
-import { QueryPathFormComponent } from '../modules/queries/forms/query-path/query-path-form/query-path-form.component';
 import { ValidationService } from './validation.service';
 
 

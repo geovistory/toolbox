@@ -16,11 +16,10 @@ import { FormFactoryConfig } from '../../../../modules/form-factory/services/For
 import { FormNodeConfig } from '../../../../modules/form-factory/services/FormNodeConfig';
 import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { TableFormArrayData, TableFormService } from '../../../../services/table-form.service';
-import { CtrlClasses, QueryFilterInjectData } from '../query-filter/query-filter.component';
-import { QueryPathInjectData } from '../query-path/query-path-form/query-path-form.component';
-import { getLabelForDefaulType } from '../table-form-array/table-form-array.component';
-import { TableFormGroupComponent } from '../table-form-group/table-form-group.component';
-
+import { CtrlClasses, QueryFilterInjectData } from '../../forms/query-filter/query-filter.component';
+import { QueryPathInjectData } from '../../forms/query-path/query-path-form/query-path-form.component';
+import { getLabelForDefaulType } from '../../forms/table-form-array/table-form-array.component';
+import { TableFormGroupComponent } from '../../forms/table-form-group/table-form-group.component';
 
 export interface TableFormGroupData {
   initVal$: Observable<QueryDefinition>;

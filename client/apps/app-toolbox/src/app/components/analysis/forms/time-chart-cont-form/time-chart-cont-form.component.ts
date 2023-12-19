@@ -1,21 +1,21 @@
+import { NgIf } from '@angular/common';
 import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { TimeChartContLine } from '@kleiolab/lib-sdk-lb4';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
+import { first, map, takeUntil } from 'rxjs/operators';
 import { FormArrayFactory } from '../../../../modules/form-factory/core/form-array-factory';
 import { FormChildFactory } from '../../../../modules/form-factory/core/form-child-factory';
 import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
 import { FormFactory } from '../../../../modules/form-factory/core/form-factory';
 import { FormFactoryComponent } from '../../../../modules/form-factory/core/form-factory.models';
 import { FormGroupFactory } from '../../../../modules/form-factory/core/form-group-factory';
-import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from '../../../../modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from '../../../../modules/form-factory/services/FormNodeConfig';
-import { QueryFilterComponent, QueryFilterInjectData } from '../../../../modules/queries/components/query-filter/query-filter.component';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
+import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
+import { QueryFilterComponent, QueryFilterInjectData } from '../query-filter/query-filter.component';
 import { TimeChartContFormGroupComponent } from '../time-chart-cont-form-group/time-chart-cont-form-group.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgIf } from '@angular/common';
 export interface TimeChartContInput {
   lines: TimeChartContLine[]
 }
@@ -142,11 +142,11 @@ export const lineControlConfigs = (initVal: LineControlInitVal): TccFormNodeConf
 ])
 
 @Component({
-    selector: 'gv-time-chart-cont-form',
-    templateUrl: './time-chart-cont-form.component.html',
-    styleUrls: ['./time-chart-cont-form.component.scss'],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, TimeChartContFormGroupComponent]
+  selector: 'gv-time-chart-cont-form',
+  templateUrl: './time-chart-cont-form.component.html',
+  styleUrls: ['./time-chart-cont-form.component.scss'],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, TimeChartContFormGroupComponent]
 })
 export class TimeChartContFormComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

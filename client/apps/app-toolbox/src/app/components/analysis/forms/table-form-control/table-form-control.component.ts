@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ClassAndTypeSelectComponent } from 'apps/app-toolbox/src/app/modules/queries/components/class-and-type-select/class-and-type-select.component';
+import { ClassAndTypeSelectComponent } from '../class-and-type-select/class-and-type-select.component';
 import { TableFormControlFactory } from '../table-form/table-form.component';
 
 @Component({

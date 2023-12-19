@@ -15,8 +15,8 @@ import { ColDef } from '@kleiolab/lib-sdk-lb4';
 import { Observable, of } from 'rxjs';
 import { first, map } from 'rxjs/operators';
 import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
-import { FilterDefinition } from '../../../../modules/queries/components/query-filter/query-filter.component';
 import { TableFormService } from '../../../../services/table-form.service';
+import { FilterDefinition } from '../query-filter/query-filter.component';
 import { TableFormControlComponent } from '../table-form-control/table-form-control.component';
 import { TableFormArrayFactory } from '../table-form/table-form.component';
 
