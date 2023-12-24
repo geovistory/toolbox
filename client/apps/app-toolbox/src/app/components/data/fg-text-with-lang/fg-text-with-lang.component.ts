@@ -8,6 +8,7 @@ import { InfAppellationWithRelations, InfLanguage, InfResourceWithRelations, Inf
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { C_339_STRING_ID, P_1864_HAS_VALUE_VERSION_ID, P_63_HAS_LANGUAGE_ID } from '../../../lib/constants/ontome-ids';
+import { getFirstElementFormQueryList } from '../../../lib/converters/base.helpers';
 import { CONTAINER_DATA } from '../../../modules/form-factory/core/form-child-factory';
 import { FormFactory } from '../../../modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../modules/form-factory/core/form-factory.models';
@@ -15,7 +16,6 @@ import { FormFactoryConfig } from '../../../modules/form-factory/services/FormFa
 import { FormNodeConfig } from '../../../modules/form-factory/services/FormNodeConfig';
 import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
 import { openClose } from '../../../modules/information/shared/animations';
-import { getFirstElementFormQueryList } from '../../../modules/base/base.helpers';
 import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 

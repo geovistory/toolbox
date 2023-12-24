@@ -6,7 +6,7 @@ import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { InfResource, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 
 

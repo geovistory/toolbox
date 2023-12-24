@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { Field } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfResourceWithRelations, ProInfoProjRel } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
+import { EditModeService } from '../../../services/edit-mode.service';
 import { EntityWithFieldsComponent } from '../entity-with-fields/entity-with-fields.component';
 import { ViewFieldItemClassInfoComponent } from '../view-field-item-class-info/view-field-item-class-info.component';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';

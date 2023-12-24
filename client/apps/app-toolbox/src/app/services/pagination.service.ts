@@ -3,9 +3,9 @@ import { Field, StateFacade, subfieldIdToString } from '@kleiolab/lib-redux';
 import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, WarFieldChange, WarFieldChangeAddToStream, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { FieldChangeSocket } from '@kleiolab/lib-sockets';
 import { indexBy } from 'ramda';
-import { interval, Observable, Subject } from 'rxjs';
+import { Observable, Subject, interval } from 'rxjs';
 import { bufferWhen, filter, first } from 'rxjs/operators';
-import { fieldPageToWarFieldChangeId, fieldToFieldPage, fieldToGvFieldTargets } from '../base.helpers';
+import { fieldPageToWarFieldChangeId, fieldToFieldPage, fieldToGvFieldTargets } from '../lib/converters/base.helpers';
 
 
 interface Loader {

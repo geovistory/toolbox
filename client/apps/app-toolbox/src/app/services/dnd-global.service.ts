@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
-import type { ViewFieldBodyComponent } from '../../../components/data/view-field-body/view-field-body.component';
+import type { ViewFieldBodyComponent } from '../components/data/view-field-body/view-field-body.component';
 export type TreeItem = StatementWithTarget
 export type DndDropPosition = 'start' | 'end';
 export interface ItemData {

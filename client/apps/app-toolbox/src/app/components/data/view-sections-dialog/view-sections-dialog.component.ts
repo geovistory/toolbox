@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { ActiveProjectService } from '../../../services/active-project.service';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
+import { EditModeService } from '../../../services/edit-mode.service';
 import { ViewSectionsComponent } from '../view-sections/view-sections.component';
 
 export interface ViewSectionsDialogData {

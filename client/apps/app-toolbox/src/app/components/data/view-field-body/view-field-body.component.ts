@@ -15,16 +15,16 @@ import { BehaviorSubject, Observable, Subject, combineLatest, merge } from 'rxjs
 import { delay, distinctUntilChanged, first, map, shareReplay, startWith, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { MatDialogModule } from '@angular/material/dialog';
+import { GvDndSortListDirective } from '../../../directives/drag-sort/dnd-sort-list.directive';
 import { OpenCloseChildDirective } from '../../../directives/open-close/open-close-child.directive';
 import { OpenCloseContainerDirective } from '../../../directives/open-close/open-close-container.directive';
+import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../../lib/converters/base.helpers';
 import { openClose } from '../../../modules/information/shared/animations';
-import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../../modules/base/base.helpers';
-import { GvDndSortListDirective } from '../../../modules/base/directives/dnd-sort-list.directive';
-import { GvDndGlobalService, TreeItem } from '../../../modules/base/services/dnd-global.service';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
-import { PaginationService } from '../../../modules/base/services/pagination.service';
-import { ViewFieldDropListService } from '../../../modules/base/services/view-field-drop-list.service';
-import { ViewFieldItemCountSumService } from '../../../modules/base/services/view-field-item-count-sum.service';
+import { GvDndGlobalService, TreeItem } from '../../../services/dnd-global.service';
+import { EditModeService } from '../../../services/edit-mode.service';
+import { PaginationService } from '../../../services/pagination.service';
+import { ViewFieldDropListService } from '../../../services/view-field-drop-list.service';
+import { ViewFieldItemCountSumService } from '../../../services/view-field-item-count-sum.service';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
 import { ViewFieldItemComponent } from '../view-field-item/view-field-item.component';
 import { ViewFieldBodyService } from './view-field-body.service';

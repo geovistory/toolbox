@@ -1,22 +1,22 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
-import { GvFieldPage, GvFieldPageReq, InfStatement, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
-import { combineLatest, Observable, Subject } from 'rxjs';
-import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { PaginationService } from '../../../modules/base/services/pagination.service';
-import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { NgIf, AsyncPipe } from '@angular/common';
+import { GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
+import { GvFieldPage, GvFieldPageReq, InfStatement, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
+import { Observable, Subject, combineLatest } from 'rxjs';
+import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { PaginationService } from '../../../services/pagination.service';
+import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
 
 @Component({
-    selector: 'gv-type-item',
-    templateUrl: './type-item.component.html',
-    styleUrls: ['./type-item.component.scss'],
-    standalone: true,
-    imports: [NgIf, MatButtonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlTypeComponent, AsyncPipe]
+  selector: 'gv-type-item',
+  templateUrl: './type-item.component.html',
+  styleUrls: ['./type-item.component.scss'],
+  standalone: true,
+  imports: [NgIf, MatButtonModule, MatIconModule, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlTypeComponent, AsyncPipe]
 })
 export class TypeItemComponent implements OnInit {
   destroy$ = new Subject<boolean>();

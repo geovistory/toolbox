@@ -11,11 +11,11 @@ import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
-import { fieldToWarFieldChangeId } from '../../../modules/base/base.helpers';
-import { openAddStatementDialogFromField } from '../../../modules/base/lib/openAddStatementDialogFromField';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
-import { PaginationService } from '../../../modules/base/services/pagination.service';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
+import { fieldToWarFieldChangeId } from '../../../lib/converters/base.helpers';
+import { openAddStatementDialogFromField } from '../../../lib/dialogs/openAddStatementDialogFromField';
+import { EditModeService } from '../../../services/edit-mode.service';
+import { PaginationService } from '../../../services/pagination.service';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 
 export interface SelectTypeDialogData {
 

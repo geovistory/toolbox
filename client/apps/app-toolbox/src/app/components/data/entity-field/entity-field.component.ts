@@ -7,12 +7,12 @@ import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } fr
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { EditModeService } from '../../../services/edit-mode.service';
+import { PaginationService } from '../../../services/pagination.service';
 import { EntityPreviewComponent } from '../../../shared/components/entity-preview/entity-preview.component';
 import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
 import { OntoPropertyInfoComponent } from '../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
-import { PaginationService } from '../../../modules/base/services/pagination.service';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { FieldLabelComponent } from '../field-label/field-label.component';
 import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
 

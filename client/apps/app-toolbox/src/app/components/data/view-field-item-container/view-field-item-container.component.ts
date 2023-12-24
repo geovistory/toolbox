@@ -5,10 +5,10 @@ import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { DndDropEvent, DndDropzoneDirective } from 'ngx-drag-drop';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GvDndSortListDirective } from '../../../modules/base/directives/dnd-sort-list.directive';
-import { DndDropPosition, GvDndGlobalService, ItemData, TreeItem } from '../../../modules/base/services/dnd-global.service';
-import { ViewFieldTreeNodeService } from '../../../modules/base/services/view-field-tree-node.service';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
+import { GvDndSortListDirective } from '../../../directives/drag-sort/dnd-sort-list.directive';
+import { DndDropPosition, GvDndGlobalService, ItemData, TreeItem } from '../../../services/dnd-global.service';
+import { ViewFieldTreeNodeService } from '../../../services/view-field-tree-node.service';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 export const canDrop = (field: Field, stmt: StatementWithTarget) => map<TreeItem | false, boolean>((dragStmt) => {
   // item can't be dropped here if...

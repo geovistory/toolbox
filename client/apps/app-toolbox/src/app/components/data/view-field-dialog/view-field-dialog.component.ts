@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { Field } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
+import { EditModeService } from '../../../services/edit-mode.service';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 
 export interface ViewFieldDialogData {

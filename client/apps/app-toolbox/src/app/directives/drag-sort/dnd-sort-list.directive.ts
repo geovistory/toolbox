@@ -2,9 +2,9 @@ import { Directive, EventEmitter, Input, Output } from '@angular/core';
 import { Field } from '@kleiolab/lib-redux';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { first } from 'rxjs/operators';
-import { ViewFieldBodyService } from '../../../components/data/view-field-body/view-field-body.service';
-import { DndDropPosition, GvDndGlobalService, ItemData, TreeItem } from '../services/dnd-global.service';
-import { ViewFieldDropListService } from '../services/view-field-drop-list.service';
+import { ViewFieldBodyService } from '../../components/data/view-field-body/view-field-body.service';
+import { DndDropPosition, GvDndGlobalService, ItemData, TreeItem } from '../../services/dnd-global.service';
+import { ViewFieldDropListService } from '../../services/view-field-drop-list.service';
 
 
 interface DndSortListDropEvent {

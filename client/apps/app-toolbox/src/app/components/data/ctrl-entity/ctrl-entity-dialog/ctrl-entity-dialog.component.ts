@@ -9,8 +9,8 @@ import { GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfRes
 import { U } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { filter, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { EditModeService } from '../../../../modules/base/services/edit-mode.service';
-import { READ_ONLY } from '../../../../modules/base/tokens/READ_ONLY';
+import { EditModeService } from '../../../../services/edit-mode.service';
+import { READ_ONLY } from '../../../../tokens/READ_ONLY';
 import { EntityCardComponent } from '../../entity-card/entity-card.component';
 import { FormCreateDataComponent } from '../../form-create-data/form-create-data.component';
 import { HbfPanelComponent } from '../../hbf-panel/hbf-panel.component';

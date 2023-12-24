@@ -1,12 +1,12 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Inject, ViewChild } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { Field } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
+import { EditModeService } from '../../../services/edit-mode.service';
 import { ViewFieldHasValueVersionComponent } from '../view-field-has-value-version/view-field-has-value-version.component';
-import { MatButtonModule } from '@angular/material/button';
-import { NgIf, AsyncPipe } from '@angular/common';
 export interface EditTextDialogData {
   classLabel: string;
   source: GvFieldSourceEntity
@@ -17,12 +17,12 @@ export interface EditTextDialogData {
   showOntoInfo$: Observable<boolean>
 }
 @Component({
-    selector: 'gv-edit-text-dialog',
-    templateUrl: './edit-text-dialog.component.html',
-    styleUrls: ['./edit-text-dialog.component.scss'],
-    providers: [EditModeService],
-    standalone: true,
-    imports: [MatDialogModule, ViewFieldHasValueVersionComponent, NgIf, MatButtonModule, AsyncPipe]
+  selector: 'gv-edit-text-dialog',
+  templateUrl: './edit-text-dialog.component.html',
+  styleUrls: ['./edit-text-dialog.component.scss'],
+  providers: [EditModeService],
+  standalone: true,
+  imports: [MatDialogModule, ViewFieldHasValueVersionComponent, NgIf, MatButtonModule, AsyncPipe]
 })
 export class EditTextDialogComponent {
 

@@ -10,7 +10,7 @@ import { GvFieldPageScope, GvFieldSourceEntity, GvSchemaModifier, InfData, InfRe
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { filter, first, map, startWith, switchMap, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../services/active-project.service';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { EntityCardComponent } from '../entity-card/entity-card.component';
 import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
 import { HbfPanelComponent } from '../hbf-panel/hbf-panel.component';

@@ -1,20 +1,20 @@
+import { AsyncPipe, NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ActiveProjectPipesService, Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, InfStatementWithRelations, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
-import { fieldToWarFieldChangeId } from '../../../modules/base/base.helpers';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
-import { PaginationService } from '../../../modules/base/services/pagination.service';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatButtonModule } from '@angular/material/button';
-import { MatListModule } from '@angular/material/list';
-import { NgStyle, NgFor, NgIf, AsyncPipe } from '@angular/common';
-import { MatDividerModule } from '@angular/material/divider';
+import { fieldToWarFieldChangeId } from '../../../lib/converters/base.helpers';
+import { EditModeService } from '../../../services/edit-mode.service';
+import { PaginationService } from '../../../services/pagination.service';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 
 export interface SelectPlatformVocabItemDialogData {
 
@@ -33,15 +33,15 @@ interface Option {
   label: string
 }
 @Component({
-    selector: 'gv-select-platform-vocab-item-dialog',
-    templateUrl: './select-platform-vocab-item-dialog.component.html',
-    styleUrls: ['./select-platform-vocab-item-dialog.component.scss'],
-    providers: [
-        EditModeService,
-        { provide: READ_ONLY, useValue: true }
-    ],
-    standalone: true,
-    imports: [MatDividerModule, NgStyle, MatDialogModule, MatListModule, NgFor, MatButtonModule, NgIf, MatProgressSpinnerModule, AsyncPipe]
+  selector: 'gv-select-platform-vocab-item-dialog',
+  templateUrl: './select-platform-vocab-item-dialog.component.html',
+  styleUrls: ['./select-platform-vocab-item-dialog.component.scss'],
+  providers: [
+    EditModeService,
+    { provide: READ_ONLY, useValue: true }
+  ],
+  standalone: true,
+  imports: [MatDividerModule, NgStyle, MatDialogModule, MatListModule, NgFor, MatButtonModule, NgIf, MatProgressSpinnerModule, AsyncPipe]
 })
 export class SelectPlatformVocabItemDialogComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

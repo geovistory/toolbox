@@ -6,11 +6,11 @@ import { GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview } from '@kleiol
 import { IOutputData } from 'angular-split/lib/interface';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { EditModeService } from '../../modules/base/services/edit-mode.service';
 import { TabLayoutComponentInterface } from '../../modules/projects/directives/on-activate-tab.directive';
 import { TabBody } from '../../pages/project/project-edit/project-edit.component';
 import { TruncatePipe } from '../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../services/active-project.service';
+import { EditModeService } from '../../services/edit-mode.service';
 import { TabLayoutService } from '../components/tab-layout/tab-layout.service';
 
 interface ConfigBase { pkEntity: number }

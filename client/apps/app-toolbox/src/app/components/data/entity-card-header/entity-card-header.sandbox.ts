@@ -3,20 +3,20 @@ import { FormsModule } from '@angular/forms';
 import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
 import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
-import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
-import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../../modules/base/base.module';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
+import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { EntityCardHeaderComponent } from './entity-card-header.component';
 
 /*****************************************************************************

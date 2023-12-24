@@ -1,5 +1,5 @@
 import { MatDialog } from '@angular/material/dialog';
-import { AddStatementDialogComponent, type AddStatementDialogData } from '../../../components/data/add-statement-dialog/add-statement-dialog.component';
+import { AddStatementDialogComponent, type AddStatementDialogData } from '../../components/data/add-statement-dialog/add-statement-dialog.component';
 
 /**
  * open add statement dialog

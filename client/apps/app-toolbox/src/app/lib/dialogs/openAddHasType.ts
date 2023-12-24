@@ -1,7 +1,7 @@
 import { MatDialog } from '@angular/material/dialog';
 import { Field } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
-import { SelectTypeDialogComponent, type SelectTypeDialogData } from '../../../components/data/select-type-dialog/select-type-dialog.component';
+import { SelectTypeDialogComponent, type SelectTypeDialogData } from '../../components/data/select-type-dialog/select-type-dialog.component';
 
 /**
 * Open a dialog to creat a has type statement with a type from the project as target.

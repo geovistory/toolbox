@@ -13,13 +13,13 @@ import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
-import { EntityLabelConfigOpenBtnComponent } from '../../project-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
+import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../modules/class-config/components/class-config-dialog/class-config-dialog.component';
 import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
+import { EditModeService } from '../../../services/edit-mode.service';
 import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
-import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../modules/class-config/components/class-config-dialog/class-config-dialog.component';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
+import { EntityLabelConfigOpenBtnComponent } from '../../project-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
 
 @Component({
   selector: 'gv-entity-card-header',

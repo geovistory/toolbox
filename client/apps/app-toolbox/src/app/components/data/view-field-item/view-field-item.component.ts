@@ -6,13 +6,13 @@ import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview, W
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { C_53_TYPE_ID } from '../../../lib/constants/ontome-ids';
+import { fieldToWarFieldChangeId } from '../../../lib/converters/base.helpers';
+import { openAddStatementDialog } from '../../../lib/dialogs/openAddStatementDialog';
 import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
+import { PaginationService } from '../../../services/pagination.service';
+import { ViewFieldDropListService } from '../../../services/view-field-drop-list.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { fieldToWarFieldChangeId } from '../../../modules/base/base.helpers';
-import { openAddStatementDialog } from '../../../modules/base/lib/openAddStatementDialog';
-import { PaginationService } from '../../../modules/base/services/pagination.service';
-import { ViewFieldDropListService } from '../../../modules/base/services/view-field-drop-list.service';
 import { EditTextDialogComponent, EditTextDialogData } from '../edit-text-dialog/edit-text-dialog.component';
 import { ViewFieldBodyService } from '../view-field-body/view-field-body.service';
 import { ViewFieldItemCellComponent } from '../view-field-item-cell/view-field-item-cell.component';

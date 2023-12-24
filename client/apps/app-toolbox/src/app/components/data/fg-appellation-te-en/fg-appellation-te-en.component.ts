@@ -1,25 +1,25 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
-import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellationWithRelations, InfLanguage, InfPlace, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
+import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { getFirstElementFormQueryList } from '../../../lib/converters/base.helpers';
 import { CONTAINER_DATA } from '../../../modules/form-factory/core/form-child-factory';
 import { FormFactory } from '../../../modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../modules/form-factory/core/form-factory.models';
-import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from '../../../modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from '../../../modules/form-factory/services/FormNodeConfig';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
 import { openClose } from '../../../modules/information/shared/animations';
-import { getFirstElementFormQueryList } from '../../../modules/base/base.helpers';
 import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { NgIf, AsyncPipe } from '@angular/common';
 
 type FgAppellationTeEnNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInjectData<Observable<InfResourceWithRelations>> {
@@ -27,12 +27,12 @@ export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInject
   pkClass: number
 }
 @Component({
-    selector: 'gv-fg-appellation-te-en',
-    templateUrl: './fg-appellation-te-en.component.html',
-    styleUrls: ['./fg-appellation-te-en.component.scss'],
-    animations: [openClose],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlAppellationComponent, MatButtonModule, MatIconModule, CtrlLanguageComponent, CtrlTypeComponent, AsyncPipe]
+  selector: 'gv-fg-appellation-te-en',
+  templateUrl: './fg-appellation-te-en.component.html',
+  styleUrls: ['./fg-appellation-te-en.component.scss'],
+  animations: [openClose],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlAppellationComponent, MatButtonModule, MatIconModule, CtrlLanguageComponent, CtrlTypeComponent, AsyncPipe]
 })
 export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

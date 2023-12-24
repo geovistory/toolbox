@@ -13,14 +13,14 @@ import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { ViewSectionsDialogComponent, ViewSectionsDialogData } from '../../../../components/data/view-sections-dialog/view-sections-dialog.component';
-import { PaginationService } from '../../../../modules/base/services/pagination.service';
+import { fieldToFieldPage, fieldToGvFieldTargets } from '../../../../lib/converters/base.helpers';
+import { openAddEntityDialog } from '../../../../lib/dialogs/openAddEntityDialog';
 import { ActiveProjectService } from '../../../../services/active-project.service';
+import { PaginationService } from '../../../../services/pagination.service';
 import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
 import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { fieldToFieldPage, fieldToGvFieldTargets } from '../../../base/base.helpers';
-import { openAddEntityDialog } from '../../../base/lib/openAddEntityDialog';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
 
 interface TypeItem {

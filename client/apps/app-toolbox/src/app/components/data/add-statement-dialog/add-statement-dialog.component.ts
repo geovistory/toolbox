@@ -10,11 +10,11 @@ import { ActiveProjectPipesService, ConfigurationPipesService, Field, FieldTarge
 import { GvFieldPageReq, GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfStatementWithRelations, StatementWithTarget, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
+import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId, statemenTargetToInfData } from '../../../lib/converters/base.helpers';
 import { ActiveProjectService } from '../../../services/active-project.service';
-import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId, statemenTargetToInfData } from '../../../modules/base/base.helpers';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
-import { PaginationService } from '../../../modules/base/services/pagination.service';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
+import { EditModeService } from '../../../services/edit-mode.service';
+import { PaginationService } from '../../../services/pagination.service';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { EntityCardComponent } from '../entity-card/entity-card.component';
 import { FormCreateDataComponent } from '../form-create-data/form-create-data.component';
 import { HbfPanelComponent } from '../hbf-panel/hbf-panel.component';

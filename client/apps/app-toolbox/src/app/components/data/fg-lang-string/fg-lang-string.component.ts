@@ -1,31 +1,31 @@
+import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellation, InfLangString, InfLangStringWithRelations, InfLanguage, QuillDoc } from '@kleiolab/lib-sdk-lb4';
+import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
+import { first, map, switchMap, takeUntil } from 'rxjs/operators';
+import { getFirstElementFormQueryList } from '../../../lib/converters/base.helpers';
 import { CONTAINER_DATA } from '../../../modules/form-factory/core/form-child-factory';
 import { FormFactory } from '../../../modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../modules/form-factory/core/form-factory.models';
-import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
 import { FormFactoryConfig } from '../../../modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from '../../../modules/form-factory/services/FormNodeConfig';
-import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
-import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { getFirstElementFormQueryList } from '../../../modules/base/base.helpers';
+import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
 import { CtrlAppellationComponent, CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgIf, NgFor } from '@angular/common';
 
 type FgLangStringNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgLangStringInjectData extends FormFactoryCompontentInjectData<Observable<InfLangString>> {
   appearance: MatFormFieldAppearance
 }
 @Component({
-    selector: 'gv-fg-lang-string',
-    templateUrl: './fg-lang-string.component.html',
-    styleUrls: ['./fg-lang-string.component.scss'],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, CtrlAppellationComponent, CtrlLanguageComponent]
+  selector: 'gv-fg-lang-string',
+  templateUrl: './fg-lang-string.component.html',
+  styleUrls: ['./fg-lang-string.component.scss'],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, CtrlAppellationComponent, CtrlLanguageComponent]
 })
 export class FgLangStringComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

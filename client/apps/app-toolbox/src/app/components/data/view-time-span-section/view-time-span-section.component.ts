@@ -5,7 +5,7 @@ import { ConfigurationPipesService, DisplayType, SectionName } from '@kleiolab/l
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
+import { EditModeService } from '../../../services/edit-mode.service';
 import { ViewSectionBodyComponent } from '../view-section-body/view-section-body.component';
 import { ViewTimeSpanItemComponent } from '../view-time-span-item/view-time-span-item.component';
 import { ViewTimeSpanSectionBodyComponent } from '../view-time-span-section-body/view-time-span-section-body.component';

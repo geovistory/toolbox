@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, OnInit, forwardRef } from '@
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
+import { EditModeService } from '../../../services/edit-mode.service';
 import { EntityCardHeaderComponent } from '../entity-card-header/entity-card-header.component';
 import { ViewSectionsComponent } from '../view-sections/view-sections.component';
 

@@ -5,8 +5,8 @@ import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ProjectEditComponent } from '../../../pages/project/project-edit/project-edit.component';
 import { ActiveProjectService } from '../../../services/active-project.service';
-import { EditModeService } from '../../../modules/base/services/edit-mode.service';
-import { READ_ONLY } from '../../../modules/base/tokens/READ_ONLY';
+import { EditModeService } from '../../../services/edit-mode.service';
+import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { EntityCardComponent } from '../entity-card/entity-card.component';
 
 /**

@@ -5,16 +5,16 @@ import { GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, WarEntityPreview
 import { TimeSpanUtil } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { PaginationService } from '../../../modules/base/services/pagination.service';
+import { PaginationService } from '../../../services/pagination.service';
 import { ViewTimeSpanItemPreviewComponent } from '../view-time-span-item-preview/view-time-span-item-preview.component';
 
 @Component({
-    selector: 'gv-entity-field-time-span',
-    templateUrl: './entity-field-time-span.component.html',
-    styleUrls: ['./entity-field-time-span.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [ViewTimeSpanItemPreviewComponent]
+  selector: 'gv-entity-field-time-span',
+  templateUrl: './entity-field-time-span.component.html',
+  styleUrls: ['./entity-field-time-span.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [ViewTimeSpanItemPreviewComponent]
 })
 export class EntityFieldTimeSpanComponent implements OnInit {
   destroy$ = new Subject<boolean>();
