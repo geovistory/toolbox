@@ -7,9 +7,9 @@ import { ActiveProjectService } from '../../../../services/active-project.servic
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { MapAndTimeContEditComponent } from '../../../analysis/layouts/map-and-time-cont-edit/map-and-time-cont-edit.component';
-import { TableEditComponent } from '../../../analysis/layouts/table-edit/table-edit.component';
-import { TimeChartContEditComponent } from '../../../analysis/layouts/time-chart-cont-edit/time-chart-cont-edit.component';
+import { AnalysisLayoutMapWithTimeComponent } from '../../../analysis/layouts/analysis-layout-map-with-time/analysis-layout-map-with-time.component';
+import { AnalysisLayoutTableComponent } from '../../../analysis/layouts/analysis-layout-table/analysis-layout-table.component';
+import { AnalysisLayoutTimeComponent } from '../../../analysis/layouts/analysis-layout-time/analysis-layout-time.component';
 
 @Component({
   selector: 'gv-analysis-detail',
@@ -17,7 +17,7 @@ import { TimeChartContEditComponent } from '../../../analysis/layouts/time-chart
   styleUrls: ['./analysis-detail.component.scss'],
   providers: [GvAnalysisService],
   standalone: true,
-  imports: [NgIf, TimeChartContEditComponent, TableEditComponent, MapAndTimeContEditComponent]
+  imports: [NgIf, AnalysisLayoutTimeComponent, AnalysisLayoutTableComponent, AnalysisLayoutMapWithTimeComponent]
 })
 export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
   t: TabLayout;
