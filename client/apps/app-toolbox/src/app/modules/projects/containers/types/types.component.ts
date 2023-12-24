@@ -12,7 +12,7 @@ import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ViewSectionsDialogComponent, ViewSectionsDialogData } from '../../../../modules/base/components/view-sections-dialog/view-sections-dialog.component';
+import { ViewSectionsDialogComponent, ViewSectionsDialogData } from '../../../../components/data/view-sections-dialog/view-sections-dialog.component';
 import { PaginationService } from '../../../../modules/base/services/pagination.service';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';

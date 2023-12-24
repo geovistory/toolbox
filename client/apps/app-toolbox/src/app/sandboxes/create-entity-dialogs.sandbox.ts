@@ -23,10 +23,10 @@ import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transform
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { BaseModule } from '../modules/base/base.module';
-import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from '../modules/base/components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
-import { AddStatementDialogComponent, AddStatementDialogData } from '../modules/base/components/add-statement-dialog/add-statement-dialog.component';
-import { CreateOrAddEntityEvent, CtrlEntityDialogComponent, CtrlEntityDialogData } from '../modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
-import { CtrlEntityModel } from '../modules/base/components/ctrl-entity/ctrl-entity.component';
+import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from '../components/data/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
+import { AddStatementDialogComponent, AddStatementDialogData } from '../components/data/add-statement-dialog/add-statement-dialog.component';
+import { CreateOrAddEntityEvent, CtrlEntityDialogComponent, CtrlEntityDialogData } from '../components/data/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
+import { CtrlEntityModel } from '../components/data/ctrl-entity/ctrl-entity.component';
 import { InitStateModule } from '../shared/components/init-state/init-state.module';
 
 

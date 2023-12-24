@@ -10,7 +10,7 @@ import { map, startWith, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 import { InfValueObject, ValuePreviewComponent } from '../../../../shared/components/value-preview/value-preview.component';
-import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateEntityEvent } from '../../../base/components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
+import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateEntityEvent } from '../../../../components/data/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 
 @Component({
   selector: 'gv-ctrl-entity-or-value-matcher',

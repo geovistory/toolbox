@@ -14,7 +14,7 @@ import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rx
 import { QuillOpsToStrPipe } from '../../../../pipes/quill-delta-to-str/quill-delta-to-str.pipe';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
-import { CtrlTextPropertyComponent } from '../../../base/components/ctrl-text-property/ctrl-text-property.component';
+import { CtrlTextPropertyComponent } from '../../../../components/data/ctrl-text-property/ctrl-text-property.component';
 
 
 /**

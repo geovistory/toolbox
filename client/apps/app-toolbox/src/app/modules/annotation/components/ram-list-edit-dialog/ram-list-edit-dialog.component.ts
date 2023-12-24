@@ -5,7 +5,7 @@ import { Field, FieldBase } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfStatement } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import { ViewFieldComponent } from '../../../base/components/view-field/view-field.component';
+import { ViewFieldComponent } from '../../../../components/data/view-field/view-field.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';

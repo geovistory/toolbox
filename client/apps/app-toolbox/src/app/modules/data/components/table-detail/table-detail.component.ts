@@ -10,8 +10,8 @@ import { ActiveProjectService } from '../../../../services/active-project.servic
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
-import { EntityCardHeaderComponent } from '../../../base/components/entity-card-header/entity-card-header.component';
-import { ViewSectionsComponent } from '../../../base/components/view-sections/view-sections.component';
+import { EntityCardHeaderComponent } from '../../../../components/data/entity-card-header/entity-card-header.component';
+import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { slideInOut } from '../../../information/shared/animations';
 import { ViewFieldHasTableValueComponent } from '../view-field-has-table-value/view-field-has-table-value.component';

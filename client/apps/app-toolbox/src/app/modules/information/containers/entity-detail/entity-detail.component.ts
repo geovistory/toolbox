@@ -11,10 +11,10 @@ import { DetailBaseComponent } from '../../../../shared/classes/detail-base-comp
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
 import { FactoidListComponent } from '../../../annotation/components/factoid-list/factoid-list.component';
-import { ContentComponent } from '../../../base/components/content/content.component';
-import { EntityCardHeaderComponent } from '../../../base/components/entity-card-header/entity-card-header.component';
-import { ViewSectionComponent } from '../../../base/components/view-section/view-section.component';
-import { ViewSectionsComponent } from '../../../base/components/view-sections/view-sections.component';
+import { ContentComponent } from '../../../../components/data/content/content.component';
+import { EntityCardHeaderComponent } from '../../../../components/data/entity-card-header/entity-card-header.component';
+import { ViewSectionComponent } from '../../../../components/data/view-section/view-section.component';
+import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { TabLayoutComponentInterface } from '../../../projects/directives/on-activate-tab.directive';
 import { slideInOut } from '../../shared/animations';

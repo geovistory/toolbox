@@ -20,7 +20,7 @@ import { WorkBook } from 'xlsx/types';
 import { ActiveAccountService } from '../../../../services/active-account.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { Cell, Header, TableComponent } from '../../../../shared/components/digital-table/components/table/table.component';
-import { CtrlLanguageComponent } from '../../../base/components/ctrl-language/ctrl-language.component';
+import { CtrlLanguageComponent } from '../../../../components/data/ctrl-language/ctrl-language.component';
 import { WorkerWrapperService } from '../../services/worker-wrapper.service';
 
 export interface ImporterDialogData {

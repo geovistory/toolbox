@@ -14,10 +14,10 @@ import { ActiveProjectService } from '../../../../services/active-project.servic
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
-import { EntityCardHeaderComponent } from '../../../base/components/entity-card-header/entity-card-header.component';
-import { ViewFieldAnnotationsComponent } from '../../../base/components/view-field-annotations/view-field-annotations.component';
-import { ViewFieldHasValueVersionComponent } from '../../../base/components/view-field-has-value-version/view-field-has-value-version.component';
-import { ViewSectionsComponent } from '../../../base/components/view-sections/view-sections.component';
+import { EntityCardHeaderComponent } from '../../../../components/data/entity-card-header/entity-card-header.component';
+import { ViewFieldAnnotationsComponent } from '../../../../components/data/view-field-annotations/view-field-annotations.component';
+import { ViewFieldHasValueVersionComponent } from '../../../../components/data/view-field-has-value-version/view-field-has-value-version.component';
+import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
 import { EditModeService } from '../../../base/services/edit-mode.service';
 import { slideInOut } from '../../../information/shared/animations';
 import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';

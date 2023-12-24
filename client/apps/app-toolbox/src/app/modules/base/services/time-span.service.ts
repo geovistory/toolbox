@@ -7,7 +7,7 @@ import { equals } from 'ramda';
 import { combineLatest, of } from 'rxjs';
 import { map, mergeMap } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../services/active-project.service';
-import { CtrlTimeSpanDialogComponent } from '../components/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
+import { CtrlTimeSpanDialogComponent } from '../../../components/data/ctrl-time-span/ctrl-time-span-dialog/ctrl-time-span-dialog.component';
 
 export interface TimeSpanFieldPages {
   fieldId: GvFieldId;

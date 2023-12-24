@@ -11,7 +11,7 @@ import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
-import { ViewFieldComponent } from '../../../base/components/view-field/view-field.component';
+import { ViewFieldComponent } from '../../../../components/data/view-field/view-field.component';
 import { fieldAtReferencePoP } from '../ram-list-edit-dialog/ram-list-edit-dialog.component';
 export interface RamListRemoveDialogData {
 

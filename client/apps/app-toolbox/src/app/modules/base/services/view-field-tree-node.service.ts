@@ -1,6 +1,6 @@
 import { Inject, Injectable, Optional, SkipSelf } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { VIEW_FIELD_DISPLAY_MODE, ViewFieldDisplayMode } from '../components/view-field/VIEW_FIELD_DISPLAY_MODE';
+import { VIEW_FIELD_DISPLAY_MODE, ViewFieldDisplayMode } from '../../../components/data/view-field/VIEW_FIELD_DISPLAY_MODE';
 
 @Injectable({
   providedIn: 'root'

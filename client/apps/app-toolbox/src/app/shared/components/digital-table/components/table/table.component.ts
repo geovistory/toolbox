@@ -17,7 +17,7 @@ import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { CopyClipboardDirective } from '../../../../../directives/copy-clipboard/copy-clipboard.directive';
-import { ViewFieldAnnotationsOfCellComponent } from '../../../../../modules/base/components/view-field-annotations-of-cell/view-field-annotations-of-cell.component';
+import { ViewFieldAnnotationsOfCellComponent } from '../../../../../components/data/view-field-annotations-of-cell/view-field-annotations-of-cell.component';
 import { EditModeService } from '../../../../../modules/base/services/edit-mode.service';
 import { ActiveProjectService } from '../../../../../services/active-project.service';
 import { NumberDialogComponent, NumberDialogData, NumberDialogReturn } from '../../../number-dialog/number-dialog.component';

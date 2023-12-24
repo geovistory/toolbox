@@ -17,7 +17,7 @@ import { ActiveProjectService } from '../../../../services/active-project.servic
 import { ValueObjectTypeName } from '../../../../shared/components/digital-table/components/table/table.component';
 import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
 import { InfValueObject, ValuePreviewComponent } from '../../../../shared/components/value-preview/value-preview.component';
-import { FieldLabelComponent } from '../../../base/components/field-label/field-label.component';
+import { FieldLabelComponent } from '../../../../components/data/field-label/field-label.component';
 
 
 @Component({

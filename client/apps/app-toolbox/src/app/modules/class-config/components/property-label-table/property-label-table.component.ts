@@ -16,7 +16,7 @@ import { either, is, isEmpty, isNil, pipe, reject, map as rmap, when } from 'ram
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../services/active-project.service';
-import { CtrlLanguageComponent } from '../../../base/components/ctrl-language/ctrl-language.component';
+import { CtrlLanguageComponent } from '../../../../components/data/ctrl-language/ctrl-language.component';
 interface Row {
 
   textProperty: ProTextProperty

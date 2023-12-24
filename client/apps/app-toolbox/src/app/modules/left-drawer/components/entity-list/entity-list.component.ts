@@ -5,7 +5,7 @@ import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../services/active-project.service';
-import { AddEntityMenuComponent } from '../../../base/components/add-entity-menu/add-entity-menu.component';
+import { AddEntityMenuComponent } from '../../../../components/data/add-entity-menu/add-entity-menu.component';
 import { ListService } from '../../services/list.service';
 import { EntitiesTabsComponent } from '../entities-tabs/entities-tabs.component';
 import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';

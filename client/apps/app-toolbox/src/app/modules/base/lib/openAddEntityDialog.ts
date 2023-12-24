@@ -1,7 +1,7 @@
 import { MatDialog } from '@angular/material/dialog';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { AddEntityOrValueDialogComponent, type AddEntityOrValueDialogData, type CreateEntityEvent } from '../components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
+import { AddEntityOrValueDialogComponent, type AddEntityOrValueDialogData, type CreateEntityEvent } from '../../../components/data/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 
 /**
   * Open the add entity dialog
