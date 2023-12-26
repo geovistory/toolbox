@@ -11,6 +11,7 @@ import { AngularSplitModule } from 'angular-split';
 import { indexBy } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { RamFormComponent } from '../../../components/data/ram-form/ram-form.component';
 import { AnalysisDetailComponent } from '../../../components/layout/tab-bodies/analysis-detail/analysis-detail.component';
 import { ProjectSettingsDataComponent } from '../../../components/project-config/project-settings-data/project-settings-data.component';
 import { TableDetailComponent } from '../../../modules/data/components/table-detail/table-detail.component';
@@ -21,7 +22,6 @@ import { DigitalsListComponent } from '../../../modules/left-drawer/components/d
 import { EntityListComponent } from '../../../modules/left-drawer/components/entity-list/entity-list.component';
 import { SettingsListComponent } from '../../../modules/left-drawer/components/settings-list/settings-list.component';
 import { SourceListComponent } from '../../../modules/left-drawer/components/source-list/source-list.component';
-import { RamFormComponent } from '../../../modules/projects/components/ram-form/ram-form.component';
 import { TabBodyComponent } from '../../../modules/projects/components/tab-body/tab-body.component';
 import { TabHandleComponent } from '../../../modules/projects/components/tab-handle/tab-handle.component';
 import { TypesComponent } from '../../../modules/projects/containers/types/types.component';

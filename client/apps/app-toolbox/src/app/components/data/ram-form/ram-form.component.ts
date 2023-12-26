@@ -11,10 +11,10 @@ import { InfAppellation, InfLangString, InfStatement, InfStatementWithRelations,
 import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { delay, filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
-import { QuillOpsToStrPipe } from '../../../../pipes/quill-delta-to-str/quill-delta-to-str.pipe';
-import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
-import { ActiveProjectService } from '../../../../services/active-project.service';
-import { CtrlTextPropertyComponent } from '../../../../components/data/ctrl-text-property/ctrl-text-property.component';
+import { QuillOpsToStrPipe } from '../../../pipes/quill-delta-to-str/quill-delta-to-str.pipe';
+import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
+import { ActiveProjectService } from '../../../services/active-project.service';
+import { CtrlTextPropertyComponent } from '../ctrl-text-property/ctrl-text-property.component';
 
 
 /**
