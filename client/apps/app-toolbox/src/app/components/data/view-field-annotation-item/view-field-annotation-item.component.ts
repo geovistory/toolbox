@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
-import { IndexedCharids } from '../../../modules/quill/quill-edit/quill-edit.component';
+import { IndexedCharids } from '../../text-editor/quill-edit/quill-edit.component';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { EntityPreviewComponent } from '../../../shared/components/entity-preview/entity-preview.component';

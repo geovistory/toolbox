@@ -6,7 +6,7 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { InfAppellation, QuillDoc, SysConfigFormCtrlType } from '@kleiolab/lib-sdk-lb4';
 import { Subject } from 'rxjs';
-import { QuillEditComponent } from '../../../modules/quill/quill-edit/quill-edit.component';
+import { QuillEditComponent } from '../../text-editor/quill-edit/quill-edit.component';
 
 export type CtrlAppellationModel = InfAppellation;
 

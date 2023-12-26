@@ -9,7 +9,7 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { C_456_CHUNK_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../lib/constants/ontome-ids';
-import { IndexedCharids } from '../../../modules/quill/quill-edit/quill-edit.component';
+import { IndexedCharids } from '../../text-editor/quill-edit/quill-edit.component';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { PaginationService } from '../../../services/pagination.service';
 import { TextDetail2Service } from '../../layout/tab-bodies/text-detail2/text-detail2.service';

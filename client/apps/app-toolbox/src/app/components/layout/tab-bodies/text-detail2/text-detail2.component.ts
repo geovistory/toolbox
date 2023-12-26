@@ -14,7 +14,7 @@ import { ViewFieldHasValueVersionComponent } from '../../../../components/data/v
 import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
 import { slideInOut } from '../../../../lib/animations/animations';
 import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../lib/constants/ontome-ids';
-import { IndexedCharids } from '../../../../modules/quill/quill-edit/quill-edit.component';
+import { IndexedCharids } from '../../../text-editor/quill-edit/quill-edit.component';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../../services/edit-mode.service';

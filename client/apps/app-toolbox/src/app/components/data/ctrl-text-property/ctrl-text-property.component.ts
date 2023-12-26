@@ -6,7 +6,7 @@ import { MatFormFieldControl } from '@angular/material/form-field';
 import { InfLanguage, QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, map, takeUntil, tap } from 'rxjs/operators';
-import { QuillEditComponent } from '../../../modules/quill/quill-edit/quill-edit.component';
+import { QuillEditComponent } from '../../text-editor/quill-edit/quill-edit.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 
 interface CtrlModel {

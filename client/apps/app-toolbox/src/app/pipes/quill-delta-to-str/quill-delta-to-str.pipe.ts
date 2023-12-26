@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Ops } from '../../modules/quill/quill.models';
+import { Ops } from '../../components/text-editor/quill.models';
 
 @Pipe({
   name: 'quillOpsToStr',
