@@ -5,7 +5,7 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { StateFacade } from '@kleiolab/lib-redux';
 import { FactoidControllerService, FactoidMapping } from '@kleiolab/lib-sdk-lb4';
 import { first } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../../services/active-project.service';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { FactoidMappingComponent } from '../factoid-mapping/factoid-mapping.component';
 
 export interface FactoidMappingsDialogData {

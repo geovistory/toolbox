@@ -1,9 +1,10 @@
+import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
-import { DfhClass } from '@kleiolab/lib-sdk-lb4';
+import { DfhClass, DigitalFactoidMapping, FactoidControllerService, FactoidMapping } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { ActiveProjectService } from '../../../../../core/active-project/active-project.service';
-import { CommentMenuModule } from '../../../../../shared/components/comment-menu/comment-menu.module';
-import { InitStateModule } from '../../../../../shared/components/init-state/init-state.module';
+import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
@@ -14,8 +15,62 @@ import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/aut
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { DataModule } from '../../../data.module';
-import { FactoidPropertyMappingComponent } from './factoid-property-mapping.component';
+import { DataModule } from '../../../../modules/data/data.module';
+import { FactoidMappingsDialogComponent, FactoidMappingsDialogData } from './factoid-mappings-dialog.component';
+
+
+@Component({
+  selector: 'gv-sandbox-factoid-mapping',
+  template: `
+    <button (click)="factoidMappingDialogNormal()">Factoid mapping</button>
+    <button (click)="factoidMappingDialogBig()">Factoid mapping Big</button>
+    <button (click)="factoidMappingDialogSmall()">Factoid mapping Small</button>
+      <div>
+          <p>Dialog result:</p>
+          <pre>{{result | json}}</pre>
+      </div>
+      `
+})
+export class SandBoxCreateDialogsComponent {
+  dialogSizing = {
+    height: 'calc(100% - 30px)',
+    width: '1000px',
+    maxWidth: '100%'
+  }
+  result: any;
+
+  constructor(private dialog: MatDialog) { }
+
+  factoidMappingDialogNormal() {
+    this.dialog.open<FactoidMappingsDialogComponent, FactoidMappingsDialogData, Array<FactoidMapping>>(
+      FactoidMappingsDialogComponent, {
+      ...this.dialogSizing,
+      data: {
+        pkTable: 53
+      }
+    }).afterClosed().subscribe(res => this.result = res)
+  }
+
+  factoidMappingDialogSmall() {
+    this.dialog.open<FactoidMappingsDialogComponent, FactoidMappingsDialogData, Array<FactoidMapping>>(
+      FactoidMappingsDialogComponent, {
+      ...this.dialogSizing,
+      data: {
+        pkTable: 58
+      }
+    }).afterClosed().subscribe(res => this.result = res)
+  }
+
+  factoidMappingDialogBig() {
+    this.dialog.open<FactoidMappingsDialogComponent, FactoidMappingsDialogData, Array<FactoidMapping>>(
+      FactoidMappingsDialogComponent, {
+      ...this.dialogSizing,
+      data: {
+        pkTable: 57
+      }
+    }).afterClosed().subscribe(res => this.result = res)
+  }
+}
 
 /*****************************************************************************
  * MOCK services
@@ -77,6 +132,7 @@ class ConfigurationPipesServiceMock {
   }
 }
 class ActiveProjectServiceMock {
+  pkProject$ = new BehaviorSubject(52)
   sys$ = {
     config$: {
       main$: new BehaviorSubject(SysConfigValueMock.SYS_CONFIC_VALID)
@@ -129,65 +185,138 @@ class ActiveProjectServiceMock {
     }
   }
 }
+class FactoidControllerServiceMock {
+  factoidControllerGetDigitalFactoidMapping(pkProject: number, pkTable: number): Observable<DigitalFactoidMapping> {
+    if (pkTable == 53) {
+      return of({
+        pkTable: 53,
+        mappings: [{
+          pkClass: 21,
+          pkDigital: 53,
+          title: 'test title',
+          comment: 'test comment',
+          properties: [{
+            pkProperty: 2
+          }, {
+            pkProperty: 2,
+            pkColumn: 11
+          }, {
+            pkProperty: 2,
+            pkColumn: 13,
+            comment: 'test test test'
+          }]
+        },
+        {
+          pkClass: 21,
+          pkDigital: 53,
+          title: 'test title',
+          comment: 'test comment',
+          properties: [{
+            pkProperty: 2,
+            pkColumn: 13,
+            comment: 'test test test'
+          }]
+        },
+        ]
+      })
+    }
+    if (pkTable == 57) {
+      return of({
+        pkTable: 57,
+        mappings: [{
+          pkClass: 21,
+          pkDigital: 57,
+          title: 'test title',
+          comment: 'test comment',
+          properties: [{
+            pkProperty: 2
+          }, {
+            pkProperty: 2,
+            pkColumn: 11
+          }, {
+            pkProperty: 2,
+            pkColumn: 13,
+            comment: 'test test test'
+          }]
+        },
+        {
+          pkClass: 21,
+          pkDigital: 57,
+          title: 'test title',
+          comment: 'test comment',
+          properties: [{
+            pkProperty: 2,
+            pkColumn: 13,
+            comment: 'test test test'
+          }, {
+            pkProperty: 2,
+            pkColumn: 13,
+            comment: 'test test test'
+          }]
+        },
+        {
+          pkClass: 21,
+          pkDigital: 57,
+          title: 'test title',
+          comment: 'test comment',
+          properties: [{
+            pkProperty: 2,
+            pkColumn: 13,
+            comment: 'test test test'
+          }, {
+            pkProperty: 2,
+            pkColumn: 13,
+            comment: 'test test test'
+          }]
+        },
+        {
+          pkClass: 21,
+          pkDigital: 57,
+          title: 'test title',
+          comment: 'test comment',
+          properties: [{
+            pkProperty: 2,
+            pkColumn: 13,
+            comment: 'test test test'
+          }, {
+            pkProperty: 2,
+            pkColumn: 13,
+            comment: 'test test test'
+          }]
+        }
+        ]
+      })
+    }
+    if (pkTable == 58) { return of({}) }
+  }
+  factoidControllerSetDigitalFactoidMapping(pkProject: string, pkTable: number, dfms: DigitalFactoidMapping): Observable<DigitalFactoidMapping> {
+    return of(dfms)
+  }
+}
 /*****************************************************************************
  * Sandboxes
  *****************************************************************************/
-export default sandboxOf(FactoidPropertyMappingComponent, {
-  declareComponent: false,
+export default sandboxOf(SandBoxCreateDialogsComponent, {
+  declareComponent: true,
   imports: [
-    CommentMenuModule,
-    DataModule,
     InitStateModule,
+    DataModule
   ],
   providers: [
     { provide: ConfigurationPipesService, useClass: ConfigurationPipesServiceMock },
-    { provide: ActiveProjectService, useClass: ActiveProjectServiceMock }
+    { provide: ActiveProjectService, useClass: ActiveProjectServiceMock },
+    { provide: FactoidControllerService, useClass: FactoidControllerServiceMock }
+
   ]
 })
-  .add('FactoidPropertyMappingComponent', {
+  .add('FactoidMappingsDialogComponent', {
     context: {
-      fm: {
-        pkClass: 21,
-        pkDigital: 11
-      },
-      fpm1: {
-        pkProperty: 2
-      },
-      fpm2: {
-        pkProperty: 2,
-        pkColumn: 11
-      },
-      fpm3: {
-        pkProperty: 2,
-        pkColumn: 13,
-        default: { pkEntity: 8 }
-      },
       schemaObjects: initialSchemaObects,
     },
     template: `
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
-
-        <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">Empty</span>
-        <div style="display:flex; flex-direction:row; justify-content:center">
-            <gv-factoid-property-mapping style="width:800px" [fm]="fm"></gv-factoid-property-mapping>
-        </div>
-
-        <br/>
-        <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">with property</span>
-        <div style="display:flex; flex-direction:row; justify-content:center">
-            <gv-factoid-property-mapping style="width:800px" [fm]="fm" [fpm]="fpm1"></gv-factoid-property-mapping>
-        </div>
-
-        <br/>
-        <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">with property + col mapping</span>
-        <div style="display:flex; flex-direction:row; justify-content:center">
-            <gv-factoid-property-mapping style="width:800px" [fm]="fm" [fpm]="fpm2"></gv-factoid-property-mapping>
-        </div>
-
-        <br/>
-        <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">with property + col mapping + default value</span>
-        <div style="display:flex; flex-direction:row; justify-content:center">
-            <gv-factoid-property-mapping style="width:800px" [fm]="fm" [fpm]="fpm3"></gv-factoid-property-mapping>
-        </div>
+        <div style="display:flex; flex-direction:row; justify-content:center; width: 100%">
+            <gv-sandbox-factoid-mapping></gv-sandbox-factoid-mapping>
+        <div>
     `
   })

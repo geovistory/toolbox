@@ -1,9 +1,9 @@
 import { ConfigurationPipesService, DisplayType, SectionName } from '@kleiolab/lib-redux';
 import { sandboxOf } from 'angular-playground';
-import { ActiveProjectService } from '../../../../../core/active-project/active-project.service';
-import { InitStateModule } from '../../../../../shared/components/init-state/init-state.module';
+import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { BehaviorSubject, of } from 'rxjs';
-import { DataModule } from '../../../data.module';
+import { DataModule } from '../../../../modules/data/data.module';
 import { FactoidPropertyDisplayComponent } from './factoid-property-display.component';
 
 /*****************************************************************************

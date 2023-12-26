@@ -1,11 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FactoidMapping } from '@kleiolab/lib-sdk-lb4';
 import { MatIconModule } from '@angular/material/icon';
-import { CommentMenuComponent } from '../../../../../shared/components/comment-menu/comment-menu.component';
+import { CommentMenuComponent } from '../../../../shared/components/comment-menu/comment-menu.component';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ClassDropdownComponent } from '../../../../../shared/components/class-dropdown/class-dropdown.component';
+import { ClassDropdownComponent } from '../../../../shared/components/class-dropdown/class-dropdown.component';
 
 @Component({
     selector: 'gv-factoid-mapping-header',

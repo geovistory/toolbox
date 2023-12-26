@@ -1,9 +1,9 @@
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { DfhClass } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { ClassDropdownModule } from '../../../../../shared/components/class-dropdown/class-dropdown.module';
-import { CommentMenuModule } from '../../../../../shared/components/comment-menu/comment-menu.module';
-import { InitStateModule } from '../../../../../shared/components/init-state/init-state.module';
+import { ClassDropdownModule } from '../../../../shared/components/class-dropdown/class-dropdown.module';
+import { CommentMenuModule } from '../../../../shared/components/comment-menu/comment-menu.module';
+import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
@@ -14,7 +14,7 @@ import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/aut
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { Observable, of } from 'rxjs';
-import { DataModule } from '../../../data.module';
+import { DataModule } from '../../../../modules/data/data.module';
 import { FactoidMappingHeaderComponent } from './factoid-mapping-header.component';
 
 

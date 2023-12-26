@@ -1,8 +1,8 @@
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { DfhClass } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { ActiveProjectService } from '../../../../../core/active-project/active-project.service';
-import { InitStateModule } from '../../../../../shared/components/init-state/init-state.module';
+import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
+import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
@@ -13,9 +13,8 @@ import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/aut
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { DataModule } from '../../../data.module';
-import { FactoidMappingComponent } from './factoid-mapping.component';
-
+import { DataModule } from '../../../../modules/data/data.module';
+import { FactoidMappingBodyComponent } from './factoid-mapping-body.component';
 
 
 /*****************************************************************************
@@ -133,48 +132,42 @@ class ActiveProjectServiceMock {
 /*****************************************************************************
  * Sandboxes
  *****************************************************************************/
-export default sandboxOf(FactoidMappingComponent, {
+export default sandboxOf(FactoidMappingBodyComponent, {
   declareComponent: false,
   imports: [
     InitStateModule,
-    DataModule
+    DataModule,
   ],
   providers: [
     { provide: ConfigurationPipesService, useClass: ConfigurationPipesServiceMock },
     { provide: ActiveProjectService, useClass: ActiveProjectServiceMock }
   ]
 })
-  .add('FactoidMappingComponent', {
+  .add('FactoidMappingBodyComponent', {
     context: {
+      fm: {
+        pkClass: 21,
+        pkDigital: 11
+      },
+      fpms: [{
+        pkProperty: 2
+      }, {
+        pkProperty: 2,
+        pkColumn: 11
+      }, {
+        pkProperty: 2,
+        pkColumn: 13,
+        default: { pkEntity: 8 },
+        comment: 'test test test'
+      }],
       pkTable: 11,
       pkClass: 21,
       schemaObjects: initialSchemaObects,
-      fm: {
-        pkClass: 21,
-        pkDigital: 11,
-        title: 'test title',
-        comment: 'test comment',
-        properties: [{
-          pkProperty: 2
-        }, {
-          pkProperty: 2,
-          pkColumn: 11
-        }, {
-          pkProperty: 2,
-          pkColumn: 13,
-          default: { pkEntity: 8 },
-          comment: 'test test test'
-        }]
-      },
     },
     template: `
         <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
-        <div style="display:flex; flex-direction:row; justify-content:center; width: 100%">
-            <gv-factoid-mapping
-                [listNumber]="1"
-                [fm]="fm"
-                style="width:800px"
-            ></gv-factoid-mapping>
+        <div style="display:flex; flex-direction:col; justify-content:center; width: 100%">
+            <gv-factoid-mapping-body style="width:800px" [fm]="fm" [fpms]="fpms"></gv-factoid-mapping-body>
         <div>
     `
   })

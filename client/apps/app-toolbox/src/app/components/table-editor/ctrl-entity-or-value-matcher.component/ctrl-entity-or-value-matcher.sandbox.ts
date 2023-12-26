@@ -3,8 +3,8 @@ import { FormsModule } from '@angular/forms';
 import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { InfLanguage, LanguagesService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
+import { ActiveProjectService } from '../../../core/active-project/active-project.service';
+import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
@@ -18,8 +18,8 @@ import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/aut
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { BaseModule } from '../../../base/base.module';
-import { DataModule } from '../../data.module';
+import { BaseModule } from '../../../modules/base/base.module';
+import { DataModule } from '../../../modules/data/data.module';
 import { CtrlEntityOrValueMatcherComponent } from './ctrl-entity-or-value-matcher.component';
 
 /*****************************************************************************

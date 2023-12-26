@@ -1,8 +1,8 @@
-import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
+import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { DfhClass } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { ActiveProjectService } from '../../../../../core/active-project/active-project.service';
-import { InitStateModule } from '../../../../../shared/components/init-state/init-state.module';
+import { ActiveProjectService } from '../../../core/active-project/active-project.service';
+import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
 import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
@@ -13,13 +13,13 @@ import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/aut
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { DataModule } from '../../../data.module';
-import { FactoidMappingBodyComponent } from './factoid-mapping-body.component';
+import { DataModule } from '../../../modules/data/data.module';
+import { ColumnMappingComponent } from './column-mapping.component';
 
 
 /*****************************************************************************
  * MOCK services
- *****************************************************************************/
+ ****************************************************************************/
 const initialSchemaObects = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
@@ -34,24 +34,8 @@ const initialSchemaObects = [
   }),
   GvSchemaObjectMock.project1, // add project and its default language
 ]
+
 class ConfigurationPipesServiceMock {
-  pipeSection(pkClass: number, displayType: DisplayType, section: SectionName) {
-    if (section == 'basic') {
-      return of([
-        { label: 'SELECT ME', property: { fkProperty: 2 }, targetClasses: [21] }])
-    }
-    if (section == 'metadata') {
-      return of([
-        { label: 'property label metadata 1', property: { fkProperty: 3 } },
-        { label: 'property label metadata 2', property: { fkProperty: 4 } }])
-    }
-    if (section == 'specific') {
-      return of([
-        { label: 'property label specific 1', property: { fkProperty: 5 } },
-        { label: 'property label specific 2', property: { fkProperty: 6 } }])
-    }
-    if (section == 'simpleForm') return of([])
-  }
   pipeClassesEnabledByProjectProfiles(): Observable<Partial<DfhClass>[]> {
     return of([
       { pk_class: 21, basic_type: 8 },
@@ -67,32 +51,8 @@ class ConfigurationPipesServiceMock {
     if (pkClass == 51) toReturn = 'Place';
     return of(toReturn)
   }
-  pipeFields(pkClass: number, noNesting = false): Observable<Partial<Field>[]> {
-    return of([{
-      property: {
-        fkProperty: 2
-      },
-      targetClasses: [21]
-    }])
-  }
 }
 class ActiveProjectServiceMock {
-  sys$ = {
-    config$: {
-      main$: new BehaviorSubject(SysConfigValueMock.SYS_CONFIC_VALID)
-    }
-  }
-  dfh$ = {
-    property$: {
-      by_pk_property$: {
-        key: (pk) => new BehaviorSubject({
-          21: {
-            identifier_in_namespace: 'P9999'
-          }
-        })
-      }
-    }
-  }
   dat$ = {
     column$: {
       by_fk_digital$: {
@@ -132,42 +92,43 @@ class ActiveProjectServiceMock {
 /*****************************************************************************
  * Sandboxes
  *****************************************************************************/
-export default sandboxOf(FactoidMappingBodyComponent, {
+export default sandboxOf(ColumnMappingComponent, {
   declareComponent: false,
   imports: [
-    InitStateModule,
     DataModule,
+    InitStateModule,
   ],
   providers: [
     { provide: ConfigurationPipesService, useClass: ConfigurationPipesServiceMock },
     { provide: ActiveProjectService, useClass: ActiveProjectServiceMock }
   ]
 })
-  .add('FactoidMappingBodyComponent', {
+  .add('ColumnMappingComponent', {
     context: {
-      fm: {
-        pkClass: 21,
-        pkDigital: 11
-      },
-      fpms: [{
-        pkProperty: 2
-      }, {
-        pkProperty: 2,
-        pkColumn: 11
-      }, {
-        pkProperty: 2,
-        pkColumn: 13,
-        default: { pkEntity: 8 },
-        comment: 'test test test'
-      }],
-      pkTable: 11,
-      pkClass: 21,
+      pkTable: 1000,
+      pkClass1$: new BehaviorSubject([21]),
+      pkClass2$: new BehaviorSubject([61]),
+      pkClass3$: new BehaviorSubject([51]),
       schemaObjects: initialSchemaObects,
     },
     template: `
-        <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
-        <div style="display:flex; flex-direction:col; justify-content:center; width: 100%">
-            <gv-factoid-mapping-body style="width:800px" [fm]="fm" [fpms]="fpms"></gv-factoid-mapping-body>
-        <div>
+    <gv-init-state [initState]="initState" [schemaObjects]="schemaObjects"></gv-init-state>
+
+    <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">Empty</span>
+    <div style="display:flex;flex-direction:row;justify-content:center">
+        <gv-column-mapping [pkTable]="pkTable" [pkTargetClasses$]="pkClass1$"></gv-column-mapping>
+    </div>
+    <div style="display:flex;flex-direction:row;justify-content:center">
+        <gv-column-mapping [pkTable]="pkTable" [pkTargetClasses$]="pkClass2$"></gv-column-mapping>
+    </div>
+    <div style="display:flex;flex-direction:row;justify-content:center">
+        <gv-column-mapping [pkTable]="pkTable" [pkTargetClasses$]="pkClass3$"></gv-column-mapping>
+    </div>
+
+    <br/>
+    <span style="width:100%; display:flex; flex-direction:row; justify-content:center;">Filled</span>
+    <div style="display:flex;flex-direction:row;justify-content:center">
+        <gv-column-mapping [pkTable]="pkTable" [pkTargetClasses$]="pkClass3$" [pkColumn]="14"></gv-column-mapping>
+    </div>
     `
   })

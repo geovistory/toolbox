@@ -15,7 +15,7 @@ import { ColumnNames, InfLanguage, TableConfig, TableConfigCol } from '@kleiolab
 import { clone, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../services/active-project.service';
+import { ActiveProjectService } from '../../../services/active-project.service';
 
 export interface TableConfigDialogData {
   pkDigital: number

@@ -7,10 +7,10 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { SysConfigValue } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../services/active-project.service';
-import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
-import { InfValueObject, ValuePreviewComponent } from '../../../../shared/components/value-preview/value-preview.component';
-import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateEntityEvent } from '../../../../components/data/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
+import { ActiveProjectService } from '../../../services/active-project.service';
+import { EntityPreviewComponent } from '../../../shared/components/entity-preview/entity-preview.component';
+import { InfValueObject, ValuePreviewComponent } from '../../../shared/components/value-preview/value-preview.component';
+import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData, CreateEntityEvent } from '../../data/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
 
 @Component({
   selector: 'gv-ctrl-entity-or-value-matcher',

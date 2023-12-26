@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
 import { Observable, of, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { OntoPropertyInfoComponent } from '../../../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
+import { OntoPropertyInfoComponent } from '../../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSelectModule } from '@angular/material/select';
