@@ -1,5 +1,5 @@
 import { sandboxOf } from 'angular-playground';
-import { SettingsModule } from '../../settings.module';
+import { SettingsModule } from '../../../modules/settings/settings.module';
 import { OntomeProfilesListComponent } from './ontome-profiles-list.component';
 
 export default sandboxOf(OntomeProfilesListComponent, {
