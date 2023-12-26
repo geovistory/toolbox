@@ -13,6 +13,7 @@ import { DfhConfig, SysConfig } from '@kleiolab/lib-config';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { DatColumn, FactoidMapping, GetTablePageOptions, InfLanguage, TColFilter, TabCell, TabCells, TableConfig, TableRow, TableService } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
+import { TableDetailComponent } from 'apps/app-toolbox/src/app/components/layout/tab-bodies/table-detail/table-detail.component';
 import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -23,7 +24,6 @@ import { Cell, Header, Row, TableComponent, TableSort } from '../../../../shared
 import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from '../../../../shared/components/info-dialog/info-dialog.component';
 import { FactoidMappingsDialogComponent, FactoidMappingsDialogData } from '../factoids/factoid-mappings-dialog/factoid-mappings-dialog.component';
 import { TableConfigDialogComponent, TableConfigDialogData, TableConfigDialogResult } from '../table-config-dialog/table-config-dialog.component';
-import { TableDetailComponent } from '../table-detail/table-detail.component';
 
 export interface TColFilters {
   [pkColumn: string]: TColFilter
