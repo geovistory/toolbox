@@ -18,8 +18,8 @@ import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
-import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../project-config/class-config-dialog/class-config-dialog.component';
-import { EntityLabelConfigOpenBtnComponent } from '../../project-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
+import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../configuration/class-config-dialog/class-config-dialog.component';
+import { EntityLabelConfigOpenBtnComponent } from '../../configuration/entity-label-config-open-btn/entity-label-config-open-btn.component';
 
 @Component({
   selector: 'gv-entity-card-header',
