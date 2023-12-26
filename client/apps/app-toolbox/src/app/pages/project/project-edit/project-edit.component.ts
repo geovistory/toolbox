@@ -22,11 +22,11 @@ import { TabBodyComponent } from '../../../components/layout/tab-layout/tab-body
 import { TabHandleComponent } from '../../../components/layout/tab-layout/tab-handle/tab-handle.component';
 import { OnActivateTabDirective } from '../../../directives/on-activate-tab.directive';
 import { PanelBodyDirective } from '../../../directives/panel-body.directive';
-import { AnalysisListComponent } from '../../../modules/left-drawer/components/analysis-list/analysis-list.component';
-import { DigitalsListComponent } from '../../../modules/left-drawer/components/digitals-list/digitals-list.component';
-import { EntityListComponent } from '../../../modules/left-drawer/components/entity-list/entity-list.component';
-import { SettingsListComponent } from '../../../modules/left-drawer/components/settings-list/settings-list.component';
-import { SourceListComponent } from '../../../modules/left-drawer/components/source-list/source-list.component';
+import { AnalysisListComponent } from '../../../components/layout/left-drawer/components/analysis-list/analysis-list.component';
+import { DigitalsListComponent } from '../../../components/layout/left-drawer/components/digitals-list/digitals-list.component';
+import { EntityListComponent } from '../../../components/layout/left-drawer/components/entity-list/entity-list.component';
+import { SettingsListComponent } from '../../../components/layout/left-drawer/components/settings-list/settings-list.component';
+import { SourceListComponent } from '../../../components/layout/left-drawer/components/source-list/source-list.component';
 import { OntomeProfilesSettingsComponent } from '../../../modules/settings/components/ontome-profiles-settings/ontome-profiles-settings.component';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { BasicService } from '../../../services/basic.service';

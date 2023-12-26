@@ -2,8 +2,8 @@ import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EntitySearchHit, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { DndModule } from '@suez/ngx-dnd';
-import { PassiveLinkDirective } from '../../../../directives/passive-link/passive-link.directive';
-import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { PassiveLinkDirective } from '../../../../../directives/passive-link/passive-link.directive';
+import { EntityPreviewComponent } from '../../../../../shared/components/entity-preview/entity-preview.component';
 
 
 @Component({

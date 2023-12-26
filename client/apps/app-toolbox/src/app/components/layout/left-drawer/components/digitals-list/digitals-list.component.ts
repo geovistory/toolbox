@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { map } from 'rxjs/operators';
-import { ActiveProjectService } from '../../../../services/active-project.service';
-import { AddEntityMenuComponent } from '../../../../components/data/add-entity-menu/add-entity-menu.component';
+import { ActiveProjectService } from '../../../../../services/active-project.service';
+import { AddEntityMenuComponent } from '../../../../data/add-entity-menu/add-entity-menu.component';
 import { ListService } from '../../services/list.service';
 import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';
 import { ListComponent } from '../list/list.component';

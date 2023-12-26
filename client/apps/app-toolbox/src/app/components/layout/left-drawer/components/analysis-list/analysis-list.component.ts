@@ -16,10 +16,10 @@ import { ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'd3';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { PassiveLinkDirective } from '../../../../directives/passive-link/passive-link.directive';
-import { AnalysisIconPipe } from '../../../../pipes/analysis-icon/analysis-icon.pipe';
-import { ActiveProjectService } from '../../../../services/active-project.service';
-import { AnalysisTabData } from '../../../../services/analysis.service';
+import { PassiveLinkDirective } from '../../../../../directives/passive-link/passive-link.directive';
+import { AnalysisIconPipe } from '../../../../../pipes/analysis-icon/analysis-icon.pipe';
+import { ActiveProjectService } from '../../../../../services/active-project.service';
+import { AnalysisTabData } from '../../../../../services/analysis.service';
 import { ListDrawerHeaderComponent } from '../list-drawer-header/list-drawer-header.component';
 
 @Component({

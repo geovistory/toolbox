@@ -3,7 +3,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from '../../../../lib/constants/ontome-ids';
+import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from '../../../../../lib/constants/ontome-ids';
 import { ListService } from '../../services/list.service';
 
 type Option = {
