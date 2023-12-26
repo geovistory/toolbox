@@ -11,7 +11,7 @@ import { TabBody } from '../../pages/project/project-edit/project-edit.component
 import { TruncatePipe } from '../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../services/active-project.service';
 import { EditModeService } from '../../services/edit-mode.service';
-import { TabLayoutService } from '../components/tab-layout/tab-layout.service';
+import { TabLayoutService } from '../../shared/components/tab-layout/tab-layout.service';
 
 interface ConfigBase { pkEntity: number }
 
