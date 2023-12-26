@@ -19,8 +19,8 @@
     </button>
     {{report.newClasses.length}} Classes
   </h4>
-  <gv-activation-report-items-table *ngIf="newClassesExpanded" [reportItems]="report.newClasses" category="class">
-  </gv-activation-report-items-table>
+  <gv-ontome-profile-activation-report-items-table *ngIf="newClassesExpanded" [reportItems]="report.newClasses" category="class">
+  </gv-ontome-profile-activation-report-items-table>
 
   <h4>
     <button mat-icon-button (click)="newPropertiesExpanded=!newPropertiesExpanded">
@@ -30,9 +30,9 @@
     </button>
     {{report.newProperties.length}} Properties
   </h4>
-  <gv-activation-report-items-table *ngIf="newPropertiesExpanded" [reportItems]="report.newProperties"
+  <gv-ontome-profile-activation-report-items-table *ngIf="newPropertiesExpanded" [reportItems]="report.newProperties"
     category="property">
-  </gv-activation-report-items-table>
+  </gv-ontome-profile-activation-report-items-table>
 
   <h3>These items are already in your project:</h3>
   <h4>
@@ -43,8 +43,8 @@
     </button>
     {{report.oldClasses.length}} Classes
   </h4>
-  <gv-activation-report-items-table *ngIf="oldClassesExpanded" [reportItems]="report.oldClasses" category="class">
-  </gv-activation-report-items-table>
+  <gv-ontome-profile-activation-report-items-table *ngIf="oldClassesExpanded" [reportItems]="report.oldClasses" category="class">
+  </gv-ontome-profile-activation-report-items-table>
 
   <h4>
     <button mat-icon-button (click)="oldPropertiesExpanded=!oldPropertiesExpanded">
@@ -54,8 +54,8 @@
     </button>
     {{report.oldProperties.length}} Properties
   </h4>
-  <gv-activation-report-items-table *ngIf="oldPropertiesExpanded" [reportItems]="report.oldProperties"
+  <gv-ontome-profile-activation-report-items-table *ngIf="oldPropertiesExpanded" [reportItems]="report.oldProperties"
     category="property">
-  </gv-activation-report-items-table>
+  </gv-ontome-profile-activation-report-items-table>
 
 </div>

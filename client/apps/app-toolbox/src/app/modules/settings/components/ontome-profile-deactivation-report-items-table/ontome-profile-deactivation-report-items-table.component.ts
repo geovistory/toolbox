@@ -7,13 +7,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'gv-deactivation-report-items-table',
-    templateUrl: './deactivation-report-items-table.component.html',
-    styleUrls: ['./deactivation-report-items-table.component.scss'],
+    selector: 'gv-ontome-profile-deactivation-report-items-table',
+    templateUrl: './ontome-profile-deactivation-report-items-table.component.html',
+    styleUrls: ['./ontome-profile-deactivation-report-items-table.component.scss'],
     standalone: true,
     imports: [MatTableModule, NgIf, MatIconModule, MatPaginatorModule]
 })
-export class DeactivationReportItemsTableComponent implements OnInit {
+export class OntomeProfileDeactivationReportItemsTableComponent implements OnInit {
 
   @Input() reportItems: DeactivationReportItem[]
   @Input() category: 'class' | 'property'

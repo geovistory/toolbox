@@ -6,13 +6,13 @@ import { ActivationReportItem } from '@kleiolab/lib-sdk-lb4';
 import { NgIf } from '@angular/common';
 
 @Component({
-    selector: 'gv-activation-report-items-table',
-    templateUrl: './activation-report-items-table.component.html',
-    styleUrls: ['./activation-report-items-table.component.scss'],
+    selector: 'gv-ontome-profile-activation-report-items-table',
+    templateUrl: './ontome-profile-activation-report-items-table.component.html',
+    styleUrls: ['./ontome-profile-activation-report-items-table.component.scss'],
     standalone: true,
     imports: [MatTableModule, NgIf, MatPaginatorModule]
 })
-export class ActivationReportItemsTableComponent implements OnInit {
+export class OntomeProfileActivationReportItemsTableComponent implements OnInit {
 
   @Input() reportItems: ActivationReportItem[]
   @Input() category: 'class' | 'property'
