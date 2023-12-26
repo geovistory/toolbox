@@ -1,11 +1,11 @@
 import { CdkPortal, PortalModule } from '@angular/cdk/portal';
 import { ChangeDetectorRef, Component, ContentChild, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { OnActivateTabDirective } from 'apps/app-toolbox/src/app/modules/projects/directives/on-activate-tab.directive';
+import { PanelBodyDirective } from 'apps/app-toolbox/src/app/modules/projects/directives/panel-body.directive';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { ProjectEditComponent, TabBody, getTabBodyKey } from '../../../../pages/project/project-edit/project-edit.component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { OnActivateTabDirective } from '../../directives/on-activate-tab.directive';
-import { PanelBodyDirective } from '../../directives/panel-body.directive';
 
 @Component({
   selector: 'gv-tab-body',

@@ -5,7 +5,7 @@ import { Router, RouterLink } from '@angular/router';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { AccountService, ProProject } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
-import { ProjectCardComponent } from '../../../modules/projects/components/project-card/project-card.component';
+import { ProjectCardComponent } from '../../../components/misc/project-card/project-card.component';
 import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 
 
