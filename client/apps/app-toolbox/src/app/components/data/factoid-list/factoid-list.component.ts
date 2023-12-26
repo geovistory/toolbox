@@ -12,12 +12,12 @@ import { FactoidEntity, FactoidStatement, SysConfigValueObjectType } from '@klei
 import { values } from 'ramda';
 import { Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { QuillOpsToStrPipe } from '../../../../pipes/quill-delta-to-str/quill-delta-to-str.pipe';
-import { ActiveProjectService } from '../../../../services/active-project.service';
-import { ValueObjectTypeName } from '../../../../shared/components/digital-table/components/table/table.component';
-import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
-import { InfValueObject, ValuePreviewComponent } from '../../../../shared/components/value-preview/value-preview.component';
-import { FieldLabelComponent } from '../../../../components/data/field-label/field-label.component';
+import { QuillOpsToStrPipe } from '../../../pipes/quill-delta-to-str/quill-delta-to-str.pipe';
+import { ActiveProjectService } from '../../../services/active-project.service';
+import { ValueObjectTypeName } from '../../../shared/components/digital-table/components/table/table.component';
+import { EntityPreviewComponent } from '../../../shared/components/entity-preview/entity-preview.component';
+import { InfValueObject, ValuePreviewComponent } from '../../../shared/components/value-preview/value-preview.component';
+import { FieldLabelComponent } from '../field-label/field-label.component';
 
 
 @Component({
