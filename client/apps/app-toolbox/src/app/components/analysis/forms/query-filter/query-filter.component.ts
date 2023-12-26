@@ -1,25 +1,25 @@
+import { NgIf } from '@angular/common';
 import { AfterViewInit, Component, forwardRef, Inject, Input, OnDestroy, OnInit, Optional } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, UntypedFormArray, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule, UntypedFormArray } from '@angular/forms';
 import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationPipesService, PropertyOption, PropertySelectModel } from "@kleiolab/lib-redux";
 import { QueryFilter, QueryFilterData } from "@kleiolab/lib-sdk-lb4";
 import { U } from "@kleiolab/lib-utils";
 import { values } from 'd3';
-import { FormArrayFactory } from '../../../../modules/form-factory/core/form-array-factory';
-import { CONTAINER_DATA } from '../../../../modules/form-factory/core/form-child-factory';
-import { FormControlFactory } from '../../../../modules/form-factory/core/form-control-factory';
-import { FormFactory } from "../../../../modules/form-factory/core/form-factory";
-import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../../modules/form-factory/core/form-factory.models';
-import { FormGroupFactory } from '../../../../modules/form-factory/core/form-group-factory';
-import { FormFactoryService } from '../../../../modules/form-factory/services/form-factory.service';
-import { FormFactoryConfig } from "../../../../modules/form-factory/services/FormFactoryConfig";
-import { FormGroupConfig } from "../../../../modules/form-factory/services/FormGroupConfig";
-import { FormNodeConfig } from "../../../../modules/form-factory/services/FormNodeConfig";
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { QueryFilterService } from './query-filter.service';
+import { FormArrayFactory } from '../../../../lib/form-factory/core/form-array-factory';
+import { CONTAINER_DATA } from '../../../../lib/form-factory/core/form-child-factory';
+import { FormControlFactory } from '../../../../lib/form-factory/core/form-control-factory';
+import { FormFactory } from "../../../../lib/form-factory/core/form-factory";
+import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../../lib/form-factory/core/form-factory.models';
+import { FormGroupFactory } from '../../../../lib/form-factory/core/form-group-factory';
+import { FormFactoryService } from '../../../../lib/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from "../../../../lib/form-factory/types/FormFactoryConfig";
+import { FormGroupConfig } from "../../../../lib/form-factory/types/FormGroupConfig";
+import { FormNodeConfig } from "../../../../lib/form-factory/types/FormNodeConfig";
 import { QfFormGroupComponent } from '../qf-form-group/qf-form-group.component';
-import { NgIf } from '@angular/common';
+import { QueryFilterService } from './query-filter.service';
 
 export type ClassFilterCondition = 'IS' | 'IS NOT' | 'ENTITY_LABEL_CONTAINS';
 export type SubgroupOperator = 'AND' | 'OR';
@@ -149,18 +149,18 @@ export interface QueryFilterInjectData {
 
 
 @Component({
-    selector: 'gv-query-filter',
-    templateUrl: './query-filter.component.html',
-    styleUrls: ['./query-filter.component.scss'],
-    providers: [
-        {
-            provide: NG_VALUE_ACCESSOR,
-            useExisting: forwardRef(() => QueryFilterComponent),
-            multi: true
-        }
-    ],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, QfFormGroupComponent]
+  selector: 'gv-query-filter',
+  templateUrl: './query-filter.component.html',
+  styleUrls: ['./query-filter.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => QueryFilterComponent),
+      multi: true
+    }
+  ],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, QfFormGroupComponent]
 })
 export class QueryFilterComponent implements OnInit, OnDestroy, AfterViewInit, ControlValueAccessor, FormFactoryComponent {
 

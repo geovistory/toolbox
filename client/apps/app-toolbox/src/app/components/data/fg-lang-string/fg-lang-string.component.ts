@@ -7,12 +7,12 @@ import { InfAppellation, InfLangString, InfLangStringWithRelations, InfLanguage,
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { getFirstElementFormQueryList } from '../../../lib/converters/getFirstElementFormQueryList';
-import { CONTAINER_DATA } from '../../../modules/form-factory/core/form-child-factory';
-import { FormFactory } from '../../../modules/form-factory/core/form-factory';
-import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../modules/form-factory/core/form-factory.models';
-import { FormFactoryConfig } from '../../../modules/form-factory/services/FormFactoryConfig';
-import { FormNodeConfig } from '../../../modules/form-factory/services/FormNodeConfig';
-import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
+import { CONTAINER_DATA } from '../../../lib/form-factory/core/form-child-factory';
+import { FormFactory } from '../../../lib/form-factory/core/form-factory';
+import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../lib/form-factory/core/form-factory.models';
+import { FormFactoryService } from '../../../lib/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from '../../../lib/form-factory/types/FormFactoryConfig';
+import { FormNodeConfig } from '../../../lib/form-factory/types/FormNodeConfig';
 import { CtrlAppellationComponent, CtrlAppellationModel } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 

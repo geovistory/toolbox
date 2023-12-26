@@ -1,29 +1,29 @@
+import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import { DfhConfig } from '@kleiolab/lib-config';
 import { InfPlace } from '@kleiolab/lib-sdk-lb4';
-import { CONTAINER_DATA } from '../../../modules/form-factory/core/form-child-factory';
-import { FormFactory } from '../../../modules/form-factory/core/form-factory';
-import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../modules/form-factory/core/form-factory.models';
-import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
-import { FormFactoryConfig } from '../../../modules/form-factory/services/FormFactoryConfig';
-import { FormNodeConfig } from '../../../modules/form-factory/services/FormNodeConfig';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgIf, NgFor } from '@angular/common';
+import { CONTAINER_DATA } from '../../../lib/form-factory/core/form-child-factory';
+import { FormFactory } from '../../../lib/form-factory/core/form-factory';
+import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../lib/form-factory/core/form-factory.models';
+import { FormFactoryService } from '../../../lib/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from '../../../lib/form-factory/types/FormFactoryConfig';
+import { FormNodeConfig } from '../../../lib/form-factory/types/FormNodeConfig';
 
 type FgPlaceNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgPlaceInjectData extends FormFactoryCompontentInjectData<Observable<InfPlace>> {
   appearance: MatFormFieldAppearance
 }
 @Component({
-    selector: 'gv-fg-place',
-    templateUrl: './fg-place.component.html',
-    styleUrls: ['./fg-place.component.scss'],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, MatInputModule]
+  selector: 'gv-fg-place',
+  templateUrl: './fg-place.component.html',
+  styleUrls: ['./fg-place.component.scss'],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, MatInputModule]
 })
 export class FgPlaceComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

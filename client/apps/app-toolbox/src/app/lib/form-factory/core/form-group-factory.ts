@@ -1,8 +1,8 @@
 import { asyncScheduler, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { FormArrayConfig } from '../services/FormArrayConfig';
-import { FormFactoryGlobal } from '../services/FormFactoryGlobal';
-import { FormGroupConfig } from '../services/FormGroupConfig';
+import { FormArrayConfig } from '../types/FormArrayConfig';
+import { FormFactoryGlobal } from '../types/FormFactoryGlobal';
+import { FormGroupConfig } from '../types/FormGroupConfig';
 import { FormArrayFactory } from './form-array-factory';
 import { FormFactory } from './form-factory';
 import { AbstractControlFactory, FactoryType } from './form-factory.models';

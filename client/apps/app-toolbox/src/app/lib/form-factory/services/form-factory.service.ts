@@ -1,9 +1,9 @@
 import { Injectable, Injector } from '@angular/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { FormGroupFactory } from '../core/form-group-factory';
 import { FormFactory } from '../core/form-factory';
-import { FormFactoryConfig } from './FormFactoryConfig';
+import { FormGroupFactory } from '../core/form-group-factory';
+import { FormFactoryConfig } from '../types/FormFactoryConfig';
 
 @Injectable()
 export class FormFactoryService {

@@ -7,7 +7,7 @@ import { ClassAndTypeSelectModel, ConfigurationPipesService, InformationBasicPip
 import { equals } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { distinctUntilChanged, filter, map, switchMap } from 'rxjs/operators';
-import { FormArrayConfig } from '../../../../modules/form-factory/services/FormArrayConfig';
+import { FormArrayConfig } from '../../../../lib/form-factory/types/FormArrayConfig';
 import { QfFormControlComponent } from '../qf-form-control/qf-form-control.component';
 import { QfArraySubgroupInitVal, QfFormArrayData, QfFormArrayFactory, QfFormControlData, QfFormControlFactory, QfFormNodeConfig } from '../query-filter/query-filter.component';
 import { QueryFilterService } from '../query-filter/query-filter.service';

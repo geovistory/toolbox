@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormGroupFactory } from '../../../modules/form-factory/core/form-group-factory';
+import { FormGroupFactory } from '../../../lib/form-factory/core/form-group-factory';
 import { FormArrayComponent } from '../form-array/form-array.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgIf } from '@angular/common';

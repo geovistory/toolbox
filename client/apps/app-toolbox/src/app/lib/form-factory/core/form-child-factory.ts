@@ -3,8 +3,8 @@ import { ComponentRef, InjectionToken } from '@angular/core';
 import { AbstractControl, ValidatorFn, Validators } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, first, switchMap, takeUntil } from 'rxjs/operators';
-import { FormChildFactoryConfig } from '../services/FormChildFactoryConfig';
-import { FormFactoryGlobal } from '../services/FormFactoryGlobal';
+import { FormChildFactoryConfig } from '../types/FormChildFactoryConfig';
+import { FormFactoryGlobal } from '../types/FormFactoryGlobal';
 import { AbstractControlFactory, FactoryType, FormFactoryComponent } from './form-factory.models';
 
 export const CONTAINER_DATA = new InjectionToken<{}>('CONTAINER_DATA');

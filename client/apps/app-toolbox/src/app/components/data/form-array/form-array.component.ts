@@ -7,7 +7,7 @@ import { Field } from '@kleiolab/lib-redux';
 import { equals, sum } from 'ramda';
 import { first } from 'rxjs/operators';
 import { openClose } from '../../../lib/animations/animations';
-import { FormArrayChild, ParentFactory } from '../../../modules/form-factory/core/form-array-factory';
+import { FormArrayChild, ParentFactory } from '../../../lib/form-factory/core/form-array-factory';
 import { FgAppellationTeEnComponent } from '../fg-appellation-te-en/fg-appellation-te-en.component';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';

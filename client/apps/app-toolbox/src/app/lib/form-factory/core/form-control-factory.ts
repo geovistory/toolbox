@@ -1,8 +1,8 @@
 import { UntypedFormControl, Validators } from '@angular/forms';
 import { ReplaySubject, merge, of } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { FormControlConfig } from '../services/FormControlConfig';
-import { FormFactoryGlobal } from '../services/FormFactoryGlobal';
+import { FormControlConfig } from '../types/FormControlConfig';
+import { FormFactoryGlobal } from '../types/FormFactoryGlobal';
 import { ParentFactory } from './form-array-factory';
 import { AbstractControlFactory, FactoryType, StatusChange } from './form-factory.models';
 /**

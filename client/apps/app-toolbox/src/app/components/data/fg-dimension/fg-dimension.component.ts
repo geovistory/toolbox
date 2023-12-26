@@ -1,19 +1,19 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldAppearance, MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput, MatInputModule } from '@angular/material/input';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { InfDimension } from '@kleiolab/lib-sdk-lb4';
-import { CONTAINER_DATA } from '../../../modules/form-factory/core/form-child-factory';
-import { FormFactory } from '../../../modules/form-factory/core/form-factory';
-import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../modules/form-factory/core/form-factory.models';
-import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
-import { FormFactoryConfig } from '../../../modules/form-factory/services/FormFactoryConfig';
-import { FormNodeConfig } from '../../../modules/form-factory/services/FormNodeConfig';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { filter, first, map, takeUntil } from 'rxjs/operators';
+import { CONTAINER_DATA } from '../../../lib/form-factory/core/form-child-factory';
+import { FormFactory } from '../../../lib/form-factory/core/form-factory';
+import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../lib/form-factory/core/form-factory.models';
+import { FormFactoryService } from '../../../lib/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from '../../../lib/form-factory/types/FormFactoryConfig';
+import { FormNodeConfig } from '../../../lib/form-factory/types/FormNodeConfig';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
 
 type FgDimensionNodeConfig = FormNodeConfig<any, any, any, any>
 export interface FgDimensionInjectData extends FormFactoryCompontentInjectData<Observable<InfDimension>> {
@@ -21,11 +21,11 @@ export interface FgDimensionInjectData extends FormFactoryCompontentInjectData<O
   pkClassOfDimension: number; // e.g. 52 for E54 Dimension
 }
 @Component({
-    selector: 'gv-fg-dimension',
-    templateUrl: './fg-dimension.component.html',
-    styleUrls: ['./fg-dimension.component.scss'],
-    standalone: true,
-    imports: [NgIf, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, MatInputModule, CtrlTypeComponent, AsyncPipe]
+  selector: 'gv-fg-dimension',
+  templateUrl: './fg-dimension.component.html',
+  styleUrls: ['./fg-dimension.component.scss'],
+  standalone: true,
+  imports: [NgIf, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, MatInputModule, CtrlTypeComponent, AsyncPipe]
 })
 export class FgDimensionComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

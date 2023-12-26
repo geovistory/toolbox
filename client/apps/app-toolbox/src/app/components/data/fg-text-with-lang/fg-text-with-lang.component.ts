@@ -10,12 +10,12 @@ import { first, map, takeUntil } from 'rxjs/operators';
 import { openClose } from '../../../lib/animations/animations';
 import { C_339_STRING_ID, P_1864_HAS_VALUE_VERSION_ID, P_63_HAS_LANGUAGE_ID } from '../../../lib/constants/ontome-ids';
 import { getFirstElementFormQueryList } from '../../../lib/converters/getFirstElementFormQueryList';
-import { CONTAINER_DATA } from '../../../modules/form-factory/core/form-child-factory';
-import { FormFactory } from '../../../modules/form-factory/core/form-factory';
-import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../modules/form-factory/core/form-factory.models';
-import { FormFactoryConfig } from '../../../modules/form-factory/services/FormFactoryConfig';
-import { FormNodeConfig } from '../../../modules/form-factory/services/FormNodeConfig';
-import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
+import { CONTAINER_DATA } from '../../../lib/form-factory/core/form-child-factory';
+import { FormFactory } from '../../../lib/form-factory/core/form-factory';
+import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../lib/form-factory/core/form-factory.models';
+import { FormFactoryService } from '../../../lib/form-factory/services/form-factory.service';
+import { FormFactoryConfig } from '../../../lib/form-factory/types/FormFactoryConfig';
+import { FormNodeConfig } from '../../../lib/form-factory/types/FormNodeConfig';
 import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 
