@@ -13,7 +13,6 @@ import { equals } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import { catchError, delay, filter, first, map, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../lib/constants/ontome-ids';
-import { TextDetail2Service } from '../../../modules/data/components/text-detail2/text-detail2.service';
 import { QuillEditComponent } from '../../../modules/quill/quill-edit/quill-edit.component';
 import { DeltaI, Op, Ops } from '../../../modules/quill/quill.models';
 import { ActiveProjectService } from '../../../services/active-project.service';
@@ -21,6 +20,7 @@ import { ConfirmHook, EditModeService } from '../../../services/edit-mode.servic
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ToggleBtnComponent } from '../../../shared/components/gv-buttons/components/toggle-btn/toggle-btn.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
+import { TextDetail2Service } from '../../layout/tab-bodies/text-detail2/text-detail2.service';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
 import type { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';

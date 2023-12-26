@@ -6,8 +6,8 @@ import { ClassConfig, GvPositiveSchemaObject, InfAppellation, ProProject } from 
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { BehaviorSubject, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
+import type { TextDetail2Config } from '../components/layout/tab-bodies/text-detail2/text-detail2.component';
 import type { TableDetailConfig } from '../modules/data/components/table-detail/table-detail.component';
-import type { TextDetail2Config } from '../modules/data/components/text-detail2/text-detail2.component';
 import type { EntityDetailConfig } from '../modules/information/containers/entity-detail/entity-detail.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from '../shared/components/progress-dialog/progress-dialog.component';

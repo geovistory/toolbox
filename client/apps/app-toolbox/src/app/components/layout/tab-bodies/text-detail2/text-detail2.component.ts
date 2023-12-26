@@ -13,14 +13,14 @@ import { ViewFieldAnnotationsComponent } from '../../../../components/data/view-
 import { ViewFieldHasValueVersionComponent } from '../../../../components/data/view-field-has-value-version/view-field-has-value-version.component';
 import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
 import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../lib/constants/ontome-ids';
+import { slideInOut } from '../../../../modules/information/shared/animations';
+import { IndexedCharids } from '../../../../modules/quill/quill-edit/quill-edit.component';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../../services/edit-mode.service';
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
-import { slideInOut } from '../../../information/shared/animations';
-import { IndexedCharids } from '../../../quill/quill-edit/quill-edit.component';
 import { TextDetail2Service } from './text-detail2.service';
 
 export interface TextDetail2Config {

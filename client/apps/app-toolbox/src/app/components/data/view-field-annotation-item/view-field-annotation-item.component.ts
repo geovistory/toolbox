@@ -7,11 +7,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
-import { TextDetail2Service } from '../../../modules/data/components/text-detail2/text-detail2.service';
 import { IndexedCharids } from '../../../modules/quill/quill-edit/quill-edit.component';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { EntityPreviewComponent } from '../../../shared/components/entity-preview/entity-preview.component';
+import { TextDetail2Service } from '../../layout/tab-bodies/text-detail2/text-detail2.service';
 import type { ViewFieldAnnotationItemData } from '../view-field-annotations/view-field-annotations.component';
 
 @Component({
