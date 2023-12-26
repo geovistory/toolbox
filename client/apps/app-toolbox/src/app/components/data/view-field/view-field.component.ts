@@ -7,7 +7,7 @@ import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, shareReplay } from 'rxjs/operators';
-import { fieldToFieldId } from '../../../lib/converters/base.helpers';
+import { fieldToFieldId } from '../../../lib/converters/fieldToFieldId';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { ViewFieldAddHooksService } from '../../../services/view-field-add-hooks.service';
 import { ViewFieldTreeNodeService } from '../../../services/view-field-tree-node.service';

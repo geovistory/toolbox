@@ -11,7 +11,7 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/operators';
 import { C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../lib/constants/ontome-ids';
-import { statemenTargetToInfData } from '../../../lib/converters/base.helpers';
+import { statemenTargetToInfData } from '../../../lib/converters/statemenTargetToInfData';
 import { TableDetailComponent } from '../../../modules/data/components/table-detail/table-detail.component';
 import { PaginationService } from '../../../services/pagination.service';
 import { TableComponent } from '../../../shared/components/digital-table/components/table/table.component';

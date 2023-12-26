@@ -5,7 +5,7 @@ import { GvFieldId, GvFieldPageScope, GvFieldSourceEntity, InfStatement, InfStat
 import { BehaviorSubject, Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import type { ViewFieldBodyComponent } from '../components/data/view-field-body/view-field-body.component';
-import { fieldToFieldId } from '../lib/converters/base.helpers';
+import { fieldToFieldId } from '../lib/converters/fieldToFieldId';
 
 @Injectable({
   providedIn: 'root'

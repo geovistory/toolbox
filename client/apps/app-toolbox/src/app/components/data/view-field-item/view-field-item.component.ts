@@ -6,7 +6,7 @@ import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview, W
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { C_53_TYPE_ID } from '../../../lib/constants/ontome-ids';
-import { fieldToWarFieldChangeId } from '../../../lib/converters/base.helpers';
+import { fieldToWarFieldChangeId } from '../../../lib/converters/fieldToWarFieldChangeId';
 import { openAddStatementDialog } from '../../../lib/dialogs/openAddStatementDialog';
 import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';

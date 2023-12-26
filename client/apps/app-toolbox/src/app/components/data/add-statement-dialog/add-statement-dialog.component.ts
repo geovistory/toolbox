@@ -10,7 +10,10 @@ import { ActiveProjectPipesService, ConfigurationPipesService, Field, FieldTarge
 import { GvFieldPageReq, GvFieldPageScope, GvFieldProperty, GvFieldSourceEntity, InfData, InfStatementWithRelations, StatementWithTarget, SubfieldPageControllerService, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, shareReplay, startWith, switchMap, takeUntil } from 'rxjs/operators';
-import { fieldToFieldPage, fieldToGvFieldTargets, fieldToWarFieldChangeId, statemenTargetToInfData } from '../../../lib/converters/base.helpers';
+import { fieldToFieldPage } from '../../../lib/converters/fieldToFieldPage';
+import { fieldToGvFieldTargets } from '../../../lib/converters/fieldToGvFieldTargets';
+import { fieldToWarFieldChangeId } from '../../../lib/converters/fieldToWarFieldChangeId';
+import { statemenTargetToInfData } from '../../../lib/converters/statemenTargetToInfData';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { PaginationService } from '../../../services/pagination.service';

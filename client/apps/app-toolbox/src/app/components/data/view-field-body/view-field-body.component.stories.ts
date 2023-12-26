@@ -14,7 +14,7 @@ import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { playInject } from '../../../../../.storybook/playInject';
 import { sleep } from '../../../../../.storybook/sleep';
-import { temporalEntityListDefaultLimit } from '../../../lib/converters/base.helpers';
+import { paginationDefaultLimit } from '../../../lib/constants/paginationDefaultLimit';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { response1 } from './testing/response1';
 import { response2 } from './testing/response2';
@@ -47,7 +47,7 @@ const inProjectScope: GvFieldPageScope = { inProject: projectId }
 export const stringObject: Story = {
   args: {
     showBodyOnInit: false,
-    limit: temporalEntityListDefaultLimit,
+    limit: paginationDefaultLimit,
     noPagination: false,
     hideNoItemsInfo: false,
     showBody$: new BehaviorSubject(true),
@@ -72,7 +72,7 @@ export const stringObject: Story = {
 export const NestedObject: Story = {
   args: {
     showBodyOnInit: false,
-    limit: temporalEntityListDefaultLimit,
+    limit: paginationDefaultLimit,
     noPagination: false,
     hideNoItemsInfo: false,
     showBody$: new BehaviorSubject(true),
@@ -112,7 +112,7 @@ class MockLargeData {
 export const LargeData: Story = {
   args: {
     showBodyOnInit: false,
-    limit: temporalEntityListDefaultLimit,
+    limit: paginationDefaultLimit,
     noPagination: false,
     hideNoItemsInfo: false,
     showBody$: new BehaviorSubject(true),
@@ -226,7 +226,7 @@ class MockStandalone {
 export const Standalone: Story = {
   args: {
     showBodyOnInit: false,
-    limit: temporalEntityListDefaultLimit,
+    limit: paginationDefaultLimit,
     noPagination: false,
     hideNoItemsInfo: false,
     showBody$: new BehaviorSubject(true),

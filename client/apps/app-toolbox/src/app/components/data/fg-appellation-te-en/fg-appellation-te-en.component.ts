@@ -9,7 +9,7 @@ import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellationWithRelations, InfLanguage, InfPlace, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
-import { getFirstElementFormQueryList } from '../../../lib/converters/base.helpers';
+import { getFirstElementFormQueryList } from '../../../lib/converters/getFirstElementFormQueryList';
 import { CONTAINER_DATA } from '../../../modules/form-factory/core/form-child-factory';
 import { FormFactory } from '../../../modules/form-factory/core/form-factory';
 import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../modules/form-factory/core/form-factory.models';

@@ -18,7 +18,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { GvDndSortListDirective } from '../../../directives/drag-sort/dnd-sort-list.directive';
 import { OpenCloseChildDirective } from '../../../directives/open-close/open-close-child.directive';
 import { OpenCloseContainerDirective } from '../../../directives/open-close/open-close-container.directive';
-import { fieldToFieldPage, fieldToGvFieldTargets, temporalEntityListDefaultLimit, temporalEntityListDefaultPageIndex } from '../../../lib/converters/base.helpers';
+import { paginationDefaultLimit } from '../../../lib/constants/paginationDefaultLimit';
+import { fieldToFieldPage } from '../../../lib/converters/fieldToFieldPage';
+import { fieldToGvFieldTargets } from '../../../lib/converters/fieldToGvFieldTargets';
 import { openClose } from '../../../modules/information/shared/animations';
 import { GvDndGlobalService, TreeItem } from '../../../services/dnd-global.service';
 import { EditModeService } from '../../../services/edit-mode.service';
@@ -53,7 +55,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
   @Input() showOntoInfo$: Observable<boolean>
   @Input() addMode$: Observable<boolean>
   @Input() showBodyOnInit: boolean
-  @Input() limit = temporalEntityListDefaultLimit
+  @Input() limit = paginationDefaultLimit
   @Input() noPagination = false
   @Input() hideNoItemsInfo = false
   @Input() showBody$ = new BehaviorSubject(false)
@@ -67,7 +69,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
 
   limit$: BehaviorSubject<number>
 
-  pageIndex$ = new BehaviorSubject(temporalEntityListDefaultPageIndex);
+  pageIndex$ = new BehaviorSubject(0);
   offset$: Observable<number>;
 
 

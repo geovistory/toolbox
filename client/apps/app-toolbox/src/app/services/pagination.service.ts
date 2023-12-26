@@ -5,7 +5,9 @@ import { FieldChangeSocket } from '@kleiolab/lib-sockets';
 import { indexBy } from 'ramda';
 import { Observable, Subject, interval } from 'rxjs';
 import { bufferWhen, filter, first } from 'rxjs/operators';
-import { fieldPageToWarFieldChangeId, fieldToFieldPage, fieldToGvFieldTargets } from '../lib/converters/base.helpers';
+import { fieldPageToWarFieldChangeId } from '../lib/converters/fieldPageToWarFieldChangeId';
+import { fieldToFieldPage } from '../lib/converters/fieldToFieldPage';
+import { fieldToGvFieldTargets } from '../lib/converters/fieldToGvFieldTargets';
 
 
 interface Loader {

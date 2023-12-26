@@ -11,7 +11,7 @@ import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, switchMap } from 'rxjs/operators';
-import { fieldToWarFieldChangeId } from '../../../lib/converters/base.helpers';
+import { fieldToWarFieldChangeId } from '../../../lib/converters/fieldToWarFieldChangeId';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { PaginationService } from '../../../services/pagination.service';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
