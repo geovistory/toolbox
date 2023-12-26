@@ -5,11 +5,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService, SectionName, StateFacade } from '@kleiolab/lib-redux';
-import { ContentComponent } from '../../../../components/data/content/content.component';
-import { EntityCardHeaderComponent } from '../../../../components/data/entity-card-header/entity-card-header.component';
-import { FactoidListComponent } from '../../../../components/data/factoid-list/factoid-list.component';
-import { ViewSectionComponent } from '../../../../components/data/view-section/view-section.component';
-import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
 import { TabLayoutComponentInterface } from '../../../../directives/on-activate-tab.directive';
 import { slideInOut } from '../../../../lib/animations/animations';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
@@ -18,6 +13,11 @@ import { EditModeService } from '../../../../services/edit-mode.service';
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
+import { ContentComponent } from '../../../editor/content/content.component';
+import { EntityCardHeaderComponent } from '../../../editor/entity-card-header/entity-card-header.component';
+import { FactoidListComponent } from '../../../editor/factoid-list/factoid-list.component';
+import { ViewSectionComponent } from '../../../editor/view-section/view-section.component';
+import { ViewSectionsComponent } from '../../../editor/view-sections/view-sections.component';
 export interface EntityDetailConfig {
   pkEntity: number,
   showContentTree: boolean,

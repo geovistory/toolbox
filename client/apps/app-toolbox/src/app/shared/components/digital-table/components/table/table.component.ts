@@ -16,7 +16,7 @@ import { TableModule } from 'primeng/table';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { ViewFieldAnnotationsOfCellComponent } from '../../../../../components/data/view-field-annotations-of-cell/view-field-annotations-of-cell.component';
+import { ViewFieldAnnotationsOfCellComponent } from '../../../../../components/editor/view-field-annotations-of-cell/view-field-annotations-of-cell.component';
 import { CopyClipboardDirective } from '../../../../../directives/copy-clipboard/copy-clipboard.directive';
 import { ActiveProjectService } from '../../../../../services/active-project.service';
 import { EditModeService } from '../../../../../services/edit-mode.service';

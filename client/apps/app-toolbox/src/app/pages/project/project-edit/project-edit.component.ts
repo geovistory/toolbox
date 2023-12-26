@@ -13,7 +13,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { OntomeProfilesSettingsComponent } from '../../../components/configuration/ontome-profiles-settings/ontome-profiles-settings.component';
 import { ProjectSettingsDataComponent } from '../../../components/configuration/project-settings-data/project-settings-data.component';
-import { RamFormComponent } from '../../../components/data/ram-form/ram-form.component';
+import { RamFormComponent } from '../../../components/editor/ram-form/ram-form.component';
 import { AnalysisListComponent } from '../../../components/layout/left-drawer/components/analysis-list/analysis-list.component';
 import { DigitalsListComponent } from '../../../components/layout/left-drawer/components/digitals-list/digitals-list.component';
 import { EntityListComponent } from '../../../components/layout/left-drawer/components/entity-list/entity-list.component';

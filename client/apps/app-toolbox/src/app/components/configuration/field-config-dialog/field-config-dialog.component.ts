@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { FieldLabelComponent } from '../../data/field-label/field-label.component';
+import { FieldLabelComponent } from '../../editor/field-label/field-label.component';
 import { FieldConfigComponent } from '../field-config/field-config.component';
 export interface FieldConfigDialogData {
   fkProject: number,

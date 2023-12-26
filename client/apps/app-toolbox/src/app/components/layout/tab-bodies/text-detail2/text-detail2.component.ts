@@ -8,19 +8,19 @@ import { ActiveProjectPipesService, ConfigurationPipesService, Field, Informatio
 import { QuillDoc } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { debounceTime, map, switchMap } from 'rxjs/operators';
-import { EntityCardHeaderComponent } from '../../../../components/data/entity-card-header/entity-card-header.component';
-import { ViewFieldAnnotationsComponent } from '../../../../components/data/view-field-annotations/view-field-annotations.component';
-import { ViewFieldHasValueVersionComponent } from '../../../../components/data/view-field-has-value-version/view-field-has-value-version.component';
-import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
 import { slideInOut } from '../../../../lib/animations/animations';
 import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../lib/constants/ontome-ids';
-import { IndexedCharids } from '../../../text-editor/quill-edit/quill-edit.component';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../../services/edit-mode.service';
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
+import { EntityCardHeaderComponent } from '../../../editor/entity-card-header/entity-card-header.component';
+import { ViewFieldAnnotationsComponent } from '../../../editor/view-field-annotations/view-field-annotations.component';
+import { ViewFieldHasValueVersionComponent } from '../../../editor/view-field-has-value-version/view-field-has-value-version.component';
+import { ViewSectionsComponent } from '../../../editor/view-sections/view-sections.component';
+import { IndexedCharids } from '../../../text-editor/quill-edit/quill-edit.component';
 import { TextDetail2Service } from './text-detail2.service';
 
 export interface TextDetail2Config {

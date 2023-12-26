@@ -21,7 +21,7 @@ import { ActiveAccountService } from '../../../services/active-account.service';
 import { WorkerWrapperService } from '../../../services/worker-wrapper.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { Cell, Header, TableComponent } from '../../../shared/components/digital-table/components/table/table.component';
-import { CtrlLanguageComponent } from '../../data/ctrl-language/ctrl-language.component';
+import { CtrlLanguageComponent } from '../../editor/ctrl-language/ctrl-language.component';
 
 export interface ImporterDialogData {
   apiCall: (table: ImportTableResponse) => Observable<ImportTableResponse>

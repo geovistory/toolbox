@@ -12,7 +12,6 @@ import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty, sortAbc } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ViewSectionsDialogComponent, ViewSectionsDialogData } from '../../../../components/data/view-sections-dialog/view-sections-dialog.component';
 import { TabLayoutComponentInterface } from '../../../../directives/on-activate-tab.directive';
 import { fieldToFieldPage } from '../../../../lib/converters/fieldToFieldPage';
 import { fieldToGvFieldTargets } from '../../../../lib/converters/fieldToGvFieldTargets';
@@ -23,6 +22,7 @@ import { DetailContentComponent } from '../../../../shared/components/detail-con
 import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
+import { ViewSectionsDialogComponent, ViewSectionsDialogData } from '../../../editor/view-sections-dialog/view-sections-dialog.component';
 
 interface TypeItem {
   pkEntity: number

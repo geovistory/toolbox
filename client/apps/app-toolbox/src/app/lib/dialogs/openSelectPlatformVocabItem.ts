@@ -1,7 +1,7 @@
 import { MatDialog } from '@angular/material/dialog';
 import { Field } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
-import { SelectPlatformVocabItemDialogComponent, type SelectPlatformVocabItemDialogData } from '../../components/data/select-platform-vocab-item-dialog/select-platform-vocab-item-dialog.component';
+import { SelectPlatformVocabItemDialogComponent, type SelectPlatformVocabItemDialogData } from '../../components/editor/select-platform-vocab-item-dialog/select-platform-vocab-item-dialog.component';
 
 /**
  * Open a dialog to creat a statement with a platform vocabulary item as target.

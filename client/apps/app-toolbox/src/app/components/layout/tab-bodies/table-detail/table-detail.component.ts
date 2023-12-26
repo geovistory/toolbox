@@ -5,8 +5,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
-import { EntityCardHeaderComponent } from '../../../../components/data/entity-card-header/entity-card-header.component';
-import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
 import { slideInOut } from '../../../../lib/animations/animations';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
@@ -14,6 +12,8 @@ import { EditModeService } from '../../../../services/edit-mode.service';
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
+import { EntityCardHeaderComponent } from '../../../editor/entity-card-header/entity-card-header.component';
+import { ViewSectionsComponent } from '../../../editor/view-sections/view-sections.component';
 import { ViewFieldHasTableValueComponent } from '../../../table-editor/view-field-has-table-value/view-field-has-table-value.component';
 
 export interface TableDetailConfig {
