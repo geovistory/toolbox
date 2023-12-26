@@ -2,7 +2,7 @@ import { NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { SysConfig } from '@kleiolab/lib-config';
 import { Subject } from 'rxjs';
-import { TabLayoutComponentInterface } from '../../../../modules/projects/directives/on-activate-tab.directive';
+import { TabLayoutComponentInterface } from '../../../../directives/on-activate-tab.directive';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';

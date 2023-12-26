@@ -19,7 +19,7 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { equals, indexBy, keys, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { TabLayoutComponentInterface } from '../../../modules/projects/directives/on-activate-tab.directive';
+import { TabLayoutComponentInterface } from '../../../directives/on-activate-tab.directive';
 import { HighlightPipe } from '../../../pipes/highlight/highlight.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { DetailContentComponent } from '../../../shared/components/detail-content/detail-content.component';

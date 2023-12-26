@@ -1,13 +1,13 @@
 import { Directive, Input } from '@angular/core';
-import { TabLayoutService } from '../../../shared/components/tab-layout/tab-layout.service';
+import { TabLayoutService } from '../shared/components/tab-layout/tab-layout.service';
 
 export interface TabLayoutComponentInterface {
   tabLayout: TabLayoutService
 }
 
 @Directive({
-    selector: '[onActivateTab]',
-    standalone: true
+  selector: '[onActivateTab]',
+  standalone: true
 })
 export class OnActivateTabDirective {
   @Input('onActivateTab') c: TabLayoutComponentInterface;
