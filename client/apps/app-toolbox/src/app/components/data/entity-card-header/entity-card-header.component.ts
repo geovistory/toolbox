@@ -13,12 +13,12 @@ import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { first, switchMap } from 'rxjs/operators';
-import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../modules/class-config/components/class-config-dialog/class-config-dialog.component';
 import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
+import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../project-config/class-config-dialog/class-config-dialog.component';
 import { EntityLabelConfigOpenBtnComponent } from '../../project-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
 
 @Component({

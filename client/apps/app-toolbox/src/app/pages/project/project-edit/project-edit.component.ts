@@ -12,6 +12,7 @@ import { indexBy } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { AnalysisDetailComponent } from '../../../components/layout/tab-bodies/analysis-detail/analysis-detail.component';
+import { ProjectSettingsDataComponent } from '../../../components/project-config/project-settings-data/project-settings-data.component';
 import { TableDetailComponent } from '../../../modules/data/components/table-detail/table-detail.component';
 import { TextDetail2Component } from '../../../modules/data/components/text-detail2/text-detail2.component';
 import { EntityDetailComponent } from '../../../modules/information/containers/entity-detail/entity-detail.component';
@@ -23,7 +24,6 @@ import { SourceListComponent } from '../../../modules/left-drawer/components/sou
 import { RamFormComponent } from '../../../modules/projects/components/ram-form/ram-form.component';
 import { TabBodyComponent } from '../../../modules/projects/components/tab-body/tab-body.component';
 import { TabHandleComponent } from '../../../modules/projects/components/tab-handle/tab-handle.component';
-import { ProjectSettingsDataComponent } from '../../../modules/projects/containers/project-settings-data/project-settings-data.component';
 import { TypesComponent } from '../../../modules/projects/containers/types/types.component';
 import { OnActivateTabDirective } from '../../../modules/projects/directives/on-activate-tab.directive';
 import { PanelBodyDirective } from '../../../modules/projects/directives/panel-body.directive';

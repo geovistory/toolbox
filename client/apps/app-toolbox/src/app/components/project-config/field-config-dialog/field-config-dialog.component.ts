@@ -1,8 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { FieldLabelComponent } from '../../data/field-label/field-label.component';
 import { FieldConfigComponent } from '../field-config/field-config.component';
-import { FieldLabelComponent } from '../../../../components/data/field-label/field-label.component';
 export interface FieldConfigDialogData {
   fkProject: number,
 
@@ -11,11 +11,11 @@ export interface FieldConfigDialogData {
   fkPropertyRange?: number
 }
 @Component({
-    selector: 'gv-field-config-dialog',
-    templateUrl: './field-config-dialog.component.html',
-    styleUrls: ['./field-config-dialog.component.scss'],
-    standalone: true,
-    imports: [MatDialogModule, FieldLabelComponent, FieldConfigComponent, MatButtonModule]
+  selector: 'gv-field-config-dialog',
+  templateUrl: './field-config-dialog.component.html',
+  styleUrls: ['./field-config-dialog.component.scss'],
+  standalone: true,
+  imports: [MatDialogModule, FieldLabelComponent, FieldConfigComponent, MatButtonModule]
 })
 export class FieldConfigDialogComponent implements OnInit {
 

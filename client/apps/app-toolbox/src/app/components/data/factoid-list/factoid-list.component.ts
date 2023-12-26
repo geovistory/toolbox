@@ -78,10 +78,6 @@ export class FactoidListComponent implements OnInit, OnDestroy {
       })
   }
 
-  stringify(objet: Object) {
-    return JSON.stringify(objet);
-  }
-
   getVOT$(bodyStatement: FactoidStatement): Observable<SysConfigValueObjectType> {
     return combineLatest([
       this.state.data.dfh.property.getDfhProperty.byProperty(bodyStatement.fkProperty),

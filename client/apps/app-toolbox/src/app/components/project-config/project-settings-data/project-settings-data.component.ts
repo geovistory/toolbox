@@ -19,17 +19,17 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { equals, indexBy, keys, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { EntityLabelConfigOpenBtnComponent } from '../../../../components/project-config/entity-label-config-open-btn/entity-label-config-open-btn.component';
-import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../../modules/class-config/components/class-config-dialog/class-config-dialog.component';
-import { HighlightPipe } from '../../../../pipes/highlight/highlight.pipe';
-import { ActiveProjectService } from '../../../../services/active-project.service';
-import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
-import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
-import { ClassInfoComponent } from '../../../../shared/components/onto-info/class-info/class-info.component';
-import { OntoClassInfoComponent } from '../../../../shared/components/onto-info/onto-class-info/onto-class-info.component';
-import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
+import { TabLayoutComponentInterface } from '../../../modules/projects/directives/on-activate-tab.directive';
+import { HighlightPipe } from '../../../pipes/highlight/highlight.pipe';
+import { ActiveProjectService } from '../../../services/active-project.service';
+import { DetailContentComponent } from '../../../shared/components/detail-content/detail-content.component';
+import { DetailTopBarComponent } from '../../../shared/components/detail-top-bar/detail-top-bar.component';
+import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
+import { OntoClassInfoComponent } from '../../../shared/components/onto-info/onto-class-info/onto-class-info.component';
+import { TabLayout } from '../../../shared/components/tab-layout/tab-layout';
+import { TabLayoutService } from '../../../shared/components/tab-layout/tab-layout.service';
+import { ClassConfigDialogComponent, ClassConfigDialogData } from '../class-config-dialog/class-config-dialog.component';
+import { EntityLabelConfigOpenBtnComponent } from '../entity-label-config-open-btn/entity-label-config-open-btn.component';
 
 interface Profile {
   label: string,

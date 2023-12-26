@@ -1,18 +1,18 @@
 import { moveItemInArray } from '@angular/cdk/drag-drop';
+import { AsyncPipe, NgFor, NgIf, SlicePipe } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ConfigurationPipesService, DisplayType, Field, SectionName, StateFacade } from '@kleiolab/lib-redux';
 import { ProClassFieldConfig } from '@kleiolab/lib-sdk-lb4';
-import { TableRowReorderEvent, TableModule } from 'primeng/table';
+import { SharedModule } from 'primeng/api';
+import { TableModule, TableRowReorderEvent } from 'primeng/table';
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { OntoPropertyInfoComponent } from '../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
 import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
-import { MatButtonModule } from '@angular/material/button';
-import { OntoPropertyInfoComponent } from '../../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgFor, AsyncPipe, SlicePipe } from '@angular/common';
-import { SharedModule } from 'primeng/api';
 
 interface FieldConfig extends Field {
   propertyField?: {
@@ -25,11 +25,11 @@ interface FieldConfig extends Field {
   fieldConfig?: ProClassFieldConfig
 }
 @Component({
-    selector: 'gv-class-fields-section',
-    templateUrl: './class-fields-section.component.html',
-    styleUrls: ['./class-fields-section.component.scss'],
-    standalone: true,
-    imports: [TableModule, SharedModule, NgIf, MatProgressSpinnerModule, OntoPropertyInfoComponent, NgFor, MatButtonModule, AsyncPipe, SlicePipe]
+  selector: 'gv-class-fields-section',
+  templateUrl: './class-fields-section.component.html',
+  styleUrls: ['./class-fields-section.component.scss'],
+  standalone: true,
+  imports: [TableModule, SharedModule, NgIf, MatProgressSpinnerModule, OntoPropertyInfoComponent, NgFor, MatButtonModule, AsyncPipe, SlicePipe]
 })
 export class ClassFieldsSectionComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
