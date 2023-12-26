@@ -14,6 +14,7 @@ import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
 import { ProjectSettingsDataComponent } from '../../../components/configuration/project-settings-data/project-settings-data.component';
 import { RamFormComponent } from '../../../components/data/ram-form/ram-form.component';
 import { AnalysisDetailComponent } from '../../../components/layout/tab-bodies/analysis-detail/analysis-detail.component';
+import { EntityDetailComponent } from '../../../components/layout/tab-bodies/entity-detail/entity-detail.component';
 import { TableDetailComponent } from '../../../components/layout/tab-bodies/table-detail/table-detail.component';
 import { TextDetail2Component } from '../../../components/layout/tab-bodies/text-detail2/text-detail2.component';
 import { TypesComponent } from '../../../components/layout/tab-bodies/types/types.component';
@@ -21,7 +22,6 @@ import { TabBodyComponent } from '../../../components/layout/tab-layout/tab-body
 import { TabHandleComponent } from '../../../components/layout/tab-layout/tab-handle/tab-handle.component';
 import { OnActivateTabDirective } from '../../../directives/on-activate-tab.directive';
 import { PanelBodyDirective } from '../../../directives/panel-body.directive';
-import { EntityDetailComponent } from '../../../modules/information/containers/entity-detail/entity-detail.component';
 import { AnalysisListComponent } from '../../../modules/left-drawer/components/analysis-list/analysis-list.component';
 import { DigitalsListComponent } from '../../../modules/left-drawer/components/digitals-list/digitals-list.component';
 import { EntityListComponent } from '../../../modules/left-drawer/components/entity-list/entity-list.component';

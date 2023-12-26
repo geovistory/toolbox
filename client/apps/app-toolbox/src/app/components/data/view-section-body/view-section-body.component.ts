@@ -9,7 +9,7 @@ import { ActiveProjectService } from '../../../services/active-project.service';
 
 import { OpenCloseChildDirective } from '../../../directives/open-close/open-close-child.directive';
 import { OpenCloseContainerDirective } from '../../../directives/open-close/open-close-container.directive';
-import { openClose } from '../../../modules/information/shared/animations';
+import { openClose } from '../../../lib/animations/animations';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { ViewFieldComponent } from '../view-field/view-field.component';
 

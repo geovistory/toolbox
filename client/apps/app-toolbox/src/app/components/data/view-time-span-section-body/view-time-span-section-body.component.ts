@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { openClose } from '../../../modules/information/shared/animations';
+import { openClose } from '../../../lib/animations/animations';
 import { ViewSectionBodyComponent } from '../view-section-body/view-section-body.component';
 
 import { AsyncPipe, NgIf } from '@angular/common';

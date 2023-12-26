@@ -11,13 +11,13 @@ import { FactoidListComponent } from '../../../../components/data/factoid-list/f
 import { ViewSectionComponent } from '../../../../components/data/view-section/view-section.component';
 import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
 import { TabLayoutComponentInterface } from '../../../../directives/on-activate-tab.directive';
+import { slideInOut } from '../../../../lib/animations/animations';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../../services/edit-mode.service';
 import { DetailBaseComponent } from '../../../../shared/classes/detail-base-component';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
-import { slideInOut } from '../../shared/animations';
 export interface EntityDetailConfig {
   pkEntity: number,
   showContentTree: boolean,

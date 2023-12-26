@@ -9,6 +9,7 @@ import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellationWithRelations, InfLanguage, InfPlace, InfResourceWithRelations, InfStatementWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, shareReplay, takeUntil } from 'rxjs/operators';
+import { openClose } from '../../../lib/animations/animations';
 import { getFirstElementFormQueryList } from '../../../lib/converters/getFirstElementFormQueryList';
 import { CONTAINER_DATA } from '../../../modules/form-factory/core/form-child-factory';
 import { FormFactory } from '../../../modules/form-factory/core/form-factory';
@@ -16,7 +17,6 @@ import { FormFactoryComponent, FormFactoryCompontentInjectData } from '../../../
 import { FormFactoryConfig } from '../../../modules/form-factory/services/FormFactoryConfig';
 import { FormNodeConfig } from '../../../modules/form-factory/services/FormNodeConfig';
 import { FormFactoryService } from '../../../modules/form-factory/services/form-factory.service';
-import { openClose } from '../../../modules/information/shared/animations';
 import { CtrlAppellationComponent } from '../ctrl-appellation/ctrl-appellation.component';
 import { CtrlLanguageComponent } from '../ctrl-language/ctrl-language.component';
 import { CtrlTypeComponent } from '../ctrl-type/ctrl-type.component';

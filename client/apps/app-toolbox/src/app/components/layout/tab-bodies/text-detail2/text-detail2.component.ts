@@ -12,8 +12,8 @@ import { EntityCardHeaderComponent } from '../../../../components/data/entity-ca
 import { ViewFieldAnnotationsComponent } from '../../../../components/data/view-field-annotations/view-field-annotations.component';
 import { ViewFieldHasValueVersionComponent } from '../../../../components/data/view-field-has-value-version/view-field-has-value-version.component';
 import { ViewSectionsComponent } from '../../../../components/data/view-sections/view-sections.component';
+import { slideInOut } from '../../../../lib/animations/animations';
 import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../lib/constants/ontome-ids';
-import { slideInOut } from '../../../../modules/information/shared/animations';
 import { IndexedCharids } from '../../../../modules/quill/quill-edit/quill-edit.component';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';

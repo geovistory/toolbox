@@ -4,7 +4,7 @@ import { TColFilter } from '@kleiolab/lib-sdk-lb4';
 import * as d3 from 'd3-dsv';
 import { sort } from 'ramda';
 import * as XLSX from 'xlsx';
-import { ImporterColFilter } from '../../../components/table-editor/importer/importer.component';
+import { ImporterColFilter } from '../components/table-editor/importer/importer.component';
 
 addEventListener('message', ({ data }) => {
   if (data.task == 'csvIntoTable') postMessage(csvIntoTable(data.params.binaries, data.params.separator));

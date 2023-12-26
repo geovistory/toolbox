@@ -8,7 +8,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Field, FieldTargetClass } from '@kleiolab/lib-redux';
 import { equals, values } from 'ramda';
 import { first } from 'rxjs/operators';
-import { openClose } from '../../../modules/information/shared/animations';
+import { openClose } from '../../../lib/animations/animations';
 import { FgAppellationTeEnComponent } from '../fg-appellation-te-en/fg-appellation-te-en.component';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
