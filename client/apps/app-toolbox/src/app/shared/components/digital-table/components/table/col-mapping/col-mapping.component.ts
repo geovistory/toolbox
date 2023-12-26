@@ -1,6 +1,11 @@
+import { AsyncPipe, NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatRadioChange, MatRadioModule } from '@angular/material/radio';
 import { ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { TableService, UnMapCheckResponse } from '@kleiolab/lib-sdk-lb4';
@@ -8,13 +13,8 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../../../components/misc/confirm-dialog/confirm-dialog.component';
 import type { ColumnMapping } from '../table.component';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { NgStyle, NgFor, NgIf, AsyncPipe } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
 
 interface ClassOption {
   label: string;
@@ -22,11 +22,11 @@ interface ClassOption {
 };
 
 @Component({
-    selector: 'gv-col-mapping',
-    templateUrl: './col-mapping.component.html',
-    styleUrls: ['./col-mapping.component.scss'],
-    standalone: true,
-    imports: [MatDialogModule, MatFormFieldModule, NgStyle, MatInputModule, FormsModule, ReactiveFormsModule, MatRadioModule, NgFor, MatIconModule, MatButtonModule, NgIf, AsyncPipe]
+  selector: 'gv-col-mapping',
+  templateUrl: './col-mapping.component.html',
+  styleUrls: ['./col-mapping.component.scss'],
+  standalone: true,
+  imports: [MatDialogModule, MatFormFieldModule, NgStyle, MatInputModule, FormsModule, ReactiveFormsModule, MatRadioModule, NgFor, MatIconModule, MatButtonModule, NgIf, AsyncPipe]
 })
 export class ColMappingComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

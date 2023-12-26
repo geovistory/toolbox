@@ -9,7 +9,7 @@ import { first, takeUntil } from 'rxjs/operators';
 import { EntityDetailConfig } from '../components/layout/tab-bodies/entity-detail/entity-detail.component';
 import { TableDetailConfig } from '../components/layout/tab-bodies/table-detail/table-detail.component';
 import type { TextDetail2Config } from '../components/layout/tab-bodies/text-detail2/text-detail2.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../shared/components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../components/misc/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from '../shared/components/progress-dialog/progress-dialog.component';
 
 

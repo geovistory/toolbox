@@ -2,11 +2,11 @@
 /* eslint-disable no-prototype-builtins */
 import { Injectable } from '@angular/core';
 import { MatDialogConfig } from '@angular/material/dialog';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import Quill from 'quill';
 import Delta from 'quill-delta';
 import { clone } from 'ramda';
-import { asapScheduler, asyncScheduler, Observable, Subject } from 'rxjs';
+import { Observable, Subject, asapScheduler, asyncScheduler } from 'rxjs';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../misc/confirm-dialog/confirm-dialog.component';
 import { DeltaI } from './quill.models';
 import { QuillEditorRegistryService } from './services/quill-editor-registry.service';
 

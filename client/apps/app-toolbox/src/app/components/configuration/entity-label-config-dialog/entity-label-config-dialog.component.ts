@@ -13,7 +13,7 @@ import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { LabelPart, LabelPartField, ProEntityLabelConfig, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../misc/confirm-dialog/confirm-dialog.component';
 export interface EntityLabelConfigDialogData {
   fkProject: number,
   fkClass: number

@@ -12,7 +12,7 @@ import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { PaginationService } from '../../../services/pagination.service';
 import { ViewFieldDropListService } from '../../../services/view-field-drop-list.service';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../misc/confirm-dialog/confirm-dialog.component';
 import { EditTextDialogComponent, EditTextDialogData } from '../edit-text-dialog/edit-text-dialog.component';
 import { ViewFieldBodyService } from '../view-field-body/view-field-body.service';
 import { ViewFieldItemCellComponent } from '../view-field-item-cell/view-field-item-cell.component';

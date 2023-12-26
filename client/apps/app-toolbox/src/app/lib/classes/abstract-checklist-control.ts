@@ -3,7 +3,7 @@ import { Directive, Input, OnInit, Optional, Self } from '@angular/core';
 import { NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { Observable, Subject } from 'rxjs';
-import { ChecklistControlService, NestedNode } from '../services/checklist-control.service';
+import { ChecklistControlService, NestedNode } from '../../services/checklist-control.service';
 
 @Directive()
 export abstract class AbstractChecklistControl<NodeData, ControlModel>
@@ -35,7 +35,7 @@ export abstract class AbstractChecklistControl<NodeData, ControlModel>
     return this.s.isEmpty();
   }
   get shouldLabelFloat() {
-    if (!!this.focused) return true
+    if (this.focused) return true
     if (!this.empty) return true
     return false
   }

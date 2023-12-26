@@ -4,11 +4,11 @@ import { ActiveProjectPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldSourceEntity, InfResourceWithRelations } from '@kleiolab/lib-sdk-lb4';
 import { filter, first, map } from 'rxjs/operators';
 import type { ViewFieldComponent } from '../components/editor/view-field/view-field.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../components/misc/confirm-dialog/confirm-dialog.component';
 import { C_933_ANNOTATION_IN_TEXT_ID, C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../lib/constants/ontome-ids';
 import { openAddHasType } from '../lib/dialogs/openAddHasType';
 import { openAddStatementDialogFromField } from '../lib/dialogs/openAddStatementDialogFromField';
 import { openSelectPlatformVocabItem } from '../lib/dialogs/openSelectPlatformVocabItem';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../shared/components/confirm-dialog/confirm-dialog.component';
 import { ActiveProjectService } from './active-project.service';
 
 @Injectable({

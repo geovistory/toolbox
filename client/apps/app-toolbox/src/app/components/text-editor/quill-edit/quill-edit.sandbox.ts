@@ -1,12 +1,12 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { sandboxOf } from 'angular-playground';
-import { isValidQuillDoc } from '../../../core/quill-doc-validation/validate-quill-doc';
-import { DomChangeModule } from '../../../shared';
-import { ConfirmDialogModule } from '../../../shared/components/confirm-dialog/confirm-dialog.module';
 import { BehaviorSubject } from 'rxjs';
 import { QuillModule } from '..';
+import { isValidQuillDoc } from '../../../core/quill-doc-validation/validate-quill-doc';
+import { DomChangeModule } from '../../../shared';
+import { ConfirmDialogModule } from '../../misc/confirm-dialog/confirm-dialog.module';
 import { IndexedCharids, QuillEditComponent } from './quill-edit.component';
-import { textBüchel, wikiRats, _33095characters } from './quill-edit.sandbox.mock';
+import { _33095characters, textBüchel, wikiRats } from './quill-edit.sandbox.mock';
 
 
 

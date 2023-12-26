@@ -1,18 +1,18 @@
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, Directive, Input, OnInit, Optional, Self } from '@angular/core';
-import { AbstractControl, NgControl, NG_VALIDATORS, Validator, ValidatorFn } from '@angular/forms';
+import { AbstractControl, NG_VALIDATORS, NgControl, Validator, ValidatorFn } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldControl } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTreeModule } from '@angular/material/tree';
 import { ClassAndTypeNode, ClassAndTypeSelectModel, InformationPipesService } from '@kleiolab/lib-redux';
-import { AbstractChecklistControl } from '../../../../shared/components/checklist-control/classes/abstract-checklist-control';
-import { ChecklistControlService, NestedNode } from '../../../../shared/components/checklist-control/services/checklist-control.service';
 import { equals } from 'ramda';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { MatIconModule } from '@angular/material/icon';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTreeModule } from '@angular/material/tree';
-import { NgIf, AsyncPipe } from '@angular/common';
-import { MatMenuModule } from '@angular/material/menu';
+import { AbstractChecklistControl } from '../../../../lib/classes/abstract-checklist-control';
+import { ChecklistControlService, NestedNode } from '../../../../services/checklist-control.service';
 
 
 export interface NodeData {
@@ -23,15 +23,15 @@ export interface NodeData {
 export type ControlModel = ClassAndTypeSelectModel;
 
 @Component({
-    selector: 'gv-class-and-type-select',
-    templateUrl: './class-and-type-select.component.html',
-    styleUrls: ['./class-and-type-select.component.scss'],
-    providers: [
-        ChecklistControlService,
-        { provide: MatFormFieldControl, useExisting: ClassAndTypeSelectComponent }
-    ],
-    standalone: true,
-    imports: [MatMenuModule, NgIf, MatTreeModule, MatButtonModule, MatCheckboxModule, MatIconModule, AsyncPipe]
+  selector: 'gv-class-and-type-select',
+  templateUrl: './class-and-type-select.component.html',
+  styleUrls: ['./class-and-type-select.component.scss'],
+  providers: [
+    ChecklistControlService,
+    { provide: MatFormFieldControl, useExisting: ClassAndTypeSelectComponent }
+  ],
+  standalone: true,
+  imports: [MatMenuModule, NgIf, MatTreeModule, MatButtonModule, MatCheckboxModule, MatIconModule, AsyncPipe]
 })
 export class ClassAndTypeSelectComponent
   extends AbstractChecklistControl<NodeData, ControlModel>
@@ -144,9 +144,9 @@ export function classOrTypeRequiredValidator(): ValidatorFn {
 }
 
 @Directive({
-    selector: '[gvClassOrTypeRequired]',
-    providers: [{ provide: NG_VALIDATORS, useExisting: ClassOrTypeRequiredValidatorDirective, multi: true }],
-    standalone: true
+  selector: '[gvClassOrTypeRequired]',
+  providers: [{ provide: NG_VALIDATORS, useExisting: ClassOrTypeRequiredValidatorDirective, multi: true }],
+  standalone: true
 })
 export class ClassOrTypeRequiredValidatorDirective implements Validator {
   validate(control: AbstractControl): { [key: string]: any } | null {
