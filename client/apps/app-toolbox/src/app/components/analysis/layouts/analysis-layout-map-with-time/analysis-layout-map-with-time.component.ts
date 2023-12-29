@@ -8,7 +8,7 @@ import { AnalysisDefinition, AnalysisMapRequest, AnalysisMapResponse } from "@kl
 import { Observable, Subject, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GvAnalysisService } from '../../../../services/analysis.service';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
+import { TabLayoutService } from '../../../../services/tab-layout.service';
 import { MapAndTimeContFormComponent } from '../../forms/map-and-time-cont-form/map-and-time-cont-form.component';
 import { VisualizationMapWithTimeComponent } from '../../visualizations/visualization-map-with-time/visualization-map-with-time.component';
 import { AnalysisLayoutBaseComponent } from '../analysis-layout-base/analysis-layout-base.component';

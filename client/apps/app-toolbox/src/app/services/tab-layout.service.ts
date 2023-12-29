@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { Subject } from 'rxjs';
-import { TabLayout } from './tab-layout';
+import { TabLayout } from '../lib/classes/tab-layout';
 
 @Injectable()
 export class TabLayoutService {

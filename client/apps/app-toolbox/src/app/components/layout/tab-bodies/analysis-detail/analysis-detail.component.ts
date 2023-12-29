@@ -3,10 +3,10 @@ import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } f
 import { SysConfig } from '@kleiolab/lib-config';
 import { Subject } from 'rxjs';
 import { TabLayoutComponentInterface } from '../../../../directives/on-activate-tab.directive';
+import { TabLayout } from '../../../../lib/classes/tab-layout';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { GvAnalysisService } from '../../../../services/analysis.service';
-import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
+import { TabLayoutService } from '../../../../services/tab-layout.service';
 import { AnalysisLayoutMapWithTimeComponent } from '../../../analysis/layouts/analysis-layout-map-with-time/analysis-layout-map-with-time.component';
 import { AnalysisLayoutTableComponent } from '../../../analysis/layouts/analysis-layout-table/analysis-layout-table.component';
 import { AnalysisLayoutTimeComponent } from '../../../analysis/layouts/analysis-layout-time/analysis-layout-time.component';

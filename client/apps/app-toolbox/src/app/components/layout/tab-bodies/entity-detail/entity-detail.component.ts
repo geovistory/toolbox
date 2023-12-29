@@ -11,13 +11,13 @@ import { DetailBaseComponent } from '../../../../lib/classes/detail-base-compone
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../../services/edit-mode.service';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
+import { TabLayoutService } from '../../../../services/tab-layout.service';
 import { ContentComponent } from '../../../editor/content/content.component';
 import { EntityCardHeaderComponent } from '../../../editor/entity-card-header/entity-card-header.component';
 import { FactoidListComponent } from '../../../editor/factoid-list/factoid-list.component';
 import { ViewSectionComponent } from '../../../editor/view-section/view-section.component';
 import { ViewSectionsComponent } from '../../../editor/view-sections/view-sections.component';
+import { TabLayoutComponent } from '../../tab-layout/tab-layout/tab-layout.component';
 export interface EntityDetailConfig {
   pkEntity: number,
   showContentTree: boolean,

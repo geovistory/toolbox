@@ -1,9 +1,9 @@
 import { ChangeDetectorRef } from '@angular/core';
 import { PanelTab, StateFacade } from '@kleiolab/lib-redux';
+import { TabLayoutMode } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project/tab-layout.models';
 import { IOutputData } from 'angular-split/lib/interface';
 import { FluxStandardAction } from 'flux-standard-action';
 import { Subject } from 'rxjs';
-import { TabLayoutMode } from './tab-layout.models';
 
 
 type Payload = PanelTab<any>;

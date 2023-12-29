@@ -14,13 +14,13 @@ import { P_1864_HAS_VALUE_VERSION_ID } from '../../../../lib/constants/ontome-id
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../../services/edit-mode.service';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
-import { TabLayoutComponent } from '../../../../shared/components/tab-layout/tab-layout/tab-layout.component';
+import { TabLayoutService } from '../../../../services/tab-layout.service';
 import { EntityCardHeaderComponent } from '../../../editor/entity-card-header/entity-card-header.component';
 import { ViewFieldAnnotationsComponent } from '../../../editor/view-field-annotations/view-field-annotations.component';
 import { ViewFieldHasValueVersionComponent } from '../../../editor/view-field-has-value-version/view-field-has-value-version.component';
 import { ViewSectionsComponent } from '../../../editor/view-sections/view-sections.component';
 import { IndexedCharids } from '../../../text-editor/quill-edit/quill-edit.component';
+import { TabLayoutComponent } from '../../tab-layout/tab-layout/tab-layout.component';
 import { TextDetail2Service } from './text-detail2.service';
 
 export interface TextDetail2Config {

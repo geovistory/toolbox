@@ -11,7 +11,7 @@ import { map, startWith } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { GvAnalysisService } from '../../../../services/analysis.service';
 import { EntityPreviewsPaginatedDialogService } from '../../../../services/entity-previews-paginated-dialog.service';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
+import { TabLayoutService } from '../../../../services/tab-layout.service';
 import { TimeChartContFormComponent, TimeChartContInput } from '../../forms/time-chart-cont-form/time-chart-cont-form.component';
 import { CursorInfo, TimelineChartComponent } from '../../visualizations/timeline/components/timeline-chart/timeline-chart.component';
 import { AnalysisLayoutBaseComponent } from '../analysis-layout-base/analysis-layout-base.component';

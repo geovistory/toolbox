@@ -5,7 +5,7 @@ import { PanelBodyDirective } from 'apps/app-toolbox/src/app/directives/panel-bo
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { ProjectEditComponent, TabBody, getTabBodyKey } from '../../../../pages/project/project-edit/project-edit.component';
-import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
+import { TabLayoutService } from '../../../../services/tab-layout.service';
 
 @Component({
   selector: 'gv-tab-body',
