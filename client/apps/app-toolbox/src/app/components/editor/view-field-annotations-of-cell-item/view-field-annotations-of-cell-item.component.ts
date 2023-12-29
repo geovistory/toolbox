@@ -8,8 +8,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { ActiveProjectService } from '../../../services/active-project.service';
-import { TableComponent } from '../../../shared/components/digital-table/components/table/table.component';
 import { EntityPreviewComponent } from '../../../shared/components/entity-preview/entity-preview.component';
+import { TableComponent } from '../../table-editor/table/table.component';
 import type { ViewFieldAnnotationOfCellItemData } from '../view-field-annotations-of-cell/view-field-annotations-of-cell.component';
 import { ViewFieldAnnotationsOfCellService } from '../view-field-annotations-of-cell/view-field-annotations-of-cell.service';
 

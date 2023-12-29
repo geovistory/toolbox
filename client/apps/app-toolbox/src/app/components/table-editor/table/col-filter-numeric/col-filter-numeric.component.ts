@@ -1,19 +1,19 @@
+import { NgFor } from '@angular/common';
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { TColFilter, TColFilterNum } from '@kleiolab/lib-sdk-lb4';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { MatInputModule } from '@angular/material/input';
-import { MatOptionModule } from '@angular/material/core';
-import { NgFor } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-    selector: 'gv-col-filter-numeric',
-    templateUrl: './col-filter-numeric.component.html',
-    styleUrls: ['./col-filter-numeric.component.scss'],
-    standalone: true,
-    imports: [MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule, MatInputModule]
+  selector: 'gv-col-filter-numeric',
+  templateUrl: './col-filter-numeric.component.html',
+  styleUrls: ['./col-filter-numeric.component.scss'],
+  standalone: true,
+  imports: [MatFormFieldModule, MatSelectModule, NgFor, MatOptionModule, MatInputModule]
 })
 export class ColFilterNumericComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -26,8 +26,6 @@ export class ColFilterNumericComponent implements OnInit, OnDestroy {
   operators: TColFilterNum.OperatorEnum[] = [
     '=', '<', '>'
   ]
-
-  constructor() { }
 
   ngOnInit() {
     const debouncedVal$ = this.value$.pipe(

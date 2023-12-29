@@ -19,9 +19,9 @@ import { first, switchMap, takeUntil } from 'rxjs/operators';
 import { WorkBook } from 'xlsx/types';
 import { ActiveAccountService } from '../../../services/active-account.service';
 import { WorkerWrapperService } from '../../../services/worker-wrapper.service';
-import { Cell, Header, TableComponent } from '../../../shared/components/digital-table/components/table/table.component';
 import { CtrlLanguageComponent } from '../../editor/ctrl-language/ctrl-language.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../misc/confirm-dialog/confirm-dialog.component';
+import { Cell, Header, TableComponent } from '../table/table.component';
 
 export interface ImporterDialogData {
   apiCall: (table: ImportTableResponse) => Observable<ImportTableResponse>

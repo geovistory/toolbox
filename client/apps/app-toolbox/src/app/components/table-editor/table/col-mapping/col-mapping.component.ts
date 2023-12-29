@@ -13,7 +13,7 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../../../components/misc/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../misc/confirm-dialog/confirm-dialog.component';
 import type { ColumnMapping } from '../table.component';
 
 interface ClassOption {

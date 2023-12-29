@@ -13,8 +13,8 @@ import { first, map, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/
 import { C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../lib/constants/ontome-ids';
 import { statemenTargetToInfData } from '../../../lib/converters/statemenTargetToInfData';
 import { PaginationService } from '../../../services/pagination.service';
-import { TableComponent } from '../../../shared/components/digital-table/components/table/table.component';
 import { TableDetailComponent } from '../../layout/tab-bodies/table-detail/table-detail.component';
+import { TableComponent } from '../../table-editor/table/table.component';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from '../ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { ViewFieldAnnotationsOfCellItemComponent } from '../view-field-annotations-of-cell-item/view-field-annotations-of-cell-item.component';

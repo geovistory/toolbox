@@ -19,11 +19,11 @@ import { distinctUntilChanged, filter, map, shareReplay, switchMap, takeUntil, t
 import { ActiveAccountService } from '../../../services/active-account.service';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
-import { Cell, Header, Row, TableComponent, TableSort } from '../../../shared/components/digital-table/components/table/table.component';
 import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from '../../../shared/components/info-dialog/info-dialog.component';
 import { TableDetailComponent } from '../../layout/tab-bodies/table-detail/table-detail.component';
 import { FactoidMappingsDialogComponent, FactoidMappingsDialogData } from '../factoids/factoid-mappings-dialog/factoid-mappings-dialog.component';
 import { TableConfigDialogComponent, TableConfigDialogData, TableConfigDialogResult } from '../table-config-dialog/table-config-dialog.component';
+import { Cell, Header, Row, TableComponent, TableSort } from '../table/table.component';
 
 export interface TColFilters {
   [pkColumn: string]: TColFilter

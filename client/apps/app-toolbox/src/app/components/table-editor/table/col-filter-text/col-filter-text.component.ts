@@ -1,17 +1,17 @@
 import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectChange } from '@angular/material/select';
 import { TColFilter, TColFilterTxt } from '@kleiolab/lib-sdk-lb4';
-import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, combineLatest } from 'rxjs';
 import { debounceTime, filter, takeUntil } from 'rxjs/operators';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
-    selector: 'gv-col-filter-text',
-    templateUrl: './col-filter-text.component.html',
-    styleUrls: ['./col-filter-text.component.scss'],
-    standalone: true,
-    imports: [MatFormFieldModule, MatInputModule]
+  selector: 'gv-col-filter-text',
+  templateUrl: './col-filter-text.component.html',
+  styleUrls: ['./col-filter-text.component.scss'],
+  standalone: true,
+  imports: [MatFormFieldModule, MatInputModule]
 })
 export class ColFilterTextComponent implements OnInit, OnDestroy {
 
@@ -21,8 +21,6 @@ export class ColFilterTextComponent implements OnInit, OnDestroy {
 
   operator$ = new BehaviorSubject<TColFilterTxt.OperatorEnum>('%iLike%');
   value$ = new BehaviorSubject<string>(null);
-
-  constructor() { }
 
   ngOnInit() {
     const debouncedVal$ = this.value$.pipe(
