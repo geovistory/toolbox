@@ -6,7 +6,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { ColumnMappingComponent } from '../../column-mapping/column-mapping.component';
-import { CtrlEntityOrValueMatcherComponent } from '../../ctrl-entity-or-value-matcher.component/ctrl-entity-or-value-matcher.component';
+import { CtrlEntityOrValueMatcherComponent } from '../../ctrl-entity-or-value-matcher/ctrl-entity-or-value-matcher.component';
 import { CommentMenuComponent } from '../comment-menu/comment-menu.component';
 import { FactoidPropertyDisplayComponent } from '../factoid-property-display/factoid-property-display.component';
 
