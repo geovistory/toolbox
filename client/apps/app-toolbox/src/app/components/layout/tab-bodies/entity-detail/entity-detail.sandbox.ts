@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService, IAppState, PanelTab } from '@kleiolab/lib-redux';
-import { ProjectDataService, ProProject, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ProProject, ProjectDataService, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
@@ -13,12 +13,12 @@ import { PROFILE_16_INTERACTIONS_S_2022_02_09 } from 'projects/__test__/data/aut
 import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-18';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
-import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { MockProjectDataService } from 'projects/__test__/mock-services/MockProjectDataService';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { InformationModule } from '../../information.module';
 import { EntityDetailComponent, EntityDetailConfig } from './entity-detail.component';
 const warEntityPreviews = [

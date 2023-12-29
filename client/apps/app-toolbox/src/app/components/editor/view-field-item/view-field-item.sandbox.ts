@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService, APP_INITIAL_STATE } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { GvPaginationObjectMock } from 'projects/__test__/data/auto-gen/api-responses/GvPaginationObjectMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
@@ -22,6 +21,7 @@ import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-ser
 import { BehaviorSubject, Observable } from 'rxjs';
 import { delay, filter } from 'rxjs/operators';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { ViewFieldItemComponent } from './view-field-item.component';
 
 const inProjectScope: GvFieldPageScope = { inProject: IAppStateMock.stateProject1.activeProject.pk_project }

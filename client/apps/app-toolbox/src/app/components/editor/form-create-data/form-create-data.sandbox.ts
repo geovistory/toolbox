@@ -3,6 +3,9 @@ import { FormsModule } from '@angular/forms';
 import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { GvPositiveSchemaObject, InfLanguage, LanguagesService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
+import { FieldMock } from 'projects/__test__/data/FieldMock';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
@@ -17,14 +20,11 @@ import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/au
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
 import { PROFILE_97_GEOVISTORY_DIGI_2022_02_05 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-97-geovistory-digi-2022-02-05';
-import { FieldMock } from 'projects/__test__/data/FieldMock';
-import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
-import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { FormCreateDataComponent } from './form-create-data.component';
 import { appeInALangMock, birthMock, geoPlaceMock, georeferenceMock, langStringMock, personMock } from './initValue.mock';
 

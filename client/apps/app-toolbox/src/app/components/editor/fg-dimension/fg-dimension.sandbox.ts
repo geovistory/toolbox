@@ -3,9 +3,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { DfhConfig } from "@kleiolab/lib-config";
 import { InfDimension } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { FgDimensionComponent } from './fg-dimension.component';
 
 const pkProject = 591;

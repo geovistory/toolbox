@@ -1,11 +1,11 @@
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { WareEntityPreviewPage, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { ActiveProjectService } from '../../../core/active-project/active-project.service';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
+import { ActiveProjectService } from '../../../core/active-project/active-project.service';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { SearchExistingEntityComponent } from './search-existing-entity.component';
 
 

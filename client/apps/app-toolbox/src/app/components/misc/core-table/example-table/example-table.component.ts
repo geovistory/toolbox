@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay, exhaustMap, filter, map, tap } from 'rxjs/operators';
-import { CoreTable } from '../../../../shared/components/core-table/table';
+import { CoreTable } from '../table';
 
 export interface Example {
   id: number;

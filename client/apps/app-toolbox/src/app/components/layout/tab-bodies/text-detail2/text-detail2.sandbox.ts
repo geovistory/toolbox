@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActiveProjectPipesService, IAppState, PanelTab } from '@kleiolab/lib-redux';
 import { GvFieldPageReq, GvPaginationObject, ProjectDataService, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { GvPaginationObjectMock } from 'projects/__test__/data/auto-gen/api-responses/GvPaginationObjectMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
@@ -12,12 +12,12 @@ import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConf
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import { PROFILE_97_GEOVISTORY_DIGI_2022_02_05 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-97-geovistory-digi-2022-02-05';
-import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { MockProjectDataService } from 'projects/__test__/mock-services/MockProjectDataService';
 import { values } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { DataModule } from '../../data.module';
 import { TextDetail2Component, TextDetail2Config } from './text-detail2.component';
 

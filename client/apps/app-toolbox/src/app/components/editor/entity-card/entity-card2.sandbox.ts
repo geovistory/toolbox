@@ -2,7 +2,6 @@ import { FormsModule } from '@angular/forms';
 import { IAppState } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { AuthModule } from '../../../core/auth/auth.module';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
@@ -13,8 +12,9 @@ import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/aut
 import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject } from 'rxjs';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
+import { AuthModule } from '../../../core/auth/auth.module';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { EntityCardComponent } from './entity-card.component';
 
 

@@ -1,9 +1,9 @@
-import { sandboxOf } from 'angular-playground';
-import { QueriesModule } from '../../../../../modules/queries/queries.module';
-import { InitStateModule } from '../../../../../shared/components/init-state/init-state.module';
-import { BehaviorSubject, of } from 'rxjs';
-import { QueryPathFormComponent } from './query-path-form.component';
 import { QueryPathSegment } from "@kleiolab/lib-sdk-lb4";
+import { sandboxOf } from 'angular-playground';
+import { BehaviorSubject, of } from 'rxjs';
+import { QueriesModule } from '../../../../../modules/queries/queries.module';
+import { InitStateModule } from '../../../../misc/init-state/init-state.module';
+import { QueryPathFormComponent } from './query-path-form.component';
 
 const initVal1: QueryPathSegment[] = [{
   type: 'classes',

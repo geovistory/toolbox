@@ -2,8 +2,8 @@ import { FormsModule } from '@angular/forms';
 import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { sandboxOf } from 'angular-playground';
 import { BaseModule } from '../../../modules/base/base.module';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { EntityCardHeaderComponent } from './entity-card-header.component';
 import { ActiveProjectPipesServiceMock, eCHcontext, eCHtemplate } from './entity-card-header.sandbox';
 

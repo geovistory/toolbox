@@ -1,9 +1,9 @@
 import { sandboxOf } from 'angular-playground';
+import { of } from 'rxjs';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { AnalysisModule } from '../../analysis.module';
 import { TableFormComponent } from './table-form.component';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { mockQuery } from './table-form.mock';
-import { of } from 'rxjs';
 
 export default sandboxOf(TableFormComponent, {
   declareComponent: false,

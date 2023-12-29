@@ -1,28 +1,28 @@
 import { APP_INITIAL_STATE, SectionName } from '@kleiolab/lib-redux';
 import { GvFieldPageReq, GvFieldPageScope, GvPaginationObject, GvSubfieldPageInfo, InfResource, InfStatement, ProInfoProjRel, StatementTargetEntity, StatementWithTarget, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { P_979_CARRIERS_PROVIDED_BY_ID } from '../../../ontome-ids';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
+import { FieldMock } from 'projects/__test__/data/FieldMock';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createStatementWithTarget } from 'projects/__test__/data/auto-gen/api-responses/GvPaginationObjectMock';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
-import { OmitEntity } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { PubAccountMock } from 'projects/__test__/data/auto-gen/gvDB/PubAccountMock';
 import { SysConfigValueMock } from 'projects/__test__/data/auto-gen/gvDB/SysConfigValueMock';
+import { OmitEntity } from 'projects/__test__/data/auto-gen/gvDB/local-model.helpers';
 import { PROFILE_12_BIOGRAPHICAL_BA_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-12-biographical-ba-2022-02-09';
 import { PROFILE_16_INTERACTIONS_S_2022_02_09 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-16-interactions-s-2022-02-09';
 import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-18';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
-import { FieldMock } from 'projects/__test__/data/FieldMock';
-import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
-import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { concat, keys, mergeDeepWith, values } from 'ramda';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { BaseModule } from '../../../modules/base/base.module';
+import { P_979_CARRIERS_PROVIDED_BY_ID } from '../../../ontome-ids';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { ContentComponent } from './content.component';
 
 const inProjectScope: GvFieldPageScope = { inProject: IAppStateMock.stateProject1.activeProject.pk_project }

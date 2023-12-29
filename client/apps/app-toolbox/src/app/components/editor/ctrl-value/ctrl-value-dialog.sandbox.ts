@@ -12,7 +12,7 @@ import { InfTimePrimitiveMock } from 'projects/__test__/data/auto-gen/gvDB/InfTi
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../../modules/base/base.module';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { InfValueObject } from '../../misc/value-preview/value-preview.component';
 import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from './ctrl-value-dialog.component';
 

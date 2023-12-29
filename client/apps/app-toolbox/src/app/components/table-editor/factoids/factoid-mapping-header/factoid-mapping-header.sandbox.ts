@@ -12,7 +12,7 @@ import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/aut
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { Observable, of } from 'rxjs';
 import { DataModule } from '../../../../modules/data/data.module';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { ClassDropdownModule } from '../class-dropdown/class-dropdown.module';
 import { CommentMenuModule } from '../comment-menu/comment-menu.module';
 import { FactoidMappingHeaderComponent } from './factoid-mapping-header.component';

@@ -26,8 +26,8 @@ import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from '../
 import { AddStatementDialogComponent, AddStatementDialogData } from '../components/editor/add-statement-dialog/add-statement-dialog.component';
 import { CreateOrAddEntityEvent, CtrlEntityDialogComponent, CtrlEntityDialogData } from '../components/editor/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../components/editor/ctrl-entity/ctrl-entity.component';
+import { InitStateModule } from '../components/misc/init-state/init-state.module';
 import { BaseModule } from '../modules/base/base.module';
-import { InitStateModule } from '../shared/components/init-state/init-state.module';
 
 
 

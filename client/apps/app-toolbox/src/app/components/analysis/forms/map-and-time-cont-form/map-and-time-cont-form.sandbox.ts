@@ -1,7 +1,7 @@
 import { sandboxOf } from 'angular-playground';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { AnalysisModule } from '../../analysis.module';
 import { MapAndTimeContFormComponent } from './map-and-time-cont-form.component';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 
 export default sandboxOf(MapAndTimeContFormComponent, {
   declareComponent: false,

@@ -1,11 +1,11 @@
 import { APP_INITIAL_STATE } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, SubfieldPageControllerService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject, of } from 'rxjs';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { ViewFieldHeaderComponent } from './view-field-header.component';
 
 const inProjectScope: GvFieldPageScope = { inProject: IAppStateMock.stateProject1.activeProject.pk_project }

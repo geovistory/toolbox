@@ -1,7 +1,7 @@
 import { FormsModule } from '@angular/forms';
 import { sandboxOf } from 'angular-playground';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { FormControlComponent } from './form-control.component';
 
 const pkProject = 591;

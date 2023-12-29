@@ -3,8 +3,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
 import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { CtrlTimeSpanComponent } from './ctrl-time-span.component';
 
 

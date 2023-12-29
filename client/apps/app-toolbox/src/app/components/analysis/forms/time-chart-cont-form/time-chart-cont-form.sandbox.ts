@@ -1,8 +1,8 @@
 import { sandboxOf } from 'angular-playground';
+import { of } from 'rxjs';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { AnalysisModule } from '../../analysis.module';
 import { TimeChartContFormComponent } from './time-chart-cont-form.component';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
-import { of } from 'rxjs';
 import { initVal1, initVal2 } from './time-chart-cont-form.mock';
 
 export default sandboxOf(TimeChartContFormComponent, {

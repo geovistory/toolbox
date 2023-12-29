@@ -3,8 +3,8 @@ import { DfhApiClassMock } from 'projects/__test__/data/auto-gen/gvDB/DfhApiClas
 import { InfAppellationMock } from 'projects/__test__/data/auto-gen/gvDB/InfAppellationMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { EntityAddExistingHitComponent } from './entity-add-existing-hit.component';
 
 

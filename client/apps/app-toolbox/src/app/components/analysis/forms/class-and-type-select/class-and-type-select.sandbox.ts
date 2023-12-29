@@ -1,10 +1,10 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { ChecklistControlModule } from '../../../../shared/components/checklist-control/checklist-control.module';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { BehaviorSubject } from 'rxjs';
 import { delay, first } from 'rxjs/operators';
+import { ChecklistControlModule } from '../../../../shared/components/checklist-control/checklist-control.module';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { QueriesModule } from '../../queries.module';
 import { ClassAndTypeSelectComponent } from './class-and-type-select.component';
 

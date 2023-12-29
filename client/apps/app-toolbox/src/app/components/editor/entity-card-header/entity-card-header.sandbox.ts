@@ -15,8 +15,8 @@ import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transform
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { BaseModule } from '../../../modules/base/base.module';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { EntityCardHeaderComponent } from './entity-card-header.component';
 
 /*****************************************************************************

@@ -3,8 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { InfLanguage, LanguagesService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { ActiveProjectService } from '../../../core/active-project/active-project.service';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
@@ -15,11 +14,12 @@ import { PROFILE_16_INTERACTIONS_S_2022_02_09 } from 'projects/__test__/data/aut
 import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-18';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
-import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { ActiveProjectService } from '../../../core/active-project/active-project.service';
 import { BaseModule } from '../../../modules/base/base.module';
 import { DataModule } from '../../../modules/data/data.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { CtrlEntityOrValueMatcherComponent } from './ctrl-entity-or-value-matcher.component';
 
 /*****************************************************************************

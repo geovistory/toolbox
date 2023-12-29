@@ -13,7 +13,7 @@ import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transform
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { ActiveProjectService } from '../../../../core/active-project/active-project.service';
 import { DataModule } from '../../../../modules/data/data.module';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { CommentMenuModule } from '../comment-menu/comment-menu.module';
 import { FactoidPropertyMappingComponent } from './factoid-property-mapping.component';
 

@@ -5,8 +5,8 @@ import { RouterOutlet } from '@angular/router';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
+import { LoadingBarComponent } from './components/layout/loading-bar/loading-bar.component';
 import { NotificationComponent } from './components/layout/notifications/notifications.component';
-import { LoadingBarComponent } from './shared/components/loading-bar/loading-bar.component';
 
 @Component({
   selector: 'gv-root',

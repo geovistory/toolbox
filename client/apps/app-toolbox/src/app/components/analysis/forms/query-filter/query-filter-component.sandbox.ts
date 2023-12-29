@@ -1,10 +1,10 @@
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { sandboxOf } from 'angular-playground';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
+import { of } from 'rxjs';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { QueriesModule } from '../../queries.module';
 import { QueryFilterComponent } from './query-filter.component';
-import { of } from 'rxjs';
 
 const filterDefLong = {
   'data': {

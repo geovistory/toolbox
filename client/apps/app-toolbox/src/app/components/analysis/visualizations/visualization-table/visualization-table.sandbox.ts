@@ -1,10 +1,10 @@
 import { AnalysisService, QueryDefinition } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { GvAnalysisService } from '../../../../modules/analysis/services/analysis.service';
-import { InitStateModule } from '../../../../shared/components/init-state/init-state.module';
 import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { MockAnalysisService } from 'projects/__test__/mock-services/MockAnalysisService';
 import { BehaviorSubject } from 'rxjs';
+import { GvAnalysisService } from '../../../../modules/analysis/services/analysis.service';
+import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { QueriesModule } from '../../queries.module';
 import { VisualizationTableComponent } from './visualization-table.component';
 

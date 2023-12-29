@@ -2,15 +2,15 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { InfLanguage, InfResourceWithRelations, LanguagesService } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { P_63_HAS_LANGUAGE_ID } from '../../../ontome-ids';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { InfAppellationMock } from 'projects/__test__/data/auto-gen/gvDB/InfAppellationMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
 import { InfStatementMock } from 'projects/__test__/data/auto-gen/gvDB/InfStatementMock';
-import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { Observable, of } from 'rxjs';
 import { BaseModule } from '../../../modules/base/base.module';
+import { P_63_HAS_LANGUAGE_ID } from '../../../ontome-ids';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { FgTextWithLangComponent } from './fg-text-with-lang.component';
 class LanguagesServiceMock {
   findLanguagesControllerSearchInLanguages(searchString?: string): Observable<InfLanguage[]> {

@@ -3,7 +3,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActiveProjectPipesService } from '@kleiolab/lib-redux';
 import { GvPositiveSchemaObject, InfLanguage, InfResourceWithRelations, LanguagesService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfAppellationMock } from 'projects/__test__/data/auto-gen/gvDB/InfAppellationMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
@@ -11,10 +11,10 @@ import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourc
 import { InfStatementMock } from 'projects/__test__/data/auto-gen/gvDB/InfStatementMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
 import { WarEntityPreviewMock } from 'projects/__test__/data/auto-gen/gvDB/WarEntityPreviewMock';
-import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../misc/init-state/init-state.module';
 import { FgAppellationTeEnComponent } from './fg-appellation-te-en.component';
 class LanguagesServiceMock {
   findLanguagesControllerSearchInLanguages(searchString?: string): Observable<InfLanguage[]> {
