@@ -6,7 +6,7 @@ import { NgFor, NgIf } from '@angular/common';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
-import { EntityPreviewComponent } from '../entity-preview/entity-preview.component';
+import { EntityPreviewComponent } from '../../../components/misc/entity-preview/entity-preview.component';
 
 @Component({
   selector: 'gv-entity-previews-paginated',

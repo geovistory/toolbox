@@ -15,9 +15,9 @@ import { Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { GvAnalysisService } from '../../../../services/analysis.service';
-import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { EntityPreviewComponent } from '../../../misc/entity-preview/entity-preview.component';
 import { EntitiesDialogData, VisualizationTableEntitiesDialogComponent } from '../visualization-table-entities-dialog/visualization-table-entities-dialog.component';
-import { VisualizationTableValuesDialogComponent, ValuesDialogData } from '../visualization-table-values-dialog/visualization-table-values-dialog.component';
+import { ValuesDialogData, VisualizationTableValuesDialogComponent } from '../visualization-table-values-dialog/visualization-table-values-dialog.component';
 
 export interface Example {
   id: number;

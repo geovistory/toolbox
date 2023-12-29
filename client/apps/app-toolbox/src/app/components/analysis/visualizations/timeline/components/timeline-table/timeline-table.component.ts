@@ -11,7 +11,7 @@ import { auditTime, filter, map, takeUntil, tap } from 'rxjs/operators';
 import { DimensionChangeDirective } from '../../../../../../directives/dimension-change/dimension-change.directive';
 import { CoreTable } from '../../../../../../shared/components/core-table/table';
 import { CoreTableFixedVirtualScrollDirective } from '../../../../../../shared/components/core-table/virtual-scroll/virtual-scroll.directive';
-import { EntityPreviewComponent } from '../../../../../../shared/components/entity-preview/entity-preview.component';
+import { EntityPreviewComponent } from '../../../../../misc/entity-preview/entity-preview.component';
 import { DraggableXAxisDirective } from '../../directives/draggable-x-axis.directive';
 import { RangeEmitterOnMouseDownDirective } from '../../directives/range-emitter-on-mouse-down.directive';
 import { RangeChangeEvent, TemporalExtent, TimeLineData, TimeLineRow, Timeline, TimelineOptions } from '../../models/timeline';

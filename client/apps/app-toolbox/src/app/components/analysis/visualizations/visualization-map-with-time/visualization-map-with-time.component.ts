@@ -14,7 +14,7 @@ import { first, map, shareReplay } from 'rxjs/operators';
 import { PassiveLinkDirective } from '../../../../directives/passive-link/passive-link.directive';
 import { CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue } from '../../../../lib/types/map.models';
 import { EntityPreviewsPaginatedDialogService } from '../../../../services/entity-previews-paginated-dialog.service';
-import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { EntityPreviewComponent } from '../../../misc/entity-preview/entity-preview.component';
 import { MapCzmlLayersComponent, MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
 import { ChartLineDefinition } from '../timeline/components/chart-line-visual/chart-line-visual.component';
 import { CursorInfo, TimelineChartComponent } from '../timeline/components/timeline-chart/timeline-chart.component';

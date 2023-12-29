@@ -9,7 +9,7 @@ import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } fro
 import { GvFieldProperty, InfData, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { map, switchMap, takeUntil } from 'rxjs/operators';
-import { EntityPreviewComponent } from '../../../shared/components/entity-preview/entity-preview.component';
+import { EntityPreviewComponent } from '../../misc/entity-preview/entity-preview.component';
 import { DisableIfHasStatement } from '../search-existing-entity/search-existing-entity.component';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog/ctrl-entity-dialog.component';
 

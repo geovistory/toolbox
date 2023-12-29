@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatListModule } from '@angular/material/list';
 import { WarEntityPreview } from "@kleiolab/lib-sdk-lb4";
 import { ActiveProjectService } from "../../../../services/active-project.service";
-import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
+import { EntityPreviewComponent } from '../../../misc/entity-preview/entity-preview.component';
 
 export interface EntitiesDialogData {
   entityPreviews: WarEntityPreview[];
