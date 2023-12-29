@@ -5,8 +5,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { first } from 'rxjs/operators';
+import { NavbarComponent } from '../../../../components/misc/navbar/navbar.component';
 import { ActiveAccountService } from '../../../../services/active-account.service';
-import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
 
 
 @Component({

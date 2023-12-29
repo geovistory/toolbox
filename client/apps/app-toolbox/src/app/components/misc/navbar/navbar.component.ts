@@ -9,8 +9,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink } from '@angular/router';
 import { PubAccount } from '@kleiolab/lib-sdk-lb4';
 import { Subscription } from 'rxjs';
-import { FeedbackDialogComponent } from '../../../components/layout/feedback-dialog/feedback-dialog.component';
 import { ActiveAccountService } from '../../../services/active-account.service';
+import { FeedbackDialogComponent } from '../../layout/feedback-dialog/feedback-dialog.component';
 
 
 @Component({

@@ -26,11 +26,11 @@ import { TextDetail2Component } from '../../../components/layout/tab-bodies/text
 import { TypesComponent } from '../../../components/layout/tab-bodies/types/types.component';
 import { TabBodyComponent } from '../../../components/layout/tab-layout/tab-body/tab-body.component';
 import { TabHandleComponent } from '../../../components/layout/tab-layout/tab-handle/tab-handle.component';
+import { NavbarComponent } from '../../../components/misc/navbar/navbar.component';
 import { OnActivateTabDirective } from '../../../directives/on-activate-tab.directive';
 import { PanelBodyDirective } from '../../../directives/panel-body.directive';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { BasicService } from '../../../services/basic.service';
-import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
 
 
 export interface TabBody<M> extends PanelTab<M> {

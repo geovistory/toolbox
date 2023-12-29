@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { DatChunk } from "@kleiolab/lib-sdk-lb4";
-import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
+import { NavbarComponent } from '../../../components/misc/navbar/navbar.component';
 
 @Component({
   selector: 'gv-home',
