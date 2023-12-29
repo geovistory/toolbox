@@ -11,7 +11,7 @@ import { CalendarType, DateTimeModule, Granularity, GregorianDateTime, JulianDat
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { ValidationService } from '../../../services/validation.service';
-import { ControlMessagesComponent } from '../../../shared/components/control-messages/control-messages.component';
+import { ControlMessagesComponent } from '../../misc/control-messages/control-messages.component';
 
 
 
@@ -349,7 +349,7 @@ export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccess
   /**
   * Validate the form and update the component's values
   */
-  validateForm(component: CtrlTimePrimitiveComponent): Function {
+  validateForm(component: CtrlTimePrimitiveComponent) {
 
     return (fg: UntypedFormGroup): void => {
 

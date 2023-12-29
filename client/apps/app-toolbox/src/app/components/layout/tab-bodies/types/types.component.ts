@@ -18,11 +18,11 @@ import { fieldToGvFieldTargets } from '../../../../lib/converters/fieldToGvField
 import { openAddEntityDialog } from '../../../../lib/dialogs/openAddEntityDialog';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { PaginationService } from '../../../../services/pagination.service';
-import { DetailContentComponent } from '../../../../shared/components/detail-content/detail-content.component';
-import { DetailTopBarComponent } from '../../../../shared/components/detail-top-bar/detail-top-bar.component';
 import { TabLayout } from '../../../../shared/components/tab-layout/tab-layout';
 import { TabLayoutService } from '../../../../shared/components/tab-layout/tab-layout.service';
 import { ViewSectionsDialogComponent, ViewSectionsDialogData } from '../../../editor/view-sections-dialog/view-sections-dialog.component';
+import { DetailContentComponent } from '../../tab-layout/detail-content/detail-content.component';
+import { DetailTopBarComponent } from '../../tab-layout/detail-top-bar/detail-top-bar.component';
 
 interface TypeItem {
   pkEntity: number
