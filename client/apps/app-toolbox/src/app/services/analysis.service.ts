@@ -5,8 +5,8 @@ import { AnalysisService as LbAnalysisService, ProAnalysis } from '@kleiolab/lib
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { catchError, first, switchMap, tap } from 'rxjs/operators';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/analysis/layouts/dialog-create/dialog-create.component';
+import { ErrorDialogComponent, ErrorDialogData } from '../components/analysis/layouts/error-dialog/error-dialog.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../components/misc/confirm-dialog/confirm-dialog.component';
-import { ErrorDialogComponent, ErrorDialogData } from '../shared/components/error-dialog/error-dialog.component';
 import { ActiveProjectService } from './active-project.service';
 
 export interface AnalysisTabData {
