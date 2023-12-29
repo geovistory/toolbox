@@ -2,18 +2,18 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
-import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
-import { InfValueObject } from '../../../shared/components/value-preview/value-preview.component';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { InfAppellationMock } from 'projects/__test__/data/auto-gen/gvDB/InfAppellationMock';
 import { InfDimensionMock } from 'projects/__test__/data/auto-gen/gvDB/InfDimensionMock';
 import { InfLangStringMock } from 'projects/__test__/data/auto-gen/gvDB/InfLangStringMock';
 import { InfPlaceMock } from 'projects/__test__/data/auto-gen/gvDB/InfPlaceMock';
 import { InfTimePrimitiveMock } from 'projects/__test__/data/auto-gen/gvDB/InfTimePrimitiveMock';
 import { ProProjectMock } from 'projects/__test__/data/auto-gen/gvDB/ProProjectMock';
-import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
-import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { BehaviorSubject } from 'rxjs';
 import { BaseModule } from '../../../modules/base/base.module';
+import { InitStateModule } from '../../../shared/components/init-state/init-state.module';
+import { InfValueObject } from '../../misc/value-preview/value-preview.component';
 import { CtrlValueDialogComponent, CtrlValueDialogData, CtrlValueDialogResult } from './ctrl-value-dialog.component';
 
 @Component({

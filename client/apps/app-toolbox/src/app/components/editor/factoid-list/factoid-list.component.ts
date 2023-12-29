@@ -16,7 +16,7 @@ import { QuillOpsToStrPipe } from '../../../pipes/quill-delta-to-str/quill-delta
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { ValueObjectTypeName } from '../../../shared/components/digital-table/components/table/table.component';
 import { EntityPreviewComponent } from '../../../shared/components/entity-preview/entity-preview.component';
-import { InfValueObject, ValuePreviewComponent } from '../../../shared/components/value-preview/value-preview.component';
+import { InfValueObject, ValuePreviewComponent } from '../../misc/value-preview/value-preview.component';
 import { FieldLabelComponent } from '../field-label/field-label.component';
 
 

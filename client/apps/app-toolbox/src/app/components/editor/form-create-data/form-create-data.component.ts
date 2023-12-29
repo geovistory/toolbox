@@ -19,7 +19,7 @@ import { FormFactoryService } from '../../../lib/form-factory/services/form-fact
 import { FormArrayConfig } from '../../../lib/form-factory/types/FormArrayConfig';
 import { FormNodeConfig } from '../../../lib/form-factory/types/FormNodeConfig';
 import { ValidationService } from '../../../services/validation.service';
-import { InfValueObject } from '../../../shared/components/value-preview/value-preview.component';
+import { InfValueObject } from '../../misc/value-preview/value-preview.component';
 import type { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { CtrlTimeSpanModel } from '../ctrl-time-span/ctrl-time-span.component';
 import { FgAppellationTeEnComponent, FgAppellationTeEnInjectData } from '../fg-appellation-te-en/fg-appellation-te-en.component';

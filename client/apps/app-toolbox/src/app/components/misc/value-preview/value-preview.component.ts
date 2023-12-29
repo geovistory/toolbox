@@ -1,10 +1,10 @@
+import { NgIf } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { ActiveProjectPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { InfAppellation, InfDimension, InfLangString, InfLanguage, InfPlace, InfTimePrimitive, SysConfigValueObjectType } from '@kleiolab/lib-sdk-lb4';
 import { GregorianDateTime, JulianDateTime } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
-import { NgIf } from '@angular/common';
 
 export interface InfValueObject {
   appellation?: InfAppellation;
@@ -16,11 +16,11 @@ export interface InfValueObject {
 }
 
 @Component({
-    selector: 'gv-value-preview',
-    templateUrl: './value-preview.component.html',
-    styleUrls: ['./value-preview.component.scss'],
-    standalone: true,
-    imports: [NgIf]
+  selector: 'gv-value-preview',
+  templateUrl: './value-preview.component.html',
+  styleUrls: ['./value-preview.component.scss'],
+  standalone: true,
+  imports: [NgIf]
 })
 export class ValuePreviewComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

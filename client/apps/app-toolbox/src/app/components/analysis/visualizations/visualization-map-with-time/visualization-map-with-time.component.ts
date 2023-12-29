@@ -13,8 +13,8 @@ import { BehaviorSubject, Observable, ReplaySubject, combineLatest } from 'rxjs'
 import { first, map, shareReplay } from 'rxjs/operators';
 import { PassiveLinkDirective } from '../../../../directives/passive-link/passive-link.directive';
 import { CzmlDoubleValue, CzmlPacket, CzmlPoint, CzmlRgbaValue } from '../../../../lib/types/map.models';
+import { EntityPreviewsPaginatedDialogService } from '../../../../services/entity-previews-paginated-dialog.service';
 import { EntityPreviewComponent } from '../../../../shared/components/entity-preview/entity-preview.component';
-import { EntityPreviewsPaginatedDialogService } from '../../../../shared/components/entity-previews-paginated/service/entity-previews-paginated-dialog.service';
 import { MapCzmlLayersComponent, MapLayer, MapLayers } from '../map-czml-layers/map-czml-layers.component';
 import { ChartLineDefinition } from '../timeline/components/chart-line-visual/chart-line-visual.component';
 import { CursorInfo, TimelineChartComponent } from '../timeline/components/timeline-chart/timeline-chart.component';
