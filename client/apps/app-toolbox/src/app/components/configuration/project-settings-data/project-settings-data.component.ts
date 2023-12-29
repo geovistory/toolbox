@@ -24,10 +24,10 @@ import { TabLayout } from '../../../lib/classes/tab-layout';
 import { HighlightPipe } from '../../../pipes/highlight/highlight.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { TabLayoutService } from '../../../services/tab-layout.service';
-import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
-import { OntoClassInfoComponent } from '../../../shared/components/onto-info/onto-class-info/onto-class-info.component';
 import { DetailContentComponent } from '../../layout/tab-layout/detail-content/detail-content.component';
 import { DetailTopBarComponent } from '../../layout/tab-layout/detail-top-bar/detail-top-bar.component';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
+import { OntoClassInfoComponent } from '../../misc/onto-class-info/onto-class-info.component';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../class-config-dialog/class-config-dialog.component';
 import { EntityLabelConfigOpenBtnComponent } from '../entity-label-config-open-btn/entity-label-config-open-btn.component';
 

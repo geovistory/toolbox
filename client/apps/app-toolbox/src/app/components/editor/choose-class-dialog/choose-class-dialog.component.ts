@@ -10,7 +10,7 @@ import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { indexBy, sortBy } from 'ramda';
 import { Observable, combineLatest } from 'rxjs';
 import { first, map } from 'rxjs/operators';
-import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 
 export interface ChooseClassDialogData {
   title: string;

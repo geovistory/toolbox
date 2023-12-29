@@ -9,7 +9,7 @@ import { ProjectDataService, ReplaceStatementInFieldRequest } from '@kleiolab/li
 import { BehaviorSubject, Observable, Subject, combineLatest, of, timer } from 'rxjs';
 import { catchError, first, map, takeUntil } from 'rxjs/operators';
 import { EditModeService } from '../../../services/edit-mode.service';
-import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../misc/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../misc/progress-dialog/progress-dialog.component';
 import { ViewFieldBodyService } from '../view-field-body/view-field-body.service';

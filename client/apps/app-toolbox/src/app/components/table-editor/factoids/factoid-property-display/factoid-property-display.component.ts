@@ -1,20 +1,20 @@
+import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
-import { Observable, of, Subject } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
-import { OntoPropertyInfoComponent } from '../../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { NgIf, NgFor, AsyncPipe } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-redux';
+import { Observable, Subject, of } from 'rxjs';
+import { map, takeUntil } from 'rxjs/operators';
+import { OntoPropertyInfoComponent } from '../../../misc/onto-property-info/onto-property-info.component';
 
 @Component({
-    selector: 'gv-factoid-property-display',
-    templateUrl: './factoid-property-display.component.html',
-    styleUrls: ['./factoid-property-display.component.scss'],
-    standalone: true,
-    imports: [NgIf, MatFormFieldModule, MatSelectModule, NgFor, MatDividerModule, MatOptionModule, OntoPropertyInfoComponent, AsyncPipe]
+  selector: 'gv-factoid-property-display',
+  templateUrl: './factoid-property-display.component.html',
+  styleUrls: ['./factoid-property-display.component.scss'],
+  standalone: true,
+  imports: [NgIf, MatFormFieldModule, MatSelectModule, NgFor, MatDividerModule, MatOptionModule, OntoPropertyInfoComponent, AsyncPipe]
 })
 export class FactoidPropertyDisplayComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

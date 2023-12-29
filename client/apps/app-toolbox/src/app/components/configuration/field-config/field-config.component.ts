@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
-import { OntoPropertyInfoComponent } from '../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
+import { OntoPropertyInfoComponent } from '../../misc/onto-property-info/onto-property-info.component';
 import { LabelsComponent } from '../labels/labels.component';
 
 @Component({

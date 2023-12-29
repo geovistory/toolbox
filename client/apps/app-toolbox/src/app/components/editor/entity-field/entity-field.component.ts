@@ -9,10 +9,10 @@ import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { PaginationService } from '../../../services/pagination.service';
-import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
-import { OntoPropertyInfoComponent } from '../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 import { EntityPreviewComponent } from '../../misc/entity-preview/entity-preview.component';
+import { OntoPropertyInfoComponent } from '../../misc/onto-property-info/onto-property-info.component';
 import { FieldLabelComponent } from '../field-label/field-label.component';
 import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
 

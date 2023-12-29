@@ -16,7 +16,7 @@ import { first, switchMap } from 'rxjs/operators';
 import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
-import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../configuration/class-config-dialog/class-config-dialog.component';
 import { EntityLabelConfigOpenBtnComponent } from '../../configuration/entity-label-config-open-btn/entity-label-config-open-btn.component';

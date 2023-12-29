@@ -11,7 +11,7 @@ import { TableModule, TableRowReorderEvent } from 'primeng/table';
 import { values } from 'ramda';
 import { Observable, Subject } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
-import { OntoPropertyInfoComponent } from '../../../shared/components/onto-info/onto-property-info/onto-property-info.component';
+import { OntoPropertyInfoComponent } from '../../misc/onto-property-info/onto-property-info.component';
 import { FieldConfigDialogComponent, FieldConfigDialogData } from '../field-config-dialog/field-config-dialog.component';
 
 interface FieldConfig extends Field {

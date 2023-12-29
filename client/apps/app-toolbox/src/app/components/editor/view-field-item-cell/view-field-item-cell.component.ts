@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { Field } from '@kleiolab/lib-redux';
 import { Observable } from 'rxjs';
 import { EditModeService } from '../../../services/edit-mode.service';
-import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 import { ViewFieldItemContainerComponent } from '../view-field-item-container/view-field-item-container.component';
 import { ViewFieldItemService } from '../view-field-item/view-field-item.service';
 

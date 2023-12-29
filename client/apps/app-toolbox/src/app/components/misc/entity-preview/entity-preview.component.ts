@@ -11,7 +11,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
-import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 
 /**
  * This component generates a small UI preview for an entity.

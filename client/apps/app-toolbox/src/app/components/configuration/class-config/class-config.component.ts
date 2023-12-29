@@ -2,7 +2,7 @@ import { Component, HostBinding, Input, OnInit } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { ConfigurationPipesService } from "@kleiolab/lib-redux";
 import { Observable } from 'rxjs';
-import { OntoClassInfoComponent } from '../../../shared/components/onto-info/onto-class-info/onto-class-info.component';
+import { OntoClassInfoComponent } from '../../misc/onto-class-info/onto-class-info.component';
 import { ClassFieldsComponent } from '../class-fields/class-fields.component';
 import { LabelsComponent } from '../labels/labels.component';
 

@@ -1,20 +1,20 @@
+import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConfigurationPipesService } from '@kleiolab/lib-redux';
 import { Observable, of } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { OntoClassInfoComponent } from '../onto-class-info/onto-class-info.component';
-import { NgIf, NgStyle, NgClass, AsyncPipe } from '@angular/common';
 
 
 @Component({
-    selector: 'gv-class-info',
-    templateUrl: './class-info.component.html',
-    styleUrls: ['./class-info.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
-    imports: [NgIf, OntoClassInfoComponent, NgStyle, MatTooltipModule, MatIconModule, NgClass, AsyncPipe]
+  selector: 'gv-class-info',
+  templateUrl: './class-info.component.html',
+  styleUrls: ['./class-info.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [NgIf, OntoClassInfoComponent, NgStyle, MatTooltipModule, MatIconModule, NgClass, AsyncPipe]
 })
 export class ClassInfoComponent implements OnInit {
   @Input() showOntoInfo$: Observable<boolean>

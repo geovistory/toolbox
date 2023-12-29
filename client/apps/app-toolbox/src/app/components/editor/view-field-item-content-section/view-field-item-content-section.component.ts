@@ -15,7 +15,7 @@ import { GvDndGlobalService } from '../../../services/dnd-global.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { ViewFieldItemCountSumService } from '../../../services/view-field-item-count-sum.service';
 import { ViewFieldTreeNodeService } from '../../../services/view-field-tree-node.service';
-import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { EntityPreviewComponent } from '../../misc/entity-preview/entity-preview.component';
 import { AddButton, pipeAddButtons } from '../content/content.component';

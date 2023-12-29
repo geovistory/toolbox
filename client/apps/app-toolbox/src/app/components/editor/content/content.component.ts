@@ -13,7 +13,7 @@ import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from '../../../lib/c
 import { openAddStatementDialog } from '../../../lib/dialogs/openAddStatementDialog';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { ViewFieldTreeNodeService } from '../../../services/view-field-tree-node.service';
-import { ClassInfoComponent } from '../../../shared/components/onto-info/class-info/class-info.component';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
 import type { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
