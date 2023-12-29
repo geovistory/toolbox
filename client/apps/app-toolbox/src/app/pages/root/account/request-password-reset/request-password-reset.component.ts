@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { AccountService } from '@kleiolab/lib-sdk-lb4';
 import { first } from 'rxjs/operators';
-import { NavbarComponent } from '../../../../components/misc/navbar/navbar.component';
+import { NavbarComponent } from '../../../../components/layout/navbar/navbar.component';
 
 
 

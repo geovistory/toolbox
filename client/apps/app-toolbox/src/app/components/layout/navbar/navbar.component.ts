@@ -10,7 +10,7 @@ import { Router, RouterLink } from '@angular/router';
 import { PubAccount } from '@kleiolab/lib-sdk-lb4';
 import { Subscription } from 'rxjs';
 import { ActiveAccountService } from '../../../services/active-account.service';
-import { FeedbackDialogComponent } from '../../layout/feedback-dialog/feedback-dialog.component';
+import { FeedbackDialogComponent } from '../feedback-dialog/feedback-dialog.component';
 
 
 @Component({

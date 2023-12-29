@@ -19,6 +19,7 @@ import { DigitalsListComponent } from '../../../components/layout/left-drawer/co
 import { EntityListComponent } from '../../../components/layout/left-drawer/components/entity-list/entity-list.component';
 import { SettingsListComponent } from '../../../components/layout/left-drawer/components/settings-list/settings-list.component';
 import { SourceListComponent } from '../../../components/layout/left-drawer/components/source-list/source-list.component';
+import { NavbarComponent } from '../../../components/layout/navbar/navbar.component';
 import { AnalysisDetailComponent } from '../../../components/layout/tab-bodies/analysis-detail/analysis-detail.component';
 import { EntityDetailComponent } from '../../../components/layout/tab-bodies/entity-detail/entity-detail.component';
 import { TableDetailComponent } from '../../../components/layout/tab-bodies/table-detail/table-detail.component';
@@ -26,7 +27,6 @@ import { TextDetail2Component } from '../../../components/layout/tab-bodies/text
 import { TypesComponent } from '../../../components/layout/tab-bodies/types/types.component';
 import { TabBodyComponent } from '../../../components/layout/tab-layout/tab-body/tab-body.component';
 import { TabHandleComponent } from '../../../components/layout/tab-layout/tab-handle/tab-handle.component';
-import { NavbarComponent } from '../../../components/misc/navbar/navbar.component';
 import { OnActivateTabDirective } from '../../../directives/on-activate-tab.directive';
 import { PanelBodyDirective } from '../../../directives/panel-body.directive';
 import { ActiveProjectService } from '../../../services/active-project.service';

@@ -9,7 +9,7 @@ import { AccountService, ResetPasswordRequest } from '@kleiolab/lib-sdk-lb4';
 import { EqualValidator } from 'apps/app-toolbox/src/app/directives/validation/equal-validator.directive';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { NavbarComponent } from '../../../../components/misc/navbar/navbar.component';
+import { NavbarComponent } from '../../../../components/layout/navbar/navbar.component';
 
 
 

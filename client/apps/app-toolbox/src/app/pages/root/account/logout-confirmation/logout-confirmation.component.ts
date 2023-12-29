@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NavbarComponent } from '../../../../components/misc/navbar/navbar.component';
+import { NavbarComponent } from '../../../../components/layout/navbar/navbar.component';
 
 @Component({
   selector: 'gv-logout-confirmation',
