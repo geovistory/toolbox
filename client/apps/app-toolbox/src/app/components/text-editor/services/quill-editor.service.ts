@@ -2,7 +2,7 @@ import { Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, Observable, Subject, timer } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
+import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../misc/progress-dialog/progress-dialog.component';
 import type { IndexedCharids } from '../quill-edit/quill-edit.component';
 import { Ops } from '../quill.models';
 import { QuillService } from '../quill.service';

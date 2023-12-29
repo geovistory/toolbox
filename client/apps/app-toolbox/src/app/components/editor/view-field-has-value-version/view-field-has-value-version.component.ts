@@ -15,9 +15,9 @@ import { catchError, delay, filter, first, map, shareReplay, startWith, switchMa
 import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../lib/constants/ontome-ids';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { ConfirmHook, EditModeService } from '../../../services/edit-mode.service';
-import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../../shared/components/progress-dialog/progress-dialog.component';
 import { TextDetail2Service } from '../../layout/tab-bodies/text-detail2/text-detail2.service';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '../../misc/confirm-dialog/confirm-dialog.component';
+import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../misc/progress-dialog/progress-dialog.component';
 import { ToggleBtnComponent } from '../../misc/toggle-btn/toggle-btn.component';
 import { QuillEditComponent } from '../../text-editor/quill-edit/quill-edit.component';
 import { DeltaI, Op, Ops } from '../../text-editor/quill.models';
