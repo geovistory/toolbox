@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { PubAccount } from "@kleiolab/lib-sdk-lb4";
-import { ActiveAccountService } from "../../../shared/services/active-account.service";
+import { ActiveAccountService } from "../../../services/active-account.service";
 
 import { NgIf, NgTemplateOutlet } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { DatChunk } from "@kleiolab/lib-sdk-lb4";
-import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
+import { NavbarComponent } from '../../../components/layout/navbar/navbar.component';
 
 @Component({
   selector: 'gv-home',

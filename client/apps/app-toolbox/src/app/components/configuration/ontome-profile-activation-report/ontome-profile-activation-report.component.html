@@ -1,0 +1,61 @@
+<div *ngIf="loading" class="w-100 d-flex align-items-center justify-content-center" style="height: 200px;">
+  <mat-spinner [diameter]="40"></mat-spinner>
+</div>
+
+<div *ngIf="!loading" class="mat-typography">
+  <p>
+    This OntoMe Profile has
+    <span class="mat-body-strong">{{report.newClasses.length + report.oldClasses.length}} Classes</span>
+    and
+    <span class="mat-body-strong"> {{report.newProperties.length + report.oldProperties.length}}
+      Properties</span>
+  </p>
+  <h3>If you activate the profile, these items will be added to your project:</h3>
+  <h4>
+    <button mat-icon-button (click)="newClassesExpanded=!newClassesExpanded">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{newClassesExpanded ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    {{report.newClasses.length}} Classes
+  </h4>
+  <gv-ontome-profile-activation-report-items-table *ngIf="newClassesExpanded" [reportItems]="report.newClasses" category="class">
+  </gv-ontome-profile-activation-report-items-table>
+
+  <h4>
+    <button mat-icon-button (click)="newPropertiesExpanded=!newPropertiesExpanded">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{newPropertiesExpanded ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    {{report.newProperties.length}} Properties
+  </h4>
+  <gv-ontome-profile-activation-report-items-table *ngIf="newPropertiesExpanded" [reportItems]="report.newProperties"
+    category="property">
+  </gv-ontome-profile-activation-report-items-table>
+
+  <h3>These items are already in your project:</h3>
+  <h4>
+    <button mat-icon-button (click)="oldClassesExpanded=!oldClassesExpanded">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{oldClassesExpanded ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    {{report.oldClasses.length}} Classes
+  </h4>
+  <gv-ontome-profile-activation-report-items-table *ngIf="oldClassesExpanded" [reportItems]="report.oldClasses" category="class">
+  </gv-ontome-profile-activation-report-items-table>
+
+  <h4>
+    <button mat-icon-button (click)="oldPropertiesExpanded=!oldPropertiesExpanded">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{oldPropertiesExpanded ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>
+    {{report.oldProperties.length}} Properties
+  </h4>
+  <gv-ontome-profile-activation-report-items-table *ngIf="oldPropertiesExpanded" [reportItems]="report.oldProperties"
+    category="property">
+  </gv-ontome-profile-activation-report-items-table>
+
+</div>

@@ -3,8 +3,10 @@ import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ActiveProjectPipesService, ReduxMainService } from '@kleiolab/lib-redux';
-import { GvPositiveSchemaObject, GvSchemaModifier, InfLanguage, InfResourceWithRelations, InfStatementWithRelations, LanguagesService, SubfieldPageControllerService, WareEntityPreviewPage, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
+import { GvPositiveSchemaObject, GvSchemaModifier, InfLanguage, InfResourceWithRelations, InfStatementWithRelations, LanguagesService, SubfieldPageControllerService, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq, WareEntityPreviewPage } from '@kleiolab/lib-sdk-lb4';
 import { sandboxOf } from 'angular-playground';
+import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
+import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { DatNamespaceMock } from 'projects/__test__/data/auto-gen/gvDB/DatNamespaceMock';
 import { InfLanguageMock } from 'projects/__test__/data/auto-gen/gvDB/InfLanguageMock';
 import { InfResourceMock } from 'projects/__test__/data/auto-gen/gvDB/InfResourceMock';
@@ -17,17 +19,15 @@ import { PROFILE_16_INTERACTIONS_S_2022_02_09 } from 'projects/__test__/data/aut
 import { PROFILE_20_PHYSICAL_MAN_MA_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-20-physical-man-ma-2022-01-18';
 import { PROFILE_5_GEOVISTORY_BASI_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import { PROFILE_8_MARITIME_HISTOR_2022_01_18 } from 'projects/__test__/data/auto-gen/ontome-profiles/profile-8-maritime-histor-2022-01-18';
-import { GvSchemaObjectMock } from 'projects/__test__/data/GvSchemaObjectMock';
-import { IAppStateMock } from 'projects/__test__/data/IAppStateMock';
 import { createCrmAsGvPositiveSchema } from 'projects/__test__/helpers/transformers';
 import { MockPaginationControllerForSandboxes } from 'projects/__test__/mock-services/MockPaginationControllerForSandboxes';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from '../components/editor/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
+import { AddStatementDialogComponent, AddStatementDialogData } from '../components/editor/add-statement-dialog/add-statement-dialog.component';
+import { CreateOrAddEntityEvent, CtrlEntityDialogComponent, CtrlEntityDialogData } from '../components/editor/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
+import { CtrlEntityModel } from '../components/editor/ctrl-entity/ctrl-entity.component';
+import { InitStateModule } from '../components/misc/init-state/init-state.module';
 import { BaseModule } from '../modules/base/base.module';
-import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from '../modules/base/components/add-entity-or-value-dialog/add-entity-or-value-dialog.component';
-import { AddStatementDialogComponent, AddStatementDialogData } from '../modules/base/components/add-statement-dialog/add-statement-dialog.component';
-import { CreateOrAddEntityEvent, CtrlEntityDialogComponent, CtrlEntityDialogData } from '../modules/base/components/ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
-import { CtrlEntityModel } from '../modules/base/components/ctrl-entity/ctrl-entity.component';
-import { InitStateModule } from '../shared/components/init-state/init-state.module';
 
 
 

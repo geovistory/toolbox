@@ -9,9 +9,9 @@ import { StateFacade } from '@kleiolab/lib-redux';
 import { InfLanguage, LanguagesService, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { CtrlLanguageComponent } from '../../../modules/base/components/ctrl-language/ctrl-language.component';
-import { NavbarComponent } from '../../../shared/components/navbar/navbar.component';
-import { GvAuthService } from '../../../shared/services/auth.service';
+import { CtrlLanguageComponent } from '../../../components/editor/ctrl-language/ctrl-language.component';
+import { NavbarComponent } from '../../../components/layout/navbar/navbar.component';
+import { GvAuthService } from '../../../services/auth.service';
 
 
 class ProjectLabelDescription {

@@ -6,10 +6,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { AccountService, ResetPasswordRequest } from '@kleiolab/lib-sdk-lb4';
+import { EqualValidator } from 'apps/app-toolbox/src/app/directives/validation/equal-validator.directive';
 import { Observable } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { EqualValidator } from '../../../../core/validation/validation.directives';
-import { NavbarComponent } from '../../../../shared/components/navbar/navbar.component';
+import { NavbarComponent } from '../../../../components/layout/navbar/navbar.component';
 
 
 

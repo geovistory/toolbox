@@ -34,7 +34,7 @@ async function start() {
   const filecontent = createFileContent(profs, ks, ps);
   createFile('./src/ontome-ids.ts', filecontent);
   createFile(
-    '../client/projects/app-toolbox/src/app/ontome-ids.ts',
+    '../client/projects/app-toolbox/src/app/lib/constants/ontome-ids.ts',
     filecontent,
   );
 }
