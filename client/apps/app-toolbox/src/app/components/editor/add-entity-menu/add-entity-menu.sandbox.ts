@@ -44,7 +44,7 @@ const types: GvPositiveSchemaObject = {
 }
 
 // mock schema objects to initialize sandboxes below
-const initialSchemaObects = [
+const initialSchemaObects: GvPositiveSchemaObject[] = [
   createCrmAsGvPositiveSchema({
     ontoMocks: [
       PROFILE_5_GEOVISTORY_BASI_2022_01_18, // add basics profile

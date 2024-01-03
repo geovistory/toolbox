@@ -5,10 +5,11 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Field, FieldTargetClass } from '@kleiolab/lib-redux';
-import { equals, values } from 'ramda';
+import { Field } from '@kleiolab/lib-redux';
+import { equals } from 'ramda';
 import { first } from 'rxjs/operators';
 import { openClose } from '../../../lib/animations/animations';
+import { getFormTargetClasses } from '../../../lib/converters/getFormTargetClasses';
 import { FgAppellationTeEnComponent } from '../fg-appellation-te-en/fg-appellation-te-en.component';
 import { FgDimensionComponent } from '../fg-dimension/fg-dimension.component';
 import { FgLangStringComponent } from '../fg-lang-string/fg-lang-string.component';
@@ -112,9 +113,3 @@ export class FormFieldHeaderComponent implements OnInit {
 }
 
 
-export function getFormTargetClasses(field?: Field): FieldTargetClass[] {
-  if (!field) return []
-  return values(field?.targets ?? [])
-    .filter(target => !target.removedFromAllProfiles)
-
-}

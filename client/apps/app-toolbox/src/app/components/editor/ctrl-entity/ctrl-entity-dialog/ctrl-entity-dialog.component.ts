@@ -45,7 +45,7 @@ export interface CreateOrAddEntityEvent {
     { provide: READ_ONLY, useValue: true }
   ],
   standalone: true,
-  imports: [SliderComponent, HbfPanelComponent, forwardRef(() => FormCreateDataComponent), MatButtonModule, NgIf, SearchExistingEntityComponent, MatTabsModule, EntityCardComponent, AsyncPipe]
+  imports: [SliderComponent, HbfPanelComponent, forwardRef(() => FormCreateDataComponent), MatButtonModule, NgIf, SearchExistingEntityComponent, MatTabsModule, forwardRef(() => EntityCardComponent), AsyncPipe]
 })
 export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
   destroy$ = new Subject<boolean>();

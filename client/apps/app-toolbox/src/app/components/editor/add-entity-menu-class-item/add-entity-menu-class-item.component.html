@@ -7,7 +7,7 @@
       <mat-icon *ngIf="showBody$|async">expand_more</mat-icon>
     </button>
   </div>
-  <div class="loc-label gv-pointer" [matTooltip]="'Add a '+item.label" (click)="menuComponent.onSelect(item.data)">
+  <div class="loc-label gv-pointer" [matTooltip]="'Add a '+item.label" (click)="menu.component.onSelect(item.data)">
     <gv-class-info [pkClass]="item.data.pkClass"></gv-class-info>
     {{item.label}}
   </div>

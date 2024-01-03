@@ -11,6 +11,7 @@ import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
 import { C_53_TYPE_ID, C_54_LANGUAGE_ID } from '../../../lib/constants/ontome-ids';
+import { getFormTargetClasses } from '../../../lib/converters/getFormTargetClasses';
 import { FormArrayFactory } from '../../../lib/form-factory/core/form-array-factory';
 import { FormChildFactory } from '../../../lib/form-factory/core/form-child-factory';
 import { FormControlFactory } from '../../../lib/form-factory/core/form-control-factory';
@@ -27,7 +28,6 @@ import { FgDimensionComponent, FgDimensionInjectData } from '../fg-dimension/fg-
 import { FgLangStringComponent, FgLangStringInjectData } from '../fg-lang-string/fg-lang-string.component';
 import { FgPlaceComponent, FgPlaceInjectData } from '../fg-place/fg-place.component';
 import { FgTextWithLangComponent, FgTextWithLangInjectData } from '../fg-text-with-lang/fg-text-with-lang.component';
-import { getFormTargetClasses } from '../form-field-header/form-field-header.component';
 import { FormGroupComponent } from '../form-group/form-group.component';
 import { FormCreateDataService } from './form-create-data.service';
 export interface FormArrayData {

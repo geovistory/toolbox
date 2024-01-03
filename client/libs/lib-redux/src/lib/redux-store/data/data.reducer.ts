@@ -34,7 +34,12 @@ class Definitions {
 
 const definitions = new Definitions();
 
-const dataRootReducers = createReducer({},
+/**
+ * Warning: Don't use this function outside of the lib for production code!
+ * Reducer should only be used within the library or in .stories.ts in order to prepare
+ * an initial state needed by the story.
+ */
+export const dataRootReducers = createReducer({},
   on(schemaModifierActions.succeeded, (state: DataState = {}, action: FluxStandardAction<GvSchemaModifier>) => {
 
     if (action.payload.positive) {

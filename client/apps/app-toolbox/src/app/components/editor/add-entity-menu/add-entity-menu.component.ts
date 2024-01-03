@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 import { openAddEntityDialog } from '../../../lib/dialogs/openAddEntityDialog';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { AddEntityMenuClassItemComponent } from '../add-entity-menu-class-item/add-entity-menu-class-item.component';
-
+import { AddEntityMenuService } from './add-entity-menu.service';
 
 /** Flat node with expandable and level information */
 interface ExampleFlatNode {
@@ -28,6 +28,7 @@ interface ExampleFlatNode {
   templateUrl: './add-entity-menu.component.html',
   styleUrls: ['./add-entity-menu.component.scss'],
   standalone: true,
+  providers: [AddEntityMenuService],
   imports: [MatMenuModule, MatButtonModule, MatTooltipModule, NgIf, MatIconModule, MatDividerModule, NgFor, forwardRef(() => AddEntityMenuClassItemComponent), AsyncPipe]
 })
 export class AddEntityMenuComponent implements OnInit, OnDestroy {
@@ -51,7 +52,10 @@ export class AddEntityMenuComponent implements OnInit, OnDestroy {
     private i: InformationPipesService,
     public p: ActiveProjectService,
     private dialog: MatDialog,
-  ) { }
+    addEntityMenu: AddEntityMenuService
+  ) {
+    addEntityMenu.registerComponent(this)
+  }
 
   ngOnInit() {
     if (!this.enabledIn) throw new Error('You must provide enabledIn input');
