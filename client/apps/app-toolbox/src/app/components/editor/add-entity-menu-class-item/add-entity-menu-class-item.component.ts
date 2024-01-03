@@ -8,8 +8,8 @@ import { AsyncPipe, NgFor, NgIf } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { OpenCloseContainerDirective } from '../../../directives/open-close/open-close-container.directive';
 import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
+import { OpenCloseComponent } from '../../misc/open-close/open-close.component';
 import { AddEntityMenuService } from '../add-entity-menu/add-entity-menu.service';
 
 @Component({
@@ -18,7 +18,7 @@ import { AddEntityMenuService } from '../add-entity-menu/add-entity-menu.service
   styleUrls: ['./add-entity-menu-class-item.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, MatButtonModule, MatIconModule, MatTooltipModule, ClassInfoComponent, NgFor, AddEntityMenuTypeItemComponent, AsyncPipe, OpenCloseContainerDirective]
+  imports: [NgIf, MatButtonModule, MatIconModule, MatTooltipModule, ClassInfoComponent, NgFor, AddEntityMenuTypeItemComponent, AsyncPipe, OpenCloseComponent]
 })
 export class AddEntityMenuClassItemComponent implements OnInit {
   destroy$ = new Subject<boolean>();

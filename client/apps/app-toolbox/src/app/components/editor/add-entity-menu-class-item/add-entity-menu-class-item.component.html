@@ -17,10 +17,7 @@
     </a>
   </div>
 </div>
-<div class="loc-container" gvOpenCloseContainer [isOpen$]="showBody$">
-  <div gvOpenCloseChild>
-
-    <gv-add-entity-menu-type-item [item]="typeItem" *ngFor="let typeItem of item.children">
-    </gv-add-entity-menu-type-item>
-  </div>
-</div>
+<gv-open-close class="loc-container" [isOpen$]="showBody$">
+  <gv-add-entity-menu-type-item [item]="typeItem" *ngFor="let typeItem of item.children">
+  </gv-add-entity-menu-type-item>
+</gv-open-close>
