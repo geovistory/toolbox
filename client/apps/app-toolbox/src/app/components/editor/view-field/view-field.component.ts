@@ -24,7 +24,8 @@ import { ViewFieldService } from './view-field.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     ViewFieldService,
-    ViewFieldTreeNodeService
+    ViewFieldTreeNodeService,
+    ViewFieldAddHooksService
   ],
   standalone: true,
   imports: [ViewFieldHeaderComponent, MatDividerModule, forwardRef(() => ViewFieldBodyComponent), AsyncPipe]

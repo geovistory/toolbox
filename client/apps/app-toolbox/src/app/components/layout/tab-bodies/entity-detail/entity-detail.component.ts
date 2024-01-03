@@ -26,7 +26,7 @@ import { TabLayoutComponent } from '../../tab-layout/tab-layout/tab-layout.compo
   styleUrls: ['./entity-detail.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [EditModeService],
+  providers: [EditModeService, TruncatePipe],
   standalone: true,
   imports: [TabLayoutComponent, EntityCardHeaderComponent, MatDividerModule, NgIf, ViewSectionsComponent, MatTabsModule, MatIconModule, ContentComponent, ViewSectionComponent, FactoidListComponent, AsyncPipe]
 })

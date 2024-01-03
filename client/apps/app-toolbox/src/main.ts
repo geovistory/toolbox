@@ -10,6 +10,7 @@ import { provideRouter } from '@angular/router';
 import { StateModule } from '@kleiolab/lib-redux';
 import { Configuration } from '@kleiolab/lib-sdk-lb4';
 import { SOCKETS_CONFIG, SocketsConfig } from '@kleiolab/lib-sockets';
+import { DndModule } from '@suez/ngx-dnd';
 import { SocketIoConfig } from 'ngx-socket-io';
 import { MessageService } from 'primeng/api';
 import { AppComponent } from './app/app.component';
@@ -61,7 +62,7 @@ bootstrapApplication(AppComponent, {
       // // other thid party modules
       // AngularSplitModule,
       CookiesModule.forRoot(),
-      //  DndModule.forRoot(),
+      DndModule.forRoot(),
       // // ??
       // SocketsModule, SocketIoModule.forRoot(socketIoConfig),
       // // @kleiolab/lib-* modules
