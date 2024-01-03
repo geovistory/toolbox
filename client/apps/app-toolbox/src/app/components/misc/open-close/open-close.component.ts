@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Observable, Subject, delay, filter, first, firstValueFrom, takeUntil, tap, timer } from 'rxjs';
 
 /**
@@ -24,9 +24,9 @@ export class OpenCloseComponent implements OnInit, OnDestroy {
   /**
    * The duration of the height transition
    */
-  @Input() @HostBinding('style.transition.ms') duration = 300;
-  @HostBinding('style.height') height = '0px';
-  @HostBinding('style.overflow') overflow = 'hidden';
+  @Input() duration = 300;
+  height = '0px';
+  overflow = 'hidden';
   @ViewChild('content', { static: true }) content: ElementRef<HTMLElement>;
 
   constructor(private ref: ChangeDetectorRef) { }
@@ -40,11 +40,9 @@ export class OpenCloseComponent implements OnInit, OnDestroy {
     if (oldIsOpen) {
       this.overflow = 'auto';
       this.height = 'unset';
+      this.ref.detectChanges();
     }
-    else {
-      this.overflow = 'hidden';
-      this.height = '0px';
-    }
+
     const newValArrived$ = new Subject<void>();
 
     this.isOpen$
@@ -68,6 +66,8 @@ export class OpenCloseComponent implements OnInit, OnDestroy {
           else {
             // start transition closed -> open
             this.height = this.content?.nativeElement.offsetHeight + 'px';
+            this.ref.detectChanges();
+
             // wait for the duration
             timer(this.duration).pipe(
               // unsubscribe if a new val arrives
