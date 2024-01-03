@@ -8,7 +8,7 @@
   <!-- TABLE -->
   <span id="scrollAccess" style="width: 100%; height: 100%">
     <p-table [value]="table" [scrollable]="true" scrollHeight="flex" [resizableColumns]="true" columnResizeMode="expand"
-      class="p-datatable-gridlines" [ngClass]="{'mat-border-edit-mode': !(readmode$|async)}">
+      class="p-datatable-gridlines" [ngClass]="{'mat-border-edit-mode': (readmode$|async)!==true}">
 
       <!-- Header params for prime-ng -->
       <ng-template pTemplate="colgroup">
@@ -28,7 +28,7 @@
           <ng-container *ngFor="let col of headers; let i = index">
             <ng-container *ngIf="!col.mapping">
               <th class="gv-pointer gv-td-col-header" [ngClass]="{
-                'mat-bg-grey-100': i==0 && origin !='importer',
+                'mat-bg-grey-100': i==0 && origin !=='importer',
                 'mat-bg-white': i>0
               }" colspan="1">
                 <!-- Column title-->
@@ -42,15 +42,15 @@
                     {{col.colLabel}}
                   </span>
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
-                  <mat-icon *ngIf="origin == 'importer' || i == 0"></mat-icon>
-                  <mat-icon *ngIf="origin !='importer' && i != 0 && !(readmode$|async)" svgIcon="link"
+                  <mat-icon *ngIf="origin === 'importer' || i == 0"></mat-icon>
+                  <mat-icon *ngIf="origin !=='importer' && i != 0 && !(readmode$|async)" svgIcon="link"
                     (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)"></mat-icon>
                   <mat-icon *ngIf="(readmode$|async) && i != 0"></mat-icon>
                 </div>
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
-                  {{col.comment == 'number' ? 'number' : 'text'}}
+                  {{col.comment === 'number' ? 'number' : 'text'}}
                   <span *ngIf="(showIds$|async) && i != 0" gvCopyClipboard [toClipboard]="col.pk_column+''"
                     [matTooltip]="'Click to copy colum id: ' + col.pk_column">
                     &nbsp;| id: {{col.pk_column}}
@@ -77,7 +77,7 @@
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
                   [ngClass]="{'gv-white-space-nowrap gv-fade-out-right': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
-                  {{col.comment == 'number' ? 'number' : 'text'}}
+                  {{col.comment === 'number' ? 'number' : 'text'}}
                   <span *ngIf="(showIds$|async) && i != 0" gvCopyClipboard [toClipboard]="col.pk_column+''"
                     [matTooltip]="'Click to copy colum id: ' + col.pk_column">
                     &nbsp;| id: {{col.pk_column}}
@@ -120,9 +120,9 @@
           <ng-container *ngFor="let col of headers; let i = index">
             <th [attr.colSpan]="col.mapping ? 2 : 1" [ngClass]="{'mat-bg-grey-100': i==0, 'mat-bg-white': i>0}">
               <div class="gv-td-filter-box p-1" *ngIf="i != 0">
-                <gv-col-filter-text *ngIf="col.type=='string'" (filterChange)="filter(i, $event)">
+                <gv-col-filter-text *ngIf="col.type==='string'" (filterChange)="filter(i, $event)">
                 </gv-col-filter-text>
-                <gv-col-filter-numeric *ngIf="col.type=='number'" (filterChange)="filter(i, $event)">
+                <gv-col-filter-numeric *ngIf="col.type==='number'" (filterChange)="filter(i, $event)">
                 </gv-col-filter-numeric>
               </div>
             </th>
@@ -130,13 +130,13 @@
         </tr>
 
         <!-- NEW TEMPROW for creating a new one -->
-        <tr *ngIf="origin !='importer' && newRow.position >= 0">
+        <tr *ngIf="origin !=='importer' && newRow.position >= 0">
           <ng-container *ngFor="let value of newRow.cells; let j = index">
             <td class="mat-bg-white" *ngIf="j != 0">
               <div style="display: flex; justify-content: center;">
                 <mat-form-field appearance="outline" style="width: 95%; margin-bottom: -1.25em">
                   <input matInput type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text"
-                    [placeholder]="'Enter ' + (getTypeOfColumn(j) == 'number' ? 'number' : 'text')" autocomplete="off">
+                    [placeholder]="'Enter ' + (getTypeOfColumn(j) === 'number' ? 'number' : 'text')" autocomplete="off">
                 </mat-form-field>
               </div>
             </td>
@@ -173,7 +173,7 @@
             <ng-container *ngIf="j == 0">
               <!-- Cell content on first column (index) -->
               <td
-                [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak, 'mat-bg-grey-100': origin !='importer'}"
+                [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak, 'mat-bg-grey-100': origin !=='importer'}"
                 class="text-center align-self-center" pResizableColumn colspan="1"
                 [matTooltip]="(showIds$|async) ? 'Click to copy row id: ' + value.pkRow: ''" gvCopyClipboard
                 [toClipboard]="value.pkRow+''" [clipBoardActivated]="(showIds$|async)">

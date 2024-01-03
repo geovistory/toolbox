@@ -3,8 +3,9 @@ import { ReplaySubject, merge, of } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { FormControlConfig } from '../types/FormControlConfig';
 import { FormFactoryGlobal } from '../types/FormFactoryGlobal';
-import { ParentFactory } from './form-array-factory';
-import { AbstractControlFactory, FactoryType, StatusChange } from './form-factory.models';
+import type { ParentFactory } from '../types/ParentFactory';
+import { AbstractControlFactory } from './abstract-control-factory';
+import type { FactoryType, StatusChange } from './form-factory.models';
 /**
  * Factory for a formControl, being the leaf element of the nested form
  */

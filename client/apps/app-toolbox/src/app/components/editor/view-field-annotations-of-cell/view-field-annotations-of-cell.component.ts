@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ActiveProjectPipesService, ConfigurationPipesService, Field, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
+import { ConfigurationPipesService, Field, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity, InfResourceWithRelations, StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
@@ -13,8 +13,8 @@ import { first, map, mapTo, shareReplay, startWith, switchMap, tap } from 'rxjs/
 import { C_934_ANNOTATION_IN_TABLE_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../lib/constants/ontome-ids';
 import { statemenTargetToInfData } from '../../../lib/converters/statemenTargetToInfData';
 import { PaginationService } from '../../../services/pagination.service';
-import { TableDetailComponent } from '../../layout/tab-bodies/table-detail/table-detail.component';
-import { TableComponent } from '../../table-editor/table/table.component';
+import { TableDetailService } from '../../layout/tab-bodies/table-detail/table-detail.service';
+import { TableService } from '../../table-editor/table/table.service';
 import { CtrlEntityDialogComponent, CtrlEntityDialogData } from '../ctrl-entity/ctrl-entity-dialog/ctrl-entity-dialog.component';
 import { CtrlEntityModel } from '../ctrl-entity/ctrl-entity.component';
 import { ViewFieldAnnotationsOfCellItemComponent } from '../view-field-annotations-of-cell-item/view-field-annotations-of-cell-item.component';
@@ -58,13 +58,12 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit, OnDestroy {
   constructor(
     private pag: PaginationService,
     private i: InformationPipesService,
-    private p: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
     private state: StateFacade,
     private dialog: MatDialog,
-    public tableComponent: TableComponent,
+    public table: TableService,
     fiewFieldAnnotationsOfCellService: ViewFieldAnnotationsOfCellService,
-    @Optional() private tableDetailComponent?: TableDetailComponent,
+    @Optional() private tableDetail?: TableDetailService,
   ) { fiewFieldAnnotationsOfCellService.registerComponent(this) }
 
   ngOnInit(): void {
@@ -79,7 +78,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit, OnDestroy {
 
       this.source = { fkTablesCell: this.pkCell }
       this.scope = { inProject: this.pkProject }
-      this.showOntoInfo$ = this.tableDetailComponent ? this.tableDetailComponent.showOntoInfo$ : new BehaviorSubject(false);
+      this.showOntoInfo$ = this.tableDetail?.component ? this.tableDetail?.component.showOntoInfo$ : new BehaviorSubject(false);
       const annotations$ = gvFieldPageReq$.pipe(
         switchMap((field) => {
           // load data from server
@@ -210,7 +209,7 @@ export class ViewFieldAnnotationsOfCellComponent implements OnInit, OnDestroy {
       outgoing_statements: [
         {
           fk_property: P_1872_IS_ANNOTATED_IN_ID,
-          fk_object_info: this.tableDetailComponent.pkEntity // Table
+          fk_object_info: this.tableDetail?.component?.pkEntity // Table
         },
         {
           fk_property: P_1874_AT_POSITION_ID,

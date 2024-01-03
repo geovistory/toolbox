@@ -7,7 +7,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { DateTimeModule } from '@kleiolab/lib-utils';
-import { ActiveProjectService } from '../../../services/active-project.service';
+import { RemoveEntityService } from '../../../services/remove-entity.service';
 import { EntityPreviewComponent } from '../../misc/entity-preview/entity-preview.component';
 import { TableComponent } from '../../table-editor/table/table.component';
 import type { ViewFieldAnnotationOfCellItemData } from '../view-field-annotations-of-cell/view-field-annotations-of-cell.component';
@@ -25,7 +25,7 @@ export class ViewFieldAnnotationsOfCellItemComponent {
 
   constructor(
     public tableComponent: TableComponent,
-    private p: ActiveProjectService,
+    private removeEntityService: RemoveEntityService,
     private cellAnnotations: ViewFieldAnnotationsOfCellService
   ) { }
 
@@ -34,7 +34,7 @@ export class ViewFieldAnnotationsOfCellItemComponent {
   async remove() {
     this.cellAnnotations.component.loadingTrigger$.next()
     return new Promise<void>((res, rej) => {
-      this.p.removeEntityFromProject(this.item.hasAnnotation.target.entity.resource.pk_entity, () => {
+      this.removeEntityService.removeEntityFromProject(this.item.hasAnnotation.target.entity.resource.pk_entity, () => {
         res()
       })
     })

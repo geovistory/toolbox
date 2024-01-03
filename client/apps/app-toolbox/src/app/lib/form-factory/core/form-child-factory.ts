@@ -5,7 +5,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { filter, first, switchMap, takeUntil } from 'rxjs/operators';
 import { FormChildFactoryConfig } from '../types/FormChildFactoryConfig';
 import { FormFactoryGlobal } from '../types/FormFactoryGlobal';
-import { AbstractControlFactory, FactoryType, FormFactoryComponent } from './form-factory.models';
+import { AbstractControlFactory } from './abstract-control-factory';
+import type { FactoryType, FormFactoryComponent } from './form-factory.models';
 
 export const CONTAINER_DATA = new InjectionToken<{}>('CONTAINER_DATA');
 

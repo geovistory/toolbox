@@ -7,6 +7,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ActiveProjectPipesService, InformationBasicPipesService, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { slideInOut } from '../../../../lib/animations/animations';
 import { DetailBaseComponent } from '../../../../lib/classes/detail-base-component';
+import { TableDetailConfig } from '../../../../lib/types/TableDetailConfig';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../../services/edit-mode.service';
@@ -15,13 +16,7 @@ import { EntityCardHeaderComponent } from '../../../editor/entity-card-header/en
 import { ViewSectionsComponent } from '../../../editor/view-sections/view-sections.component';
 import { ViewFieldHasTableValueComponent } from '../../../table-editor/view-field-has-table-value/view-field-has-table-value.component';
 import { TabLayoutComponent } from '../../tab-layout/tab-layout/tab-layout.component';
-
-export interface TableDetailConfig {
-  pkEntity: number,
-  filterOnRow?: number
-
-}
-
+import { TableDetailService } from './table-detail.service';
 
 @Component({
   selector: 'gv-table-detail',
@@ -29,7 +24,7 @@ export interface TableDetailConfig {
   styleUrls: ['./table-detail.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [EditModeService],
+  providers: [EditModeService, TableDetailService],
   standalone: true,
   imports: [TabLayoutComponent, EntityCardHeaderComponent, MatDividerModule, NgIf, ViewFieldHasTableValueComponent, MatTabsModule, MatIconModule, ViewSectionsComponent, AsyncPipe]
 })
@@ -47,6 +42,7 @@ export class TableDetailComponent
     b: InformationBasicPipesService,
     truncatePipe: TruncatePipe,
     state: StateFacade,
+    tableDetailService: TableDetailService,
     public override editMode: EditModeService,
     public override tabLayout: TabLayoutService
   ) {
@@ -62,6 +58,7 @@ export class TableDetailComponent
       editMode,
       tabLayout
     )
+    tableDetailService.registerComponent(this);
   }
 
   ngOnInit() {

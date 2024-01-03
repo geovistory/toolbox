@@ -8,6 +8,7 @@ import { ActiveProjectPipesService, InformationBasicPipesService, InformationPip
 import { TabLayoutComponentInterface } from '../../../../directives/on-activate-tab.directive';
 import { slideInOut } from '../../../../lib/animations/animations';
 import { DetailBaseComponent } from '../../../../lib/classes/detail-base-component';
+import type { EntityDetailConfig } from '../../../../lib/types/EntityDetailConfig';
 import { TruncatePipe } from '../../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../../services/active-project.service';
 import { EditModeService } from '../../../../services/edit-mode.service';
@@ -18,19 +19,7 @@ import { FactoidListComponent } from '../../../editor/factoid-list/factoid-list.
 import { ViewSectionComponent } from '../../../editor/view-section/view-section.component';
 import { ViewSectionsComponent } from '../../../editor/view-sections/view-sections.component';
 import { TabLayoutComponent } from '../../tab-layout/tab-layout/tab-layout.component';
-export interface EntityDetailConfig {
-  pkEntity: number,
-  showContentTree: boolean,
-  // showLinkedSources: boolean
-  showLinkedEntities: boolean
-  showFactoids: boolean
-  // showAnnotations: boolean // anntotations where this entity is referred to by an annotation
-}
 
-// @WithSubStore({
-//   // localReducer: entityDetailReducer,
-//   basePathMethodName: 'getBasePath'
-// })
 @Component({
   selector: 'gv-entity-detail',
   templateUrl: './entity-detail.component.html',

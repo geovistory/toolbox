@@ -7,11 +7,11 @@ import { IOutputData } from 'angular-split/lib/interface';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
 import { TabLayoutComponentInterface } from '../../directives/on-activate-tab.directive';
-import { TabBody } from '../../pages/project/project-edit/project-edit.component';
 import { TruncatePipe } from '../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../services/active-project.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { TabLayoutService } from '../../services/tab-layout.service';
+import { TabBody } from '../types/TabBody';
 
 interface ConfigBase { pkEntity: number }
 

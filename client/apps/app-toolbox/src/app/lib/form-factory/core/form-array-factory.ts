@@ -2,22 +2,17 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
 import { UntypedFormGroup } from '@angular/forms';
 import { BehaviorSubject, Observable, combineLatest, merge, of } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { FormArrayConfig } from '../types/FormArrayConfig';
-import { FormFactoryGlobal } from '../types/FormFactoryGlobal';
-import { FormNodeConfig } from '../types/FormNodeConfig';
+import type { FormArrayChild } from '../types/FormArrayChild';
+import type { FormArrayConfig } from '../types/FormArrayConfig';
+import type { FormFactoryGlobal } from '../types/FormFactoryGlobal';
+import type { FormNodeConfig } from '../types/FormNodeConfig';
+import type { ParentFactory } from '../types/ParentFactory';
+import { AbstractControlFactory } from './abstract-control-factory';
+import { combineLatestOrEmpty } from './combineLatestOrEmpty';
 import { FormChildFactory } from './form-child-factory';
 import { FormControlFactory } from './form-control-factory';
-import { AbstractControlFactory, FactoryType, StatusChange, combineLatestOrEmpty } from './form-factory.models';
-import { FormGroupFactory } from './form-group-factory';
+import type { FactoryType, StatusChange } from './form-factory.models';
 
-export interface FormArrayChild<C, A, Ch> extends AbstractControlFactory {
-  controlFactory?: FormControlFactory<C>,
-  arrayFactory?: FormArrayFactory<C, A, Ch>,
-  childFactory?: FormChildFactory<Ch>
-}
-export interface ParentFactory<C, A, Ch> {
-  groupFactory?: FormGroupFactory, arrayFactory?: FormArrayFactory<C, A, Ch>
-}
 /**
  * Factory for a formArray, being an intermediate node of the nested form
  *

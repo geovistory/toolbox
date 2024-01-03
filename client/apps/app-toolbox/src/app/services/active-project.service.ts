@@ -6,11 +6,11 @@ import { ClassConfig, GvPositiveSchemaObject, InfAppellation, ProProject } from 
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { BehaviorSubject, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { EntityDetailConfig } from '../components/layout/tab-bodies/entity-detail/entity-detail.component';
-import { TableDetailConfig } from '../components/layout/tab-bodies/table-detail/table-detail.component';
 import type { TextDetail2Config } from '../components/layout/tab-bodies/text-detail2/text-detail2.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../components/misc/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from '../components/misc/progress-dialog/progress-dialog.component';
+import { EntityDetailConfig } from '../lib/types/EntityDetailConfig';
+import { TableDetailConfig } from '../lib/types/TableDetailConfig';
 
 
 export interface RamSource {
@@ -95,33 +95,6 @@ export class ActiveProjectService {
     this.state.setState({ data: {}, ui: {} })
   }
 
-
-  /************************************************************************************
-  * Change Project Relations
-  ************************************************************************************/
-
-  removeEntityFromProject(pkEntity: number, cb?: (schemaObject: GvPositiveSchemaObject) => any) {
-    this.state.pkProject$.pipe(first()).subscribe(pkProject => {
-      const timer$ = timer(200)
-
-      // this.s.store(this.s.api.removeEntityFromProject(pkProject, pkEntity), pkProject)
-      const call$ = this.state.data.removeEntityFromProject(pkProject, pkEntity);
-      let dialogRef;
-      timer$.pipe(takeUntil(call$)).subscribe(() => {
-        const data: ProgressDialogData = {
-          title: 'Removing entity from your project',
-          hideValue: true, mode$: new BehaviorSubject('indeterminate'), value$: new BehaviorSubject(0)
-        }
-        dialogRef = this.dialog.open(ProgressDialogComponent, { data, disableClose: true })
-      })
-      call$.subscribe(
-        (schemaObject: GvPositiveSchemaObject) => {
-          if (cb) cb(schemaObject)
-          if (dialogRef) dialogRef.close()
-        }
-      )
-    })
-  }
 
   addEntityToProject(pkEntity: number, cb?: (schemaObject: GvPositiveSchemaObject) => any): Observable<GvPositiveSchemaObject> {
     const s$ = new Subject<GvPositiveSchemaObject>()

@@ -17,14 +17,13 @@ import { values } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import { CopyClipboardDirective } from '../../../directives/copy-clipboard/copy-clipboard.directive';
-import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { ViewFieldAnnotationsOfCellComponent } from '../../editor/view-field-annotations-of-cell/view-field-annotations-of-cell.component';
 import { NumberDialogComponent, NumberDialogData, NumberDialogReturn } from '../number-dialog/number-dialog.component';
 import { ColFilterNumericComponent } from './col-filter-numeric/col-filter-numeric.component';
 import { ColFilterTextComponent } from './col-filter-text/col-filter-text.component';
 import { ColMappingComponent } from './col-mapping/col-mapping.component';
-
+import { TableService as TableComponentService } from './table.service';
 export interface TableSort {
   // pkColumn of column to sort by. In case the col has no pk (yet), use colNb.
   pkColumn: number,
@@ -103,6 +102,7 @@ export interface TableColFilter {
     ViewFieldAnnotationsOfCellComponent,
     AsyncPipe,
   ],
+  providers: [TableComponentService]
 })
 export class TableComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
@@ -163,13 +163,14 @@ export class TableComponent implements OnInit, OnDestroy {
   @ViewChildren('cells') cells: QueryList<Input>;
 
   constructor(
-    public p: ActiveProjectService,
     private state: StateFacade,
     private dialog: MatDialog,
     private tableAPI: TableService,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    tableComponentService: TableComponentService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
+    tableComponentService.registerComponent(this);
   }
 
   ngOnInit() {
@@ -198,29 +199,6 @@ export class TableComponent implements OnInit, OnDestroy {
     // fetch the config
     this.state.data.sys.config.sysConfig$.pipe(takeUntil(this.destroy$)).subscribe(config => this.config = config)
   }
-
-
-  // ngAfterViewChecked(): void {
-  //   if (!this.target) {
-  //     const pTableContainer = document.getElementById('scrollAccess') as HTMLElement;
-  //     if (!pTableContainer) return;
-  //     this.target = pTableContainer.getElementsByClassName('p-datatable-scrollable-body')[0];
-
-  //     let timeout;
-  //     this.target.addEventListener('scroll', () => {
-  //       this.scrolling = true;
-  //       window.clearTimeout(timeout);
-  //       timeout = setTimeout(() => {
-  //         this.scrollTop = this.target.scrollTop;
-  //         this.scrollLeft = this.target.scrollLeft;
-  //         this.scrolling = false;
-  //       }, 66);
-  //     });
-  //   } else if (!this.scrolling) {
-  //     this.target.scrollTop = this.scrollTop;
-  //     this.target.scrollLeft = this.scrollLeft;
-  //   }
-  // }
 
   ngOnDestroy() {
     this.destroy$.next(true);

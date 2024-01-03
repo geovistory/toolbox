@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ListType, PanelTab, StateFacade } from '@kleiolab/lib-redux';
+import { ListType, StateFacade } from '@kleiolab/lib-redux';
 import { AngularSplitModule } from 'angular-split';
 import { indexBy } from 'ramda';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -29,15 +29,10 @@ import { TabBodyComponent } from '../../../components/layout/tab-layout/tab-body
 import { TabHandleComponent } from '../../../components/layout/tab-layout/tab-handle/tab-handle.component';
 import { OnActivateTabDirective } from '../../../directives/on-activate-tab.directive';
 import { PanelBodyDirective } from '../../../directives/panel-body.directive';
+import { TabBody } from '../../../lib/types/TabBody';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { BasicService } from '../../../services/basic.service';
 
-
-export interface TabBody<M> extends PanelTab<M> {
-  panelId: number;
-  panelIndex: number;
-  tabIndex: number;
-}
 
 export const getTabBodyKey = <M>(b: TabBody<M>) => b.path.join('');
 
@@ -46,6 +41,7 @@ export const getTabBodyKey = <M>(b: TabBody<M>) => b.path.join('');
   templateUrl: './project-edit.component.html',
   styleUrls: ['./project-edit.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [ActiveProjectService],
   standalone: true,
   imports: [NavbarComponent, RouterLink, NgIf, MatButtonModule, MatSidenavModule, NgClass, MatIconModule, DigitalsListComponent, SourceListComponent, EntityListComponent, AnalysisListComponent, SettingsListComponent, CdkDropListGroup, AngularSplitModule, NgFor, CdkDropList, TabHandleComponent, CdkDrag, PanelBodyDirective, TabBodyComponent, TextDetail2Component, OnActivateTabDirective, TableDetailComponent, EntityDetailComponent, AnalysisDetailComponent, ProjectSettingsDataComponent, OntomeProfilesSettingsComponent, TypesComponent, RamFormComponent, AsyncPipe]
 })

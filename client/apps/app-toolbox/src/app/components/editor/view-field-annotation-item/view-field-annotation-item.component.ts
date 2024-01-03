@@ -9,6 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
+import { RemoveEntityService } from '../../../services/remove-entity.service';
 import { TextDetail2Service } from '../../layout/tab-bodies/text-detail2/text-detail2.service';
 import { EntityPreviewComponent } from '../../misc/entity-preview/entity-preview.component';
 import { IndexedCharids } from '../../text-editor/quill-edit/quill-edit.component';
@@ -31,7 +32,8 @@ export class ViewFieldAnnotationItemComponent implements OnInit {
   constructor(
     public textEdit: TextDetail2Service,
     public p: ActiveProjectService,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    private removeEntityService: RemoveEntityService
   ) {
 
   }
@@ -72,7 +74,7 @@ export class ViewFieldAnnotationItemComponent implements OnInit {
     const e = this.itemData.hasAnnotation?.target?.entity?.resource
     if (e) {
       this.deleting$.next(true)
-      this.p.removeEntityFromProject(e.pk_entity)
+      this.removeEntityService.removeEntityFromProject(e.pk_entity)
     }
   }
 }

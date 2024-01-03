@@ -1,13 +1,12 @@
 import { asyncScheduler, Subject } from 'rxjs';
 import { first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { FormArrayConfig } from '../types/FormArrayConfig';
-import { FormFactoryGlobal } from '../types/FormFactoryGlobal';
-import { FormGroupConfig } from '../types/FormGroupConfig';
+import type { FormArrayConfig } from '../types/FormArrayConfig';
+import type { FormFactoryGlobal } from '../types/FormFactoryGlobal';
+import type { FormGroupConfig } from '../types/FormGroupConfig';
+import { AbstractControlFactory } from './abstract-control-factory';
 import { FormArrayFactory } from './form-array-factory';
 import { FormFactory } from './form-factory';
-import { AbstractControlFactory, FactoryType } from './form-factory.models';
-
-
+import type { FactoryType } from './form-factory.models';
 
 /**
  * Factory for a formGroup, being the root of the nested form
