@@ -23,7 +23,7 @@ export interface RamSource {
 
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ActiveProjectService {
   project: ProProject;
 

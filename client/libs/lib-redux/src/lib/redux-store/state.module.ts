@@ -20,13 +20,13 @@ export function apiConfigFactory(): Configuration {
 
 @NgModule({
   imports: [
+    SocketsModule,
     SdkLb4Module,
     UiModule,
     DataModule,
     StoreModule.forRoot(),
     StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: !isDevMode(), connectOutsideZone: true }),
     EffectsModule.forRoot(StateEffects),
-    SocketsModule
   ],
 })
 export class StateModule {

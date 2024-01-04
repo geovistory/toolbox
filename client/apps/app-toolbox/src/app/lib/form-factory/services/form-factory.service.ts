@@ -5,7 +5,7 @@ import { FormFactory } from '../core/form-factory';
 import { FormGroupFactory } from '../core/form-group-factory';
 import { FormFactoryConfig } from '../types/FormFactoryConfig';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class FormFactoryService {
   constructor(
     private fb: UntypedFormBuilder,

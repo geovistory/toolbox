@@ -34,7 +34,8 @@ export interface TextDetail2Config {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     EditModeService,
-    TextDetail2Service
+    TextDetail2Service,
+    TruncatePipe
   ],
   standalone: true,
   imports: [TabLayoutComponent, EntityCardHeaderComponent, MatDividerModule, NgIf, ViewFieldHasValueVersionComponent, MatTabsModule, MatIconModule, ViewFieldAnnotationsComponent, ViewSectionsComponent, AsyncPipe]

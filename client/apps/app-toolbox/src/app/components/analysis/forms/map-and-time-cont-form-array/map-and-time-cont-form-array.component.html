@@ -66,7 +66,7 @@
       </button>
     </div>
     <mat-list-item class="p-0"
-      *ngIf="formArrayFactory.formControl.hasError('invalidArrayLength') && formArrayFactory.formControl.touched">
+      *ngIf="formArrayFactory.formArray.hasError('invalidArrayLength') && formArrayFactory.formArray.touched">
       <mat-error>
         Please continue
       </mat-error>

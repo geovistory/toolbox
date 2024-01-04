@@ -3,6 +3,7 @@ import { LOCALE_ID, enableProdMode, importProvidersFrom } from '@angular/core';
 // import { Ion, buildModuleUrl } from 'cesium';
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS, MatFormFieldDefaultOptions } from '@angular/material/form-field';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -11,7 +12,6 @@ import { StateModule } from '@kleiolab/lib-redux';
 import { Configuration } from '@kleiolab/lib-sdk-lb4';
 import { SOCKETS_CONFIG, SocketsConfig } from '@kleiolab/lib-sockets';
 import { DndModule } from '@suez/ngx-dnd';
-import { SocketIoConfig } from 'ngx-socket-io';
 import { MessageService } from 'primeng/api';
 import { AppComponent } from './app/app.component';
 import { APP_ROUTES } from './app/pages/root/root.routes';
@@ -23,7 +23,6 @@ import { SystemAdminGuard } from './app/services/system-admin-guard.service';
 import { environment } from './environments/environment';
 
 const socketsConfig: SocketsConfig = { baseUrl: environment.apiUrl, options: { autoConnect: true } };
-const socketIoConfig: SocketIoConfig = { url: environment.apiUrl, options: {} };
 const appearance: MatFormFieldDefaultOptions = {
   appearance: 'outline'
 };
@@ -54,6 +53,10 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
+    {
+      provide: SOCKETS_CONFIG,
+      useValue: socketsConfig
+    },
     MessageService,
     importProvidersFrom(
       // angular modules
@@ -63,6 +66,7 @@ bootstrapApplication(AppComponent, {
       // AngularSplitModule,
       CookiesModule.forRoot(),
       DndModule.forRoot(),
+      MatDialogModule,
       // // ??
       // SocketsModule, SocketIoModule.forRoot(socketIoConfig),
       // // @kleiolab/lib-* modules
@@ -82,10 +86,6 @@ bootstrapApplication(AppComponent, {
     GvAuthService,
     SystemAdminGuard,
     { provide: LOCALE_ID, useValue: 'en-US' },
-    {
-      provide: SOCKETS_CONFIG,
-      useValue: socketsConfig
-    },
     {
       provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
       useValue: appearance

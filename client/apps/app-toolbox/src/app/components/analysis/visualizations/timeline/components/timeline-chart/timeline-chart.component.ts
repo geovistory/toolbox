@@ -19,6 +19,7 @@ import { DraggableXAxisDirective } from '../../directives/draggable-x-axis.direc
 import { IXAxisDefinition, XAxisDefinition } from '../../models/x-axis-definition';
 import { YAxisDefinition } from '../../models/y-axis-definition';
 import { Zoomer } from '../../models/zoomer';
+import { D3Service } from '../../services/d3.service';
 import { ChartLineDefinition, ChartLineVisualComponent } from '../chart-line-visual/chart-line-visual.component';
 import { XAxisComponent } from '../x-axis/x-axis.component';
 import { YAxisComponent } from '../y-axis/y-axis.component';
@@ -65,6 +66,7 @@ export class CursorInfo {
   selector: 'gv-timeline-chart',
   templateUrl: './timeline-chart.component.html',
   styleUrls: ['./timeline-chart.component.scss'],
+  providers: [D3Service, DatePipe],
   standalone: true,
   imports: [DimensionChangeDirective, NgIf, DraggableXAxisDirective, XAxisComponent, YAxisComponent, ChartLineVisualComponent, MatButtonModule, MatMenuModule, MatIconModule, MatFormFieldModule, MatSelectModule, NgClass, MatOptionModule, NgFor, MatDividerModule, ZoomSliderComponent, MatCardModule, PassiveLinkDirective, MatTooltipModule]
 })

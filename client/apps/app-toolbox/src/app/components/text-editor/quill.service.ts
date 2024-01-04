@@ -48,7 +48,7 @@ export interface FormatTextParams {
 
 type UpdateType = 'before' | 'after' | 'replace';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class QuillService {
 
   Quill = Quill;

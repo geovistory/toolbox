@@ -1,4 +1,4 @@
-import { Component, HostBinding, OnInit } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 
 @Component({
   selector: 'gv-detail-content',
@@ -6,11 +6,7 @@ import { Component, HostBinding, OnInit } from '@angular/core';
   styleUrls: ['./detail-content.component.scss'],
   standalone: true
 })
-export class DetailContentComponent implements OnInit {
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
-
+export class DetailContentComponent {
   // @HostBinding('class.gv-flex-fh') fh = true;
   @HostBinding('class.gv-scroll-y-container') scroll = true;
 
