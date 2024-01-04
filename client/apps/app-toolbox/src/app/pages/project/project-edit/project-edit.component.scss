@@ -13,11 +13,7 @@
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.tab-box:last-child {
-  // border: none;
-}
-
-.tab-list.cdk-drop-list-dragging .tab-box:not(.cdk-drag-placeholder) {
+.tab-list.cdk-drop-list-dragging gv-tab-handle:not(.cdk-drag-placeholder) {
   transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
 }
 

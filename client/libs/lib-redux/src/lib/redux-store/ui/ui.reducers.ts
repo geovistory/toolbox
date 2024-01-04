@@ -8,17 +8,17 @@ import { setUiState } from './ui.actions'
 import { UiState } from './ui.models'
 
 
-const dataRootReducers = createReducer({},
+const uiRootReducers = createReducer({},
   // set the entire ui state
   on(setUiState, (_, action) => action.ui)
 )
 
-export const uiReducers = composeReducers(
+export const uiReducers = composeReducers<UiState>(
   combineReducers<UiState>({
     account: accountReducer,
     loadingBar: loadingBarReducer,
     activeProject: activeProjectReducer,
     notifications: notificationReducer
   }),
-  dataRootReducers
+  uiRootReducers
 )

@@ -519,9 +519,6 @@ $gv-bg-drawer-list: #cde4f3;
 *   2. Tile (properties, mentioned entities, …)
 *   3. Field (short title, birth, when …)
 ****************************/
-gv-tab-handle.tab-box {
-  height: 32px;
-}
 
 .gv-detail-top-bar {
   .mat-tab-label {
@@ -570,6 +567,15 @@ gv-tab-handle.tab-box {
  ***************************/
 $tabs-height: 32px;
 
+gv-tab-handle {
+  color: map.get($gv-grey-palette, 500);
+  background: map.get($gv-grey-palette, 200);
+}
+
+gv-tab-handle.active {
+  background: $white;
+}
+
 gv-project-edit {
   .gv-drawer-list {
     background-color: $gv-bg-drawer-list;
@@ -587,23 +593,9 @@ gv-project-edit {
   }
 
   .focus {
-    .tab-box {
+    gv-tab-handle {
       color: inherit;
     }
-  }
-
-  .tab-box {
-    color: map.get($gv-grey-palette, 500);
-    padding: 5px 10px;
-    border-right: solid 1px #ccc;
-    background: map.get($gv-grey-palette, 200);
-    font-size: $font-size-sm;
-    min-width: 100px;
-    display: flex;
-  }
-
-  .tab-box.active {
-    background: $white;
   }
 
   .panel-body {
@@ -665,45 +657,6 @@ gv-project-edit {
         pointer-events: initial;
       }
     }
-  }
-}
-
-/***************************
- * tab handle component
- ***************************/
-gv-tab-handle {
-  .left {
-    cursor: grab;
-    display: flex;
-    overflow: hidden;
-
-    .icon {
-      min-width: 1rem;
-      padding-right: 0.2rem;
-    }
-
-    .label {
-      max-width: 160px;
-      text-overflow: ellipsis;
-      flex-wrap: nowrap;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-  }
-
-  .left :active {
-    cursor: grabbing;
-  }
-
-  .right {
-    cursor: pointer;
-    width: 1rem;
-    line-height: initial;
-    padding: 0 0.7rem 0 0.5rem;
-    margin-left: auto;
-    font-size: $font-size-sm;
-    @extend .btn;
-    @extend .btn-link-gray;
   }
 }
 

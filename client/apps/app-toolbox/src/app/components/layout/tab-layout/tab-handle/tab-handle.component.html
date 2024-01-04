@@ -1,10 +1,9 @@
-<div class="left" (mousedown)="activateTab.emit()">
-  <div *ngIf="!(loading$ | async )" class="icon">
+<div class="mat-typography left" (mousedown)="activateTab.emit()">
 
-    <mat-icon style="font-size:18px;height:18px;width:18px" [svgIcon]="svgIcon" [ngClass]="colorClass">
-    </mat-icon>
+  <mat-icon style="font-size:18px;height:18px;width:18px" *ngIf="(loading$ | async )!==true" class="icon"
+    [svgIcon]="svgIcon" [ngClass]="colorClass">
+  </mat-icon>
 
-  </div>
   <div *ngIf="(loading$ | async )" class="icon">
     <span class="fa fa-pulse fa-spinner mat-text-secondary"></span>
   </div>
@@ -12,6 +11,6 @@
     {{(title$ | async )}}
   </div>
 </div>
-<div class="right" (click)="closeTab.emit()">
+<div class="right btn btn-link-gray" (click)="closeTab.emit()">
   <i class="fa fa-close"></i>
 </div>
