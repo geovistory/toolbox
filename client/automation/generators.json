@@ -1,9 +1,14 @@
 {
   "generators": {
     "angular-component": {
-      "factory": "./src/generators/generator",
-      "schema": "./src/generators/schema.json",
+      "factory": "./src/generators/angular-component/generator",
+      "schema": "./src/generators/angular-component/schema.json",
       "description": "Generate an angular component configured for the toolbox and a storybook story"
+    },
+    "angular-component-story": {
+      "factory": "./src/generators/angular-component-story/generator",
+      "schema": "./src/generators/angular-component-story/schema.json",
+      "description": "Add a story to an existing component"
     }
   }
 }

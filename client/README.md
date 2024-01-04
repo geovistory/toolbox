@@ -18,21 +18,47 @@ If you happen to use Nx plugins, you can leverage code generators that might com
 
 Run `nx list` to get a list of available plugins and whether they have generators. Then run `nx list <plugin-name>` to see what generators are available.
 
+Or use Nx Console Extension of VS Code – it provides a UI for the generators.
+
 Learn more about [Nx generators on the docs](https://nx.dev/plugin-features/use-code-generators).
 
-### Generate Angular Component
+### Component
 
-### Generate Stoybook Story for Angular Component
-
-You can run this command to create a story for the TabHandleComponent:
+Run this command from the workspace root to create component a story for the TabHandleComponent:
 
 ```bash
-nx g @nx/angular:component-story --componentName TabHandleComponent --componentPath ./src/app/components/layout/tab-layout/tab-handle --componentFileName tab-handle.component --projectPath ./apps/app-toolbox
+nx g @geovistory/automation:angular-component
+
+# > Path to components folder relative to workspace root
+
+# Enter for example:
+# apps/app-toolbox/src/app/components/misc/new-button
+
+# See output similar to this:
+
+CREATE apps/app-toolbox/src/app/components/misc/new-button/new-button.component.scss
+CREATE apps/app-toolbox/src/app/components/misc/new-button/new-button.component.html
+CREATE apps/app-toolbox/src/app/components/misc/new-button/new-button.component.ts
+CREATE apps/app-toolbox/src/app/components/misc/new-button/new-button.component.stories.ts
 ```
 
-### VS Code > Nx Console
+### Add Story to Component
 
-Nx Console Extension of VS Code provides a UI for these generators.
+Run this command from the workspace root add a .stories.ts file to an existing component folder.
+
+In VS Code, right-click on the folder of the component and 'Copy relative path'.
+
+```bash
+nx g @geovistory/automation:angular-component-story
+
+# > Path to components folder relative to workspace root
+
+# Paste
+
+# See output similar to this:
+
+CREATE apps/app-toolbox/src/app/components/misc/new-button/new-button.component.stories.ts
+```
 
 ## Running tasks
 

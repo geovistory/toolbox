@@ -1,3 +1,3 @@
 export interface AngularComponentGeneratorSchema {
-  componentFolder: string;
+  componentPath: string;
 }
