@@ -20,6 +20,20 @@ Run `nx list` to get a list of available plugins and whether they have generator
 
 Learn more about [Nx generators on the docs](https://nx.dev/plugin-features/use-code-generators).
 
+### Generate Angular Component
+
+### Generate Stoybook Story for Angular Component
+
+You can run this command to create a story for the TabHandleComponent:
+
+```bash
+nx g @nx/angular:component-story --componentName TabHandleComponent --componentPath ./src/app/components/layout/tab-layout/tab-handle --componentFileName tab-handle.component --projectPath ./apps/app-toolbox
+```
+
+### VS Code > Nx Console
+
+Nx Console Extension of VS Code provides a UI for these generators.
+
 ## Running tasks
 
 To execute tasks with Nx use the following syntax:

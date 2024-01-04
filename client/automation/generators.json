@@ -1,0 +1,9 @@
+{
+  "generators": {
+    "angular-component": {
+      "factory": "./src/generators/generator",
+      "schema": "./src/generators/schema.json",
+      "description": "Generate an angular component configured for the toolbox and a storybook story"
+    }
+  }
+}
