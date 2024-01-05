@@ -103,7 +103,6 @@ export class SettingsListComponent {
       active: true,
       component: 'ontome-profiles-settings',
       icon: 'settings',
-      pathSegment: 'ontomeProfilesSettings'
     })
   }
 
@@ -112,7 +111,6 @@ export class SettingsListComponent {
       active: true,
       component: 'classes-settings',
       icon: 'settings',
-      pathSegment: 'classesSettings'
     })
   }
 
@@ -121,7 +119,6 @@ export class SettingsListComponent {
       active: true,
       component: 'contr-vocab-settings',
       icon: 'settings',
-      pathSegment: 'contrVocabSettings',
       data: { pkClass }
     })
   }

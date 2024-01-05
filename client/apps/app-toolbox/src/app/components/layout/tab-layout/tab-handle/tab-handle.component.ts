@@ -35,7 +35,7 @@ export class TabHandleComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    const tabId = this.tab.path[2];
+    const tabId = this.tab.id;
     this.title$ = this.state.ui.activeProject.getTabTitle(tabId)
     this.tooltip$ = this.state.ui.activeProject.getTabTooltip(tabId)
     this.loading$ = this.state.ui.activeProject.getTabLoading(tabId)
@@ -72,6 +72,7 @@ export class TabHandleComponent implements OnInit, OnDestroy {
         return '';
     }
   }
+
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.unsubscribe();

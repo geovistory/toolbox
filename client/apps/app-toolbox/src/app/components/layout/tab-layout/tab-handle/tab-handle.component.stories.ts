@@ -33,7 +33,6 @@ type Story = StoryObj<TabHandleComponent>;
 
 
 const mockStateFactory = new MockStateFactory();
-mockStateFactory.setActiveProject(3001);
 mockStateFactory.state.ui.activeProject.tabLayouts = {
   'tab_1': {
     loading: false,
@@ -50,7 +49,7 @@ export const Default: Story = {
         active: true,
         component: 'entity',
         icon: 'temporal-entity',
-        path: ['', '', 'tab_1']
+        id: 'tab_1'
       }"></gv-tab-handle>
     </div>
     `

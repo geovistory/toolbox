@@ -4,7 +4,12 @@ import { dataRootReducers } from '@kleiolab/lib-redux/lib/redux-store/data/data.
 import { ActiveProjectAction, ActiveProjectActions } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project.action';
 import { uiReducers } from '@kleiolab/lib-redux/lib/redux-store/ui/ui.reducers';
 import { GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
+import { combineReducers } from '@ngrx/store';
 
+const rootReducer = combineReducers<IAppState>({
+  data: dataRootReducers,
+  ui: uiReducers
+})
 /**
  * Class to initialize a mock state, for testing and stories.
  *
@@ -16,7 +21,7 @@ import { GvPositiveSchemaObject } from '@kleiolab/lib-sdk-lb4';
  */
 export class MockStateFactory {
 
-  public state: IAppState = { data: {}, ui: {} }
+  public state: IAppState = rootReducer({ ui: {}, data: {} }, { type: 'init' })
 
   /**
    * Set the active project id
@@ -27,7 +32,7 @@ export class MockStateFactory {
       type: ActiveProjectActions.LOAD_PROJECT_BASICS_SUCCEEDED,
       meta: { pk_project: id }
     }
-    this.applyUiAction(action)
+    this.applyAction(action)
   }
 
   /**
@@ -37,19 +42,10 @@ export class MockStateFactory {
    * @param data
    */
   public addPositiveSchemaObject(data: GvPositiveSchemaObject) {
-    this.applyDataAction(schemaModifierActions.succeeded({ payload: { positive: data } }))
+    this.applyAction(schemaModifierActions.succeeded({ payload: { positive: data } }))
   }
 
-  private applyUiAction(action: any) {
-    this.state = {
-      ...this.state,
-      ui: uiReducers(this.state.ui, action)
-    }
-  }
-  private applyDataAction(action: any) {
-    this.state = {
-      ...this.state,
-      data: dataRootReducers(this.state.data, action)
-    }
+  private applyAction(action: any) {
+    this.state = rootReducer(this.state, action)
   }
 }

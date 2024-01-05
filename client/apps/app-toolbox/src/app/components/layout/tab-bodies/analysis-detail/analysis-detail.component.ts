@@ -25,7 +25,6 @@ export class AnalysisDetailComponent implements OnInit, OnDestroy, TabLayoutComp
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   // path to the substore
-  @Input() basePath: string[];
   @Input() pkEntity: number;
   @Input() fkAnalysisType: number;
 

@@ -57,7 +57,6 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
   @HostBinding('class.gv-flex-fh') flexFh = true;
 
   // path to the substore
-  @Input() basePath: string[];
   @Input() pkEntity: number;
 
   pkProject: number;

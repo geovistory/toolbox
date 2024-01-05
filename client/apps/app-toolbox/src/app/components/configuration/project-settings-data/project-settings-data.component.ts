@@ -1,6 +1,6 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog } from '@angular/material/dialog';
@@ -116,8 +116,6 @@ export class ProjectSettingsDataComponent implements OnInit, OnDestroy, TabLayou
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  // path to the substore
-  @Input() basePath;
 
   // select observables of substore properties
   loading$: Observable<boolean>;
@@ -191,8 +189,6 @@ export class ProjectSettingsDataComponent implements OnInit, OnDestroy, TabLayou
       this.dataSource.data = items;
     })
   }
-
-  getBasePath = () => this.basePath;
 
   ngOnInit() {
 
@@ -481,7 +477,6 @@ export class ProjectSettingsDataComponent implements OnInit, OnDestroy, TabLayou
       active: true,
       component: 'contr-vocab-settings',
       icon: 'settings',
-      pathSegment: 'contrVocabSettings',
       data: { pkClass: classItem.pkClass }
     })
   }

@@ -59,12 +59,6 @@ export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInte
   // emits true on destroy of this component
   destroy$ = new Subject<boolean>();
 
-  // local store of this component
-  // localStore: ObservableStore<Types>;
-
-  // path to the substore
-  @Input() basePath;
-
   // has type property
   @Input() pkClass: number;
 
@@ -90,7 +84,6 @@ export class TypesComponent implements OnInit, OnDestroy, TabLayoutComponentInte
   ) {
   }
 
-  getBasePath = () => this.basePath;
   getTypePk(_, item: TypeItem) {
     return item.pkEntity;
   }

@@ -72,7 +72,7 @@ export abstract class DetailBaseComponent<Config extends ConfigBase> implements 
   }
 
   get tabUuid() {
-    return this.tab.path[2]
+    return this.tab.id
   }
 
   constructor(

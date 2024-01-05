@@ -189,7 +189,6 @@ export class ActiveProjectService {
       data: {
         pkEntity: pkEntity
       },
-      pathSegment: 'textDetails'
     })
   }
 
@@ -202,7 +201,6 @@ export class ActiveProjectService {
         pkEntity: pkEntity,
         filterOnRow: fkRow
       },
-      pathSegment: 'tableDetails'
     })
   }
 
@@ -235,7 +233,6 @@ export class ActiveProjectService {
       active: true,
       component: classEnriched.detailPage,
       icon: classEnriched.icon,
-      pathSegment: 'peItDetails',
       data: config
     })
   }

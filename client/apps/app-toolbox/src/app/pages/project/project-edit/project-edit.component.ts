@@ -34,7 +34,6 @@ import { ActiveProjectService } from '../../../services/active-project.service';
 import { BasicService } from '../../../services/basic.service';
 
 
-export const getTabBodyKey = <M>(b: TabBody<M>) => b.path.join('');
 
 @Component({
   selector: 'gv-project-edit',
@@ -126,7 +125,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
     }))
 
     this.tabBodiesByKey$ = this.allTabs$.pipe(
-      map(tabs => indexBy(tab => getTabBodyKey(tab), tabs)),
+      map(tabs => indexBy(tab => tab.id, tabs)),
       shareReplay({ refCount: true, bufferSize: 1 })
     )
 
@@ -153,7 +152,7 @@ export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   trackByPath(index, item: TabBody<any>) {
-    return getTabBodyKey(item);
+    return item.id;
   }
 
   setHighlightPanel(i: number, area: string) {

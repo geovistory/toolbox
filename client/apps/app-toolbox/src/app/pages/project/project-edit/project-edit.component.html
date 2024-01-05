@@ -101,7 +101,7 @@
                 <div cdkDropList [cdkDropListData]="i" cdkDropListOrientation="horizontal"
                   (cdkDropListDropped)="dropTab($event)" class="tab-list">
 
-                  <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag class="tab-box"
+                  <gv-tab-handle *ngFor="let tab of panel.tabs; let j=index;" cdkDrag
                     [cdkDragData]="{'panelIndex': i, 'tabIndex': j}" [ngClass]="{'active': tab.active }"
                     (cdkDragEnded)="tabDragEnded()" (cdkDragStarted)="tabDragStarted()" [tab]="tab"
                     (activateTab)="state.ui.activeProject.setActiveTab(i,j)"
@@ -143,35 +143,33 @@
           <gv-tab-body [tab]="tab" [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
             *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
 
-            <gv-text-detail2 class="gv-flex-fh" *ngIf="tab.component=='text'" [tab]="tab" #c [onActivateTab]="c">
+            <gv-text-detail2 class="gv-flex-fh" *ngIf="tab.component==='text'" [tab]="tab" #c [onActivateTab]="c">
             </gv-text-detail2>
 
 
-            <gv-table-detail class="gv-flex-fh" *ngIf="tab.component=='table'" [tab]="tab" #c [onActivateTab]="c">
+            <gv-table-detail class="gv-flex-fh" *ngIf="tab.component==='table'" [tab]="tab" #c [onActivateTab]="c">
             </gv-table-detail>
 
 
-            <gv-entity-detail class="gv-flex-fh" *ngIf="tab.component=='entity'" [tab]="tab"
+            <gv-entity-detail class="gv-flex-fh" *ngIf="tab.component==='entity'" [tab]="tab"
               (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-entity-detail>
 
-            <gv-analysis-detail class="gv-flex-fh" *ngIf="tab.component=='analysis'"
-              [fkAnalysisType]="tab.data?.fkAnalysisType" [pkEntity]="tab.data?.pkEntity" [basePath]="tab.path"
+            <gv-analysis-detail class="gv-flex-fh" *ngIf="tab.component==='analysis'"
+              [fkAnalysisType]="tab.data?.fkAnalysisType" [pkEntity]="tab.data?.pkEntity"
               (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-analysis-detail>
 
-            <gv-project-settings-data class="gv-flex-fh" *ngIf="tab.component=='classes-settings'" [basePath]="tab.path"
+            <gv-project-settings-data class="gv-flex-fh" *ngIf="tab.component==='classes-settings'"
               (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-project-settings-data>
 
-            <gv-ontome-profiles-settings class="gv-flex-fh" *ngIf="tab.component=='ontome-profiles-settings'"
-              [basePath]="tab.path" (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c
-              [onActivateTab]="c">
+            <gv-ontome-profiles-settings class="gv-flex-fh" *ngIf="tab.component==='ontome-profiles-settings'"
+              (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c">
             </gv-ontome-profiles-settings>
 
-            <gv-types class="gv-flex-fh" *ngIf="tab.component=='contr-vocab-settings'" [pkClass]="tab.data.pkClass"
-              [basePath]="tab.path" (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c
-              [onActivateTab]="c"></gv-types>
+            <gv-types class="gv-flex-fh" *ngIf="tab.component==='contr-vocab-settings'" [pkClass]="tab.data.pkClass"
+              (close)="state.ui.activeProject.closeTab(tab.panelIndex,tab.tabIndex)" #c [onActivateTab]="c"></gv-types>
 
           </gv-tab-body>
         </div>

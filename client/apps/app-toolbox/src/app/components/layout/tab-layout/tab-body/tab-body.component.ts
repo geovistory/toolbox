@@ -5,7 +5,7 @@ import { map, takeUntil } from 'rxjs/operators';
 import { OnActivateTabDirective } from '../../../../directives/on-activate-tab.directive';
 import { PanelBodyDirective } from '../../../../directives/panel-body.directive';
 import { TabBody } from '../../../../lib/types/TabBody';
-import { ProjectEditComponent, getTabBodyKey } from '../../../../pages/project/project-edit/project-edit.component';
+import { ProjectEditComponent } from '../../../../pages/project/project-edit/project-edit.component';
 import { TabLayoutService } from '../../../../services/tab-layout.service';
 
 @Component({
@@ -37,7 +37,7 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
 
   private host: PanelBodyDirective;
   get tabUuid() {
-    return this.tab.path[2]
+    return this.tab.id
   }
   constructor(
     private projectEditComponent: ProjectEditComponent,
@@ -59,10 +59,9 @@ export class TabBodyComponent implements OnChanges, OnDestroy, OnInit {
   ngOnInit() {
     this.tabLayout.create(this.tabUuid, this.ref, this.destroy$);
 
-    const key = getTabBodyKey(this.tab)
     const tabBody$ = this.projectEditComponent.tabBodiesByKey$
       .pipe(
-        map(idxed => idxed[key])
+        map(idxed => idxed[this.tab.id])
       )
     // combineLatest([this.active$, this.panelId$, this.bodies$]).pipe(takeUntil(this.destroy$))
     //   .subscribe(([active, panelId, panelBodies]) => {

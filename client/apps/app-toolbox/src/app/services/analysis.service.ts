@@ -242,7 +242,6 @@ export class GvAnalysisService<I, O> {
                 active: true,
                 component: 'analysis',
                 icon: 'analysis',
-                pathSegment: 'analysisDetails',
                 data: {
                   pkEntity: data.pro.analysis[0].pk_entity,
                   fkAnalysisType: this.fkAnalysisType

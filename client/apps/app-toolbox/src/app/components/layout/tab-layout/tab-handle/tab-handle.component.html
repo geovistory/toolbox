@@ -1,4 +1,4 @@
-<div class="mat-typography left" (mousedown)="activateTab.emit()">
+<div class="mat-typography left" (click)="activateTab.emit()">
 
   <mat-icon style="font-size:18px;height:18px;width:18px" *ngIf="(loading$ | async )!==true" class="icon"
     [svgIcon]="svgIcon" [ngClass]="colorClass">

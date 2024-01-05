@@ -1,7 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { createReducer, on } from '@ngrx/store';
-import { omit } from 'ramda';
 import { composeReducers } from '../../_lib/composeReducers';
 import { ActiveProjectAction, ActiveProjectActions, classSettings, tabLayoutActions } from './active-project.action';
 import { ActiveProjectState } from './active-project.models';
@@ -184,12 +183,11 @@ export const activeProjectReducer = composeReducers(
               ...state.panels[pi],
               tabs: [
                 ...state.panels[pi].tabs.map(t => {
-                  return { ...t, active: true }
+                  return { ...t, active: false }
                 }),
                 {
-                  ...omit(['pathSegment'], action.meta.tab),
-                  // panelIndex: pi,
-                  path: ['activeProject', action.meta.tab.pathSegment, state.uiIdSerial.toString()]
+                  ...action.meta.tab,
+                  id: state.uiIdSerial.toString()
                 }
               ]
             }
