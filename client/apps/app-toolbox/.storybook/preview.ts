@@ -6,11 +6,11 @@ window['env'] = {
   apiVersion: 'lb3-api'
 }
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule, importProvidersFrom } from '@angular/core';
+import { Component, ElementRef, EnvironmentInjector, NgModule, ProviderToken, importProvidersFrom, inject, runInInjectionContext } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { setCompodocJson } from '@storybook/addon-docs/angular';
-import { Preview, applicationConfig } from '@storybook/angular';
+import { Preview, applicationConfig, componentWrapperDecorator, moduleMetadata } from '@storybook/angular';
 import docJson from '../documentation.json';
 
 setCompodocJson(docJson);
@@ -26,9 +26,38 @@ export class MatIconRegistryModule {
     matIconRegistry.addSvgIconSetInNamespace('gv', domSanitizer.bypassSecurityTrustResourceUrl(url + '/assets/gv-icons.svg'));
   }
 }
+@Component({
+  selector: 'gv-injector',
+  template: `<ng-content></ng-content>`,
+  standalone: false,
+})
+export class InjectorComponent {
+  constructor(el: ElementRef) {
+    const environmentInjector = inject(EnvironmentInjector);
+    // expose inject() via native element
+    el.nativeElement.inject = <S>(injectionToken: ProviderToken<S>) => {
+      return new Promise<S>((res) => {
+        runInInjectionContext(environmentInjector, () => {
+          const injectedInstance = inject(injectionToken);
+          res(injectedInstance);
+        });
+      });
+    }
+  }
+}
+
 
 const preview: Preview = {
-  decorators: [applicationConfig({ providers: [importProvidersFrom(MatIconRegistryModule)] })],
+  decorators: [
+    applicationConfig({ providers: [importProvidersFrom(MatIconRegistryModule)] }),
+    moduleMetadata({
+      declarations: [InjectorComponent],
+    }),
+    componentWrapperDecorator(
+      (story) => `<gv-injector>${story}</gv-injector>`
+    ),
+  ],
+
 };
 
 export default preview;

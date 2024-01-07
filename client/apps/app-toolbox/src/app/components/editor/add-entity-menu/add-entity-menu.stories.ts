@@ -8,12 +8,12 @@ import { createCrmAsGvPositiveSchema } from '@kleiolab/lib-redux/lib/_helpers/tr
 import { schemaModifierActions } from '@kleiolab/lib-redux/lib/redux-store/data/data.actions';
 import { dataRootReducers } from '@kleiolab/lib-redux/lib/redux-store/data/data.reducer';
 import { GvSchemaModifier } from '@kleiolab/lib-sdk-lb4';
-import { INITIAL_STATE, Store } from '@ngrx/store';
-import { within } from '@storybook/testing-library';
+import { INITIAL_STATE } from '@ngrx/store';
+import { expect } from '@storybook/jest';
+import { userEvent, within } from '@storybook/testing-library';
 import { DragDropConfig } from '@suez/ngx-dnd';
-import { firstValueFrom } from 'rxjs';
+import { getCdkOverlayCanvas } from '../../../../../.storybook/getCdkOverlayCanvas';
 import { mergeSchemaModifier } from '../../../../../.storybook/mergeSchemaModifier';
-import { playInject } from '../../../../../.storybook/playInject';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { AddEntityMenuComponent } from './add-entity-menu.component';
 
@@ -83,7 +83,6 @@ x = mergeSchemaModifier(x, {
     }
   }
 })
-console.log('x', x)
 
 // Modify the (empty) data state according to the SchemaModifier (x)
 const dataState = dataRootReducers({}, schemaModifierActions.succeeded({ payload: x }))
@@ -108,28 +107,12 @@ export const Main: Story = {
     })
   ],
   play: async ({ canvasElement }) => {
-    // const state = await playInject(canvasElement, StateFacade)
-    const store = await playInject<Store<IAppState>>(canvasElement, Store<IAppState>)
-
-    // // set project id
-    // state.ui.activeProject.loadProjectBasiscsSucceded(1)
-    // // add class 21 in profile 1
-    // state.data.dfh.klass.loadSucceeded([{ pk_class: 21, profiles: [{ fk_profile: 1, removed_from_api: false }], parent_classes: [70], ancestor_classes: [] }], '')
-    // // add profile 1 to project 2
-    // state.data.pro.dfhProfileProjRel.loadSucceeded([{ fk_profile: 1, fk_project: 1, enabled: true, pk_entity: 99 }], '')
-    // // add sys config to map class to icon
-    // state.data.sys.config.loadSucceeded([{ classes: { 21: { icon: 'persistent-item' } }, specialFields: {}, }], '')
 
     const canvas = within(canvasElement);
-
-    console.log(await firstValueFrom(store.select(s => s)))
-
-    // expect(canvas.getByText(/Jack/)).toBeTruthy();
-    // expect(canvas.getByText(/Person/)).toBeTruthy();
-    // const menuTrigger = canvas.getByTestId('menu-trigger');
-    // await userEvent.click(menuTrigger)
-    // const cdkOverlay = getCdkOverlayCanvas(canvasElement);
-    // expect(cdkOverlay.getByText(/Open Jack.*in new/)).toBeTruthy();
+    const menuTrigger = canvas.getByTestId('add-btn');
+    await userEvent.click(menuTrigger)
+    const cdkOverlay = getCdkOverlayCanvas(canvasElement);
+    expect(cdkOverlay.getByText(/Web Request/)).toBeTruthy();
   },
 
 };

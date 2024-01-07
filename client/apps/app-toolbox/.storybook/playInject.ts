@@ -1,6 +1,7 @@
-import { ProviderToken, inject, runInInjectionContext } from '@angular/core';
-export declare const ng;
-
+import { ProviderToken } from '@angular/core';
+interface HTMLElementInjector extends Element {
+  inject: <S>(injectionToken: ProviderToken<S>) => Promise<S>
+}
 /**
  * Get a Provider by its token in the context of the given canvasElement.
  *
@@ -16,12 +17,6 @@ export declare const ng;
  * @returns
  */
 export async function playInject<S>(canvasElement: HTMLElement, s: ProviderToken<S>) {
-  const storybookRootElement = canvasElement.getElementsByTagName('storybook-root')[0];
-  const injector = ng.getInjector(storybookRootElement);
-  return new Promise<S>((res) => {
-    runInInjectionContext(injector, () => {
-      const injectedInstance = inject(s);
-      res(injectedInstance);
-    });
-  });
+  const injectorElement = canvasElement.getElementsByTagName('gv-injector')[0] as HTMLElementInjector;
+  return injectorElement.inject(s);
 }
