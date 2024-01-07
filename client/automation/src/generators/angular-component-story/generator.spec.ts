@@ -1,21 +1,14 @@
-import { componentGenerator, componentStoryGenerator, libraryGenerator } from '@nx/angular/generators';
 import { Tree } from '@nx/devkit';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
+import angularComponentStoryGenerator from './generator';
 
 describe('angular-component-story generator', () => {
   let tree: Tree;
   const libName = 'ng-lib1';
   const storyFile = `${libName}/src/lib/test-button/test-button.component.stories.ts`;
-
+  const componentFolder = `${libName}/src/lib/test-button`
   beforeEach(async () => {
     tree = createTreeWithEmptyWorkspace({ layout: 'apps-libs' });
-
-    await libraryGenerator(tree, { name: libName, skipFormat: true });
-    await componentGenerator(tree, {
-      name: 'test-button',
-      project: libName,
-      skipFormat: true,
-    });
 
     tree.write(
       `${libName}/src/lib/test-button/test-button.component.ts`,
@@ -42,38 +35,17 @@ describe('angular-component-story generator', () => {
 
   it('should not generate the component stories file when it already exists', async () => {
     tree.write(storyFile, '');
-
-    await componentStoryGenerator(tree, {
-      componentFileName: 'test-button.component',
-      componentName: 'TestButtonComponent',
-      componentPath: `src/lib/test-button`,
-      projectPath: `${libName}`,
-      skipFormat: true,
-    });
-
+    await angularComponentStoryGenerator(tree, { componentPath: componentFolder });
     expect(tree.read(storyFile, 'utf-8')).toBe('');
   });
 
   it('should generate the component stories file', async () => {
-    await componentStoryGenerator(tree, {
-      componentFileName: 'test-button.component',
-      componentName: 'TestButtonComponent',
-      componentPath: `src/lib/test-button`,
-      projectPath: `${libName}`,
-      skipFormat: true,
-    });
-
+    await angularComponentStoryGenerator(tree, { componentPath: componentFolder });
     expect(tree.exists(storyFile)).toBe(true);
   });
 
   it('should generate the right props', async () => {
-    await componentStoryGenerator(tree, {
-      componentFileName: 'test-button.component',
-      componentName: 'TestButtonComponent',
-      componentPath: `src/lib/test-button`,
-      projectPath: `${libName}`,
-    });
-
+    await angularComponentStoryGenerator(tree, { componentPath: componentFolder });
     expect(tree.read(storyFile)?.toString()).toMatchSnapshot();
   });
 });

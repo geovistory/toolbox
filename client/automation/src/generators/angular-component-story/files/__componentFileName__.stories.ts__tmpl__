@@ -1,57 +1,53 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`angular-component-story generator should generate the right props 1`] = `
-"import type { Meta, StoryObj } from '@storybook/angular';
+import type { Meta, StoryObj } from '@storybook/angular';
 import {
   applicationConfig,
   type Meta,
   type StoryObj,
 } from '@storybook/angular';
-import { TestButtonComponent } from './test-button.component';
+import { <%=componentName%> } from './<%=componentFileName%>';
 import { importProvidersFrom } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { StateModule } from '@kleiolab/lib-redux';
 import { INITIAL_STATE } from '@ngrx/store';
-
+<% if ( interactionTests ) { %>
 import { within } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
+<% } %>
 
-const meta: Meta<TestButtonComponent> = {
-  component: TestButtonComponent,
-  title: 'TestButtonComponent',
+const meta: Meta<<%= componentName %>> = {
+  component: <%= componentName %>,
+  title: '<%= componentName %>',
   decorators: [
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(StateModule, MatDialogModule),
+        importProvidersFrom(
+          StateModule,
+          MatDialogModule
+        ),
         ActiveProjectService,
       ],
     }),
-  ],
+  ]
 };
 export default meta;
-type Story = StoryObj<TestButtonComponent>;
+type Story = StoryObj<<%=componentName%>>;
 
 // Setup the initial state of the story Basic
 const stateBasic = new MockStateFactory();
 
 export const Basic: Story = {
-  args: {
-    buttonType: 'button',
-    style: 'default',
-    age: 0,
-    isOn: false,
+  args: {<% for (let prop of props) { %>
+    <%= prop.name %>: <%- prop.defaultValue %>,<% } %>
   },
   decorators: [
     applicationConfig({
-      providers: [{ provide: INITIAL_STATE, useValue: stateBasic.state }],
-    }),
+      providers: [{ provide: INITIAL_STATE, useValue: stateBasic.state }]
+    })
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText(/test-button works!/gi)).toBeTruthy();
+    expect(canvas.getByText(/<%=componentNameSimple%> works!/gi)).toBeTruthy();
   },
 };
-"
-`;
