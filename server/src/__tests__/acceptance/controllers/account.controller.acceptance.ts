@@ -6,12 +6,12 @@ import {PubCredentialRepository} from '../../../repositories/pub-credential.repo
 import {AccountService} from '../../../services/account.service';
 import {PasswordResetTokenService} from '../../../services/password-reset-token.service';
 import {SqlBuilderBase} from '../../../utils/sql-builders/sql-builder-base';
+import {TestDbFactory} from '../../helpers/TestDbFactory';
 import {createAccountNotVerified, createAccountVerified} from '../../helpers/generic/account.helper';
 import {createSandBoxProject} from '../../helpers/graphs/project.helper';
 import {setupApplication} from '../../helpers/gv-server-helpers';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
 import {createModel} from '../../helpers/meta/model.helper';
-import {testdb} from '../../helpers/testdb';
 
 const qs = require('querystring');
 
@@ -146,7 +146,7 @@ describe('AccountController', () => {
 
             const q = new SqlBuilderBase();
             q.sql = 'SELECT emailverified as col FROM public.account WHERE id = ' + q.addParam(acc) + ';'
-            const result = await testdb.execute(q.sql, q.params);
+            const result = await TestDbFactory.datasource.execute(q.sql, q.params);
             expect(result[0].col).to.be.true();
         })
     })
@@ -193,8 +193,8 @@ describe('AccountController', () => {
 
         it('should accept request', async () => {
             //craft locally the token that is send in the email
-            const accountRepository = new PubAccountRepository(testdb, async () => credentialRepository);
-            const credentialRepository = new PubCredentialRepository(testdb);
+            const accountRepository = new PubAccountRepository(TestDbFactory.datasource, async () => credentialRepository);
+            const credentialRepository = new PubCredentialRepository(TestDbFactory.datasource);
             const accountService = new AccountService(accountRepository);
             const account = await accountRepository.findOne({where: {email: {eq: email}}});
             const userProfile = accountService.convertToUserProfile(account as PubAccount);

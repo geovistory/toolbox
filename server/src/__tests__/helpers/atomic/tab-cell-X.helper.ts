@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
-import { DatDigital, TabRow } from "../../../models";
-import { testdb } from '../testdb';
-import { TabCell } from '../../../models/tab-cell.model';
+import {DatDigital, TabRow} from "../../../models";
+import {TabCell} from '../../../models/tab-cell.model';
+import {TestDbFactory} from '../TestDbFactory';
 
 
 export async function createCellTable_old(digital: Partial<DatDigital>) {
-    await testdb.execute("SELECT tables.create_cell_table_for_digital(" + digital.pk_entity + ");");
+    await TestDbFactory.datasource.execute("SELECT tables.create_cell_table_for_digital(" + digital.pk_entity + ");");
 }
 
 export async function createCellTable(digital: number) {
-    await testdb.execute("SELECT tables.create_cell_table_for_digital(" + digital + ");");
+    await TestDbFactory.datasource.execute("SELECT tables.create_cell_table_for_digital(" + digital + ");");
 }
 
 
 export async function createTabCell(cell: Partial<TabCell>, row?: TabRow) {
     if (cell.pk_cell) {
-        await testdb.execute(`SELECT setval('tables.cell_pk_cell_seq', ${cell.pk_cell - 1}, true);`);
+        await TestDbFactory.datasource.execute(`SELECT setval('tables.cell_pk_cell_seq', ${cell.pk_cell - 1}, true);`);
     }
     const sql = `
     INSERT INTO tables.cell_${cell.fk_digital} (
@@ -33,7 +33,7 @@ export async function createTabCell(cell: Partial<TabCell>, row?: TabRow) {
         $4,
         $5
     );`
-    await testdb.execute(sql, [
+    await TestDbFactory.datasource.execute(sql, [
         cell.fk_digital,
         cell.fk_column,
         cell.fk_row,

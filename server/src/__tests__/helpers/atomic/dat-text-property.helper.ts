@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {DatTextProperty} from '../../../models';
 import {DatTextPropertyRepository} from '../../../repositories';
-import {testdb} from '../../helpers/testdb';
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createDatTextPropertyRepo() {
-    return new DatTextPropertyRepository(testdb)
+    return new DatTextPropertyRepository(TestDbFactory.datasource)
 }
 
 export async function createDatTextProperty(item: Partial<DatTextProperty>) {

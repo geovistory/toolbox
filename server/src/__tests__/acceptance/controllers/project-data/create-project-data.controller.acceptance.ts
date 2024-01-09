@@ -10,7 +10,7 @@ import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
 import {ProjectVisibilityOptions} from '../../../../models/sys-config/sys-config-project-visibility-options';
 import {MaintenanceDbFactory} from '../../../helpers/MaintenanceDbFactory';
 import {TestDbFactory} from '../../../helpers/TestDbFactory';
-import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
+import {createDfhApiClass} from '../../../helpers/atomic/createDfhApiClass';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
@@ -39,6 +39,7 @@ describe('CreateProjectDataController', () => {
 
   beforeEach(async () => {
     await MaintenanceDbFactory.connect()
+    await TestDbFactory.disconnect();
     await MaintenanceDbFactory.dropTestDB();
     await MaintenanceDbFactory.createTestDB();
     await TestDbFactory.connect();
@@ -47,6 +48,10 @@ describe('CreateProjectDataController', () => {
     // await createModel();
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProject1();
+    await createSysSystemConfig({
+      classes: {},
+      specialFields: {}
+    });
 
     accountInProject = await createAccountVerified(emailGaetan, pwd);
     await linkAccountToProject(accountInProject, ProProjectMock.PROJECT_1.pk_entity as number);
@@ -59,6 +64,7 @@ describe('CreateProjectDataController', () => {
   describe('POST /project-data/upsert-resources', () => {
 
     it('should respond with GvSchemaModifier containing an appellation (from object)', async () => {
+
 
       const resource: DataObject<InfResourceWithRelations> = {
         fk_class: 1,

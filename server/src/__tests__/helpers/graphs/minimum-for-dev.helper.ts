@@ -1,5 +1,7 @@
 import {genSalt, hash} from 'bcryptjs';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
+import {TestDbFactory} from '../TestDbFactory';
+import {setSequencesToMax} from '../atomic/_sequences.helper';
 import {createDatNamespace} from '../atomic/dat-namespace.helper';
 import {createInfAppellation} from '../atomic/inf-appellation.helper';
 import {createInfLanguage} from '../atomic/inf-language.helper';
@@ -17,7 +19,6 @@ import {createPubRoleMapping} from '../atomic/pub-rolemapping.helper';
 import {createSysSystemRelevantClass} from '../atomic/sys-relevant-class.helper';
 import {createSysSystemConfig} from '../atomic/sys-system-config.helper';
 import {createSysSystemType} from '../atomic/sys-system-type.helper';
-import {setSequencesToMax} from '../atomic/_sequences.helper';
 import {DatNamespaceMock} from '../data/gvDB/DatNamespaceMock';
 import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
@@ -28,8 +29,8 @@ import {ProProjectMock} from '../data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../data/gvDB/ProTextPropertyMock';
 import {PubAccountMock} from '../data/gvDB/PubAccountMock';
 import {PubCredentialMock} from '../data/gvDB/PubCredentialMock';
-import {PubRoleMappingMock} from '../data/gvDB/PubRolemappingMock';
 import {PubRoleMock} from '../data/gvDB/PubRoleMock';
+import {PubRoleMappingMock} from '../data/gvDB/PubRolemappingMock';
 import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
 import {SysSystemRelevantClassMock} from '../data/gvDB/SysSystemRelevantClass';
 import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
@@ -37,7 +38,6 @@ import {PROFILE_12_BIOGRAPHICAL_BA_2022_02_09} from '../data/ontome-profiles/pro
 import {PROFILE_21_INTELLECTUAL_AN_2022_01_18} from '../data/ontome-profiles/profile-21-intellectual-an-2022-01-18';
 import {PROFILE_5_GEOVISTORY_BASI_2022_01_18} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
-import {testdb} from '../testdb';
 import {createTextAndAnnotation} from './feature-X.helper';
 import {createSourceHabsbourgEmpire} from './source.helper';
 
@@ -138,7 +138,7 @@ export async function minimumForDev() {
 
   // Account Gaetan > Credentials
   const hashed = await hash(PubCredentialMock.GAETAN_PASSWORD.password ?? '', await genSalt());
-  await new PubCredentialRepository(testdb)
+  await new PubCredentialRepository(TestDbFactory.datasource)
     .create({accountId: PubAccountMock.GAETAN_VERIFIED.id, password: hashed});
 
   // Account Gaetan > Project Sandbox

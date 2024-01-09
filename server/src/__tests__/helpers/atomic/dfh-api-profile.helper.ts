@@ -1,12 +1,12 @@
 import {DfhApiProfile} from '../../../models';
 import {DfhApiProfileRepository} from '../../../repositories';
-import {testdb} from '../testdb';
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createDfhApiProfileRepo() {
 
   return new DfhApiProfileRepository(
-    testdb,
+    TestDbFactory.datasource,
   )
 }
 

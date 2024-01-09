@@ -1,13 +1,13 @@
 import {InfLangString} from '../../../models';
 import {InfLangStringRepository, InfLanguageRepository, InfStatementRepository} from '../../../repositories';
-import {testdb} from "../testdb";
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createInfLangStringRepo() {
   let infStatementRepo: InfStatementRepository;
   let infLanguageRepo: InfLanguageRepository;
   return new InfLangStringRepository(
-    testdb,
+    TestDbFactory.datasource,
     async () => infStatementRepo,
     async () => infLanguageRepo,
   )

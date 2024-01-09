@@ -1,17 +1,17 @@
-import {testdb} from "../testdb";
-import {SysSystemTypeRepository} from '../../../repositories';
-import {dealWithPkEntity} from './_sequences.helper';
 import {SysSystemType} from '../../../models/sys-system-type.model';
+import {SysSystemTypeRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
+import {dealWithPkEntity} from './_sequences.helper';
 
 // export async function createType(name: string, id: number, definition: string): Promise<void> {
-//   await testdb.execute("SELECT setval('system.entity_pk_entity_seq', " + (id - 1) + ", true);");
-//   await new SysSystemTypeRepository(testdb).create({definition: definition});
+//   await TestDbFactory.datasource.execute("SELECT setval('system.entity_pk_entity_seq', " + (id - 1) + ", true);");
+//   await new SysSystemTypeRepository(TestDbFactory.datasource).create({definition: definition});
 // }
 
 function createSysSystemTypeRepo() {
 
   return new SysSystemTypeRepository(
-    testdb
+    TestDbFactory.datasource
   )
 }
 

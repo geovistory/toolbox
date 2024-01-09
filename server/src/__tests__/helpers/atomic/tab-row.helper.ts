@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/camelcase */
-import { TabRow } from '../../../models';
-import { TabRowRepository } from '../../../repositories/tab-row.repository';
-import { testdb } from '../../helpers/testdb';
+import {TabRow} from '../../../models';
+import {TabRowRepository} from '../../../repositories/tab-row.repository';
+import {TestDbFactory} from '../TestDbFactory';
 
 
 function createTabRowRepo() {
-    return new TabRowRepository(testdb)
+    return new TabRowRepository(TestDbFactory.datasource)
 }
 
 
@@ -19,12 +19,12 @@ export async function deleteTabRow(id: number) {
 }
 
 export async function createRowTable(digital: number) {
-    await testdb.execute("SELECT tables.create_row_table_for_digital(" + digital + ");");
+    await TestDbFactory.datasource.execute("SELECT tables.create_row_table_for_digital(" + digital + ");");
 }
 
 export async function createTabRow(row: Partial<TabRow>): Promise<TabRow> {
     if (row.pk_row) {
-        await testdb.execute(`SELECT setval('tables.row_pk_row_seq', ${row.pk_row - 1}, true);`);
+        await TestDbFactory.datasource.execute(`SELECT setval('tables.row_pk_row_seq', ${row.pk_row - 1}, true);`);
     }
     const sql = `
     INSERT INTO tables.row_` + row.fk_digital + ` (
@@ -35,7 +35,7 @@ export async function createTabRow(row: Partial<TabRow>): Promise<TabRow> {
         $1,
         $2
     );`
-    return await testdb.execute(sql, [
+    return await TestDbFactory.datasource.execute(sql, [
         row.fk_digital,
         row.position ?? row.pk_row
     ]) as TabRow

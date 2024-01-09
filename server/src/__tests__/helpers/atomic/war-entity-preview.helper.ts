@@ -1,11 +1,11 @@
 import {WarEntityPreviewWithFulltext} from '../../../models';
 import {WarEntityPreviewId} from '../../../models/entity-preview/WarEntityPreviewId';
 import {WarEntityPreviewRepository} from '../../../repositories';
-import {testdb} from "../testdb";
+import {TestDbFactory} from '../TestDbFactory';
 
 export function createWarEntityPreviewRepo() {
   return new WarEntityPreviewRepository(
-    testdb,
+    TestDbFactory.datasource,
   )
 }
 

@@ -1,9 +1,9 @@
 import {Client, expect} from '@loopback/testlab';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
-import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
+import {createDfhApiClass} from '../../../helpers/atomic/createDfhApiClass';
 import {createDfhApiProperty} from '../../../helpers/atomic/dfh-api-property.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
-import {addProfilesToProject, addProfileToProject} from '../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
+import {addProfileToProject, addProfilesToProject} from '../../../helpers/atomic/pro-dfh-profile-proj-rel.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
 import {createSysSystemConfig} from '../../../helpers/atomic/sys-system-config.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';

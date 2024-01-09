@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProTableConfig, TableConfig } from "../../../models";
-import { ProTableConfigRepository } from "../../../repositories/pro-table-config.repository";
-import { testdb } from "../testdb";
+import {ProTableConfig, TableConfig} from "../../../models";
+import {ProTableConfigRepository} from "../../../repositories/pro-table-config.repository";
+import {TestDbFactory} from '../TestDbFactory';
 
 export async function createProTableConfig(fkProject: number, accountId: number | undefined, fkDigital: number, config: TableConfig) { //english
     const item: Partial<ProTableConfig> = {
@@ -11,7 +11,7 @@ export async function createProTableConfig(fkProject: number, accountId: number 
         config
     };
 
-    const repo = new ProTableConfigRepository(testdb)
+    const repo = new ProTableConfigRepository(TestDbFactory.datasource)
     const created = await repo.create(item);
     return repo.findById(created.pk_entity as number)
 }

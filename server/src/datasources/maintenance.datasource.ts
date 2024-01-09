@@ -13,7 +13,6 @@ export class MaintenanceDbDataSource extends juggler.DataSource
   connecting = false;
   // static readonly defaultConfig = config;
   constructor() {
-
     super({
       url: process.env.GV_DB_MAINTAINANCE,
       name: 'maintenanceDb',
@@ -22,5 +21,6 @@ export class MaintenanceDbDataSource extends juggler.DataSource
         rejectUnauthorized: false,
       },
     });
+    if (process.version !== 'v12.8.1') throw new Error('Node version must be v12.8.1, current version: ' + process.version)
   }
 }

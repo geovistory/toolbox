@@ -2,7 +2,7 @@ import {expect} from '@loopback/testlab';
 import {GeovistoryApplication} from '../../../../application';
 import {getCommunityVisibilityDefault, getProjectVisibilityDefault, VisibilityController} from '../../../../controllers/backoffice/visibility.controller';
 import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
-import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
+import {createDfhApiClass} from '../../../helpers/atomic/createDfhApiClass';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';

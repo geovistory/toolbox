@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {DatNamespace} from '../../../models';
 import {DatNamespaceRepository} from '../../../repositories';
-import {testdb} from "../testdb";
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createDatNamespaceRepo() {
-  return new DatNamespaceRepository(testdb)
+  return new DatNamespaceRepository(TestDbFactory.datasource)
 }
 
 export async function createDatNamespace(item: Partial<DatNamespace>) {

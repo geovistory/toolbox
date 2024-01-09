@@ -3,7 +3,7 @@ import {GeovistoryApplication} from '../../../../application';
 import {LoginResponse} from '../../../../controllers/account.controller';
 import {VisibilityReport} from '../../../../controllers/backoffice/community-visibility.controller';
 import {CommunityVisibilityOptions} from '../../../../models/sys-config/sys-config-community-visibility-options';
-import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
+import {createDfhApiClass} from '../../../helpers/atomic/createDfhApiClass';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';

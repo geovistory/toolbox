@@ -1,11 +1,11 @@
-import {createDfhApiClass} from '../atomic/dfh-api-class.helper';
-import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
-import {InfResourceMock} from '../data/gvDB/InfResourceMock';
-import {createInfStatement} from '../atomic/inf-statement.helper';
-import {InfStatementMock} from '../data/gvDB/InfStatementMock';
+import {createDfhApiClass} from '../atomic/createDfhApiClass';
 import {createDfhApiProperty} from '../atomic/dfh-api-property.helper';
-import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
 import {createInfResource} from '../atomic/inf-resource.helper';
+import {createInfStatement} from '../atomic/inf-statement.helper';
+import {DfhApiClassMock} from '../data/gvDB/DfhApiClassMock';
+import {DfhApiPropertyMock} from '../data/gvDB/DfhApiPropertyMock';
+import {InfResourceMock} from '../data/gvDB/InfResourceMock';
+import {InfStatementMock} from '../data/gvDB/InfStatementMock';
 
 export async function createModelMockForMadrid() {
   await createDfhApiClass(DfhApiClassMock.EN_363_GEO_PLACE);

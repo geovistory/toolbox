@@ -11,10 +11,12 @@ export class TestDbFactory {
   }
 
   static async disconnect() {
-    return this?.datasource.disconnect();
+    await this.ensureConnected()
+    return this?.datasource?.disconnect();
   }
 
   static async createSchemas() {
+    await this.ensureConnected()
     await this?.datasource.execute(`
     --
   -- PostgreSQL database dump
@@ -20925,5 +20927,11 @@ export class TestDbFactory {
   -- PostgreSQL database dump complete
   --
     `)
+  }
+
+  static async ensureConnected() {
+    if (this.datasource?.connected) return;
+    if (this.datasource) return this.datasource.connect()
+    return this.connect()
   }
 }
