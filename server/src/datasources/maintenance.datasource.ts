@@ -1,6 +1,5 @@
 import {LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
-import {getGvPgUrlForLoopback} from '../utils/databaseUrl';
 
 
 // Observe application's life cycle to disconnect the datasource when
@@ -8,16 +7,16 @@ import {getGvPgUrlForLoopback} from '../utils/databaseUrl';
 // gracefully. The `stop()` method is inherited from `juggler.DataSource`.
 // Learn more at https://loopback.io/doc/en/lb4/Life-cycle.html
 // @lifeCycleObserver('datasource')
-export class TestdbDataSource extends juggler.DataSource
+export class MaintenanceDbDataSource extends juggler.DataSource
   implements LifeCycleObserver {
-  static dataSourceName = 'testdb';
+  static dataSourceName = 'maintenanceDb';
   connecting = false;
   // static readonly defaultConfig = config;
   constructor() {
 
     super({
-      url: getGvPgUrlForLoopback(),
-      name: 'testdb',
+      url: process.env.GV_DB_MAINTAINANCE,
+      name: 'maintenanceDb',
       connector: 'postgresql',
       ssl: {
         rejectUnauthorized: false,

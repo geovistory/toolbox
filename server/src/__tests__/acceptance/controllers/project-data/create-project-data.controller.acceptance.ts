@@ -8,6 +8,8 @@ import {CalendarType} from '../../../../models/enums/CalendarType';
 import {Granularity} from '../../../../models/enums/Granularity';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
 import {ProjectVisibilityOptions} from '../../../../models/sys-config/sys-config-project-visibility-options';
+import {MaintenanceDbFactory} from '../../../helpers/MaintenanceDbFactory';
+import {TestDbFactory} from '../../../helpers/TestDbFactory';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
@@ -20,7 +22,6 @@ import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {createAccountVerified} from '../../../helpers/generic/account.helper';
 import {createProject1} from '../../../helpers/graphs/project.helper';
 import {setupApplication} from '../../../helpers/gv-server-helpers';
-import {cleanDb} from '../../../helpers/meta/clean-db.helper';
 
 describe('CreateProjectDataController', () => {
   let server: GeovistoryApplication;
@@ -31,11 +32,18 @@ describe('CreateProjectDataController', () => {
   const pwd = 'testtest1';
   let lb4Token: string
 
-  before(async () => {({server, client} = await setupApplication());});
-  after(async () => {await server.stop();});
+
+  afterEach(async () => {
+    await server.stop();
+  });
 
   beforeEach(async () => {
-    await cleanDb();
+    await MaintenanceDbFactory.connect()
+    await MaintenanceDbFactory.dropTestDB();
+    await MaintenanceDbFactory.createTestDB();
+    await TestDbFactory.connect();
+    await TestDbFactory.createSchemas();
+    ({server, client} = await setupApplication());
     // await createModel();
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProject1();
