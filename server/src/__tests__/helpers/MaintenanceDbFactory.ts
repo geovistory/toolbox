@@ -16,7 +16,7 @@ export class MaintenanceDbFactory {
 
   static async dropTestDB() {
     await this.ensureConnected()
-    await MaintenanceDbFactory.datasource.execute('DROP DATABASE IF EXISTS gv_test_db;');
+    await MaintenanceDbFactory.datasource.execute('DROP DATABASE IF EXISTS gv_test_db WITH (FORCE);');
   }
 
   static async createTestDB() {
