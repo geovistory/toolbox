@@ -15,6 +15,7 @@ import { KeysModule } from 'projects/app-toolbox/src/app/shared/pipes/keys.modul
 import { QuillOpsToStrModule } from 'projects/app-toolbox/src/app/shared/pipes/quill-delta-to-str/quill-delta-to-str.module';
 import { TruncateModule } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.module';
 import { GvButtonsModule } from '../../shared/components/gv-buttons/gv-buttons.module';
+import { VisibilityDialogModule } from '../../shared/components/visibility-dialog/visibility-dialog.module';
 import { OpenCloseModule } from '../../shared/directives/open-close/open-close.module';
 import { EntityLabelConfigModule } from '../../shared/modules/entity-label-config/entity-label-config.module';
 import { AbbreviateModule } from '../../shared/pipes/abbreviate/abbreviate.module';
@@ -194,7 +195,7 @@ const components = [
   ViewFieldAnnotationsOfCellItemComponent,
   GvDndSortListDirective,
   SelectPlatformVocabItemDialogComponent,
-  SelectTypeDialogComponent
+  SelectTypeDialogComponent,
 ]
 
 const baseModules = [
@@ -219,7 +220,8 @@ const baseModules = [
   EntityLabelConfigModule,
   OpenCloseModule,
   GvButtonsModule,
-  NgxDndModule
+  NgxDndModule,
+  VisibilityDialogModule
 ]
 
 @NgModule({

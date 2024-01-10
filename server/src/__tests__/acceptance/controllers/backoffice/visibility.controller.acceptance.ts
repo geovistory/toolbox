@@ -132,7 +132,7 @@ describe('VisibilityController', () => {
           communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}
         },
         classesByBasicType: {
-          [8]: {communityVisibilityDefault: def}
+          8: {communityVisibilityDefault: def}
         },
         classes: {},
       }
@@ -154,10 +154,10 @@ describe('VisibilityController', () => {
           communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}
         },
         classesByBasicType: {
-          [8]: {communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}}
+          8: {communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}}
         },
         classes: {
-          [21]: {communityVisibilityDefault: def}
+          21: {communityVisibilityDefault: def}
         },
       }
       const res = getCommunityVisibilityDefault(sysConfig, 21, 8, projectConfig)
