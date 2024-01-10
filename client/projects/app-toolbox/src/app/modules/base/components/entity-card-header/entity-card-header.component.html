@@ -18,7 +18,7 @@
 
 
 </div>
-<a *ngIf="  showVisibility$|async" href="" class="gv-passive-link loc-visibility-status mat-text-secondary"
+<a *ngIf="showVisibility$|async" href="" class="gv-passive-link loc-visibility-status mat-text-secondary"
   (click)="openVisibilityDialog()">
   <mat-icon [svgIcon]="'lock-outline'" *ngIf="(communityVisibility$|async)?.toolbox === false"></mat-icon>
   <mat-icon [svgIcon]="'lock-open-outline'" *ngIf="(communityVisibility$|async)?.toolbox === true"></mat-icon>
