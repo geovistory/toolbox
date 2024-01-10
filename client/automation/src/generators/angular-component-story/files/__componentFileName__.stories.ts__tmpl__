@@ -1,4 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/angular';
+<%
+  const relativePathToStorybook = Array(depth - 2).fill('../').join('');
+  const relativePathToServices = Array(depth - 4).fill('../').join('');
+%>
+
 import {
   applicationConfig,
   type Meta,
@@ -14,6 +18,9 @@ import { INITIAL_STATE } from '@ngrx/store';
 import { within } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
 <% } %>
+import { MockStateFactory } from './<%= relativePathToStorybook %>.storybook/MockStateFactory';
+import { ActiveProjectService } from './<%= relativePathToServices %>services/active-project.service';
+
 
 const meta: Meta<<%= componentName %>> = {
   component: <%= componentName %>,

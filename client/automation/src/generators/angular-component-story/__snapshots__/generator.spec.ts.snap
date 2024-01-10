@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`angular-component-story generator should generate the right props 1`] = `
-"import type { Meta, StoryObj } from '@storybook/angular';
-import {
+exports[`angular-component-story generator should generate the right stories file 1`] = `
+"import {
   applicationConfig,
   type Meta,
   type StoryObj,
@@ -16,6 +15,9 @@ import { INITIAL_STATE } from '@ngrx/store';
 
 import { within } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
+
+import { MockStateFactory } from './../../.storybook/MockStateFactory';
+import { ActiveProjectService } from './services/active-project.service';
 
 const meta: Meta<TestButtonComponent> = {
   component: TestButtonComponent,

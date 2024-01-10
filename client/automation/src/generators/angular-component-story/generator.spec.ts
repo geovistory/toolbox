@@ -44,7 +44,7 @@ describe('angular-component-story generator', () => {
     expect(tree.exists(storyFile)).toBe(true);
   });
 
-  it('should generate the right props', async () => {
+  it('should generate the right stories file', async () => {
     await angularComponentStoryGenerator(tree, { componentPath: componentFolder });
     expect(tree.read(storyFile)?.toString()).toMatchSnapshot();
   });

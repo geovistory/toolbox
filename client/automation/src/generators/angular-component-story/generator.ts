@@ -28,7 +28,8 @@ export async function angularComponentStoryGenerator(
     componentPath: pathSegments.slice(2).join('/'),
     projectPath: projectPath,
     interactionTests: true,
-    skipFormat: false
+    skipFormat: false,
+    depth: pathSegments.length
   };
 
   const templatesDir = joinPathFragments(__dirname, 'files');
@@ -52,6 +53,7 @@ export async function angularComponentStoryGenerator(
     componentName: resolvedOptions.componentName,
     componentNameSimple: resolvedOptions.componentFileName.replace('.component', ''),
     interactionTests: resolvedOptions.interactionTests,
+    depth: resolvedOptions.depth,
     props: props.filter((p) => typeof p.defaultValue !== 'undefined'),
     tmpl: '',
   });

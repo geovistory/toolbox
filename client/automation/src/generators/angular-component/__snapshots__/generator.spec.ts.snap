@@ -17,8 +17,7 @@ export class ExampleComponent {}
 `;
 
 exports[`angular-component generator should run successfully: stories 1`] = `
-"import type { Meta, StoryObj } from '@storybook/angular';
-import {
+"import {
   applicationConfig,
   type Meta,
   type StoryObj,
@@ -32,6 +31,9 @@ import { INITIAL_STATE } from '@ngrx/store';
 
 import { within } from '@storybook/testing-library';
 import { expect } from '@storybook/jest';
+
+import { MockStateFactory } from './../../../.storybook/MockStateFactory';
+import { ActiveProjectService } from './../services/active-project.service';
 
 const meta: Meta<ExampleComponent> = {
   component: ExampleComponent,
