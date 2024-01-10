@@ -2,7 +2,7 @@ import {Client, expect} from '@loopback/testlab';
 import {GeovistoryApplication} from '../../../../application';
 import {LoginResponse} from '../../../../controllers/account.controller';
 import {GvPositiveSchemaObject} from '../../../../models/gv-positive-schema-object.model';
-import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
+import {createDfhApiClass} from '../../../helpers/atomic/createDfhApiClass';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
 import {createProInfoProjRel} from '../../../helpers/atomic/pro-info-proj-rel.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';

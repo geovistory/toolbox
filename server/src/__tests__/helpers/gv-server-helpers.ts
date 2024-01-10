@@ -3,7 +3,7 @@ import {Client, createRestAppClient, givenHttpServerConfig} from '@loopback/test
 import Ajv, {ErrorObject, ValidateFunction} from 'ajv';
 import {path} from 'ramda';
 import {GeovistoryApplication} from '../../application';
-import {testdb} from './testdb';
+import {TestDbFactory} from './TestDbFactory';
 const toJsonSchema = require('@openapi-contrib/openapi-schema-to-json-schema');
 
 export async function setupApplication(): Promise<AppWithClient> {
@@ -35,7 +35,7 @@ export interface AppWithClient {
 
 
 export function pgNotify(channel: string, value: string) {
-  return testdb.execute(`SELECT pg_notify($1, $2)`, [channel, value])
+  return TestDbFactory.datasource.execute(`SELECT pg_notify($1, $2)`, [channel, value])
 }
 
 

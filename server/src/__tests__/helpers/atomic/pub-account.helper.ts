@@ -1,13 +1,13 @@
-import { testdb } from "../testdb";
+import {PubAccount} from '../../../models';
 import {PubAccountRepository} from '../../../repositories';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
-import {PubAccount} from '../../../models';
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithId} from './_sequences.helper';
 
 function createPubAccountRepo() {
     let pubCredentialRepository: PubCredentialRepository;
     return new PubAccountRepository(
-        testdb,
+        TestDbFactory.datasource,
         async () => pubCredentialRepository
     )
 }
@@ -22,4 +22,4 @@ export async function create(email: string, username: string, verificationToken:
 
 export async function createPubAccount(item: Partial<PubAccount>) {
     return createPubAccountRepo().create(await dealWithId(item, 'public.account_id_seq'))
-  }
+}

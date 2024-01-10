@@ -1,11 +1,11 @@
 import {InfDimension} from '../../../models';
-import {testdb} from "../testdb";
-import {dealWithPkEntity} from './_sequences.helper';
 import {InfDimensionRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
+import {dealWithPkEntity} from './_sequences.helper';
 
 function createInfDimensionRepo() {
   return new InfDimensionRepository(
-    testdb,
+    TestDbFactory.datasource,
   )
 }
 

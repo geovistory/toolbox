@@ -1,11 +1,12 @@
-import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActiveProjectPipesService, ConfigurationPipesService } from '@kleiolab/lib-queries';
-import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { ActiveProjectPipesService, ConfigurationPipesService, SchemaSelectorsService } from '@kleiolab/lib-queries';
+import { CommunityVisibilityOptions, InfResource, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { ActiveProjectService } from 'projects/app-toolbox/src/app/core/active-project/active-project.service';
+import { VisibilityDialogComponent, VisibilityDialogData } from 'projects/app-toolbox/src/app/shared/components/visibility-dialog/visibility-dialog.component';
 import { TruncatePipe } from 'projects/app-toolbox/src/app/shared/pipes/truncate/truncate.pipe';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { first, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
+import { first, map, switchMap } from 'rxjs/operators';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../../class-config/components/class-config-dialog/class-config-dialog.component';
 import { EditModeService } from '../../services/edit-mode.service';
 import { READ_ONLY } from '../../tokens/READ_ONLY';
@@ -13,7 +14,8 @@ import { READ_ONLY } from '../../tokens/READ_ONLY';
 @Component({
   selector: 'gv-entity-card-header',
   templateUrl: './entity-card-header.component.html',
-  styleUrls: ['./entity-card-header.component.scss']
+  styleUrls: ['./entity-card-header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityCardHeaderComponent implements OnInit {
 
@@ -27,12 +29,15 @@ export class EntityCardHeaderComponent implements OnInit {
 
   preview$: Observable<WarEntityPreview>;
   classLabel$: Observable<string>;
+  communityVisibility$: Observable<CommunityVisibilityOptions>;
+  showVisibility$ = new BehaviorSubject(false)
 
   constructor(
     public editMode: EditModeService,
     private p: ActiveProjectService,
     private ap: ActiveProjectPipesService,
     private c: ConfigurationPipesService,
+    private s: SchemaSelectorsService,
     private dialog: MatDialog,
     private truncatePipe: TruncatePipe,
     @Optional() @Inject(READ_ONLY) public readonly: boolean
@@ -48,8 +53,9 @@ export class EntityCardHeaderComponent implements OnInit {
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true, this.pkProject)
 
     this.classLabel$ = this.fkClass$.pipe(switchMap(fkClass => this.c.pipeClassLabel(fkClass)))
-    // if (this.fkClass$)
-    // else this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
+
+    this.communityVisibility$ = this.s.inf$.resource$.by_pk_entity_key$(this.pkEntity)
+      .pipe(map((r: InfResource) => r?.community_visibility))
   }
 
   openClassConfig() {
@@ -81,5 +87,9 @@ export class EntityCardHeaderComponent implements OnInit {
     const tabTitle = [trucatedClassLabel, preview.entity_label].filter(i => !!i).join(' - ')
     const confirmed = await this.p.openRemoveEntityDialog(tabTitle, this.pkEntity)
     if (confirmed) this.removed.emit()
+  }
+
+  async openVisibilityDialog() {
+    this.dialog.open<VisibilityDialogComponent, VisibilityDialogData>(VisibilityDialogComponent)
   }
 }

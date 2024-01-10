@@ -1,11 +1,11 @@
-import { testdb } from "../testdb";
 import {ProClassFieldConfig} from '../../../models';
 import {ProClassFieldConfigRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createProClassFieldConfigRepo() {
   return new ProClassFieldConfigRepository(
-    testdb
+    TestDbFactory.datasource
   )
 }
 

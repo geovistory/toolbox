@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {values} from 'lodash';
 import {keys} from 'ramda';
-import {testdb} from "../testdb";
+import {TestDbFactory} from '../TestDbFactory';
 
 /**
  * These helpers are independent of any loopback 4 repository
@@ -20,7 +20,7 @@ export async function createDfhApiProperty(item: Partial<NewDfhApiProperty> = {}
     SELECT ${keys(templateExisting).join(',')}
     FROM tw1;
   `
-  const res: DfhApiProperty[] = await testdb.execute(sql, values(x));
+  const res: DfhApiProperty[] = await TestDbFactory.datasource.execute(sql, values(x));
   return res[0]
 }
 
@@ -37,13 +37,13 @@ export async function updateDfhApiProperty(pkEntity: number, item: Partial<NewDf
     SELECT ${keys(templateExisting).join(',')}
     FROM tw1;
   `
-  const res: DfhApiProperty[] = await testdb.execute(sql, [pkEntity, ...values(x)]);
+  const res: DfhApiProperty[] = await TestDbFactory.datasource.execute(sql, [pkEntity, ...values(x)]);
   return res[0]
 }
 
 export async function deleteDfhApiProperty(pkEntity: number) {
   const sql = `DELETE FROM data_for_history.api_property WHERE pk_entity = $1;`
-  return testdb.execute(sql, [pkEntity]);
+  return TestDbFactory.datasource.execute(sql, [pkEntity]);
 }
 
 

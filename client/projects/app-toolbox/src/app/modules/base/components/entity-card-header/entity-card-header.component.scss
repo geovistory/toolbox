@@ -55,3 +55,12 @@
 .loc-more-btn {
   margin-left: 8px;
 }
+.loc-visibility-status {
+  margin-right: 2rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.loc-visibility-status mat-icon {
+  margin-right: -6px;
+}

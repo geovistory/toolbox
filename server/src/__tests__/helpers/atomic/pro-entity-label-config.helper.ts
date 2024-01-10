@@ -1,10 +1,10 @@
-import { testdb } from "../testdb";
 import {ProEntityLabelConfig} from '../../../models';
 import {ProEntityLabelConfigRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 function createProEntityLabelConfigRepo() {
   return new ProEntityLabelConfigRepository(
-    testdb
+    TestDbFactory.datasource
   )
 }
 
@@ -19,5 +19,5 @@ export async function updateProEntityLabelConfig(id: number, item: Partial<ProEn
 
 
 export async function deleteProEntityLabelConfig(pkEntity: number) {
-  return new ProEntityLabelConfigRepository(testdb).deleteById(pkEntity);
+  return new ProEntityLabelConfigRepository(TestDbFactory.datasource).deleteById(pkEntity);
 }

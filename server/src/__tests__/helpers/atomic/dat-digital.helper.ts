@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {DatDigital} from '../../../models';
 import {DatDigitalRepository} from '../../../repositories';
-import {testdb} from '../../helpers/testdb';
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntityAndPkText} from './_sequences.helper';
 
 
 function createDatDigitalRepo() {
-    return new DatDigitalRepository(testdb)
+    return new DatDigitalRepository(TestDbFactory.datasource)
 }
 
 export async function createDatDigital(item: Partial<DatDigital>) {

@@ -1,12 +1,12 @@
 import {PubRoleMapping} from '../../../models';
 import {PubRoleMappingRepository, PubRoleRepository} from '../../../repositories';
-import {testdb} from "../testdb";
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithId} from './_sequences.helper';
 
 function createPubRoleMappingRepo() {
     let pubRoleRepository: PubRoleRepository
     return new PubRoleMappingRepository(
-        testdb,
+        TestDbFactory.datasource,
         async () => pubRoleRepository
     )
 }

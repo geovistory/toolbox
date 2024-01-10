@@ -1,4 +1,4 @@
-import {createDfhApiClass} from '../atomic/dfh-api-class.helper';
+import {createDfhApiClass} from '../atomic/createDfhApiClass';
 import {createDfhApiProfile} from '../atomic/dfh-api-profile.helper';
 import {createDfhApiProperty} from '../atomic/dfh-api-property.helper';
 import {OntomeProfileMock} from '../data/gvDB/local-model.helpers';

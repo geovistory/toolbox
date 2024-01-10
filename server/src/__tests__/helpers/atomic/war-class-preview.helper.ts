@@ -1,10 +1,10 @@
-import { testdb } from "../testdb";
 import {WarClassPreview} from '../../../models';
 import {WarClassPreviewRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
 
 export function createWarClassPreviewRepo() {
   return new WarClassPreviewRepository(
-    testdb,
+    TestDbFactory.datasource,
   )
 }
 

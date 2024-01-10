@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {values} from 'lodash';
 import {keys} from 'ramda';
+import {TestDbFactory} from '../TestDbFactory';
 import {DfhApiClass, NewDfhApiClass} from '../data/gvDB/local-model.helpers';
-import {testdb} from "../testdb";
 
 /**
  * These helpers are independent of any loopback 4 repository
@@ -21,7 +21,7 @@ export async function createDfhApiClass(item: Partial<NewDfhApiClass> = {}) {
     SELECT ${keys(templateExisting).join(',')}
     FROM tw1;
   `
-  const res: DfhApiClass[] = await testdb.execute(sql, values(x));
+  const res: DfhApiClass[] = await TestDbFactory.datasource.execute(sql, values(x));
   return res[0]
 }
 
@@ -38,17 +38,17 @@ export async function updateDfhApiClass(pkEntity: number, item: Partial<NewDfhAp
     SELECT ${keys(templateExisting).join(',')}
     FROM tw1;
   `
-  const res: DfhApiClass[] = await testdb.execute(sql, [pkEntity, ...values(x)]);
+  const res: DfhApiClass[] = await TestDbFactory.datasource.execute(sql, [pkEntity, ...values(x)]);
   return res[0]
 }
 
 export async function deleteDfhApiClass(pkEntity: number) {
   const sql = `DELETE FROM data_for_history.api_class WHERE pk_entity = $1;`
-  return testdb.execute(sql, [pkEntity]);
+  return TestDbFactory.datasource.execute(sql, [pkEntity]);
 }
 
 
-const templateNew: NewDfhApiClass = {
+export const templateNew: NewDfhApiClass = {
   dfh_pk_class: 100,
   dfh_class_identifier_in_namespace: 'C100',
   dfh_class_label_language: 'en',
@@ -70,7 +70,7 @@ const templateNew: NewDfhApiClass = {
 }
 
 
-const templateExisting: DfhApiClass = {
+export const templateExisting: DfhApiClass = {
   pk_entity: 0,
   tmsp_last_modification: '',
   ...templateNew,

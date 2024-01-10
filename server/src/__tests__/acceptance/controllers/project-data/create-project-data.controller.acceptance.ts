@@ -8,9 +8,11 @@ import {CalendarType} from '../../../../models/enums/CalendarType';
 import {Granularity} from '../../../../models/enums/Granularity';
 import {GvSchemaModifier} from '../../../../models/gv-schema-modifier.model';
 import {ProjectVisibilityOptions} from '../../../../models/sys-config/sys-config-project-visibility-options';
-import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
+import {createDfhApiClass} from '../../../helpers/atomic/createDfhApiClass';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
 import {createInfResource} from '../../../helpers/atomic/inf-resource.helper';
+import {createProProject} from '../../../helpers/atomic/pro-project.helper';
+import {createProVisibilitySettings} from '../../../helpers/atomic/pro-visibility-settings.helper';
 import {linkAccountToProject} from '../../../helpers/atomic/pub-account_project_rel.helper';
 import {createSysSystemConfig} from '../../../helpers/atomic/sys-system-config.helper';
 import {DfhApiClassMock} from '../../../helpers/data/gvDB/DfhApiClassMock';
@@ -20,7 +22,7 @@ import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {createAccountVerified} from '../../../helpers/generic/account.helper';
 import {createProject1} from '../../../helpers/graphs/project.helper';
 import {setupApplication} from '../../../helpers/gv-server-helpers';
-import {cleanDb} from '../../../helpers/meta/clean-db.helper';
+import {setupTestDB} from '../../../helpers/setupTestDB';
 
 describe('CreateProjectDataController', () => {
   let server: GeovistoryApplication;
@@ -31,14 +33,21 @@ describe('CreateProjectDataController', () => {
   const pwd = 'testtest1';
   let lb4Token: string
 
-  before(async () => {({server, client} = await setupApplication());});
-  after(async () => {await server.stop();});
+
+  afterEach(async () => {
+    await server.stop();
+  });
 
   beforeEach(async () => {
-    await cleanDb();
+    await setupTestDB();
+    ({server, client} = await setupApplication());
     // await createModel();
     await createInfLanguage(InfLanguageMock.GERMAN)
     await createProject1();
+    await createSysSystemConfig({
+      classes: {},
+      specialFields: {}
+    });
 
     accountInProject = await createAccountVerified(emailGaetan, pwd);
     await linkAccountToProject(accountInProject, ProProjectMock.PROJECT_1.pk_entity as number);
@@ -51,6 +60,7 @@ describe('CreateProjectDataController', () => {
   describe('POST /project-data/upsert-resources', () => {
 
     it('should respond with GvSchemaModifier containing an appellation (from object)', async () => {
+
 
       const resource: DataObject<InfResourceWithRelations> = {
         fk_class: 1,
@@ -434,7 +444,180 @@ describe('CreateProjectDataController', () => {
         .send([resource])
       expect(res.body.positive.inf?.resource?.[0].community_visibility).to.deepEqual(def)
     })
+
+    it('projectVisibilitySettings.classesDefault should override communityVisibilitySettings', async () => {
+      await createDfhApiClass(DfhApiClassMock.EN_21_PERSON) // basic type 8
+      await createProVisibilitySettings({
+        pk_entity: 9001,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        settings: {
+          classesDefault: {
+            communityVisibilityDefault: {toolbox: true, dataApi: true, website: true}, // <- should apply
+          },
+          classesByBasicType: {
+            9: {
+              communityVisibilityDefault: {toolbox: true, dataApi: true, website: false},
+            }
+          },
+          classes: {
+            363: {
+              communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+            }
+          }
+        }
+      })
+      await createSysSystemConfig({
+        specialFields: {},
+        classes: {},
+        classesDefault: {
+          communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+          projectVisibilityDefault: {dataApi: false, website: false},
+        },
+      })
+      const params = {pkProject: ProProjectMock.PROJECT_1.pk_entity, }
+      const resource: Partial<InfResource> = {fk_class: 21}
+      const res: {body: GvSchemaModifier} = await client
+        .post('/project-data/upsert-resources')
+        .set('Authorization', lb4Token)
+        .query(params)
+        .send([resource])
+      expect(res.body.positive.inf?.resource?.[0].community_visibility).to
+        .deepEqual({toolbox: true, dataApi: true, website: true})
+    })
+
+    it('projectVisibilitySettings.classesByBasicType should override communityVisibilitySettings', async () => {
+      await createDfhApiClass(DfhApiClassMock.EN_61_BIRTH) // basic type 9
+      await createProVisibilitySettings({
+        pk_entity: 9001,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        settings: {
+          classesDefault: {
+            communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+          },
+          classesByBasicType: {
+            9: {
+              communityVisibilityDefault: {toolbox: true, dataApi: true, website: false}, // <- should apply
+            }
+          },
+          classes: {
+            363: {
+              communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+            }
+          }
+        }
+      })
+      await createSysSystemConfig({
+        specialFields: {},
+        classes: {},
+        classesDefault: {
+          communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+          projectVisibilityDefault: {dataApi: false, website: false},
+        },
+      })
+      const params = {pkProject: ProProjectMock.PROJECT_1.pk_entity, }
+      const resource: Partial<InfResource> = {fk_class: 61}
+      const res: {body: GvSchemaModifier} = await client
+        .post('/project-data/upsert-resources')
+        .set('Authorization', lb4Token)
+        .query(params)
+        .send([resource])
+      expect(res.body.positive.inf?.resource?.[0].community_visibility).to
+        .deepEqual({toolbox: true, dataApi: true, website: false})
+    })
+
+    it('projectVisibilitySettings.classes should override communityVisibilitySettings', async () => {
+      await createDfhApiClass(DfhApiClassMock.EN_363_GEO_PLACE) // basic type 8
+      await createProVisibilitySettings({
+        pk_entity: 9001,
+        fk_project: ProProjectMock.PROJECT_1.pk_entity,
+        settings: {
+          classesDefault: {
+            communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+          },
+          classesByBasicType: {
+            9: {
+              communityVisibilityDefault: {toolbox: true, dataApi: true, website: false}, // <- should apply
+            }
+          },
+          classes: {
+            363: {
+              communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+            }
+          }
+        }
+      })
+      await createSysSystemConfig({
+        specialFields: {},
+        classes: {},
+        classesDefault: {
+          communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},
+          projectVisibilityDefault: {dataApi: false, website: false},
+        },
+      })
+      const params = {pkProject: ProProjectMock.PROJECT_1.pk_entity, }
+      const resource: Partial<InfResource> = {fk_class: 363}
+      const res: {body: GvSchemaModifier} = await client
+        .post('/project-data/upsert-resources')
+        .set('Authorization', lb4Token)
+        .query(params)
+        .send([resource])
+      expect(res.body.positive.inf?.resource?.[0].community_visibility).to
+        .deepEqual({toolbox: true, dataApi: false, website: false})
+    })
+
+
+    it('projectVisibilitySettings should not affect other projects and apply system defaults', async () => {
+      await createDfhApiClass(DfhApiClassMock.EN_363_GEO_PLACE) // basic type 8
+      await createProProject({pk_entity: 123})
+      await createProVisibilitySettings({
+        pk_entity: 9001,
+        fk_project: 123,
+        settings: {
+          classesDefault: {
+            communityVisibilityDefault: {toolbox: true, dataApi: true, website: true},
+          },
+          classesByBasicType: {
+            9: {
+              communityVisibilityDefault: {toolbox: true, dataApi: true, website: false},
+            }
+          },
+          classes: {
+            363: {
+              communityVisibilityDefault: {toolbox: true, dataApi: false, website: false},
+            }
+          }
+        }
+      })
+      await createSysSystemConfig({
+        specialFields: {},
+        classes: {},
+        classesDefault: {
+          communityVisibilityDefault: {toolbox: false, dataApi: false, website: false},  // <- should apply
+          projectVisibilityDefault: {dataApi: false, website: false},
+        },
+      })
+      const params = {pkProject: ProProjectMock.PROJECT_1.pk_entity, }
+      const resource: Partial<InfResource> = {fk_class: 21}
+      const res: {body: GvSchemaModifier} = await client
+        .post('/project-data/upsert-resources')
+        .set('Authorization', lb4Token)
+        .query(params)
+        .send([resource])
+      expect(res.body.positive.inf?.resource?.[0].community_visibility).to
+        .deepEqual({toolbox: false, dataApi: false, website: false})
+
+      const res2: {body: GvSchemaModifier} = await client
+        .post('/project-data/upsert-resources')
+        .set('Authorization', lb4Token)
+        .query(params)
+        .send([resource])
+      expect(res2.body.positive.inf?.resource?.[0].community_visibility).to
+        .deepEqual({toolbox: false, dataApi: false, website: false})
+    })
+
   })
+
+
 
   describe('POST /project-data/upsert-statements', () => {
     it('should respond with GvSchemaModifier containing many statements', async () => {
@@ -685,4 +868,5 @@ describe('CreateProjectDataController', () => {
   })
 
 });
+
 

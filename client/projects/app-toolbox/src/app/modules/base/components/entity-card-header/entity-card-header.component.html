@@ -14,8 +14,21 @@
     *ngIf="(preview$|async)?.fk_type">{{(preview$|async)?.type_label}}</span>
   <span class="loc-text-item mat-caption mat-text-secondary loc-id" [matTooltip]="'id: ' + pkEntity">id
     {{pkEntity}}</span>
+
+
+
 </div>
+<a *ngIf="showVisibility$|async" href="" class="gv-passive-link loc-visibility-status mat-text-secondary"
+  (click)="openVisibilityDialog()">
+  <mat-icon [svgIcon]="'lock-outline'" *ngIf="(communityVisibility$|async)?.toolbox === false"></mat-icon>
+  <mat-icon [svgIcon]="'lock-open-outline'" *ngIf="(communityVisibility$|async)?.toolbox === true"></mat-icon>
+
+  <mat-icon [svgIcon]="'lock-outline'" *ngIf="(communityVisibility$|async)?.dataApi === false"></mat-icon>
+  <mat-icon [svgIcon]="'lock-open-outline'" *ngIf="(communityVisibility$|async)?.dataApi === true"></mat-icon>
+</a>
 <div class="loc-buttons">
+
+
   <mat-button-toggle-group *ngIf="!readonly" class="loc-edit-toggle" [value]="editMode.value$|async"
     (change)="editMode.toggleValue()">
     <mat-button-toggle [value]="true" aria-label="Edit mode" [matTooltip]="'Edit mode [Shift + E]'">
@@ -40,6 +53,13 @@
     <button [hidden]="readonly" mat-menu-item (click)="editMode.toggleValue();$event.stopPropagation();">
       <mat-slide-toggle color="accent" [checked]="editMode.value$|async" style="pointer-events: none">
         Edit mode [Shift + E]
+      </mat-slide-toggle>
+    </button>
+
+
+    <button mat-menu-item (click)="showVisibility$.next(!showVisibility$.value);$event.stopPropagation();">
+      <mat-slide-toggle color="accent" [checked]="showVisibility$|async" style="pointer-events: none">
+        Visibility status
       </mat-slide-toggle>
     </button>
 

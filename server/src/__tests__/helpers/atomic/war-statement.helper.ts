@@ -1,10 +1,10 @@
-import {testdb} from "../testdb";
 import {WarStatement, WarStatementId} from '../../../models';
 import {WarStatementRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
 
 export function createWarStatementRepo() {
   return new WarStatementRepository(
-    testdb,
+    TestDbFactory.datasource,
   )
 }
 

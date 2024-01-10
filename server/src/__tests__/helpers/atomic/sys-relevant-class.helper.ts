@@ -1,17 +1,17 @@
-import {testdb} from "../testdb";
-import {SysSystemRelevantClassRepository} from '../../../repositories';
-import {dealWithPkEntity} from './_sequences.helper';
 import {SysSystemRelevantClass} from '../../../models/sys-system-relevant-class.model';
+import {SysSystemRelevantClassRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
+import {dealWithPkEntity} from './_sequences.helper';
 
 // export async function createType(name: string, id: number, definition: string): Promise<void> {
-//   await testdb.execute("SELECT setval('system.entity_pk_entity_seq', " + (id - 1) + ", true);");
-//   await new SysSystemRelevantClassRepository(testdb).create({definition: definition});
+//   await TestDbFactory.datasource.execute("SELECT setval('system.entity_pk_entity_seq', " + (id - 1) + ", true);");
+//   await new SysSystemRelevantClassRepository(TestDbFactory.datasource).create({definition: definition});
 // }
 
 function createSysSystemRelevantClassRepo() {
 
   return new SysSystemRelevantClassRepository(
-    testdb
+    TestDbFactory.datasource
   )
 }
 

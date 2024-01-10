@@ -1,10 +1,10 @@
 import {SYS_CONFIG_KEY} from '../../../controllers/backoffice/sys-config.controller';
 import {SysConfigValue} from '../../../models/sys-config/sys-config-value.model';
-import {testdb} from '../testdb';
+import {TestDbFactory} from '../TestDbFactory';
 
 export async function createSysSystemConfig(config: SysConfigValue) {
   await deleteSysSystemConfig();
-  return testdb.execute(
+  return TestDbFactory.datasource.execute(
     `INSERT INTO system.config (key, config) VALUES ($1,$2)`,
     [SYS_CONFIG_KEY, config]
   )
@@ -12,7 +12,7 @@ export async function createSysSystemConfig(config: SysConfigValue) {
 
 
 export async function deleteSysSystemConfig() {
-  await testdb.execute(
+  await TestDbFactory.datasource.execute(
     `DELETE FROM system.config WHERE key = $1`,
     [SYS_CONFIG_KEY]
   );

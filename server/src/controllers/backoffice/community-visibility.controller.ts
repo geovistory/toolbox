@@ -67,14 +67,14 @@ export class CommunityVisibilityController {
   // @authenticate('basic')
   // @authorize({allowedRoles: [Roles.SYS_ADMIN]})
   async reportConflicts(): Promise<VisibilityReport[]> {
-    await this.visibilityController.initializeConfiguration()
+    await this.visibilityController.initializeSystemSettings()
     const classes = this.visibilityController.allClasses ?? [];
 
 
 
     const q = new SqlBuilderLb4Models(this.datasource);
     const allowedVisibliities = classes.map(k => {
-      const x = this.visibilityController.getAllowedCommunityVisibility(k.pk_class)
+      const x = this.visibilityController.getAllowedCommunityVisibility(k.pk_class ?? -1)
       return ` (${k.pk_class}, ARRAY[${x.toolbox}], ARRAY[${x.dataApi}], ARRAY[${x.website}]) `
     }).join(',\n')
 
@@ -167,7 +167,7 @@ export class CommunityVisibilityController {
       const entitiesCount = countPerClass[key];
       const label = labelPerClass[key];
       const allowedVisibility = this.visibilityController.getAllowedCommunityVisibility(classId)
-      const defaultVisibility = this.visibilityController.getDefaultCommunityVisibility(classId)
+      const defaultVisibility = this.visibilityController.getSystemDefaultCommunityVisibility(classId)
       let totalConflicts = 0;
       let conflicts: CommunityVisibilityConflicts[] = []
       // add conflicts
@@ -208,7 +208,7 @@ export class CommunityVisibilityController {
     if (!['toolbox', 'dataApi', 'website'].includes(channel)) {
       throw new HttpErrors.UnprocessableEntity('channel must be one of: toolbox, dataApi, website')
     }
-    await this.visibilityController.initializeConfiguration()
+    await this.visibilityController.initializeSystemSettings()
     const range = this.visibilityController.getAllowedCommunityVisibility(classId)
     const allowedVals = range[channel as keyof AllowedCommunityVisibility]
 

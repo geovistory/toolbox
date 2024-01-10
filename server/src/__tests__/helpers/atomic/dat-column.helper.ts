@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {DatColumn} from '../../../models';
 import {DatColumnRepository, DatNamespaceRepository} from '../../../repositories';
-import {testdb} from '../../helpers/testdb';
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createDatColumnRepo() {
     let datNamespaceRepository: DatNamespaceRepository;
-    return new DatColumnRepository(testdb, async () => datNamespaceRepository)
+    return new DatColumnRepository(TestDbFactory.datasource, async () => datNamespaceRepository)
 }
 
 export async function createDatColumn(item: Partial<DatColumn>) {

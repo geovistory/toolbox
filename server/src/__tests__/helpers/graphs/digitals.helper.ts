@@ -4,6 +4,8 @@ import {QuillDoc} from '../../../models/quill-doc/quill-doc.model';
 import {QuillOperation} from '../../../models/quill-doc/quill-operation.model';
 import {C_339_STRING_ID, C_365_APPELLATION_IN_A_LANGUAGE_ID, C_40_APPELLATION_ID, C_456_CHUNK_ID, C_503_EXPRESSION_PORTION_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1111_IS_APPELLATION_FOR_LANGUAGE_OF_ID, P_1113_REFERS_TO_NAME_ID, P_1317_IS_PART_OF_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID} from '../../../ontome-ids';
 import {PubCredentialRepository} from '../../../repositories/pub-credential.repository';
+import {TestDbFactory} from '../TestDbFactory';
+import {setSequencesToMax} from '../atomic/_sequences.helper';
 import {createDatClassColumnMapping} from '../atomic/dat-class-mapping.helper';
 import {createDatColumn} from '../atomic/dat-column.helper';
 import {createDatDigital} from '../atomic/dat-digital.helper';
@@ -29,7 +31,6 @@ import {createSysSystemType} from '../atomic/sys-system-type.helper';
 import {createCellTable_old, createTabCell} from '../atomic/tab-cell-X.helper';
 import {createRowTable, createTabRow} from '../atomic/tab-row.helper';
 import {createWarEntityPreview} from '../atomic/war-entity-preview.helper';
-import {setSequencesToMax} from '../atomic/_sequences.helper';
 import {DatClassColumnMappingMock} from '../data/gvDB/DatClassColumnMappingMock';
 import {DatColumnMock} from '../data/gvDB/DatColumnMock';
 import {DatDigitalMock} from '../data/gvDB/DatDigitalMock';
@@ -40,25 +41,24 @@ import {InfAppellationMock} from '../data/gvDB/InfAppellationMock';
 import {InfLanguageMock} from '../data/gvDB/InfLanguageMock';
 import {InfResourceMock} from '../data/gvDB/InfResourceMock';
 import {InfStatementMock} from '../data/gvDB/InfStatementMock';
-import {OmitEntity} from '../data/gvDB/local-model.helpers';
 import {ProEntityLabelConfigMock} from '../data/gvDB/ProEntityLabelConfigMock';
 import {ProProjectMock} from '../data/gvDB/ProProjectMock';
 import {ProTextPropertyMock} from '../data/gvDB/ProTextPropertyMock';
 import {PubAccountMock} from '../data/gvDB/PubAccountMock';
 import {PubCredentialMock} from '../data/gvDB/PubCredentialMock';
-import {PubRoleMappingMock} from '../data/gvDB/PubRolemappingMock';
 import {PubRoleMock} from '../data/gvDB/PubRoleMock';
+import {PubRoleMappingMock} from '../data/gvDB/PubRolemappingMock';
 import {SysConfigValueMock} from '../data/gvDB/SysConfigValueMock';
 import {SysSystemRelevantClassMock} from '../data/gvDB/SysSystemRelevantClass';
 import {SysSystemTypeMock} from '../data/gvDB/SysSystemTypeMock';
 import {TabCellXMock} from '../data/gvDB/TabCellXMock';
 import {TabRowMock} from '../data/gvDB/TabRowMock';
 import {WarEntityPreviewMock} from '../data/gvDB/WarEntityPreviewMock';
+import {OmitEntity} from '../data/gvDB/local-model.helpers';
 import {PROFILE_12_BIOGRAPHICAL_BA_2022_02_09} from '../data/ontome-profiles/profile-12-biographical-ba-2022-02-09';
 import {PROFILE_5_GEOVISTORY_BASI_2022_01_18} from '../data/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
 import {PROFILE_97_GEOVISTORY_DIGI_2022_02_05} from '../data/ontome-profiles/profile-97-geovistory-digi-2022-02-05';
 import {createOntomeProfileMock} from '../generic/ontomeprofile.helper';
-import {testdb} from '../testdb';
 import {createBunchOfPersons} from './person.helper';
 
 
@@ -171,7 +171,7 @@ export async function digitalsSeeds() {
 
   // Account Gaetan > Credentials
   const hashed = await hash(PubCredentialMock.GAETAN_PASSWORD.password ?? '', await genSalt());
-  await new PubCredentialRepository(testdb)
+  await new PubCredentialRepository(TestDbFactory.datasource)
     .create({accountId: PubAccountMock.GAETAN_VERIFIED.id, password: hashed});
 
   // Account Gaetan > Project 1

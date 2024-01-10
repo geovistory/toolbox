@@ -1,11 +1,11 @@
 import {ProDfhProfileProjRel} from '../../../models';
 import {ProDfhProfileProjRelRepository} from '../../../repositories';
-import {testdb} from "../testdb";
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createProDfhProfileProjRelRepo() {
   return new ProDfhProfileProjRelRepository(
-    testdb,
+    TestDbFactory.datasource,
   )
 }
 

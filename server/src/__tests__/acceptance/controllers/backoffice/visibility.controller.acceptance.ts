@@ -1,6 +1,7 @@
 import {expect} from '@loopback/testlab';
 import {GeovistoryApplication} from '../../../../application';
-import {getCommunityVisibilityDefault, getProjectVisibilityDefault, VisibilityController} from '../../../../controllers/backoffice/visibility.controller';
+import {VisibilityController, getCommunityVisibilityDefault, getProjectVisibilityDefault} from '../../../../controllers/backoffice/visibility.controller';
+import {ProVisibilitySettingsValue} from '../../../../models/project-visibilty-settings/pro-visibility-settings-value';
 import {SysConfigValue} from '../../../../models/sys-config/sys-config-value.model';
 import {createDfhApiClass} from '../../../helpers/atomic/dfh-api-class.helper';
 import {createInfLanguage} from '../../../helpers/atomic/inf-language.helper';
@@ -11,7 +12,7 @@ import {ProProjectMock} from '../../../helpers/data/gvDB/ProProjectMock';
 import {createAccountVerified} from '../../../helpers/generic/account.helper';
 import {createProject1} from '../../../helpers/graphs/project.helper';
 import {setupApplication} from '../../../helpers/gv-server-helpers';
-import {cleanDb} from '../../../helpers/meta/clean-db.helper';
+import {setupTestDB} from '../../../helpers/setupTestDB';
 
 describe('VisibilityController', () => {
   let server: GeovistoryApplication;
@@ -20,14 +21,11 @@ describe('VisibilityController', () => {
   const emailJonas = 'jonas.schneider@kleiolab.ch';
   const pwd = 'testtest1';
 
-  before(async () => {({server} = await setupApplication());});
-  after(async () => {await server.stop();});
-
 
   describe('getBasicTypeLookup()', () => {
-
-    beforeEach(async () => {
-      await cleanDb();
+    it('should find basicType of class', async () => {
+      await setupTestDB();
+      ({server} = await setupApplication());
       // await createModel();
       await createInfLanguage(InfLanguageMock.GERMAN)
       await createProject1();
@@ -35,12 +33,11 @@ describe('VisibilityController', () => {
       accountInProject = await createAccountVerified(emailGaetan, pwd);
       await linkAccountToProject(accountInProject, ProProjectMock.PROJECT_1.pk_entity as number);
       await createAccountVerified(emailJonas, pwd);
-    });
-    it('should find basicType of class', async () => {
       await createDfhApiClass(DfhApiClassMock.EN_21_PERSON)
       const createProjectDataController: VisibilityController = await server.get('controllers.VisibilityController')
       const lookup = await createProjectDataController.getClassLookup()
       expect(lookup[21].basic_type).to.equal(8)
+      await server.stop();
     })
   })
   describe('getCommunityVisibilityDefault()', () => {
@@ -54,7 +51,7 @@ describe('VisibilityController', () => {
 
       expect(res).to.deepEqual({toolbox: true, dataApi: true, website: true})
     })
-    it('should find communityVisibilityDefault by classesDefault', async () => {
+    it('should find communityVisibilityDefault by system classesDefault', async () => {
       const def = {toolbox: true, dataApi: false, website: true}
       const sysConfig: SysConfigValue = {
         specialFields: {},
@@ -67,7 +64,7 @@ describe('VisibilityController', () => {
 
       expect(res).to.deepEqual(def)
     })
-    it('should find communityVisibilityDefault by basicType', async () => {
+    it('should find communityVisibilityDefault by system basicType', async () => {
       const def = {toolbox: true, dataApi: false, website: true}
       const sysConfig: SysConfigValue = {
         specialFields: {},
@@ -83,7 +80,7 @@ describe('VisibilityController', () => {
 
       expect(res).to.deepEqual(def)
     })
-    it('should find communityVisibilityDefault by pkClass', async () => {
+    it('should find communityVisibilityDefault by system pkClass', async () => {
       const def = {toolbox: true, dataApi: false, website: true}
       const sysConfig: SysConfigValue = {
         specialFields: {},
@@ -98,6 +95,72 @@ describe('VisibilityController', () => {
         },
       }
       const res = getCommunityVisibilityDefault(sysConfig, 21, 8)
+
+      expect(res).to.deepEqual(def)
+    })
+
+    it('should find communityVisibilityDefault by project classesDefault', async () => {
+      const def = {toolbox: true, dataApi: false, website: true}
+      const sysConfig: SysConfigValue = {
+        specialFields: {},
+        classesDefault: {
+          communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}
+        },
+        classes: {},
+      }
+      const projectConfig: ProVisibilitySettingsValue = {
+        classesDefault: {
+          communityVisibilityDefault: def
+        },
+        classes: {},
+      }
+      const res = getCommunityVisibilityDefault(sysConfig, 21, 8, projectConfig)
+
+      expect(res).to.deepEqual(def)
+    })
+    it('should find communityVisibilityDefault by project basicType', async () => {
+      const def = {toolbox: true, dataApi: false, website: true}
+      const sysConfig: SysConfigValue = {
+        specialFields: {},
+        classesDefault: {
+          communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}
+        },
+        classes: {},
+      }
+      const projectConfig: ProVisibilitySettingsValue = {
+        classesDefault: {
+          communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}
+        },
+        classesByBasicType: {
+          8: {communityVisibilityDefault: def}
+        },
+        classes: {},
+      }
+      const res = getCommunityVisibilityDefault(sysConfig, 21, 8, projectConfig)
+
+      expect(res).to.deepEqual(def)
+    })
+    it('should find communityVisibilityDefault by project pkClass', async () => {
+      const def = {toolbox: true, dataApi: false, website: true}
+      const sysConfig: SysConfigValue = {
+        specialFields: {},
+        classesDefault: {
+          communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}
+        },
+        classes: {},
+      }
+      const projectConfig: ProVisibilitySettingsValue = {
+        classesDefault: {
+          communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}
+        },
+        classesByBasicType: {
+          8: {communityVisibilityDefault: {toolbox: false, dataApi: false, website: false}}
+        },
+        classes: {
+          21: {communityVisibilityDefault: def}
+        },
+      }
+      const res = getCommunityVisibilityDefault(sysConfig, 21, 8, projectConfig)
 
       expect(res).to.deepEqual(def)
     })
