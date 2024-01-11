@@ -1,28 +1,34 @@
 .gv-detail-top-bar {
   height: 2.5rem;
-  // overflow: hidden;
+  .mat-tab-label {
+    height: 40px;
+  }
+
+  .mat-mdc-tab-header {
+    --mdc-secondary-navigation-tab-container-height: 40px;
+  }
 }
 
-.close-right-area-btn {
+.left-btn {
   text-align: right;
   padding-right: 0px;
   padding-left: 0px;
   height: 100%;
   border: 0;
   border-radius: 0;
+  mat-icon {
+    margin-left: 0px;
+  }
 }
 
-.open-right-area-btn {
+.right-btn {
   text-align: left;
   padding-left: 0px;
+  padding-right: 0px;
   height: 100%;
   border: 0;
   border-radius: 0;
-}
-
-::ng-deep .gv-detail-top-bar > div > .mat-button-base {
-  height: 2.5rem;
-  border: 0;
-  border: 0;
-  border-radius: 0;
+  mat-icon {
+    margin-right: 0px;
+  }
 }

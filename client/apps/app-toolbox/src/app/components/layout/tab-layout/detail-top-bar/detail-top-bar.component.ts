@@ -1,16 +1,16 @@
-import { Component, OnInit, HostBinding, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { NgIf, NgStyle } from '@angular/common';
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output } from '@angular/core';
 import { ExtendedModule } from '@angular/flex-layout/extended';
-import { NgStyle, NgIf } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout/flex';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
-    selector: 'gv-detail-top-bar',
-    templateUrl: './detail-top-bar.component.html',
-    styleUrls: ['./detail-top-bar.component.scss'],
-    standalone: true,
-    imports: [FlexModule, NgStyle, ExtendedModule, NgIf, MatButtonModule, MatIconModule]
+  selector: 'gv-detail-top-bar',
+  templateUrl: './detail-top-bar.component.html',
+  styleUrls: ['./detail-top-bar.component.scss'],
+  standalone: true,
+  imports: [FlexModule, NgStyle, ExtendedModule, NgIf, MatButtonModule, MatIconModule]
 })
 export class DetailTopBarComponent implements OnInit {
 
@@ -30,7 +30,6 @@ export class DetailTopBarComponent implements OnInit {
 
   @HostBinding('class.gv-flex-shrink-0') noshrink = true;
 
-  constructor() { }
   ngOnInit() {
     this.height = this.height ? this.height : '2.5rem';
   }
