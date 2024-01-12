@@ -22,7 +22,7 @@
 
 </mat-menu>
 
-<button *ngIf="!disabled" class="trigger-btn" [matMenuTriggerFor]="menu" (menuOpened)="onOpen()">
+<button *ngIf="!disabled" class="trigger-btn mat-typography" [matMenuTriggerFor]="menu" (menuOpened)="onOpen()">
   <div class="select-value">
     <div class="select-value-text">{{selectedText$|async}}</div>
   </div>

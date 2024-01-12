@@ -232,7 +232,10 @@ export class QueryFilterComponent implements OnInit, OnDestroy, AfterViewInit, C
       // else use the selected classes in this project
       pkClasses$ = this.c.pipeClassesOfProject().pipe(
         map(items => items
-          .filter(item => (values(item.belongsToCategory)?.[0]?.showInAddMenu))
+          .filter(item => {
+            const isSelectable = values(item.belongsToCategory)?.[0]?.showInAddMenu;
+            return isSelectable
+          })
           .map(item => item.dfhClass.pk_class)
         ))
     }
