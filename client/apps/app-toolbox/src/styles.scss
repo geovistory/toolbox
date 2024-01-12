@@ -153,6 +153,11 @@ $app-theme: mat.define-light-theme(
 // for native header elements scoped within the .mat-typography CSS class.
 @include mat.typography-hierarchy($gv-typography);
 
+.density-4 {
+  @include mat.icon-button-density(-4);
+  @include mat.icon-density(-4);
+}
+
 /*************** Other ******************/
 
 $font-size-xs: 0.68rem;
@@ -422,26 +427,6 @@ $gv-color-selected: #00ffff;
   height: 100vh;
 }
 
-#global-loading-bar {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  left: 0;
-  right: 0;
-
-  mat-progress-bar {
-    height: 2px !important;
-    transition: visibility 0s linear 0.33s, opacity 0.33s linear;
-    opacity: 0;
-    transition-delay: 0s;
-
-    &.is-visible {
-      opacity: 1;
-      transition-delay: 0s;
-    }
-  }
-}
-
 #userDashboard {
   #userImage {
     font-size: 6rem;
@@ -495,7 +480,7 @@ $gv-bg-drawer-list: #cde4f3;
   }
 }
 
-.feedback-button.mat-raised-button {
+.feedback-button.mat-mdc-raised-button {
   position: fixed;
   right: 0;
   top: 0;
@@ -520,18 +505,11 @@ $gv-bg-drawer-list: #cde4f3;
 *   3. Field (short title, birth, when …)
 ****************************/
 
-.gv-detail-top-bar {
-  .mat-tab-label {
-    height: 40px;
-  }
-}
-
 .gv-tab-group-sm {
-  .mat-tab-label {
+  .mat-mdc-tab:not(.mdc-tab--stacked) {
     height: 40px;
   }
-
-  .mat-tab-label-content mat-icon {
+  .mdc-tab__content mat-icon {
     margin-right: 8px;
   }
 }
@@ -661,228 +639,6 @@ gv-project-edit {
 }
 
 /***************************
- * qf form array
- ***************************/
-gv-qf-form-array {
-  position: relative;
-  display: block;
-  $top-horizontal-line: 30px;
-
-  .full-with {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .left-col {
-    display: flex;
-    justify-content: center;
-    /* align-items: center; */
-    flex: 1 1 0;
-    /* background: #6EAFF7; */
-    flex-direction: column;
-    /* overflow: hidden; */
-  }
-
-  .right-col {
-    display: flex;
-    flex: 0 0 32px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .qf-arr-classes,
-  .qf-arr-properties {
-    display: block;
-    position: relative;
-    /*temp*/
-  }
-
-  .qf-arr-classes {
-    // border: 1px dashed rgb(194, 48, 121);
-    // margin: 5px;
-    // padding: 5px;
-  }
-
-  .qf-arr-properties {
-    /*temp*/
-    // border: 1px dashed rgb(48, 82, 194);
-
-    .qf-prop-controls {
-      display: flex;
-      flex-direction: row;
-    }
-  }
-
-  .gv-condition-block {
-    border: 1px solid map.get($gv-mat-teal, 300);
-    padding: 0.75rem;
-    margin-top: 1.25rem;
-  }
-
-  .qf-arr-subgroup {
-    /*temp*/
-    // border: 1px dashed rgb(18, 173, 52);
-    // padding: 5px;
-
-    position: relative;
-    display: flex;
-    margin-bottom: 40px;
-
-    .zero {
-      width: 0.75rem;
-      height: 31px;
-      flex-shrink: 0;
-
-      &.line {
-        border-bottom: 1px solid map.get($gv-mat-teal, 300);
-      }
-    }
-
-    .first {
-      width: 1px;
-      flex-shrink: 0;
-      // margin-top: $top-horizontal-line;
-      margin-bottom: 34px;
-      position: relative;
-      background-color: map.get($gv-mat-teal, 300);
-      z-index: 1;
-
-      .subgroup-operation-container {
-        position: absolute;
-        bottom: 0;
-        top: 45px;
-        width: 46px;
-        left: -23px;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .subgroup-operation-select {
-        font-size: 14px;
-        background: $white;
-        border: 1px solid map.get($gv-grey-palette, 100) !important;
-        border-color: map.get($gv-grey-palette, 400) !important;
-        border-radius: 0.25rem !important;
-        padding-right: 0.25rem;
-        padding-left: 0.25rem;
-        z-index: 1;
-
-        &::ng-deep .mat-select-arrow {
-          margin: 0;
-        }
-      }
-
-      .add-sibling-button {
-        position: absolute;
-        bottom: -24px;
-        left: -12px;
-      }
-
-      &.top-cut {
-        margin-top: 30px;
-      }
-    }
-
-    .second {
-      display: flex;
-      flex-direction: column;
-      flex: 1 0 0%;
-
-      .sub-query-item {
-        position: relative;
-        display: flex;
-        align-items: flex-start;
-
-        .subquery-left {
-          position: relative;
-          width: 35px;
-          padding: 0 0 0 5px;
-
-          .horizontal-line {
-            position: absolute;
-            top: $top-horizontal-line;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background-color: map.get($gv-mat-teal, 300);
-
-            &.is-subgroup {
-              top: 62px;
-            }
-          }
-
-          .add-subgroup-button {
-            margin-top: 18px;
-          }
-        }
-
-        gv-qf-form-array {
-          // margin-left: 0.75rem;
-          flex: 1 0 0%;
-
-          &.is-subgroup {
-            margin-top: 2rem;
-          }
-        }
-      }
-    }
-  }
-
-  .gv-qf-button-absolute-1 {
-    position: absolute;
-    right: -31px;
-    top: 20px;
-
-    mat-icon-btn {
-      line-height: 20px;
-    }
-  }
-
-  .gv-qf-button-absolute-2 {
-    position: absolute;
-    left: 12px;
-    bottom: -10px;
-
-    mat-icon-btn {
-      line-height: 20px;
-    }
-  }
-
-  .gv-qf-button-absolute-3 {
-    position: absolute;
-    right: -31px;
-    top: 54px;
-
-    mat-icon-btn {
-      line-height: 20px;
-    }
-  }
-
-  .gv-mat-icon-button-sm {
-    width: 24px !important;
-    height: 24px !important;
-    line-height: 20px;
-
-    svg {
-      width: 20px !important;
-      height: 20px !important;
-    }
-
-    &::ng-deep .mat-button-wrapper {
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      width: 100% !important;
-      height: 100% !important;
-
-      .mat-icon {
-        font-size: 20px !important;
-      }
-    }
-  }
-}
-
-/***************************
  * Timeline
  ***************************/
 gv-timeline-table {
@@ -910,7 +666,7 @@ gv-timeline-table {
     }
   }
 
-  .body.mat-cell {
+  .body.mat-mdc-cell {
     font-size: $font-size-xs;
 
     .tick {
@@ -1014,13 +770,13 @@ gv-quill-edit {
     @extend .gv-grow-1;
   }
 
-  .ql-snow.ql-toolbar button.mat-icon-button {
+  .ql-snow.ql-toolbar button.mat-mdc-icon-button {
     padding: 0;
     width: 40px;
     height: 40px;
   }
 
-  .ql-snow.ql-toolbar button.mat-icon-button:focus {
+  .ql-snow.ql-toolbar button.mat-mdc-icon-button:focus {
     color: unset;
   }
 }
@@ -1111,9 +867,6 @@ gv-quill-edit.gv-quill-textarea-like {
       background-color: transparent;
       border: 0;
     }
-
-    // Customize the `:focus` state to imitate native WebKit styles.
-    // @include form-control-focus(); // Placeholder
 
     &::placeholder {
       color: map.get(
@@ -1445,26 +1198,18 @@ $categories: digitals, sources, entities, analysis, stories, values;
 @include gv-sidenav-accordion-theme($app-theme);
 @include gv-sidenav-accordion-typography($gv-typography);
 
-/***********************************
-* Condensed mat-tabs
-***********************************/
 // Define a mixin that accepts a theme and outputs the theme-specific styles.
-@mixin gv-condensed-mat-tabs() {
-  // Define any styles affected by the theme.
-  mat-tab-group.condensed .mdc-tab {
-    min-width: 0px;
-    padding-right: 4px;
-    padding-left: 4px;
-  }
+mat-tab-group.condensed .mdc-tab {
+  min-width: 0px;
+  padding-right: 4px;
+  padding-left: 4px;
 }
 
-@include gv-condensed-mat-tabs();
-
-.mat-table.gv-head-gray thead {
+.mat-mdc-table.gv-head-gray thead {
   background: #f5f5f5;
 }
 
-.mat-paginator {
+.mat-mdc-paginator {
   background: inherit;
 }
 
@@ -1634,13 +1379,7 @@ $mat-color-divider: mat.get-color-from-palette($foreground, divider);
   background-color: $mat-color-primary;
 }
 
-mat-checkbox {
-  label {
-    margin-bottom: 0;
-  }
-}
-
-button:not(.mat-icon-button) {
+button:not(.mat-mdc-icon-button) {
   mat-icon {
     font-size: 20px !important;
   }
@@ -1692,11 +1431,11 @@ mat-icon.mat-icon-caption {
 * fix for inproper alignement
 * see: https://www.npmjs.com/package/@mdi/angular-material
 */
-button.mat-menu-item {
+button.mat-mdc-menu-item {
   line-height: 24px !important;
 }
 
-a.mat-menu-item > mat-icon {
+a.mat-mdc-menu-item > mat-icon {
   margin-bottom: 14px;
 }
 
@@ -1726,16 +1465,15 @@ a.mat-menu-item > mat-icon {
 @mixin mix-mat-button-toggle($app-theme) {
   $primary: map-get($app-theme, primary);
   $accent: map-get($app-theme, accent);
-
-  .mat-button-toggle {
-    background-color: unset;
-    color: mat.get-color-from-palette($primary);
-  }
-
-  .mat-button-toggle-checked,
-  .mat-button-toggle-checked.mat-button-toggle-appearance-standard {
-    background-color: mat.get-color-from-palette($primary);
-    color: mat.get-color-from-palette($primary, default-contrast);
+  .mat-button-toggle-appearance-standard {
+    &.mat-button-toggle {
+      background-color: unset;
+      color: mat.get-color-from-palette($primary);
+      &.mat-button-toggle-checked {
+        background-color: mat.get-color-from-palette($primary);
+        color: mat.get-color-from-palette($primary, default-contrast);
+      }
+    }
   }
 }
 
@@ -1758,7 +1496,7 @@ a.mat-menu-item > mat-icon {
   background-color: mat.get-color-from-palette($app-accent);
 }
 
-.mat-row.gv-bg-highlight {
+.mat-mdc-row.gv-bg-highlight {
   background-color: rgba(223, 213, 232, 0.5);
 }
 
@@ -2013,14 +1751,6 @@ a.mat-menu-item > mat-icon {
   padding-right: inherit;
 }
 
-mat-list-item.p-0 .mat-list-item-content {
-  padding: 0 !important;
-}
-
-mat-dialog-actions {
-  box-sizing: content-box;
-}
-
 mat-paginator.dense .mat-mdc-paginator-range-label {
   margin: 0;
 }
@@ -2074,14 +1804,6 @@ mat-paginator.dense .mat-mdc-paginator-range-label {
   }
 }
 
-.gv-form-field-slim .mat-form-field-wrapper {
-  padding-bottom: 0;
-
-  .mat-form-field-infix {
-    padding: 0.2em 0 0.7em 0;
-  }
-}
-
 .gv-split-area {
   position: relative;
 }
@@ -2129,40 +1851,6 @@ mat-paginator.dense .mat-mdc-paginator-range-label {
   }
 }
 
-.gv-panel-top-bar-tabs {
-  > .mat-tab-header {
-    background-color: $white;
-    height: 2.5rem;
-    margin-left: 24px;
-
-    .mat-tab-label {
-      height: 2.5rem;
-    }
-  }
-}
-
-.gv-slim-tabs {
-  > .mat-tab-header {
-    height: 2.5rem;
-
-    .mat-tab-label {
-      height: 2.5rem;
-    }
-  }
-}
-
-.gv-mat-tabs-shrink {
-  .mat-tab-label {
-    min-width: unset;
-  }
-}
-
-.mat-tab-group.gv-flex-fh {
-  > .mat-tab-body-wrapper {
-    @extend .gv-flex-fh;
-  }
-}
-
 .gv-add-list-table-and-paginator-container {
   min-width: 320px;
   margin: 2.5rem 0;
@@ -2201,26 +1889,6 @@ gv-importer {
 
   .gv-drop-zone-content {
     margin: auto;
-  }
-}
-
-.mat-form-field[dense] {
-  .mat-form-field-flex > .mat-form-field-infix {
-    padding: 0.6em 0 0.4em 0 !important;
-    border-top: unset !important;
-  }
-
-  .mat-form-field-label-wrapper {
-    top: -1.5em;
-  }
-
-  &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
-    .mat-form-field-label {
-    transform: translateY(-1.1em) scale(0.75);
-  }
-
-  .mat-form-field-wrapper {
-    padding-bottom: 0;
   }
 }
 
@@ -2315,13 +1983,6 @@ gv-importer {
 
 .gv-text-align-center {
   text-align: center;
-}
-
-gv-project-card {
-  mat-card.mat-mdc-card {
-    box-shadow: none;
-    border: 1px solid map.get($gv-grey-palette, 300) !important;
-  }
 }
 
 @import '~jsoneditor/dist/jsoneditor.min.css';
