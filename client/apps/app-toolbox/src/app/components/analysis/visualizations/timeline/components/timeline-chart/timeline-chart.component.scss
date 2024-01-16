@@ -19,7 +19,6 @@
   display: flex;
   flex: 0 0 50px;
   align-items: center;
-  // justify-content: center;
   mat-select {
     width: 180px;
   }
@@ -30,32 +29,21 @@
   right: 0;
 }
 
-// :host ::ng-deep .empty-select .mat-select-value-text {
-//   color: $mat-color-secondary-text;
-// }
-
 .x-axis {
   user-select: none;
 }
 
 .info-box {
   position: absolute;
-  padding: 1rem;
   right: 0px;
   top: 0px;
-  // background-color: rgba(255, 255, 255, 0.8);
   width: 160px;
-  mat-card-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
   .close-btn {
     position: absolute;
     right: 0;
     top: 0;
   }
-  mat-card-subtitle.mat-card-subtitle {
+  mat-card-subtitle.mat-mdc-card-subtitle {
     margin-bottom: 0;
   }
 }

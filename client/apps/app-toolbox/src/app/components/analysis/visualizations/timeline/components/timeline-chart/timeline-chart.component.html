@@ -1,4 +1,4 @@
-<div class="chart" gvDimensionChange (dimensionsChange)="onDimensionsChange($event)">
+<div class="chart mat-typography" gvDimensionChange (dimensionsChange)="onDimensionsChange($event)">
 
   <svg [attr.width]="width" [attr.height]="height" draggableXAxis (onDrag)="onDrag($event)"
     *ngIf="chartLine?.config?.data" #referenceEl>
@@ -84,20 +84,22 @@
   </div>
 </div> -->
 
-<mat-card class="info-box" *ngIf="showInfoBox">
+<mat-card appearance="outlined" class="info-box mat-typography density-4" *ngIf="showInfoBox">
 
   <button class="close-btn" mat-icon-button (click)="showInfoBox=false; showInfoBtn=true">
     <mat-icon>close</mat-icon>
   </button>
 
 
-  <mat-card-content class="mt-3" *ngIf="chartLine?.config?.data?.activeLine == undefined">
+  <mat-card-content class="mt-4" *ngIf="chartLine?.config?.data?.activeLine===null">
     <i>Click a line to inspect</i>
   </mat-card-content>
-  <mat-card-subtitle *ngIf="chartLine?.config?.data?.activeLine !== undefined">
-    Active line
-  </mat-card-subtitle>
-  <mat-card-content *ngIf="chartLine?.config?.data?.activeLine !== undefined">
+  <mat-card-content class="mt-2">
+    <mat-card-subtitle *ngIf="chartLine?.config?.data?.activeLine !== null">
+      Active line
+    </mat-card-subtitle>
+  </mat-card-content>
+  <mat-card-content *ngIf="chartLine?.config?.data?.activeLine !== null">
     <div>{{chartLine?.config?.data?.chartLines[chartLine?.config?.data?.activeLine]?.label}}</div>
     <a href *ngIf="chartLine?.config?.data?.chartLines[chartLine?.config?.data?.activeLine]?.pkEntities"
       class="gv-passive-link" matTooltip="Show details"
@@ -105,19 +107,16 @@
       {{chartLine?.config?.data?.chartLines[chartLine?.config?.data?.activeLine]?.pkEntities?.length}} items in
       total</a>
   </mat-card-content>
-  <mat-card-subtitle>
-    Date
-  </mat-card-subtitle>
+  <mat-card-content>
+    <mat-card-subtitle>
+      Date
+    </mat-card-subtitle>
+  </mat-card-content>
   <mat-card-content>
     <div>{{cursorInfo.cursorDateLabel}}</div>
-    <a href *ngIf="cursorInfo.activeLine" class="gv-passive-link" matTooltip="Show details"
+    <a href *ngIf="cursorInfo.activeLine" class="gv-passive-link" [matTooltip]="'Show details'"
       (click)="onShowDetailsClick()"> {{cursorInfo?.linePoint?.y}} items on this date</a>
   </mat-card-content>
-  <!-- <mat-card-subtitle *ngIf="cursorInfo.activeLine">
-    Y-value of active line
-  </mat-card-subtitle> -->
-  <!-- <mat-card-content>
-  </mat-card-content> -->
 </mat-card>
 
 <button class="info-btn" [ngClass]="{'is-small': width < 450 }" mat-icon-button

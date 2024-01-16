@@ -1,4 +1,4 @@
-import { DatePipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { DatePipe, JsonPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -68,7 +68,7 @@ export class CursorInfo {
   styleUrls: ['./timeline-chart.component.scss'],
   providers: [D3Service, DatePipe],
   standalone: true,
-  imports: [DimensionChangeDirective, NgIf, DraggableXAxisDirective, XAxisComponent, YAxisComponent, ChartLineVisualComponent, MatButtonModule, MatMenuModule, MatIconModule, MatFormFieldModule, MatSelectModule, NgClass, MatOptionModule, NgFor, MatDividerModule, ZoomSliderComponent, MatCardModule, PassiveLinkDirective, MatTooltipModule]
+  imports: [DimensionChangeDirective, NgIf, DraggableXAxisDirective, XAxisComponent, YAxisComponent, ChartLineVisualComponent, MatButtonModule, MatMenuModule, MatIconModule, MatFormFieldModule, MatSelectModule, NgClass, MatOptionModule, NgFor, MatDividerModule, ZoomSliderComponent, MatCardModule, PassiveLinkDirective, MatTooltipModule, JsonPipe]
 })
 export class TimelineChartComponent implements OnInit, OnDestroy {
 
