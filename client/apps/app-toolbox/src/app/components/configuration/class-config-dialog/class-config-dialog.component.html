@@ -1,7 +1,7 @@
-<h1 mat-dialog-title>Configure class '{{c.classLabel$|async}}'</h1>
+<h1 mat-dialog-title>Configure class '{{classLabel$|async}}'</h1>
 
 <mat-dialog-content class="pb-1">
-  <gv-class-config [fkClass]="data.fkClass" #c [fkAppContext]="data.fkAppContext" [fkProject]="data.fkProject">
+  <gv-class-config [fkClass]="data.fkClass" #c [fkProject]="data.fkProject">
   </gv-class-config>
 </mat-dialog-content>
 

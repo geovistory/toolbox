@@ -1,23 +1,19 @@
 <h3>{{toPascalCase(section)}} fields</h3>
 <p class="mat-caption">{{comment}}</p>
 
-
-
-<p-table [value]="fields$|async" class="mat-table w-100" (onRowReorder)="onRowReorder($event)">
+<p-table [value]="fields$|async" class="w-100" (onRowReorder)="onRowReorder($event)">
   <ng-template pTemplate="header">
     <tr class="mat-header-row">
       <th class="mat-header-cell drag-col"></th>
       <th class="mat-header-cell">OntoMe</th>
       <th class="mat-header-cell">Display Label</th>
       <th class="mat-header-cell">Relates to class(es)</th>
-      <!-- <th class="mat-header-cell">Enabled</th> -->
       <th class="mat-header-cell"></th>
     </tr>
   </ng-template>
   <ng-template pTemplate="body" let-row let-index="rowIndex">
     <tr class="mat-row" [pReorderableRow]="index">
       <td class="mat-cell drag-col">
-        <!-- <mat-icon svgIcon="bars"></mat-icon> -->
         <i *ngIf="!reordering" class="fa fa-bars gv-cursor-drag" pReorderableRowHandle>
         </i>
         <mat-spinner *ngIf="reordering" [diameter]="20" color="accent"></mat-spinner>
@@ -25,7 +21,7 @@
       <td>
         <gv-onto-property-info *ngIf="row.propertyField" [pkProperty]="row.pkProperty"></gv-onto-property-info>
       </td>
-      <td class="mat-cell mat-body-strong">{{row.label}}</td>
+      <td class="mat-cell">{{row.label}}</td>
       <td class="mat-cell">
         <span *ngIf="row?.propertyField?.targetClasses; let truncated" class="mat-text-secondary">
           <span>
@@ -39,9 +35,6 @@
           </span>
         </span>
       </td>
-      <!-- <td class="mat-cell">
-        <mat-checkbox [checked]="true"></mat-checkbox>
-      </td> -->
       <td class="mat-cell"><button mat-flat-button color="primary" *ngIf="row.propertyField"
           (click)="openFieldDialog(row)">Edit Labels</button>
       </td>

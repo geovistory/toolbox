@@ -38,7 +38,6 @@ export class ClassFieldsSectionComponent implements OnInit, OnDestroy {
   @Input() fkClass: number
   @Input() section: SectionName
   @Input() comment: string
-  // @Input() fkAppContext: number
 
 
   fields$: Observable<FieldConfig[]>
