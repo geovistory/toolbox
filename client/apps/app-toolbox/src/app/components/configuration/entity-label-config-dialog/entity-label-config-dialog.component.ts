@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormArray, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
@@ -34,6 +34,7 @@ interface FieldId { fkProperty: number, isOutgoing: boolean }
   imports: [MatDialogModule, NgIf, MatProgressSpinnerModule, FormsModule, ReactiveFormsModule, NgFor, MatFormFieldModule, MatSelectModule, MatOptionModule, MatInputModule, MatButtonModule, MatIconModule, AsyncPipe]
 })
 export class EntityLabelConfigDialogComponent implements OnInit, OnDestroy {
+  @HostBinding('class.mat-typography') m = true;
   destroy$ = new Subject<boolean>();
   labelParts = new UntypedFormArray([], [Validators.required]);
   form: UntypedFormGroup;
