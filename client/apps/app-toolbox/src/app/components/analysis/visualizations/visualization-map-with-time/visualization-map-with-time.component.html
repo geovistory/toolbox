@@ -1,5 +1,5 @@
-<as-split unit="pixel" class="gv-split-style" [direction]="'vertical'" [gutterSize]="1" [useTransition]="false"
-  (dragEnd)="setTimelineHeight($event.sizes[1])">
+<as-split unit="pixel" class="gv-split-style mat-typography" [direction]="'vertical'" [gutterSize]="1"
+  [useTransition]="false" (dragEnd)="setTimelineHeight($event.sizes[1])">
 
   <as-split-area [size]="$any('*')" class="map">
     <gv-map-czml-layers [data$]="mapData$" [julianSecondOfCursor$]="julianSecondOfCursor$"
@@ -7,11 +7,6 @@
     </gv-map-czml-layers>
 
     <div class="toolbar">
-
-      <!-- <button class="toolbar-item" mat-icon-button (click)="showInfoBox=true; showInfoBtn=false" *ngIf="showInfoBtn"
-        matTooltip="Enter fullscreen mode">
-        <mat-icon>info</mat-icon>
-      </button> -->
 
       <button class="toolbar-item" mat-icon-button color="primary" [matMenuTriggerFor]="menu"
         matTooltip="Display Settings for Points">
@@ -49,18 +44,19 @@
       </button>
     </div>
 
-    <mat-card class="info-box" *ngIf="showInfoBox">
+    <mat-card appearance="outlined" class="info-box" *ngIf="showInfoBox">
       <button class="close-btn" mat-icon-button (click)="showInfoBox=false; showInfoBtn=true">
         <mat-icon>close</mat-icon>
       </button>
 
-
       <mat-card-content class="mt-3" *ngIf="!infoBox.geoEntity">
         <i>Click on a point to inspect</i>
       </mat-card-content>
-      <mat-card-subtitle *ngIf="infoBox.geoEntity">
-        Activated Place
-      </mat-card-subtitle>
+      <mat-card-content>
+        <mat-card-subtitle *ngIf="infoBox.geoEntity">
+          Activated Place
+        </mat-card-subtitle>
+      </mat-card-content>
       <mat-card-content *ngIf="infoBox.geoEntity">
         <div>
           <gv-entity-preview [preview]="infoBox.geoEntity" [dragEnabled]="false" [openTabOnClick]="true">
@@ -73,9 +69,11 @@
 
       </mat-card-content>
 
-      <mat-card-subtitle>
-        Date
-      </mat-card-subtitle>
+      <mat-card-content>
+        <mat-card-subtitle>
+          Date
+        </mat-card-subtitle>
+      </mat-card-content>
       <mat-card-content>
         <div>{{infoBox?.cursorInfo?.cursorDateLabel}}</div>
         <a href *ngIf="infoBox?.cursorInfo?.activeLine" class="gv-passive-link" matTooltip="Show details"
@@ -91,8 +89,5 @@
       (showDetailsClick)=onShowLineDetailsClick() (chartLineDefChange)="onChartLineDefChange(i, $event)">
     </gv-timeline-chart>
   </as-split-area>
-
-
-
 
 </as-split>

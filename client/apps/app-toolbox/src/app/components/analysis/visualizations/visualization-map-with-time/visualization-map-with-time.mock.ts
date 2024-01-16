@@ -24,8 +24,7 @@ export const queryResults1: Array<GeoEntityMapAndTimeCont> = [
     'geo_entity_preview': {
       'pk_entity': 206099,
       'time_span': null,
-      'fk_project': 84760,
-      'project': 84760,
+      'project_id': 84760,
       'fk_class': 365,
       'type_label': null,
       'class_label': 'Geographical Place',
@@ -1034,8 +1033,7 @@ export const queryResults1: Array<GeoEntityMapAndTimeCont> = [
     'geo_entity_preview': {
       'pk_entity': 208782,
       'time_span': null,
-      'fk_project': 84760,
-      'project': 84760,
+      'project_id': 84760,
       'fk_class': 365,
       'type_label': null,
       'class_label': 'Geographical Place',
@@ -1745,8 +1743,7 @@ export const queryResults1: Array<GeoEntityMapAndTimeCont> = [
     geo_entity_pk: 742832,
     geo_entity_preview: {
       'pk_entity': 742832,
-      'fk_project': 591,
-      'project': 591,
+      'project_id': 591,
       'fk_class': 365,
       'type_label': 'Parrocchia',
       'class_label': 'Geographical Place',

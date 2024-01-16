@@ -41,17 +41,9 @@
   top: 55px;
   right: 5px;
   width: 160px;
-  mat-card-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
   .close-btn {
     position: absolute;
     right: 0;
     top: 0;
-  }
-  mat-card-subtitle.mat-card-subtitle {
-    margin-bottom: 0;
   }
 }

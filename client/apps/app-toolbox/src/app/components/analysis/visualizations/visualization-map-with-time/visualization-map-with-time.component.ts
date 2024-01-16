@@ -376,11 +376,6 @@ export class VisualizationMapWithTimeComponent implements OnInit {
    */
   mapAndTimeContQueryResToOutput(queryRes: GeoEntityMapAndTimeCont[], pointDisplayMode: PointDisplayMode): MapAndTimeContData {
 
-    // logTime('conversion - start')
-
-    console.log('mapAndTimeContQueryResToOutput', ++this.i)
-
-
     this.pkEntityCzmlsMap.clear()
 
     if (!queryRes || !queryRes.length) return { layers: [] }
@@ -410,9 +405,6 @@ export class VisualizationMapWithTimeComponent implements OnInit {
     const minRadius = 10;
     const maxRadius = 50;
 
-    // logTime('conversion - minMaxOk')
-
-
     const scalePoint = d3.scaleLinear()
       .domain([minVal, maxVal])
       .range([minRadius, maxRadius]);
@@ -421,7 +413,6 @@ export class VisualizationMapWithTimeComponent implements OnInit {
 
     queryRes.forEach((item, lineIndex) => {
       const temporalVals = item.temporal_data.timeCzmlValues
-      // logTime(`conversion - item ${lineIndex} start, having ${temporalVals.length} temporalVals`)
 
 
       const point: CzmlPoint = pointDisplayMode.fixedSize ?
@@ -436,8 +427,6 @@ export class VisualizationMapWithTimeComponent implements OnInit {
             // default
             this.createFixedPoint(outlineColorActive);
 
-
-      // logTime(`conversion - item ${lineIndex} pointCreated`)
 
       item.geo_positions.forEach((position) => {
         const czmlPacket = this.createCzmlPacket(
@@ -458,8 +447,6 @@ export class VisualizationMapWithTimeComponent implements OnInit {
 
       })
 
-      // logTime(`conversion - item ${lineIndex} geo_positions added`)
-
       const chartLine: ChartLine = {
         label: item.geo_entity_preview.entity_label,
         linePoints: item.temporal_data.timeLinePoints,
@@ -478,12 +465,10 @@ export class VisualizationMapWithTimeComponent implements OnInit {
 
       data_lookups.push(item.temporal_data.data_lookup)
 
-      // logTime(`conversion - item ${lineIndex} end`)
       this.pkEntityEntityPreviewMap.set(item.geo_entity_pk, item.geo_entity_preview)
 
     })
 
-    // logTime('mapAndTimeContQueryResToOutput - created all points and lines')
 
 
     const map: MapLayer = { czml }
