@@ -1,5 +1,5 @@
 import { AsyncPipe, NgFor, NgIf } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
@@ -48,7 +48,7 @@ interface PageLoadRes {
   standalone: true,
   imports: [NgIf, TableModule, SharedModule, MatDividerModule, MatButtonModule, MatMenuModule, MatIconModule, NgFor, MatProgressBarModule, EntityPreviewComponent, AsyncPipe]
 })
-export class VisualizationTableComponent implements OnInit, AfterViewInit, OnDestroy {
+export class VisualizationTableComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
   @Input() definition$: Observable<QueryDefinition>;
   @ViewChild('table') table: Table;
@@ -71,7 +71,6 @@ export class VisualizationTableComponent implements OnInit, AfterViewInit, OnDes
     public dialog: MatDialog,
     public p: ActiveProjectService,
     public a: GvAnalysisService<AnalysisTableRequest, PageLoadRes>,
-    private ref: ChangeDetectorRef,
   ) {
 
   }
@@ -109,16 +108,6 @@ export class VisualizationTableComponent implements OnInit, AfterViewInit, OnDes
 
       // trigger change detection
       this.items = [...this.items];
-
-
-      // Hack for updating height of table on first load
-      let count = 0
-      if (res && count === 0) {
-        setTimeout(() => {
-          // this.table.scrollableViewChild.virtualScrollBody.checkViewportSize()
-        }, 100)
-        count++;
-      }
     })
 
   }
@@ -188,18 +177,9 @@ export class VisualizationTableComponent implements OnInit, AfterViewInit, OnDes
   }
 
 
-
-  ngAfterViewInit() {
-
-  }
-
   loadDataOnScroll(event: TableLazyLoadEvent) {
     this.lazyLoadState = event;
     if (this.definition) this.load(this.definition, event.first, event.rows);
-    // combineLatest([this.p.pkProject$, this.definition$]).pipe(first(), takeUntil(this.destroy$))
-    //   .subscribe(([pkProject, definition]) => {
-    //   })
-
   }
   private load(definition: QueryDefinition, offset: number, rows: number) {
     const analysisDefinition: AnalysisDefinition = {
