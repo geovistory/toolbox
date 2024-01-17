@@ -1,9 +1,9 @@
-<gv-hbf-panel>
+<gv-hbf-panel class=" bg-white">
 
   <div header class="gv-fw">
 
     <!-- Search input & Project entities only -->
-    <div class="gv-row-space-between gv-fw">
+    <div class="gv-row-space-between gv-fw density-4">
       <mat-form-field appearance="outline" class="grow-mr-24">
         <mat-label>Search</mat-label>
         <input matInput type="text" autocomplete="off" [ngModel]="searchString$|async"
@@ -41,14 +41,13 @@
       <!-- List is not empty -->
       <div *ngIf="!(loading$ | async) && (collectionSize$ | async)!==0" class="gv-fw">
         <mat-list>
-          <mat-list-item *ngFor="let hit of (hits$ | async)" class="gv-height-auto">
+          <mat-list-item *ngFor="let hit of (hits$ | async)" class="gv-height-auto border-bottom-grey-100">
             <gv-entity-add-existing-hit [pkEntity]="hit.pkEntity" [title]="hit.title" [description]="hit.description"
               [isInProject]="hit.isInProject" [numberOfProject]="hit.numberOfProject" [selected]="hit.selected"
               [confirmBtnText]="hit.confirmBtnText" [confirmBtnDisabled]="hit.confirmBtnDisabled"
               [confirmBtnTooltip]="hit.confirmBtnTooltip" style="width:100%" (showDetailsOfEntity)="onMoreClick(hit)"
               (hideDetailsOfEntity)="onBackClick()" (confirm)="onConfirmClick(hit.pkEntity,hit.isInProject)">
             </gv-entity-add-existing-hit>
-            <mat-divider></mat-divider>
           </mat-list-item>
         </mat-list>
       </div>
@@ -58,7 +57,7 @@
   <ng-container footer>
 
     <!-- Back button -->
-    <button mat-button [ngStyle]="{'visibility': mode=='mode2' ? 'inherit' : 'hidden'}" (click)="onBackClick()">
+    <button mat-button [ngStyle]="{'visibility': mode==='mode2' ? 'inherit' : 'hidden'}" (click)="onBackClick()">
       <mat-icon svgIcon="arrow-left"></mat-icon>
       Back
     </button>

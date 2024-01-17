@@ -119,8 +119,8 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
       debounceTime(0),
       distinctUntilChanged(equals), // because of filterParams$ and page$ can both emit at the same time (see l.86)
       map(([params, page]) => ({
-        searchString: params[1],
-        scope: params[2],
+        searchString: params[0],
+        scope: params[1],
         page
       }))
     )
