@@ -1,9 +1,9 @@
 <h2 class="form-title mat-h2 row-center" *ngIf="!formFactory?.formGroupFactory.globalConfig.hideTitle">
-  Create a new {{classLabel}} or... {{formFactory?.formGroupFactory.globalConfig.hideTitle}}
+  Create a new {{classLabel}} or...
 </h2>
 
 <form *ngIf="formFactory?.formGroup" [formGroup]="formFactory?.formGroup">
   <gv-form-group [formGroupFactory]="formFactory.formGroupFactory"></gv-form-group>
   <button mat-button type="button" color="primary" class="mt-2" (click)="setAdvanced(!advancedMode$.value)"
-    *ngIf="!(advancedMode$|async) && !(isValue$|async)">Advanced form</button>
+    *ngIf="(advancedMode$|async)===false && (isValue$|async)===undefined">Advanced form</button>
 </form>
