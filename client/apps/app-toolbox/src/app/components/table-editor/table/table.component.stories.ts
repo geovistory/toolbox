@@ -1,7 +1,7 @@
 import { importProvidersFrom } from '@angular/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { StateModule, SysConfigValueMock } from '@kleiolab/lib-redux';
+import { InfLanguageMock, PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, PROFILE_5_GEOVISTORY_BASI_2022_01_18, ProProjectMock, StateModule, SysConfigValueMock } from '@kleiolab/lib-redux';
 import { INITIAL_STATE } from '@ngrx/store';
 import {
   applicationConfig,
@@ -11,9 +11,11 @@ import {
 import { TableComponent } from './table.component';
 
 import { expect } from '@storybook/jest';
-import { within } from '@storybook/testing-library';
+import { userEvent, within } from '@storybook/testing-library';
 
+import { createCrmAsGvPositiveSchema } from '@kleiolab/lib-redux/lib/_helpers/transformers';
 import { BehaviorSubject, of } from 'rxjs';
+import { getCdkOverlayCanvas } from '../../../../../.storybook/getCdkOverlayCanvas';
 import { MockStateFactory } from './../../../../../.storybook/MockStateFactory';
 import { ActiveProjectService } from './../../../services/active-project.service';
 
@@ -35,8 +37,37 @@ type Story = StoryObj<TableComponent>;
 
 // Setup the initial state of the story Basic
 const stateBasic = new MockStateFactory();
+stateBasic.setActiveProject(ProProjectMock.SANDBOX_PROJECT.pk_entity)
 stateBasic.addPositiveSchemaObject({ sys: { config: [SysConfigValueMock.SYS_CONFIC_VALID] } })
+stateBasic.addPositiveSchemaObject(createCrmAsGvPositiveSchema({
+  ontoMocks: [
+    PROFILE_5_GEOVISTORY_BASI_2022_01_18,
+    PROFILE_12_BIOGRAPHICAL_BA_2022_02_09
+  ],
+  sysConf: SysConfigValueMock.SYS_CONFIC_VALID,
+  p: ProProjectMock.SANDBOX_PROJECT.pk_entity
+}))
+stateBasic.addPositiveSchemaObject({
+  pro: {
+    project: [ProProjectMock.SANDBOX_PROJECT],
+    dfh_class_proj_rel: [
+      {
+        pk_entity: 7001,
+        fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
+        fk_class: 21,
+        enabled_in_entities: true
+      },
+      {
+        pk_entity: 7002,
+        fk_project: ProProjectMock.SANDBOX_PROJECT.pk_entity,
+        fk_class: 61,
+        enabled_in_entities: true
+      },
 
+    ]
+  },
+  inf: { language: [InfLanguageMock.ENGLISH] }
+})
 export const Basic: Story = {
   args: {
     pkProject: 0,
@@ -72,7 +103,7 @@ export const Basic: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText(/table works!/gi)).toBeTruthy();
+    expect(canvas.findByText(/Birthdate/i)).toBeTruthy();
   },
 };
 
@@ -117,7 +148,7 @@ export const NewRow: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText(/table works!/gi)).toBeTruthy();
+    expect(canvas.getByText(/New row at position 2/i)).toBeTruthy();
   },
 };
 
@@ -158,6 +189,9 @@ export const EditMode: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText(/table works!/gi)).toBeTruthy();
+    const btn = await canvas.findByRole('button', { name: /Map a Class/ })
+    await userEvent.click(btn)
+    const cdkOverlay = getCdkOverlayCanvas(canvasElement);
+    expect(cdkOverlay.findByText(/Map column/i)).toBeTruthy();
   },
 };

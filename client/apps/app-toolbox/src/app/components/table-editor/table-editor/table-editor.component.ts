@@ -17,7 +17,6 @@ import { equals, indexBy, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { ActiveAccountService } from '../../../services/active-account.service';
-import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { TableDetailComponent } from '../../layout/tab-bodies/table-detail/table-detail.component';
 import { InfoDialogComponent, InfoDialogData, InfoDialogReturn } from '../../misc/info-dialog/info-dialog.component';
@@ -86,7 +85,6 @@ export class TableEditorComponent implements OnInit {
   accountId: number;
   constructor(
     public ref: ChangeDetectorRef,
-    private p: ActiveProjectService,
     private tableAPI: TableService,
     private state: StateFacade,
     private c: ConfigurationPipesService,
@@ -157,13 +155,6 @@ export class TableEditorComponent implements OnInit {
       this.tableConfig$,
       this.state.data.dat.column.getColumn.byFkDigital$(this.pkEntity)
     ]).pipe(
-      // only forward if we have the datColumns AND the config
-      // (avoid timing issue when first this.columns$ fires and not yet textProperties)
-      // filter(([config, datColumns]) => {
-      //   const cols1 = config.columns.filter(col => col.visible).map(col => col.fkColumn);
-      //   const cols2 = values(datColumns).map(col => col.pk_entity);
-      //   return !cols1.some(pk1 => !cols2.some(pk2 => pk2 === pk1)); // Do we have at least one pk that misses in one of the two tables?
-      // }),
       map(([config, datColumns]) => {
         const datColsByPk = indexBy(col => col.pk_entity.toString(), values(datColumns))
         return config.columns.filter(col => col.visible && datColsByPk[col.fkColumn]).map(col => datColsByPk[col.fkColumn]);
@@ -304,12 +295,6 @@ export class TableEditorComponent implements OnInit {
       maxWidth: '100%',
       data: { pkTable: this.pkEntity }
     }).afterClosed()
-    // .pipe(takeUntil(this.destroy$)).subscribe((result) => {
-    //   if (!result) return;
-    //   this.s.modifyGvSchema(this.tableAPI.tableControllerUpdateColumn(
-    //     this.pkProject, this.pkEntity, this.a.account.id, this.defaultLanguage.pk_entity, result.cols)
-    //     , this.pkProject);
-    // });
   }
   preNewRow(newPosition: number) {
     this.newRowTemp.position = newPosition;

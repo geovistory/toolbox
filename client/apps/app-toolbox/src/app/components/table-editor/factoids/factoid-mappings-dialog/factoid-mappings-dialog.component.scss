@@ -1,21 +1,26 @@
-.loc-no-margin {
-  margin: 0;
-}
-
-.loc-body {
-  flex: 1 1 auto;
-  overflow: auto;
-
+:host {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
-.loc-footer {
-  padding: 0 24px 24px 24px;
-  flex: 0 0 60px;
-  overflow: hidden;
+mat-dialog-content {
+  max-height: unset !important;
+  flex: 1 0 0;
+}
 
+.top-content {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  flex: 1 1 auto;
+  gv-factoid-mapping {
+    width: 100%;
+  }
 }

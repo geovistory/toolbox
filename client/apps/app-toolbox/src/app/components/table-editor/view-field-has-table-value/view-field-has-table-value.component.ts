@@ -1,5 +1,5 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, forwardRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -23,7 +23,7 @@ interface PkTableValueLoader {
   templateUrl: './view-field-has-table-value.component.html',
   styleUrls: ['./view-field-has-table-value.component.scss'],
   standalone: true,
-  imports: [NgIf, MatProgressSpinnerModule, MatButtonModule, TableEditorComponent, AsyncPipe]
+  imports: [NgIf, MatProgressSpinnerModule, MatButtonModule, forwardRef(() => TableEditorComponent), AsyncPipe]
 })
 export class ViewFieldHasTableValueComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();

@@ -1,27 +1,20 @@
 .loc-pointer {
-    cursor: pointer
+  cursor: pointer;
 }
 
 .loc {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 ::ng-deep .loc-content {
-    .mat-menu-content {
-        display: flex;
-        flex-direction: column;
-        padding: 8px;
-    }
-}
-
-::ng-deep .loc-comment {
-    .mat-form-field-wrapper {
-        padding: 0 !important;
-        margin:0 !important;
-    }
-}
-
-::ng-deep .mat-badge.hide-text .mat-badge-content {
-    color: transparent;
+  .mat-mdc-menu-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1rem 0.5rem 1rem;
   }
+}
+
+// ::ng-deep .mat-badge.hide-text .mat-badge-content {
+//     color: transparent;
+//   }

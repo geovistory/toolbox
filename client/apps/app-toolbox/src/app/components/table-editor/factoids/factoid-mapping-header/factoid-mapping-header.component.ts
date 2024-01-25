@@ -23,7 +23,7 @@ export class FactoidMappingHeaderComponent implements OnInit {
   @Output() fmChanged = new EventEmitter<FactoidMapping>();
   @Output() collapseBody = new EventEmitter<boolean>();
 
-  collapsed = true;
+  collapsed = false;
 
   ngOnInit(): void {
     if (!this.fm) this.fm = {}

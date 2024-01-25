@@ -1,19 +1,13 @@
 .loc-bg {
-    background-color: rgba(0, 125, 255, 0.08)
+  background-color: rgba(0, 125, 255, 0.08);
+  padding: 0.5rem 0;
 }
 
 .loc-pointer {
-    cursor: pointer
+  cursor: pointer;
 }
 
 .loc-my-auto {
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-::ng-deep .loc-fm-head {
-    .mat-form-field-wrapper {
-        padding: 0 !important;
-        margin:0 !important;
-    }
+  margin-top: auto;
+  margin-bottom: auto;
 }

@@ -2,6 +2,7 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, QueryList, ViewChildren } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -89,6 +90,7 @@ export interface TableColFilter {
     NgClass,
     SharedModule,
     NgFor,
+    MatButtonModule,
     MatIconModule,
     CopyClipboardDirective,
     MatTooltipModule,

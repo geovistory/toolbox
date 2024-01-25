@@ -1,35 +1,24 @@
-<div class="gv-td-menu-container">
+<div class="gv-td-menu-container bg-white">
 
-  <!-- <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-col-toggler orange">
-    <div
-      style="height: 100%; display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px"
-      [ngClass]="{'mat-bg-edit-mode': (editMode.value$|async)}">
 
-      <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary" (click)="editMode.toggleValue()">
-        {{(editMode.value$|async) ? 'Stop editing' : 'Edit table'}}
-      </button>
-    </div>
-  </div> -->
-
-  <div class="gv-td-menu-item mat-border-top orange"
+  <div class="gv-td-menu-item mat-border-top"
     style="display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px">
 
-    <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary center-vert"
-      (click)="tableConfiguration()">
+    <button mat-flat-button color="primary" class="center-vert" (click)="tableConfiguration()">
       Manage columns
     </button>
 
   </div>
-  <div class="gv-td-menu-item mat-border-top orange"
+  <div class="gv-td-menu-item mat-border-top"
     style="display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px">
 
-    <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary center-vert" (click)="factoidMapping()">
+    <button mat-flat-button color="primary" class="center-vert" (click)="factoidMapping()">
       Factoid mapping
     </button>
 
   </div>
 
-  <div class="gv-td-menu-item mat-border-top gv-td-col-checkbox orange">
+  <div class="gv-td-menu-item mat-border-top gv-td-col-checkbox">
 
     <!-- Filter Toggler -->
     <mat-checkbox [(ngModel)]="colFiltersEnabled">Filters</mat-checkbox>
@@ -37,7 +26,7 @@
     <!-- Metadata Toggler -->
     <mat-checkbox [(ngModel)]="lineBrakeInCells">Text break</mat-checkbox>
   </div>
-  <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-paginator orange">
+  <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-paginator">
     <!-- Paginator -->
     <mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
       [pageSizeOptions]="[5, 10, 20, 50]" [showFirstLastButtons]=true (page)="onPageChange($event)">
@@ -57,10 +46,7 @@
     </mat-menu>
   </div>
 </div>
-<!-- <mat-divider></mat-divider> -->
 
-<!--  [columnComments$]="" [loading]="" -->
-<!-- // MOVED cellMapping TO EntityMatcherComponent -->
 <gv-table class="mat-border-edit-mode" [pkProject]="pkProject" [pkDigital]="pkEntity" [loading]="loading"
   [sortBy$]="sortByIndex$" [headers$]="headers$" [table$]="table$" [filteringEnabled]="colFiltersEnabled"
   [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" [showIds$]="showIds$" [newRow]="newRowTemp"
@@ -71,14 +57,14 @@
 </gv-table>
 
 <div class="gv-row-center mt-4" *ngIf="filterOnRow">
-  <mat-card class="mb-4">
-    <mat-card-header>
-      <div mat-card-avatar>
-        <mat-icon color="primary">info</mat-icon>
+  <mat-card appearance="outlined" class="mb-4">
+    <mat-card-content>
+      <div class="d-flex">
+        <mat-icon class="mr-2" color="primary">info</mat-icon>
+        Filtered on row {{(table$|async)?.[0]?.[0]?.text}}
       </div>
-      <mat-card-subtitle>Filtered on row {{(table$|async)?.[0]?.[0]?.text}}</mat-card-subtitle>
-    </mat-card-header>
-    <mat-card-actions align="end">
+    </mat-card-content>
+    <mat-card-actions>
       <button mat-button color=primary (click)="removeFilterOnRow()">Show all rows</button>
     </mat-card-actions>
   </mat-card>

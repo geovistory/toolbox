@@ -21,14 +21,11 @@ tr.table-row-filter {
 
 .gv-td-menu-item {
   flex: 0 1 auto;
-  overflow: auto;
   display: flex;
-  align-items: baseline;
+  align-items: center;
 
-  // border-top: 1px solid $mat-color-divider;
-  // border-left: 1px solid $mat-color-divider;
-  margin-top: -1px;
-  margin-left: -1px;
+  // margin-top: -1px;
+  // margin-left: -1px;
 
   .gv-td-menu-label {
     margin: 0 4px;
@@ -45,9 +42,8 @@ tr.table-row-filter {
 
   &.gv-td-col-checkbox {
     flex: 0 1 auto;
-
-    padding: 27px 1rem 0 1rem;
-    .mat-checkbox {
+    padding-right: 1rem;
+    .mat-mdc-checkbox {
       margin: 0 4px 0 4px;
     }
   }
@@ -65,9 +61,6 @@ tr.table-row-filter {
   margin-top: auto;
   margin-bottom: auto;
 }
-mat-card-subtitle {
-  margin-bottom: 0;
-}
-.mat-card-avatar {
+d-avatar {
   width: 20px;
 }

@@ -1,17 +1,21 @@
-<div mat-dialog-title>
-  <h2>Table configuration <small>({{data.pkDigital}})</small></h2>
+<h2 mat-dialog-title>Table configuration <small>({{data.pkDigital}})</small></h2>
+<mat-dialog-content style="flex: 0 0 auto; overflow: hidden; padding-bottom:0">
   <div style="display: flex; flex-direction: row; justify-content: space-between;">
-    <mat-form-field [ngStyle]="{'width': '70%'}" appearance="outline" dense>
-      <input matInput autocomplete="off" (keyup)="filter($any($event).target.value)" placeholder="Filter">
-    </mat-form-field>
-    <button class="mat-menu-trigger mat-flat-button mat-button-base mat-primary center-vert"
-      (click)="createNewColumn()">New column</button>
+    <div class="density-4">
+      <mat-form-field appearance="outline">
+        <input matInput autocomplete="off" (keyup)="filter($any($event).target.value)" placeholder="Filter">
+      </mat-form-field>
+    </div>
+    <button mat-flat-button color="primary" class="center-vert" (click)="createNewColumn()">New column</button>
   </div>
-  <p *ngIf="filterIsOn">
-    <small>Be carefull! When filter is activated, moving columns can lead to an unwanted order, check
-      it with no filter afterwards</small>
-  </p>
-</div>
+  <mat-hint *ngIf="filterIsOn">
+    <small>
+      Be carefull! When filter is activated, moving columns can lead to an unwanted
+      order, check
+      it with no filter afterwards
+    </small>
+  </mat-hint>
+</mat-dialog-content>
 
 <mat-dialog-content #scrollContainer>
   <div cdkDropList class="drag-and-drop-list" (cdkDropListDropped)="move($event.previousIndex, $event.currentIndex)">
@@ -44,6 +48,8 @@
             Number
           </mat-radio-button>
         </mat-radio-group>
+        <button mat-stroked-button color="primary" class="ml-2" (click)="editColumn = undefined">
+          OK</button>
       </div>
       <div class="on-right">
         <mat-icon svgIcon="arrow-collapse-up" color="primary" (click)="move(i, 0)" style="cursor: pointer;"

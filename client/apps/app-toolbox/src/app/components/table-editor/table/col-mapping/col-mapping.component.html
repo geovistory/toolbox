@@ -1,12 +1,11 @@
-<div mat-dialog-title>
-  <h2>Map column <i>{{data.colLabel}}</i> <small> (id:{{data.pkColumn}}) </small> to ...</h2>
+<h2 mat-dialog-title>Map column <i>{{data.colLabel}}</i> <small> (id:{{data.pkColumn}}) </small> to ...</h2>
 
-  <mat-form-field [ngStyle]="{'width': '48%'}" appearance="outline" dense>
+<mat-dialog-content class="top-content density-4">
+  <mat-form-field class="hide-subscript" [ngStyle]="{'width': '48%'}" appearance="outline">
     <input matInput autocomplete="off" (keyup)="filter($any($event).target.value)" placeholder="Filter">
   </mat-form-field>
-
-</div>
-<mat-dialog-content>
+</mat-dialog-content>
+<mat-dialog-content class="main-content">
   <form [formGroup]="form">
 
     <mat-radio-group aria-label="Select a class" [formControl]="selectedClassCtrl" (change)="mapColumn($event)"
@@ -21,7 +20,7 @@
             <span class="fa-2x gv-icon gv-icon-entity gv-entities-primary-color"></span>
             <span class="ml-1">ENTITY CLASSES</span>
           </h5>
-          <mat-radio-button *ngFor="let class of (filteredClasses$ | async).normalClasses"
+          <mat-radio-button *ngFor="let class of (filteredClasses$ | async)?.normalClasses"
             [checked]="this.selectedClass == class.pkClass" value="{{class.pkClass}}">
             {{class.label}}
           </mat-radio-button>
@@ -32,7 +31,7 @@
             <mat-icon class="gv-entities-primary-color" svgIcon="ruler-square"></mat-icon>
             <span class="ml-1">VALUE CLASSES</span>
           </h5>
-          <mat-radio-button *ngFor="let class of (filteredClasses$ | async).specialClasses"
+          <mat-radio-button *ngFor="let class of (filteredClasses$ | async)?.specialClasses"
             [checked]="this.selectedClass == class.pkClass" value="{{class.pkClass}}">
             {{class.label}}
           </mat-radio-button>

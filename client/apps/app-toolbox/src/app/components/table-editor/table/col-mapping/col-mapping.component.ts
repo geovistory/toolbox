@@ -84,8 +84,8 @@ export class ColMappingComponent implements OnInit, OnDestroy {
             item
           }))
         ))))
-    ), this.state.data.sys.config.sysConfig$]).pipe(
-      map(([items, config]) => {
+    )]).pipe(
+      map(([items]) => {
         const specialClasses: Array<ClassOption> = [];
         const normalClasses: Array<ClassOption> = [];
         items.forEach(i => {

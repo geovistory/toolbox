@@ -163,7 +163,9 @@ $app-theme: mat.define-light-theme(
   @include mat.form-field-density(-5);
 }
 
-mat-form-field.hide-subscript {
+mat-form-field.hide-subscript,
+gv-class-dropdown.hide-subscript,
+gv-ctrl-entity-or-value-matcher.hide-subscript {
   .mat-mdc-form-field-subscript-wrapper {
     display: none;
   }
