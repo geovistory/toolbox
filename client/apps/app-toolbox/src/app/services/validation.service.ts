@@ -24,7 +24,7 @@ export function isValidQuillDoc(candidate: any): Validated<QuillDoc> {
 }
 
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ValidationService {
 
   /** The control must not have invalid child controls.

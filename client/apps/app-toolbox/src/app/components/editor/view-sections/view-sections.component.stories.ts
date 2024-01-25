@@ -21,7 +21,7 @@ import { response2 } from './testing/response2';
 import { ViewSectionsComponent } from './view-sections.component';
 const meta: Meta<ViewSectionsComponent> = {
   component: ViewSectionsComponent,
-  title: 'ViewSectionsComponent',
+  title: 'Editor/Views/ViewSectionsComponent',
   decorators: [applicationConfig({
     providers: [
       Store,

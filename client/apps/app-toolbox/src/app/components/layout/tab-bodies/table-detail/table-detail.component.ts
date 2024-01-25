@@ -24,7 +24,7 @@ import { TableDetailService } from './table-detail.service';
   styleUrls: ['./table-detail.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [EditModeService, TableDetailService],
+  providers: [EditModeService, TableDetailService, TruncatePipe],
   standalone: true,
   imports: [TabLayoutComponent, EntityCardHeaderComponent, MatDividerModule, NgIf, ViewFieldHasTableValueComponent, MatTabsModule, MatIconModule, ViewSectionsComponent, AsyncPipe]
 })

@@ -15,13 +15,13 @@
   justify-content: center;
 }
 
-.right-col > .mat-button,
+.right-col > .mat-mdc-button,
 .right-col.mat-button {
   padding: 0 5px;
   min-width: 40px;
   padding-right: 5px;
 }
 
-::ng-deep .mat-headline.mat-line {
+::ng-deep .mat-headline-5.mat-line {
   font-size: 28px !important;
 }

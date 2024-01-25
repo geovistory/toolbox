@@ -9,8 +9,6 @@ import {
 } from '@storybook/angular';
 import { SearchExistingEntityComponent, SearchExistingEntityListMode } from './search-existing-entity.component';
 
-import { expect } from '@storybook/jest';
-import { within } from '@storybook/testing-library';
 
 import { WareEntityPreviewPage, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, of } from 'rxjs';
@@ -101,8 +99,4 @@ export const Basic: Story = {
       { provide: WarEntityPreviewControllerService, useClass: WarEntityPreviewControllerServiceMock },],
     }),
   ],
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    expect(canvas.getByText(/search-existing-entity works!/gi)).toBeTruthy();
-  },
 };

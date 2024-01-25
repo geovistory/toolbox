@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100%;
   position: relative;
-  .mat-dialog-content {
+  .mat-mdc-dialog-content {
     padding: 0;
   }
 }
@@ -22,16 +22,11 @@
   }
 }
 
-::ng-deep gv-select-type-dialog .mat-list-item-content {
-  padding: 0 24px !important;
-}
-
 .loc-list {
   padding: 0 !important;
 }
 
 .loc-filter {
-  margin: -24px -24px 0 -24px;
   font-size: inherit;
   box-shadow: none;
   border-radius: 0;
@@ -41,7 +36,7 @@
 }
 
 .loc-filter input {
-  padding: 24px 24px 16px 24px;
+  padding: 16px;
 }
 
 .loc-filter-input {

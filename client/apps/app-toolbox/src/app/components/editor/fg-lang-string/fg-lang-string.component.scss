@@ -5,14 +5,9 @@
 .gv-fg-lang-string-container {
   display: flex;
   flex-direction: row;
-  
+
   mat-form-field ~ mat-form-field {
     margin: 0 0 0 1rem;
-  }
-  mat-form-field {
-    ::ng-deep .mat-form-field-infix {
-      width: unset;
-    }
   }
   .ctrl-language {
     flex: 0 0 80px;

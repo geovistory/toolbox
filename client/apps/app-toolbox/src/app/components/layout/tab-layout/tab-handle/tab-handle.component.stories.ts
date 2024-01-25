@@ -12,7 +12,7 @@ import { TabHandleComponent } from './tab-handle.component';
 
 const meta: Meta<TabHandleComponent> = {
   component: TabHandleComponent,
-  title: 'TabHandleComponent',
+  title: 'Layout/TabHandleComponent',
   decorators: [
     applicationConfig({
       providers: [

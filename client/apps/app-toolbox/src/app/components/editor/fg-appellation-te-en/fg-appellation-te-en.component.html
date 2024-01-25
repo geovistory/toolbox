@@ -17,9 +17,10 @@
           </mat-error>
         </mat-form-field>
 
-        <div style="width: {{(showOptions$|async) ? '80px' : '0px'}}; margin: 0 0 0 1rem;">
-          <mat-form-field [@openClose]="(showOptions$|async) ? 'open' : 'closed'" class="ctrl-language"
-            *ngIf="ctrls?.lang " [appearance]="appearance">
+        <div
+          [ngStyle]="{display:(showOptions$|async) ? 'block' : 'none', marginLeft: (showOptions$|async) ? '1rem' : 0}"
+          style="width: 80px;">
+          <mat-form-field class="ctrl-language" *ngIf="ctrls?.lang " [appearance]="appearance">
             <mat-label>{{placeholders.lang}}</mat-label>
 
             <gv-ctrl-language placeholder="Placeholder" [formControl]="ctrls.lang">
@@ -33,7 +34,7 @@
       </div>
 
       <div class="second-line" [@openClose]="(showOptions$|async) ? 'open' : 'closed'">
-        <mat-form-field class="ctrl-type" *ngIf="ctrls?.type " [appearance]="appearance">
+        <mat-form-field class="ctrl-type mt-1" *ngIf="ctrls?.type " [appearance]="appearance">
           <mat-label>{{placeholders.type}}</mat-label>
 
           <gv-ctrl-type #c [pkTypedClass]="pkTypedClass" [pkTypeClass]="pkTypeClass$|async" placeholder="Select ..."

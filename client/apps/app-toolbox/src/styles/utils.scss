@@ -62,7 +62,7 @@
 }
 
 .border-danger {
-  border-color: 1px solid map.get(mat.$red-palette, 700) !important;
+  border-color: map.get(mat.$red-palette, 700) !important;
 }
 
 .border-right-0 {

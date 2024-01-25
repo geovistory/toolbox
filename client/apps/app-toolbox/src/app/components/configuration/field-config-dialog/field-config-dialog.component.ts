@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FieldLabelComponent } from '../../editor/field-label/field-label.component';
@@ -17,7 +17,7 @@ export interface FieldConfigDialogData {
   standalone: true,
   imports: [MatDialogModule, FieldLabelComponent, FieldConfigComponent, MatButtonModule]
 })
-export class FieldConfigDialogComponent implements OnInit {
+export class FieldConfigDialogComponent {
 
   isOutgoing: boolean
   fkSource: number
@@ -27,8 +27,4 @@ export class FieldConfigDialogComponent implements OnInit {
     this.isOutgoing = !!data.fkPropertyDomain
     this.fkSource = this.isOutgoing ? data.fkPropertyDomain : data.fkPropertyRange
   }
-
-  ngOnInit() {
-  }
-
 }

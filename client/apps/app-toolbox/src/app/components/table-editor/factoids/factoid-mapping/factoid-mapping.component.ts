@@ -1,17 +1,17 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FactoidMapping, FactoidPropertyMapping } from '@kleiolab/lib-sdk-lb4';
 import { NgClass } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FactoidMapping, FactoidPropertyMapping } from '@kleiolab/lib-sdk-lb4';
 import { FactoidMappingBodyComponent } from '../factoid-mapping-body/factoid-mapping-body.component';
 import { FactoidMappingHeaderComponent } from '../factoid-mapping-header/factoid-mapping-header.component';
 
 @Component({
-    selector: 'gv-factoid-mapping',
-    templateUrl: './factoid-mapping.component.html',
-    styleUrls: ['./factoid-mapping.component.scss'],
-    standalone: true,
-    imports: [FactoidMappingHeaderComponent, FactoidMappingBodyComponent, NgClass]
+  selector: 'gv-factoid-mapping',
+  templateUrl: './factoid-mapping.component.html',
+  styleUrls: ['./factoid-mapping.component.scss'],
+  standalone: true,
+  imports: [FactoidMappingHeaderComponent, FactoidMappingBodyComponent, NgClass]
 })
-export class FactoidMappingComponent implements OnInit {
+export class FactoidMappingComponent {
 
   @Input() listNumber: number
   @Input() fm: FactoidMapping = {}
@@ -19,11 +19,7 @@ export class FactoidMappingComponent implements OnInit {
   @Output() deleteFM = new EventEmitter();
   @Output() fmChanged = new EventEmitter<FactoidPropertyMapping>();
 
-  bodyCollapsed: Boolean
-
-  constructor() { }
-
-  ngOnInit(): void { }
+  bodyCollapsed: boolean
 
   fmChange(fm: FactoidMapping) {
     this.fm = fm;
@@ -39,7 +35,7 @@ export class FactoidMappingComponent implements OnInit {
     this.deleteFM.emit();
   }
 
-  collapseBody(collapsed: Boolean) {
+  collapseBody(collapsed: boolean) {
     this.bodyCollapsed = collapsed;
   }
 

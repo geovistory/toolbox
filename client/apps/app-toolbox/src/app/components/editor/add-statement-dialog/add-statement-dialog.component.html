@@ -1,36 +1,37 @@
 <ng-container *ngIf="(alreadyHas$ | async) === true">
-  <span class="mat-h2 loc-dialog-title top-dialog-padding">
-    Existing information found in other projects!
-  </span>
-  <span class="mat-body1 loc-dialog-title">
-    About: {{classLabel_source$ | async}} {{sourceEntityLabel$ | async}} – {{data.field.label}} –
-    {{classLabel_target$ | async}}
-  </span>
-  <span class="mat-body1 loc-field-title">
-    Select and add items from the list below or create a new item.
-  </span>
-  <gv-view-field-body [source]="data.source" [field]="fieldWithOneTarget" [showBodyOnInit]="true" [scope]="scope$|async"
-    [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" (close)="onClose($event)" (next)="onNext()">
-  </gv-view-field-body>
+  <h1 mat-dialog-title>Existing information found in other projects!</h1>
+  <mat-dialog-content>
+    <p class="">
+      About: {{classLabel_source$ | async}} {{sourceEntityLabel$ | async}} – {{data.field.label}} –
+      {{classLabel_target$ | async}}
+    </p>
+    <p class="mat-body1">
+      Select and add items from the list below or create a new item.
+    </p>
+    <gv-view-field-body class="h-100 mt-4" [source]="data.source" [field]="fieldWithOneTarget" [showBodyOnInit]="true"
+      [scope]="scope$|async" [showOntoInfo$]="showOntoInfo$" [addMode$]="addMode$" (close)="onClose($event)"
+      (next)="onNext()">
+    </gv-view-field-body>
+  </mat-dialog-content>
 </ng-container>
 
-
-<div class="gv-col gv-fh" *ngIf="(alreadyHas$ | async) === false">
-  <span class="gv-col-center">
-    <span class="loc-dialog-title mat-h2">Add...</span>
+<div class="loc-container" *ngIf="(alreadyHas$ | async) === false">
+  <span class="loc-header">
+    <span class="mat-h2">Add...</span>
     <div class="gv-row-center mat-caption mat-text-secondary pl-2 pr-2">
-      <div class="loc-title-left loc-ellipsis">to {{classLabel_source$ | async}} – {{sourceEntityLabel$ | async}}
+      <div class="loc-ellipsis">to {{classLabel_source$ | async}} – {{sourceEntityLabel$ | async}}
       </div>
       <div>
         <mat-icon svgIcon="arrow-right" class="loc-arrow-icon"></mat-icon>
       </div>
-      <div class="loc-title-right loc-ellipsis">{{data.field.label}}</div>
+      <div class="loc-ellipsis">{{data.field.label}}</div>
     </div>
+    <mat-divider></mat-divider>
   </span>
 
-  <mat-divider></mat-divider>
 
-  <gv-slider class="gv-fh" [slide]="!data.showAddList ? 'center' : sliderView" style="height:'calc(100% - 95px)'">
+
+  <gv-slider [slide]="!data.showAddList ? 'center' : sliderView">
     <!--title height + padding bot + padding top  + divdier = 62 + 16 + 16 + 1 = 95  -->
 
     <!-- SLIDE 1 -->
@@ -44,7 +45,7 @@
 
         <!-- body -->
         <ng-container body>
-          <gv-form-create-data class="gv-ovf-auto" [field]="data.field" [pkClass]="data.targetClass"
+          <gv-form-create-data class="gv-ovf-auto h-100" [field]="data.field" [pkClass]="data.targetClass"
             [source]="data.source" [hideTitle]="true" [hiddenProperty]="data.hiddenProperty" [hideButtons]="true"
             [initVal$]="initVal$" (searchString)="searchStringChange($event)" #f>
           </gv-form-create-data>
@@ -86,7 +87,7 @@
             [confirmBtnTextInProject]="'Select'" [confirmBtnTextNotInProject]="'Add and Select'"
             [confirmBtnTooltipInProject]="'Select entity'"
             [confirmBtnTooltiptNotInProject]="'add to your project and select entity'" [searchString$]="searchString$"
-            [mode]="sliderView == 'right' ? 'mode2' : 'mode1'" (onConfirm)="upsertSelected($event.pkEntity)"
+            [mode]="sliderView === 'right' ? 'mode2' : 'mode1'" (onConfirm)="upsertSelected($event.pkEntity)"
             (onMore)="onMoreClick($event)" (onBack)="onBackClick()">
           </gv-search-existing-entity>
         </ng-container>

@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100%;
   position: relative;
-  .mat-dialog-content {
+  .mat-mdc-dialog-content {
     padding: 0;
   }
 }
@@ -16,13 +16,10 @@
   right: -24px;
   display: flex;
   background: white;
+
   mat-spinner {
     margin: auto;
   }
-}
-
-::ng-deep gv-select-platform-vocab-item-dialog .mat-list-item-content {
-  padding: 0 24px !important;
 }
 
 .loc-list {
@@ -30,7 +27,6 @@
 }
 
 .loc-filter {
-  margin: -24px -24px 0 -24px;
   font-size: inherit;
   box-shadow: none;
   border-radius: 0;
@@ -40,7 +36,7 @@
 }
 
 .loc-filter input {
-  padding: 24px 24px 16px 24px;
+  padding: 16px;
 }
 
 .loc-filter-input {

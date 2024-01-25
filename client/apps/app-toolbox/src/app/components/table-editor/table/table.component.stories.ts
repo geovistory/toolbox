@@ -21,7 +21,7 @@ import { ActiveProjectService } from './../../../services/active-project.service
 
 const meta: Meta<TableComponent> = {
   component: TableComponent,
-  title: 'TableComponent',
+  title: 'Table Editor/TableComponent',
   decorators: [
     applicationConfig({
       providers: [

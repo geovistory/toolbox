@@ -1,7 +1,7 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit, forwardRef } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit, forwardRef } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -52,9 +52,10 @@ export interface AddStatementDialogData {
     { provide: READ_ONLY, useValue: true }
   ],
   standalone: true,
-  imports: [NgIf, forwardRef(() => ViewFieldBodyComponent), MatIconModule, MatDividerModule, SliderComponent, HbfPanelComponent, forwardRef(() => FormCreateDataComponent), MatButtonModule, MatProgressSpinnerModule, SearchExistingEntityComponent, MatTabsModule, forwardRef(() => EntityCardComponent), AsyncPipe]
+  imports: [MatDialogModule, NgIf, forwardRef(() => ViewFieldBodyComponent), MatIconModule, MatDividerModule, SliderComponent, HbfPanelComponent, forwardRef(() => FormCreateDataComponent), MatButtonModule, MatProgressSpinnerModule, SearchExistingEntityComponent, MatTabsModule, forwardRef(() => EntityCardComponent), AsyncPipe]
 })
 export class AddStatementDialogComponent implements OnInit, OnDestroy {
+  @HostBinding('class.mat-typography') m = true;
   destroy$ = new Subject<boolean>();
 
   pkClass_target$: Observable<number>;
@@ -171,7 +172,6 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     // get count from rest api first
     this.alreadyHas$ =
       combineLatest([this.state.pkProject$, this.next$]).pipe(
-        // first(),
         switchMap(([pkProject, next]) => {
           if (next) return of(0);
           const req: GvFieldPageReq = {

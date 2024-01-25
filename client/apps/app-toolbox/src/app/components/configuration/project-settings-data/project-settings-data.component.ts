@@ -484,7 +484,6 @@ export class ProjectSettingsDataComponent implements OnInit, OnDestroy, TabLayou
   openClassConfig(classItem: ClassItem) {
     this.state.pkProject$.pipe(first(), takeUntil(this.destroy$)).subscribe(fkProject => {
       const data: ClassConfigDialogData = {
-        fkAppContext: 45,
         fkClass: classItem.pkClass,
         fkProject
       }

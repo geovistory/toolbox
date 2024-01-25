@@ -23,7 +23,7 @@ export interface CtrlEntityDialogData {
   hiddenProperty: GvFieldProperty
   initVal$: Observable<CtrlEntityModel>
   showAddList: boolean
-  disableIfHasStatement: DisableIfHasStatement,
+  disableIfHasStatement?: DisableIfHasStatement,
   defaultSearch: string;
 }
 

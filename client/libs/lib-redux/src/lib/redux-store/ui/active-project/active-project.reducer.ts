@@ -219,8 +219,10 @@ export const activeProjectReducer = composeReducers(
                 ...state.panels[pi],
                 tabs: [...state.panels[pi].tabs]
                   .map((tab, index) => {
-                    tab.active = (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)));
-                    return tab;
+                    return {
+                      ...tab,
+                      active: (index === (ti < state.panels[pi].tabs.length ? ti : (ti - 1)))
+                    }
                   })
               }
             })

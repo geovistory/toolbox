@@ -45,9 +45,28 @@ a.text-primary:focus {
 .text-white {
   color: #fff !important;
 }
+.bg-white {
+  background-color: #fff !important;
+}
 
 .border-light {
-  border-color: map.get($gv-grey-palette, 200) !important;
+  border: 1px solid map.get($gv-grey-palette, 200) !important;
+}
+
+.border-gray {
+  border: 1px solid map.get($gv-grey-palette, 500) !important;
+}
+
+.bg-light {
+  background-color: map.get($gv-grey-palette, 200) !important;
+}
+
+.bg-grey-100 {
+  background-color: map.get($gv-grey-palette, 100) !important;
+}
+
+.border-bottom-grey-100 {
+  border-bottom: 1px solid map.get($gv-grey-palette, 100) !important;
 }
 
 .bg-info {
@@ -55,4 +74,16 @@ a.text-primary:focus {
 }
 .bg-warning {
   background-color: #ffc107 !important;
+}
+
+.border-green {
+  border: 1px solid map.get($gv-mat-teal, 300) !important;
+}
+
+.border-bottom-green {
+  border-bottom: 1px solid map.get($gv-mat-teal, 300) !important;
+}
+
+.bg-green {
+  background-color: map.get($gv-mat-teal, 300) !important;
 }

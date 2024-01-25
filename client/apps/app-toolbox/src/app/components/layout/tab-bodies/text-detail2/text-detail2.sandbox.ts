@@ -67,7 +67,6 @@ const initialSchemaObects = [
     p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles
   }),
   GvSchemaObjectMock.project1, // add project and its default language
-
 ]
 
 /**
@@ -99,32 +98,7 @@ class MockPaginatedStatementsControllerService {
         })
       );
     }
-    // else if (values(gvLoadSubfieldPageReq[0].targets)[0].place) {
-    //   return new BehaviorSubject(GvPaginationObjectMock.madridsPresenceWasAtPlace);
-    // }
-    // else if (values(gvLoadSubfieldPageReq[0].targets)[0].nestedResource) {
-    //   return new BehaviorSubject(GvPaginationObjectMock.personHasAppeTeEn);
-    // }
-
-    // else if (values(gvLoadSubfieldPageReq[0].targets)[0].dimension) {
-    //   return new BehaviorSubject(GvPaginationObjectMock.journeyHasDuration);
-    // }
-    // else if (values(gvLoadSubfieldPageReq[0].targets)[0].langString) {
-    //   return new BehaviorSubject(GvPaginationObjectMock.manifSingletonHasShortTitleMurderer);
-    // }
-
-    // else if (values(gvLoadSubfieldPageReq[0].targets)[0].language) {
-    //   return new BehaviorSubject(GvPaginationObjectMock.appeTeEnUsedInLanguage);
-    // }
-    // else if (values(gvLoadSubfieldPageReq[0].targets)[0].timePrimitive) {
-    //   return new BehaviorSubject(GvPaginationObjectMock.shipVoyageAtSomeTimeWithin);
-    // }
-    // else if (values(gvLoadSubfieldPageReq[0].targets)[0].timeSpan) {
-    //   return new BehaviorSubject(GvPaginationObjectMock.shipVoyageHasTimeSpan);
-    // }
-
     throw new Error('mock not implemented for this request');
-
   }
 }
 

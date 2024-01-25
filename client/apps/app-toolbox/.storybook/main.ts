@@ -9,7 +9,8 @@ const config: StorybookConfig = {
   },
   staticDirs: [
     { from: '../src/assets', to: '/assets' },
-    { from: '../../../node_modules/@mdi/angular-material/mdi.svg', to: '/assets/mdi/mdi.svg' }
+    { from: '../../../node_modules/@mdi/angular-material/mdi.svg', to: '/assets/mdi/mdi.svg' },
+    { from: '../../../node_modules//cesium/Build/Cesium', to: '/assets/cesium' }
   ],
   docs: {
     autodocs: true,

@@ -1,21 +1,77 @@
-import { importProvidersFrom } from '@angular/core';
+import { ChangeDetectionStrategy, Component, importProvidersFrom, Input, OnInit } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   applicationConfig,
   type Meta,
   type StoryObj,
 } from '@storybook/angular';
-import { CtrlLanguageComponent } from './ctrl-language.component';
+import { CtrlLanguageComponent, CtrlLanguageModel } from './ctrl-language.component';
 
 import { expect } from '@storybook/jest';
-import { within } from '@storybook/testing-library';
+import { userEvent, within } from '@storybook/testing-library';
 
+import { JsonPipe } from '@angular/common';
 import { HttpEvent, HttpResponse } from '@angular/common/http';
-import { InfLanguage, LanguagesService } from '@kleiolab/lib-sdk-lb4';
+import { FormBuilder, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { InfAppellation, InfLanguage, LanguagesService } from '@kleiolab/lib-sdk-lb4';
 import { Observable, of } from 'rxjs';
-const meta: Meta<CtrlLanguageComponent> = {
-  component: CtrlLanguageComponent,
-  title: 'Editor/FormElements/CtrlLanguageComponent',
+import { getCdkOverlayCanvas } from '../../../../../.storybook/getCdkOverlayCanvas';
+
+@Component({
+  selector: `gv-form-field`,
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.Default,
+  imports: [ReactiveFormsModule, CtrlLanguageComponent, MatFormFieldModule, JsonPipe],
+  template: `
+  <form [formGroup]="form">
+    <mat-form-field class="w-100" appearance="outline">
+      <gv-ctrl-language data-testid="ctrl" #c [formControl]="ctrl" placeholder="Enter Foo" required=true></gv-ctrl-language>
+      <mat-error>You must enter a value</mat-error>
+    </mat-form-field>
+  </form>
+  <table>
+    <tr>
+      <td colspan="2">
+        <button (click)="c.onContainerClick()">set focus</button>
+      </td>
+    </tr>
+    <tr>
+      <td>form.status:</td>
+      <td>{{form.status | json}}</td>
+    </tr>
+    <tr>
+      <td>form.touched:</td>
+      <td>{{form.touched | json}}</td>
+    </tr>
+    <tr>
+      <td>form.dirty:</td>
+      <td>{{form.dirty | json}}</td>
+    </tr>
+    <tr>
+      <td>ctrl.value</td>
+      <td>
+        <pre>{{ctrl.value | json:2}}</pre>
+      </td>
+    </tr>
+  </table>
+  `
+})
+class FormFieldComponent implements OnInit {
+  @Input() initVal?: InfAppellation
+  ctrl = new FormControl<CtrlLanguageModel>({ fk_class: 123 })
+  form = this.formBuilder.group({
+    ctrl: this.ctrl
+  });
+  constructor(private formBuilder: FormBuilder) { }
+  ngOnInit() {
+    if (this.initVal) this.ctrl.setValue(this.initVal)
+  }
+}
+
+const meta: Meta<FormFieldComponent> = {
+  component: FormFieldComponent,
+  title: 'Editor/Form Elements/CtrlLanguageComponent',
   decorators: [
     applicationConfig({
       providers: [
@@ -56,6 +112,9 @@ export const Basic: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText(/ctrl-language works!/gi)).toBeTruthy();
+    const inputEl = await canvas.findByRole('combobox')
+    await userEvent.click(inputEl)
+    const cdkOverlay = getCdkOverlayCanvas(canvasElement);
+    expect(cdkOverlay.findByText(/Greek/i)).toBeTruthy();
   },
 };

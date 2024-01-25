@@ -1,4 +1,4 @@
-import { AsyncPipe, NgIf } from '@angular/common';
+import { AsyncPipe, NgIf, NgStyle } from '@angular/common';
 import { AfterViewInit, Component, Inject, Input, OnDestroy, OnInit, Optional, QueryList, ViewChildren } from '@angular/core';
 import { FormsModule, ReactiveFormsModule, UntypedFormControl } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,7 +32,7 @@ export interface FgAppellationTeEnInjectData extends FormFactoryCompontentInject
   styleUrls: ['./fg-appellation-te-en.component.scss'],
   animations: [openClose],
   standalone: true,
-  imports: [NgIf, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlAppellationComponent, MatButtonModule, MatIconModule, CtrlLanguageComponent, CtrlTypeComponent, AsyncPipe]
+  imports: [NgIf, NgStyle, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlAppellationComponent, MatButtonModule, MatIconModule, CtrlLanguageComponent, CtrlTypeComponent, AsyncPipe]
 })
 export class FgAppellationTeEnComponent implements OnInit, OnDestroy, AfterViewInit, FormFactoryComponent {
   destroy$ = new Subject<boolean>();

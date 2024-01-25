@@ -6,7 +6,7 @@ window['env'] = {
   apiVersion: 'lb3-api'
 }
 import { HttpClientModule } from '@angular/common/http';
-import { Component, ElementRef, EnvironmentInjector, NgModule, ProviderToken, importProvidersFrom, inject, runInInjectionContext } from '@angular/core';
+import { Component, ElementRef, EnvironmentInjector, HostBinding, NgModule, ProviderToken, importProvidersFrom, inject, runInInjectionContext } from '@angular/core';
 import { MatIconRegistry } from '@angular/material/icon';
 import { DomSanitizer } from '@angular/platform-browser';
 import { setCompodocJson } from '@storybook/addon-docs/angular';
@@ -32,6 +32,8 @@ export class MatIconRegistryModule {
   standalone: false,
 })
 export class InjectorComponent {
+
+  @HostBinding('class.mat-typography') m = true
   constructor(el: ElementRef) {
     const environmentInjector = inject(EnvironmentInjector);
     // expose inject() via native element

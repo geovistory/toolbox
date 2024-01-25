@@ -19,7 +19,7 @@ import { AddEntityMenuComponent } from './add-entity-menu.component';
 
 const meta: Meta<AddEntityMenuComponent> = {
   component: AddEntityMenuComponent,
-  title: 'AddEntityMenuComponent',
+  title: 'Editor/Dialogs/AddEntityMenuComponent',
   decorators: [
     applicationConfig({
       providers: [

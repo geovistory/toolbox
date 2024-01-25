@@ -17,7 +17,7 @@ import { EntityPreviewComponent } from './entity-preview.component';
 
 const meta: Meta<EntityPreviewComponent> = {
   component: EntityPreviewComponent,
-  title: 'EntityPreviewComponent',
+  title: 'Misc/EntityPreviewComponent',
   decorators: [
     applicationConfig({
       providers: [
@@ -285,5 +285,27 @@ export const Loading: Story = {
     const canvas = within(canvasElement);
 
     expect(canvas.findByTestId('spinner')).toBeTruthy()
+  },
+};
+
+/**
+ * Example using preloaded data.
+ */
+export const Preloaded: Story = {
+  args: {
+    preview: {
+      fk_class: 21,
+      project_id: 123,
+      class_label: 'Person',
+      entity_label: 'Foo Bar Person',
+      entity_type: 'peIt',
+      pk_entity: 1,
+    },
+    openTabOnClick: true
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.findByText('Foo Bar Person')).toBeTruthy()
   },
 };

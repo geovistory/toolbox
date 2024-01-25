@@ -16,15 +16,25 @@ import { IAppState } from '../../redux-store/state.model';
 import { StateModule } from '../../redux-store/state.module';
 import { setUiState } from '../../redux-store/ui/ui.actions';
 
+import { InfLanguageMock } from '../../_helpers/data/auto-gen/gvDB/InfLanguageMock';
+import { InfResourceMock } from '../../_helpers/data/auto-gen/gvDB/InfResourceMock';
+import { ProInfoProjRelMock } from '../../_helpers/data/auto-gen/gvDB/ProInfoProjRelMock';
+import { ProProjectMock } from '../../_helpers/data/auto-gen/gvDB/ProProjectMock';
+import { SysConfigValueMock } from '../../_helpers/data/auto-gen/gvDB/SysConfigValueMock';
+import { WarEntityPreviewMock } from '../../_helpers/data/auto-gen/gvDB/WarEntityPreviewMock';
+import { OntomeProfileMock } from '../../_helpers/data/auto-gen/gvDB/local-model.helpers';
+import { PROFILE_5_CLASSES, PROFILE_5_PROPERTIES } from '../../_helpers/data/auto-gen/ontome-profiles/profile-5-geovistory-basi-2022-01-18';
+import { createCrmAsGvPositiveSchema } from '../../_helpers/transformers';
 import { FieldPage } from '../configuration/models/FieldPage';
 import { InformationPipesService } from './information-pipes.service';
+import { ClassAndTypeNode } from './models/ClassAndTypeNode';
 
 describe('InformationPipesService', () => {
   let store: Store<IAppState>;
   let service: InformationPipesService;
   let facade: DataFacade;
 
-  const storeSchemaObjectGv = (positive: GvPositiveSchemaObject, projectId: number) => {
+  const storeSchemaObjectGv = (positive: GvPositiveSchemaObject) => {
     store.dispatch(schemaModifierActions.succeeded({ payload: { positive } }))
   }
   const setState = (state: IAppState) => {
@@ -182,9 +192,9 @@ describe('InformationPipesService', () => {
       setState(IAppStateMock.stateProject1)
       const req = GvFieldPageReqMock.person1HasAppeTeEn
       facade.loadFieldPage([req])
-      storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties, 0)
-      storeSchemaObjectGv(GvSchemaObjectMock.project1, 0)
-      storeSchemaObjectGv(GvSchemaObjectMock.sysConfig, 0)
+      storeSchemaObjectGv(GvSchemaObjectMock.basicClassesAndProperties)
+      storeSchemaObjectGv(GvSchemaObjectMock.project1)
+      storeSchemaObjectGv(GvSchemaObjectMock.sysConfig)
 
 
       // using pipe
@@ -224,5 +234,81 @@ describe('InformationPipesService', () => {
         done);
   });
 
+
+  describe('.pipeClassesAndTypesOfClasses()', () => {
+    it('should return array of ClassAndTypeNode', async () => {
+      setState(IAppStateMock.stateProject1)
+      const mockSchema: OntomeProfileMock = {
+        profile: {
+          removed_from_api: false,
+          requested_language: 'en',
+          dfh_pk_profile: 5,
+          dfh_profile_label: "Geovistory Basics",
+          dfh_project_label: "Geovistory",
+          dfh_owned_by_project: 6,
+          dfh_profile_definition: "This profile includes classes and properties that are directly implemented in the Geovistory virtual search environment or that represent the foundation of its functionalities. They are always present in the information system.",
+          dfh_project_label_language: "en",
+          dfh_profile_label_language: "en",
+          dfh_profile_definition_language: "en",
+          dfh_is_ongoing_forced_publication: true,
+          dfh_is_root_profile: false,
+          dfh_fk_root_profile: 52
+        },
+        classes: [
+          PROFILE_5_CLASSES.EN_363_GEOGRAPHICAL_PLACE,
+          PROFILE_5_CLASSES.EN_364_GEOGRAPHICAL_PLACE_TYPE,
+        ],
+        properties: [
+          PROFILE_5_PROPERTIES.EN_363_1110_364_HAS_GEOGRAPHICAL_PLACE_TYPE,
+        ]
+      }
+
+      const positive = createCrmAsGvPositiveSchema({
+        ontoMocks: [mockSchema],
+        sysConf: SysConfigValueMock.SYS_CONFIC_VALID, // add SYS_CONFIG json
+        p: ProProjectMock.PROJECT_1.pk_entity // pk project used to enable above profiles
+      })
+      // seeding ontology
+      storeSchemaObjectGv(positive)
+      // seeding project basics
+      storeSchemaObjectGv({
+        pro: { project: [ProProjectMock.PROJECT_1] },
+        inf: { language: [InfLanguageMock.GERMAN] }
+      })
+      // seeding type
+      storeSchemaObjectGv({
+        inf: { resource: [InfResourceMock.GEO_PLACE_TYPE_CITY] },
+        pro: { info_proj_rel: [ProInfoProjRelMock.PROJ_1_CITY_TYPE] },
+        war: { entity_preview: [WarEntityPreviewMock.GEO_PLACE_TYPE_CITY] }
+      })
+      // using pipe
+      const actual = await firstValueFrom(service.pipeClassesAndTypesOfClasses([363]))
+
+      // testing pipe
+      const expected: ClassAndTypeNode[] = [
+        {
+          label: "Geographical Place",
+          data: {
+            pkClass: 363,
+            pkHasTypeProperty: 1110,
+            pkType: null,
+          },
+          children: [
+            {
+              label: "City",
+              data: {
+                pkClass: 363,
+                pkHasTypeProperty: 1110,
+                pkType: 2003,
+              },
+            },
+          ],
+        },
+      ]
+      expect(actual).toEqual(expected)
+    });
+
+
+  })
 
 });

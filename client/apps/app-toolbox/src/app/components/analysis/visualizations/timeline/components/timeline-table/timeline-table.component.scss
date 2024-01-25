@@ -18,10 +18,10 @@ cdk-virtual-scroll-viewport {
   max-width: 100%;
 }
 
-.mat-row {
+.mat-mdc-row {
   min-height: 36px;
 }
-.mat-header-row {
+.mat-mdc-header-row {
   min-height: 41px;
   height: 41px;
 }
@@ -33,7 +33,7 @@ cdk-virtual-scroll-viewport {
   }
   border-right: 1px solid #e0e0e0;
 
-  &.mat-header-cell {
+  &.mat-mdc-header-cell {
     padding-left: 10px;
   }
 }

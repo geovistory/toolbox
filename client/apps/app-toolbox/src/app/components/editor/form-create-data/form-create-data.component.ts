@@ -1084,9 +1084,9 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
         map(label => [this.timePrimitiveCtrl(true, '', targetClass, label, initValWithCal, (val: TimePrimitiveWithCal): InfData => {
           return {
             timePrimitive: {
-              calendar: val.calendar,
-              duration: val.duration,
-              julian_day: val.julianDay,
+              calendar: val?.calendar,
+              duration: val?.duration,
+              julian_day: val?.julianDay,
               fk_class: targetClass
             }
           }

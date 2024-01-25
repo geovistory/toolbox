@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { StateFacade } from '@kleiolab/lib-redux';
-import { AnalysisService as LbAnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
+import { AnalysisService, ProAnalysis } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { catchError, first, switchMap, tap } from 'rxjs/operators';
 import { DialogCreateComponent, DialogCreateData, DialogCreateResult } from '../components/analysis/layouts/dialog-create/dialog-create.component';
@@ -26,7 +26,7 @@ export class GvAnalysisService<I, O> {
   pkEntity: number
 
   constructor(
-    public analysisApi: LbAnalysisService,
+    public analysisApi: AnalysisService,
     private dialog: MatDialog,
     private p: ActiveProjectService,
     private state: StateFacade,

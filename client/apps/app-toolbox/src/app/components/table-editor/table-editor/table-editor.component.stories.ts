@@ -25,7 +25,7 @@ import { TableEditorComponent } from './table-editor.component';
 
 const meta: Meta<TableEditorComponent> = {
   component: TableEditorComponent,
-  title: 'TableEditorComponent',
+  title: 'Table Editor/TableEditorComponent',
   decorators: [
     applicationConfig({
       providers: [

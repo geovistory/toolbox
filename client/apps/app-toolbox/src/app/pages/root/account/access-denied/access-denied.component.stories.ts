@@ -14,7 +14,7 @@ import { GvInternalStorage } from '../../../../services/cookies.module';
 
 const meta: Meta<AccessDeniedComponent> = {
   component: AccessDeniedComponent,
-  title: 'AccessDeniedComponent',
+  title: 'Pages/AccessDeniedComponent',
   decorators: [
     moduleMetadata({
       imports: [

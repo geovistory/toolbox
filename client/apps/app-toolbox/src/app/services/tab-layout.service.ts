@@ -7,7 +7,7 @@ import { TabLayout } from '../lib/classes/tab-layout';
 export class TabLayoutService {
 
   public t: TabLayout;
-  constructor(private state: StateFacade) { }
+  constructor(protected state: StateFacade) { }
 
   create(uiId: string, ref: ChangeDetectorRef, destroy$: Subject<boolean>) {
     this.t = new TabLayout(this.state, uiId, ref, destroy$)

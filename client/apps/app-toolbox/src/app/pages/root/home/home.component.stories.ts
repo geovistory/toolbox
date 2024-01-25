@@ -16,7 +16,7 @@ import { GvInternalStorage } from '../../../services/cookies.module';
 
 const meta: Meta<HomeComponent> = {
   component: HomeComponent,
-  title: 'HomeComponent',
+  title: 'Pages/HomeComponent',
   decorators: [
     applicationConfig({
       providers: [

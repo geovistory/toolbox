@@ -17,7 +17,7 @@ import { GvInternalStorage } from '../../../services/cookies.module';
 
 const meta: Meta<NavbarComponent> = {
   component: NavbarComponent,
-  title: 'NavbarComponent',
+  title: 'Layout/NavbarComponent',
   decorators: [
     moduleMetadata({
       imports: [

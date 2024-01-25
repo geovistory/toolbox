@@ -21,6 +21,7 @@ import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../..
 import { ToggleBtnComponent } from '../../misc/toggle-btn/toggle-btn.component';
 import { QuillEditComponent } from '../../text-editor/quill-edit/quill-edit.component';
 import { DeltaI, Op, Ops } from '../../text-editor/quill.models';
+import { EditTextDialogService } from '../edit-text-dialog/edit-text-dialog.service';
 import { ViewFieldBodyComponent } from '../view-field-body/view-field-body.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
 import type { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
@@ -73,8 +74,11 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     public dialog: MatDialog,
     public p: ActiveProjectService,
     @Optional() public textDetail: TextDetail2Service,
-    public editMode: EditModeService
+    public editMode: EditModeService,
+    @Optional() editText: EditTextDialogService,
+
   ) {
+    if (editText) editText.registerComponent(this)
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
   }
 

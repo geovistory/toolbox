@@ -1,6 +1,5 @@
+import { InfLangStringMock, InfResourceWithRelationsMock } from '@kleiolab/lib-redux';
 import { InfData } from '@kleiolab/lib-sdk-lb4';
-import { InfLangStringMock } from 'projects/__test__/data/auto-gen/gvDB/InfLangStringMock';
-import { InfResourceWithRelationsMock } from 'projects/__test__/data/InfResourceWithRelationsMock';
 
 export const georeferenceMock: InfData = {
   resource: {

@@ -9,7 +9,7 @@ import { StatementWithTarget } from '@kleiolab/lib-sdk-lb4';
 import { DateTimeModule } from '@kleiolab/lib-utils';
 import { RemoveEntityService } from '../../../services/remove-entity.service';
 import { EntityPreviewComponent } from '../../misc/entity-preview/entity-preview.component';
-import { TableComponent } from '../../table-editor/table/table.component';
+import { TableService } from '../../table-editor/table/table.service';
 import type { ViewFieldAnnotationOfCellItemData } from '../view-field-annotations-of-cell/view-field-annotations-of-cell.component';
 import { ViewFieldAnnotationsOfCellService } from '../view-field-annotations-of-cell/view-field-annotations-of-cell.service';
 
@@ -24,7 +24,7 @@ export class ViewFieldAnnotationsOfCellItemComponent {
   @Input() item: ViewFieldAnnotationOfCellItemData
 
   constructor(
-    public tableComponent: TableComponent,
+    public table: TableService,
     private removeEntityService: RemoveEntityService,
     private cellAnnotations: ViewFieldAnnotationsOfCellService
   ) { }

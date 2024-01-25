@@ -1,6 +1,6 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { NgClass, NgIf } from '@angular/common';
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Optional, Output, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { MatFormFieldControl } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -111,7 +111,6 @@ export class CtrlAppellationComponent implements OnDestroy, ControlValueAccessor
 
   constructor(
     @Optional() @Self() public ngControl: NgControl,
-    private ref: ChangeDetectorRef
   ) {
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;

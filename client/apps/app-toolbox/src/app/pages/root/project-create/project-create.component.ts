@@ -3,7 +3,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { InfLanguage, LanguagesService, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
@@ -25,7 +27,7 @@ class ProjectLabelDescription {
   templateUrl: './project-create.component.html',
   styleUrls: ['./project-create.component.scss'],
   standalone: true,
-  imports: [NavbarComponent, RouterLink, MatCardModule, MatIconModule, FormsModule, NgClass, NgIf, NgFor, CtrlLanguageComponent, MatButtonModule]
+  imports: [NavbarComponent, RouterLink, MatCardModule, MatIconModule, FormsModule, NgClass, NgIf, NgFor, CtrlLanguageComponent, MatButtonModule, MatFormFieldModule, MatInputModule]
 })
 export class ProjectCreateComponent implements OnInit {
   createBtnDisabled = false;

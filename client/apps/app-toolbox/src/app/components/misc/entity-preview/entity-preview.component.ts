@@ -70,7 +70,7 @@ export class EntityPreviewComponent implements OnInit, OnDestroy {
         .subscribe(preview => {
           this.preview = preview
           // extract urls from string
-          this.urls = typeof preview.entity_label === 'string' ? [...getUrls(preview.entity_label)] : []
+          this.urls = typeof preview?.entity_label === 'string' ? [...getUrls(preview?.entity_label)] : []
           this.ref.detectChanges()
         })
     }

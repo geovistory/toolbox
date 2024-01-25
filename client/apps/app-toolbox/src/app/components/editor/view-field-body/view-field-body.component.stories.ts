@@ -21,7 +21,7 @@ import { response2 } from './testing/response2';
 import { ViewFieldBodyComponent } from './view-field-body.component';
 const meta: Meta<ViewFieldBodyComponent> = {
   component: ViewFieldBodyComponent,
-  title: 'ViewFieldBodyComponent',
+  title: 'Editor/Views/ViewFieldBodyComponent',
   decorators: [applicationConfig({
     providers: [
       Store,
@@ -62,8 +62,7 @@ export const stringObject: Story = {
     const canvas = within(canvasElement);
     const facade = await playInject(canvasElement, StateFacade);
     facade.ui.activeProject.loadProjectBasiscsSucceded(projectId)
-    await sleep(100)
-    expect(canvas.getByText(/Jack the foo 5000/i)).toBeTruthy();
+    expect(canvas.findByText(/Jack the foo 5000/i)).toBeTruthy();
   },
 };
 
@@ -90,8 +89,8 @@ export const NestedObject: Story = {
     facade.data.addSchemaModifier({ positive: GvSchemaObjectMock.basicClassesAndProperties })
     facade.data.addSchemaModifier({ positive: GvSchemaObjectMock.project1 })
     facade.data.addSchemaModifier({ positive: GvSchemaObjectMock.sysConfig })
-    await sleep(100)
-    expect(canvas.getAllByText(/refers to name/i).length).toBe(5);
+    const elements = await canvas.findAllByText(/refers to name/i)
+    expect(elements).toHaveLength(5);
   },
 };
 
@@ -153,8 +152,7 @@ export const LargeData: Story = {
       }
     })
     facade.data.addSchemaModifier({ positive: GvSchemaObjectMock.sysConfig })
-    await sleep(100)
-    expect(canvas.getByText(/Adamo di Melchiorre/i)).toBeTruthy();
+    expect(canvas.findByText(/Adamo di Melchiorre/i)).toBeTruthy();
   },
 };
 
@@ -298,5 +296,28 @@ export const Standalone: Story = {
     facade.data.addSchemaModifier({ positive: GvSchemaObjectMock.sysConfig })
     await sleep(100)
     expect(canvas.getByText(/Target Label/i)).toBeTruthy();
+  },
+};
+
+export const addMode: Story = {
+  args: {
+    addMode$: new BehaviorSubject(true),
+    showBodyOnInit: false,
+    limit: paginationDefaultLimit,
+    noPagination: false,
+    hideNoItemsInfo: false,
+    showBody$: new BehaviorSubject(true),
+    dividerPosition: 'bottom',
+    source: { fkInfo: InfResourceMock.NAMING_1.pk_entity },
+    field: FieldMock.appeHasAppeString,
+    scope: inProjectScope,
+    showOntoInfo$: new BehaviorSubject(false),
+    readmode$: new BehaviorSubject(false),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const facade = await playInject(canvasElement, StateFacade);
+    facade.ui.activeProject.loadProjectBasiscsSucceded(projectId)
+    expect(canvas.findByText(/Jack the foo 5000/i)).toBeTruthy();
   },
 };

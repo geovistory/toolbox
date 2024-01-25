@@ -8,7 +8,7 @@ import { OpenCloseComponent } from './open-close.component';
 
 const meta: Meta<OpenCloseComponent> = {
   component: OpenCloseComponent,
-  title: 'OpenCloseComponent',
+  title: 'Misc/OpenCloseComponent',
   decorators: [
     applicationConfig({
       providers: [

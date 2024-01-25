@@ -1,6 +1,6 @@
 <mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4">
   <mat-list-item class="p-0">
-    <div class="mat-headline" mat-line> Explore your entities
+    <div class="mat-headline-5" mat-line> Explore your entities
     </div>
     <mat-menu #appMenu="matMenu" xPosition="before">
       <button mat-menu-item [matMenuTriggerFor]="entityAttributes">
@@ -115,10 +115,10 @@
 
     <mat-list *ngIf="child.controlFactory?.config?.data?.ctrlClasses" class="mb-4">
       <mat-list-item class="p-0">
-        <div class="mat-headline" mat-line *ngIf="!(child.controlFactory?.config.disabled$ | async)">
+        <div class="mat-headline-5" mat-line *ngIf="!(child.controlFactory?.config.disabled$ | async)">
           Choose your entities
         </div>
-        <div class="mat-headline" mat-line *ngIf="(child.controlFactory?.config.disabled$ | async)"
+        <div class="mat-headline-5" mat-line *ngIf="(child.controlFactory?.config.disabled$ | async)"
           [ngClass]="{'mat-text-secondary': (child.controlFactory?.config.disabled$ | async)}">
           Chosen entities
         </div>
@@ -136,7 +136,7 @@
 
     <mat-list *ngIf="child?.childFactory?.config?.data?.filter" class="mb-4">
       <mat-list-item class="p-0">
-        <div class="mat-headline" mat-line> Filter your entities
+        <div class="mat-headline-5" mat-line> Filter your entities
         </div>
       </mat-list-item>
       <mat-divider></mat-divider>

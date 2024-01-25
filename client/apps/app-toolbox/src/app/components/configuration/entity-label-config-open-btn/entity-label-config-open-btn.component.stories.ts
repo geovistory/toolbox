@@ -11,11 +11,12 @@ import {
 import { EntityLabelConfigOpenBtnComponent } from './entity-label-config-open-btn.component';
 
 import { expect } from '@storybook/jest';
-import { within } from '@storybook/testing-library';
+import { userEvent, within } from '@storybook/testing-library';
 
 import { HttpEvent, HttpResponse } from '@angular/common/http';
 import { createCrmAsGvPositiveSchema } from '@kleiolab/lib-redux/lib/_helpers/transformers';
 import { GetEntityLabelConfigResponse, ProjectConfigurationService } from '@kleiolab/lib-sdk-lb4';
+import { getCdkOverlayCanvas } from 'apps/app-toolbox/.storybook/getCdkOverlayCanvas';
 import { Observable, of } from 'rxjs';
 import { MockStateFactory } from './../../../../../.storybook/MockStateFactory';
 import { ActiveProjectService } from './../../../services/active-project.service';
@@ -99,8 +100,12 @@ export const Basic: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const buttonEl = canvas.getByRole('button');
+    await userEvent.click(buttonEl)
+    const overlayCanvas = getCdkOverlayCanvas(canvasElement)
+
     expect(
-      canvas.getByText(/entity-label-config-open-btn works!/gi)
+      overlayCanvas.getByText(/Configure Person labels/gi)
     ).toBeTruthy();
   },
 };

@@ -2,7 +2,7 @@
   <input class="loc-filter-input mat-text-secondary" [placeholder]="'Filter'" autofocus="true" autocomplete="off"
     (keyup)="onFilter($event)" [value]="filter$|async">
 </div>
-<mat-divider [ngStyle]="{'margin':'0 -24px'}"></mat-divider>
+<mat-divider></mat-divider>
 <div mat-dialog-content>
   <mat-action-list class="loc-list">
     <button *ngFor="let option of options$|async" mat-list-item (click)="upsertSelected(option.id)">
@@ -10,7 +10,7 @@
     </button>
   </mat-action-list>
 </div>
-<mat-divider [ngStyle]="{'margin':'0 -24px'}"></mat-divider>
+<mat-divider></mat-divider>
 <div mat-dialog-actions>
   <button mat-button color="secondary" [mat-dialog-close]="false">Cancel</button>
   <button mat-button (click)="openAdvancedDialog()">Advanced...</button>

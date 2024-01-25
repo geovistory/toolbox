@@ -22,7 +22,7 @@ import { ActiveProjectService } from './../../../../../../services/active-projec
 
 const meta: Meta<TimelineChartComponent> = {
   component: TimelineChartComponent,
-  title: 'Analysis/Vuszalizations/TimelineChartComponent',
+  title: 'Analysis/Visualizations/TimelineChartComponent',
   decorators: [
     applicationConfig({
       providers: [

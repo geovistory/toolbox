@@ -22,26 +22,7 @@
       <gv-ctrl-language class="mat-text-secondary" [matTooltip]="placeholders.lang" [placeholder]="placeholders.lang"
         [formControl]="ctrls.lang">
       </gv-ctrl-language>
-      <!--
-      <mat-form-field class="ctrl-language" *ngIf="ctrls?.lang " [appearance]="appearance">
-        <mat-label>{{placeholders.lang}}</mat-label>
 
-
-      </mat-form-field>
- -->
-      <!-- <div class="second-line" [@openClose]="(showOptions$|async) ? 'open' : 'closed'">
-        <mat-form-field class="ctrl-type" *ngIf="ctrls?.type " [appearance]="appearance">
-          <mat-label>{{placeholders.type}}</mat-label>
-
-          <gv-ctrl-type #c [pkTypedClass]="pkTypedClass" [pkTypeClass]="pkTypeClass$|async" placeholder="Select ..."
-            [formControl]="ctrls.type">
-          </gv-ctrl-type>
-
-          <mat-error *ngIf="ctrls.type.hasError('required')">
-            Required
-          </mat-error>
-        </mat-form-field>
-      </div> -->
     </div>
   </div>
 </form>

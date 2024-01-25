@@ -12,6 +12,7 @@ import { StateModule } from '@kleiolab/lib-redux';
 import { Configuration } from '@kleiolab/lib-sdk-lb4';
 import { SOCKETS_CONFIG, SocketsConfig } from '@kleiolab/lib-sockets';
 import { DndModule } from '@suez/ngx-dnd';
+import { Ion, buildModuleUrl } from 'cesium';
 import { MessageService } from 'primeng/api';
 import { AppComponent } from './app/app.component';
 import { APP_ROUTES } from './app/pages/root/root.routes';
@@ -48,8 +49,8 @@ if (environment.production) {
 }
 
 // buildModuleUrl.setBaseUrl('/assets/cesium/')
-// buildModuleUrl.setBaseUrl('/assets/cesium/'); // If youre using Cesium version >= 1.42.0 add this line
-// Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzODVhZjMzNC04ODE1LTRhZTYtYWMwMS0wOWZhZjUyYjQ1YTIiLCJpZCI6MTYyODgsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NzAwOTE4NDR9.AKPArS_LoiwqgupddFnCqRoaq6IGA16MgzhSGZFlZ6c';
+buildModuleUrl.setBaseUrl('/assets/cesium/'); // If youre using Cesium version >= 1.42.0 add this line
+Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzODVhZjMzNC04ODE1LTRhZTYtYWMwMS0wOWZhZjUyYjQ1YTIiLCJpZCI6MTYyODgsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NzAwOTE4NDR9.AKPArS_LoiwqgupddFnCqRoaq6IGA16MgzhSGZFlZ6c';
 
 bootstrapApplication(AppComponent, {
   providers: [

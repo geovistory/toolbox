@@ -16,17 +16,18 @@ import { first, switchMap } from 'rxjs/operators';
 import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
-import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../configuration/class-config-dialog/class-config-dialog.component';
 import { EntityLabelConfigOpenBtnComponent } from '../../configuration/entity-label-config-open-btn/entity-label-config-open-btn.component';
+import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
 
 @Component({
   selector: 'gv-entity-card-header',
   templateUrl: './entity-card-header.component.html',
   styleUrls: ['./entity-card-header.component.scss'],
   standalone: true,
-  imports: [NgIf, ClassInfoComponent, DndModule, MatTooltipModule, MatButtonToggleModule, MatIconModule, MatButtonModule, MatMenuModule, MatSlideToggleModule, MatDividerModule, EntityLabelConfigOpenBtnComponent, AsyncPipe]
+  providers: [TruncatePipe],
+  imports: [NgIf, ClassInfoComponent, DndModule, MatTooltipModule, MatButtonToggleModule, MatIconModule, MatButtonModule, MatMenuModule, MatSlideToggleModule, MatDividerModule, EntityLabelConfigOpenBtnComponent, AsyncPipe,]
 })
 export class EntityCardHeaderComponent implements OnInit {
 
@@ -72,7 +73,6 @@ export class EntityCardHeaderComponent implements OnInit {
     ).subscribe(
       ([pro, kla]) => {
         const data: ClassConfigDialogData = {
-          fkAppContext: 45,
           fkClass: kla,
           fkProject: pro
         }

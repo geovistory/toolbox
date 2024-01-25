@@ -1,26 +1,20 @@
 import { Component, importProvidersFrom, Input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { ActiveProjectPipesService, GvSchemaObjectMock, InfLanguageMock, InfResourceMock, MockPaginationControllerForSandboxes, PROFILE_12_BIOGRAPHICAL_BA_2022_02_09, PROFILE_16_INTERACTIONS_S_2022_02_09, PROFILE_20_PHYSICAL_MAN_MA_2022_01_18, PROFILE_5_GEOVISTORY_BASI_2022_01_18, PROFILE_8_MARITIME_HISTOR_2022_01_18, PROFILE_97_GEOVISTORY_DIGI_2022_02_05, ProInfoProjRelMock, ProProjectMock, StateModule, SysConfigValueMock, WarEntityPreviewMock } from '@kleiolab/lib-redux';
-import { INITIAL_STATE } from '@ngrx/store';
-import {
-  applicationConfig,
-  type Meta,
-  type StoryObj,
-} from '@storybook/angular';
-import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from './add-entity-or-value-dialog.component';
-
-import { expect } from '@storybook/jest';
-import { userEvent, within } from '@storybook/testing-library';
-
-import { MatButtonModule } from '@angular/material/button';
 import { createCrmAsGvPositiveSchema } from '@kleiolab/lib-redux/lib/_helpers/transformers';
 import { InfLanguage, LanguagesService, SubfieldPageControllerService, WareEntityPreviewPage, WarEntityPreview, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
+import { INITIAL_STATE } from '@ngrx/store';
+import { applicationConfig, type Meta, type StoryObj } from '@storybook/angular';
+import { expect } from '@storybook/jest';
+import { userEvent, within } from '@storybook/testing-library';
 import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, delay, Observable, of } from 'rxjs';
-import { getCdkOverlayCanvas } from './../../../../../.storybook/getCdkOverlayCanvas';
-import { MockStateFactory } from './../../../../../.storybook/MockStateFactory';
-import { ActiveProjectService } from './../../../services/active-project.service';
+import { getCdkOverlayCanvas } from '../../../../../../.storybook/getCdkOverlayCanvas';
+import { MockStateFactory } from './../../../../../../.storybook/MockStateFactory';
+import { ActiveProjectService } from './../../../../services/active-project.service';
+import { CtrlEntityDialogComponent, CtrlEntityDialogData } from './ctrl-entity-dialog.component';
 
 @Component({
   selector: 'gv-launch-dialog',
@@ -31,11 +25,11 @@ import { ActiveProjectService } from './../../../services/active-project.service
   imports: [MatButtonModule]
 })
 class LaunchDialogComponent {
-  @Input() data: AddEntityOrValueDialogData;
+  @Input() data: CtrlEntityDialogData;
   constructor(private _dialog: MatDialog) { }
 
   launch(): void {
-    this._dialog.open<AddEntityOrValueDialogComponent, AddEntityOrValueDialogData>(AddEntityOrValueDialogComponent, {
+    this._dialog.open<CtrlEntityDialogComponent, CtrlEntityDialogData>(CtrlEntityDialogComponent, {
       height: 'calc(100% - 30px)',
       width: '850px',
       maxWidth: '100%',
@@ -138,7 +132,7 @@ class WarEntityPreviewControllerServiceMock {
 }
 const meta: Meta<LaunchDialogComponent> = {
   component: LaunchDialogComponent,
-  title: 'Editor/Dialogs/AddEntityOrValueDialogComponent',
+  title: 'Editor/Dialogs/CtrlEntityDialogComponent',
   decorators: [
     applicationConfig({
       providers: [
@@ -150,7 +144,7 @@ const meta: Meta<LaunchDialogComponent> = {
   ],
 };
 export default meta;
-type Story = StoryObj<AddEntityOrValueDialogComponent>;
+type Story = StoryObj<CtrlEntityDialogComponent>;
 
 // Setup the initial state of the story Basic
 const stateBasic = new MockStateFactory();
@@ -191,7 +185,11 @@ stateBasic.addPositiveSchemaObject({
 export const Basic: Story = {
   args: {
     data: {
-      pkClass: 21
+      pkClass: 21,
+      hiddenProperty: {},
+      defaultSearch: 'Hans',
+      initVal$: of({}),
+      showAddList: true,
     }
   },
   decorators: [

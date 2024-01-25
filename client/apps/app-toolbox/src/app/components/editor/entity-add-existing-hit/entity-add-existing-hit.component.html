@@ -3,15 +3,15 @@
   'mat-bg-grey-100-on-hover':!selected
 }">
   <div class="loc-first-line">
-    <div class="loc-title mat-body-1">
+    <div class="loc-title mat-body-2">
       {{title}}
     </div>
-    <mat-chip-list class="loc-meta" [matTooltip]="metaTooltipText">
-      <mat-chip color="{{isInProject ? 'accent' : 'secondary'}}" selected>{{numberOfProject}}</mat-chip>
-    </mat-chip-list>
+    <mat-chip-listbox class="loc-meta" [matTooltip]="metaTooltipText">
+      <mat-chip-option color="{{isInProject ? 'accent' : 'secondary'}}"
+        [highlighted]="true">{{numberOfProject}}</mat-chip-option>
+    </mat-chip-listbox>
   </div>
-  <div class="loc-description mat-caption mat-text-secondary">
-    <span [innerHTML]="composedDescription"></span>
+  <div class="loc-description mat-caption mat-text-secondary" [innerHTML]="composedDescription">
   </div>
   <div class="loc-footer">
     <button class="loc-footer-item" mat-button color=primary (click)="onToggleDetailsOfEntity(selected)">

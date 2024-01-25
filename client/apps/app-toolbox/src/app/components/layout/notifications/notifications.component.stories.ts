@@ -15,7 +15,7 @@ import { NotificationComponent } from './notifications.component';
 
 const meta: Meta<NotificationComponent> = {
   component: NotificationComponent,
-  title: 'NotificationComponent',
+  title: 'Layout/NotificationComponent',
   decorators: [
     moduleMetadata({
       imports: [HttpClientModule, NotificationModule],

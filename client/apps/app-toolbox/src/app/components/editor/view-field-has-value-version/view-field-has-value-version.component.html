@@ -15,16 +15,16 @@
   [showCharIdToggleBtn]=false>
   <ng-container buttonsRight *ngIf="showRightButtons">
     <ng-container *ngIf="editMode.value$|async">
-      <a mat-button color="primary" class="loc-toolbar-item mat-btn-padding-x-8"
+      <button mat-button color="primary" class="loc-toolbar-item mat-btn-padding-x-8"
         *ngIf="(selectedDelta$|async)?.ops?.length; else addAnnotationDisabled" (click)="annotate()"
         [matTooltip]="'Create an annotation'">
         <mat-icon [svgIcon]="'comment-plus'"></mat-icon>
-      </a>
+      </button>
       <ng-template #addAnnotationDisabled>
-        <a mat-button [disabled]="true" class="loc-toolbar-item mat-btn-padding-x-8"
+        <button mat-button [disabled]="true" class="loc-toolbar-item mat-btn-padding-x-8"
           [matTooltip]="'Select text and create an annotation'">
           <mat-icon [svgIcon]="'comment-plus'"></mat-icon>
-        </a>
+        </button>
       </ng-template>
     </ng-container>
 
@@ -74,7 +74,7 @@
 
   <!-- header -->
   <div class="loc-history-header mat-bg-grey-100">
-    <div class="mat-body-2">Version history</div>
+    <div class="mat-subtitle-2">Version history</div>
     <button mat-button color="primary" class="mat-btn-padding-x-8"
       (click)="showHistory$.next(false); loadTrigger$.next()" [matTooltip]="'Close version history'">
       <mat-icon [svgIcon]="'close'"></mat-icon>

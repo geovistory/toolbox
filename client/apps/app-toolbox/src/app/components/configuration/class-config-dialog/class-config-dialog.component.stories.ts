@@ -17,7 +17,7 @@ import { MockStateFactory } from './../../../../../.storybook/MockStateFactory';
 import { ActiveProjectService } from './../../../services/active-project.service';
 
 @Component({
-  selector: 'gv-launcher',
+  selector: 'gv-launch-dialog',
   template: `
     <button mat-raised-button color="primary" (click)="launch()"> Launch class {{fkClass}} project {{fkProject}} </button>
   `,

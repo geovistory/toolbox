@@ -8,7 +8,7 @@ import {
   type Meta,
   type StoryObj,
 } from '@storybook/angular';
-import { AddEntityOrValueDialogComponent, AddEntityOrValueDialogData } from './add-entity-or-value-dialog.component';
+import { AddStatementDialogComponent, AddStatementDialogData } from './add-statement-dialog.component';
 
 import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
@@ -16,11 +16,11 @@ import { userEvent, within } from '@storybook/testing-library';
 import { MatButtonModule } from '@angular/material/button';
 import { createCrmAsGvPositiveSchema } from '@kleiolab/lib-redux/lib/_helpers/transformers';
 import { InfLanguage, LanguagesService, SubfieldPageControllerService, WareEntityPreviewPage, WarEntityPreview, WarEntityPreviewControllerService, WarEntityPreviewSearchExistingReq } from '@kleiolab/lib-sdk-lb4';
-import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, delay, Observable, of } from 'rxjs';
 import { getCdkOverlayCanvas } from './../../../../../.storybook/getCdkOverlayCanvas';
 import { MockStateFactory } from './../../../../../.storybook/MockStateFactory';
 import { ActiveProjectService } from './../../../services/active-project.service';
+
 
 @Component({
   selector: 'gv-launch-dialog',
@@ -31,11 +31,11 @@ import { ActiveProjectService } from './../../../services/active-project.service
   imports: [MatButtonModule]
 })
 class LaunchDialogComponent {
-  @Input() data: AddEntityOrValueDialogData;
+  @Input() data: AddStatementDialogData;
   constructor(private _dialog: MatDialog) { }
 
   launch(): void {
-    this._dialog.open<AddEntityOrValueDialogComponent, AddEntityOrValueDialogData>(AddEntityOrValueDialogComponent, {
+    this._dialog.open<AddStatementDialogComponent, AddStatementDialogData>(AddStatementDialogComponent, {
       height: 'calc(100% - 30px)',
       width: '850px',
       maxWidth: '100%',
@@ -138,19 +138,19 @@ class WarEntityPreviewControllerServiceMock {
 }
 const meta: Meta<LaunchDialogComponent> = {
   component: LaunchDialogComponent,
-  title: 'Editor/Dialogs/AddEntityOrValueDialogComponent',
+  title: 'Editor/Dialogs/AddStatementDialogComponent',
   decorators: [
     applicationConfig({
       providers: [
         provideAnimations(),
-        importProvidersFrom(StateModule, MatDialogModule, DndModule.forRoot()),
+        importProvidersFrom(StateModule, MatDialogModule),
         ActiveProjectService,
       ],
     }),
   ],
 };
 export default meta;
-type Story = StoryObj<AddEntityOrValueDialogComponent>;
+type Story = StoryObj<AddStatementDialogComponent>;
 
 // Setup the initial state of the story Basic
 const stateBasic = new MockStateFactory();
@@ -191,7 +191,13 @@ stateBasic.addPositiveSchemaObject({
 export const Basic: Story = {
   args: {
     data: {
-      pkClass: 21
+      showAddList: true,
+      field: {
+        'sourceClass': 61, 'sourceClassLabel': 'Birth', 'sourceMaxQuantity': 1, 'sourceMinQuantity': 1, 'targetMinQuantity': 0, 'targetMaxQuantity': -1, 'label': 'brought into life', 'isHasTypeField': false, 'isTimeSpanShortCutField': false, 'property': { 'fkProperty': 86 }, 'isOutgoing': true, 'identityDefiningForSource': true, 'identityDefiningForTarget': false, 'ontoInfoLabel': 'P98', 'ontoInfoUrl': 'https://ontome.net/property/86', 'allSubfieldsRemovedFromAllProfiles': false, 'targetClasses': [21], 'display': { 'formSections': { 'specific': { 'position': null } }, 'viewSections': { 'specific': { 'position': null } } }, 'isSpecialField': false, 'targets': { '21': { 'viewType': { 'entityPreview': 'true' }, 'formControlType': { 'entity': 'true' }, 'removedFromAllProfiles': false, 'targetClass': 21, 'targetClassLabel': 'Person' } }
+      },
+      targetClass: 21,
+      source: { fkInfo: 1003 },
+      hiddenProperty: {}
     }
   },
   decorators: [
@@ -212,7 +218,7 @@ export const Basic: Story = {
     const overlayCanvas = getCdkOverlayCanvas(canvasElement)
 
     expect(
-      overlayCanvas.getByText(/or choose an existing Person/gi)
+      overlayCanvas.getByText(/Existing information found/gi)
     ).toBeTruthy();
   },
 };

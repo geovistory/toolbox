@@ -32,7 +32,7 @@
     </div>
 
     <ng-container *ngIf="(items$|async)?.length">
-      <div *ngIf="addMode$|async" class="gv-row-space-between">
+      <div *ngIf="addMode$|async" class="gv-row-space-between py-2">
         <div class="gv-row-center">
           <button [disabled]="(selectedCount$ | async) < 1 || (adding$|async)" type="submit" mat-flat-button
             color="primary" class="mr-2" (click)="add()">
