@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { GetTablePageOptions, SysConfigValue, SysConfigValueObjectType, TColFilter, TabCell, TableService } from '@kleiolab/lib-sdk-lb4';
@@ -101,6 +102,7 @@ export interface TableColFilter {
     TextFieldModule,
     ViewFieldAnnotationsOfCellComponent,
     AsyncPipe,
+    MatSnackBarModule
   ],
   providers: [TableComponentService]
 })
@@ -108,13 +110,13 @@ export class TableComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   // mandatory inputs
-  @Input() pkProject: number;
-  @Input() pkDigital: number;
-  @Input() loading = false;
-  @Input() headers$: Observable<Header[]>;
-  @Input() table$: Observable<Array<Array<Cell>>>;
+  @Input({ required: true }) pkProject: number;
+  @Input({ required: true }) pkDigital: number;
+  @Input({ required: true }) loading = false;
+  @Input({ required: true }) headers$: Observable<Header[]>;
+  @Input({ required: true }) table$: Observable<Array<Array<Cell>>>;
+  @Input({ required: true }) showIds$: BehaviorSubject<boolean>;
   readmode$: Observable<boolean>;
-  @Input() showIds$: BehaviorSubject<boolean>;
 
   // optionnal inputs
   @Input() filteringEnabled = false;

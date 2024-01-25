@@ -1,4 +1,4 @@
-.id-cell {
+td .id-cell {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -10,6 +10,9 @@
   justify-content: flex-end;
 
   padding-right: 3px;
+}
+tr.new-row {
+  height: unset;
 }
 
 .content-cell {
@@ -35,16 +38,7 @@
   p-cellEditor mat-form-field {
     width: 100%;
   }
-
-  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-wrapper {
-    margin: 0 !important;
-    padding: 0;
-    border: 0;
-  }
-  ::ng-deep .mat-form-field-appearance-outline .mat-form-field-infix {
-    border: 0;
-  }
-  textarea.mat-input-element {
+  textarea.mat-mdc-input-element {
     padding: 0;
   }
 }

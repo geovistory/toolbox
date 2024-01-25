@@ -27,7 +27,7 @@
         <tr>
           <ng-container *ngFor="let col of headers; let i = index">
             <ng-container *ngIf="!col.mapping">
-              <th class="gv-pointer gv-td-col-header" [ngClass]="{
+              <th class="gv-pointer gv-td-col-header" pResizableColumn [ngClass]="{
                 'mat-bg-grey-100': i==0 && origin !=='importer',
                 'mat-bg-white': i>0
               }" colspan="1">
@@ -60,7 +60,7 @@
             </ng-container>
 
             <ng-container *ngIf="col.mapping">
-              <th class="mat-bg-white gv-pointer gv-td-col-header" colspan="2">
+              <th class="mat-bg-white gv-pointer gv-td-col-header" pResizableColumn colspan="2">
                 <!-- Column title-->
                 <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column" (click)="sort(i)"
@@ -130,28 +130,29 @@
         </tr>
 
         <!-- NEW TEMPROW for creating a new one -->
-        <tr *ngIf="origin !=='importer' && newRow.position >= 0">
+        <tr *ngIf="newRow && origin !=='importer' && newRow.position >= 0" class="new-row">
           <ng-container *ngFor="let value of newRow.cells; let j = index">
             <td class="mat-bg-white" *ngIf="j != 0">
-              <div style="display: flex; justify-content: center;">
-                <mat-form-field appearance="outline" style="width: 95%; margin-bottom: -1.25em">
+              <div style="display: flex; justify-content: center;" class="form-field-density-5">
+                <mat-form-field class="hide-subscript" appearance="outline" style="width: 100%;">
                   <input matInput type="{{getTypeOfColumn(j)}}" [(ngModel)]="value.text"
                     [placeholder]="'Enter ' + (getTypeOfColumn(j) === 'number' ? 'number' : 'text')" autocomplete="off">
                 </mat-form-field>
               </div>
             </td>
             <td class="mat-bg-white" *ngIf="j == 0">
-              <div style="display: flex; justify-content: center; min-height: 40px;">
-                New row at position {{value.text}}
-              </div>
-              <div style="display: flex; justify-content: space-evenly;">
-                <mat-icon *ngIf="!rowCreationLoading" color="accent" svgIcon="check-circle-outline"
-                  (click)="validateCreateNewRow(newRow)" style="cursor: pointer;">
-                </mat-icon>
-                <mat-icon *ngIf="!rowCreationLoading" color="warn" svgIcon="close-circle-outline"
-                  (click)="cancelNewRowDemanded.emit()" style="cursor: pointer;"></mat-icon>
-                <mat-spinner *ngIf="rowCreationLoading" [diameter]="20"></mat-spinner>
-
+              <div style="display: flex; padding: 0 1rem;">
+                <div style="white-space: nowrap;">
+                  New row at position {{value.text}}
+                </div>
+                <div style="margin-left: auto; width: 48px; display:flex">
+                  <mat-icon *ngIf="!rowCreationLoading" color="accent" svgIcon="check-circle-outline"
+                    (click)="validateCreateNewRow(newRow)" style="cursor: pointer;">
+                  </mat-icon>
+                  <mat-icon *ngIf="!rowCreationLoading" color="warn" svgIcon="close-circle-outline"
+                    (click)="cancelNewRowDemanded.emit()" style="cursor: pointer;"></mat-icon>
+                  <mat-spinner *ngIf="rowCreationLoading" [diameter]="20"></mat-spinner>
+                </div>
               </div>
             </td>
 
@@ -225,10 +226,10 @@
                 </ng-container>
 
                 <ng-container *ngIf="!(readmode$|async)">
-                  <p-cellEditor id="cells_{{i}}_{{j}}">
+                  <p-cellEditor id="cells_{{i}}_{{j}}" class="form-field-density-5">
                     <ng-template pTemplate="input">
 
-                      <mat-form-field appearance="outline">
+                      <mat-form-field class="hide-subscript" appearance="outline">
                         <textarea matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize" pInputText
                           [(ngModel)]="value.text" (focus)="focusCell(value.text)"
                           (keydown.enter)="cellBlur(value.pkCell, value.pkRow, value.pkColumn, i, j, $any($event).target.value)"
