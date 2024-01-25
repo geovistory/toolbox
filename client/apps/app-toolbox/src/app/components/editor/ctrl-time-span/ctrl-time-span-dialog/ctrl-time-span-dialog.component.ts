@@ -1,5 +1,5 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostBinding, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormsModule, ReactiveFormsModule, UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -50,7 +50,7 @@ interface F {
   imports: [MatDialogModule, NgIf, MatButtonModule, MatIconModule, MatTabsModule, ExistenceTimeHelpComponent, FormsModule, ReactiveFormsModule, MatFormFieldModule, CtrlTimePrimitiveComponent, AsyncPipe]
 })
 export class CtrlTimeSpanDialogComponent implements OnInit, OnDestroy {
-
+  @HostBinding('class.mat-typography') m = true;
   destroy$ = new Subject<boolean>();
 
   showOntoInfo$: Observable<boolean>;

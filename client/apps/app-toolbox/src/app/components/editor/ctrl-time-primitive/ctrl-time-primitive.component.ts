@@ -10,6 +10,7 @@ import { TimePrimitiveWithCal } from '@kleiolab/lib-sdk-lb4';
 import { CalendarType, DateTimeModule, Granularity, GregorianDateTime, JulianDateTime, TimePrimitive } from '@kleiolab/lib-utils';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { PassiveLinkDirective } from '../../../directives/passive-link/passive-link.directive';
 import { ValidationService } from '../../../services/validation.service';
 import { ControlMessagesComponent } from '../../misc/control-messages/control-messages.component';
 
@@ -33,7 +34,8 @@ type CtrlModel = TimePrimitiveWithCal;
     FormsModule,
     ReactiveFormsModule,
     DateTimeModule,
-    ControlMessagesComponent
+    ControlMessagesComponent,
+    PassiveLinkDirective
   ],
 })
 export class CtrlTimePrimitiveComponent implements OnDestroy, ControlValueAccessor, MatFormFieldControl<CtrlModel> {
