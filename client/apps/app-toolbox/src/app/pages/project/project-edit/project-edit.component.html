@@ -143,8 +143,8 @@
           <gv-tab-body [tab]="tab" [active]="tab.active" [panelId]="tab.panelId" [panelBodies$]="panelBodies$"
             *ngFor="let tab of (allTabs$ | async); let j=index; trackBy:trackByPath;">
 
-            <gv-text-detail2 class="gv-flex-fh" *ngIf="tab.component==='text'" [tab]="tab" #c [onActivateTab]="c">
-            </gv-text-detail2>
+            <gv-text-detail class="gv-flex-fh" *ngIf="tab.component==='text'" [tab]="tab" #c [onActivateTab]="c">
+            </gv-text-detail>
 
 
             <gv-table-detail class="gv-flex-fh" *ngIf="tab.component==='table'" [tab]="tab" #c [onActivateTab]="c">

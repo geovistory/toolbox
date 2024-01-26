@@ -21,27 +21,27 @@ import { ViewFieldHasValueVersionComponent } from '../../../editor/view-field-ha
 import { ViewSectionsComponent } from '../../../editor/view-sections/view-sections.component';
 import { IndexedCharids } from '../../../text-editor/quill-edit/quill-edit.component';
 import { TabLayoutComponent } from '../../tab-layout/tab-layout/tab-layout.component';
-import { TextDetail2Service } from './text-detail2.service';
+import { TextDetailService } from './text-detail.service';
 
-export interface TextDetail2Config {
+export interface TextDetailConfig {
   pkEntity: number
 }
 @Component({
-  selector: 'gv-text-detail2',
-  templateUrl: './text-detail2.component.html',
-  styleUrls: ['./text-detail2.component.scss'],
+  selector: 'gv-text-detail',
+  templateUrl: './text-detail.component.html',
+  styleUrls: ['./text-detail.component.scss'],
   animations: [slideInOut],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     EditModeService,
-    TextDetail2Service,
+    TextDetailService,
     TruncatePipe
   ],
   standalone: true,
   imports: [TabLayoutComponent, EntityCardHeaderComponent, MatDividerModule, NgIf, ViewFieldHasValueVersionComponent, MatTabsModule, MatIconModule, ViewFieldAnnotationsComponent, ViewSectionsComponent, AsyncPipe]
 })
-export class TextDetail2Component
-  extends DetailBaseComponent<TextDetail2Config>
+export class TextDetailComponent
+  extends DetailBaseComponent<TextDetailConfig>
   implements OnInit {
 
   hasValueVersionField$: Observable<Field>
@@ -78,7 +78,7 @@ export class TextDetail2Component
     truncatePipe: TruncatePipe,
     public override editMode: EditModeService,
     public override tabLayout: TabLayoutService,
-    textDetailService: TextDetail2Service
+    textDetailService: TextDetailService
   ) {
     super(
       p,

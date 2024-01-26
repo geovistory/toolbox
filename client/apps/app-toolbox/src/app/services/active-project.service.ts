@@ -6,7 +6,7 @@ import { ClassConfig, GvPositiveSchemaObject, InfAppellation, ProProject } from 
 import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { BehaviorSubject, Observable, ReplaySubject, Subject, timer } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import type { TextDetail2Config } from '../components/layout/tab-bodies/text-detail2/text-detail2.component';
+import type { TextDetailConfig } from '../components/layout/tab-bodies/text-detail/text-detail.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../components/misc/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from '../components/misc/progress-dialog/progress-dialog.component';
 import { EntityDetailConfig } from '../lib/types/EntityDetailConfig';
@@ -182,7 +182,7 @@ export class ActiveProjectService {
   }
 
   private addText2Tab(pkEntity: number) {
-    this.state.ui.activeProject.addTab<TextDetail2Config>({
+    this.state.ui.activeProject.addTab<TextDetailConfig>({
       active: true,
       component: 'text',
       icon: 'text',

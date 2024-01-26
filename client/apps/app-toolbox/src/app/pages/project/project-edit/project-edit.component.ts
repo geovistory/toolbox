@@ -23,7 +23,7 @@ import { NavbarComponent } from '../../../components/layout/navbar/navbar.compon
 import { AnalysisDetailComponent } from '../../../components/layout/tab-bodies/analysis-detail/analysis-detail.component';
 import { EntityDetailComponent } from '../../../components/layout/tab-bodies/entity-detail/entity-detail.component';
 import { TableDetailComponent } from '../../../components/layout/tab-bodies/table-detail/table-detail.component';
-import { TextDetail2Component } from '../../../components/layout/tab-bodies/text-detail2/text-detail2.component';
+import { TextDetailComponent } from '../../../components/layout/tab-bodies/text-detail/text-detail.component';
 import { TypesComponent } from '../../../components/layout/tab-bodies/types/types.component';
 import { TabBodyComponent } from '../../../components/layout/tab-layout/tab-body/tab-body.component';
 import { TabHandleComponent } from '../../../components/layout/tab-layout/tab-handle/tab-handle.component';
@@ -42,7 +42,7 @@ import { BasicService } from '../../../services/basic.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [ActiveProjectService],
   standalone: true,
-  imports: [NavbarComponent, RouterLink, NgIf, MatButtonModule, MatSidenavModule, NgClass, MatIconModule, DigitalsListComponent, SourceListComponent, EntityListComponent, AnalysisListComponent, SettingsListComponent, CdkDropListGroup, AngularSplitModule, NgFor, CdkDropList, TabHandleComponent, CdkDrag, PanelBodyDirective, TabBodyComponent, TextDetail2Component, OnActivateTabDirective, TableDetailComponent, EntityDetailComponent, AnalysisDetailComponent, ProjectSettingsDataComponent, OntomeProfilesSettingsComponent, TypesComponent, RamFormComponent, AsyncPipe]
+  imports: [NavbarComponent, RouterLink, NgIf, MatButtonModule, MatSidenavModule, NgClass, MatIconModule, DigitalsListComponent, SourceListComponent, EntityListComponent, AnalysisListComponent, SettingsListComponent, CdkDropListGroup, AngularSplitModule, NgFor, CdkDropList, TabHandleComponent, CdkDrag, PanelBodyDirective, TabBodyComponent, TextDetailComponent, OnActivateTabDirective, TableDetailComponent, EntityDetailComponent, AnalysisDetailComponent, ProjectSettingsDataComponent, OntomeProfilesSettingsComponent, TypesComponent, RamFormComponent, AsyncPipe]
 })
 export class ProjectEditComponent implements OnInit, OnDestroy, AfterViewInit {
 

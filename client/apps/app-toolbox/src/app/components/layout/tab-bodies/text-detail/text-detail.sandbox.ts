@@ -19,7 +19,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { InitStateModule } from '../../../misc/init-state/init-state.module';
 import { DataModule } from '../../data.module';
-import { TextDetail2Component, TextDetail2Config } from './text-detail2.component';
+import { TextDetailComponent, TextDetailConfig } from './text-detail.component';
 
 const warEntityPreviews = [
   WarEntityPreviewMock.DEFINITION_1,
@@ -28,11 +28,11 @@ const warEntityPreviews = [
 const infResources = [
   InfResourceMock.DEFINITION_1,
 ]
-const tabData: TextDetail2Config = {
+const tabData: TextDetailConfig = {
   pkEntity: InfResourceMock.DEFINITION_1.pk_entity,
 }
 const tabId = 't1'
-const tab: PanelTab<TextDetail2Config> = {
+const tab: PanelTab<TextDetailConfig> = {
   active: true,
   component: 'entity',
   icon: 'persistent-item',
@@ -103,7 +103,7 @@ class MockPaginatedStatementsControllerService {
 }
 
 
-export default sandboxOf(TextDetail2Component, {
+export default sandboxOf(TextDetailComponent, {
   imports: [
     InitStateModule,
     DataModule

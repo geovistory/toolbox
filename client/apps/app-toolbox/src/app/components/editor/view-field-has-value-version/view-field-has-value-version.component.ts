@@ -15,7 +15,7 @@ import { catchError, delay, filter, first, map, shareReplay, startWith, switchMa
 import { C_339_STRING_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1864_HAS_VALUE_VERSION_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../lib/constants/ontome-ids';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { ConfirmHook, EditModeService } from '../../../services/edit-mode.service';
-import { TextDetail2Service } from '../../layout/tab-bodies/text-detail2/text-detail2.service';
+import { TextDetailService } from '../../layout/tab-bodies/text-detail/text-detail.service';
 import { ConfirmDialogComponent, ConfirmDialogData, ConfirmDialogReturn } from '../../misc/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData, ProgressMode } from '../../misc/progress-dialog/progress-dialog.component';
 import { ToggleBtnComponent } from '../../misc/toggle-btn/toggle-btn.component';
@@ -73,7 +73,7 @@ export class ViewFieldHasValueVersionComponent implements OnInit {
     public projectData: ProjectDataService,
     public dialog: MatDialog,
     public p: ActiveProjectService,
-    @Optional() public textDetail: TextDetail2Service,
+    @Optional() public textDetail: TextDetailService,
     public editMode: EditModeService,
     @Optional() editText: EditTextDialogService,
 

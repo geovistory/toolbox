@@ -8,7 +8,7 @@ import {
   type Meta,
   type StoryObj,
 } from '@storybook/angular';
-import { TextDetail2Component, TextDetail2Config } from './text-detail2.component';
+import { TextDetailComponent, TextDetailConfig } from './text-detail.component';
 
 import { expect } from '@storybook/jest';
 import { within } from '@storybook/testing-library';
@@ -17,14 +17,14 @@ import { createCrmAsGvPositiveSchema } from '@kleiolab/lib-redux/lib/_helpers/tr
 import { GvFieldPageReq, GvPaginationObject, ProjectDataService, SubfieldPageControllerService, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { DndModule } from '@suez/ngx-dnd';
 import { values } from 'ramda';
-import { BehaviorSubject, delay, map, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, delay, map, Observable, of, Subject } from 'rxjs';
+import { MockStateFactory } from '../../../../../../.storybook/MockStateFactory';
+import { ActiveProjectService } from '../../../../services/active-project.service';
 import { TabLayoutService } from '../../../../services/tab-layout.service';
-import { MockStateFactory } from './../../../../../../.storybook/MockStateFactory';
-import { ActiveProjectService } from './../../../../services/active-project.service';
 
-const meta: Meta<TextDetail2Component> = {
-  component: TextDetail2Component,
-  title: 'TextDetail2Component',
+const meta: Meta<TextDetailComponent> = {
+  component: TextDetailComponent,
+  title: 'Cards/TextDetailComponent',
   decorators: [
     applicationConfig({
       providers: [
@@ -37,15 +37,15 @@ const meta: Meta<TextDetail2Component> = {
   ],
 };
 export default meta;
-type Story = StoryObj<TextDetail2Component>;
+type Story = StoryObj<TextDetailComponent>;
 
 // Setup the initial state of the story Basic
 const stateBasic = new MockStateFactory();
 const tabId = 't1'
-const tabData: TextDetail2Config = {
+const tabData: TextDetailConfig = {
   pkEntity: InfResourceMock.DEFINITION_1.pk_entity,
 }
-const tab: PanelTab<TextDetail2Config> = {
+const tab: PanelTab<TextDetailConfig> = {
   active: true,
   component: 'entity',
   icon: 'persistent-item',
@@ -107,6 +107,7 @@ class MockPaginatedStatementsControllerService {
         })
       );
     }
+    return of()
     // throw new Error('mock not implemented for this request');
   }
 }
@@ -141,6 +142,6 @@ export const Basic: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText(/text-detail2 works!/gi)).toBeTruthy();
+    expect(canvas.findByText(/This person is the famous jack the foo, invented by KleioLab and used in Geovistory mock data/i)).toBeTruthy();
   },
 };

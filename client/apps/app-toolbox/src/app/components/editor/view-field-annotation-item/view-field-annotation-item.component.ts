@@ -10,7 +10,7 @@ import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { RemoveEntityService } from '../../../services/remove-entity.service';
-import { TextDetail2Service } from '../../layout/tab-bodies/text-detail2/text-detail2.service';
+import { TextDetailService } from '../../layout/tab-bodies/text-detail/text-detail.service';
 import { EntityPreviewComponent } from '../../misc/entity-preview/entity-preview.component';
 import { IndexedCharids } from '../../text-editor/quill-edit/quill-edit.component';
 import type { ViewFieldAnnotationItemData } from '../view-field-annotations/view-field-annotations.component';
@@ -30,7 +30,7 @@ export class ViewFieldAnnotationItemComponent implements OnInit {
   deleting$ = new BehaviorSubject(false)
 
   constructor(
-    public textEdit: TextDetail2Service,
+    public textEdit: TextDetailService,
     public p: ActiveProjectService,
     public editMode: EditModeService,
     private removeEntityService: RemoveEntityService

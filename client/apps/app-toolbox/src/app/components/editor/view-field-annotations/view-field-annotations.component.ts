@@ -9,10 +9,10 @@ import { combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { filter, first, map, shareReplay, switchMap, takeUntil } from 'rxjs/operators';
 import { C_456_CHUNK_ID, C_933_ANNOTATION_IN_TEXT_ID, P_1872_IS_ANNOTATED_IN_ID, P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID } from '../../../lib/constants/ontome-ids';
-import { IndexedCharids } from '../../text-editor/quill-edit/quill-edit.component';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { PaginationService } from '../../../services/pagination.service';
-import { TextDetail2Service } from '../../layout/tab-bodies/text-detail2/text-detail2.service';
+import { TextDetailService } from '../../layout/tab-bodies/text-detail/text-detail.service';
+import { IndexedCharids } from '../../text-editor/quill-edit/quill-edit.component';
 import { ViewFieldAnnotationItemComponent } from '../view-field-annotation-item/view-field-annotation-item.component';
 export interface ViewFieldAnnotationItemData {
   hasAnnotation: StatementWithTarget;
@@ -44,7 +44,7 @@ export class ViewFieldAnnotationsComponent implements OnInit {
     private pag: PaginationService,
     private i: InformationPipesService,
     private c: ConfigurationPipesService,
-    public textDetail: TextDetail2Service,
+    public textDetail: TextDetailService,
     public editMode: EditModeService
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
