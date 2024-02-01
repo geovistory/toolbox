@@ -369,7 +369,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
         items AS  (
           SELECT json_agg(${q.createBuildObject('t1', EntitySearchHit.definition, ['projects', 'related_statements'])}) as json
           FROM tw1 t1
-          GROUP BY true
+          GROUP BY 1=1
         ),
         count AS  (
           SELECT total_count

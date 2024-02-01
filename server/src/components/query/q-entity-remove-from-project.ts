@@ -126,7 +126,7 @@ export class QEntityRemoveFromProject extends SqlBuilderLb4Models {
             SELECT * FROM tw2
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       )
       SELECT
       json_build_object (

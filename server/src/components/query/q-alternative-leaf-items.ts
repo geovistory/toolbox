@@ -185,7 +185,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
             SELECT * FROM tw2
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       appellation AS (
         SELECT json_agg(t1.objects) as json
@@ -198,7 +198,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
             SELECT * FROM tw3
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       lang_string AS (
         SELECT json_agg(t1.objects) as json
@@ -211,7 +211,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
             SELECT * FROM tw4
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       language AS (
         SELECT json_agg(t2.objects) as json
@@ -226,7 +226,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
             SELECT * FROM tw6
           ) AS t1
         ) as t2
-        GROUP BY true
+        GROUP BY 1=1
       ),
       time_primitive AS (
         SELECT json_agg(t1.objects) as json
@@ -239,7 +239,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
             SELECT * FROM tw7
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       place AS (
         SELECT json_agg(t1.objects) as json
@@ -252,7 +252,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
             SELECT * FROM tw8
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       dimension AS (
         SELECT json_agg(t1.objects) as json
@@ -265,7 +265,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
             SELECT * FROM tw9
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       entity_preview AS (
         SELECT json_agg(t1.objects) as json
@@ -282,7 +282,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
             SELECT * FROM tw12
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       paginatedStatements AS (
         SELECT COALESCE(json_agg(t1.pk_entity), '[]'::json) as json

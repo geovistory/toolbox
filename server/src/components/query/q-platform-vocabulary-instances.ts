@@ -54,7 +54,7 @@ export class QPlatformVocabularyInstances extends SqlBuilderLb4Models {
             SELECT proj_rel FROM tw1
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       resource AS (
         SELECT json_agg(t1.objects) as json
@@ -65,7 +65,7 @@ export class QPlatformVocabularyInstances extends SqlBuilderLb4Models {
             SELECT * FROM tw1
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       )
       SELECT
       json_build_object (
