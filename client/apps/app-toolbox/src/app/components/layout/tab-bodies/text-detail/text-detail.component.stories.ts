@@ -24,7 +24,7 @@ import { TabLayoutService } from '../../../../services/tab-layout.service';
 
 const meta: Meta<TextDetailComponent> = {
   component: TextDetailComponent,
-  title: 'Cards/TextDetailComponent',
+  title: 'Layout/Tab Bodies/TextDetailComponent',
   decorators: [
     applicationConfig({
       providers: [

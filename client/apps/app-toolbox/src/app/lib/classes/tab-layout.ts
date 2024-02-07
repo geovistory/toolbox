@@ -3,7 +3,7 @@ import { PanelTab, StateFacade } from '@kleiolab/lib-redux';
 import { TabLayoutMode } from '@kleiolab/lib-redux/lib/redux-store/ui/active-project/active-project/tab-layout.models';
 import { IOutputData } from 'angular-split/lib/interface';
 import { FluxStandardAction } from 'flux-standard-action';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 
 type Payload = PanelTab<any>;
@@ -36,7 +36,15 @@ export class TabLayout {
     public uiId: string,
     public ref: ChangeDetectorRef,
     public destroy$: Subject<boolean>
-  ) { }
+  ) {
+
+    this.state.ui.activeProject.getTabLayoutMode(uiId)
+      .pipe(takeUntil(destroy$))
+      .subscribe((val) => {
+        this.layoutMode = val
+        this.setSplitSize(val)
+      });
+  }
 
   setSplitSize(mode: TabLayoutMode) {
     if (mode == 'left-only') {

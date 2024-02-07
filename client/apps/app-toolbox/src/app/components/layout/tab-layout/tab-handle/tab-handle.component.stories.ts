@@ -32,12 +32,15 @@ type Story = StoryObj<TabHandleComponent>;
 
 
 const stateBasic = new MockStateFactory();
-stateBasic.state.ui.activeProject.tabLayouts = {
-  'tab_1': {
-    loading: false,
-    layoutMode: 'both',
-    tabTitle: 'Foo title',
-    tabTooltip: 'Foo tooltip'
+stateBasic.state.ui.activeProject = {
+  ...stateBasic.state.ui.activeProject,
+  tabLayouts: {
+    'tab_1': {
+      loading: false,
+      layoutMode: 'both',
+      tabTitle: 'Foo title',
+      tabTooltip: 'Foo tooltip'
+    }
   }
 };
 export const Basic: Story = {

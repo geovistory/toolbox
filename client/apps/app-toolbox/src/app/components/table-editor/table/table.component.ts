@@ -112,12 +112,12 @@ export class TableComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
 
   // mandatory inputs
-  @Input({ required: true }) pkProject: number;
-  @Input({ required: true }) pkDigital: number;
-  @Input({ required: true }) loading = false;
-  @Input({ required: true }) headers$: Observable<Header[]>;
-  @Input({ required: true }) table$: Observable<Array<Array<Cell>>>;
-  @Input({ required: true }) showIds$: BehaviorSubject<boolean>;
+  @Input() pkProject: number;
+  @Input() pkDigital: number;
+  @Input() loading = false;
+  @Input() headers$: Observable<Header[]>;
+  @Input() table$: Observable<Array<Array<Cell>>>;
+  @Input() showIds$: BehaviorSubject<boolean>;
   readmode$: Observable<boolean>;
 
   // optionnal inputs
