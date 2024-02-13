@@ -21,9 +21,9 @@ import { expect } from '@storybook/jest';
 import { userEvent, within } from '@storybook/testing-library';
 
 import { createCrmAsGvPositiveSchema } from '@kleiolab/lib-redux/lib/_helpers/transformers';
-import { sleep } from 'apps/app-toolbox/.storybook/sleep';
 import { of } from 'rxjs';
 import { MockStateFactory } from './../../../../../../../.storybook/MockStateFactory';
+import { getCdkOverlayCanvas } from './../../../../../../../.storybook/getCdkOverlayCanvas';
 import { ActiveProjectService } from './../../../../../services/active-project.service';
 
 const meta: Meta<QueryPathFormComponent> = {
@@ -131,11 +131,43 @@ export const TwoSteps: Story = {
     const canvas = within(canvasElement);
     const add = await canvas.findByRole('button', { name: /add/i });
     await userEvent.click(add);
-
-    // does not work
-    await sleep(1000);
-    const properties = await canvas.findByRole('button', { name: /properties/i });
+    const properties = await canvas.findByRole('combobox', { name: /Properties/i });
     await userEvent.click(properties);
+    const cdkOverlay = getCdkOverlayCanvas(canvasElement);
+    expect(cdkOverlay.findByText(/has gender/gi)).toBeTruthy();
+
+  },
+};
+export const ThreeSteps: Story = {
+  args: {
+    rootClasses$: of([21]),
+    initVal$: of([
+      {
+        type: 'classes',
+        data: {
+          classes: [21],
+        },
+      },
+    ]),
+  },
+  decorators: [
+    applicationConfig({
+      providers: [{ provide: INITIAL_STATE, useValue: stateBasic.state }],
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const add = await canvas.findByRole('button', { name: /add/i });
+    await userEvent.click(add);
+    const properties = await canvas.findByRole('combobox', { name: /Properties/i });
+    await userEvent.click(properties);
+    const cdkOverlay = getCdkOverlayCanvas(canvasElement);
+    const wasBornOption = await cdkOverlay.findByRole('option', { name: /was born/i });
+    await userEvent.click(wasBornOption);
+    const add2 = await canvas.findByRole('button', { name: /add/i });
+    await userEvent.click(add2);
+    const classesElements = await canvas.findAllByText(/Classes/gi)
+    expect(classesElements).toHaveLength(2);
 
   },
 };

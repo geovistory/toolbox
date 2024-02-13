@@ -24,14 +24,14 @@
 
 <button *ngIf="!disabled" class="trigger-btn mat-typography" [matMenuTriggerFor]="menu" (menuOpened)="onOpen()">
   <div class="select-value">
-    <div class="select-value-text">{{selectedText$|async}}</div>
+    <div class="select-value-text">{{selectedText$|async}}&nbsp;</div>
   </div>
   <mat-icon class="arrow-drop-down">arrow_drop_down</mat-icon>
 </button>
 
-<button *ngIf="disabled" class="trigger-btn disabled">
+<button *ngIf="disabled" class="trigger-btn disabled mat-typography">
   <div class="select-value">
-    <div class="select-value-text">{{selectedText$|async}}</div>
+    <div class="select-value-text">{{selectedText$|async}}&nbsp;</div>
   </div>
   <mat-icon class="arrow-drop-down">arrow_drop_down</mat-icon>
 </button>
