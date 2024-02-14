@@ -1,47 +1,51 @@
 <mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4">
   <mat-list-item class="p-0">
-    <div class="mat-headline-5" mat-line> Explore your entities
+
+    <div class="w-100 d-flex">
+      <span class="mat-headline-5" mat-line>Explore your entities
+      </span>
+
+      <mat-menu #appMenu="matMenu" xPosition="before">
+        <button mat-menu-item [matMenuTriggerFor]="entityAttributes">
+          <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+          Entity attributes
+        </button>
+        <button mat-menu-item (click)="addPathColumn()">
+          <mat-icon class="fa-rotate-90" svgIcon="transit-connection" color="primary"></mat-icon>
+          Path to related entities
+        </button>
+      </mat-menu>
+
+      <mat-menu #entityAttributes="matMenu">
+        <button mat-menu-item (click)="addDefaultColumn('entity_preview')">
+          <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+          {{getLabelForDefaulType('entity_preview')}}
+        </button>
+        <button mat-menu-item (click)="addDefaultColumn('pk_entity')">
+          <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+          {{getLabelForDefaulType('pk_entity')}}
+        </button>
+        <button mat-menu-item (click)="addDefaultColumn('entity_label')">
+          <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+          {{getLabelForDefaulType('entity_label')}}
+        </button>
+        <button mat-menu-item (click)="addDefaultColumn('class_label')">
+          <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+          {{getLabelForDefaulType('class_label')}}
+        </button>
+        <button mat-menu-item (click)="addDefaultColumn('type_label')">
+          <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+          {{getLabelForDefaulType('type_label')}}
+        </button>
+        <button mat-menu-item (click)="addDefaultColumn('fk_type')">
+          <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
+          {{getLabelForDefaulType('fk_type')}}
+        </button>
+      </mat-menu>
+
+
+      <button class="ml-auto" mat-flat-button color="primary" [matMenuTriggerFor]="appMenu">Add</button>
     </div>
-    <mat-menu #appMenu="matMenu" xPosition="before">
-      <button mat-menu-item [matMenuTriggerFor]="entityAttributes">
-        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
-        Entity attributes
-      </button>
-      <button mat-menu-item (click)="addPathColumn()">
-        <mat-icon class="fa-rotate-90" svgIcon="transit-connection" color="primary"></mat-icon>
-        Path to related entities
-      </button>
-    </mat-menu>
-
-    <mat-menu #entityAttributes="matMenu">
-      <button mat-menu-item (click)="addDefaultColumn('entity_preview')">
-        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
-        {{getLabelForDefaulType('entity_preview')}}
-      </button>
-      <button mat-menu-item (click)="addDefaultColumn('pk_entity')">
-        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
-        {{getLabelForDefaulType('pk_entity')}}
-      </button>
-      <button mat-menu-item (click)="addDefaultColumn('entity_label')">
-        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
-        {{getLabelForDefaulType('entity_label')}}
-      </button>
-      <button mat-menu-item (click)="addDefaultColumn('class_label')">
-        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
-        {{getLabelForDefaulType('class_label')}}
-      </button>
-      <button mat-menu-item (click)="addDefaultColumn('type_label')">
-        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
-        {{getLabelForDefaulType('type_label')}}
-      </button>
-      <button mat-menu-item (click)="addDefaultColumn('fk_type')">
-        <mat-icon svgIcon="tag-outline" color="primary"></mat-icon>
-        {{getLabelForDefaulType('fk_type')}}
-      </button>
-    </mat-menu>
-
-
-    <button class="ml-3" mat-flat-button color="primary" [matMenuTriggerFor]="appMenu">Add</button>
   </mat-list-item>
   <mat-divider></mat-divider>
 
@@ -115,16 +119,19 @@
 
     <mat-list *ngIf="child.controlFactory?.config?.data?.ctrlClasses" class="mb-4">
       <mat-list-item class="p-0">
-        <div class="mat-headline-5" mat-line *ngIf="!(child.controlFactory?.config.disabled$ | async)">
-          Choose your entities
-        </div>
-        <div class="mat-headline-5" mat-line *ngIf="(child.controlFactory?.config.disabled$ | async)"
-          [ngClass]="{'mat-text-secondary': (child.controlFactory?.config.disabled$ | async)}">
-          Chosen entities
-        </div>
-        <button class="ml-3" mat-flat-button *ngIf="(child.controlFactory?.config.disabled$ | async)"
-          (click)="removeQueryDefinition(child.controlFactory)">Revert</button>
+        <div class="w-100 d-flex">
+          <span class="mat-headline-5" mat-line *ngIf="!(child.controlFactory?.config.disabled$ | async)">
+            Choose your entities
+          </span>
 
+          <span class="mat-headline-5" mat-line *ngIf="(child.controlFactory?.config.disabled$ | async)"
+            [ngClass]="{'mat-text-secondary': (child.controlFactory?.config.disabled$ | async)}">
+            Chosen entities
+          </span>
+
+          <button class="ml-auto" mat-flat-button *ngIf="(child.controlFactory?.config.disabled$ | async)"
+            (click)="removeQueryDefinition(child.controlFactory)">Revert</button>
+        </div>
       </mat-list-item>
       <mat-divider></mat-divider>
       <!-- <mat-list-item class="mat-text-secondary" *ngIf="!(child.config.disabled$ | async)">
@@ -136,8 +143,8 @@
 
     <mat-list *ngIf="child?.childFactory?.config?.data?.filter" class="mb-4">
       <mat-list-item class="p-0">
-        <div class="mat-headline-5" mat-line> Filter your entities
-        </div>
+        <span class="mat-headline-5" mat-line>Filter your entities
+        </span>
       </mat-list-item>
       <mat-divider></mat-divider>
       <mat-list-item class="p-0 mat-text-secondary">
