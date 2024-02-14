@@ -18,7 +18,7 @@
 <!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 mat-text-secondary"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
 
 <!-- Results -->
-<div class="d-flex gv-fh mx-0 py-1 px-3 border-light gv-scroll-y-auto">
+<div class="d-flex gv-fh mx-0 py-1 px-3 gv-scroll-y-auto">
   <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [hit]="hit" (onOpenEntityPreview)=onOpen.emit($event)>
   </gv-entity-search-hit>
 </div>
