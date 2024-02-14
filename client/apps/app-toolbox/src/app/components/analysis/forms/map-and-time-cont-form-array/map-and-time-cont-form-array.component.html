@@ -1,6 +1,6 @@
 <mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4 mb-5">
   <mat-list-item class="p-0">
-    <div class="mat-headline-5" mat-line> Path </div>
+    <span class="mat-headline-5" mat-line> Path </span>
   </mat-list-item>
   <mat-divider></mat-divider>
   <mat-list-item class="p-0">
@@ -14,23 +14,27 @@
 
     <mat-list *ngIf="child?.childFactory?.config?.data?.filter" class="mb-4">
       <mat-list-item class="p-0">
-        <div class="mat-headline-5" mat-line> Filter
-        </div>
+        <span class="mat-headline-5" mat-line> Filter
+        </span>
       </mat-list-item>
       <mat-divider></mat-divider>
     </mat-list>
 
     <mat-list *ngIf="child?.controlFactory?.config?.data?.ctrlClasses" class="mb-4">
       <mat-list-item class="p-0">
-        <div class="mat-headline-5" mat-line *ngIf="!(child.controlFactory?.config.disabled$ | async)">
-          Choose type of geographical entities
+
+        <div class="w-100 d-flex">
+          <span class="mat-headline-5" mat-line *ngIf="!(child.controlFactory?.config.disabled$ | async)">
+            Choose type of geographical entities
+          </span>
+          <span class="mat-headline-5" mat-line *ngIf="(child.controlFactory?.config.disabled$ | async)"
+            [ngClass]="{'mat-text-secondary': (child.controlFactory?.config.disabled$ | async)}">
+            Chosen geographical entities
+          </span>
+          <button class="ml-auto" mat-flat-button *ngIf="(child.controlFactory?.config.disabled$ | async)"
+            (click)="removeQueryDefinition(child.controlFactory)">Revert</button>
         </div>
-        <div class="mat-headline-5" mat-line *ngIf="(child.controlFactory?.config.disabled$ | async)"
-          [ngClass]="{'mat-text-secondary': (child.controlFactory?.config.disabled$ | async)}">
-          Chosen geographical entities
-        </div>
-        <button class="ml-3" mat-flat-button *ngIf="(child.controlFactory?.config.disabled$ | async)"
-          (click)="removeQueryDefinition(child.controlFactory)">Revert</button>
+
 
       </mat-list-item>
       <mat-divider></mat-divider>
