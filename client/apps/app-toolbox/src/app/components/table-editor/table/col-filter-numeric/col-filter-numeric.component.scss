@@ -7,10 +7,12 @@
 .gv-cfn-operator-ctrl {
   flex: 1 0 40px;
   overflow: auto;
+  margin-bottom: -1.25em;
 }
 
 .gv-cfn-value-ctrl {
   flex: 1 1 auto;
   overflow: auto;
   padding-left: 4px;
+  margin-bottom: -1.25em;
 }
