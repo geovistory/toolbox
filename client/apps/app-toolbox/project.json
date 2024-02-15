@@ -22,6 +22,7 @@
           "zone.js"
         ],
         "tsConfig": "apps/app-toolbox/tsconfig.app.json",
+        "webWorkerTsConfig": "apps/app-toolbox/tsconfig.worker.json",
         "assets": [
           "apps/app-toolbox/src/assets",
           {
