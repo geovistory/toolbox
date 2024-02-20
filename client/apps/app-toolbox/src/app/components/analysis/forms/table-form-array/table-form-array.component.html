@@ -185,7 +185,7 @@
 
     <div *ngIf="child?.controlFactory?.config?.data?.ctrlClasses">
       <button mat-flat-button color="primary"
-        *ngIf="!(child.controlFactory?.config?.disabled$|async) && child.formArray.valid" class="mb-4"
+        *ngIf="!(child.controlFactory?.config?.disabled$|async) && child.controlFactory.formControl.valid" class="mb-4"
         (click)="addQueryDefinition(child.controlFactory)">
         Continue
       </button>
