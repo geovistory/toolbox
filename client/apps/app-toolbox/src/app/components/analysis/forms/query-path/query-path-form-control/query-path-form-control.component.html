@@ -14,10 +14,10 @@
 <mat-form-field *ngIf="formControlFactory.config?.data.propertiesSegment" class="w-100" appearance="outline">
 
   <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
-  <gv-property-select [options$]="formControlFactory.config.data.propertiesSegment.options$"
-    [formControl]="formControlFactory.formControl" [required]="formControlFactory.config?.required"
-    [disabled]="formControlFactory.config?.disabled$ |async">
-  </gv-property-select>
+    <gv-property-select [options$]="formControlFactory.config.data.propertiesSegment.options$"
+      [formControl]="formControlFactory.formControl" [required]="formControlFactory.config?.required"
+      [disabled]="formControlFactory.config?.disabled$ |async">
+    </gv-property-select>
 
   <mat-error *ngIf="formControlFactory.formControl.hasError('required')">
     Select or remove.

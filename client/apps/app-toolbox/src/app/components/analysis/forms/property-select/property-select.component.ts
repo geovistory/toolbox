@@ -1,10 +1,10 @@
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { AsyncPipe, NgFor } from '@angular/common';
-import { ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self } from '@angular/core';
+import { ChangeDetectorRef, Component, Directive, EventEmitter, HostBinding, Input, OnDestroy, OnInit, Optional, Output, Self, ViewChild } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormsModule, NG_VALIDATORS, NgControl, ReactiveFormsModule, UntypedFormControl, UntypedFormGroup, Validator, ValidatorFn } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
+import { MatSelect, MatSelectModule } from '@angular/material/select';
 import { PropertyOption, PropertySelectModel } from '@kleiolab/lib-redux';
 import { QueryFilter } from '@kleiolab/lib-sdk-lb4';
 import { U } from '@kleiolab/lib-utils';
@@ -45,6 +45,7 @@ export class PropertiesRequiredValidatorDirective implements Validator {
 abstract class PropertySelectMatControl implements OnDestroy, ControlValueAccessor, MatFormFieldControl<PropertySelectModel> {
   abstract value: PropertySelectModel | null;
   static nextId = 0;
+  @ViewChild(MatSelect, { static: true }) matSelect: MatSelect;
 
   model: PropertySelectModel;
   // the flattened selection
@@ -125,8 +126,7 @@ abstract class PropertySelectMatControl implements OnDestroy, ControlValueAccess
 
 
   onContainerClick(event: MouseEvent) {
-    // TODO: implement this
-
+    this.matSelect.open()
   }
 
   writeValue(value: PropertySelectModel | null): void { }

@@ -1,15 +1,17 @@
-<div *ngFor="let child of formArrayFactory.children; let i=index" class="d-inline-block">
-  <mat-icon>arrow_right_alt</mat-icon>
-  <gv-query-path-form-control class="d-inline-block" *ngIf="child.controlFactory"
-    [formControlFactory]="child.controlFactory">
-  </gv-query-path-form-control>
+<!-- Select a Property/Class -->
+<div *ngFor="let child of formArrayFactory.children; let i = index" class="d-inline-block">
+  <mat-icon class="icon">arrow_right_alt</mat-icon>
+  <gv-query-path-form-control class="d-inline-block" *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory"></gv-query-path-form-control>
 </div>
-<button class="d-inline-block" mat-icon-button (click)="removeSegment(formArrayFactory.children.length-1)" color="warn"
-  *ngIf="formArrayFactory.children.length>1" matTooltip="Remove last path segment">
+
+<!-- Remove the current block from the path -->
+<button class="d-inline-block icon" mat-icon-button (click)="removeSegment(formArrayFactory.children.length - 1)" color="warn" *ngIf="formArrayFactory.children.length > 1" matTooltip="Remove last path segment">
   <mat-icon>clear</mat-icon>
 </button>
-<div class="d-inline-block">
-  <button class="ml-3" mat-icon-button (click)="addSegment()" matTooltip="Add path segment">
+
+<!-- Expand path -->
+<div class="d-inline-block icon">
+  <button mat-icon-button (click)="addSegment()" matTooltip="Add path segment" aria-label="add">
     <mat-icon>add</mat-icon>
   </button>
 </div>
