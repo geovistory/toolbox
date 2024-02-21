@@ -27,7 +27,10 @@
         <tr>
           <ng-container *ngFor="let col of headers; let i = index">
             <ng-container *ngIf="!col.mapping">
-              <th class="gv-td-col-header " pResizableColumn class="mat-bg-white" colspan="1">
+              <th class="gv-td-col-header " pResizableColumn [ngClass]="{
+                'mat-bg-grey-100': i==0 && origin !=='importer',
+                'mat-bg-white': i>0
+              }" colspan="1">
                 <!-- Column title-->
                 <div class="d-flex justify-content-between density-4"
                   [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
@@ -35,8 +38,8 @@
                     [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
                   </mat-icon>
                   <mat-icon></mat-icon>
-                  <span (click)="sort(i)" class="gv-pointer" style="display: flex; overflow: hidden;"
-                    [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
+                  <span (click)="sort(i)" style="display: flex; overflow: hidden;"
+                    [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak, 'gv-pointer': sortingEnabled}">
                     {{col.colLabel}}
                   </span>
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
@@ -67,7 +70,7 @@
                     [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
                   </mat-icon>
                   <mat-icon></mat-icon>
-                  <span (click)="sort(i)" class="gv-pointer">{{col.colLabel}}</span>
+                  <span (click)="sort(i)" [ngClass]="{'gv-pointer': sortingEnabled}">{{col.colLabel}}</span>
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
                   <mat-icon *ngIf="!(readmode$|async)" svgIcon="link"
                     (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)">
