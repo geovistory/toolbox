@@ -160,6 +160,15 @@ export class TimelineChartComponent implements OnInit, OnDestroy {
           }
         }
 
+
+        // This is a trick to avoid errors when the analysis brings no Temporal data. 
+        // We manually set the begin to 1. (not 0 because it is Falsy and fire some error in the zoomer.setExtent)
+        // We manually set the end to 2. (not 1 because it would be <= to the begin, and would fire an error in the zoomer.setExtent)
+        if(this.xMin == Infinity) this.xMin = 1
+        if(this.xMax == -Infinity) this.xMax = 2
+        if(this.yMin == Infinity) this.yMin = 1
+        if(this.xMax == -Infinity) this.xMax = 2
+        
         if (this.cursorInfo.domainX === undefined) this.cursorInfo.domainX = this.xMin;
 
 

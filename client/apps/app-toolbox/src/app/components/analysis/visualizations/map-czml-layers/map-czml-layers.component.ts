@@ -47,7 +47,7 @@ export class MapCzmlLayersComponent implements AfterViewInit, OnDestroy {
     this.cs.addBaseLayerPicker(this.baseLayerPickerContainer.nativeElement, 0)
     this.cs.addSceneModePicker(this.sceneModePickerContainer.nativeElement)
     this.cs.addNavigationHelpButton(this.navigationHelpButtonContainer.nativeElement)
-    // this.cs.addMouseoverHighlight()
+    this.cs.addMouseoverHighlight()
     this.cs.addMouseclickEvent((clickedObject) => {
       this.objectClicked.emit(clickedObject);
     })

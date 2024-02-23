@@ -28,9 +28,7 @@ export class MapAndTimeContFormArrayComponent implements OnInit {
 
   constructor(private t: TableFormService) { }
 
-  ngOnInit() {
-    console.log(this.formArrayFactory.children)
-  }
+  ngOnInit() { }
 
 
   addQueryDefinition(child: FormControlFactory<any>) {
