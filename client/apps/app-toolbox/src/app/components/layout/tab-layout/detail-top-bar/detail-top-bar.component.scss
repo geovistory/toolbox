@@ -32,3 +32,9 @@
     margin-right: 0px;
   }
 }
+
+::ng-deep .gv-detail-top-bar > div > .mat-mdc-button-base {
+  height: 2.5rem;
+  border: 0;
+  border-radius: 0;
+}

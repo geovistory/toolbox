@@ -44,13 +44,13 @@ class MockAnalysisService {
 
     const rows: { [key: string]: AnalysisTableCell; }[] = []
 
-    const full_count = 1234
+    const full_count = 5
     const max = def.offset + def.limit > full_count ? full_count : def.limit + def.offset;
 
     for (let i = def.offset ?? 0; i < max; i++) {
       const row: { [key: string]: AnalysisTableCell; } = {}
       def.columns.forEach(col => {
-        row[col.id] = { entityLabel: 'line ' + i }
+        row[col.id] = { entityLabel: 'col ' + col.label + ' - line ' + i }
       })
       rows.push(row)
     }
@@ -110,7 +110,69 @@ export const Basic: Story = {
   },
   render: (args) => ({
     props: args,
-    template: `<gv-visualization-table style="height:400px" ${argsToTemplate(args)}></gv-visualization-table>`
+    template: `<gv-visualization-table style="height:400px;" ${argsToTemplate(args)}></gv-visualization-table>`
+  }),
+  decorators: [
+    applicationConfig({
+      providers: [
+        { provide: INITIAL_STATE, useValue: stateBasic.state },
+        { provide: AnalysisService, useClass: MockAnalysisService }
+      ],
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.findByText(/line 0/i)).toBeTruthy();
+  },
+};
+
+
+
+export const TwoColumns: Story = {
+  args: {
+    definition$: of({
+      filter: {
+        'data': {
+          'classes': [
+            21
+          ],
+          'types': []
+        },
+        'children': [
+          {
+            'data': {
+              'operator': 'AND',
+              'subgroup': 'property'
+            },
+            'children': [
+              {
+                'data': {
+                  'operator': 'IS',
+                  'outgoingProperties': [],
+                  'ingoingProperties': [
+                    1192
+                  ]
+                },
+                children: []
+              }
+            ]
+          }
+        ]
+      },
+      columns: [{
+        defaultType: 'entity_preview',
+        ofRootTable: true,
+        id: 'col_0',
+        label: 'Entity Preview'
+      },{
+        id: 'col_1',
+        label: 'Place of birth'
+      }]
+    })
+  },
+  render: (args) => ({
+    props: args,
+    template: `<gv-visualization-table style="height:600px" ${argsToTemplate(args)}></gv-visualization-table>`
   }),
   decorators: [
     applicationConfig({

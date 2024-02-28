@@ -306,8 +306,10 @@ export class FormArrayFactory<C, A, Ch> extends AbstractControlFactory {
 
   markAllAsTouched() {
     this.formArray.markAsTouched()
-    this.children.forEach(child => {
-      child.markAllAsTouched()
+    this.children?.forEach(child => {
+      child.controlFactory?.markAllAsTouched();
+      child.arrayFactory?.markAllAsTouched();
+      child.childFactory?.markAllAsTouched();
     })
   }
 

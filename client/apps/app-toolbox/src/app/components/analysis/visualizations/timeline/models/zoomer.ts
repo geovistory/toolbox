@@ -88,7 +88,6 @@ export class Zoomer {
    * - sets the  domain start and end that zoom level
    */
   zoomTo(timeSpanBegin: number, timeSpanEnd: number): Zoomer {
-
     const timeSpanDuration = (timeSpanEnd - timeSpanBegin) * 1.1; // add 10% margin
     const days = timeSpanDuration / 86400;
     const dP100 = days / this.pixels * 100; // days per 100 px before finding a zoom level

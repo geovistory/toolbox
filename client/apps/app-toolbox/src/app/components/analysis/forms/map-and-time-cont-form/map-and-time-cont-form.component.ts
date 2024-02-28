@@ -83,7 +83,6 @@ export class MapAndTimeContFormComponent implements OnInit, OnDestroy, AfterView
     this.ff.create(ffConfig, this.destroy$).pipe(
       first(), takeUntil(this.destroy$)
     ).subscribe((v) => {
-      console.log(v)
       this.formFactory$.next(v)
       this.formFactory = v;
     })

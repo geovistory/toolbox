@@ -253,7 +253,6 @@ export class QueryFilterComponent implements OnInit, OnDestroy, AfterViewInit, C
     ).subscribe((v) => {
       this.formFactory$.next(v)
       this.formFactory = v;
-      console.log(v)
     })
     this.formFactory$.pipe(
       filter(o => o !== null),
