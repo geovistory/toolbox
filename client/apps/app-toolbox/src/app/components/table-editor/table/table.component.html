@@ -27,7 +27,7 @@
         <tr>
           <ng-container *ngFor="let col of headers; let i = index">
             <ng-container *ngIf="!col.mapping">
-              <th class="gv-pointer gv-td-col-header " pResizableColumn [ngClass]="{
+              <th class="gv-td-col-header " pResizableColumn [ngClass]="{
                 'mat-bg-grey-100': i==0 && origin !=='importer',
                 'mat-bg-white': i>0
               }" colspan="1">
@@ -39,7 +39,7 @@
                   </mat-icon>
                   <mat-icon></mat-icon>
                   <span (click)="sort(i)" style="display: flex; overflow: hidden;"
-                    [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak}">
+                    [ngClass]="{'gv-white-space-nowrap': !lineBreak, 'gv-word-wrap-break-word': lineBreak, 'gv-pointer': sortingEnabled}">
                     {{col.colLabel}}
                   </span>
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
@@ -48,7 +48,7 @@
                     aria-label="Map a Class" (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)">
                     <mat-icon svgIcon="link"></mat-icon>
                   </button>
-                  <mat-icon *ngIf="(readmode$|async) && i != 0"></mat-icon>
+                  <mat-icon *ngIf="(readmode$|async) && i != 0 && origin !== 'importer'"></mat-icon>
                 </div>
                 <!-- Column comment-->
                 <div class="d-flex justify-content-center mat-caption"
@@ -63,14 +63,14 @@
             </ng-container>
 
             <ng-container *ngIf="col.mapping">
-              <th class="mat-bg-white gv-pointer gv-td-col-header" pResizableColumn colspan="2">
+              <th class="mat-bg-white gv-td-col-header" pResizableColumn colspan="2">
                 <!-- Column title-->
                 <div class="d-flex justify-content-between" [ngClass]="{'gv-word-wrap-break-word': lineBreak}">
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column" (click)="sort(i)"
                     [svgIcon]="curSort.direction === 'ASC' ? 'arrow-down' : 'arrow-up'">
                   </mat-icon>
                   <mat-icon></mat-icon>
-                  <span (click)="sort(i)">{{col.colLabel}}</span>
+                  <span (click)="sort(i)" [ngClass]="{'gv-pointer': sortingEnabled}">{{col.colLabel}}</span>
                   <mat-icon *ngIf="sortingEnabled && curSort.pkColumn == col.pk_column"></mat-icon>
                   <mat-icon *ngIf="!(readmode$|async)" svgIcon="link"
                     (click)="openMappingDialog(col.colLabel, col.pk_column, col.mapping)">
@@ -222,7 +222,7 @@
                 [matTooltip]="(showIds$|async) && value && value.pkCell != null? 'Click to copy cell id: ' + value.pkCell : ''"
                 gvCopyClipboard [toClipboard]="value ? value.pkCell : ''" [clipBoardActivated]="(showIds$|async)">
 
-                <ng-container *ngIf="readmode$|async">
+                <ng-container *ngIf="(readmode$|async) && !(showIds$|async)">
                   <div class="content-cell" [ngClass]="{'gv-fade-out-right': !lineBreak}">
                     <span class="center-vert">{{value ? value.text : ''}}</span>
                   </div>
@@ -250,7 +250,7 @@
                 </ng-container>
 
                 <ng-container *ngIf="showIds$|async">
-                  <div class="id-cell mat-caption">
+                  <div class="mat-caption id-cell">
                     <span *ngIf="!!value.pkCell">
                       id: {{value.pkCell}}
                     </span>

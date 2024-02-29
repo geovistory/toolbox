@@ -17,17 +17,17 @@
   </div>
 
   <!-- Load file -->
-  <div class="d-flex flex-direction-column load-file"
+  <div class="d-flex flex-direction-column mt-2"
     *ngIf="mode=='load' || mode == 'parsing' || mode == 'uploading' || mode == 'preview'">
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="ml-2">
       <mat-icon matPrefix>folder</mat-icon>
       <input matInput placeholder="Selected file" [value]="file?.name" [readonly]="true">
       <mat-icon matSuffix (click)="reset()" *ngIf="mode!='load' && mode != 'parsing' && mode != 'uploading'">close
       </mat-icon>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngIf="type=='csv'">
+    <mat-form-field appearance="outline" *ngIf="type=='csv'" class="ml-2">
       <mat-label>Separator in CSV</mat-label>
       <mat-select [(value)]="separator" (selectionChange)="parseCSV()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
@@ -35,7 +35,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngIf="type=='csv'">
+    <mat-form-field appearance="outline" *ngIf="type=='csv'" class="ml-2">
       <mat-label>Comma in numbers</mat-label>
       <mat-select [(value)]="comma" (selectionChange)="parseCSV()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
@@ -43,7 +43,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" *ngIf="type=='xls'">
+    <mat-form-field appearance="outline" *ngIf="type=='xls'" class="ml-2">
       <mat-label>Excel sheet</mat-label>
       <mat-select [(value)]="sheetName" (selectionChange)="parseXLS()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
@@ -51,7 +51,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="ml-2">
       <mat-label>Headers are in</mat-label>
       <mat-select [(value)]="columnsOption" (selectionChange)="parseHeaders()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
@@ -59,7 +59,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="ml-2">
       <mat-label>Rows to preview</mat-label>
       <mat-select [(value)]="rowsNb" (selectionChange)="parseTable()"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
@@ -67,7 +67,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="ml-2">
       <mat-label>Encoding</mat-label>
       <mat-select [(value)]="encoding" (selectionChange)="selectFile(this.file)"
         [disabled]="mode=='load' || mode == 'parsing' || mode == 'uploading'">
@@ -80,7 +80,7 @@
 
   <!-- [columnComments$]="dataTypes$" -->
   <gv-table [headers$]="headers$" [table$]="previewTable$" [loading]="mode=='parsing'" [origin]='"importer"'
-    [sortingEnabled]="true" [filteringEnabled]="true" class="gv-overflow-hidden"
+    [sortingEnabled]="false" [filteringEnabled]="false" class="gv-overflow-hidden"
     *ngIf="mode=='parsing' || mode=='preview' || mode == 'uploading'" (sortDemanded)="sort($event)"
     (filterDemanded)="filter($event)">
   </gv-table>

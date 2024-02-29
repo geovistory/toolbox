@@ -195,3 +195,47 @@ export const EditMode: Story = {
     expect(cdkOverlay.findByText(/Map column/i)).toBeTruthy();
   },
 };
+
+
+export const ImporterMode: Story = {
+  args: {
+    pkProject: 0,
+    pkDigital: 0,
+    loading: false,
+    filteringEnabled: true,
+    sortingEnabled: true,
+    lineBreak: false,
+    origin: 'importer',
+    readmode$: of(true),
+    headers$: new BehaviorSubject([
+      {
+        colLabel: 'Name',
+        comment: 'Name of the person',
+        type: 'string',
+        pk_column: 12
+      },
+      {
+        colLabel: 'Birthdate2',
+        comment: 'Birth date of the person',
+        type: 'string',
+        pk_column: 13
+      }
+    ]),
+    table$: new BehaviorSubject([
+      [{ text: '1', pkCell: 1, pkRow: 1, pkColumn: 12 }, { text: '1 Feb. 1988', pkCell: 2, pkRow: 1, pkColumn: 13 }],
+      [{ text: '2', pkCell: 3, pkRow: 2, pkColumn: 12 }, { text: '12. Nov. 1765', pkCell: 4, pkRow: 2, pkColumn: 13 }],
+    ])
+  },
+  decorators: [
+    applicationConfig({
+      providers: [{ provide: INITIAL_STATE, useValue: stateBasic.state }],
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const btn = await canvas.findByRole('button', { name: /Map a Class/ })
+    await userEvent.click(btn)
+    const cdkOverlay = getCdkOverlayCanvas(canvasElement);
+    expect(cdkOverlay.findByText(/Map column/i)).toBeTruthy();
+  },
+};

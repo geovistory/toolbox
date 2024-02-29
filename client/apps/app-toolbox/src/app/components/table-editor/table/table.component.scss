@@ -1,9 +1,6 @@
 td .id-cell {
-  position: absolute;
   width: 100%;
   height: 100%;
-  top: 0;
-  left: 0;
 
   display: flex;
   flex-direction: row;
@@ -11,6 +8,7 @@ td .id-cell {
 
   padding-right: 3px;
 }
+
 tr.new-row {
   height: unset;
 }
@@ -38,6 +36,7 @@ tr.new-row {
   p-cellEditor mat-form-field {
     width: 100%;
   }
+
   textarea.mat-mdc-input-element {
     padding: 0;
   }

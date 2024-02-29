@@ -460,6 +460,7 @@ export class ImporterComponent implements OnInit, OnDestroy {
       yesBtnColor: 'primary',
       title: title,
       paragraphs: [message],
+      hideNoButton: true
     }
     await this.dialog.open(ConfirmDialogComponent, { data }).afterClosed().pipe(first()).toPromise();
     this.dialogRef.close()
