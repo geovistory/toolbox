@@ -1,6 +1,6 @@
 import { PortalModule } from '@angular/cdk/portal';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatLineModule } from '@angular/material/core';
 import { MatDividerModule } from '@angular/material/divider';
@@ -23,15 +23,10 @@ import { FilterDefinition } from '../query-filter/query-filter.component';
   standalone: true,
   imports: [NgIf, MatListModule, MatLineModule, MatDividerModule, NgFor, NgClass, MatButtonModule, MapAndTimeContFormControlComponent, PortalModule, MatFormFieldModule, AsyncPipe]
 })
-export class MapAndTimeContFormArrayComponent implements OnInit {
+export class MapAndTimeContFormArrayComponent  {
   @Input() formArrayFactory: MapAndTimeContFormArrayFactory;
 
   constructor(private t: TableFormService) { }
-
-  ngOnInit() {
-    console.log(this.formArrayFactory.children)
-  }
-
 
   addQueryDefinition(child: FormControlFactory<any>) {
     const selectedClasses$: Observable<ClassAndTypeSelectModel> = child.valueChanges$
@@ -53,6 +48,5 @@ export class MapAndTimeContFormArrayComponent implements OnInit {
     this.formArrayFactory.removeLastChild()
     child.config.disabled$.next(false)
   }
-
 
 }

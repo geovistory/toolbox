@@ -88,6 +88,8 @@ export class VisualizationTableComponent implements OnInit, OnDestroy {
       if (this.table) {
         this.table.resetScrollTop()
         this.table.reset()
+      } else {
+        this.load(this.definition, 0, this.limit)
       }
     })
     // let count = 0;
