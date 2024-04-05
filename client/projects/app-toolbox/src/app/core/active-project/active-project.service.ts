@@ -9,11 +9,12 @@ import { EntityPreviewSocket } from '@kleiolab/lib-sockets';
 import { ConfirmDialogComponent, ConfirmDialogData } from 'projects/app-toolbox/src/app/shared/components/confirm-dialog/confirm-dialog.component';
 import { ProgressDialogComponent, ProgressDialogData } from 'projects/app-toolbox/src/app/shared/components/progress-dialog/progress-dialog.component';
 import { values } from 'ramda';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject, timer } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject, combineLatest, timer } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, mergeMap, takeUntil } from 'rxjs/operators';
 import { TableDetailConfig } from '../../modules/data/components/table-detail/table-detail.component';
 import { TextDetail2Config } from '../../modules/data/components/text-detail2/text-detail2.component';
 import { EntityDetailConfig } from '../../modules/information/containers/entity-detail/entity-detail.component';
+import { C_32_LINGUISTIC_OBJECT_ID } from '../../ontome-ids';
 
 
 
@@ -352,7 +353,7 @@ export class ActiveProjectService {
 
   private _addEntityTab(pkEntity: number, classEnriched: DfhClassEnriched) {
     let config: EntityDetailConfig;
-    if (classEnriched.belongsToCategory.sources) {
+    if (classEnriched.belongsToCategory.sources || classEnriched.dfhClass.pk_class == C_32_LINGUISTIC_OBJECT_ID) {
       config = {
         pkEntity,
         showContentTree: true,

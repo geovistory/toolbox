@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { ConfigurationPipesService, DisplayType, Field, SectionName } from '@kleiolab/lib-queries';
 import { GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4/public-api';
-import { C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
+import { C_218_EXPRESSION_ID, C_32_LINGUISTIC_OBJECT_ID, C_503_EXPRESSION_PORTION_ID } from 'projects/app-toolbox/src/app/ontome-ids';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { BaseModalsService } from '../../services/base-modals.service';
 import { EditModeService } from '../../services/edit-mode.service';
 import { ViewFieldTreeNodeService } from '../../services/view-field-tree-node.service';
-import { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
 import { VIEW_FIELD_ITEM_TYPE } from '../view-field-item/VIEW_FIELD_ITEM_TYPE';
-import { ViewFieldDisplayMode, VIEW_FIELD_DISPLAY_MODE } from '../view-field/VIEW_FIELD_DISPLAY_MODE';
+import { ViewFieldItemTypeFn } from '../view-field-item/view-field-item.component';
+import { VIEW_FIELD_DISPLAY_MODE, ViewFieldDisplayMode } from '../view-field/VIEW_FIELD_DISPLAY_MODE';
 const itemTypeProvider: ViewFieldItemTypeFn = (f, s) => {
-  if ([C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID].includes(s.targetClass)) {
+  if ([C_218_EXPRESSION_ID, C_503_EXPRESSION_PORTION_ID, C_32_LINGUISTIC_OBJECT_ID].includes(s.targetClass)) {
     return 'content-tree'
   }
 }
