@@ -152,3 +152,27 @@ export const FactoidMappingOpen: Story = {
     expect(dialogTxt).toBeTruthy();
   },
 };
+
+
+
+export const FiltersAcitvated: Story = {
+  args: {
+    pkEntity: DatDigitalMock.DIGITAL_UNIONS.pk_entity,
+  },
+  decorators: [
+    applicationConfig({
+      providers: [
+        { provide: INITIAL_STATE, useValue: stateBasic.state },
+        { provide: TableService, useClass: TableApiMock },
+        { provide: SubfieldPageControllerService, useClass: MockPaginationControllerForSandboxes },
+        { provide: FactoidControllerService, useClass: FactoidControllerMock },
+      ],
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const el = await canvas.findByRole('checkbox', { name: 'Filters' });
+    await userEvent.click(el)
+    expect(canvas.findByText('"="')).toBeTruthy();
+  },
+};
