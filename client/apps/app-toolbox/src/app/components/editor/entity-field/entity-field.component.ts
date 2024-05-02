@@ -1,12 +1,14 @@
-import { AsyncPipe, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, Input, OnInit, Optional } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Field, FieldPage, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
+import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'ramda';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, firstValueFrom } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { P_1879_HAS_VALUE_ID } from '../../../lib/constants/ontome-ids';
+import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
 import { PaginationService } from '../../../services/pagination.service';
 import { READ_ONLY } from '../../../tokens/READ_ONLY';
@@ -22,7 +24,7 @@ import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dia
   styleUrls: ['./entity-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, ClassInfoComponent, OntoPropertyInfoComponent, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewComponent, AsyncPipe]
+  imports: [NgIf, NgClass, ClassInfoComponent, OntoPropertyInfoComponent, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewComponent, AsyncPipe]
 })
 export class EntityFieldComponent implements OnInit {
   destroy$ = new Subject<boolean>();
@@ -37,12 +39,14 @@ export class EntityFieldComponent implements OnInit {
   page$: Observable<FieldPage>
   constructor(
     private state: StateFacade,
+    private projectService: ActiveProjectService,
+    private p: ActiveProjectPipesService,
     private i: InformationPipesService,
     private pag: PaginationService,
     private dialog: MatDialog,
     private ref: ChangeDetectorRef,
     @Optional() @Inject(READ_ONLY) public readonly: boolean,
-    public editMode: EditModeService
+    public editMode: EditModeService,
   ) {
     this.readmode$ = this.editMode.value$.pipe(map(v => !v))
   }
@@ -111,6 +115,25 @@ export class EntityFieldComponent implements OnInit {
         data
       })
     })
+  }
+  async openTableOnRow(pkDigital: number, fkRow: number) {
+    const pkProject = await firstValueFrom(this.state.pkProject$);
+    // load the has value statement to get the table id
+    const page = await this.state.data.loadFieldPage([{
+      page: {
+        isOutgoing: false,
+        limit: 1, offset: 0,
+        property: { fkProperty: P_1879_HAS_VALUE_ID },
+        scope: { inProject: pkProject },
+        source: { fkData: pkDigital }
+      },
+      pkProject,
+      targets: {}
+    }]).pipe(first()).toPromise();;
+
+    // open a table tab
+    const pkEntity = page.subfieldPages?.[0].paginatedStatements?.[0]?.statement?.fk_subject_info;
+    this.projectService.addTableTab(pkEntity, fkRow)
   }
   ngOnDestroy() {
     this.destroy$.next(true);

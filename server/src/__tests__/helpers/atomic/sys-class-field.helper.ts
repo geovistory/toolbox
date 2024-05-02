@@ -1,11 +1,11 @@
 import {SysClassField} from '../../../models';
 import {SysClassFieldRepository} from '../../../repositories';
-import {testdb} from "../testdb";
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createSysClassFieldRepo() {
 
-  return new SysClassFieldRepository(testdb)
+  return new SysClassFieldRepository(TestDbFactory.datasource)
 }
 
 export async function createSysClassField(item: Partial<SysClassField>) {

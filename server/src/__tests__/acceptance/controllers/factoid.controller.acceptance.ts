@@ -1,5 +1,6 @@
 import {Client, expect} from '@loopback/testlab';
 import {GeovistoryApplication} from '../../../application';
+import {TestDbFactory} from '../../helpers/TestDbFactory';
 import {DatColumnMock} from '../../helpers/data/gvDB/DatColumnMock';
 import {DatDigitalMock} from '../../helpers/data/gvDB/DatDigitalMock';
 import {InfResourceMock} from '../../helpers/data/gvDB/InfResourceMock';
@@ -10,7 +11,6 @@ import {createJonasSchneider} from '../../helpers/graphs/account.helper';
 import {forFeatureX} from '../../helpers/graphs/feature-X.helper';
 import {setupApplication} from '../../helpers/gv-server-helpers';
 import {cleanDb} from '../../helpers/meta/clean-db.helper';
-import {testdb} from '../../helpers/testdb';
 
 
 describe('FactoidController', () => {
@@ -244,7 +244,7 @@ describe('FactoidController', () => {
             const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdIn})).body.lb4Token;
             const res = await client.post(path).set('Authorization', jwt).query({pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkTable: FMs1.pkTable}).send(FMs1);
 
-            const result = await testdb.execute("SELECT * FROM data.factoid_mapping WHERE fk_digital = " + FMs1.pkTable);
+            const result = await TestDbFactory.datasource.execute("SELECT * FROM data.factoid_mapping WHERE fk_digital = " + FMs1.pkTable);
             expect(result[0].pk_entity).to.be.equal(res.body.mappings[0].pkEntity)
             expect(result[0].fk_digital).to.be.equal(FMs1.mappings[0].pkDigital)
             expect(result[0].fk_class).to.be.equal(FMs1.mappings[0].pkClass)
@@ -262,13 +262,13 @@ describe('FactoidController', () => {
             const jwt = (await client.post('/login').send({email: accountInProject.email, password: pwdIn})).body.lb4Token;
             const res = await client.post(path).set('Authorization', jwt).query({pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkTable: FMs1.pkTable}).send(FMs1);
 
-            const result1 = await testdb.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res.body.mappings[0].pkEntity);
+            const result1 = await TestDbFactory.datasource.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res.body.mappings[0].pkEntity);
             expect(result1[0].fk_property).to.equal(FMs1.mappings[0].properties[0].pkProperty)
             expect(result1[0].fk_column).to.equal(FMs1.mappings[0].properties[0].pkColumn)
             expect(result1[0].fk_factoid_mapping).to.equal(res.body.mappings[0].pkEntity)
             expect(result1[0].is_outgoing).to.equal(FMs1.mappings[0].properties[0].isOutgoing)
             expect(result1[0].comment).to.equal(FMs1.mappings[0].properties[0].comment)
-            const result2 = await testdb.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res.body.mappings[1].pkEntity);
+            const result2 = await TestDbFactory.datasource.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res.body.mappings[1].pkEntity);
             expect(result2[0].fk_property).to.equal(FMs1.mappings[1].properties[0].pkProperty)
             expect(result2[0].fk_column).to.equal(FMs1.mappings[1].properties[0].pkColumn)
             expect(result2[0].fk_factoid_mapping).to.equal(res.body.mappings[1].pkEntity)
@@ -291,13 +291,13 @@ describe('FactoidController', () => {
 
             const res2 = await client.post(path).set('Authorization', jwt).query({pkProject: ProProjectMock.SANDBOX_PROJECT.pk_entity, pkTable: FMs2.pkTable}).send(FMs2);
 
-            const result1 = await testdb.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res2.body.mappings[0].pkEntity);
+            const result1 = await TestDbFactory.datasource.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res2.body.mappings[0].pkEntity);
             expect(result1[0].fk_property).to.equal(FMs2.mappings[0].properties[0].pkProperty)
             expect(result1[0].fk_column).to.equal(FMs2.mappings[0].properties[0].pkColumn)
             expect(result1[0].fk_factoid_mapping).to.equal(res2.body.mappings[0].pkEntity)
             expect(result1[0].is_outgoing).to.equal(FMs2.mappings[0].properties[0].isOutgoing)
             expect(result1[0].comment).to.equal(FMs2.mappings[0].properties[0].comment)
-            const result2 = await testdb.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res1.body.mappings[1].pkEntity);
+            const result2 = await TestDbFactory.datasource.execute("SELECT * FROM data.factoid_property_mapping WHERE fk_factoid_mapping = " + res1.body.mappings[1].pkEntity);
             expect(result2[0].pk_entity).to.equal(res1.body.mappings[1].properties[0].pkEntity)
             expect(result2[0].fk_property).to.equal(FMs2.mappings[1].properties[0].pkProperty)
             expect(result2[0].fk_column).to.equal(FMs2.mappings[1].properties[0].pkColumn)

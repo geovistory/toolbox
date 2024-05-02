@@ -1,12 +1,12 @@
-import { testdb } from "../testdb";
 import {InfStatement} from '../../../models';
 import {InfStatementRepository, ProInfoProjRelRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createInfStatementRepo() {
   let proInfoProjRelRepo: ProInfoProjRelRepository;
   return new InfStatementRepository(
-    testdb,
+    TestDbFactory.datasource,
     async () => proInfoProjRelRepo,
   )
 }

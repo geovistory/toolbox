@@ -6,7 +6,7 @@ import {inject} from "@loopback/core";
 import {getModelSchemaRef, param, post, requestBody, tags} from "@loopback/openapi-v3";
 import {model, property, repository} from "@loopback/repository";
 import {HttpErrors} from "@loopback/rest";
-import {SecurityBindings, securityId, UserProfile} from '@loopback/security';
+import {SecurityBindings, UserProfile, securityId} from '@loopback/security';
 import {concat, isEmpty} from "lodash";
 import {mergeDeepWith} from "ramda";
 import {PartialDeep} from "type-fest";
@@ -113,7 +113,7 @@ export class CreateProjectDataController {
       },
     }) entities: InfResourceWithRelations[]
   ): Promise<GvSchemaModifier> {
-    await this.visibilityController.initializeConfiguration()
+    await this.visibilityController.initializeSettings(pkProject)
     const promisedEntities = entities.map(entity => this.findOrCreateResourceWithRelations(entity, pkProject))
     await Promise.all(promisedEntities)
     return this.schemaModifier
@@ -149,7 +149,7 @@ export class CreateProjectDataController {
       },
     }) statements: InfStatementWithRelations[]
   ): Promise<GvSchemaModifier> {
-    await this.visibilityController.initializeConfiguration()
+    await this.visibilityController.initializeSettings(pkProject)
     const promisedStmts = statements.map(stmt => this.findOrCreateStatementWithRelations(stmt, pkProject))
     await Promise.all(promisedStmts)
     return this.schemaModifier
@@ -245,7 +245,7 @@ export class CreateProjectDataController {
     @param.query.number('pkProject') pkProject: number,
     @requestBody() data: InfData
   ): Promise<GvSchemaModifier> {
-    await this.visibilityController.initializeConfiguration()
+    await this.visibilityController.initializeSettings(pkProject)
 
     // statement
     if (data.statement) {
@@ -374,7 +374,7 @@ export class CreateProjectDataController {
   async createResourceAndProjectRel(resourceWithRels: PartialDeep<InfResourceWithRelations>, fkProject: number) {
     const {pk_entity, fk_class} = resourceWithRels;
 
-    const community_visibility: CommunityVisibilityOptions = this.visibilityController.getDefaultCommunityVisibility(fk_class);
+    const community_visibility: CommunityVisibilityOptions = this.visibilityController.getDefaultCommunityVisibility(fk_class ?? -1);
     const createdResource = await this.infResourceRepository.create({
       pk_entity,
       fk_class,
@@ -398,7 +398,7 @@ export class CreateProjectDataController {
 
   private async upsertInfoProjRel(fkEntity: number, override: PartialDeep<ProInfoProjRel> = {}, fkProject: number, fkClass?: number) {
     let project_visibility: ProjectVisibilityOptions | undefined;
-    if (fkClass) project_visibility = this.visibilityController.getProjectVisibilityDefault(fkClass)
+    if (fkClass) project_visibility = this.visibilityController.getProjectVisibilityDefault(fkClass ?? -1)
     const dataObject: PartialDeep<ProInfoProjRel> = {
       // defaults:
       fk_entity: fkEntity,

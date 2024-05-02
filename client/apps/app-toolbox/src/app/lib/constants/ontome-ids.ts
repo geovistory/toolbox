@@ -37,6 +37,7 @@ export const C_12_PRODUCTION_ID = 12
 export const C_21_PERSON_ID = 21
 export const C_22_MAN_MADE_OBJECT_ID = 22
 export const C_24_MAN_MADE_FEATURE_ID = 24
+export const C_32_LINGUISTIC_OBJECT_ID = 32
 export const C_39_LEGAL_BODY_ID = 39
 export const C_40_APPELLATION_ID = 40
 export const C_41_IDENTIFIER_ID = 41
@@ -453,4 +454,3 @@ export const P_1876_MENTIONS_ID = 1876
 export const P_1877_IS_MENTIONED_IN_ID = 1877
 export const P_1878_AT_POSITION_ID = 1878
 export const P_1879_HAS_VALUE_ID = 1879
-  

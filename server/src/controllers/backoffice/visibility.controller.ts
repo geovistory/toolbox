@@ -2,11 +2,12 @@ import {inject} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {SysConfigController} from '..';
 import {DfhClass} from '../../models/dfh-class.model';
+import {ProVisibilitySettingsValue} from '../../models/project-visibilty-settings/pro-visibility-settings-value';
 import {SysConfigValue} from '../../models/sys-config';
 import {CommunityVisibilityOptions} from '../../models/sys-config/sys-config-community-visibility-options';
 import {ProjectVisibilityOptions} from '../../models/sys-config/sys-config-project-visibility-options';
 import {AllowedCommunityVisibility} from '../../models/sys-config/sys-config-visibility-range';
-import {DfhClassRepository} from '../../repositories';
+import {DfhClassRepository, ProVisibilitySettingsRepository} from '../../repositories';
 
 interface ClassLookup {[pkClass: number]: DfhClass};
 
@@ -19,12 +20,15 @@ export class VisibilityController {
   systemConfig?: SysConfigValue;
   classLookup?: ClassLookup;
   allClasses?: DfhClass[];
+  projectVisibilitySettings?: ProVisibilitySettingsValue;
 
   constructor(
     @inject('controllers.SysConfigController')
     public sysConfigController: SysConfigController,
     @repository(DfhClassRepository)
     public dfhClass: DfhClassRepository,
+    @repository(ProVisibilitySettingsRepository)
+    public proVisibilitySettingsRepository: ProVisibilitySettingsRepository,
   ) { }
 
 
@@ -42,48 +46,80 @@ export class VisibilityController {
     return res
   }
 
-  async initializeConfiguration() {
+  /**
+   * Initialize settings including settings of given project
+   */
+
+  async initializeSettings(projectId: number) {
+    await this.initializeSystemSettings()
+    this.projectVisibilitySettings = (await this.proVisibilitySettingsRepository.findByProjectId(projectId))?.settings;
+  }
+
+  /**
+   * Initialize settings without considering projects
+   */
+  async initializeSystemSettings() {
     this.systemConfig = await this.sysConfigController.getSystemConfig()
     this.classLookup = await this.getClassLookup()
   }
 
-  getDefaultCommunityVisibility(fkClass = -1): CommunityVisibilityOptions {
+  /**
+  * Get default community visibility
+  */
+  getDefaultCommunityVisibility(fkClass: number): CommunityVisibilityOptions {
     if (!this.classLookup) throw new Error('classLookup is not set')
     if (!this.systemConfig) throw new Error('systemConfig is not set')
     const basicType = this.classLookup[fkClass]?.basic_type ?? -1;
-    // if (fkClass === -1) console.warn('no fkClass given to get community visibility')
-    // if (basicType === -1) console.warn('no basicType found to get community visibility')
-    return getCommunityVisibilityDefault(this.systemConfig, fkClass, basicType)
+    return getCommunityVisibilityDefault(this.systemConfig, fkClass, basicType, this.projectVisibilitySettings)
   }
 
-  getAllowedCommunityVisibility(fkClass = -1): AllowedCommunityVisibility {
+
+  /**
+  * Get default project visibility
+  */
+  getProjectVisibilityDefault(fkClass: number): ProjectVisibilityOptions {
+    if (!this.classLookup) throw new Error('classLookup is not set')
+    if (!this.systemConfig) throw new Error('systemConfig is not set')
+    const basicType = this.classLookup[fkClass]?.basic_type ?? -1;
+    return getProjectVisibilityDefault(this.systemConfig, fkClass, basicType, this.projectVisibilitySettings)
+  }
+
+  /**
+    * Get allowed community visibility (this is always a system level config)
+    */
+  getAllowedCommunityVisibility(fkClass: number): AllowedCommunityVisibility {
     if (!this.classLookup) throw new Error('classLookup is not set')
     if (!this.systemConfig) throw new Error('systemConfig is not set')
     const basicType = this.classLookup[fkClass]?.basic_type ?? -1;
     return getCommunityVisibilityRange(this.systemConfig, fkClass, basicType)
   }
 
-  getProjectVisibilityDefault(fkClass = -1): ProjectVisibilityOptions {
+  /**
+    * Get default community visibility without considering projects
+    */
+  getSystemDefaultCommunityVisibility(fkClass: number): CommunityVisibilityOptions {
     if (!this.classLookup) throw new Error('classLookup is not set')
     if (!this.systemConfig) throw new Error('systemConfig is not set')
     const basicType = this.classLookup[fkClass]?.basic_type ?? -1;
-    // if (fkClass === -1) console.warn('no fkClass given to get project visibility')
-    // if (basicType === -1) console.warn('no basicType found to get project visibility')
-    return getProjectVisibilityDefault(this.systemConfig, fkClass, basicType)
+    return getCommunityVisibilityDefault(this.systemConfig, fkClass, basicType)
   }
 
 }
 
 /**
- * Gets the community visibility default for a class according to system config.
+ * Gets the community visibility default for a class according to project or system config.
  * @param sysConfig system configuration
  * @param pkClass the pk_class of the class
  * @param basicTypeId the basic_type of the class
+ * @param projectVisibilitySettings settings for the visibility on project level
  * @returns the community visibility according to system config or a fallback value.
  */
-export function getCommunityVisibilityDefault(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): CommunityVisibilityOptions {
+export function getCommunityVisibilityDefault(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number, projectVisibilitySettings?: ProVisibilitySettingsValue): CommunityVisibilityOptions {
 
-  return sysConfig?.classes?.[pkClass]?.communityVisibilityDefault ??
+  return projectVisibilitySettings?.classes?.[pkClass]?.communityVisibilityDefault ??
+    projectVisibilitySettings?.classesByBasicType?.[basicTypeId]?.communityVisibilityDefault ??
+    projectVisibilitySettings?.classesDefault?.communityVisibilityDefault ??
+    sysConfig?.classes?.[pkClass]?.communityVisibilityDefault ??
     sysConfig?.classesByBasicType?.[basicTypeId]?.communityVisibilityDefault ??
     sysConfig?.classesDefault?.communityVisibilityDefault ??
     {toolbox: true, dataApi: true, website: true};
@@ -106,15 +142,19 @@ export function getCommunityVisibilityRange(sysConfig: SysConfigValue, pkClass: 
 
 
 /**
- * Gets the project visibility default for a class according to system config.
+ * Gets the project visibility default for a class according to  project or system config.
  * @param sysConfig system configuration
  * @param pkClass the pk_class of the class
  * @param basicTypeId the basic_type of the class
+ * @param projectVisibilitySettings settings for the visibility on project level
  * @returns the project visibility according to system config or a fallback value.
  */
-export function getProjectVisibilityDefault(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number): ProjectVisibilityOptions {
+export function getProjectVisibilityDefault(sysConfig: SysConfigValue, pkClass: number, basicTypeId: number, projectVisibilitySettings?: ProVisibilitySettingsValue): ProjectVisibilityOptions {
 
-  return sysConfig?.classes?.[pkClass]?.projectVisibilityDefault ??
+  return projectVisibilitySettings?.classes?.[pkClass]?.projectVisibilityDefault ??
+    projectVisibilitySettings?.classesByBasicType?.[basicTypeId]?.projectVisibilityDefault ??
+    projectVisibilitySettings?.classesDefault?.projectVisibilityDefault ??
+    sysConfig?.classes?.[pkClass]?.projectVisibilityDefault ??
     sysConfig?.classesByBasicType?.[basicTypeId]?.projectVisibilityDefault ??
     sysConfig?.classesDefault?.projectVisibilityDefault ??
     {dataApi: false, website: false};

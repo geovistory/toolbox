@@ -196,7 +196,7 @@ export class SqlBuilderLb4Models extends SqlBuilderBase {
               SELECT ${tw.colName} objects FROM ${tw.twName}
             `).join(' UNION ALL ')}
           ) as t1
-          GROUP BY true
+          GROUP BY 1=1
         )`)
       }
     }

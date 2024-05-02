@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { ProClassFieldConfig } from '../../../../models';
-import { PK_DEFAULT_CONFIG_PROJECT } from './local-model.helpers';
-import { DfhApiPropertyMock } from './DfhApiPropertyMock';
-import { DfhApiClassMock } from './DfhApiClassMock';
+import {ProClassFieldConfig} from '../../../../models';
+import {DfhApiClassMock} from './DfhApiClassMock';
+import {DfhApiPropertyMock} from './DfhApiPropertyMock';
+import {PK_DEFAULT_CONFIG_PROJECT} from './local-model.helpers';
 
 /**
  * pk_entity prefix: 400

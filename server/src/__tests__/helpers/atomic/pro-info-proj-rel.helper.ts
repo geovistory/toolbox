@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { testdb } from "../testdb";
 import {ProInfoProjRel} from '../../../models';
 import {ProInfoProjRelRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
 import {PubAccountMock} from '../data/gvDB/PubAccountMock';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createProInfoProjRelRepo() {
   return new ProInfoProjRelRepository(
-    testdb,
+    TestDbFactory.datasource,
   )
 }
 

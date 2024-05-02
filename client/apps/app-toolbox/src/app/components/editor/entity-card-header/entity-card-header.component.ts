@@ -1,5 +1,5 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,10 +9,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActiveProjectPipesService, ConfigurationPipesService, StateFacade } from '@kleiolab/lib-redux';
-import { WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
+import { CommunityVisibilityOptions, InfResource, WarEntityPreview } from '@kleiolab/lib-sdk-lb4';
 import { DndModule } from '@suez/ngx-dnd';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { first, switchMap } from 'rxjs/operators';
+import { first, map, switchMap } from 'rxjs/operators';
+import { PassiveLinkDirective } from '../../../directives/passive-link/passive-link.directive';
 import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { EditModeService } from '../../../services/edit-mode.service';
@@ -20,6 +21,7 @@ import { READ_ONLY } from '../../../tokens/READ_ONLY';
 import { ClassConfigDialogComponent, ClassConfigDialogData } from '../../configuration/class-config-dialog/class-config-dialog.component';
 import { EntityLabelConfigOpenBtnComponent } from '../../configuration/entity-label-config-open-btn/entity-label-config-open-btn.component';
 import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
+import { VisibilityDialogComponent } from '../visibility-dialog/visibility-dialog.component';
 
 @Component({
   selector: 'gv-entity-card-header',
@@ -27,7 +29,8 @@ import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
   styleUrls: ['./entity-card-header.component.scss'],
   standalone: true,
   providers: [TruncatePipe],
-  imports: [NgIf, ClassInfoComponent, DndModule, MatTooltipModule, MatButtonToggleModule, MatIconModule, MatButtonModule, MatMenuModule, MatSlideToggleModule, MatDividerModule, EntityLabelConfigOpenBtnComponent, AsyncPipe,]
+  imports: [NgIf, PassiveLinkDirective, ClassInfoComponent, DndModule, MatTooltipModule, MatButtonToggleModule, MatIconModule, MatButtonModule, MatMenuModule, MatSlideToggleModule, MatDividerModule, EntityLabelConfigOpenBtnComponent, AsyncPipe,],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class EntityCardHeaderComponent implements OnInit {
 
@@ -41,6 +44,8 @@ export class EntityCardHeaderComponent implements OnInit {
 
   preview$: Observable<WarEntityPreview>;
   classLabel$: Observable<string>;
+  communityVisibility$: Observable<CommunityVisibilityOptions>;
+  showVisibility$ = new BehaviorSubject(false)
 
   constructor(
     public editMode: EditModeService,
@@ -63,8 +68,9 @@ export class EntityCardHeaderComponent implements OnInit {
     this.preview$ = this.ap.streamEntityPreview(this.pkEntity, true, this.pkProject)
 
     this.classLabel$ = this.fkClass$.pipe(switchMap(fkClass => this.c.pipeClassLabel(fkClass)))
-    // if (this.fkClass$)
-    // else this.classLabel$ = this.i.pipeClassLabelOfEntity(this.pkEntity)
+
+    this.communityVisibility$ = this.state.data.inf.resource.getResource.byPkEntity$(this.pkEntity)
+      .pipe(map((r: InfResource) => r?.community_visibility))
   }
 
   openClassConfig() {
@@ -95,5 +101,9 @@ export class EntityCardHeaderComponent implements OnInit {
     const tabTitle = [trucatedClassLabel, preview.entity_label].filter(i => !!i).join(' - ')
     const confirmed = await this.p.openRemoveEntityDialog(tabTitle, this.pkEntity)
     if (confirmed) this.removed.emit()
+  }
+
+  async openVisibilityDialog() {
+    this.dialog.open<VisibilityDialogComponent>(VisibilityDialogComponent)
   }
 }

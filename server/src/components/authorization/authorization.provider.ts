@@ -1,18 +1,15 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import {
-  AuthorizationContext,
-
-  AuthorizationDecision, AuthorizationMetadata, Authorizer
+  AuthorizationContext, AuthorizationDecision, AuthorizationMetadata, Authorizer
 } from '@loopback/authorization';
-import {Provider} from "@loopback/core";
+import {Provider, inject} from "@loopback/core";
 import {repository} from '@loopback/repository';
 import {RequestContext} from '@loopback/rest';
 import {isInteger} from 'lodash';
 import {uniq} from 'ramda';
-import {DatDigitalRepository, DatNamespaceRepository, PubAccountProjectRelRepository} from '../../repositories';
+import {Postgres1DataSource} from '../../datasources';
+import {DatNamespaceRepository, PubAccountProjectRelRepository} from '../../repositories';
 import {PubRoleMappingRepository} from '../../repositories/pub-role-mapping.repository';
 import {SqlBuilderBase} from '../../utils/sql-builders/sql-builder-base';
-import {testdb} from '../../__tests__/helpers/testdb';
 import {Roles} from './keys';
 
 export class AuthorizationProvider implements Provider<Authorizer> {
@@ -28,8 +25,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     @repository(PubAccountProjectRelRepository) private pubAccountProjectRelRepo: PubAccountProjectRelRepository,
     @repository(PubRoleMappingRepository) private pubRoleMappingRepo: PubRoleMappingRepository,
     @repository(DatNamespaceRepository) private datNamespaceRepository: DatNamespaceRepository,
-    @repository(DatDigitalRepository) private datDigitalRepository: DatDigitalRepository
-  ) { }
+    @inject('datasources.postgres1') public datasource: Postgres1DataSource,) { }
 
   async authorize(
     context: AuthorizationContext,
@@ -130,7 +126,7 @@ export class AuthorizationProvider implements Provider<Authorizer> {
     if (!accountId || (!pkDataEntity && !pkDigital)) return AuthorizationDecision.DENY;
     const q = new SqlBuilderBase();
     q.sql = 'SELECT fk_namespace FROM data.entity WHERE pk_entity=' + q.addParam(pkDataEntity ?? pkDigital) + ';';
-    const fkNamespace = (await testdb.execute(q.sql, q.params))[0]?.fk_namespace;
+    const fkNamespace = (await this.datasource.execute(q.sql, q.params))[0]?.fk_namespace;
     if (!fkNamespace) return AuthorizationDecision.DENY;
     const namespace = await this.datNamespaceRepository.findById(fkNamespace);
     if (!namespace) return AuthorizationDecision.DENY;

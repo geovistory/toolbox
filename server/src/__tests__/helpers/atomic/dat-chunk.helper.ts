@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import {DatDigital} from '../../../models';
 import {DatChunkRepository, DatDigitalRepository, DatNamespaceRepository, InfStatementRepository} from '../../../repositories';
-import {testdb} from '../testdb';
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 function createDatChunkRepo() {
     let infStatementRepo: InfStatementRepository;
     let datDigitalRepo: DatDigitalRepository;
     let datNamespaceRepo: DatNamespaceRepository;
     return new DatChunkRepository(
-        testdb,
+        TestDbFactory.datasource,
         async () => infStatementRepo,
         async () => datDigitalRepo,
         async () => datNamespaceRepo,

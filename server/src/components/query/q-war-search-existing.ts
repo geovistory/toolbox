@@ -242,7 +242,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
         items AS  (
           SELECT json_agg(t1) as json
           FROM tw3 t1
-          GROUP BY true
+          GROUP BY 1=1
         ),
         count AS  (
           SELECT total_count

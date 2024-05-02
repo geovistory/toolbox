@@ -1,12 +1,12 @@
 import {InfPlace} from '../../../models';
 import {InfPlaceRepository} from '../../../repositories';
-import {testdb} from "../testdb";
+import {TestDbFactory} from '../TestDbFactory';
 import {dealWithPkEntity} from './_sequences.helper';
 
 function createInfPlaceRepo() {
 
   return new InfPlaceRepository(
-    testdb,
+    TestDbFactory.datasource,
 
   )
 }

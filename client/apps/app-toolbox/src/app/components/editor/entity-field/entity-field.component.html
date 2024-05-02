@@ -18,7 +18,8 @@
       </gv-entity-preview>
     </ng-container>
     <ng-template #cell>
-      <div class="loc-cell" *ngIf="statementWT.target.cell; else default">
+      <div class="loc-cell" *ngIf="statementWT.target.cell; else default" [ngClass]="{'gv-pointer': !readonly}"
+        (click)="openTableOnRow(statementWT.target.cell.fk_digital, statementWT.target.cell.fk_row)">
 
 
         <div class="loc-cell-line-one">

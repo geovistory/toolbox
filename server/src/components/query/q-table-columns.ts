@@ -1,8 +1,8 @@
-import { Postgres1DataSource } from '../../datasources';
-import { DatColumn, DatTextProperty } from '../../models';
-import { DatClassColumnMapping } from '../../models/dat-class-column-mapping.model';
-import { GvPositiveSchemaObject } from '../../models/gv-positive-schema-object.model';
-import { SqlBuilderLb4Models } from '../../utils/sql-builders/sql-builder-lb4-models';
+import {Postgres1DataSource} from '../../datasources';
+import {DatColumn, DatTextProperty} from '../../models';
+import {DatClassColumnMapping} from '../../models/dat-class-column-mapping.model';
+import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
+import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 
 export class QTableColumns extends SqlBuilderLb4Models {
@@ -63,7 +63,7 @@ export class QTableColumns extends SqlBuilderLb4Models {
           SELECT * FROM tw1
         ) AS t1
       ) as t1
-      GROUP BY true
+      GROUP BY 1=1
     ),
     dat_text_property AS (
       SELECT json_agg(t1.objects) as json
@@ -74,7 +74,7 @@ export class QTableColumns extends SqlBuilderLb4Models {
           SELECT * FROM tw2
         ) AS t1
       ) as t1
-      GROUP BY true
+      GROUP BY 1=1
     ),
     dat_class_column_mapping AS (
       SELECT json_agg(t1.objects) as json
@@ -85,7 +85,7 @@ export class QTableColumns extends SqlBuilderLb4Models {
           SELECT * FROM tw3
         ) AS t1
       ) as t1
-      GROUP BY true
+      GROUP BY 1=1
     )
     SELECT
     json_build_object (

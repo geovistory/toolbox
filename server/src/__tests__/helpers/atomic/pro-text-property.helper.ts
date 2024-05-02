@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { ProTextProperty } from '../../../models';
-import { ProTextPropertyRepository } from '../../../repositories';
-import { testdb } from "../testdb";
-import { dealWithPkEntity } from './_sequences.helper';
+import {ProTextProperty} from '../../../models';
+import {ProTextPropertyRepository} from '../../../repositories';
+import {TestDbFactory} from '../TestDbFactory';
+import {dealWithPkEntity} from './_sequences.helper';
 function createProTextPropertyRepo() {
     return new ProTextPropertyRepository(
-        testdb
+        TestDbFactory.datasource
     )
 }
 
@@ -17,7 +17,7 @@ export async function createProTextPropertyClassLabel(fkProject: number, fkClass
         fk_dfh_class: fkClass,
         string: classLabel
     })
-    const repo = new ProTextPropertyRepository(testdb)
+    const repo = new ProTextPropertyRepository(TestDbFactory.datasource)
     const created = await repo.create(item);
     return repo.findById(created.pk_entity)
 }
@@ -30,19 +30,19 @@ export async function createProTextPropertyPropertyLabel(fkProject: number, fkPr
         fk_dfh_property: fkProperty,
         string: propertyLabel
     })
-    const repo = new ProTextPropertyRepository(testdb)
+    const repo = new ProTextPropertyRepository(TestDbFactory.datasource)
     const created = await repo.create(item);
     return repo.findById(created.pk_entity)
 }
 
 export async function updateProTextProperty(pkEntity: number, patch: Partial<ProTextProperty>) {
-    const repo = new ProTextPropertyRepository(testdb)
+    const repo = new ProTextPropertyRepository(TestDbFactory.datasource)
     await repo.updateById(pkEntity, patch);
     return repo.findById(pkEntity)
 }
 
 export async function deleteProTextProperty(pkEntity: number) {
-    return new ProTextPropertyRepository(testdb).deleteById(pkEntity);
+    return new ProTextPropertyRepository(TestDbFactory.datasource).deleteById(pkEntity);
 }
 
 

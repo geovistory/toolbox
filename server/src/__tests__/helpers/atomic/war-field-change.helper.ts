@@ -1,11 +1,11 @@
 import {WarFieldChangeId} from '../../../models/war-field-change-id.model';
 import {WarFieldChange} from '../../../models/war-field-change.model';
 import {WarFieldChangeRepository} from '../../../repositories/war-field-change.repository';
-import {testdb} from "../testdb";
+import {TestDbFactory} from '../TestDbFactory';
 
 export function createWarFieldChangeRepo() {
   return new WarFieldChangeRepository(
-    testdb,
+    TestDbFactory.datasource,
   )
 }
 

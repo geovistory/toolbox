@@ -148,7 +148,7 @@ export class QContentTree extends SqlBuilderLb4Models {
             SELECT proj_rel FROM tw6
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       entity_preview AS (
         SELECT json_agg(t1.objects) as json
@@ -159,7 +159,7 @@ export class QContentTree extends SqlBuilderLb4Models {
             SELECT * FROM tw1
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       statement AS (
         SELECT json_agg(t1.objects) as json
@@ -174,7 +174,7 @@ export class QContentTree extends SqlBuilderLb4Models {
             SELECT * FROM tw6
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       digital AS (
         SELECT json_agg(t1.objects) as json
@@ -185,7 +185,7 @@ export class QContentTree extends SqlBuilderLb4Models {
             SELECT * FROM tw7
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       )
       SELECT
       json_build_object (

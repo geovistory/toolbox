@@ -28,6 +28,7 @@ export * from './pro-info-proj-rel.repository';
 export * from './pro-project.repository';
 export * from './pro-table-config.repository';
 export * from './pro-text-property.repository';
+export * from './pro-visibility-settings.repository';
 export * from './pub-account-project-rel.repository';
 export * from './pub-account.repository';
 export * from './pub-role-mapping.repository';

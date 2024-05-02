@@ -149,40 +149,6 @@ export class SqlGvCloneSandboxProject extends SqlBuilderLb4Models {
           t1.pk_entity = t2.pk_entity;
 
         /*
-        * Clone all entity_previews from sandbox project
-        * so that warehouse for this project is ready instantly
-        */
-        INSERT INTO war.entity_preview (pk_entity, fk_project, project, fk_class, entity_type, class_label, entity_label, time_span, fk_type, type_label, full_text, ts_vector, first_second, last_second, tmsp_last_modification, entity_id, parent_classes, ancestor_classes, project_id, type_id)
-        SELECT
-          pk_entity,
-          pk_new_project AS fk_project,
-          pk_new_project AS project,
-          fk_class,
-          entity_type,
-          class_label,
-          entity_label,
-          time_span,
-          fk_type,
-          type_label,
-          full_text,
-          ts_vector,
-          first_second,
-          last_second,
-          tmsp_last_modification,
-          entity_id,
-          parent_classes,
-          ancestor_classes,
-          pk_new_project AS project_id,
-          type_id
-        FROM
-          war.entity_preview
-        WHERE
-          project_id = pk_sandbox_project
-        ON CONFLICT (entity_id,
-          project_id)
-          DO NOTHING;
-
-        /*
         * Clone analysis
         */
         INSERT INTO projects.analysis (fk_last_modifier, fk_project, fk_analysis_type, name, description, analysis_definition)

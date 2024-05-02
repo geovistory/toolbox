@@ -1,7 +1,7 @@
+import {Postgres1DataSource} from '../../datasources';
 import {InfResource, ProInfoProjRel} from '../../models';
 import {GvPositiveSchemaObject} from '../../models/gv-positive-schema-object.model';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
-import {Postgres1DataSource} from '../../datasources';
 
 
 export class QResource extends SqlBuilderLb4Models {
@@ -46,7 +46,7 @@ export class QResource extends SqlBuilderLb4Models {
             SELECT proj_rel FROM tw1
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       ),
       resource AS (
         SELECT json_agg(t1.objects) as json
@@ -57,7 +57,7 @@ export class QResource extends SqlBuilderLb4Models {
             SELECT * FROM tw1
           ) AS t1
         ) as t1
-        GROUP BY true
+        GROUP BY 1=1
       )
       SELECT
       json_build_object (

@@ -1,6 +1,6 @@
 import {FactoidEntity, FactoidStatement} from '../../controllers';
 import {Postgres1DataSource} from '../../datasources';
-import {P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID} from '../../ontome-ids';
+import {P_1874_AT_POSITION_ID, P_1875_ANNOTATED_ENTITY_ID, P_1879_HAS_VALUE_ID} from '../../ontome-ids';
 import {SqlBuilderLb4Models} from '../../utils/sql-builders/sql-builder-lb4-models';
 
 class RetrievedLine {
@@ -103,7 +103,7 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         )
 
         SELECT
-            t2.fk_digital as fkDigital,
+            t6.fk_subject_info as fkDigital,
             t1.fk_factoid_mapping as fkFactoidMapping,
             t2.fk_class AS fkClass,
             t3.fk_property AS fkProperty,
@@ -117,6 +117,8 @@ export class QFactoidsFromEntity extends SqlBuilderLb4Models {
         INNER JOIN data.factoid_mapping AS t2 ON (t2.pk_entity = t1.fk_factoid_mapping)
         INNER JOIN data.factoid_property_mapping AS t3 ON (t2.pk_entity = t3.fk_factoid_mapping)
         INNER JOIN tables.cell AS t5 ON (t1.fk_row = t5.fk_row AND t5.fk_column = t3.fk_column)
+        LEFT JOIN information.statement t6 ON t2.fk_digital = t6.fk_object_data
+            AND t6.fk_property = ${this.addParam(P_1879_HAS_VALUE_ID)}
         LEFT JOIN LATERAL (
             SELECT t8.fk_object_info as pkEntity
             FROM information.statement as t6
