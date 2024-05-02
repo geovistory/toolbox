@@ -142,6 +142,7 @@ export class DfhConfig {
   static CLASS_PK_CHUNK = 456;
   static CLASS_PK_EXPRESSION_PORTION = 503;
 
+  static CLASS_PK_TYPE = 53;
 
   static CLASS_PKS_SOURCE_PE_IT = [219, 220, 221, 502];
 

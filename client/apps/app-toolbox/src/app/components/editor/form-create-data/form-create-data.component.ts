@@ -10,7 +10,7 @@ import { TimeSpanResult, U, combineLatestOrEmpty } from '@kleiolab/lib-utils';
 import { equals, flatten, groupBy, sum, values } from 'ramda';
 import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
 import { distinctUntilChanged, filter, first, map, switchMap, takeUntil } from 'rxjs/operators';
-import { C_53_TYPE_ID, C_54_LANGUAGE_ID } from '../../../lib/constants/ontome-ids';
+import { C_54_LANGUAGE_ID } from '../../../lib/constants/ontome-ids';
 import { getFormTargetClasses } from '../../../lib/converters/getFormTargetClasses';
 import { FormArrayFactory } from '../../../lib/form-factory/core/form-array-factory';
 import { FormChildFactory } from '../../../lib/form-factory/core/form-child-factory';
@@ -775,7 +775,7 @@ export class FormCreateDataComponent implements OnInit, OnDestroy {
         maxLength = 1;
         addOnInit = 1;
       }
-      else if (this.ap.getIsSubclassOf(targetClass, C_53_TYPE_ID) && targetClass !== C_54_LANGUAGE_ID) {
+      else if (this.ap.getIsSubclassOf(targetClass, DfhConfig.CLASS_PK_TYPE) && targetClass !== C_54_LANGUAGE_ID) {
         formControlType = { typeItem: true }
         maxLength = 1;
         addOnInit = 1;

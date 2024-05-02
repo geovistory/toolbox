@@ -179,7 +179,7 @@ function changeImportOntomeIds(content) {
     ) {
       line = line.replace(
         line.substring(line.indexOf('from ') + 5),
-        "'../lib/constants/ontome-ids';",
+        "'../ontome-ids';",
       );
     }
     return line;

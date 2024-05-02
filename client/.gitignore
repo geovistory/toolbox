@@ -48,7 +48,6 @@ Thumbs.db
 /apps/app-toolbox/src/assets/version.js
 
 # Auto generated
-libs/lib-redux/src/lib/_helpers/data/auto-gen/*
 dist/
 report.*json
 documentation

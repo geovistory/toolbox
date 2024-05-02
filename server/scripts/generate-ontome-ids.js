@@ -37,6 +37,10 @@ async function start() {
     '../client/libs/lib-redux/src/lib/_helpers/data/auto-gen/ontome-ids.ts',
     filecontent,
   );
+  createFile(
+    '../client/apps/app-toolbox/src/app/lib/constants/ontome-ids.ts',
+    filecontent,
+  );
 }
 
 function createFile(filepath, filecontent) {

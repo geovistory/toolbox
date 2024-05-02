@@ -1,11 +1,11 @@
 import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { DfhConfig } from '@kleiolab/lib-config';
 import { ActiveProjectPipesService, Field, StateFacade } from '@kleiolab/lib-redux';
 import { GvFieldPageScope, InfResource, StatementWithTarget, WarEntityPreview, WarFieldChangeId } from '@kleiolab/lib-sdk-lb4';
 import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { C_53_TYPE_ID } from '../../../lib/constants/ontome-ids';
 import { fieldToWarFieldChangeId } from '../../../lib/converters/fieldToWarFieldChangeId';
 import { openAddStatementDialog } from '../../../lib/dialogs/openAddStatementDialog';
 import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
@@ -90,7 +90,7 @@ export class ViewFieldItemComponent implements OnInit {
 
         if (this.ap.getIsPlatformVocabClass(item.targetClass)) return 'preview-platform-vocabulary'
 
-        if (this.ap.getIsSubclassOf(item.targetClass, C_53_TYPE_ID)) return 'preview-has-type'
+        if (this.ap.getIsSubclassOf(item.targetClass, DfhConfig.CLASS_PK_TYPE)) return 'preview-has-type'
 
         return 'preview'
       }
