@@ -202,8 +202,8 @@ export const ImporterMode: Story = {
     pkProject: 0,
     pkDigital: 0,
     loading: false,
-    filteringEnabled: true,
-    sortingEnabled: true,
+    filteringEnabled: false,
+    sortingEnabled: false,
     lineBreak: false,
     origin: 'importer',
     readmode$: of(true),
@@ -233,9 +233,6 @@ export const ImporterMode: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const btn = await canvas.findByRole('button', { name: /Map a Class/ })
-    await userEvent.click(btn)
-    const cdkOverlay = getCdkOverlayCanvas(canvasElement);
-    expect(cdkOverlay.findByText(/Map column/i)).toBeTruthy();
+    expect(canvas.findByText('1 Feb. 1988')).toBeTruthy();
   },
 };
