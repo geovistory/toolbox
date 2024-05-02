@@ -97,6 +97,20 @@ Whenever you deal with circular dependencies, consider using madge. To find circ
 
 Just run `nx build app-toolbox` to build the application. The build artifacts will be stored in the `dist/` directory, ready to be deployed.
 
+## Docker
+
+To create a docker image run:
+
+```bash
+ docker build . -t toolbox:1
+```
+
+For Apple Silicon:
+
+```bash
+ docker build . --platform linux/amd64  -t toolbox:1
+```
+
 ## Set up CI!
 
 Nx comes with local caching already built-in (check your `nx.json`). On CI you might want to go a step further.
