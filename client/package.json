@@ -4,7 +4,8 @@
   "private": true,
   "license": "MIT",
   "scripts": {
-    "test": "bash test.sh"
+    "test": "bash test.sh",
+    "setup:version": "node ./scripts/setup-version.js"
   },
   "engines": {
     "node": "18"
