@@ -28,7 +28,7 @@ export class WebSocketServer extends Context {
     super();
     this.io = new Server(server, {
       cors: {
-        origin: "http://localhost:4200"
+        origin: '*'
       }
     });
     this.setupRoutes();
