@@ -97,7 +97,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           # Location of Dockerfile, if not Dockerfile in root directory
-          file: server/webserver.dockerfile
+          file: webserver.dockerfile
           # Directory to run `docker build` from, if not project root
           context: server
           push: true

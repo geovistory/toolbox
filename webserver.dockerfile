@@ -6,23 +6,24 @@ WORKDIR /app
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
-COPY package*.json /app/
+COPY server/package*.json /app/server/
 
 #  “Ci” will install packages directly from the lock file.
-RUN npm ci
+RUN npm --prefix server ci
 
 # Copy typescript (everything needed to compile)
-COPY tsconfig.json /app
-COPY src /app/src
+COPY server/tsconfig.json /app/server
+COPY server/src /app/server/src
 
 # Copy migration files
-COPY db-migrate /app/db-migrate
+COPY database/migrations /app/database/migrations
+COPY server/db-migrate /app/server/db-migrate
 
 # Copy entrypoint
-COPY webserver.start.sh /app
+COPY webserver.start.sh /app/
 
 # Compile TypeScript (in workdir)
-RUN npm run tsc
+RUN npm --prefix server run tsc
 
 # If you are building your code for production
 #RUN npm ci --only=production
