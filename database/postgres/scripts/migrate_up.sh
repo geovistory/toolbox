@@ -3,9 +3,8 @@
 echo "*********************************"
 echo run migrations
 
-
 # Iterate over each file in the migrations directory
-for file in /migrations/*; do
+for file in /migrations/sqls/*-up.sql; do
   # Check if it is a file (not a directory)
   if [ -f "$file" ]; then
     echo run migration $file
