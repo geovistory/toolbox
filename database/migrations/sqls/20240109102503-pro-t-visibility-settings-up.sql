@@ -9544,29 +9544,6 @@ CREATE TABLE war.class_preview(
 );
 
 --
--- TOC entry 394 (class 1259 OID 24181)
--- Name: entity_preview; Type: TABLE; Schema: war; Owner: -
---
-CREATE TABLE war.entity_preview(
-  pk_entity integer,
-  fk_project integer,
-  project integer DEFAULT 0 NOT NULL,
-  entity_type text,
-  fk_class integer,
-  class_label character varying,
-  entity_label text,
-  full_text text,
-  ts_vector tsvector,
-  type_label text,
-  fk_type integer,
-  time_span jsonb,
-  first_second bigint,
-  last_second bigint,
-  tmsp_last_modification timestamp with time zone,
-  key character varying
-);
-
---
 -- TOC entry 423 (class 1259 OID 24953)
 -- Name: entity_preview_template; Type: TABLE; Schema: war; Owner: -
 --
@@ -12241,13 +12218,6 @@ ALTER TABLE ONLY war.class_preview
   ADD CONSTRAINT war_class_preview_unique UNIQUE (fk_class, fk_project);
 
 --
--- TOC entry 5703 (class 2606 OID 24206)
--- Name: entity_preview war_entity_preview_unique; Type: CONSTRAINT; Schema: war; Owner: -
---
-ALTER TABLE ONLY war.entity_preview
-  ADD CONSTRAINT war_entity_preview_unique UNIQUE (pk_entity, project);
-
---
 -- TOC entry 5335 (class 1259 OID 23542)
 -- Name: text_string_idx; Type: INDEX; Schema: commons; Owner: -
 --
@@ -12798,30 +12768,6 @@ CREATE INDEX quill_doc_cell_string_value_idx ON tables.quill_doc_cell USING btre
 -- Name: text_string_idx; Type: INDEX; Schema: tables; Owner: -
 --
 CREATE INDEX text_string_idx ON tables.quill_doc_cell USING btree(string);
-
---
--- TOC entry 5698 (class 1259 OID 24254)
--- Name: entity_preview_entity_label_idx; Type: INDEX; Schema: war; Owner: -
---
-CREATE INDEX entity_preview_entity_label_idx ON war.entity_preview USING btree(entity_label);
-
---
--- TOC entry 5699 (class 1259 OID 24784)
--- Name: entity_preview_full_text; Type: INDEX; Schema: war; Owner: -
---
-CREATE INDEX entity_preview_full_text ON war.entity_preview USING gin(ts_vector);
-
---
--- TOC entry 5700 (class 1259 OID 24692)
--- Name: entity_preview_key_idx; Type: INDEX; Schema: war; Owner: -
---
-CREATE INDEX entity_preview_key_idx ON war.entity_preview USING btree(key);
-
---
--- TOC entry 5701 (class 1259 OID 24256)
--- Name: entity_preview_pk_entity_idx; Type: INDEX; Schema: war; Owner: -
---
-CREATE INDEX entity_preview_pk_entity_idx ON war.entity_preview USING btree(pk_entity);
 
 --
 -- TOC entry 5774 (class 1259 OID 24963)
@@ -16509,47 +16455,11 @@ CREATE TRIGGER versioning_trigger
   EXECUTE FUNCTION public.versioning('sys_period', 'tables.quill_doc_cell_vt', 'true');
 
 --
--- TOC entry 6256 (class 2620 OID 24263)
--- Name: entity_preview after_insert_on_entity_preview; Type: TRIGGER; Schema: war; Owner: -
---
-CREATE TRIGGER after_insert_on_entity_preview
-  AFTER INSERT ON war.entity_preview REFERENCING NEW TABLE AS new_table
-  FOR EACH STATEMENT
-  EXECUTE FUNCTION war.entity_previews__notify_upsert();
-
---
--- TOC entry 6257 (class 2620 OID 24264)
--- Name: entity_preview after_update_on_entity_preview; Type: TRIGGER; Schema: war; Owner: -
---
-CREATE TRIGGER after_update_on_entity_preview
-  AFTER UPDATE ON war.entity_preview REFERENCING NEW TABLE AS new_table
-  FOR EACH STATEMENT
-  EXECUTE FUNCTION war.entity_previews__notify_upsert();
-
---
--- TOC entry 6258 (class 2620 OID 24691)
--- Name: entity_preview generate_key; Type: TRIGGER; Schema: war; Owner: -
---
-CREATE TRIGGER generate_key
-  BEFORE INSERT OR UPDATE ON war.entity_preview
-  FOR EACH ROW
-  EXECUTE FUNCTION war.entity_preview_generate_key();
-
---
 -- TOC entry 6277 (class 2620 OID 24530)
 -- Name: class_preview last_modification_tmsp; Type: TRIGGER; Schema: war; Owner: -
 --
 CREATE TRIGGER last_modification_tmsp
   BEFORE INSERT OR UPDATE ON war.class_preview
-  FOR EACH ROW
-  EXECUTE FUNCTION commons.tmsp_last_modification();
-
---
--- TOC entry 6259 (class 2620 OID 24265)
--- Name: entity_preview last_modification_tmsp; Type: TRIGGER; Schema: war; Owner: -
---
-CREATE TRIGGER last_modification_tmsp
-  BEFORE INSERT OR UPDATE ON war.entity_preview
   FOR EACH ROW
   EXECUTE FUNCTION commons.tmsp_last_modification();
 
@@ -16561,15 +16471,6 @@ CREATE TRIGGER notify_modification
   AFTER INSERT OR DELETE OR UPDATE ON war.class_preview
   FOR EACH STATEMENT
   EXECUTE FUNCTION commons.notify_modification_trigger();
-
---
--- TOC entry 6260 (class 2620 OID 24556)
--- Name: entity_preview ts_vector; Type: TRIGGER; Schema: war; Owner: -
---
-CREATE TRIGGER ts_vector
-  BEFORE INSERT OR UPDATE ON war.entity_preview
-  FOR EACH ROW
-  EXECUTE FUNCTION war.entity_preview_ts_vector();
 
 --
 -- TOC entry 5789 (class 2606 OID 23333)
