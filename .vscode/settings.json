@@ -5,4 +5,5 @@
     "source.organizeImports": true,
     "source.fixAll": true
   },
+  "pgFormatter.noGrouping": true
 }
