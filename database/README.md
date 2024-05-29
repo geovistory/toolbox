@@ -2,6 +2,24 @@
 
 This folder contains all code to develop and test the postgres database of geovistory.
 
+## Add a database migration
+
+Whenever you modify the database schema, create a migration file.
+
+```bash
+# Change into server directory
+cd ../server
+# Install node modules (if not yet done)
+npm i
+# create .env (if not yet done)
+cp .env.example .env
+# create migration
+npm run db:cm name-of-migration
+# this will create a *-up.sql and a *-down.sql
+# - in *-up.sql, add your modifications
+# - in *-down.sql, revert your modifications
+```
+
 ## Write tests
 
 Add pgTap files ending on .sql to one of these folders:
