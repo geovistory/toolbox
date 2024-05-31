@@ -340,3 +340,169 @@ BEGIN
   RETURN jsonb_build_object('pkEntity', time_primitive.pk_entity, 'fkClass', time_primitive.fk_class, 'julianDay', time_primitive.julian_day, 'duration', time_primitive.duration, 'calendar', time_primitive.calendar::text, 'label', label, 'from', jsonb_build_object('julianDay', from_day, 'julianSecond', from_second, 'calGregorian', from_gregorian_cal, 'calGregorianIso8601', from_gregorian_cal_iso8601, 'calJulian', from_julian_cal), 'to', jsonb_build_object('julianDay', to_day, 'julianSecond', to_second, 'calGregorian', to_gregorian_cal, 'calGregorianIso8601', to_gregorian_cal_iso8601, 'calJulian', to_julian_cal));
 END;
 $BODY$;
+------ Table pgwar.statement ----------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS pgwar.statement(
+    pk_entity int NOT NULL PRIMARY KEY,
+    fk_subject_info int NOT NULL,
+    fk_property int NOT NULL,
+    fk_object_info int,
+    fk_object_tables_cell bigint,
+    object_label varchar(100),
+    object_value jsonb
+);
+------ Table pgwar.statement ----------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION pgwar.upsert_statement(stmt pgwar.statement)
+    RETURNS VOID
+    AS $$
+BEGIN
+    INSERT INTO pgwar.statement(pk_entity,fk_subject_info,fk_property,fk_object_info,fk_object_tables_cell,object_label,object_value)
+        VALUES(
+          stmt.pk_entity,
+          stmt.fk_subject_info,
+          stmt.fk_property,
+          stmt.fk_object_info,
+          stmt.fk_object_tables_cell,
+          stmt.object_label,
+          stmt.object_value
+        )
+    ON CONFLICT(pk_entity)
+        DO UPDATE SET
+            -- ... or update the fk_class
+            fk_subject_info = EXCLUDED.fk_subject_info,
+            fk_property = EXCLUDED.fk_property,
+            fk_object_info = EXCLUDED.fk_object_info,
+            fk_object_tables_cell = EXCLUDED.fk_object_tables_cell,
+            object_label = EXCLUDED.object_label,
+            object_value = EXCLUDED.object_value
+        WHERE
+            -- ... where it is distinct from previous value
+            statement.fk_subject_info IS DISTINCT FROM EXCLUDED.fk_subject_info OR
+            statement.fk_property IS DISTINCT FROM EXCLUDED.fk_property OR
+            statement.fk_object_info IS DISTINCT FROM EXCLUDED.fk_object_info OR
+            statement.fk_object_tables_cell IS DISTINCT FROM EXCLUDED.fk_object_tables_cell OR
+            statement.object_label IS DISTINCT FROM EXCLUDED.object_label OR
+            statement.object_value IS DISTINCT FROM EXCLUDED.object_value;
+END;
+$$
+LANGUAGE plpgsql;
+
+------ Trigger after upsert statement table -------------------------------------------------
+---------------------------------------------------------------------------------------------
+CREATE FUNCTION pgwar.after_upsert_statement()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    entity information.resource;
+    appellation information.appellation;
+    lang_string information.lang_string;
+    language information.language;
+    place information.place;
+    time_primitive information.time_primitive;
+    cell tables.cell;
+BEGIN
+
+    -- get the referenced appellation...
+    SELECT * INTO appellation FROM information.appellation WHERE pk_entity = NEW.fk_object_info;
+    -- ...if not null...
+    IF appellation.pk_entity IS NOT NULL THEN
+      -- create a pgwar.statement
+      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+        pgwar.get_value_label(appellation),
+        pgwar.get_value_object(appellation)
+      )::pgwar.statement);
+      -- return!
+      RETURN NEW;
+    END IF;
+
+      -- get the referenced entity...
+    SELECT * INTO entity FROM information.resource WHERE pk_entity = NEW.fk_object_info;
+    -- ...if not null...
+    IF entity.pk_entity IS NOT NULL THEN
+      -- create a pgwar.statement
+      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,NULL,NULL)::pgwar.statement);
+      -- return!
+      RETURN NEW;
+    END IF;
+
+    -- fallback
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER after_upsert_statement
+    AFTER INSERT OR UPDATE ON information.statement
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_upsert_statement();
+
+    ------ Trigger after delete statement table -------------------------------------------------
+---------------------------------------------------------------------------------------------
+CREATE FUNCTION pgwar.after_delete_statement()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    DELETE FROM pgwar.statement
+    WHERE pk_entity = OLD.pk_entity;
+    
+    RETURN OLD;
+END;
+$$;
+
+CREATE TRIGGER after_delete_statement
+    AFTER DELETE ON information.statement
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_delete_statement();
+
+
+
+------ Trigger after delete on literal table -------------------------------------------------
+---------------------------------------------------------------------------------------------
+CREATE FUNCTION pgwar.after_delete_object_info()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+BEGIN
+    DELETE FROM pgwar.statement 
+    WHERE fk_object_info = OLD.pk_entity;
+    RETURN OLD;
+END;
+$$;
+
+CREATE TRIGGER after_delete_appellation
+    AFTER DELETE ON information.appellation
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_delete_object_info();
+
+-- TODO add triggers for all information.*literal
+
+-- TODO add trigger-fn for tables.cell 
+
+
+------ Trigger after upsert literal table -------------------------------------------------
+---------------------------------------------------------------------------------------------
+CREATE FUNCTION pgwar.after_upsert_object_info()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+BEGIN
+    PERFORM pgwar.upsert_statement((stmt.pk_entity,stmt.fk_subject_info,stmt.fk_property,stmt.fk_object_info,stmt.fk_object_tables_cell,
+        pgwar.get_value_label(NEW),
+        pgwar.get_value_object(NEW)
+      )::pgwar.statement)
+    FROM information.statement stmt
+    WHERE fk_object_info = NEW.pk_entity;
+    RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER after_upsert_appellation
+    AFTER INSERT OR UPDATE ON information.appellation
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_upsert_object_info();
+
