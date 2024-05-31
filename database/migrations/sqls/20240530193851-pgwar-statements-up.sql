@@ -398,6 +398,7 @@ CREATE FUNCTION pgwar.after_upsert_statement()
 DECLARE
     entity information.resource;
     appellation information.appellation;
+    dimension information.dimension;
     lang_string information.lang_string;
     language information.language;
     place information.place;
@@ -418,7 +419,87 @@ BEGIN
       RETURN NEW;
     END IF;
 
-      -- get the referenced entity...
+    -- get the referenced dimension...
+    SELECT * INTO dimension FROM information.dimension WHERE pk_entity = NEW.fk_object_info;
+    -- ...if not null...
+    IF dimension.pk_entity IS NOT NULL THEN
+      -- create a pgwar.statement
+      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+        pgwar.get_value_label(dimension),
+        pgwar.get_value_object(dimension)
+      )::pgwar.statement);
+      -- return!
+      RETURN NEW;
+    END IF;
+
+     -- get the referenced lang_string...
+    SELECT * INTO lang_string FROM information.lang_string WHERE pk_entity = NEW.fk_object_info;
+    -- ...if not null...
+    IF lang_string.pk_entity IS NOT NULL THEN
+      -- create a pgwar.statement
+      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+        pgwar.get_value_label(lang_string),
+        pgwar.get_value_object(lang_string)
+      )::pgwar.statement);
+      -- return!
+      RETURN NEW;
+    END IF;
+
+    -- get the referenced dimension...
+    SELECT * INTO language FROM information.language WHERE pk_entity = NEW.fk_object_info;
+    -- ...if not null...
+    IF language.pk_entity IS NOT NULL THEN
+      -- create a pgwar.statement
+      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+        pgwar.get_value_label(language),
+        pgwar.get_value_object(language)
+      )::pgwar.statement);
+      -- return!
+      RETURN NEW;
+    END IF;
+
+     -- get the referenced place...
+    SELECT * INTO place FROM information.place WHERE pk_entity = NEW.fk_object_info;
+    -- ...if not null...
+    IF place.pk_entity IS NOT NULL THEN
+      -- create a pgwar.statement
+      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+        pgwar.get_value_label(place),
+        pgwar.get_value_object(place)
+      )::pgwar.statement);
+      -- return!
+      RETURN NEW;
+    END IF;
+
+    -- get the referenced time_primitive...
+    SELECT * INTO time_primitive FROM information.time_primitive WHERE pk_entity = NEW.fk_object_info;
+    -- ...if not null...
+    IF time_primitive.pk_entity IS NOT NULL THEN
+      -- create a pgwar.statement
+      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+        pgwar.get_value_label(time_primitive),
+        pgwar.get_value_object(time_primitive)
+      )::pgwar.statement);
+      -- return!
+      RETURN NEW;
+    END IF;
+
+        -- get the referenced cell...
+    SELECT * INTO cell FROM tables.cell WHERE pk_entity = NEW.fk_object_tables_cell;
+    -- ...if not null...
+    IF cell.pk_entity IS NOT NULL THEN
+      -- create a pgwar.statement
+      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+        pgwar.get_value_label(cell),
+        pgwar.get_value_object(cell)
+      )::pgwar.statement);
+      -- return!
+      RETURN NEW;
+    END IF;
+
+    
+
+    -- get the referenced entity...
     SELECT * INTO entity FROM information.resource WHERE pk_entity = NEW.fk_object_info;
     -- ...if not null...
     IF entity.pk_entity IS NOT NULL THEN
@@ -472,13 +553,52 @@ BEGIN
     RETURN OLD;
 END;
 $$;
+CREATE FUNCTION pgwar.after_delete_object_tables_cell()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+BEGIN
+    DELETE FROM pgwar.statement 
+    WHERE fk_object_tables_cell = OLD.pk_entity;
+    RETURN OLD;
+END;
+$$;
 
 CREATE TRIGGER after_delete_appellation
     AFTER DELETE ON information.appellation
     FOR EACH ROW
     EXECUTE FUNCTION pgwar.after_delete_object_info();
 
--- TODO add triggers for all information.*literal
+CREATE TRIGGER after_delete_dimension
+    AFTER DELETE ON information.dimension
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_delete_object_info();
+
+CREATE TRIGGER after_delete_lang_string
+    AFTER DELETE ON information.lang_string
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_delete_object_info();
+
+CREATE TRIGGER after_delete_language
+    AFTER DELETE ON information.language
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_delete_object_info();
+
+CREATE TRIGGER after_delete_place
+    AFTER DELETE ON information.place
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_delete_object_info();
+
+CREATE TRIGGER after_delete_time_primitive
+    AFTER DELETE ON information.time_primitive
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_delete_object_info();
+
+    CREATE TRIGGER after_delete_cell
+    AFTER DELETE ON tables.cell
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_delete_object_tables_cell();
 
 -- TODO add trigger-fn for tables.cell 
 
@@ -501,8 +621,54 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION pgwar.after_upsert_object_tables_cell()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+BEGIN
+    PERFORM pgwar.upsert_statement((stmt.pk_entity,stmt.fk_subject_info,stmt.fk_property,stmt.fk_object_info,stmt.fk_object_tables_cell,
+        pgwar.get_value_label(NEW),
+        pgwar.get_value_object(NEW)
+      )::pgwar.statement)
+    FROM information.statement stmt
+    WHERE fk_object_tables_cell = NEW.pk_cell;
+    RETURN NEW;
+END;
+$$;
+
 CREATE TRIGGER after_upsert_appellation
     AFTER INSERT OR UPDATE ON information.appellation
     FOR EACH ROW
     EXECUTE FUNCTION pgwar.after_upsert_object_info();
+
+CREATE TRIGGER after_upsert_dimension
+    AFTER INSERT OR UPDATE ON information.dimension
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_upsert_object_info();
+
+CREATE TRIGGER after_upsert_lang_string
+    AFTER INSERT OR UPDATE ON information.lang_string
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_upsert_object_info();
+
+CREATE TRIGGER after_upsert_language
+    AFTER INSERT OR UPDATE ON information.language
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_upsert_object_info();
+
+CREATE TRIGGER after_upsert_place
+    AFTER INSERT OR UPDATE ON information.place
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_upsert_object_info();
+
+CREATE TRIGGER after_upsert_time_primitive
+    AFTER INSERT OR UPDATE ON information.time_primitive
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_upsert_object_info();
+
+CREATE TRIGGER after_upsert_cell
+    AFTER INSERT OR UPDATE ON tables.cell
+    FOR EACH ROW
+    EXECUTE FUNCTION pgwar.after_upsert_object_tables_cell();
 
