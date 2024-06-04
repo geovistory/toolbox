@@ -432,7 +432,7 @@ BEGIN
       RETURN NEW;
     END IF;
 
-     -- get the referenced lang_string...
+    -- get the referenced lang_string...
     SELECT * INTO lang_string FROM information.lang_string WHERE pk_entity = NEW.fk_object_info;
     -- ...if not null...
     IF lang_string.pk_entity IS NOT NULL THEN
@@ -458,7 +458,7 @@ BEGIN
       RETURN NEW;
     END IF;
 
-     -- get the referenced place...
+    -- get the referenced place...
     SELECT * INTO place FROM information.place WHERE pk_entity = NEW.fk_object_info;
     -- ...if not null...
     IF place.pk_entity IS NOT NULL THEN
@@ -484,10 +484,10 @@ BEGIN
       RETURN NEW;
     END IF;
 
-        -- get the referenced cell...
-    SELECT * INTO cell FROM tables.cell WHERE pk_entity = NEW.fk_object_tables_cell;
+    -- get the referenced cell...
+    SELECT * INTO cell FROM tables.cell WHERE pk_cell = NEW.fk_object_tables_cell;
     -- ...if not null...
-    IF cell.pk_entity IS NOT NULL THEN
+    IF cell.pk_cell IS NOT NULL THEN
       -- create a pgwar.statement
       PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
         pgwar.get_value_label(cell),
@@ -560,7 +560,7 @@ CREATE FUNCTION pgwar.after_delete_object_tables_cell()
 DECLARE
 BEGIN
     DELETE FROM pgwar.statement 
-    WHERE fk_object_tables_cell = OLD.pk_entity;
+    WHERE fk_object_tables_cell = OLD.pk_cell;
     RETURN OLD;
 END;
 $$;

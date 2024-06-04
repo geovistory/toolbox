@@ -1,5 +1,4 @@
 -- Test the creation pgwar.statement with dimension
--- Start transaction and plan the tests.
 BEGIN;
 
 SELECT plan(6);

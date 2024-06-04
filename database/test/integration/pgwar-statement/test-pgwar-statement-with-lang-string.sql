@@ -1,5 +1,4 @@
--- Test the creation pgwar.statement with appellation
--- Start transaction and plan the tests.
+-- Test the creation pgwar.statement with lang_string
 BEGIN;
 
 SELECT plan(6);
@@ -8,17 +7,32 @@ PREPARE get_all_pgwar_statements AS
 SELECT *
 FROM pgwar.statement;
 
--- Insert an appellation 
-INSERT INTO information.appellation(string, fk_class, notes)
-VALUES ('foo', 0, '_a1');
+WITH inserted_lang AS (
+    -- Insert a language, as required by lang_string
+    INSERT INTO information.language (
+            notes,
+            iso6391,
+            iso6392b,
+            iso6392t,
+            pk_language,
+            fk_class
+        )
+    VALUES ('english', 'e', 'en', 'eng', 'eng', 123) RETURNING pk_entity
+) -- Insert a lang_string 
+INSERT INTO information.lang_string (string, fk_language, fk_class, notes)
+SELECT 'foo',
+    inserted_lang.pk_entity,
+    123,
+    '_1'
+FROM inserted_lang;
 
--- Insert one statement referencing appellation '_a1'
+-- Insert one statement referencing lang_string '_1'
 INSERT INTO information.statement(fk_subject_info, fk_property, fk_object_info)
 SELECT 0,
     0,
     pk_entity
-FROM information.appellation
-WHERE notes = '_a1';
+FROM information.lang_string
+WHERE notes = '_1';
 
 SELECT is(
         object_label,
@@ -34,9 +48,9 @@ SELECT ok(
 FROM pgwar.statement;
 
 -- Update the literal
-UPDATE information.appellation
+UPDATE information.lang_string
 SET string = 'bar'
-WHERE notes = '_a1';
+WHERE notes = '_1';
 
 SELECT is(
         object_label,
@@ -53,13 +67,13 @@ SELECT is_empty(
         'Assert pgwar statement is empty after deleting statement'
     );
 
--- Re-insert one statement referencing appellation '_a1'
+-- Re-insert one statement referencing lang_string '_1'
 INSERT INTO information.statement(fk_subject_info, fk_property, fk_object_info)
 SELECT 0,
     0,
     pk_entity
-FROM information.appellation
-WHERE notes = '_a1';
+FROM information.lang_string
+WHERE notes = '_1';
 
 SELECT isnt_empty(
         'get_all_pgwar_statements',
@@ -67,7 +81,7 @@ SELECT isnt_empty(
     );
 
 -- Delete the literal
-DELETE FROM information.appellation;
+DELETE FROM information.lang_string;
 
 SELECT is_empty(
         'get_all_pgwar_statements',
