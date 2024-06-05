@@ -28,6 +28,7 @@ services:
   postgres:
     build:
       context: ./postgres
+      dockerfile: ${DOCKER_FILE}
     shm_size: 1g
     environment:
       POSTGRES_USER: postgres
@@ -46,7 +47,7 @@ services:
       - 'test:/test'
       - 'migrations:/migrations'
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready', '-d', 'schema_only_db']
+      test: ['CMD-SHELL', 'pg_isready', '-q']
       interval: 0.5s
       timeout: 0.5s
       retries: 20

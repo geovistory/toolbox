@@ -28,25 +28,25 @@ done
 docker compose down -v
 
 # Create test container
+if [ "$run_performance_tests" = true ]; then
+    export DOCKER_FILE=heavy.Dockerfile
+    docker compose up -d --wait --build
+else
+    export DOCKER_FILE=light.Dockerfile
+fi
 docker compose up -d --wait --build
 
-echo "Test containers are up"
-
-docker logs database-postgres-1
-
-echo "Check if pg is ready..."
-
-# Wait for PostgreSQL to be ready inside the container
-docker exec database-postgres-1 sh -c 'until pg_isready -q; do echo "Waiting for PostgreSQL..."; sleep 0.5; done'
-
-echo "Pg is ready. Starting tests."
-
-# Migrate databases based on test types
 if [ "$run_unit_tests" = true ] || [ "$run_integration_tests" = true ]; then
+    # Ensure schema_only_db is ready
+    docker exec database-postgres-1 sh -c 'until psql -U postgres -d schema_only_db -c "SELECT 1"; do echo "Waiting for PostgreSQL..."; sleep 0.5; done'
+    # Migrate databases based on test types
     docker exec database-postgres-1 sh -c "scripts/migrate_up_schema_only_db.sh"
 fi
 
 if [ "$run_performance_tests" = true ]; then
+    # Ensure filled_db is ready
+    docker exec database-postgres-1 sh -c 'until psql -U postgres -d filled_db -c "SELECT 1"; do echo "Waiting for PostgreSQL..."; sleep 0.5; done'
+    # Migrate databases based on test types
     docker exec database-postgres-1 sh -c "scripts/migrate_up_filled_db.sh"
 fi
 
