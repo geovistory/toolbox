@@ -29,7 +29,11 @@ docker compose down -v
 
 # Create test container
 docker compose up -d --wait --build
+
 echo "Test containers are up"
+
+docker logs database-postgres-1
+
 echo "Check if pg is ready..."
 
 # Wait for PostgreSQL to be ready inside the container
