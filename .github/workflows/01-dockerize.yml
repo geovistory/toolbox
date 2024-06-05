@@ -15,7 +15,7 @@ jobs:
 
       # run database integration and unit tests
       - name: run functional database tests
-        run: cd database && bash test.sh -i -u -p
+        run: cd database && export POSTGRES_PORT=5432 && bash test.sh -i -u -p
 
       # todo: run server tests
       # todo: run client tests
