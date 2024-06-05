@@ -9,23 +9,17 @@ volumes:
       device: ./logs/postgres
       o: bind
   # postgis-data: null
-  test: 
+  test:
     driver: local
     driver_opts:
       type: none
       device: ./test
       o: bind
-  migrations: 
+  migrations:
     driver: local
     driver_opts:
       type: none
       device: ./migrations
-      o: bind
-  seed:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./seed
       o: bind
 
 services:
@@ -37,9 +31,10 @@ services:
     shm_size: 1g
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: local_pw
-      POSTGRES_DATABASE: test_db
-    command: "postgres -c wal_level=logical -c logging_collector=on -c log_destination=stderr -c log_directory=/logs"
+      POSTGRES_PASSWORD: pw
+      POSTGRES_SCHEMA_ONLY_DB: schema_only_db
+      POSTGRES_FILLED_DB: filled_db
+    command: 'postgres -c wal_level=logical -c logging_collector=on -c log_destination=stderr -c log_directory=/logs'
     ports:
       - ${POSTGRES_PORT}:5432
     restart: always
@@ -50,10 +45,3 @@ services:
       - 'postgis-logs:/logs'
       - 'test:/test'
       - 'migrations:/migrations'
-      - 'seed:/seed'
-
-    healthcheck:
-      test: ["CMD-SHELL", "test -f /var/lib/postgresql/data/ready || exit 1"]
-      interval: 100ms
-      timeout: 100ms
-      retries: 50
