@@ -29,9 +29,13 @@ docker compose down -v
 
 # Create test container
 docker compose up -d --wait --build
+echo "Test containers are up"
+echo "Check if pg is ready..."
 
 # Wait for PostgreSQL to be ready inside the container
 docker exec database-postgres-1 sh -c 'until pg_isready -q; do echo "Waiting for PostgreSQL..."; sleep 0.5; done'
+
+echo "Pg is ready. Starting tests."
 
 # Migrate databases based on test types
 if [ "$run_unit_tests" = true ] || [ "$run_integration_tests" = true ]; then
