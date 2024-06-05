@@ -24,16 +24,17 @@ while getopts "uip" flag; do
     esac
 done
 
+# Set the Dockerfile
+if [ "$run_performance_tests" = true ]; then
+    export DOCKER_FILE=heavy.Dockerfile
+else
+    export DOCKER_FILE=light.Dockerfile
+fi
+
 # Shut down test container
 docker compose down -v
 
 # Create test container
-if [ "$run_performance_tests" = true ]; then
-    export DOCKER_FILE=heavy.Dockerfile
-    docker compose up -d --wait --build
-else
-    export DOCKER_FILE=light.Dockerfile
-fi
 docker compose up -d --wait --build
 
 if [ "$run_unit_tests" = true ] || [ "$run_integration_tests" = true ]; then
