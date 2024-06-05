@@ -1,8 +1,8 @@
 FROM ghcr.io/geovistory/toolbox-dev-db:l-1
 
-RUN rm -R /logs
+RUN rm -Rf /logs
 RUN mkdir /logs
 RUN chmod -R 777 /logs
-RUN rm -R /scripts
+RUN rm -Rf /scripts
 COPY scripts /scripts
 RUN chmod -R 777 /scripts
