@@ -10,7 +10,7 @@ VALUES ('english', 'e', 'en', 'eng', 'eng', 123);
 SELECT is(
         pgwar.get_value_label(language),
        'english',
-        'Assert information.language is correctly converted a label'
+        'Assert information.language is correctly converted to a label'
     )
 FROM information.language language;
 

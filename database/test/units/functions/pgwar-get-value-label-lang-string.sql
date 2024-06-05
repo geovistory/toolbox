@@ -24,7 +24,7 @@ FROM inserted_lang;
 SELECT is(
         pgwar.get_value_label(lang_string),
         'foo',
-        'Assert information.lang_string is correctly converted a label'
+        'Assert information.lang_string is correctly converted to a label'
     )
 FROM information.lang_string lang_string;
 

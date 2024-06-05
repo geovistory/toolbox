@@ -13,7 +13,7 @@ VALUES (
 SELECT is(
         pgwar.get_value_label(place),
         'WGS84: 7.123°, 3.123°',
-        'Assert information.place is correctly converted a label'
+        'Assert information.place is correctly converted to a label'
     )
 FROM information.place place;
 
