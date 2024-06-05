@@ -51,17 +51,47 @@ if [ "$run_performance_tests" = true ]; then
     docker exec database-postgres-1 sh -c "scripts/migrate_up_filled_db.sh"
 fi
 
+# Initialize a flag to track if tests are successful
+unit_tests_successful=true
+integration_tests_successful=true
+performance_tests_successful=true
+
 # Run unit tests if specified
 if [ "$run_unit_tests" = true ]; then
+    unit_tests_successful=false
     docker exec database-postgres-1 sh -c "scripts/test_units.sh"
+    if [ $? -eq 0 ]; then
+        unit_tests_successful=true
+    fi
 fi
 
 # Run integration tests if specified
 if [ "$run_integration_tests" = true ]; then
+    integration_tests_successful=false
     docker exec database-postgres-1 sh -c "scripts/test_integration.sh"
+    if [ $? -eq 0 ]; then
+        integration_tests_successful=true
+    fi
 fi
 
 # Run performance tests if specified
 if [ "$run_performance_tests" = true ]; then
+    performance_tests_successful=false
     docker exec database-postgres-1 sh -c "scripts/test_performance.sh"
+    if [ $? -eq 0 ]; then
+        performance_tests_successful=true
+    fi
+fi
+
+# Check the final status of all tests
+if [ "$unit_tests_successful" = true ] && [ "$integration_tests_successful" = true ] && [ "$performance_tests_successful" = true ]; then
+    echo "*********************************"
+    echo "All tests have been successful."
+    echo "*********************************"
+else
+    echo "*********************************"
+    echo "Some tests failed!"
+    echo "*********************************"
+    # Exit with error, in order to stop GitHub action
+    exit 1
 fi
