@@ -1,6 +1,8 @@
-FROM ghcr.io/geovistory/toolbox-dev-db:1.0.0-filled
+FROM ghcr.io/geovistory/toolbox-dev-db:s-1
 
+RUN rm -R /logs
 RUN mkdir /logs
 RUN chmod -R 777 /logs
+RUN rm -R /scripts
 COPY scripts /scripts
 RUN chmod -R 777 /scripts
