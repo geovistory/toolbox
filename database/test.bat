@@ -30,32 +30,32 @@ docker compose down -v
 docker compose up -d --wait --build
 
 :: Wait for PostgreSQL to be ready inside the container
-docker exec -it database-postgres-1 sh -c 'until psql -U postgres -c "select 1"; do echo "Waiting for PostgreSQL..."; sleep 1; done'
+docker exec database-postgres-1 sh -c 'until psql -U postgres -c "select 1"; do echo "Waiting for PostgreSQL..."; sleep 1; done'
 
 :: Migrate databases based on test types
 if "%run_unit_tests%"=="true" (
-    docker exec -it database-postgres-1 sh -c "scripts/migrate_up_schema_only_db.sh"
+    docker exec database-postgres-1 sh -c "scripts/migrate_up_schema_only_db.sh"
 )
 if "%run_integration_tests%"=="true" (
-    docker exec -it database-postgres-1 sh -c "scripts/migrate_up_schema_only_db.sh"
+    docker exec database-postgres-1 sh -c "scripts/migrate_up_schema_only_db.sh"
 )
 if "%run_performance_tests%"=="true" (
-    docker exec -it database-postgres-1 sh -c "scripts/migrate_up_filled_db.sh"
+    docker exec database-postgres-1 sh -c "scripts/migrate_up_filled_db.sh"
 )
 
 :: Run unit tests if specified
 if "%run_unit_tests%"=="true" (
-    docker exec -it database-postgres-1 sh -c "scripts/test_units.sh"
+    docker exec database-postgres-1 sh -c "scripts/test_units.sh"
 )
 
 :: Run integration tests if specified
 if "%run_integration_tests%"=="true" (
-    docker exec -it database-postgres-1 sh -c "scripts/test_integration.sh"
+    docker exec database-postgres-1 sh -c "scripts/test_integration.sh"
 )
 
 :: Run performance tests if specified
 if "%run_performance_tests%"=="true" (
-    docker exec -it database-postgres-1 sh -c "scripts/test_performance.sh"
+    docker exec database-postgres-1 sh -c "scripts/test_performance.sh"
 )
 
 endlocal
