@@ -20,7 +20,7 @@ jobs:
           username: geovbot
           password: ${{ secrets.GEOVBOT_READ_WRITE_PACKAGES }}
 
-          # run database integration and unit tests
+      # run database integration and unit tests
       - name: run functional database tests
         run: cd database && export POSTGRES_PORT=5432 && bash test.sh -i -u -p
 
