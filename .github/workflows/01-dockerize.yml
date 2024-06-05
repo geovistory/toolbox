@@ -137,7 +137,7 @@ jobs:
           # Location of Dockerfile, if not Dockerfile in root directory
           file: webserver.dockerfile
           # Directory to run `docker build` from, if not project root
-          context: server
+          context: .
           push: true
           tags: ghcr.io/geovistory/toolbox-server:${{needs.set-version.outputs.version_tag}}
 
