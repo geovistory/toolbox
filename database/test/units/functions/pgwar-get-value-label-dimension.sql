@@ -17,7 +17,7 @@ FROM m_unit;
 SELECT is(
         pgwar.get_value_label(dimension),
         '43.21',
-        'Assert information.dimension is correctly converted a label'
+        'Assert information.dimension is correctly converted to a label'
     )
 FROM information.dimension dimension;
 
