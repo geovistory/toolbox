@@ -18,7 +18,7 @@ VALUES(44, 55, 0, 1, 'foo', 43.21, 88);
 SELECT is(
         pgwar.get_value_label(cell),
         'foo',
-        'Assert tables.cell is correctly converted a label'
+        'Assert tables.cell is correctly converted to a label'
     )
 FROM tables.cell cell;
 
