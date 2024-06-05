@@ -17,8 +17,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          username: geovbot
+          password: ${{ secrets.GEOVBOT_READ_WRITE_PACKAGES }}
 
           # run database integration and unit tests
       - name: run functional database tests
