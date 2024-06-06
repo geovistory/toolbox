@@ -4,8 +4,8 @@ on:
   pull_request:
 
 jobs:
-  # run functional tests before dockerizing
-  functional-tests:
+  # run tests before dockerizing
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
