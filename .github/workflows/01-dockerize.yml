@@ -21,27 +21,12 @@ jobs:
           password: ${{ secrets.GEOVBOT_READ_WRITE_PACKAGES }}
 
       # run database integration and unit tests
-      - name: run functional database tests
+      - name: run database tests
         run: |
           cd database
           chmod -R 777 logs
           export POSTGRES_PORT=5432
-          bash test.sh -i -u
-
-  # # run performance tests in parallel to dockerizing
-  # PROBLEM: GitHUB actions have only 14 GB storage
-  #          https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners/about-github-hosted-runners#standard-github-hosted-runners-for-public-repositories
-  # peformance-tests:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v3
-  #       with:
-  #         ref: ${{ github.head_ref }}
-
-  #     # run database performance tests
-  #     - name: run performance database tests
-  #       run: cd database && bash test.sh -p
+          bash test.sh -i -u -p
 
   set-version:
     runs-on: ubuntu-latest
