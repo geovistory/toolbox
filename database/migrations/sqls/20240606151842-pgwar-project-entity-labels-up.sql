@@ -1,4 +1,6 @@
-
+/***
+* Functions
+***/
 -- get label of project entity
 CREATE OR REPLACE FUNCTION pgwar.get_entity_label_config(class_id int, project_id int)
 RETURNS jsonb AS $$
@@ -169,5 +171,17 @@ BEGIN
     jsonb_array_elements(label_config->'labelParts') part;
 
     RETURN label;
+END;
+$$ LANGUAGE plpgsql;
+
+-- update entity label or project entity
+CREATE OR REPLACE FUNCTION pgwar.update_project_entity_label(entity_id int, project_id int, new_label text)
+RETURNS void AS $$
+BEGIN
+    UPDATE pgwar.entity_preview 
+    SET entity_label = new_label
+    WHERE pk_entity = entity_id
+    AND fk_project = project_id
+    AND entity_label IS DISTINCT FROM new_label;
 END;
 $$ LANGUAGE plpgsql;
