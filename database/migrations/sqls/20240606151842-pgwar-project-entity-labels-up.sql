@@ -185,3 +185,138 @@ BEGIN
     AND entity_label IS DISTINCT FROM new_label;
 END;
 $$ LANGUAGE plpgsql;
+
+/***
+* Triggers
+***/
+
+-- Update entity labels on change on project statement
+CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_project_statement_change()
+RETURNS TRIGGER AS $$
+DECLARE
+    project_id int;
+    subject_entity_id int;
+    object_entity_id int;
+    new_label text;
+BEGIN
+    project_id := 1; -- TODO: use this: COALESCE(NEW.fk_project, OLD.fk_project);
+    subject_entity_id := COALESCE(NEW.fk_subject_info, OLD.fk_subject_info);
+
+    -- Update the label for the subject entity
+    PERFORM pgwar.update_project_entity_label(subject_entity_id, project_id, pgwar.get_project_entity_label(subject_entity_id, project_id));
+
+    -- Check if the object is an entity (object_label IS NULL)
+    IF COALESCE(NEW.object_label, OLD.object_label) IS NULL THEN
+        object_entity_id := COALESCE(NEW.fk_object_info, OLD.fk_object_info);
+        PERFORM pgwar.update_project_entity_label(object_entity_id, project_id, pgwar.get_project_entity_label(object_entity_id, project_id));
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER on_modify_project_statement
+AFTER INSERT OR UPDATE OR DELETE ON pgwar.statement -- TODO change this to: pgwar.project_statement
+FOR EACH ROW
+EXECUTE FUNCTION pgwar.update_entity_label_on_project_statement_change();
+
+-- Update entity labels on change on entity preview fk_class
+
+CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_fk_class_change()
+RETURNS TRIGGER AS $$
+DECLARE
+    project_id int;
+    entity_id int;
+    new_label text;
+BEGIN
+    project_id := COALESCE(NEW.fk_project, OLD.fk_project);
+    entity_id := COALESCE(NEW.pk_entity, OLD.pk_entity);
+
+    -- Update the entity label in pgwar.entity_preview
+    PERFORM pgwar.update_project_entity_label(entity_id, project_id, pgwar.get_project_entity_label(entity_id, project_id));
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER on_upsert_entity_preview_fk_class
+AFTER INSERT OR UPDATE OF fk_class ON pgwar.entity_preview
+FOR EACH ROW
+EXECUTE FUNCTION pgwar.update_entity_label_on_fk_class_change();
+
+-- Update entity labels of related entities, on change on entity preview entity_label
+CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_entity_label_change()
+RETURNS TRIGGER AS $$
+DECLARE
+    project_id int;
+    entity_id int;
+BEGIN
+    project_id := COALESCE(NEW.fk_project, OLD.fk_project);
+    entity_id := COALESCE(NEW.pk_entity, OLD.pk_entity);
+
+    -- Update the entity labels of the related object entities
+    PERFORM pgwar.update_project_entity_label(fk_object_info, project_id, pgwar.get_project_entity_label(fk_object_info, project_id))
+    FROM pgwar.statement -- TODO: change to pgwar.project_statement
+    WHERE fk_subject_info = entity_id
+    AND object_label IS NULL
+    -- TODO: add: AND fk_project = project id
+    ;
+
+    -- Update the entity labels of the related subject entities
+    PERFORM pgwar.update_project_entity_label(fk_subject_info, project_id, pgwar.get_project_entity_label(fk_subject_info, project_id))
+    FROM pgwar.statement -- TODO: change to pgwar.project_statement
+    WHERE fk_object_info = entity_id
+    -- TODO: add: AND fk_project = project id
+    ;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER on_upsert_entity_preview_entity_label
+AFTER DELETE OR INSERT OR UPDATE OF entity_label ON pgwar.entity_preview
+FOR EACH ROW
+EXECUTE FUNCTION pgwar.update_entity_label_on_entity_label_change();
+
+
+-- Update entity labels on change on entity label config
+
+
+CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_entity_label_config_change()
+RETURNS TRIGGER AS $$
+DECLARE
+    project_id int;
+    class_id int;
+BEGIN
+    project_id := COALESCE(NEW.fk_project, OLD.fk_project);
+    class_id := COALESCE(NEW.fk_class, OLD.fk_class);
+
+    IF project_id = 375669 THEN 
+
+        -- perform update of entity labels that depend on the default config of project 375669
+        PERFORM pgwar.update_project_entity_label(ep.pk_entity, ep.fk_project, pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project)) 
+        FROM pgwar.entity_preview ep
+        LEFT JOIN projects.entity_label_config c 
+            ON c.fk_class = class_id 
+            AND c.fk_project != project_id
+        WHERE ep.fk_class = class_id
+        AND ep.fk_project != 0
+        AND c.config IS NULL; -- take only rows that have no proper project config
+
+    ELSE
+
+        PERFORM pgwar.update_project_entity_label(pk_entity, fk_project, pgwar.get_project_entity_label(pk_entity, fk_project)) 
+        FROM pgwar.entity_preview
+        WHERE fk_class = class_id
+        AND fk_project = project_id;
+
+    END IF;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER on_upsert_entity_preview_entity_label
+AFTER DELETE OR INSERT OR UPDATE ON projects.entity_label_config
+FOR EACH ROW
+EXECUTE FUNCTION pgwar.update_entity_label_on_entity_label_config_change();
