@@ -1,7 +1,12 @@
 -- Test the pgwar.project_statements module
 BEGIN;
 
-SELECT plan(6);
+SELECT plan(7);
+
+------- Prepare required context data ------
+-- Create and switch to a sink table for entity previews
+SELECT war.create_sink_table_entity_preview('war.e');
+SELECT war.switch_entity_preview_table('war.e');
 
 PREPARE get_all_pgwar_project_statements AS
     SELECT *
@@ -14,24 +19,14 @@ INSERT INTO information.language(pk_language) VALUES ('eng');
 INSERT INTO projects.project(fk_language, notes)
 SELECT pk_entity, '_p1' FROM information.language;
 
-
--- Insert an appellation
-INSERT INTO information.appellation(string, fk_class, notes)
-VALUES ('foo', 0, '_a1');
-
-
 -- Insert one statement referencing appellation '_a1'
-INSERT INTO information.statement(fk_subject_info, fk_property, fk_object_info)
-SELECT 0,
-       0,
-       pk_entity
-FROM information.appellation
-WHERE notes = '_a1';
+INSERT INTO pgwar.statement(pk_entity, fk_subject_info, fk_property, fk_object_info, object_label, object_value)
+VALUES (1,0,0,1,'foo', '{"foo":"bar"}');
 
--- Add the statement '_a1' to the project '_p1' in projects.info_proj_rel
+-- Add the statement to the project '_p1' in projects.info_proj_rel
 INSERT INTO projects.info_proj_rel(fk_project, fk_entity, is_in_project, notes)
-SELECT proj.pk_entity, pgstmt.pk_entity, TRUE, '_ipr1'
-FROM projects.project proj, pgwar.statement pgstmt
+SELECT proj.pk_entity, 1, TRUE, '_ipr1'
+FROM projects.project proj
 WHERE proj.notes = '_p1';
 
 
@@ -45,18 +40,23 @@ SELECT is(
            'foo',
            'Assert project statement has correct object_label'
        )
-FROM pgwar.statement;
+FROM pgwar.project_statements;
 
 SELECT ok(
            object_value IS NOT NULL,
            'Assert project statement has an object_value'
        )
-FROM pgwar.statement;
+FROM pgwar.project_statements;
 
 -- Update the literal
-UPDATE information.appellation
-SET string = 'bar'
-WHERE notes = '_a1';
+-- UPDATE information.appellation
+-- SET string = 'bar'
+-- WHERE notes = '_a1';
+
+--Update pgwar.statement
+UPDATE pgwar.statement
+SET object_label = 'bar'
+WHERE pk_entity = 1;
 
 SELECT is(
            object_label,

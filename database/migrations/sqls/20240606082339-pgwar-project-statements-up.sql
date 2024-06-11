@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS pgwar.project_statements(
   fk_object_tables_cell bigint,
   ord_num_of_domain integer,
   ord_num_of_range integer,
+  object_label varchar(100),
   object_value jsonb,
   PRIMARY KEY (pk_entity, fk_project)
 );
@@ -28,6 +29,7 @@ BEGIN
         fk_object_tables_cell,
         ord_num_of_domain,
         ord_num_of_range,
+        object_label,
         object_value
     )
     VALUES(
@@ -39,6 +41,7 @@ BEGIN
         ps.fk_object_tables_cell,
         ps.ord_num_of_domain,
         ps.ord_num_of_range,
+        ps.object_label,
         ps.object_value
     )
     ON CONFLICT(pk_entity, fk_project)
@@ -50,6 +53,7 @@ BEGIN
         fk_object_tables_cell = EXCLUDED.fk_object_tables_cell,
         ord_num_of_domain = EXCLUDED.ord_num_of_domain,
         ord_num_of_range = EXCLUDED.ord_num_of_range,
+        object_label = EXCLUDED.object_label,
         object_value = EXCLUDED.object_value
     WHERE
         -- ... where it is distinct from previous value
@@ -59,7 +63,9 @@ BEGIN
         ps.fk_object_tables_cell IS DISTINCT FROM EXCLUDED.fk_object_tables_cell OR
         ps.ord_num_of_domain IS DISTINCT FROM EXCLUDED.ord_num_of_domain OR
         ps.ord_num_of_range IS DISTINCT FROM EXCLUDED.ord_num_of_range OR
+        ps.object_label IS DISTINCT FROM EXCLUDED.object_label OR
         ps.object_value IS DISTINCT FROM EXCLUDED.object_value;
+    RAISE NOTICE 'Project statement %s', ps;
 END;
 $$
     LANGUAGE plpgsql;
@@ -89,20 +95,21 @@ BEGIN
             -- ... upsert the project statements
             PERFORM
                 pgwar.upsert_project_statements((
-                        NEW.pk_entity,
+                        NEW.fk_entity,
                         NEW.fk_project,
-                        NEW.fk_subject_info,
-                        NEW.fk_property,
-                        NEW.fk_object_info,
-                        NEW.fk_object_tables_cell,
+                        statement.fk_subject_info,
+                        statement.fk_property,
+                        statement.fk_object_info,
+                        statement.fk_object_tables_cell,
                         NEW.ord_num_of_domain,
                         NEW.ord_num_of_range,
-                        NEW.object_value)::pgwar.project_statements
+                        statement.object_label,
+                        statement.object_value)::pgwar.project_statements
                 );
         ELSE
             -- ... delete the project_statements
             DELETE FROM pgwar.project_statements
-            WHERE pk_entity = COALESCE(NEW.pk_entity, OLD.pk_entity)
+            WHERE pk_entity = COALESCE(NEW.fk_entity, OLD.fk_entity)
               AND fk_project = COALESCE(NEW.fk_project, OLD.fk_project);
         END IF;
     END IF;
@@ -140,8 +147,9 @@ BEGIN
                 NEW.fk_property,
                 NEW.fk_object_info,
                 NEW.fk_object_tables_cell,
-                NEW.ord_num_of_domain,
-                NEW.ord_num_of_range,
+                ord_num_of_domain,
+                ord_num_of_range,
+                NEW.object_label,
                 NEW.object_value)::pgwar.project_statements
             )
         FROM
@@ -149,6 +157,7 @@ BEGIN
         WHERE
             fk_entity = NEW.pk_entity
           AND is_in_project = TRUE;
+        RAISE NOTICE 'New pgwar.statement %s', NEW;
     END IF;
     RETURN NEW;
 END;
