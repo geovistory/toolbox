@@ -1,9 +1,5 @@
 -- Check performance of updating info_proj_rels
 BEGIN;
-/********* 
- ***** END OF HELPER FUNCTIONS
- *********/
-SELECT plan(1);
 
 -- Drop all triggers except the one for pgwar
 DROP TRIGGER IF EXISTS after_epr_upsert ON projects.info_proj_rel;
@@ -25,6 +21,8 @@ DROP TRIGGER IF EXISTS update_entity_version_key ON projects.info_proj_rel;
 
 DROP TRIGGER IF EXISTS versioning_trigger ON projects.info_proj_rel;
 
+SELECT plan(1);
+
 -- Prepare procedure to update 10k rows
 PREPARE update_info_proj_rels AS WITH updated_rows AS (
     SELECT pk_entity
@@ -41,7 +39,7 @@ WHERE info_proj_rel.pk_entity = updated_rows.pk_entity;
 SELECT performs_ok(
         'update_info_proj_rels',
         10000,
-        'Assert that updateing  with a name takes less than 10s'
+        'Assert that updating 10000 with a name takes less than 10s'
     );
 
 SELECT *
