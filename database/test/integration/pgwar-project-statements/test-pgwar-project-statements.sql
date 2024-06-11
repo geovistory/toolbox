@@ -1,7 +1,7 @@
 -- Test the pgwar.project_statements module
 BEGIN;
 
-SELECT plan(7);
+SELECT plan(6);
 
 ------- Prepare required context data ------
 -- Create and switch to a sink table for entity previews
@@ -19,7 +19,7 @@ INSERT INTO information.language(pk_language) VALUES ('eng');
 INSERT INTO projects.project(fk_language, notes)
 SELECT pk_entity, '_p1' FROM information.language;
 
--- Insert one statement referencing appellation '_a1'
+-- Insert one statement
 INSERT INTO pgwar.statement(pk_entity, fk_subject_info, fk_property, fk_object_info, object_label, object_value)
 VALUES (1,0,0,1,'foo', '{"foo":"bar"}');
 
@@ -66,32 +66,20 @@ SELECT is(
 FROM pgwar.project_statements;
 
 -- Delete the statement
-DELETE FROM information.statement;
+DELETE FROM pgwar.statement;
 
 SELECT is_empty(
                'get_all_pgwar_project_statements',
-               'Assert pgwar project statement is empty after deleting statement'
+               'Assert pgwar project statement is empty after deleting pgwar statement'
        );
 
--- Re-insert one statement referencing appellation '_a1'
-INSERT INTO information.statement(fk_subject_info, fk_property, fk_object_info)
-SELECT 0,
-       0,
-       pk_entity
-FROM information.appellation
-WHERE notes = '_a1';
+-- Re-insert one statement
+INSERT INTO pgwar.statement(pk_entity, fk_subject_info, fk_property, fk_object_info, object_label, object_value)
+VALUES (1,0,0,1,'foo', '{"foo":"bar"}');
 
 SELECT isnt_empty(
                'get_all_pgwar_project_statements',
                'Assert pgwar project statement is not empty after re-inserting a statement'
-       );
-
--- Delete the literal
-DELETE FROM information.appellation;
-
-SELECT is_empty(
-               'get_all_pgwar_project_statements',
-               'Assert pgwar project statement is empty after deleting literal'
        );
 
 -- Finish the tests and clean up.

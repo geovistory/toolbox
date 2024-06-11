@@ -20,6 +20,7 @@ CREATE OR REPLACE FUNCTION pgwar.upsert_project_statements(ps pgwar.project_stat
     RETURNS VOID
 AS $$
 BEGIN
+    RAISE NOTICE 'Enter function';
     INSERT INTO pgwar.project_statements(
         pk_entity,
         fk_project,
@@ -57,14 +58,14 @@ BEGIN
         object_value = EXCLUDED.object_value
     WHERE
         -- ... where it is distinct from previous value
-        ps.fk_subject_info IS DISTINCT FROM EXCLUDED.fk_subject_info OR
-        ps.fk_property IS DISTINCT FROM EXCLUDED.fk_property OR
-        ps.fk_object_info IS DISTINCT FROM EXCLUDED.fk_object_info OR
-        ps.fk_object_tables_cell IS DISTINCT FROM EXCLUDED.fk_object_tables_cell OR
-        ps.ord_num_of_domain IS DISTINCT FROM EXCLUDED.ord_num_of_domain OR
-        ps.ord_num_of_range IS DISTINCT FROM EXCLUDED.ord_num_of_range OR
-        ps.object_label IS DISTINCT FROM EXCLUDED.object_label OR
-        ps.object_value IS DISTINCT FROM EXCLUDED.object_value;
+        project_statements.fk_subject_info IS DISTINCT FROM EXCLUDED.fk_subject_info OR
+        project_statements.fk_property IS DISTINCT FROM EXCLUDED.fk_property OR
+        project_statements.fk_object_info IS DISTINCT FROM EXCLUDED.fk_object_info OR
+        project_statements.fk_object_tables_cell IS DISTINCT FROM EXCLUDED.fk_object_tables_cell OR
+        project_statements.ord_num_of_domain IS DISTINCT FROM EXCLUDED.ord_num_of_domain OR
+        project_statements.ord_num_of_range IS DISTINCT FROM EXCLUDED.ord_num_of_range OR
+        project_statements.object_label IS DISTINCT FROM EXCLUDED.object_label OR
+        project_statements.object_value IS DISTINCT FROM EXCLUDED.object_value;
     RAISE NOTICE 'Project statement %s', ps;
 END;
 $$
