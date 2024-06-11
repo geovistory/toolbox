@@ -1,7 +1,21 @@
 BEGIN;
 
-SELECT plan(2);
+/**
+ * Drop triggers that would reset the entity label to NULL and break the unit test
+ **/
+-- Drop trigger on_modify_project_statement
+DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.statement;
 
+-- Drop trigger on_upsert_entity_preview_fk_class
+DROP TRIGGER IF EXISTS on_upsert_entity_preview_fk_class ON pgwar.entity_preview;
+
+-- Drop trigger on_upsert_entity_preview_entity_label
+DROP TRIGGER IF EXISTS on_upsert_entity_preview_entity_label ON pgwar.entity_preview;
+
+-- Drop trigger on_upsert_entity_label_config
+DROP TRIGGER IF EXISTS on_upsert_entity_label_config ON projects.entity_label_config;
+
+SELECT plan(2);
 
 CREATE TABLE pgwar.entity_preview_1 PARTITION OF pgwar.entity_preview FOR
 VALUES IN (1);
@@ -18,14 +32,13 @@ INSERT INTO pgwar.statement -- TODO: Change this to pgwar.project_statement
         fk_object_info,
         object_label
     )
-SELECT 
-	id,
-	fk_subject_info,
+SELECT id,
+    fk_subject_info,
     fk_property,
     fk_object_info,
     object_label
 FROM entity
-JOIN LATERAL (
+    JOIN LATERAL (
         VALUES (1, 31, 22, entity.pk_entity, ''),
             (2, 32, 22, entity.pk_entity, ''),
             (3, 33, 22, entity.pk_entity, ''),

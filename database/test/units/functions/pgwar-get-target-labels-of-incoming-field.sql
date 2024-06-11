@@ -1,4 +1,18 @@
 BEGIN;
+/**
+* Drop triggers that would reset the entity label to NULL and break the unit test
+**/
+-- Drop trigger on_modify_project_statement
+DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.statement;
+
+-- Drop trigger on_upsert_entity_preview_fk_class
+DROP TRIGGER IF EXISTS on_upsert_entity_preview_fk_class ON pgwar.entity_preview;
+
+-- Drop trigger on_upsert_entity_preview_entity_label
+DROP TRIGGER IF EXISTS on_upsert_entity_preview_entity_label ON pgwar.entity_preview;
+
+-- Drop trigger on_upsert_entity_label_config
+DROP TRIGGER IF EXISTS on_upsert_entity_label_config ON projects.entity_label_config;
 
 SELECT plan(2);
 
@@ -24,6 +38,7 @@ VALUES
 (31, 1, 88, 'Entity 31'),
 (32, 1, 88, NULL),
 (33, 1, 88, 'Entity 33');
+
 
 -- Test 1: Check if function returns the correct target labels for incoming field
 SELECT results_eq(

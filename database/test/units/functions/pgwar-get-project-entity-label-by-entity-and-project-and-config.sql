@@ -1,5 +1,20 @@
 BEGIN;
 
+/**
+ * Drop triggers that would reset the entity label to NULL and break the unit test
+ **/
+-- Drop trigger on_modify_project_statement
+DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.statement;
+
+-- Drop trigger on_upsert_entity_preview_fk_class
+DROP TRIGGER IF EXISTS on_upsert_entity_preview_fk_class ON pgwar.entity_preview;
+
+-- Drop trigger on_upsert_entity_preview_entity_label
+DROP TRIGGER IF EXISTS on_upsert_entity_preview_entity_label ON pgwar.entity_preview;
+
+-- Drop trigger on_upsert_entity_label_config
+DROP TRIGGER IF EXISTS on_upsert_entity_label_config ON projects.entity_label_config;
+
 SELECT plan(3);
 
 CREATE TABLE pgwar.entity_preview_1 PARTITION OF pgwar.entity_preview FOR
@@ -66,6 +81,7 @@ SELECT is(
         'get_project_entity_label returns NULL for not existing entity'
     );
 
+SELECT *
+FROM finish();
 
-SELECT * FROM finish();
 ROLLBACK;

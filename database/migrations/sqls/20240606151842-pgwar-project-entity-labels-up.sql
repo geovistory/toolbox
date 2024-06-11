@@ -316,7 +316,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER on_upsert_entity_preview_entity_label
+CREATE TRIGGER on_upsert_entity_label_config
 AFTER DELETE OR INSERT OR UPDATE ON projects.entity_label_config
 FOR EACH ROW
 EXECUTE FUNCTION pgwar.update_entity_label_on_entity_label_config_change();
