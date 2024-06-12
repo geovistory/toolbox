@@ -88,7 +88,7 @@ SELECT is(
            1,
            'Assert project statement has correct ord_num_of_domain'
        )
-FROM projects.info_proj_rel;
+FROM pgwar.project_statements;
 
 
 SELECT is(
@@ -96,7 +96,7 @@ SELECT is(
                2,
                'Assert project statement has correct ord_num_of_range'
        )
-FROM projects.info_proj_rel;
+FROM pgwar.project_statements;
 
 -- Update info_proj_rel _ipr1 to remove the statement from the project
 UPDATE projects.info_proj_rel
