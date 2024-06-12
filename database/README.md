@@ -20,6 +20,36 @@ npm run db:cm name-of-migration
 # - in *-down.sql, revert your modifications
 ```
 
+If the create migration command fails with these errors
+```
+/home/username/toolbox/server/db-migrate/create.sh: 2: Bad substitution
+
+/home/username/toolbox/toolbox/server/db-migrate/create.sh: 6: [[: not found
+
+/home/username/toolbox/server/db-migrate/create.sh: 6: ==: not found
+
+/home/username/toolbox/server/db-migrate/create.sh: 6: ==: not found
+/home/username/toolbox/server/db-migrate/create.sh: 11: 
+Syntax error: redirection unexpected
+```
+
+it could mean your bash interpreter is not "/bin/bash" but another one, like "dash" which come in distributions like Ubuntu.
+To solve the issue, check first what really is your interpreter with:
+```bash
+ls -l /bin/sh
+```
+If the output gives a similar result to
+```
+lrwxrwxrwx 1 root root 4 May  1  2023 /bin/sh -> dash
+```
+then you should remove this symlink and create a new one pointing to the correct bash interpreter
+
+```bash
+sudo rm /bin/sh
+sudo ln -s /bin/bash /bin/sh
+```
+Now the migration creation script should work properly 
+
 ## Write tests
 
 Add pgTap files ending on .sql to one of these folders:
