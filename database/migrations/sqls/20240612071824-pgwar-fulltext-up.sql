@@ -1,4 +1,4 @@
--- create dblink extension for accessing postgres cron
+-- create dblink extension for accessing database with pg_cron
 CREATE EXTENSION dblink;
 
 /***
@@ -156,3 +156,39 @@ BEGIN
     RETURN full_text;
 END;
 $$ LANGUAGE plpgsql;
+
+------ Table pgwar.project_statements_deleted ----------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+-- this table is used by the fulltext cron job to find entities that need an fulltext update
+-- because they are the subject or object of a deleted project statement
+CREATE TABLE IF NOT EXISTS pgwar.project_statements_deleted(
+  pk_entity integer NOT NULL,
+  fk_project integer NOT NULL,
+  fk_subject_info integer,
+  fk_property integer NOT NULL,
+  fk_object_info integer,
+  tmsp_deletion timestamp with time zone,
+  PRIMARY KEY (pk_entity, fk_project)
+);
+
+CREATE OR REPLACE FUNCTION pgwar.handle_project_statements_delete() 
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Insert or update the deleted row in pgwar.project_statements_deleted
+    INSERT INTO pgwar.project_statements_deleted (pk_entity, fk_project, fk_subject_info, fk_property, fk_object_info, tmsp_deletion)
+    VALUES (OLD.pk_entity, OLD.fk_project, OLD.fk_subject_info, OLD.fk_property, OLD.fk_object_info, CURRENT_TIMESTAMP)
+    ON CONFLICT (pk_entity, fk_project)
+    DO UPDATE SET 
+        fk_subject_info = EXCLUDED.fk_subject_info,
+        fk_property = EXCLUDED.fk_property,
+        fk_object_info = EXCLUDED.fk_object_info,
+        tmsp_deletion = EXCLUDED.tmsp_deletion;
+
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER after_delete_project_statements
+AFTER DELETE ON pgwar.project_statements
+FOR EACH ROW
+EXECUTE FUNCTION pgwar.handle_project_statements_delete();
