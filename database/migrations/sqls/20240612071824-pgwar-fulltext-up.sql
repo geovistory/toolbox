@@ -38,6 +38,8 @@ BEGIN
     RETURN label;
 END;
 $$ LANGUAGE plpgsql;
+
+
 -- get the label of a property in the language (or in the english fallback) 
 CREATE OR REPLACE FUNCTION pgwar.get_property_label(property_id int, lang_code text)
 RETURNS text AS $$
@@ -133,9 +135,9 @@ BEGIN
                 ': ',
                 pgwar.get_label_of_outgoing_field(entity_id, project_id, fk_property, 5)
             ) AS field_string
-        FROM pgwar.statement -- TODO: change to project statement
+        FROM pgwar.project_statements
         WHERE fk_subject_info = entity_id
-        -- TODO: AND fk_project = project_id 
+        AND fk_project = project_id 
         UNION 
         SELECT DISTINCT ON (fk_property) 
             concat(
@@ -143,9 +145,9 @@ BEGIN
                 ': ',
                 pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5)
             ) AS field_string
-        FROM pgwar.statement -- TODO: change to project statement
+        FROM pgwar.project_statements
         WHERE fk_object_info = entity_id
-        -- TODO: AND fk_project = project_id 
+        AND fk_project = project_id 
 
     )
     SELECT string_agg(fields.field_string, '\n ') INTO full_text  

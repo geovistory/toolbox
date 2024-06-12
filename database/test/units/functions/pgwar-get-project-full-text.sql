@@ -4,7 +4,7 @@ BEGIN;
  * Drop triggers that would reset the entity label to NULL and break the unit test
  **/
 -- Drop trigger on_modify_project_statement
-DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.statement;
+DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.project_statements;
 
 -- Drop trigger on_upsert_entity_preview_fk_class
 DROP TRIGGER IF EXISTS on_upsert_entity_preview_fk_class ON pgwar.entity_preview;
@@ -31,26 +31,42 @@ SELECT pk_entity,
 FROM information.language
 WHERE pk_language = 'fra';
 
-INSERT INTO pgwar.statement -- TODO: Change this to pgwar.project_statement
-    (
+INSERT INTO pgwar.project_statements (
         pk_entity,
+        fk_project,
         fk_subject_info,
         fk_property,
         fk_object_info,
         object_label
     )
-VALUES (1, 31, 22, 11, 'this has no influence'),
-    (2, 32, 22, 11, 'this has no influence'),
-    (3, 33, 22, 11, 'this has no influence'),
-    (4, 34, 22, 11, 'this has no influence'),
-    (5, 35, 22, 11, 'this has no influence'),
-    (6, 36, 22, 11, 'this has no influence'),
-    (7, 11, 55, 61, 'Label 61'),
-    (8, 11, 55, 62, 'Label 62'),
-    (9, 11, 55, 63, NULL),
-    (10, 11, 55, 64, NULL),
-    (11, 11, 55, 65, 'Label 65'),
-    (12, 11, 55, 66, 'Label 66');
+SELECT v.pk_entity,
+    pro.pk_entity,
+    v.fk_subject_info,
+    v.fk_property,
+    v.fk_object_info,
+    v.object_label
+FROM (
+        VALUES (1, 31, 22, 11, 'this has no influence'),
+            (2, 32, 22, 11, 'this has no influence'),
+            (3, 33, 22, 11, 'this has no influence'),
+            (4, 34, 22, 11, 'this has no influence'),
+            (5, 35, 22, 11, 'this has no influence'),
+            (6, 36, 22, 11, 'this has no influence'),
+            (7, 11, 55, 61, 'Label 61'),
+            (8, 11, 55, 62, 'Label 62'),
+            (9, 11, 55, 63, NULL),
+            (10, 11, 55, 64, NULL),
+            (11, 11, 55, 65, 'Label 65'),
+            (12, 11, 55, 66, 'Label 66')
+    ) AS v (
+        pk_entity,
+        fk_subject_info,
+        fk_property,
+        fk_object_info,
+        object_label
+    ),
+    projects.project pro
+WHERE pro.notes = '_p1';
 
 INSERT INTO pgwar.entity_preview (pk_entity, fk_project, fk_class, entity_label)
 SELECT v.pk_entity,
