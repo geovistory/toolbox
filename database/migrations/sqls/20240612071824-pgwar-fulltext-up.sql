@@ -119,7 +119,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- create the fulltext of an entity
-CREATE OR REPLACE FUNCTION pgwar.get_project_fulltext(project_id int, entity_id int)
+CREATE OR REPLACE FUNCTION pgwar.get_project_full_text(project_id int, entity_id int)
 RETURNS text AS $$
 DECLARE
     full_text text;
@@ -392,3 +392,64 @@ END;
 $$ LANGUAGE plpgsql;
 
 
+/***
+* Update the full texts
+***/
+
+CREATE OR REPLACE FUNCTION pgwar.update_full_texts(max_limit int)
+RETURNS text AS $$
+DECLARE
+    current_set RECORD;
+    result_set RECORD;
+    pair_count int;
+    updated_count int;
+BEGIN
+    pair_count := 0;
+
+    -- Initialize the temporary table to store unique pairs
+    CREATE TEMP TABLE temp_unique_pairs (
+        pk_entity integer,
+        fk_project integer,
+        CONSTRAINT unique_pairs_pk_project UNIQUE (pk_entity, fk_project)
+    ) ON COMMIT DROP;
+
+    -- Execute functions sequentially and add unique pairs
+    FOR current_set IN SELECT unnest(array[
+        'pgwar.get_ftu_in_subjects_of_pstmt',
+        'pgwar.get_ftu_in_objects_of_pstmt',
+        'pgwar.get_ftu_in_subjects_of_pstmt_del',
+        'pgwar.get_ftu_in_objects_of_pstmt_del',
+        'pgwar.get_ftu_in_subjects_of_pstmt_by_dfh_prop',
+        'pgwar.get_ftu_in_objects_of_pstmt_by_dfh_prop'
+    ]) AS function_name
+    LOOP
+        EXECUTE 'INSERT INTO temp_unique_pairs (pk_entity, fk_project) ' ||
+                'SELECT pk_entity, fk_project ' ||
+                'FROM ' || current_set.function_name || '(' || max_limit || ') ' ||
+                'ON CONFLICT DO NOTHING';
+
+        -- Update the pair count
+        SELECT COUNT(*) INTO pair_count FROM temp_unique_pairs;
+				
+        -- Check if the limit has been reached
+        IF pair_count >= max_limit THEN
+            EXIT;
+        END IF;
+    END LOOP;
+
+    -- Insert or update pgwar.entity_full_text using the collected unique pairs
+   	INSERT INTO pgwar.entity_full_text (pk_entity, fk_project, full_text)
+	SELECT pk_entity, fk_project, pgwar.get_project_full_text(fk_project, pk_entity)
+	FROM temp_unique_pairs
+	ON CONFLICT (pk_entity, fk_project)
+	DO UPDATE
+    SET full_text = EXCLUDED.full_text
+	WHERE entity_full_text.full_text IS DISTINCT FROM EXCLUDED.full_text;
+	
+    -- Get the number of rows updated
+    GET DIAGNOSTICS updated_count = ROW_COUNT;
+
+    -- Return the result message
+    RETURN 'Number of rows updated: ' || updated_count;
+END;
+$$ LANGUAGE plpgsql;
