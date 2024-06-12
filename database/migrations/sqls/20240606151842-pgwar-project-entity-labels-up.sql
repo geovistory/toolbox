@@ -141,11 +141,9 @@ BEGIN
 
 
     IF is_outgoing = true THEN
-        SELECT string_agg(labels.label, ', ') INTO label 
-        FROM pgwar.get_target_labels_of_outgoing_field(entity_id, project_id, property_id, limit_count) AS labels;
+        SELECT pgwar.get_label_of_outgoing_field(entity_id, project_id, property_id, limit_count) INTO label;
     ELSE
-        SELECT string_agg(labels.label,', ') INTO label 
-        FROM pgwar.get_target_labels_of_incoming_field(entity_id, project_id, property_id, limit_count) AS labels;
+        SELECT pgwar.get_label_of_incoming_field(entity_id, project_id, property_id, limit_count) INTO label;
     END IF;
 
     RETURN label;
