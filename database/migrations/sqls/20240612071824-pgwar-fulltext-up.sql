@@ -223,15 +223,18 @@ RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
     -- find subjects of modified project statements
-    SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
-    FROM pgwar.project_statements pstmt
-    LEFT JOIN pgwar.entity_full_text ftxt 
-        ON pstmt.fk_subject_info = ftxt.pk_entity
-        AND pstmt.fk_project = ftxt.fk_project
-    WHERE ftxt.tmsp_last_modification IS NULL
-    OR ftxt.tmsp_last_modification < pstmt.tmsp_last_modification
-    ORDER BY pstmt.tmsp_last_modification DESC
-    LIMIT max_limit;
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
+        FROM pgwar.project_statements pstmt
+        LEFT JOIN pgwar.entity_full_text ftxt 
+            ON pstmt.fk_subject_info = ftxt.pk_entity
+            AND pstmt.fk_project = ftxt.fk_project
+        WHERE ftxt.tmsp_last_modification IS NULL
+        OR ftxt.tmsp_last_modification < pstmt.tmsp_last_modification
+        ORDER BY pstmt.tmsp_last_modification DESC
+        LIMIT max_limit
+    ) AS s;
 END;
 $$ LANGUAGE plpgsql;
 /***
@@ -242,16 +245,19 @@ RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
     -- find objects of modified project statements
-    SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
-    FROM pgwar.project_statements pstmt
-    LEFT JOIN pgwar.entity_full_text ftxt 
-        ON pstmt.fk_object_info = ftxt.pk_entity
-        AND pstmt.fk_project = ftxt.fk_project
-    WHERE pstmt.object_value IS NULL
-    AND (ftxt.tmsp_last_modification IS NULL
-    OR ftxt.tmsp_last_modification < pstmt.tmsp_last_modification)
-    ORDER BY pstmt.tmsp_last_modification DESC
-    LIMIT max_limit;
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
+        FROM pgwar.project_statements pstmt
+        LEFT JOIN pgwar.entity_full_text ftxt 
+            ON pstmt.fk_object_info = ftxt.pk_entity
+            AND pstmt.fk_project = ftxt.fk_project
+        WHERE pstmt.object_value IS NULL
+        AND (ftxt.tmsp_last_modification IS NULL
+        OR ftxt.tmsp_last_modification < pstmt.tmsp_last_modification)
+        ORDER BY pstmt.tmsp_last_modification DESC
+        LIMIT max_limit
+    ) AS s;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -264,15 +270,18 @@ RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
     -- find subjects of modified project statements
-    SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
-    FROM pgwar.project_statements_deleted pstmt
-    LEFT JOIN pgwar.entity_full_text ftxt 
-        ON pstmt.fk_subject_info = ftxt.pk_entity
-        AND pstmt.fk_project = ftxt.fk_project
-    WHERE ftxt.tmsp_last_modification IS NULL
-    OR ftxt.tmsp_last_modification < pstmt.tmsp_deletion
-    ORDER BY pstmt.tmsp_deletion DESC
-    LIMIT max_limit;
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
+        FROM pgwar.project_statements_deleted pstmt
+        LEFT JOIN pgwar.entity_full_text ftxt 
+            ON pstmt.fk_subject_info = ftxt.pk_entity
+            AND pstmt.fk_project = ftxt.fk_project
+        WHERE ftxt.tmsp_last_modification IS NULL
+        OR ftxt.tmsp_last_modification < pstmt.tmsp_deletion
+        ORDER BY pstmt.tmsp_deletion DESC
+        LIMIT max_limit
+    ) AS s;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -285,16 +294,101 @@ RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
     -- find objects of modified project statements
-    SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
-    FROM pgwar.project_statements_deleted pstmt
-    LEFT JOIN pgwar.entity_full_text ftxt 
-        ON pstmt.fk_object_info = ftxt.pk_entity
-        AND pstmt.fk_project = ftxt.fk_project
-    WHERE  pstmt.object_value IS NULL
-    AND (ftxt.tmsp_last_modification IS NULL
-        OR ftxt.tmsp_last_modification < pstmt.tmsp_deletion)
-    ORDER BY pstmt.tmsp_deletion DESC
-    LIMIT max_limit;
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
+        FROM pgwar.project_statements_deleted pstmt
+        LEFT JOIN pgwar.entity_full_text ftxt 
+            ON pstmt.fk_object_info = ftxt.pk_entity
+            AND pstmt.fk_project = ftxt.fk_project
+        WHERE  pstmt.object_value IS NULL
+        AND (ftxt.tmsp_last_modification IS NULL
+            OR ftxt.tmsp_last_modification < pstmt.tmsp_deletion)
+        ORDER BY pstmt.tmsp_deletion DESC
+        LIMIT max_limit
+    ) AS s;
 END;
 $$ LANGUAGE plpgsql;
+
+
+/***
+* Find full text updates in subjects of project statements with modified dfh-prop
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_subjects_of_pstmt_by_dfh_prop(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find subjects of project statements with modified dfh-prop
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
+        FROM 
+                pgwar.project_statements pstmt,
+                data_for_history.api_property dfh_prop
+        LEFT JOIN pgwar.entity_full_text ftxt 
+            ON pstmt.fk_subject_info = ftxt.pk_entity
+            AND pstmt.fk_project = ftxt.fk_project
+        WHERE
+            dfh_prop.dfh_pk_property = pstmt.fk_property
+        AND ftxt.tmsp_last_modification < dfh_prop.tmsp_last_modification
+        ORDER BY dfh_prop.tmsp_last_modification DESC
+        LIMIT max_limit
+    ) AS s;
+END;
+$$ LANGUAGE plpgsql;
+
+
+/***
+* Find full text updates in subjects of project statements with modified dfh-prop
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_subjects_of_pstmt_by_dfh_prop(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find subjects of project statements with modified dfh-prop
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
+        FROM 
+                pgwar.project_statements pstmt,
+                data_for_history.api_property dfh_prop,
+                pgwar.entity_full_text ftxt 
+        WHERE
+            pstmt.fk_subject_info = ftxt.pk_entity
+        AND pstmt.fk_project = ftxt.fk_project
+        AND dfh_prop.dfh_pk_property = pstmt.fk_property
+        AND ftxt.tmsp_last_modification < dfh_prop.tmsp_last_dfh_update
+        ORDER BY dfh_prop.tmsp_last_modification DESC
+        LIMIT max_limit
+    ) AS s;
+END;
+$$ LANGUAGE plpgsql;
+
+/***
+* Find full text updates in objects of project statements with modified dfh-prop
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_objects_of_pstmt_by_dfh_prop(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find objects of project statements with modified dfh-prop
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
+        FROM 
+                pgwar.project_statements pstmt,
+                data_for_history.api_property dfh_prop,
+                pgwar.entity_full_text ftxt 
+        WHERE
+            pstmt.fk_object_info = ftxt.pk_entity
+        AND pstmt.object_value IS NULL
+        AND pstmt.fk_project = ftxt.fk_project
+        AND dfh_prop.dfh_pk_property = pstmt.fk_property
+        AND ftxt.tmsp_last_modification < dfh_prop.tmsp_last_dfh_update
+        ORDER BY dfh_prop.tmsp_last_modification DESC
+        LIMIT max_limit
+    ) AS s;
+END;
+$$ LANGUAGE plpgsql;
+
 
