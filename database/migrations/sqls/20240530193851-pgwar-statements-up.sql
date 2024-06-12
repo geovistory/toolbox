@@ -595,12 +595,10 @@ CREATE TRIGGER after_delete_time_primitive
     FOR EACH ROW
     EXECUTE FUNCTION pgwar.after_delete_object_info();
 
-    CREATE TRIGGER after_delete_cell
+CREATE TRIGGER after_delete_cell
     AFTER DELETE ON tables.cell
     FOR EACH ROW
     EXECUTE FUNCTION pgwar.after_delete_object_tables_cell();
-
--- TODO add trigger-fn for tables.cell 
 
 
 ------ Trigger after upsert literal table -------------------------------------------------

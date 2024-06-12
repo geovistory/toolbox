@@ -71,23 +71,23 @@ RETURNS TABLE(label VARCHAR) AS $$
 BEGIN
     RETURN QUERY
     SELECT coalesce(
-                t2.entity_label, -- take the project entity label,
-                t3.entity_label -- else the community entity label
+                pep.entity_label, -- take the project entity label,
+                cep.entity_label -- else the community entity label
             )::VARCHAR AS label
-    FROM pgwar.statement t1 -- TODO: change to pgwar.project_statement t1
+    FROM pgwar.project_statements pstmt
     -- join the project entity
-    LEFT JOIN pgwar.entity_preview t2 
-        ON t2.fk_project = project_id
-        AND t1.fk_subject_info = t2.pk_entity
+    LEFT JOIN pgwar.entity_preview pep 
+        ON pep.fk_project = project_id
+        AND pstmt.fk_subject_info = pep.pk_entity
     -- join the community entity
-    LEFT JOIN pgwar.entity_preview t3
-        ON t3.fk_project = 0
-        AND t1.fk_subject_info = t3.pk_entity
+    LEFT JOIN pgwar.entity_preview cep
+        ON cep.fk_project = 0
+        AND pstmt.fk_subject_info = cep.pk_entity
     WHERE
-        t1.fk_object_info = entity_id
-      	-- TODO: add: AND t1.fk_project = project_id 
-        AND t1.fk_property = property_id
-    -- TODO: add: ORDER BY t1.ord_num_of_domain ASC, t1.tmsp_last_modification DESC
+        pstmt.fk_object_info = entity_id
+      	AND pstmt.fk_project = project_id 
+        AND pstmt.fk_property = property_id
+    ORDER BY pstmt.ord_num_of_domain ASC, pstmt.tmsp_last_modification DESC
     LIMIT limit_count;
 END;
 $$ LANGUAGE plpgsql;
@@ -103,24 +103,24 @@ RETURNS TABLE(label VARCHAR) AS $$
 BEGIN
     RETURN QUERY
     SELECT coalesce(
-                t1.object_label, -- take the literal label
-                t2.entity_label, -- else the project entity label,
-                t3.entity_label -- else the community entity label
+                pstmt.object_label, -- take the literal label
+                pep.entity_label, -- else the project entity label,
+                cep.entity_label -- else the community entity label
             )::VARCHAR AS label
-    FROM pgwar.statement t1 -- TODO: change to pgwar.project_statement t1
+    FROM pgwar.project_statements pstmt
     -- join the project entity
-    LEFT JOIN pgwar.entity_preview t2 
-        ON t2.fk_project = project_id
-        AND t1.fk_object_info = t2.pk_entity
+    LEFT JOIN pgwar.entity_preview pep 
+        ON pep.fk_project = project_id
+        AND pstmt.fk_object_info = pep.pk_entity
     -- join the community entity
-    LEFT JOIN pgwar.entity_preview t3
-        ON t3.fk_project = 0
-        AND t1.fk_object_info = t3.pk_entity
+    LEFT JOIN pgwar.entity_preview cep
+        ON cep.fk_project = 0
+        AND pstmt.fk_object_info = cep.pk_entity
     WHERE
-        t1.fk_subject_info = entity_id
-      	-- TODO: add: AND t1.fk_project = project_id 
-        AND t1.fk_property = property_id
-    -- TODO: add: ORDER BY t1.ord_num_of_domain ASC, t1.tmsp_last_modification DESC
+        pstmt.fk_subject_info = entity_id
+      	AND pstmt.fk_project = project_id 
+        AND pstmt.fk_property = property_id
+    ORDER BY pstmt.ord_num_of_range ASC, pstmt.tmsp_last_modification DESC
     LIMIT limit_count;
 END;
 $$ LANGUAGE plpgsql;
@@ -199,7 +199,7 @@ DECLARE
     object_entity_id int;
     new_label text;
 BEGIN
-    project_id := 1; -- TODO: use this: COALESCE(NEW.fk_project, OLD.fk_project);
+    project_id := COALESCE(NEW.fk_project, OLD.fk_project);
     subject_entity_id := COALESCE(NEW.fk_subject_info, OLD.fk_subject_info);
 
     -- Update the label for the subject entity
@@ -216,7 +216,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER on_modify_project_statement
-AFTER INSERT OR UPDATE OR DELETE ON pgwar.statement -- TODO change this to: pgwar.project_statement
+AFTER INSERT OR UPDATE OR DELETE ON pgwar.project_statements
 FOR EACH ROW
 EXECUTE FUNCTION pgwar.update_entity_label_on_project_statement_change();
 
@@ -256,18 +256,16 @@ BEGIN
 
     -- Update the entity labels of the related object entities
     PERFORM pgwar.update_project_entity_label(fk_object_info, project_id, pgwar.get_project_entity_label(fk_object_info, project_id))
-    FROM pgwar.statement -- TODO: change to pgwar.project_statement
+    FROM pgwar.project_statements
     WHERE fk_subject_info = entity_id
     AND object_label IS NULL
-    -- TODO: add: AND fk_project = project id
-    ;
+    AND fk_project = project_id;
 
     -- Update the entity labels of the related subject entities
     PERFORM pgwar.update_project_entity_label(fk_subject_info, project_id, pgwar.get_project_entity_label(fk_subject_info, project_id))
-    FROM pgwar.statement -- TODO: change to pgwar.project_statement
+    FROM pgwar.project_statements
     WHERE fk_object_info = entity_id
-    -- TODO: add: AND fk_project = project id
-    ;
+    AND fk_project = project_id;
 
     RETURN NULL;
 END;

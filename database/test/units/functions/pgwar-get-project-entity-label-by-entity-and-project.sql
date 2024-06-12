@@ -4,7 +4,7 @@ BEGIN;
  * Drop triggers that would reset the entity label to NULL and break the unit test
  **/
 -- Drop trigger on_modify_project_statement
-DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.statement;
+DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.project_statements;
 
 -- Drop trigger on_upsert_entity_preview_fk_class
 DROP TRIGGER IF EXISTS on_upsert_entity_preview_fk_class ON pgwar.entity_preview;
@@ -24,15 +24,17 @@ WITH entity AS (
     INSERT INTO information.resource (fk_class)
     VALUES (77) RETURNING pk_entity
 )
-INSERT INTO pgwar.statement -- TODO: Change this to pgwar.project_statement
+INSERT INTO pgwar.project_statements
     (
         pk_entity,
+        fk_project,
         fk_subject_info,
         fk_property,
         fk_object_info,
         object_label
     )
 SELECT id,
+    1,
     fk_subject_info,
     fk_property,
     fk_object_info,
