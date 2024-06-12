@@ -2,7 +2,7 @@
 CREATE EXTENSION dblink;
 
 /***
-* Functions
+* Functions for the creation of fulltext
 ***/
 
 -- get label of outgoing field
@@ -157,6 +157,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
 ------ Table pgwar.project_statements_deleted ----------------------------------------------------------------
 ---------------------------------------------------------------------------------------------
 -- this table is used by the fulltext cron job to find entities that need an fulltext update
@@ -167,6 +168,7 @@ CREATE TABLE IF NOT EXISTS pgwar.project_statements_deleted(
   fk_subject_info integer,
   fk_property integer NOT NULL,
   fk_object_info integer,
+  object_value jsonb,
   tmsp_deletion timestamp with time zone,
   PRIMARY KEY (pk_entity, fk_project)
 );
@@ -175,13 +177,14 @@ CREATE OR REPLACE FUNCTION pgwar.handle_project_statements_delete()
 RETURNS TRIGGER AS $$
 BEGIN
     -- Insert or update the deleted row in pgwar.project_statements_deleted
-    INSERT INTO pgwar.project_statements_deleted (pk_entity, fk_project, fk_subject_info, fk_property, fk_object_info, tmsp_deletion)
-    VALUES (OLD.pk_entity, OLD.fk_project, OLD.fk_subject_info, OLD.fk_property, OLD.fk_object_info, CURRENT_TIMESTAMP)
+    INSERT INTO pgwar.project_statements_deleted (pk_entity, fk_project, fk_subject_info, fk_property, fk_object_info, object_value, tmsp_deletion)
+    VALUES (OLD.pk_entity, OLD.fk_project, OLD.fk_subject_info, OLD.fk_property, OLD.fk_object_info, OLD.object_value, CURRENT_TIMESTAMP)
     ON CONFLICT (pk_entity, fk_project)
     DO UPDATE SET 
         fk_subject_info = EXCLUDED.fk_subject_info,
         fk_property = EXCLUDED.fk_property,
         fk_object_info = EXCLUDED.fk_object_info,
+        object_value = EXCLUDED.object_value,
         tmsp_deletion = EXCLUDED.tmsp_deletion;
 
     RETURN OLD;
@@ -192,3 +195,106 @@ CREATE TRIGGER after_delete_project_statements
 AFTER DELETE ON pgwar.project_statements
 FOR EACH ROW
 EXECUTE FUNCTION pgwar.handle_project_statements_delete();
+
+
+
+------ Table pgwar.entity_full_text ----------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS pgwar.entity_full_text(
+  pk_entity integer NOT NULL,
+  fk_project integer NOT NULL,
+  full_text text,
+  tmsp_last_modification timestamp with time zone,
+  PRIMARY KEY (pk_entity, fk_project)
+);
+-- add trigger for last_modification_tmsp
+CREATE OR REPLACE TRIGGER last_modification_tmsp
+    BEFORE INSERT OR UPDATE 
+    ON pgwar.entity_full_text
+    FOR EACH ROW
+    EXECUTE FUNCTION commons.tmsp_last_modification();
+
+
+/***
+* Find full text updates in subjects of project statements
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_subjects_of_pstmt(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find subjects of modified project statements
+    SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
+    FROM pgwar.project_statements pstmt
+    LEFT JOIN pgwar.entity_full_text ftxt 
+        ON pstmt.fk_subject_info = ftxt.pk_entity
+        AND pstmt.fk_project = ftxt.fk_project
+    WHERE ftxt.tmsp_last_modification IS NULL
+    OR ftxt.tmsp_last_modification < pstmt.tmsp_last_modification
+    ORDER BY pstmt.tmsp_last_modification DESC
+    LIMIT max_limit;
+END;
+$$ LANGUAGE plpgsql;
+/***
+* Find full text updates in objects of project statements
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_objects_of_pstmt(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find objects of modified project statements
+    SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
+    FROM pgwar.project_statements pstmt
+    LEFT JOIN pgwar.entity_full_text ftxt 
+        ON pstmt.fk_object_info = ftxt.pk_entity
+        AND pstmt.fk_project = ftxt.fk_project
+    WHERE pstmt.object_value IS NULL
+    AND (ftxt.tmsp_last_modification IS NULL
+    OR ftxt.tmsp_last_modification < pstmt.tmsp_last_modification)
+    ORDER BY pstmt.tmsp_last_modification DESC
+    LIMIT max_limit;
+END;
+$$ LANGUAGE plpgsql;
+
+
+/***
+* Find full text updates in subjects of project statements deleted
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_subjects_of_pstmt_del(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find subjects of modified project statements
+    SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
+    FROM pgwar.project_statements_deleted pstmt
+    LEFT JOIN pgwar.entity_full_text ftxt 
+        ON pstmt.fk_subject_info = ftxt.pk_entity
+        AND pstmt.fk_project = ftxt.fk_project
+    WHERE ftxt.tmsp_last_modification IS NULL
+    OR ftxt.tmsp_last_modification < pstmt.tmsp_deletion
+    ORDER BY pstmt.tmsp_deletion DESC
+    LIMIT max_limit;
+END;
+$$ LANGUAGE plpgsql;
+
+
+/***
+* Find full text updates in objects from project statements deleted
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_objects_of_pstmt_del(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find objects of modified project statements
+    SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
+    FROM pgwar.project_statements_deleted pstmt
+    LEFT JOIN pgwar.entity_full_text ftxt 
+        ON pstmt.fk_object_info = ftxt.pk_entity
+        AND pstmt.fk_project = ftxt.fk_project
+    WHERE  pstmt.object_value IS NULL
+    AND (ftxt.tmsp_last_modification IS NULL
+        OR ftxt.tmsp_last_modification < pstmt.tmsp_deletion)
+    ORDER BY pstmt.tmsp_deletion DESC
+    LIMIT max_limit;
+END;
+$$ LANGUAGE plpgsql;
+
