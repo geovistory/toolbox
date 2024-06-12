@@ -20,7 +20,6 @@ CREATE OR REPLACE FUNCTION pgwar.upsert_project_statements(ps pgwar.project_stat
     RETURNS VOID
 AS $$
 BEGIN
-    RAISE NOTICE 'Enter function';
     INSERT INTO pgwar.project_statements(
         pk_entity,
         fk_project,
@@ -66,7 +65,6 @@ BEGIN
         project_statements.ord_num_of_range IS DISTINCT FROM EXCLUDED.ord_num_of_range OR
         project_statements.object_label IS DISTINCT FROM EXCLUDED.object_label OR
         project_statements.object_value IS DISTINCT FROM EXCLUDED.object_value;
-    RAISE NOTICE 'Project statement %s', ps;
 END;
 $$
     LANGUAGE plpgsql;
@@ -158,7 +156,6 @@ BEGIN
         WHERE
             fk_entity = NEW.pk_entity
           AND is_in_project = TRUE;
-        RAISE NOTICE 'New pgwar.statement %s', NEW;
     END IF;
     RETURN NEW;
 END;

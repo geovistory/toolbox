@@ -1,7 +1,7 @@
 -- Test the pgwar.project_statements module
 BEGIN;
 
-SELECT plan(6);
+SELECT plan(11);
 
 ------- Prepare required context data ------
 -- Create and switch to a sink table for entity previews
@@ -48,11 +48,6 @@ SELECT ok(
        )
 FROM pgwar.project_statements;
 
--- Update the literal
--- UPDATE information.appellation
--- SET string = 'bar'
--- WHERE notes = '_a1';
-
 --Update pgwar.statement
 UPDATE pgwar.statement
 SET object_label = 'bar'
@@ -81,6 +76,57 @@ SELECT isnt_empty(
                'get_all_pgwar_project_statements',
                'Assert pgwar project statement is not empty after re-inserting a statement'
        );
+
+-- Update info_proj_rel _ipr1 ord_num_of_domain and ord_num_of_range
+UPDATE projects.info_proj_rel
+SET ord_num_of_domain = 1,
+    ord_num_of_range = 2
+WHERE notes = '_ipr1';
+
+SELECT is(
+           ord_num_of_domain,
+           1,
+           'Assert project statement has correct ord_num_of_domain'
+       )
+FROM projects.info_proj_rel;
+
+
+SELECT is(
+               ord_num_of_range,
+               2,
+               'Assert project statement has correct ord_num_of_range'
+       )
+FROM projects.info_proj_rel;
+
+-- Update info_proj_rel _ipr1 to remove the statement from the project
+UPDATE projects.info_proj_rel
+SET is_in_project = FALSE
+WHERE notes = '_ipr1';
+
+SELECT is_empty(
+           'get_all_pgwar_project_statements',
+           'Assert pgwar project statement is empty after setting is_in_project to FALSE in info_proj_rel'
+       );
+
+-- Update info_proj_rel _ipr1 to add the statement to the project
+UPDATE projects.info_proj_rel
+SET is_in_project = TRUE
+WHERE notes = '_ipr1';
+
+SELECT isnt_empty(
+               'get_all_pgwar_project_statements',
+               'Assert pgwar project statement is not empty after setting is_in_project to TRUE in info_proj_rel'
+       );
+
+-- Delete info_proj_rel _ipr1
+DELETE FROM projects.info_proj_rel
+WHERE notes = '_ipr1';
+
+SELECT is_empty(
+               'get_all_pgwar_project_statements',
+               'Assert pgwar project statement is empty after deleting info_proj_rel _ipr1'
+       );
+
 
 -- Finish the tests and clean up.
 SELECT *
