@@ -63,15 +63,17 @@ VALUES (
     );
 
 -- Insert project statement with enitity one as subject and a literal object_label
-INSERT INTO pgwar.statement -- TODO: Change this to pgwar.project_statement
+INSERT INTO pgwar.project_statements
     (
         pk_entity,
+        fk_project,
         fk_subject_info,
         fk_property,
         fk_object_info,
         object_label
     )
 SELECT 1,
+    1,
     pk_entity,
     55,
     66,
@@ -92,15 +94,17 @@ WHERE ep.pk_entity = r.pk_entity
     AND ep.fk_project = 1;
 
 -- Insert project statement with entity two as subject and enitity one as object 
-INSERT INTO pgwar.statement -- TODO: Change this to pgwar.project_statement
+INSERT INTO pgwar.project_statements
     (
         pk_entity,
+        fk_project,
         fk_subject_info,
         fk_property,
         fk_object_info,
         object_label
     )
 SELECT 2,
+    1,
     two.pk_entity,
     22,
     one.pk_entity,
@@ -123,15 +127,17 @@ WHERE ep.pk_entity = r.pk_entity
     AND ep.fk_project = 1;
 
 -- Insert project statement with enitity two as subject and a literal object_label
-INSERT INTO pgwar.statement -- TODO: Change this to pgwar.project_statement
+INSERT INTO pgwar.project_statements
     (
         pk_entity,
+        fk_project,
         fk_subject_info,
         fk_property,
         fk_object_info,
         object_label
     )
 SELECT 3,
+    1,
     pk_entity,
     55,
     66,
@@ -179,8 +185,9 @@ WHERE ep.pk_entity = r.pk_entity
     AND ep.fk_project = 1;
 
 -- DELETE pgwar statement for entity two
-DELETE FROM pgwar.statement -- TODO: Change this to pgwar.project_statement
-WHERE pk_entity = 3;
+DELETE FROM pgwar.project_statements
+WHERE pk_entity = 3
+AND fk_project = 1;
 
 -- Assert the project entity preview has Label 1
 SELECT IS (
