@@ -1,7 +1,7 @@
 BEGIN;
 SELECT plan(3);
 
-INSERT INTO pgwar.project_statements (
+INSERT INTO pgwar.project_statements_deleted (
         pk_entity,
         fk_project,
         fk_subject_info,
@@ -17,32 +17,31 @@ VALUES (1, 123, 31, 522, 11, NULL),
 PREPARE entities_for_update AS
 SELECT pk_entity,
     fk_project
-FROM pgwar.get_ftu_in_objects_of_pstmt(100);
+FROM pgwar.get_outdated_full_texts_in_subjects_of_pstmt_del(5);
 
--- Note that (13, 543) is an object_value and does therefore
--- not show up amongst the entities_for_update
 SELECT bag_eq(
         'entities_for_update',
-        'VALUES (11, 123), (12, 999)',
-        'Contains all 2 pairs of project_id and object entity_id.'
+        'VALUES (31, 123), (32, 999), (33, 543)',
+        'Contains all 3 pairs of project_id and subject entity_id.'
     );
 
--- add full text one of the entities
+-- add full text for two of the entities
 INSERT INTO pgwar.entity_full_text (
         pk_entity,
         fk_project,
         full_text
     )
-VALUES (12, 999, 'full-text');
+VALUES (32, 999, 'full-text'),
+    (33, 543, 'full-text');
 
 -- Assert that only one entity remains in entities_for_update
 SELECT bag_eq(
         'entities_for_update',
-        'VALUES (11, 123)',
+        'VALUES (31, 123)',
         'Assert that only one entity remains in entities_for_update.'
     );
 
-INSERT INTO pgwar.project_statements (
+INSERT INTO pgwar.project_statements_deleted (
         pk_entity,
         fk_project,
         fk_subject_info,
@@ -62,7 +61,7 @@ SELECT is(
         3,
         'Assert the limit of 3 is respected'
     )
-FROM pgwar.get_ftu_in_objects_of_pstmt(3);
+FROM pgwar.get_outdated_full_texts_in_subjects_of_pstmt_del(3);
 
 SELECT *
 FROM finish();

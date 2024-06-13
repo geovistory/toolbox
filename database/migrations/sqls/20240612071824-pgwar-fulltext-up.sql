@@ -216,9 +216,9 @@ CREATE OR REPLACE TRIGGER last_modification_tmsp
 
 
 /***
-* Find full text updates in subjects of project statements
+* Find outdated full texts in subjects of project statements
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_subjects_of_pstmt(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_pstmt(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
@@ -238,9 +238,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 /***
-* Find full text updates in objects of project statements
+* Find outdated full texts in objects of project statements
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_objects_of_pstmt(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_pstmt(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
@@ -263,9 +263,9 @@ $$ LANGUAGE plpgsql;
 
 
 /***
-* Find full text updates in subjects of project statements deleted
+* Find outdated full texts in subjects of project statements deleted
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_subjects_of_pstmt_del(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_pstmt_del(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
@@ -287,9 +287,9 @@ $$ LANGUAGE plpgsql;
 
 
 /***
-* Find full text updates in objects from project statements deleted
+* Find outdated full texts in objects from project statements deleted
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_objects_of_pstmt_del(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_pstmt_del(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
@@ -312,9 +312,9 @@ $$ LANGUAGE plpgsql;
 
 
 /***
-* Find full text updates in subjects of project statements with modified dfh-prop
+* Find outdated full texts in subjects of project statements with modified dfh-prop
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_subjects_of_pstmt_by_dfh_prop(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_pstmt_by_dfh_prop(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
@@ -339,9 +339,9 @@ $$ LANGUAGE plpgsql;
 
 
 /***
-* Find full text updates in subjects of project statements with modified dfh-prop
+* Find outdated full texts in subjects of project statements with modified dfh-prop
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_subjects_of_pstmt_by_dfh_prop(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_pstmt_by_dfh_prop(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
@@ -365,9 +365,9 @@ END;
 $$ LANGUAGE plpgsql;
 
 /***
-* Find full text updates in objects of project statements with modified dfh-prop
+* Find outdated full texts in objects of project statements with modified dfh-prop
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_ftu_in_objects_of_pstmt_by_dfh_prop(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_pstmt_by_dfh_prop(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
@@ -391,13 +391,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 /***
-* Update the full texts
+* Function to get outdated full texts
 ***/
-
-CREATE OR REPLACE FUNCTION pgwar.update_full_texts(max_limit int)
-RETURNS text AS $$
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 DECLARE
     current_set RECORD;
     result_set RECORD;
@@ -406,6 +404,9 @@ DECLARE
 BEGIN
     pair_count := 0;
 
+    -- Drop the temporary table if it already exists within transaction
+    DROP TABLE IF EXISTS temp_unique_pairs;
+    
     -- Initialize the temporary table to store unique pairs
     CREATE TEMP TABLE temp_unique_pairs (
         pk_entity integer,
@@ -415,12 +416,12 @@ BEGIN
 
     -- Execute functions sequentially and add unique pairs
     FOR current_set IN SELECT unnest(array[
-        'pgwar.get_ftu_in_subjects_of_pstmt',
-        'pgwar.get_ftu_in_objects_of_pstmt',
-        'pgwar.get_ftu_in_subjects_of_pstmt_del',
-        'pgwar.get_ftu_in_objects_of_pstmt_del',
-        'pgwar.get_ftu_in_subjects_of_pstmt_by_dfh_prop',
-        'pgwar.get_ftu_in_objects_of_pstmt_by_dfh_prop'
+        'pgwar.get_outdated_full_texts_in_subjects_of_pstmt',
+        'pgwar.get_outdated_full_texts_in_objects_of_pstmt',
+        'pgwar.get_outdated_full_texts_in_subjects_of_pstmt_del',
+        'pgwar.get_outdated_full_texts_in_objects_of_pstmt_del',
+        'pgwar.get_outdated_full_texts_in_subjects_of_pstmt_by_dfh_prop',
+        'pgwar.get_outdated_full_texts_in_objects_of_pstmt_by_dfh_prop'
     ]) AS function_name
     LOOP
         EXECUTE 'INSERT INTO temp_unique_pairs (pk_entity, fk_project) ' ||
@@ -437,10 +438,28 @@ BEGIN
         END IF;
     END LOOP;
 
-    -- Insert or update pgwar.entity_full_text using the collected unique pairs
+    RETURN QUERY
+	SELECT t.pk_entity, t.fk_project
+    FROM temp_unique_pairs t
+	LIMIT max_limit;
+    
+END;
+$$ LANGUAGE plpgsql;
+
+/***
+* Update the full texts
+***/
+
+CREATE OR REPLACE FUNCTION pgwar.update_full_texts(max_limit int)
+RETURNS text AS $$
+DECLARE
+    updated_count int;
+BEGIN
+
+    -- Insert or update pgwar.entity_full_text from the outdated full texts
    	INSERT INTO pgwar.entity_full_text (pk_entity, fk_project, full_text)
 	SELECT pk_entity, fk_project, pgwar.get_project_full_text(fk_project, pk_entity)
-	FROM temp_unique_pairs
+	FROM pgwar.get_outdated_full_texts(max_limit)
 	ON CONFLICT (pk_entity, fk_project)
 	DO UPDATE
     SET full_text = EXCLUDED.full_text

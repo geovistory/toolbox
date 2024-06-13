@@ -29,7 +29,7 @@ VALUES (31, 123, 'full-text'),
 PREPARE entities_for_update AS
 SELECT pk_entity,
     fk_project
-FROM pgwar.get_ftu_in_subjects_of_pstmt_by_dfh_prop(100);
+FROM pgwar.get_outdated_full_texts_in_subjects_of_pstmt_by_dfh_prop(100);
 
 -- assert no entity for update found
 SELECT is_empty(
@@ -56,7 +56,7 @@ SELECT is(
         1,
         'Assert the limit of 1 is respected'
     )
-FROM pgwar.get_ftu_in_subjects_of_pstmt_by_dfh_prop(1);
+FROM pgwar.get_outdated_full_texts_in_subjects_of_pstmt_by_dfh_prop(1);
 
 SELECT *
 FROM finish();
