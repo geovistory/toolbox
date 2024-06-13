@@ -389,10 +389,10 @@ END;
 $$
 LANGUAGE plpgsql;
 
------- Trigger after upsert statement table -------------------------------------------------
+------ Function to update pgwar from a statement --------------------------------------------
 ---------------------------------------------------------------------------------------------
-CREATE FUNCTION pgwar.after_upsert_statement()
-    RETURNS TRIGGER
+CREATE FUNCTION pgwar.update_from_statement(NEW_STMT information.statement)
+    RETURNS void
     LANGUAGE plpgsql
     AS $$
 DECLARE
@@ -407,109 +407,120 @@ DECLARE
 BEGIN
 
     -- get the referenced appellation...
-    SELECT * INTO appellation FROM information.appellation WHERE pk_entity = NEW.fk_object_info;
+    SELECT * INTO appellation FROM information.appellation WHERE pk_entity = NEW_STMT.fk_object_info;
     -- ...if not null...
     IF appellation.pk_entity IS NOT NULL THEN
       -- create a pgwar.statement
-      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+      PERFORM pgwar.upsert_statement((NEW_STMT.pk_entity,NEW_STMT.fk_subject_info,NEW_STMT.fk_property,NEW_STMT.fk_object_info,NEW_STMT.fk_object_tables_cell,
         pgwar.get_value_label(appellation),
         pgwar.get_value_object(appellation)
       )::pgwar.statement);
       -- return!
-      RETURN NEW;
+      RETURN;
     END IF;
 
     -- get the referenced dimension...
-    SELECT * INTO dimension FROM information.dimension WHERE pk_entity = NEW.fk_object_info;
+    SELECT * INTO dimension FROM information.dimension WHERE pk_entity = NEW_STMT.fk_object_info;
     -- ...if not null...
     IF dimension.pk_entity IS NOT NULL THEN
       -- create a pgwar.statement
-      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+      PERFORM pgwar.upsert_statement((NEW_STMT.pk_entity,NEW_STMT.fk_subject_info,NEW_STMT.fk_property,NEW_STMT.fk_object_info,NEW_STMT.fk_object_tables_cell,
         pgwar.get_value_label(dimension),
         pgwar.get_value_object(dimension)
       )::pgwar.statement);
       -- return!
-      RETURN NEW;
+      RETURN;
     END IF;
 
     -- get the referenced lang_string...
-    SELECT * INTO lang_string FROM information.lang_string WHERE pk_entity = NEW.fk_object_info;
+    SELECT * INTO lang_string FROM information.lang_string WHERE pk_entity = NEW_STMT.fk_object_info;
     -- ...if not null...
     IF lang_string.pk_entity IS NOT NULL THEN
       -- create a pgwar.statement
-      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+      PERFORM pgwar.upsert_statement((NEW_STMT.pk_entity,NEW_STMT.fk_subject_info,NEW_STMT.fk_property,NEW_STMT.fk_object_info,NEW_STMT.fk_object_tables_cell,
         pgwar.get_value_label(lang_string),
         pgwar.get_value_object(lang_string)
       )::pgwar.statement);
       -- return!
-      RETURN NEW;
+      RETURN;
     END IF;
 
     -- get the referenced dimension...
-    SELECT * INTO language FROM information.language WHERE pk_entity = NEW.fk_object_info;
+    SELECT * INTO language FROM information.language WHERE pk_entity = NEW_STMT.fk_object_info;
     -- ...if not null...
     IF language.pk_entity IS NOT NULL THEN
       -- create a pgwar.statement
-      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+      PERFORM pgwar.upsert_statement((NEW_STMT.pk_entity,NEW_STMT.fk_subject_info,NEW_STMT.fk_property,NEW_STMT.fk_object_info,NEW_STMT.fk_object_tables_cell,
         pgwar.get_value_label(language),
         pgwar.get_value_object(language)
       )::pgwar.statement);
       -- return!
-      RETURN NEW;
+      RETURN;
     END IF;
 
     -- get the referenced place...
-    SELECT * INTO place FROM information.place WHERE pk_entity = NEW.fk_object_info;
+    SELECT * INTO place FROM information.place WHERE pk_entity = NEW_STMT.fk_object_info;
     -- ...if not null...
     IF place.pk_entity IS NOT NULL THEN
       -- create a pgwar.statement
-      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+      PERFORM pgwar.upsert_statement((NEW_STMT.pk_entity,NEW_STMT.fk_subject_info,NEW_STMT.fk_property,NEW_STMT.fk_object_info,NEW_STMT.fk_object_tables_cell,
         pgwar.get_value_label(place),
         pgwar.get_value_object(place)
       )::pgwar.statement);
       -- return!
-      RETURN NEW;
+      RETURN;
     END IF;
 
     -- get the referenced time_primitive...
-    SELECT * INTO time_primitive FROM information.time_primitive WHERE pk_entity = NEW.fk_object_info;
+    SELECT * INTO time_primitive FROM information.time_primitive WHERE pk_entity = NEW_STMT.fk_object_info;
     -- ...if not null...
     IF time_primitive.pk_entity IS NOT NULL THEN
       -- create a pgwar.statement
-      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+      PERFORM pgwar.upsert_statement((NEW_STMT.pk_entity,NEW_STMT.fk_subject_info,NEW_STMT.fk_property,NEW_STMT.fk_object_info,NEW_STMT.fk_object_tables_cell,
         pgwar.get_value_label(time_primitive),
         pgwar.get_value_object(time_primitive)
       )::pgwar.statement);
       -- return!
-      RETURN NEW;
+      RETURN;
     END IF;
 
     -- get the referenced cell...
-    SELECT * INTO cell FROM tables.cell WHERE pk_cell = NEW.fk_object_tables_cell;
+    SELECT * INTO cell FROM tables.cell WHERE pk_cell = NEW_STMT.fk_object_tables_cell;
     -- ...if not null...
     IF cell.pk_cell IS NOT NULL THEN
       -- create a pgwar.statement
-      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,
+      PERFORM pgwar.upsert_statement((NEW_STMT.pk_entity,NEW_STMT.fk_subject_info,NEW_STMT.fk_property,NEW_STMT.fk_object_info,NEW_STMT.fk_object_tables_cell,
         pgwar.get_value_label(cell),
         pgwar.get_value_object(cell)
       )::pgwar.statement);
       -- return!
-      RETURN NEW;
+      RETURN;
     END IF;
 
     
 
     -- get the referenced entity...
-    SELECT * INTO entity FROM information.resource WHERE pk_entity = NEW.fk_object_info;
+    SELECT * INTO entity FROM information.resource WHERE pk_entity = NEW_STMT.fk_object_info;
     -- ...if not null...
     IF entity.pk_entity IS NOT NULL THEN
       -- create a pgwar.statement
-      PERFORM pgwar.upsert_statement((NEW.pk_entity,NEW.fk_subject_info,NEW.fk_property,NEW.fk_object_info,NEW.fk_object_tables_cell,NULL,NULL)::pgwar.statement);
+      PERFORM pgwar.upsert_statement((NEW_STMT.pk_entity,NEW_STMT.fk_subject_info,NEW_STMT.fk_property,NEW_STMT.fk_object_info,NEW_STMT.fk_object_tables_cell,NULL,NULL)::pgwar.statement);
       -- return!
-      RETURN NEW;
+      RETURN;
     END IF;
 
-    -- fallback
+END;
+$$;
+
+------ Trigger function after upsert statement table -------------------------------------------------
+---------------------------------------------------------------------------------------------
+CREATE FUNCTION pgwar.after_upsert_statement()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM pgwar.update_from_statement(NEW);
+
     RETURN NEW;
 END;
 $$;
@@ -519,7 +530,7 @@ CREATE TRIGGER after_upsert_statement
     FOR EACH ROW
     EXECUTE FUNCTION pgwar.after_upsert_statement();
 
-    ------ Trigger after delete statement table -------------------------------------------------
+------ Trigger after delete statement table -------------------------------------------------
 ---------------------------------------------------------------------------------------------
 CREATE FUNCTION pgwar.after_delete_statement()
     RETURNS TRIGGER
