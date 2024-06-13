@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS pgwar.project_statements(
   ord_num_of_range integer,
   object_label varchar(100),
   object_value jsonb,
+  tmsp_last_modification timestamp with time zone,
   PRIMARY KEY (pk_entity, fk_project)
 );
 
@@ -103,7 +104,8 @@ BEGIN
                         NEW.ord_num_of_domain,
                         NEW.ord_num_of_range,
                         statement.object_label,
-                        statement.object_value)::pgwar.project_statements
+                        statement.object_value,
+                        NULL)::pgwar.project_statements
                 );
         ELSE
             -- ... delete the project_statements
@@ -149,7 +151,8 @@ BEGIN
                 ord_num_of_domain,
                 ord_num_of_range,
                 NEW.object_label,
-                NEW.object_value)::pgwar.project_statements
+                NEW.object_value,
+                NULL)::pgwar.project_statements
             )
         FROM
             projects.info_proj_rel
@@ -183,3 +186,10 @@ CREATE TRIGGER after_delete_pgw_statement
     AFTER DELETE ON pgwar.statement
     FOR EACH ROW
 EXECUTE FUNCTION pgwar.after_delete_pgw_statement();
+
+-- add trigger for last_modification_tmsp
+CREATE OR REPLACE TRIGGER last_modification_tmsp
+    BEFORE INSERT OR UPDATE 
+    ON pgwar.project_statements
+    FOR EACH ROW
+    EXECUTE FUNCTION commons.tmsp_last_modification();
