@@ -74,7 +74,7 @@ BEGIN
                 pep.entity_label, -- take the project entity label,
                 cep.entity_label -- else the community entity label
             )::VARCHAR AS label
-    FROM pgwar.project_statements pstmt
+    FROM pgwar.v_statements_combined pstmt
     -- join the project entity
     LEFT JOIN pgwar.entity_preview pep 
         ON pep.fk_project = project_id
@@ -107,7 +107,7 @@ BEGIN
                 pep.entity_label, -- else the project entity label,
                 cep.entity_label -- else the community entity label
             )::VARCHAR AS label
-    FROM pgwar.project_statements pstmt
+    FROM pgwar.v_statements_combined pstmt
     -- join the project entity
     LEFT JOIN pgwar.entity_preview pep 
         ON pep.fk_project = project_id

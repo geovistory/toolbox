@@ -216,17 +216,17 @@ CREATE OR REPLACE TRIGGER last_modification_tmsp
 
 
 /***
-* Find outdated full texts in subjects of project statements
+* Find outdated full texts in subjects of statements
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_pstmt(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_stmt(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
-    -- find subjects of modified project statements
+    -- find subjects of modified statements
     SELECT DISTINCT s.pk_entity, s.fk_project
     FROM (
         SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
-        FROM pgwar.project_statements pstmt
+        FROM pgwar.v_statements_combined pstmt
         LEFT JOIN pgwar.entity_full_text ftxt 
             ON pstmt.fk_subject_info = ftxt.pk_entity
             AND pstmt.fk_project = ftxt.fk_project
@@ -238,17 +238,17 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 /***
-* Find outdated full texts in objects of project statements
+* Find outdated full texts in objects of statements
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_pstmt(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_stmt(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
-    -- find objects of modified project statements
+    -- find objects of modified statements
     SELECT DISTINCT s.pk_entity, s.fk_project
     FROM (
         SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
-        FROM pgwar.project_statements pstmt
+        FROM pgwar.v_statements_combined pstmt
         LEFT JOIN pgwar.entity_full_text ftxt 
             ON pstmt.fk_object_info = ftxt.pk_entity
             AND pstmt.fk_project = ftxt.fk_project
@@ -263,17 +263,17 @@ $$ LANGUAGE plpgsql;
 
 
 /***
-* Find outdated full texts in subjects of project statements deleted
+* Find outdated full texts in subjects of statements deleted
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_pstmt_del(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_stmt_del(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
-    -- find subjects of modified project statements
+    -- find subjects of deleted statements
     SELECT DISTINCT s.pk_entity, s.fk_project
     FROM (
         SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
-        FROM pgwar.project_statements_deleted pstmt
+        FROM pgwar.v_statements_deleted_combined pstmt
         LEFT JOIN pgwar.entity_full_text ftxt 
             ON pstmt.fk_subject_info = ftxt.pk_entity
             AND pstmt.fk_project = ftxt.fk_project
@@ -287,17 +287,17 @@ $$ LANGUAGE plpgsql;
 
 
 /***
-* Find outdated full texts in objects from project statements deleted
+* Find outdated full texts in objects of statements deleted
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_pstmt_del(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_stmt_del(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
-    -- find objects of modified project statements
+    -- find objects of deleted statements
     SELECT DISTINCT s.pk_entity, s.fk_project
     FROM (
         SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
-        FROM pgwar.project_statements_deleted pstmt
+        FROM pgwar.v_statements_deleted_combined pstmt
         LEFT JOIN pgwar.entity_full_text ftxt 
             ON pstmt.fk_object_info = ftxt.pk_entity
             AND pstmt.fk_project = ftxt.fk_project
@@ -312,45 +312,18 @@ $$ LANGUAGE plpgsql;
 
 
 /***
-* Find outdated full texts in subjects of project statements with modified dfh-prop
+* Find outdated full texts in subjects of statements with modified dfh-prop
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_pstmt_by_dfh_prop(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_stmt_by_dfh_prop(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
-    -- find subjects of project statements with modified dfh-prop
+    -- find subjects of statements with modified dfh-prop
     SELECT DISTINCT s.pk_entity, s.fk_project
     FROM (
         SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
         FROM 
-                pgwar.project_statements pstmt,
-                data_for_history.api_property dfh_prop
-        LEFT JOIN pgwar.entity_full_text ftxt 
-            ON pstmt.fk_subject_info = ftxt.pk_entity
-            AND pstmt.fk_project = ftxt.fk_project
-        WHERE
-            dfh_prop.dfh_pk_property = pstmt.fk_property
-        AND ftxt.tmsp_last_modification < dfh_prop.tmsp_last_modification
-        ORDER BY dfh_prop.tmsp_last_modification DESC
-        LIMIT max_limit
-    ) AS s;
-END;
-$$ LANGUAGE plpgsql;
-
-
-/***
-* Find outdated full texts in subjects of project statements with modified dfh-prop
-***/
-CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_pstmt_by_dfh_prop(max_limit int)
-RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
-BEGIN
-    RETURN QUERY
-    -- find subjects of project statements with modified dfh-prop
-    SELECT DISTINCT s.pk_entity, s.fk_project
-    FROM (
-        SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
-        FROM 
-                pgwar.project_statements pstmt,
+                pgwar.v_statements_combined pstmt,
                 data_for_history.api_property dfh_prop,
                 pgwar.entity_full_text ftxt 
         WHERE
@@ -365,18 +338,18 @@ END;
 $$ LANGUAGE plpgsql;
 
 /***
-* Find outdated full texts in objects of project statements with modified dfh-prop
+* Find outdated full texts in objects of statements with modified dfh-prop
 ***/
-CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_pstmt_by_dfh_prop(max_limit int)
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_stmt_by_dfh_prop(max_limit int)
 RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
 BEGIN
     RETURN QUERY
-    -- find objects of project statements with modified dfh-prop
+    -- find objects of statements with modified dfh-prop
     SELECT DISTINCT s.pk_entity, s.fk_project
     FROM (
         SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
         FROM 
-                pgwar.project_statements pstmt,
+                pgwar.v_statements_combined pstmt,
                 data_for_history.api_property dfh_prop,
                 pgwar.entity_full_text ftxt 
         WHERE
@@ -416,12 +389,12 @@ BEGIN
 
     -- Execute functions sequentially and add unique pairs
     FOR current_set IN SELECT unnest(array[
-        'pgwar.get_outdated_full_texts_in_subjects_of_pstmt',
-        'pgwar.get_outdated_full_texts_in_objects_of_pstmt',
-        'pgwar.get_outdated_full_texts_in_subjects_of_pstmt_del',
-        'pgwar.get_outdated_full_texts_in_objects_of_pstmt_del',
-        'pgwar.get_outdated_full_texts_in_subjects_of_pstmt_by_dfh_prop',
-        'pgwar.get_outdated_full_texts_in_objects_of_pstmt_by_dfh_prop'
+        'pgwar.get_outdated_full_texts_in_subjects_of_stmt',
+        'pgwar.get_outdated_full_texts_in_objects_of_stmt',
+        'pgwar.get_outdated_full_texts_in_subjects_of_stmt_del',
+        'pgwar.get_outdated_full_texts_in_objects_of_stmt_del',
+        'pgwar.get_outdated_full_texts_in_subjects_of_stmt_by_dfh_prop',
+        'pgwar.get_outdated_full_texts_in_objects_of_stmt_by_dfh_prop'
     ]) AS function_name
     LOOP
         EXECUTE 'INSERT INTO temp_unique_pairs (pk_entity, fk_project) ' ||
