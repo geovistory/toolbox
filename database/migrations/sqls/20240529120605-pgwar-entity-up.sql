@@ -68,10 +68,11 @@ $$
 LANGUAGE plpgsql;
 
 
--- Trigger function after_upsert_resource
+
+-- Function to update pgwar from resource
 ----------------------------------------------
-CREATE FUNCTION pgwar.after_upsert_resource()
-    RETURNS TRIGGER
+CREATE FUNCTION pgwar.update_from_resource(NEW_RES information.resource)
+    RETURNS void
     LANGUAGE plpgsql
     AS $$
 BEGIN
@@ -82,27 +83,39 @@ BEGIN
         FROM
             projects.info_proj_rel
         WHERE
-            fk_entity = COALESCE(NEW.pk_entity)
+            fk_entity = NEW_RES.pk_entity
             AND is_in_project = TRUE) THEN
-    -- ... insert missing project entities or update existing, in case fk_class differs
-    PERFORM
-        pgwar.upsert_entity_preview_fk_class(fk_entity, fk_project, NEW.fk_class)
-    FROM
-        projects.info_proj_rel
-    WHERE
-        fk_entity = NEW.pk_entity
-        AND is_in_project = TRUE;
-    -- ... insert missing community entity or update existing, in case fk_class differs
-    PERFORM
-        pgwar.upsert_entity_preview_fk_class(NEW.pk_entity, 0, NEW.fk_class);
-END IF;
-    -- if hidden for toolbox community ...
-    IF(NEW.community_visibility ->> 'toolbox')::bool = FALSE THEN
-        -- ... delete potentially unallowed community entities
-        DELETE FROM pgwar.entity_preview
-        WHERE fk_project = 0
-            AND pk_entity = NEW.pk_entity;
+        -- ... insert missing project entities or update existing, in case fk_class differs
+        PERFORM
+            pgwar.upsert_entity_preview_fk_class(fk_entity, fk_project, NEW_RES.fk_class)
+        FROM
+            projects.info_proj_rel
+        WHERE
+            fk_entity = NEW_RES.pk_entity
+            AND is_in_project = TRUE;
+        -- ... insert missing community entity or update existing, in case fk_class differs
+        PERFORM
+            pgwar.upsert_entity_preview_fk_class(NEW_RES.pk_entity, 0, NEW_RES.fk_class);
     END IF;
+        -- if hidden for toolbox community ...
+        IF(NEW_RES.community_visibility ->> 'toolbox')::bool = FALSE THEN
+            -- ... delete potentially unallowed community entities
+            DELETE FROM pgwar.entity_preview
+            WHERE fk_project = 0
+                AND pk_entity = NEW_RES.pk_entity;
+    END IF;
+END;
+$$;
+
+-- Trigger function after_upsert_resource
+----------------------------------------------
+CREATE FUNCTION pgwar.after_upsert_resource()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    PERFORM pgwar.update_from_resource(NEW);
+
     RETURN NEW;
 END;
 $$;
