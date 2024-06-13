@@ -472,3 +472,23 @@ BEGIN
     RETURN 'Number of rows updated: ' || updated_count;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- Create the trigger function to update entity preview full text
+CREATE OR REPLACE FUNCTION pgwar.update_entity_preview_full_text()
+RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE pgwar.entity_preview
+    SET full_text = NEW.full_text
+    WHERE pk_entity = NEW.pk_entity
+    AND fk_project = NEW.fk_project;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the trigger after_upsert_entity_full_text
+CREATE TRIGGER after_upsert_entity_full_text
+AFTER INSERT OR UPDATE ON pgwar.entity_full_text
+FOR EACH ROW
+EXECUTE FUNCTION pgwar.update_entity_preview_full_text();

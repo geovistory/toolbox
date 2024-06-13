@@ -1,29 +1,67 @@
--- schedule the cron job
-SELECT * FROM dblink(
-	'dbname=postgres', -- the database with pg_cron installed
-	'SELECT cron.schedule_in_database(''my-test-job'', ''1 seconds'', ''SELECT pgwar.update_fulltexts()'', ''' || current_database() ||''');'
-) AS dl(schedule_in_database int);
-
-
-
 BEGIN;
--- create seed data
 
+SELECT plan(4);
 
-SELECT plan(1);
--- wait 2 seconds for the cron job to create the fulltext
+-- add partitions
+CREATE TABLE pgwar.entity_preview_999 PARTITION OF pgwar.entity_preview FOR
+VALUES IN (999);
 
--- test
+CREATE TABLE pgwar.entity_preview_543 PARTITION OF pgwar.entity_preview FOR
+VALUES IN (543);
+
+-- initialize entity previews
+INSERT INTO pgwar.entity_preview (pk_entity, fk_project, fk_class)
+VALUES (32, 999, 0),
+	(33, 543, 0);
+
+-- add full text for two of the entities
+INSERT INTO pgwar.entity_full_text (pk_entity, fk_project, full_text)
+VALUES (32, 999, 'full-text-a'),
+	(33, 543, 'full-text-b');
+
+SELECT is(
+		full_text,
+		'full-text-a',
+		'Assert that full-text-a is inserted into entity_preview table after insert'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 32
+	AND fk_project = 999;
+
+SELECT is(
+		full_text,
+		'full-text-b',
+		'Assert that full-text-b is inserted into entity_preview table after insert'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 33
+	AND fk_project = 543;
+
+UPDATE pgwar.entity_full_text
+SET full_text = 'foo'
+WHERE pk_entity = 33
+	AND fk_project = 543;
+
+SELECT is(
+		full_text,
+		'foo',
+		'Assert that foo is inserted into entity_preview table after update'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 33
+	AND fk_project = 543;
+
+SELECT is(
+		full_text,
+		'full-text-a',
+		'Assert that entity preview 32-999 is not affected by update'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 32
+	AND fk_project = 999;
 
 -- Finish the tests and clean up.
 SELECT *
 FROM finish();
 
 ROLLBACK;
-
-
--- unschedule all cron jobs
-SELECT * FROM dblink(
-	'dbname=postgres',
-	'SELECT cron.unschedule(jobid) FROM cron.job;'
-) AS dl(unschedule bool);
