@@ -65,46 +65,46 @@ test/
 
 ## Testing
 
+### Prepare env
+
 First Copy `.env.example` to `.env` and adjust the `POSTGRES_PORT` in case you have already a process listinging on this port.
 
-Start the docker container to run tests:
+### Run tests
+
+On Linux / Mac
 
 ```bash
-# Linux / Mac
-bash docker_compose_up.sh
-
-# Windows
-call docker_compose_up.bat
+# To run unit tests:
+bash ./test.sh -u
+# To run integration tests:
+bash ./test.sh -i
+# To run performance tests:
+bash ./test.sh -p
+# To run any combination of tests, combine the flags. For example, to run both unit and integration tests:
+bash ./test.sh -u -i
+# To run all tests:
+bash ./test.sh -u -i -p
 ```
 
-This will start the testing container with postgres and test scripts.
+On Windows
 
-Then you run one of the following commands:
-
-### Run unit and integration tests
-
-```bash
-# Linux / Mac
-bash test_units.sh && bash test_integration.sh
-# Windows
-call test_units.bat && call test_integration.bat
-```
-
-### Run performance tests
-
-These scripts will call function that seeds the db with 1mio statements and may take while.
-
-```bash
-# Linux / Mac
-bash test_performance.sh
-# Windows
-call test_performance.bat
+```powershell
+# To run unit tests:
+call ./test.bat -u
+# To run integration tests:
+call ./test.bat -i
+# To run performance tests:
+call ./test.bat -p
+# To run any combination of tests, combine the flags. For example, to run both unit and integration tests:
+call ./test.bat -u -i
+# To run all tests:
+call ./test.bat -u -i -p
 ```
 
 ## Setup CI
 
-To setup CI, just run these commands:
+To setup CI, just run this command:
 
 ```bash
-bash docker_compose_up.sh && bash test_all.sh
+bash ./test.sh -u -i -p
 ```
