@@ -243,6 +243,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER on_upsert_entity_preview_fk_class
 AFTER INSERT OR UPDATE OF fk_class ON pgwar.entity_preview
 FOR EACH ROW
+WHEN (NEW.fk_project IS DISTINCT FROM 0)
 EXECUTE FUNCTION pgwar.update_entity_label_on_fk_class_change();
 
 -- Update entity labels of related entities, on change on entity preview entity_label
