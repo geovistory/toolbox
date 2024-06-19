@@ -2,7 +2,7 @@
 -- Start transaction and plan the tests.
 BEGIN;
 
-SELECT plan(6);
+SELECT plan(8);
 
 -- Create and switch to a sink table for entity previews
 SELECT war.create_sink_table_entity_preview('war.e');
@@ -194,6 +194,34 @@ SELECT IS (
         ep.entity_label,
         'Label 1',
         'Assert project entity preview has Label 1'
+    )
+FROM pgwar.entity_preview ep,
+    information.resource r
+WHERE ep.pk_entity = r.pk_entity
+    AND r.notes = '_1'
+    AND ep.fk_project = 1;
+
+-- Update fk_class
+UPDATE information.resource
+SET fk_class = 99
+WHERE notes = '_1';
+
+
+SELECT IS (
+        ep.fk_class,
+        99,
+        'Assert project entity preview has the changed class'
+    )
+FROM pgwar.entity_preview ep,
+    information.resource r
+WHERE ep.pk_entity = r.pk_entity
+    AND r.notes = '_1'
+    AND ep.fk_project = 1;
+
+SELECT IS (
+        ep.entity_label,
+        NULL,
+        'Assert project entity preview has NULL after changed class'
     )
 FROM pgwar.entity_preview ep,
     information.resource r

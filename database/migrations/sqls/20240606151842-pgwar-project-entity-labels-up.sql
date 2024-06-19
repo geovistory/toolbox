@@ -184,6 +184,25 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+
+-- get and update entity label or project entity
+CREATE OR REPLACE FUNCTION pgwar.get_and_update_project_entity_label(entity_id int, project_id int)
+RETURNS void AS $$
+BEGIN
+    IF EXISTS(
+        SELECT
+            pk_entity
+        FROM
+            pgwar.entity_preview
+        WHERE
+            pk_entity = entity_id
+            AND fk_project = project_id) THEN
+         PERFORM pgwar.update_project_entity_label(entity_id, project_id, pgwar.get_project_entity_label(entity_id, project_id));
+     END IF;
+END;
+$$ LANGUAGE plpgsql;
+
 /***
 * Triggers
 ***/
@@ -201,12 +220,12 @@ BEGIN
     subject_entity_id := COALESCE(NEW.fk_subject_info, OLD.fk_subject_info);
 
     -- Update the label for the subject entity
-    PERFORM pgwar.update_project_entity_label(subject_entity_id, project_id, pgwar.get_project_entity_label(subject_entity_id, project_id));
+    PERFORM pgwar.get_and_update_project_entity_label(subject_entity_id, project_id);
 
     -- Check if the object is an entity (object_label IS NULL)
     IF COALESCE(NEW.object_label, OLD.object_label) IS NULL THEN
         object_entity_id := COALESCE(NEW.fk_object_info, OLD.fk_object_info);
-        PERFORM pgwar.update_project_entity_label(object_entity_id, project_id, pgwar.get_project_entity_label(object_entity_id, project_id));
+        PERFORM pgwar.get_and_update_project_entity_label(object_entity_id, project_id);
     END IF;
 
     RETURN NULL;
@@ -219,7 +238,6 @@ FOR EACH ROW
 EXECUTE FUNCTION pgwar.update_entity_label_on_project_statement_change();
 
 -- Update entity labels on change on entity preview fk_class
-
 CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_fk_class_change()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -253,14 +271,14 @@ BEGIN
     entity_id := COALESCE(NEW.pk_entity, OLD.pk_entity);
 
     -- Update the entity labels of the related object entities
-    PERFORM pgwar.update_project_entity_label(fk_object_info, project_id, pgwar.get_project_entity_label(fk_object_info, project_id))
+    PERFORM pgwar.get_and_update_project_entity_label(fk_object_info, project_id)
     FROM pgwar.project_statements
     WHERE fk_subject_info = entity_id
     AND object_label IS NULL
     AND fk_project = project_id;
 
     -- Update the entity labels of the related subject entities
-    PERFORM pgwar.update_project_entity_label(fk_subject_info, project_id, pgwar.get_project_entity_label(fk_subject_info, project_id))
+    PERFORM pgwar.get_and_update_project_entity_label(fk_subject_info, project_id)
     FROM pgwar.project_statements
     WHERE fk_object_info = entity_id
     AND fk_project = project_id;

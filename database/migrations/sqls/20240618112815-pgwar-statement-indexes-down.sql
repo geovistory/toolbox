@@ -1,0 +1,7 @@
+DROP INDEX IF EXISTS pgwar.project_statements_fk_subject_info_idx;
+DROP INDEX IF EXISTS pgwar.project_statements_fk_object_info_idx;
+DROP INDEX IF EXISTS pgwar.community_statements_fk_subject_info_idx;
+DROP INDEX IF EXISTS pgwar.community_statements_fk_object_info_idx;
+DROP INDEX IF EXISTS pgwar.project_statements_outgoing_order_idx;
+DROP INDEX IF EXISTS pgwar.community_statements_fk_property_idx;
+DROP INDEX IF EXISTS pgwar.project_statements_fk_property_idx;
