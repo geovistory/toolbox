@@ -267,6 +267,10 @@ DECLARE
     project_id int;
     entity_id int;
 BEGIN
+    IF TG_OP = 'INSERT' AND NEW.entity_label IS NULL THEN
+        RETURN NULL; 
+    END IF;
+
     project_id := COALESCE(NEW.fk_project, OLD.fk_project);
     entity_id := COALESCE(NEW.pk_entity, OLD.pk_entity);
 

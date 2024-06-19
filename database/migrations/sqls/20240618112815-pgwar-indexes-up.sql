@@ -25,3 +25,7 @@ CREATE INDEX IF NOT EXISTS community_statements_fk_property_idx
 CREATE INDEX IF NOT EXISTS project_statements_fk_property_idx
     ON pgwar.project_statements USING btree
     (fk_property ASC NULLS LAST);
+
+CREATE INDEX IF NOT EXISTS entity_preview_fk_class_idx
+    ON pgwar.entity_preview USING btree
+    (fk_class ASC NULLS LAST);
