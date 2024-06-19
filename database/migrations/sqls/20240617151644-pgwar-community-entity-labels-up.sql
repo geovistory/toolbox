@@ -92,9 +92,10 @@ CREATE OR REPLACE FUNCTION pgwar.update_community_entity_label_on_project_entity
 DECLARE
     label text;
 BEGIN
-    IF NEW.fk_project != 0 THEN
-        SELECT pgwar.get_most_frequent_entity_label(NEW.pk_entity) INTO label;
+    IF NEW.fk_project != 0 OR OLD.fk_project !=0 THEN
+
         IF tg_op = 'UPDATE' AND OLD.entity_label != NEW.entity_label THEN
+            SELECT pgwar.get_most_frequent_entity_label(NEW.pk_entity) INTO label;
             PERFORM
                 pgwar.upsert_community_entity_preview((
                    NEW.pk_entity,
@@ -113,6 +114,7 @@ BEGIN
                    NEW.tmsp_last_modification)::pgwar.entity_preview
                 );
         ELSEIF tg_op = 'INSERT' THEN
+            SELECT pgwar.get_most_frequent_entity_label(NEW.pk_entity) INTO label;
             PERFORM
                 pgwar.upsert_community_entity_preview((
                    NEW.pk_entity,
@@ -131,6 +133,7 @@ BEGIN
                    NEW.tmsp_last_modification)::pgwar.entity_preview
                 );
         ELSE
+            SELECT pgwar.get_most_frequent_entity_label(OLD.pk_entity) INTO label;
             UPDATE pgwar.entity_preview
             SET entity_label = label
             WHERE fk_project = 0 AND pk_entity = OLD.pk_entity;

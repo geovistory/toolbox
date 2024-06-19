@@ -322,7 +322,7 @@ WHERE notes = '_1';
 SELECT is(
     ep.entity_label,
     'Label 1bis',
-    'Assert community entity preview has Label 1bis'
+    'Assert community entity preview has Label 1bis after inserts'
 )
 FROM pgwar.entity_preview ep,
      information.resource r
@@ -339,7 +339,7 @@ WHERE fk_project > 3;
 SELECT is(
    ep.entity_label,
    'Label 1ter',
-   'Assert community entity preview has Label 1ter'
+   'Assert community entity preview has Label 1ter after updates'
 )
 FROM pgwar.entity_preview ep,
      information.resource r
@@ -355,7 +355,7 @@ WHERE fk_project > 1;
 SELECT is(
    ep.entity_label,
    'Label 1',
-   'Assert community entity preview has Label 1'
+   'Assert community entity preview has Label 1 after deletes'
 )
 FROM pgwar.entity_preview ep,
      information.resource r
