@@ -182,6 +182,7 @@ BEGIN
     SET entity_label = new_label
     WHERE pk_entity = entity_id
     AND fk_project = project_id
+    AND fk_project != 0
     AND entity_label IS DISTINCT FROM new_label;
 END;
 $$ LANGUAGE plpgsql;
