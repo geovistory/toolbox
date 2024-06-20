@@ -7,10 +7,16 @@
 ***/
 
 -- Drop trigger on_modify_project_statement
-DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.statement;
+DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.project_statements;
+
+-- Drop trigger after_delete_entity_preview_01
+DROP TRIGGER IF EXISTS after_delete_entity_preview_01 ON pgwar.entity_preview;
 
 -- Drop trigger on_upsert_entity_preview_fk_class
 DROP TRIGGER IF EXISTS on_upsert_entity_preview_fk_class ON pgwar.entity_preview;
+
+-- Drop trigger  after_upsert_entity_preview_entity_label_01
+DROP TRIGGER IF EXISTS after_upsert_entity_preview_entity_label_01 ON pgwar.entity_preview;
 
 -- Drop trigger on_upsert_entity_preview_entity_label
 DROP TRIGGER IF EXISTS on_upsert_entity_preview_entity_label ON pgwar.entity_preview;

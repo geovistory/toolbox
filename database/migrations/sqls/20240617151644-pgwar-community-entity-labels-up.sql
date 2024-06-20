@@ -26,7 +26,7 @@ DECLARE
     label text;
 BEGIN
     
-    -- check if communty entity exists in pgwar.entity_preview
+    -- check if community entity exists in pgwar.entity_preview
     IF EXISTS(
         SELECT pk_entity
         FROM pgwar.entity_preview
