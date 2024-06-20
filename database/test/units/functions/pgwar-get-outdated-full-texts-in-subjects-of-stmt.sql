@@ -71,10 +71,10 @@ VALUES (4, 44, 31, 522, 11, NULL),
 
 SELECT is(
         count(*)::int,
-        3,
-        'Assert the limit of 3 is respected'
+        1,
+        'Assert the limit of 1 is respected'
     )
-FROM pgwar.get_outdated_full_texts_in_subjects_of_stmt(3);
+FROM pgwar.get_outdated_full_texts_in_subjects_of_stmt(1);
 
 SELECT *
 FROM finish();
