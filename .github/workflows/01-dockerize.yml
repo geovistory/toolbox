@@ -26,7 +26,7 @@ jobs:
           cd database
           chmod -R 777 logs
           export POSTGRES_PORT=5432
-          bash test.sh -i -u 
+          bash test.sh -i -u -p
 
   set-version:
     runs-on: ubuntu-latest
