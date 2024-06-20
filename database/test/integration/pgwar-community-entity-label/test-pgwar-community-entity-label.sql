@@ -131,8 +131,8 @@ VALUES (
        );
 
 -- Add entity 1
-INSERT INTO information.resource (fk_class, notes)
-VALUES (77, '_1') RETURNING pk_entity;
+INSERT INTO information.resource (fk_class, community_visibility, notes)
+VALUES (77, '{"toolbox":true}', '_1') RETURNING pk_entity;
 
 INSERT INTO projects.info_proj_rel (fk_entity, fk_project, is_in_project)
 SELECT pk_entity,
