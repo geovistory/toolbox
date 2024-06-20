@@ -34,8 +34,8 @@ DROP FUNCTION IF EXISTS pgwar.update_entity_label_on_entity_label_config_change;
 * Functions
 ***/
 
--- Drop function pgwar.update_project_entity_label
-DROP FUNCTION IF EXISTS pgwar.update_project_entity_label;
+-- Drop function pgwar.update_entity_label_of_entity_preview
+DROP FUNCTION IF EXISTS pgwar.update_entity_label_of_entity_preview;
 
 -- Drop function pgwar.get_project_entity_label(entity_id int, project_id int, label_config jsonb)
 DROP FUNCTION IF EXISTS pgwar.get_project_entity_label(entity_id int, project_id int, label_config jsonb);

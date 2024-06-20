@@ -19,6 +19,32 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- get and update community entity label
+CREATE OR REPLACE FUNCTION pgwar.get_and_update_community_entity_label(entity_id int)
+RETURNS void AS $$
+DECLARE
+    label text;
+BEGIN
+    
+    -- check if communty entity exists in pgwar.entity_preview
+    IF EXISTS(
+        SELECT pk_entity
+        FROM pgwar.entity_preview
+        WHERE pk_entity = entity_id
+        AND fk_project = 0
+    ) THEN
+        -- get community entity label
+        label := pgwar.get_most_frequent_entity_label(entity_id);
+    
+        -- update entity preview
+        PERFORM pgwar.update_entity_label_of_entity_preview(entity_id, 0, label);
+    
+    END IF;
+    
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- Function to upsert on pgwar.entity_preview
 -----------------------------------------------------------------------------
 CREATE OR REPLACE FUNCTION pgwar.upsert_community_entity_preview(ep pgwar.entity_preview)
@@ -90,61 +116,25 @@ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION pgwar.update_community_entity_label_on_project_entity_label_change()
     RETURNS TRIGGER AS $$
 DECLARE
+    entity_id int;
     label text;
 BEGIN
-    IF NEW.fk_project != 0 OR OLD.fk_project !=0 THEN
+    entity_id := COALESCE(NEW.pk_entity, OLD.pk_entity);
 
-        IF tg_op = 'UPDATE' AND OLD.entity_label != NEW.entity_label THEN
-            SELECT pgwar.get_most_frequent_entity_label(NEW.pk_entity) INTO label;
-            PERFORM
-                pgwar.upsert_community_entity_preview((
-                   NEW.pk_entity,
-                   0,
-                   NEW.fk_class,
-                   NEW.entity_type,
-                   NEW.class_label,
-                   label,
-                   NEW.full_text,
-                   NEW.ts_vector,
-                   NEW.type_label,
-                   NEW.fk_type,
-                   NEW.time_span,
-                   NEW.first_second,
-                   NEW.last_second,
-                   NEW.tmsp_last_modification)::pgwar.entity_preview
-                );
-        ELSEIF tg_op = 'INSERT' THEN
-            SELECT pgwar.get_most_frequent_entity_label(NEW.pk_entity) INTO label;
-            PERFORM
-                pgwar.upsert_community_entity_preview((
-                   NEW.pk_entity,
-                   0,
-                   NEW.fk_class,
-                   NEW.entity_type,
-                   NEW.class_label,
-                   label,
-                   NEW.full_text,
-                   NEW.ts_vector,
-                   NEW.type_label,
-                   NEW.fk_type,
-                   NEW.time_span,
-                   NEW.first_second,
-                   NEW.last_second,
-                   NEW.tmsp_last_modification)::pgwar.entity_preview
-                );
-        ELSE
-            SELECT pgwar.get_most_frequent_entity_label(OLD.pk_entity) INTO label;
-            UPDATE pgwar.entity_preview
-            SET entity_label = label
-            WHERE fk_project = 0 AND pk_entity = OLD.pk_entity;
-        END IF;
-    END IF;
-
+    PERFORM pgwar.get_and_update_community_entity_label(entity_id);
+    
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER on_modify_project_entity_preview
-    AFTER INSERT OR UPDATE OR DELETE ON pgwar.entity_preview
-    FOR EACH ROW
+CREATE TRIGGER after_upsert_entity_preview_entity_label_02
+AFTER INSERT OR UPDATE OF entity_label ON pgwar.entity_preview
+FOR EACH ROW
+WHEN (NEW.fk_project IS DISTINCT FROM 0)
+EXECUTE FUNCTION pgwar.update_community_entity_label_on_project_entity_label_change();
+
+CREATE TRIGGER after_delete_entity_preview_02
+AFTER DELETE ON pgwar.entity_preview
+FOR EACH ROW
+WHEN (OLD.fk_project IS DISTINCT FROM 0)
 EXECUTE FUNCTION pgwar.update_community_entity_label_on_project_entity_label_change();
