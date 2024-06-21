@@ -142,7 +142,9 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
     )
   }
   openAddModal() {
-    this.dialog.open(OntomeProfilesListDialogComponent)
+    this.dialog.open(OntomeProfilesListDialogComponent, {
+      width: '100%',
+    })
   }
 
   openDeactivationReportModal(item: ProfileItem) {

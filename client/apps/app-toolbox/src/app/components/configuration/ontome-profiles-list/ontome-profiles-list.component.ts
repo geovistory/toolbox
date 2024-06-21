@@ -1,10 +1,12 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AsyncPipe, NgIf } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -40,9 +42,11 @@ import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-setting
     MatTooltipModule,
     MatPaginatorModule,
     AsyncPipe,
+    MatFormFieldModule,
+    MatInputModule
   ],
 })
-export class OntomeProfilesListComponent implements OnInit {
+export class OntomeProfilesListComponent implements OnInit, OnDestroy {
 
   destroy$ = new Subject<boolean>();
   loading = false;
@@ -128,6 +132,11 @@ export class OntomeProfilesListComponent implements OnInit {
     this.dialog.open(OntomeProfileActivationReportDialogComponent, {
       data
     })
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   ngOnDestroy() {
