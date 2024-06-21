@@ -54,6 +54,8 @@ DROP FUNCTION IF EXISTS pgwar.get_value_label(information.lang_string);
 DROP FUNCTION IF EXISTS pgwar.get_value_label(tables.cell);
 DROP FUNCTION IF EXISTS pgwar.get_value_label(information.dimension);
 
+DROP FUNCTION IF EXISTS pgwar.update_from_statement(information.statement);
+
 ------ Drop functions in commons schema -------------------------------------------------------
 ---------------------------------------------------------------------------------------------
 DROP FUNCTION IF EXISTS commons.julian_second__to_iso_8601(bigint);

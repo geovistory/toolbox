@@ -1,33 +1,29 @@
--- Drop trigger and function to delete pgwar.project_statements
----------------------------------------------------------------
-DROP TRIGGER IF EXISTS after_delete_pgw_statement ON pgwar.statement;
+-- Drop trigger after_delete_pgw_statement
+DROP TRIGGER after_delete_pgw_statement ON pgwar.statement;
 
-DROP FUNCTION IF EXISTS pgwar.after_delete_pgw_statement;
+-- Drop function pgwar.after_delete_pgw_statement
+DROP FUNCTION pgwar.after_delete_pgw_statement;
 
--- Drop trigger and function after upsert on pgwar.statement
-------------------------------------------------------------
-DROP TRIGGER IF EXISTS after_upsert_pgw_statement ON pgwar.statement;
+-- Drop trigger after_upsert_pgw_statement
+DROP TRIGGER after_upsert_pgw_statement ON pgwar.statement;
 
-DROP FUNCTION IF EXISTS pgwar.after_upsert_pgw_statement;
+-- Drop function pgwar.after_upsert_pgw_statement
+DROP FUNCTION pgwar.after_upsert_pgw_statement;
 
--- Drop trigger and function after upsert on projects.info_proj_rel
--------------------------------------------------------------------
-DROP TRIGGER IF EXISTS after_modify_info_proj_rel_proj_stmt ON projects.info_proj_rel;
+-- Drop trigger after_modify_info_proj_rel
+DROP TRIGGER after_modify_info_proj_rel ON projects.info_proj_rel;
 
-DROP FUNCTION IF EXISTS pgwar.after_modify_info_proj_rel_proj_stmt;
+-- Drop function pgwar.after_modify_info_proj_rel
+DROP FUNCTION pgwar.after_modify_info_proj_rel;
 
--- Drop function to upsert on pgwar.project_statements
-------------------------------------------------------
-DROP FUNCTION IF EXISTS pgwar.upsert_project_statements;
+-- Drop function pgwar.update_from_info_proj_rel
+DROP FUNCTION pgwar.update_from_info_proj_rel;
+
+-- Drop function pgwar.upsert_project_statements
+DROP FUNCTION pgwar.upsert_project_statements;
+
+-- Drop trigger last_modification_tmsp on pgwar.project_statements
+DROP TRIGGER last_modification_tmsp ON pgwar.project_statements;
 
 -- Drop table pgwar.project_statements
---------------------------------------
-DROP TABLE IF EXISTS pgwar.project_statements;
-
-
-
-
-
-
-
-
+DROP TABLE pgwar.project_statements;
