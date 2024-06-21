@@ -2,16 +2,19 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { ChangeDetectorRef, Component, HostBinding, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import { SysConfig } from '@kleiolab/lib-config';
 import { StateFacade } from '@kleiolab/lib-redux';
 import { DfhProfile } from '@kleiolab/lib-sdk-lb4';
 import { values } from 'ramda';
-import { Observable, Subject, combineLatest } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest } from 'rxjs';
 import { filter, map, switchMap } from 'rxjs/operators';
 import { TabLayoutComponentInterface } from '../../../directives/on-activate-tab.directive';
 import { TabLayout } from '../../../lib/classes/tab-layout';
+import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { ActiveProjectService } from '../../../services/active-project.service';
 import { GvAnalysisService } from '../../../services/analysis.service';
 import { TabLayoutService } from '../../../services/tab-layout.service';
@@ -49,6 +52,9 @@ export interface ProfileItem {
     MatButtonModule,
     MatTableModule,
     MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    TruncatePipe
   ],
 })
 export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLayoutComponentInterface {
@@ -65,10 +71,13 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
   destroy$ = new Subject<boolean>();
 
   dataSource$: Observable<ProfileItem[]>;
-  columnsToDisplay = ['expand', 'label', 'owner', 'ontomeLink', 'deactivate', 'update'];
-  expandedElement: ProfileItem | null;
+  columnsToDisplay = ['label', 'description', 'ontomeLink', 'deactivate', 'update'];
+  secondHeaderRow = ['label2', 'description2', 'ontomeLink2', 'deactivate2', 'update2'];
 
   ontomeUrl = SysConfig.ONTOME_URL;
+
+  labelFilter$ = new BehaviorSubject('');
+  descriptionFilter$ = new BehaviorSubject('');
 
   constructor(
     public ref: ChangeDetectorRef,
@@ -85,7 +94,7 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
     this.pkProject = this.state.pkProject;
     this.state.data.loadProjectProfileRelations(this.pkProject);
 
-    this.dataSource$ =
+    const allEnableProfiles$ =
       this.state.data.sys.config.sysConfig$.pipe(
         switchMap((sysConfig) => this.state.data.pro.dfhProfileProjRel.getDfhProfileProjRel.byFkProjectEnabled$(this.pkProject, true).pipe(
           switchMap((rels) => {
@@ -115,6 +124,29 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
           })
         )
         ))
+
+
+    this.dataSource$ = combineLatest([allEnableProfiles$, this.labelFilter$, this.descriptionFilter$]).pipe(
+      map(([all, labelFilter, descriptionFilter]) => {
+        return all.filter((item => {
+
+          // if label filter is set and if item label does not include the string ...
+          if (labelFilter !== '' && !item.label.toLocaleLowerCase().includes(labelFilter)) {
+            // ... do not show the item
+            return false
+          }
+
+          // if description filter is set and if item scopeNote does not include the string ...
+          if (descriptionFilter !== '' && !item.scopeNote.toLocaleLowerCase().includes(descriptionFilter)) {
+            // ... do not show the item
+            return false
+          }
+
+          // else show the item
+          return true
+        }))
+      })
+    )
 
   }
 
@@ -165,6 +197,14 @@ export class OntomeProfilesSettingsComponent implements OnInit, OnDestroy, TabLa
     this.dialog.open(OntomeProfileUpdateDialogComponent, {
       data
     })
+  }
+  applyLabelFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.labelFilter$.next(filterValue.trim().toLocaleLowerCase());
+  }
+  applyDescriptionFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.descriptionFilter$.next(filterValue.trim().toLocaleLowerCase());
   }
 
   ngOnDestroy() {

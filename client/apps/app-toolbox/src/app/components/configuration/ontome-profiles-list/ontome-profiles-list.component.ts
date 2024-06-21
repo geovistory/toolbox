@@ -17,6 +17,7 @@ import { ApiProfile } from '@kleiolab/lib-sdk-lb4';
 import { flatten, indexBy, uniqBy } from 'ramda';
 import { Observable, Subject, combineLatest } from 'rxjs';
 import { first, map, takeUntil } from 'rxjs/operators';
+import { TruncatePipe } from '../../../pipes/truncate/truncate.pipe';
 import { OntomeProfileActivationReportDialogComponent, OntomeProfileActivationReportDialogData } from '../ontome-profile-activation-report-dialog/ontome-profile-activation-report-dialog.component';
 import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-settings.component';
 
@@ -43,7 +44,8 @@ import { ProfileItem } from '../ontome-profiles-settings/ontome-profiles-setting
     MatPaginatorModule,
     AsyncPipe,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    TruncatePipe
   ],
 })
 export class OntomeProfilesListComponent implements OnInit, OnDestroy {
@@ -51,14 +53,19 @@ export class OntomeProfilesListComponent implements OnInit, OnDestroy {
   destroy$ = new Subject<boolean>();
   loading = false;
 
-  columnsToDisplay = ['expand', 'label', 'owner', 'ontomeLink', 'actions'];
-  expandedElement: ProfileItem | null;
+  columnsToDisplay = ['label', 'description', 'ontomeLink', 'actions'];
+  secondHeaderRow = ['label2', 'description2', 'ontomeLink2', 'actions2'];
+
   dataSource = new MatTableDataSource<ProfileItem>([]);
+  data: ProfileItem[] = []
 
   enabledProfiles$: Observable<{ [key: number]: number }>
 
   ontomeUrl = SysConfig.ONTOME_URL;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+
+  labelFilter = '';
+  descriptionFilter = '';
 
   constructor(
     private http: HttpClient,
@@ -93,7 +100,7 @@ export class OntomeProfilesListComponent implements OnInit, OnDestroy {
 
         this.loading = false;
         const uniq = uniqBy((p) => p.profileID, response)
-        this.dataSource.data = uniq.map(apiItem => {
+        this.data = uniq.map(apiItem => {
           const item: ProfileItem = {
             label: apiItem.profileLabel,
             ownerId: apiItem.ownedByProjectID,
@@ -104,6 +111,7 @@ export class OntomeProfilesListComponent implements OnInit, OnDestroy {
           }
           return item
         })
+        this.applyFilter();
       })
   }
 
@@ -134,9 +142,39 @@ export class OntomeProfilesListComponent implements OnInit, OnDestroy {
     })
   }
 
-  applyFilter(event: Event) {
+
+
+  applyLabelFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.labelFilter = filterValue.trim().toLocaleLowerCase();
+    this.applyFilter();
+  }
+  applyDescriptionFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.descriptionFilter = filterValue.trim().toLocaleLowerCase();
+    this.applyFilter();
+  }
+
+  applyFilter() {
+    const predicate = (item: ProfileItem) => {
+
+      // if label filter is set and if item label does not include the string ...
+      if (this.labelFilter !== '' && !item.label.toLocaleLowerCase().includes(this.labelFilter)) {
+        // ... do not show the item
+        return false
+      }
+
+      // if description filter is set and if item scopeNote does not include the string ...
+      if (this.descriptionFilter !== '' && !item.scopeNote.toLocaleLowerCase().includes(this.descriptionFilter)) {
+        // ... do not show the item
+        return false
+      }
+
+      // else show the item
+      return true
+    }
+
+    this.dataSource.data = this.data.filter(predicate);
   }
 
   ngOnDestroy() {

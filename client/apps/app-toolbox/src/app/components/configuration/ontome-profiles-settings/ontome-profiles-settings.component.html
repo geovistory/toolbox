@@ -1,6 +1,6 @@
 <gv-detail-top-bar></gv-detail-top-bar>
 <gv-detail-content class="p-3 gv-scroll-y-auto mat-typography">
-  <h1>Ontome Profiles</h1>
+  <h1>OntoME Profiles</h1>
   <p>
     OntoMe Profiles are collections of classes and properties related to a specific topic. <br>
     In other words: OntoMe Profiles provide the model for the data in your project.
@@ -23,40 +23,30 @@
   </p>
 
   <div class="mat-h1 d-flex">
-    <span>Activated Ontome Profiles</span>
+    <span>Activated OntoME Profiles</span>
     <button class="ml-auto" mat-button (click)="openAddModal()" color="primary">
       Activate other profiles...
     </button>
   </div>
 
-  <table mat-table [dataSource]="dataSource$" [multiTemplateDataRows]=true class="mat-elevation-z8">
-    <ng-container matColumnDef="expand">
-      <th mat-header-cell *matHeaderCellDef> </th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-icon-button (click)="expandedElement = expandedElement === element ? null : element">
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{expandedElement === element ? 'expand_more' : 'chevron_right'}}
-          </mat-icon>
-        </button>
-      </td>
-    </ng-container>
+
+  <table mat-table [dataSource]="dataSource$" class="mat-elevation-z8">
     <ng-container matColumnDef="label">
       <th mat-header-cell *matHeaderCellDef> Profile Name </th>
-      <td mat-cell *matCellDef="let element">{{element.label}}</td>
+      <td mat-cell *matCellDef="let element" class="mat-body-strong">{{element.label}}</td>
+
     </ng-container>
-    <ng-container matColumnDef="owner">
-      <th mat-header-cell *matHeaderCellDef> Managed By </th>
+    <ng-container matColumnDef="description">
+      <th mat-header-cell *matHeaderCellDef> Description </th>
       <td mat-cell *matCellDef="let element">
-        <a [attr.href]="ontomeUrl + '/project/' + element.ownerId" target="_blank">
-          OntoMe-Project #{{element.ownerId}}
-        </a>
+        {{element.scopeNote|truncate:['400']}}
       </td>
     </ng-container>
     <ng-container matColumnDef="ontomeLink">
-      <th mat-header-cell *matHeaderCellDef> Documentation Link </th>
+      <th mat-header-cell *matHeaderCellDef> OntoME Link </th>
       <td mat-cell *matCellDef="let element">
-        <a [attr.href]="ontomeUrl + '/profile/' + element.profileId" target="_blank">
-          Documentation on OntoME
+        <a mat-button color="primary" [attr.href]="ontomeUrl + '/profile/' + element.profileId" target="_blank">
+          Read&nbsp;more...
         </a>
       </td>
     </ng-container>
@@ -74,25 +64,36 @@
       </td>
     </ng-container>
 
-    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-    <ng-container matColumnDef="expandedDetail">
-      <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
-        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-          <div class="example-element-description">
-            <span class="mat-body-strong">
-              Profile Description:
-            </span>
-            {{element.scopeNote}}
-          </div>
-        </div>
-      </td>
+    <ng-container matColumnDef="label2">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-form-field class="form-field-density-5 hide-subscript">
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="applyLabelFilter($event)" #input>
+        </mat-form-field>
+      </th>
+    </ng-container>
+    <ng-container matColumnDef="description2">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-form-field class="form-field-density-5 hide-subscript">
+          <mat-label>Filter</mat-label>
+          <input matInput (keyup)="applyDescriptionFilter($event)" #input>
+        </mat-form-field>
+      </th>
+    </ng-container>
+    <ng-container matColumnDef="ontomeLink2">
+      <th mat-header-cell *matHeaderCellDef></th>
+    </ng-container>
+    <ng-container matColumnDef="deactivate2">
+      <th mat-header-cell *matHeaderCellDef> </th>
+    </ng-container>
+    <ng-container matColumnDef="update2">
+      <th mat-header-cell *matHeaderCellDef> </th>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row"
-      [class.example-expanded-row]="expandedElement === element">
+    <tr mat-header-row *matHeaderRowDef="secondHeaderRow"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;">
     </tr>
-    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
   </table>
 
 </gv-detail-content>
