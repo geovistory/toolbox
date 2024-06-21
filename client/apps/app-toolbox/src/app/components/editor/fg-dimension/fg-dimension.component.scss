@@ -1,6 +1,6 @@
-:host {
-  width: 100%;
-}
+// :host {
+//   width: 100%;
+// }
 
 .gv-fg-dimension-container {
   display: flex;
@@ -12,6 +12,6 @@
     flex: 1 1 auto;
   }
   .ctrl-number {
-    flex: 0 0 120px;
+    width: 120px;
   }
 }
