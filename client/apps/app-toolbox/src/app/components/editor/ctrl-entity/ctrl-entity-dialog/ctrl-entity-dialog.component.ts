@@ -121,8 +121,8 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
     else this.searchString$.next(this.get4CharsForEachWords(this.data.defaultSearch))
   }
 
-  private get4CharsForEachWords(str: string) {
-    return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').map(s => s.slice(0, 4)).join(' ')
+  private get4CharsForEachWords(str: string | number) {
+    return str.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(' ').map(s => s.slice(0, 4)).join(' ')
   }
 
   // TODO: Integrate this in the concept of using the core services for api calls, using InfActions
