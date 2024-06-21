@@ -1,4 +1,5 @@
 BEGIN;
+
 SELECT plan(3);
 
 INSERT INTO pgwar.project_statements_deleted (
@@ -13,17 +14,27 @@ VALUES (1, 123, 31, 522, 11, NULL),
     (2, 999, 32, 523, 12, NULL),
     (3, 543, 33, 524, 13, '{}');
 
+INSERT INTO pgwar.community_statements_deleted (
+        pk_entity,
+        fk_subject_info,
+        fk_property,
+        fk_object_info,
+        object_value
+    )
+VALUES (1, 31, 522, 11, NULL),
+    (2, 32, 523, 12, NULL),
+    (3, 33, 524, 13, '{}');
 
 PREPARE entities_for_update AS
 SELECT pk_entity,
     fk_project
-FROM pgwar.get_outdated_full_texts_in_objects_of_pstmt_del(100);
+FROM pgwar.get_outdated_full_texts_in_objects_of_stmt_del(100);
 
--- Note that (13, 543) is an object_value and does therefore
+-- Note that (13, 543), (13, 0) is an object_value and does therefore
 -- not show up amongst the entities_for_update
 SELECT bag_eq(
         'entities_for_update',
-        'VALUES (11, 123), (12, 999)',
+        'VALUES (11, 123), (12, 999), (11, 0), (12, 0)',
         'Contains all 2 pairs of project_id and object entity_id.'
     );
 
@@ -33,12 +44,13 @@ INSERT INTO pgwar.entity_full_text (
         fk_project,
         full_text
     )
-VALUES (12, 999, 'full-text');
+VALUES (12, 999, 'full-text'),
+(12, 0, 'full-text');
 
--- Assert that only one entity remains in entities_for_update
+-- Assert that only two entities remains in entities_for_update
 SELECT bag_eq(
         'entities_for_update',
-        'VALUES (11, 123)',
+        'VALUES (11, 123), (11, 0)',
         'Assert that only one entity remains in entities_for_update.'
     );
 
@@ -62,7 +74,7 @@ SELECT is(
         3,
         'Assert the limit of 3 is respected'
     )
-FROM pgwar.get_outdated_full_texts_in_objects_of_pstmt_del(3);
+FROM pgwar.get_outdated_full_texts_in_objects_of_stmt_del(3);
 
 SELECT *
 FROM finish();
