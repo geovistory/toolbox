@@ -1,32 +1,5 @@
-.gv-full-with {
-  flex-wrap: wrap;
-}
-
-.left-col {
-  display: flex;
-  justify-content: center;
-  flex: 1 1 0;
-  flex-direction: column;
-}
-
-.right-col {
-  margin-left: 1rem;
-  display: flex;
-  flex: 0 0 40px;
-  align-items: flex-start;
-  justify-content: center;
-}
-
 .is-field + .is-field,
 .is-section + .is-section {
-  margin-top: 0.5rem;
-}
-
-// .is-field {
-//   padding: 0.5rem;
-// }
-
-.is-control {
   margin-top: 0.5rem;
 }
 
@@ -34,6 +7,28 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.loc-container {
+  display: flex;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.loc-left {
+  flex-grow: 1;
+}
+
+.loc-right {
+  padding-top: 0.8rem;
+  width: 32px;
+  display: flex;
+  justify-content: flex-end;
+  white-space: nowrap; /* Ensures content doesn't wrap and the width stays fixed */
+}
+
+.loc-fg {
+  flex-grow: 1;
 }
 
 .icon {

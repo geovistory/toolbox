@@ -17,20 +17,20 @@
     }" class="left-col">
       </gv-form-array>
 
-      <div *ngIf="child.controlFactory || child.childFactory" class="gv-full-with is-control">
+      <div *ngIf="child.controlFactory || child.childFactory" class="loc-container">
 
         <!-- This is adding the 'leaf' of the form via template: a form-control like input, ect. -->
-        <gv-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory" class="left-col">
+        <gv-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory" class="loc-left">
         </gv-form-control>
 
         <!-- This is adding the 'leaf' of the form via portal: a fg-* -->
-        <div *ngIf="child.childFactory" class="left-col">
-          <ng-template [cdkPortalOutlet]="child.childFactory.portal" #outlet
+        <div *ngIf="child.childFactory" class="loc-left">
+          <ng-template [cdkPortalOutlet]="child.childFactory.portal" #outlet class="loc-fg"
             (attached)="child.childFactory.attached($any($event), $any(outlet))">
           </ng-template>
         </div>
 
-        <div class="gv-col-center ml-2" style="padding-bottom: 1.34375em">
+        <div class="loc-right">
           <mat-icon class="mat-text-primary inside-width-center" style="font-size: 20px; height: 20px; cursor: pointer;"
             (click)="remove(i)" [hidden]="!showRemoveBtn(child)">
             close
