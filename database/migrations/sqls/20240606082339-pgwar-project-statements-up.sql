@@ -68,7 +68,7 @@ BEGIN
         project_statements.object_value IS DISTINCT FROM EXCLUDED.object_value;
 END;
 $$
-    LANGUAGE plpgsql;
+LANGUAGE plpgsql;
 
 -- Function update_from_info_proj_rel
 ----------------------------------------------

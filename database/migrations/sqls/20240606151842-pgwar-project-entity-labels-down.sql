@@ -7,10 +7,16 @@
 ***/
 
 -- Drop trigger on_modify_project_statement
-DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.statement;
+DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.project_statements;
+
+-- Drop trigger after_delete_entity_preview_01
+DROP TRIGGER IF EXISTS after_delete_entity_preview_01 ON pgwar.entity_preview;
 
 -- Drop trigger on_upsert_entity_preview_fk_class
 DROP TRIGGER IF EXISTS on_upsert_entity_preview_fk_class ON pgwar.entity_preview;
+
+-- Drop trigger  after_upsert_entity_preview_entity_label_01
+DROP TRIGGER IF EXISTS after_upsert_entity_preview_entity_label_01 ON pgwar.entity_preview;
 
 -- Drop trigger on_upsert_entity_preview_entity_label
 DROP TRIGGER IF EXISTS on_upsert_entity_preview_entity_label ON pgwar.entity_preview;
@@ -34,8 +40,8 @@ DROP FUNCTION IF EXISTS pgwar.update_entity_label_on_entity_label_config_change;
 * Functions
 ***/
 
--- Drop function pgwar.update_project_entity_label
-DROP FUNCTION IF EXISTS pgwar.update_project_entity_label;
+-- Drop function pgwar.update_entity_label_of_entity_preview
+DROP FUNCTION IF EXISTS pgwar.update_entity_label_of_entity_preview;
 
 -- Drop function pgwar.get_project_entity_label(entity_id int, project_id int, label_config jsonb)
 DROP FUNCTION IF EXISTS pgwar.get_project_entity_label(entity_id int, project_id int, label_config jsonb);

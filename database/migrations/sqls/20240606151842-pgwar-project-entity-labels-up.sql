@@ -172,8 +172,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- update entity label or project entity
-CREATE OR REPLACE FUNCTION pgwar.update_project_entity_label(entity_id int, project_id int, new_label text)
+-- update entity label of entity preview, if distinct
+CREATE OR REPLACE FUNCTION pgwar.update_entity_label_of_entity_preview(entity_id int, project_id int, new_label text)
 RETURNS void AS $$
 BEGIN
     UPDATE pgwar.entity_preview 
@@ -198,7 +198,7 @@ BEGIN
         WHERE
             pk_entity = entity_id
             AND fk_project = project_id) THEN
-         PERFORM pgwar.update_project_entity_label(entity_id, project_id, pgwar.get_project_entity_label(entity_id, project_id));
+         PERFORM pgwar.update_entity_label_of_entity_preview(entity_id, project_id, pgwar.get_project_entity_label(entity_id, project_id));
      END IF;
 END;
 $$ LANGUAGE plpgsql;
@@ -249,7 +249,7 @@ BEGIN
     entity_id := COALESCE(NEW.pk_entity, OLD.pk_entity);
 
     -- Update the entity label in pgwar.entity_preview
-    PERFORM pgwar.update_project_entity_label(entity_id, project_id, pgwar.get_project_entity_label(entity_id, project_id));
+    PERFORM pgwar.update_entity_label_of_entity_preview(entity_id, project_id, pgwar.get_project_entity_label(entity_id, project_id));
 
     RETURN NULL;
 END;
@@ -258,6 +258,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER on_upsert_entity_preview_fk_class
 AFTER INSERT OR UPDATE OF fk_class ON pgwar.entity_preview
 FOR EACH ROW
+WHEN (NEW.fk_project IS DISTINCT FROM 0)
 EXECUTE FUNCTION pgwar.update_entity_label_on_fk_class_change();
 
 -- Update entity labels of related entities, on change on entity preview entity_label
@@ -291,9 +292,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER on_upsert_entity_preview_entity_label
-AFTER DELETE OR INSERT OR UPDATE OF entity_label ON pgwar.entity_preview
+CREATE TRIGGER after_upsert_entity_preview_entity_label_01
+AFTER INSERT OR UPDATE OF entity_label ON pgwar.entity_preview
 FOR EACH ROW
+WHEN (NEW.fk_project IS DISTINCT FROM 0)
+EXECUTE FUNCTION pgwar.update_entity_label_on_entity_label_change();
+
+CREATE TRIGGER after_delete_entity_preview_01
+AFTER DELETE ON pgwar.entity_preview
+FOR EACH ROW
+WHEN (OLD.fk_project IS DISTINCT FROM 0)
 EXECUTE FUNCTION pgwar.update_entity_label_on_entity_label_change();
 
 
@@ -312,7 +320,7 @@ BEGIN
     IF project_id = 375669 THEN 
 
         -- perform update of entity labels that depend on the default config of project 375669
-        PERFORM pgwar.update_project_entity_label(ep.pk_entity, ep.fk_project, pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project)) 
+        PERFORM pgwar.update_entity_label_of_entity_preview(ep.pk_entity, ep.fk_project, pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project)) 
         FROM pgwar.entity_preview ep
         LEFT JOIN projects.entity_label_config c 
             ON c.fk_class = class_id 
@@ -323,7 +331,7 @@ BEGIN
 
     ELSE
 
-        PERFORM pgwar.update_project_entity_label(pk_entity, fk_project, pgwar.get_project_entity_label(pk_entity, fk_project)) 
+        PERFORM pgwar.update_entity_label_of_entity_preview(pk_entity, fk_project, pgwar.get_project_entity_label(pk_entity, fk_project)) 
         FROM pgwar.entity_preview
         WHERE fk_class = class_id
         AND fk_project = project_id;
