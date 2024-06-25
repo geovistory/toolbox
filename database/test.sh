@@ -24,11 +24,36 @@ while getopts "uip" flag; do
     esac
 done
 
+# Load environment variables from .env file
+if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs)
+fi
+
+# set the name of the docker compose project
+export COMPOSE_PROJECT_NAME=test
+
+# Set the postgres port
+export POSTGRES_PORT=$POSTGRES_PORT_TEST
+
 # Set the Dockerfile
 if [ "$run_performance_tests" = true ]; then
-    export DOCKER_FILE=heavy.Dockerfile
+    # the filled one for performance tests
+    if [ $DOCKER_PLATFORM = "ARM" ]; then
+        # the one for arm
+        export DOCKER_FILE=heavy.arm.Dockerfile
+    else
+        # the amd (default)
+        export DOCKER_FILE=heavy.Dockerfile
+    fi
 else
-    export DOCKER_FILE=light.Dockerfile
+    # the empty one for unit and integration tests
+    if [ $DOCKER_PLATFORM = "ARM" ]; then
+        # the one for arm
+        export DOCKER_FILE=light.arm.Dockerfile
+    else
+        # the amd (default)
+        export DOCKER_FILE=light.Dockerfile
+    fi
 fi
 
 # Shut down test container
@@ -39,16 +64,16 @@ docker compose up -d --wait --build
 
 if [ "$run_unit_tests" = true ] || [ "$run_integration_tests" = true ]; then
     # Ensure schema_only_db is ready
-    docker exec database-postgres-1 sh -c 'until psql -U postgres -d schema_only_db -c "SELECT 1"; do echo "Waiting for PostgreSQL..."; sleep 0.5; done'
+    docker exec $COMPOSE_PROJECT_NAME-postgres-1 sh -c 'until psql -U postgres -d schema_only_db -c "SELECT 1"; do echo "Waiting for PostgreSQL..."; sleep 0.5; done'
     # Migrate databases based on test types
-    docker exec database-postgres-1 sh -c "scripts/migrate_up_schema_only_db.sh"
+    docker exec $COMPOSE_PROJECT_NAME-postgres-1 sh -c "scripts/migrate_up_schema_only_db.sh"
 fi
 
 if [ "$run_performance_tests" = true ]; then
     # Ensure filled_db is ready
-    docker exec database-postgres-1 sh -c 'until psql -U postgres -d filled_db -c "SELECT 1"; do echo "Waiting for PostgreSQL..."; sleep 0.5; done'
+    docker exec $COMPOSE_PROJECT_NAME-postgres-1 sh -c 'until psql -U postgres -d filled_db -c "SELECT 1"; do echo "Waiting for PostgreSQL..."; sleep 0.5; done'
     # Migrate databases based on test types
-    docker exec database-postgres-1 sh -c "scripts/migrate_up_filled_db.sh"
+    docker exec $COMPOSE_PROJECT_NAME-postgres-1 sh -c "scripts/migrate_up_filled_db.sh"
 fi
 
 # Initialize a flag to track if tests are successful
@@ -59,7 +84,7 @@ performance_tests_successful=true
 # Run unit tests if specified
 if [ "$run_unit_tests" = true ]; then
     unit_tests_successful=false
-    docker exec database-postgres-1 sh -c "scripts/test_units.sh"
+    docker exec $COMPOSE_PROJECT_NAME-postgres-1 sh -c "scripts/test_units.sh"
     if [ $? -eq 0 ]; then
         unit_tests_successful=true
     fi
@@ -68,7 +93,7 @@ fi
 # Run integration tests if specified
 if [ "$run_integration_tests" = true ]; then
     integration_tests_successful=false
-    docker exec database-postgres-1 sh -c "scripts/test_integration.sh"
+    docker exec $COMPOSE_PROJECT_NAME-postgres-1 sh -c "scripts/test_integration.sh"
     if [ $? -eq 0 ]; then
         integration_tests_successful=true
     fi
@@ -77,7 +102,7 @@ fi
 # Run performance tests if specified
 if [ "$run_performance_tests" = true ]; then
     performance_tests_successful=false
-    docker exec database-postgres-1 sh -c "scripts/test_performance.sh"
+    docker exec $COMPOSE_PROJECT_NAME-postgres-1 sh -c "scripts/test_performance.sh"
     if [ $? -eq 0 ]; then
         performance_tests_successful=true
     fi
