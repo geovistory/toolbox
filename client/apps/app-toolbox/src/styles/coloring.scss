@@ -1,0 +1,89 @@
+a {
+  color: map.get($gv-mat-purple, 800);
+  text-decoration: none;
+  background-color: transparent;
+}
+
+a:hover {
+  color: map.get($gv-mat-purple, 900);
+  text-decoration: underline;
+}
+
+a:not([href]):not([tabindex]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:not([href]):not([tabindex]):hover,
+a:not([href]):not([tabindex]):focus {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:not([href]):not([tabindex]):focus {
+  outline: 0;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+a.text-danger:hover,
+a.text-danger:focus {
+  color: #a71d2a !important;
+}
+
+.text-primary {
+  color: map.get($gv-mat-purple, 800) !important;
+}
+
+a.text-primary:hover,
+a.text-primary:focus {
+  color: map.get($gv-mat-purple, 900) !important;
+}
+
+.text-white {
+  color: #fff !important;
+}
+.bg-white {
+  background-color: #fff !important;
+}
+
+.border-light {
+  border: 1px solid map.get($gv-grey-palette, 200) !important;
+}
+
+.border-gray {
+  border: 1px solid map.get($gv-grey-palette, 500) !important;
+}
+
+.bg-light {
+  background-color: map.get($gv-grey-palette, 200) !important;
+}
+
+.bg-grey-100 {
+  background-color: map.get($gv-grey-palette, 100) !important;
+}
+
+.border-bottom-grey-100 {
+  border-bottom: 1px solid map.get($gv-grey-palette, 100) !important;
+}
+
+.bg-info {
+  background-color: #17a2b8 !important;
+}
+.bg-warning {
+  background-color: #ffc107 !important;
+}
+
+.border-green {
+  border: 1px solid map.get($gv-mat-teal, 300) !important;
+}
+
+.border-bottom-green {
+  border-bottom: 1px solid map.get($gv-mat-teal, 300) !important;
+}
+
+.bg-green {
+  background-color: map.get($gv-mat-teal, 300) !important;
+}

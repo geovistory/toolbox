@@ -198,6 +198,5 @@ export namespace WarEntityPreviewMock {
         fk_type: WarEntityPreviewMock.GEO_PLACE_TYPE_CITY.pk_entity,
         type_label: WarEntityPreviewMock.GEO_PLACE_TYPE_CITY.entity_label
     })
-
 }
 

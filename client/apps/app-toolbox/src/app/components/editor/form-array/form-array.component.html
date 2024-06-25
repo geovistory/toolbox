@@ -1,0 +1,47 @@
+<ng-container *ngIf="!(formArrayFactory.children.length == 0 && data.gvFormSection)">
+
+  <gv-form-section-header *ngIf="data.gvFormSection?.section?.showHeader$|async" [section]="data.gvFormSection.section"
+    [control]="control"></gv-form-section-header>
+
+  <gv-form-field-header [hidden]="data.gvFormField?.config?.noFieldHeader" [formField]="data.gvFormField"
+    [length]="length" [maxLength]="maxLength" [control]="control" [formArrayFactory]="formArrayFactory">
+  </gv-form-field-header>
+
+  <div [@openClose]="((data?.gvFormSection?.section?.expanded$|async) === false) ? 'closed':'open'">
+
+    <ng-container *ngFor="let child of formArrayFactory.children; let i=index" trackBy="trackByFn">
+
+      <gv-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" [ngClass]="{
+      'is-field': child.arrayFactory?.config?.data.gvFormField,
+      'is-section': child.arrayFactory?.config?.data.gvFormSection
+    }" class="left-col">
+      </gv-form-array>
+
+      <div *ngIf="child.controlFactory || child.childFactory" class="loc-container">
+
+        <!-- This is adding the 'leaf' of the form via template: a form-control like input, ect. -->
+        <gv-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory" class="loc-left">
+        </gv-form-control>
+
+        <!-- This is adding the 'leaf' of the form via portal: a fg-* -->
+        <div *ngIf="child.childFactory" class="loc-left">
+          <ng-template [cdkPortalOutlet]="child.childFactory.portal" #outlet class="loc-fg"
+            (attached)="child.childFactory.attached($any($event), $any(outlet))">
+          </ng-template>
+        </div>
+
+        <div class="loc-right">
+          <mat-icon class="mat-text-primary inside-width-center" style="font-size: 20px; height: 20px; cursor: pointer;"
+            (click)="remove(i)" [hidden]="!showRemoveBtn(child)">
+            close
+          </mat-icon>
+          <mat-icon class="mat-text-secondary inside-width-center" style="font-size: 20px; height: 20px;"
+            [hidden]="showRemoveBtn(child)">
+          </mat-icon>
+        </div>
+
+      </div>
+    </ng-container>
+
+  </div>
+</ng-container>

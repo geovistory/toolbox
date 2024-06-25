@@ -1,0 +1,37 @@
+.gv-pe-it-title {
+  background-color: unset;
+  height: 3rem;
+  border-bottom: 0px solid !important;
+  display: flex;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loc-tab {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.close-right-area-btn {
+  height: 80px;
+  min-width: 24px;
+  width: 24px;
+  border-top: 0;
+  border-bottom: 0;
+  padding: 0;
+  position: fixed;
+  z-index: 10;
+  border-left: 0;
+  border-radius: 0;
+}
+
+.loc-white-spacer {
+  height: 40px;
+  min-height: 40px;
+}

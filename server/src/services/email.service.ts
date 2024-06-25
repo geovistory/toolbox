@@ -1,6 +1,6 @@
 
-import { createTransport } from 'nodemailer';
-import { UrlBuilder } from '../utils/url-builder';
+import {createTransport} from 'nodemailer';
+import {env} from '../utils/env-vars';
 
 export class EmailService {
 
@@ -25,8 +25,8 @@ export class EmailService {
     verificationToken: string
   ) {
 
-    const serverUrl = new UrlBuilder().getServerUrl();
-    const clientUrl = new UrlBuilder().getClientUrl();
+    const serverUrl = env.SERVER_URL;
+    const clientUrl = env.CLIENT_URL;
     const link = `${serverUrl}/verify-email?accountId=${accountId}&verificationToken=${verificationToken}&redirectOnSuccess=${clientUrl}/email-verified`
 
     // send mail with defined transport object
@@ -46,7 +46,7 @@ export class EmailService {
     passwordResetToken: string
   ) {
 
-    const url = new UrlBuilder().getClientUrl();
+    const url = env.CLIENT_URL;
     const link = `${url}/reset-password?access_token=${passwordResetToken}`
 
     // send mail with defined transport object

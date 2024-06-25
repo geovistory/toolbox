@@ -1,0 +1,82 @@
+<mat-list *ngIf="formArrayFactory.config?.data?.columns" class="my-4 mb-5">
+  <mat-list-item class="p-0">
+    <span class="mat-headline-5" mat-line> Path </span>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+  <mat-list-item class="p-0">
+    <div mat-line> Create a path to a class you want to visualize.</div>
+  </mat-list-item>
+</mat-list>
+
+
+<ng-container>
+  <div *ngFor="let child of formArrayFactory.children; let i=index" class="d-flex flex-column">
+
+    <mat-list *ngIf="child?.childFactory?.config?.data?.filter" class="mb-4">
+      <mat-list-item class="p-0">
+        <span class="mat-headline-5" mat-line> Filter
+        </span>
+      </mat-list-item>
+      <mat-divider></mat-divider>
+    </mat-list>
+
+    <mat-list *ngIf="child?.controlFactory?.config?.data?.ctrlClasses" class="mb-4">
+      <mat-list-item class="p-0">
+
+        <div class="w-100 d-flex">
+          <span class="mat-headline-5" mat-line *ngIf="!(child.controlFactory?.config.disabled$ | async)">
+            Choose type of geographical entities
+          </span>
+          <span class="mat-headline-5" mat-line *ngIf="(child.controlFactory?.config.disabled$ | async)"
+            [ngClass]="{'mat-text-secondary': (child.controlFactory?.config.disabled$ | async)}">
+            Chosen geographical entities
+          </span>
+          <button class="ml-auto" mat-flat-button *ngIf="(child.controlFactory?.config.disabled$ | async)"
+            (click)="removeQueryDefinition(child.controlFactory)">Revert</button>
+        </div>
+
+
+      </mat-list-item>
+      <mat-divider></mat-divider>
+      <!-- <mat-list-item class="mat-text-secondary" *ngIf="!(child.controlFactory?.config.disabled$ | async)">
+          <div class="mat-text-secondary">
+            Select the classes and types you are interested in.
+          </div>
+        </mat-list-item> -->
+    </mat-list>
+
+
+    <div class="gv-full-with">
+
+
+      <gv-map-and-time-cont-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory"
+        class="left-col">
+      </gv-map-and-time-cont-form-array>
+
+      <gv-map-and-time-cont-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory"
+        class="left-col">
+      </gv-map-and-time-cont-form-control>
+
+      <ng-template *ngIf="child.childFactory" [cdkPortalOutlet]="child.childFactory.portal" #outlet
+        (attached)="child.childFactory.attached($any($event), $any(outlet))"></ng-template>
+
+    </div>
+
+    <div *ngIf="child?.controlFactory?.config?.data?.ctrlClasses">
+      <button mat-flat-button color="primary"
+        *ngIf="!(child.controlFactory?.config?.disabled$|async) && child.controlFactory.formControl.valid" class="mb-4"
+        (click)="addQueryDefinition(child.controlFactory)">
+        Continue
+      </button>
+    </div>
+    <mat-list-item class="p-0"
+      *ngIf="formArrayFactory.formArray.hasError('invalidArrayLength') && formArrayFactory.formArray.touched">
+      <mat-error>
+        Please continue
+      </mat-error>
+    </mat-list-item>
+
+
+  </div>
+
+</ng-container>

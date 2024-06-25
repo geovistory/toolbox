@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/**/*.ts",
+    ".storybook/**/*.ts",
+  ],
+  "compilerOptions": {
+    "types": [
+      "jest",
+      "node"
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+// :host {
+//   width: 100%;
+// }
+
+.gv-fg-dimension-container {
+  display: flex;
+  flex-direction: row;
+  mat-form-field ~ mat-form-field {
+    margin: 0 0 0 1rem;
+  }
+  .ctrl-measurement-unit {
+    flex: 1 1 auto;
+  }
+  .ctrl-number {
+    width: 120px;
+  }
+}

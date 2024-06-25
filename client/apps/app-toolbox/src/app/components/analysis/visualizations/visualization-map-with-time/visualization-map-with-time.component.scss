@@ -1,0 +1,49 @@
+:host.fullscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  z-index: 1;
+}
+
+.map {
+  position: relative;
+  padding-bottom: 2px;
+}
+.timeline {
+  padding-top: 2px;
+}
+
+.toolbar {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  display: flex;
+  .toolbar-item {
+    margin-right: 3px;
+  }
+}
+
+.toolbar-bottom-right {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  display: flex;
+  .toolbar-item {
+    margin-left: 3px;
+  }
+}
+
+.info-box {
+  position: absolute;
+  top: 55px;
+  right: 5px;
+  width: 160px;
+  .close-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}

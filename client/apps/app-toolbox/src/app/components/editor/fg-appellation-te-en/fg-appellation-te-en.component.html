@@ -1,0 +1,51 @@
+<form *ngIf="formFactory?.formGroup" [formGroup]="formFactory.formGroup">
+  <div *ngIf="formFactory.formGroupFactory.child.factoryType === 'array'"
+    [formGroup]="formFactory.formGroupFactory.formGroup">
+    <div formArrayName="childControl">
+
+      <div class="second-line">
+        <mat-form-field class="ctrl-text" *ngIf="ctrls?.text" [appearance]="appearance">
+          <mat-label>{{placeholders.text}}</mat-label>
+
+          <gv-ctrl-appellation placeholder="Placeholder" [formControl]="ctrls.text">
+          </gv-ctrl-appellation>
+          <button mat-icon-button matSuffix [color]="(showOptions$|async) ? 'primary' : 'default'" (click)="toggle()">
+            <mat-icon>tune</mat-icon>
+          </button>
+          <mat-error *ngIf="ctrls.text.hasError('required')">
+            Required
+          </mat-error>
+        </mat-form-field>
+
+        <div
+          [ngStyle]="{display:(showOptions$|async) ? 'block' : 'none', marginLeft: (showOptions$|async) ? '1rem' : 0}"
+          style="width: 80px;">
+          <mat-form-field class="ctrl-language" *ngIf="ctrls?.lang " [appearance]="appearance">
+            <mat-label>{{placeholders.lang}}</mat-label>
+
+            <gv-ctrl-language placeholder="Placeholder" [formControl]="ctrls.lang">
+            </gv-ctrl-language>
+
+            <mat-error *ngIf="ctrls.text.hasError('required')">
+              Required
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="second-line" [@openClose]="(showOptions$|async) ? 'open' : 'closed'">
+        <mat-form-field class="ctrl-type mt-1" *ngIf="ctrls?.type " [appearance]="appearance">
+          <mat-label>{{placeholders.type}}</mat-label>
+
+          <gv-ctrl-type #c [pkTypedClass]="pkTypedClass" [pkTypeClass]="pkTypeClass$|async" placeholder="Select ..."
+            [formControl]="ctrls.type">
+          </gv-ctrl-type>
+
+          <mat-error *ngIf="ctrls.type.hasError('required')">
+            Required
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</form>

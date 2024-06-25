@@ -1,0 +1,34 @@
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item">Your Account</li>
+  </ol>
+</gv-navbar>
+<div class="container">
+  <div class="row">
+    <div class="col-3">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Personal Settings</mat-card-title>
+        </mat-card-header>
+        <mat-nav-list>
+          <mat-divider></mat-divider>
+          <mat-list-item routerLink="profile" routerLinkActive="active">
+            Profile
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item routerLink="password" routerLinkActive="active">
+            Password
+          </mat-list-item>
+          <mat-divider></mat-divider>
+          <mat-list-item routerLink="email" routerLinkActive="active">
+            Email
+          </mat-list-item>
+        </mat-nav-list>
+      </mat-card>
+    </div>
+    <div class="col-md-9 col-lg-6">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

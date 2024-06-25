@@ -1,0 +1,71 @@
+<div class="gv-td-menu-container bg-white">
+
+
+  <div class="gv-td-menu-item mat-border-top"
+    style="display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px">
+
+    <button mat-flat-button color="primary" class="center-vert" (click)="tableConfiguration()">
+      Manage columns
+    </button>
+
+  </div>
+  <div class="gv-td-menu-item mat-border-top"
+    style="display: flex; flex-direction:column; justify-content:center; padding-right: 10px; padding-left: 10px">
+
+    <button mat-flat-button color="primary" class="center-vert" (click)="factoidMapping()">
+      Factoid mapping
+    </button>
+
+  </div>
+
+  <div class="gv-td-menu-item mat-border-top gv-td-col-checkbox">
+
+    <!-- Filter Toggler -->
+    <mat-checkbox [(ngModel)]="colFiltersEnabled">Filters</mat-checkbox>
+
+    <!-- Metadata Toggler -->
+    <mat-checkbox [(ngModel)]="lineBrakeInCells">Text break</mat-checkbox>
+  </div>
+  <div class="gv-td-menu-item mat-border-top mat-border-left gv-td-paginator">
+    <!-- Paginator -->
+    <mat-paginator [length]="length$ | async" [pageSize]="pageSize$ | async" [pageIndex]="pageIndex$ | async"
+      [pageSizeOptions]="[5, 10, 20, 50]" [showFirstLastButtons]=true (page)="onPageChange($event)">
+    </mat-paginator>
+
+    <!-- Additional options -->
+    <button mat-icon-button [matMenuTriggerFor]="mainMenu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #mainMenu="matMenu" xPosition="before">
+      <!-- toggle onto info -->
+      <button mat-menu-item>
+        <mat-slide-toggle color="accent" [checked]="showIds$|async" (change)="toggleIds()">
+          Display IDs
+        </mat-slide-toggle>
+      </button>
+    </mat-menu>
+  </div>
+</div>
+
+<gv-table class="mat-border-edit-mode" [pkProject]="pkProject" [pkDigital]="pkEntity" [loading]="loading"
+  [sortBy$]="sortByIndex$" [headers$]="headers$" [table$]="table$" [filteringEnabled]="colFiltersEnabled"
+  [sortingEnabled]="true" [lineBreak]="lineBrakeInCells" [showIds$]="showIds$" [newRow]="newRowTemp"
+  class="gv-overflow-hidden" (sortDemanded)="onSortChange($event)" (filterDemanded)="onFilterChange($event)"
+  (createRowDemanded)="preNewRow($event.position)" (deleteRowDemanded)="deleteRow($event.pkRow)"
+  (moveRowDemanded)="moveRow($event.pkRow, $event.position)" (validateNewRowDemanded)="newRow($event)"
+  (cancelNewRowDemanded)="cancelNewRow()">
+</gv-table>
+
+<div class="gv-row-center mt-4" *ngIf="filterOnRow">
+  <mat-card appearance="outlined" class="mb-4">
+    <mat-card-content>
+      <div class="d-flex">
+        <mat-icon class="mr-2" color="primary">info</mat-icon>
+        Filtered on row {{(table$|async)?.[0]?.[0]?.text}}
+      </div>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button color=primary (click)="removeFilterOnRow()">Show all rows</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -1,0 +1,154 @@
+:host {
+  position: relative;
+  display: block;
+}
+$top-horizontal-line: 30px;
+.full-with {
+  display: flex;
+  flex-direction: row;
+}
+
+.left-col {
+  display: flex;
+  justify-content: center;
+  flex: 1 1 0;
+  flex-direction: column;
+}
+
+.right-col {
+  display: flex;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+}
+
+.qf-arr-classes,
+.qf-arr-properties {
+  display: block;
+  position: relative;
+}
+
+.qf-arr-properties {
+  .qf-prop-controls {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.gv-condition-block {
+  padding: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.qf-arr-subgroup {
+  position: relative;
+  display: flex;
+  margin-bottom: 40px;
+
+  .zero {
+    width: 0.75rem;
+    height: 31px;
+    flex-shrink: 0;
+  }
+
+  .first {
+    width: 1px;
+    flex-shrink: 0;
+    margin-bottom: 34px;
+    position: relative;
+    z-index: 1;
+
+    .subgroup-operation-container {
+      position: absolute;
+      bottom: 0;
+      top: 45px;
+      width: 46px;
+      left: -23px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .add-sibling-button {
+      position: absolute;
+      bottom: -30px;
+      left: -16px;
+    }
+
+    &.top-cut {
+      margin-top: 30px;
+    }
+  }
+
+  .second {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 0%;
+
+    .sub-query-item {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+
+      .subquery-left {
+        position: relative;
+        width: 35px;
+        padding: 0 0 0 5px;
+
+        .horizontal-line {
+          position: absolute;
+          top: $top-horizontal-line;
+          left: 0;
+          right: 0;
+          height: 1px;
+
+          &.is-subgroup {
+            top: 62px;
+          }
+        }
+
+        .add-subgroup-button {
+          margin-top: 18px;
+        }
+      }
+
+      gv-qf-form-array {
+        // margin-left: 0.75rem;
+        flex: 1 0 0%;
+
+        &.is-subgroup {
+          margin-top: 2rem;
+        }
+      }
+    }
+  }
+}
+
+.gv-qf-button-absolute-1 {
+  position: absolute;
+  right: -39px;
+  top: 20px;
+
+  mat-icon-btn {
+    line-height: 20px;
+  }
+}
+
+.gv-qf-button-absolute-2 {
+  position: absolute;
+  left: 12px;
+  bottom: -10px;
+
+  mat-icon-btn {
+    line-height: 20px;
+  }
+}
+
+.gv-qf-button-absolute-3 {
+  position: absolute;
+  right: -39px;
+  top: 60px;
+
+  mat-icon-btn {
+    line-height: 20px;
+  }
+}

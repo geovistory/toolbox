@@ -1,0 +1,51 @@
+<mat-form-field *ngIf="config?.data.ctrlClasses" class="w-100" appearance="outline">
+  <mat-label>{{config?.placeholder}}</mat-label>
+  <gv-class-and-type-select [formControl]="formControlFactory.formControl" [disabled]="config?.disabled$ | async"
+    [pkClasses$]="config?.data.ctrlClasses.pkClasses$" [required]="config?.required">
+  </gv-class-and-type-select>
+  <mat-error *ngIf="formControlFactory.formControl.hasError('classOrTypeRequired')">
+    Please select
+  </mat-error>
+</mat-form-field>
+
+
+<mat-form-field *ngIf="config?.data.ctrlCondition" class="w-100" appearance="outline">
+  <mat-label>{{config?.placeholder}}</mat-label>
+
+  <mat-select [formControl]="formControlFactory.formControl" [required]="config?.required">
+    <mat-option *ngFor="let o of config?.data.ctrlCondition.options" [value]="o.value">{{o.label}}</mat-option>
+  </mat-select>
+  <mat-error *ngIf="formControlFactory.formControl.hasError('required')">
+    Please enter a value
+  </mat-error>
+</mat-form-field>
+
+
+
+<mat-form-field *ngIf="config?.data.ctrlProperties" class="w-100" appearance="outline">
+  <mat-label>{{config?.placeholder}}</mat-label>
+  <gv-property-select [formControl]="formControlFactory.formControl" [required]="config?.required"
+    [rootFormGroup]="rootFormGroup" [options$]="config?.data.ctrlProperties.options$">
+  </gv-property-select>
+  <mat-error *ngIf="formControlFactory.formControl.hasError('propertiesRequired')">
+    Please select
+  </mat-error>
+</mat-form-field>
+
+
+<mat-form-field *ngIf="config?.data.ctrlSearchTerm" class="w-100" appearance="outline">
+  <mat-label>{{config?.placeholder}}</mat-label>
+  <input matInput autocomplete="off" [formControl]="formControlFactory.formControl" [required]="config?.required" />
+  <mat-error *ngIf="formControlFactory.formControl.hasError('required')">
+    Please enter a value
+  </mat-error>
+</mat-form-field>
+
+
+
+<!-- Subgroup Operation -->
+<mat-select *ngIf="config?.data.ctrlOperator" [formControl]="formControlFactory.formControl"
+  class="subgroup-operation-select border-gray bg-white">
+  <mat-option value="AND">and</mat-option>
+  <mat-option value="OR">or</mat-option>
+</mat-select>

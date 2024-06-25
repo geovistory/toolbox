@@ -1,0 +1,14 @@
+<button mat-icon-button (click)="zoomer.zoomOut(); onChange()">
+  <mat-icon svgIcon="magnify-minus-outline"></mat-icon>
+</button>
+<mat-slider [min]="0" [max]="zoomer.zoomLevels.length -1" [step]="1" [displayWith]="createThumbLabel"><input matSliderThumb />
+  <input matSliderThumb [value]="zoomer.currentLevel" (valueChange)="onSlide($event)">
+
+</mat-slider>
+<button mat-icon-button (click)="zoomer.zoomIn(); onChange()">
+  <mat-icon svgIcon="magnify-plus-outline"></mat-icon>
+</button>
+
+<button mat-icon-button (click)="zoomer.zoomToExtent(); onChange()" matTooltip="Zoom to all items">
+  <mat-icon svgIcon="arrow-expand-horizontal"></mat-icon>
+</button>

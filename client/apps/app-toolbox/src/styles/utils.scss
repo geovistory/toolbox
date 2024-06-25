@@ -1,0 +1,123 @@
+/** Utils **/
+.d-block {
+  display: block !important;
+}
+
+.d-flex {
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.d-inline-block {
+  display: inline-block !important;
+}
+
+.flex-column {
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+
+.w-100 {
+  width: 100% !important;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.w-50 {
+  width: 50% !important;
+}
+
+.justify-content-center {
+  -ms-flex-pack: center !important;
+  justify-content: center !important;
+}
+
+.justify-content-between {
+  -ms-flex-pack: justify !important;
+  justify-content: space-between !important;
+}
+
+.align-items-center {
+  -ms-flex-align: center !important;
+  align-items: center !important;
+}
+
+.align-self-center {
+  -ms-flex-item-align: center !important;
+  align-self: center !important;
+}
+
+.border {
+  border: 1px solid map.get($gv-grey-palette, 100) !important;
+}
+
+.border-bottom {
+  border-bottom: 1px solid map.get($gv-grey-palette, 100) !important;
+}
+
+.border-danger {
+  border-color: map.get(mat.$red-palette, 700) !important;
+}
+
+.border-right-0 {
+  border-right: 0 !important;
+}
+
+.rounded-circle {
+  border-radius: 50% !important;
+}
+
+.rounded-0 {
+  border-radius: 0 !important;
+}
+
+.border-success {
+  border-color: map.get($gv-mat-teal, 300) !important;
+}
+
+.font-weight-bold {
+  font-weight: 700 !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.float-right {
+  float: right !important;
+}
+
+.align-middle {
+  vertical-align: middle !important;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (min-width: 576px) {
+  .d-sm-none {
+    display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .d-md-block {
+    display: block !important;
+  }
+}

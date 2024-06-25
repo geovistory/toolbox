@@ -1,20 +1,21 @@
-import {authenticate} from '@loopback/authentication';
-import {authorize} from '@loopback/authorization';
-import {inject} from '@loopback/context';
-import {model, property} from '@loopback/repository';
-import {Request, ResponseObject, RestBindings, get, param, post, requestBody} from '@loopback/rest';
-import {SecurityBindings, UserProfile} from '@loopback/security';
-import {Roles} from '../components/authorization/keys';
-import {TColFilter} from '../components/query/q-table-page';
-import {StatementWithTarget} from '../models/field-response/gv-statement-with-target';
-import {GvFieldTargetViewType} from '../models/field/gv-field-target-view-type';
-import {ProjectClassConfig} from '../models/project-visibilty-settings/pro-class-config';
-import {QuillOperation} from '../models/quill-doc/quill-operation.model';
-import {ClassConfig} from '../models/sys-config/sys-config-class-config';
-import {CommunityVisibilityOptionsWithRelations} from '../models/sys-config/sys-config-community-visibility-options';
-import {SysConfigFieldDisplay} from '../models/sys-config/sys-config-field-display.model';
-import {SysConfigFieldsOfSourceClass} from '../models/sys-config/sys-config-fields-of-source-class.model';
-import {ProjectVisibilityOptions} from '../models/sys-config/sys-config-project-visibility-options';
+import { authenticate } from '@loopback/authentication';
+import { authorize } from '@loopback/authorization';
+import { inject } from '@loopback/context';
+import { model, property } from '@loopback/repository';
+import { Request, ResponseObject, RestBindings, get, param, post, requestBody } from '@loopback/rest';
+import { SecurityBindings, UserProfile } from '@loopback/security';
+import { Roles } from '../components/authorization/keys';
+import { TColFilter } from '../components/query/q-table-page';
+import { StatementWithTarget } from '../models/field-response/gv-statement-with-target';
+import { GvFieldTargetViewType } from '../models/field/gv-field-target-view-type';
+import { ProjectClassConfig } from '../models/project-visibilty-settings/pro-class-config';
+import { PubRoleMapping } from '../models/pub-role-mapping.model';
+import { QuillOperation } from '../models/quill-doc/quill-operation.model';
+import { ClassConfig } from '../models/sys-config/sys-config-class-config';
+import { CommunityVisibilityOptionsWithRelations } from '../models/sys-config/sys-config-community-visibility-options';
+import { SysConfigFieldDisplay } from '../models/sys-config/sys-config-field-display.model';
+import { SysConfigFieldsOfSourceClass } from '../models/sys-config/sys-config-fields-of-source-class.model';
+import { ProjectVisibilityOptions } from '../models/sys-config/sys-config-project-visibility-options';
 
 /**
  * OpenAPI response for ping()
@@ -27,13 +28,13 @@ const PING_RESPONSE: ResponseObject = {
         type: 'object',
         title: 'PingResponse',
         properties: {
-          greeting: {type: 'string'},
-          date: {type: 'string'},
-          url: {type: 'string'},
+          greeting: { type: 'string' },
+          date: { type: 'string' },
+          url: { type: 'string' },
           headers: {
             type: 'object',
             properties: {
-              'Content-Type': {type: 'string'},
+              'Content-Type': { type: 'string' },
             },
             additionalProperties: true,
           },
@@ -53,7 +54,7 @@ class ProjectPongRequest {
 export class PingController {
   constructor(
     @inject(RestBindings.Http.REQUEST) private req: Request,
-    @inject(SecurityBindings.USER, {optional: true}) public user: UserProfile,
+    @inject(SecurityBindings.USER, { optional: true }) public user: UserProfile,
   ) { }
 
   // Map to `GET /ping`
@@ -80,7 +81,7 @@ export class PingController {
     },
   })
   @authenticate('basic')
-  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
   projectPing(
     @param.query.number('pkProject') pkProject: number
   ): string {
@@ -94,7 +95,7 @@ export class PingController {
     },
   })
   @authenticate('basic')
-  @authorize({allowedRoles: [Roles.PROJECT_MEMBER]})
+  @authorize({ allowedRoles: [Roles.PROJECT_MEMBER] })
   projectPong(
     @requestBody() req: ProjectPongRequest
   ): string {
@@ -109,7 +110,7 @@ export class PingController {
     },
   })
   @authenticate('basic')
-  @authorize({allowedRoles: [Roles.SYS_ADMIN]})
+  @authorize({ allowedRoles: [Roles.SYS_ADMIN] })
   sysAdminPing(): string {
     return `Hello ${this.user.name}, you are system admin!`
   }
@@ -123,7 +124,7 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': GvFieldTargetViewType}}}
+        content: { 'application/json': { schema: { 'x-ts-type': GvFieldTargetViewType } } }
       }
     }
   })
@@ -143,7 +144,7 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': ClassConfig}}}
+        content: { 'application/json': { schema: { 'x-ts-type': ClassConfig } } }
       }
     }
   })
@@ -153,7 +154,7 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': ProjectClassConfig}}}
+        content: { 'application/json': { schema: { 'x-ts-type': ProjectClassConfig } } }
       }
     }
   })
@@ -163,7 +164,7 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': TColFilter}}}
+        content: { 'application/json': { schema: { 'x-ts-type': TColFilter } } }
       }
     }
   })
@@ -173,7 +174,7 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': SysConfigFieldsOfSourceClass}}}
+        content: { 'application/json': { schema: { 'x-ts-type': SysConfigFieldsOfSourceClass } } }
       }
     }
   })
@@ -183,7 +184,7 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': SysConfigFieldDisplay}}}
+        content: { 'application/json': { schema: { 'x-ts-type': SysConfigFieldDisplay } } }
       }
     }
   })
@@ -193,7 +194,7 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': QuillOperation}}}
+        content: { 'application/json': { schema: { 'x-ts-type': QuillOperation } } }
       }
     }
   })
@@ -204,7 +205,7 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': CommunityVisibilityOptionsWithRelations}}}
+        content: { 'application/json': { schema: { 'x-ts-type': CommunityVisibilityOptionsWithRelations } } }
       }
     }
   })
@@ -214,7 +215,7 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': ProjectVisibilityOptions}}}
+        content: { 'application/json': { schema: { 'x-ts-type': ProjectVisibilityOptions } } }
       }
     }
   })
@@ -225,11 +226,23 @@ export class PingController {
     responses: {
       '200': {
         description: '',
-        content: {'application/json': {schema: {'x-ts-type': StatementWithTarget}}}
+        content: { 'application/json': { schema: { 'x-ts-type': StatementWithTarget } } }
       }
     }
   })
   xStatementWithTarget() { }
+
+  @post('/PubRoleMapping', {
+    responses: {
+      '200': {
+        description: '',
+        content: { 'application/json': { schema: { 'x-ts-type': PubRoleMapping } } }
+      }
+    }
+  })
+  xPubRoleMapping() { }
+
+
 }
 
 

@@ -1,0 +1,23 @@
+<gv-view-field-item-container>
+  <span class="loc-left mat-typography">
+
+    <gv-view-field-item-class-info class="loc-class-info" [showOntoInfo$]="showOntoInfo$" [resource]="resource"
+      [isInProject]="item.component.item.projRel?.is_in_project"
+      [classLabel]="field.targets[resource.fk_class]?.targetClassLabel" [isFavorite]="ordNum===1">
+    </gv-view-field-item-class-info>
+
+    <gv-entity-preview class="loc-item" [hideClass]="true"
+      [pkEntity]="item.component.item.target.entity.resource.pk_entity" [dragEnabled]="false" [openTabOnClick]="false"
+      [truncateLabel]="'250'">
+    </gv-entity-preview>
+  </span>
+
+  <span class="loc-right mat-text-secondary">
+    <button mat-icon-button (click)="onDelete()" *ngIf="editMode.value$|async">
+      <mat-icon svgIcon="delete"></mat-icon>
+    </button>
+    <button mat-icon-button (click)="onEdit()" *ngIf="editMode.value$|async">
+      <mat-icon svgIcon="pencil"></mat-icon>
+    </button>
+  </span>
+</gv-view-field-item-container>

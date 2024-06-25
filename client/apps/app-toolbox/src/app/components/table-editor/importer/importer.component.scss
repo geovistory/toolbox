@@ -1,0 +1,19 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.mat-mdc-dialog-content {
+  max-height: unset !important;
+  flex: 1 0 0;
+  overflow: hidden;
+  display: flex;
+}
+
+.load-file > mat-form-field:first-of-type {
+  width: 240px;
+}
+.load-file > mat-form-field {
+  width: 128px;
+  margin-right: 10px;
+}

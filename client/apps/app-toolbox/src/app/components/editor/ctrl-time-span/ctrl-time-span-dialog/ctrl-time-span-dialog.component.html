@@ -1,0 +1,152 @@
+<div>
+  <h2 mat-dialog-title>
+    Time span <small *ngIf="(helpMode$ | async) === 'long'" class="mat-text-secondary">(Help)</small>
+
+    <button class="float-right" mat-button *ngIf="(helpMode$ | async) === 'hidden'"
+      (click)="setHelpMode('long')">Help</button>
+
+    <button class="float-right" *ngIf="(helpMode$ | async) === 'long'" mat-button (click)="setHelpMode('hidden')">
+      <mat-icon>arrow_back</mat-icon> Back to form
+    </button>
+  </h2>
+
+
+  <mat-tab-group *ngIf="(helpMode$ | async) === 'hidden'"
+    [selectedIndex]="(mode$ | async) === 'one-date' ? 0 : (mode$ | async) === 'begin-end' ? 1 : 2"
+    (selectedTabChange)="selectedTabChange($event.index)">
+    <mat-tab label="One Date"></mat-tab>
+    <mat-tab label="Begin and End"></mat-tab>
+    <mat-tab label="Advanced"> </mat-tab>
+  </mat-tab-group>
+</div>
+
+<mat-dialog-content *ngIf="(helpMode$ | async) === 'long'">
+
+  <gv-existence-time-help></gv-existence-time-help>
+</mat-dialog-content>
+
+<mat-dialog-actions *ngIf="(helpMode$ | async) === 'long'">
+  <button mat-flat-button color="primary" (click)="setHelpMode('hidden')">
+    <mat-icon>arrow_back</mat-icon> Back to form
+  </button>
+</mat-dialog-actions>
+
+<!-- Main content -->
+<mat-dialog-content *ngIf="(helpMode$ | async) !== 'long'">
+  <!-- <ngx-slim-loading-bar color="inherit"></ngx-slim-loading-bar> -->
+
+
+
+
+  <!--
+  <div class=" d-flex flex-column" *ngIf="(helpMode$ | async) === 'short'">
+
+
+    <img src="/assets/images/time-span.png" alt="Time Span Structure"
+      class="img-fluid border mt-3 mb-2 align-self-center" style="max-width: 430px;">
+
+    <i class="align-self-center mb-5">
+      Components defining the temporal existence of phenomena.
+      <a href="" class="gv-passive-link" (click)="setHelpMode('long')">Read more...</a>
+    </i>
+  </div> -->
+
+  <form [formGroup]="formGroup">
+
+
+
+    <!-- At some time within -->
+    <div *ngIf="(mode$ | async) !== 'begin-end'">
+
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._72_outgoing">
+        <mat-label>{{f?._72_outgoing?.title}}</mat-label>
+        <gv-ctrl-time-primitive [formControlName]="cName?._72_outgoing" (focus)="activate('_72_outgoing')">
+        </gv-ctrl-time-primitive>
+        <mat-error *ngIf="formGroup?.get(cName._72_outgoing).invalid">
+          {{getErrorMessage(formGroup?.get(cName._72_outgoing))}}</mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <!-- <gv-time-span-form-part [controlName]="cName?._72_outgoing" [control]="formGroup?.get(cName?._72_outgoing)"
+      [active]="active?._72_outgoing" [label]="f?._72_outgoing?.title" (activate)="activate('_72_outgoing',
+         ['_152_outgoing', '_153_outgoing'], ['_152_outgoing', '_153_outgoing'])"></gv-time-span-form-part>
+ -->
+    <!-- Begin of Begin -->
+    <div class="pl-4 mt-3" *ngIf="(mode$ | async) === 'advanced'">
+
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._152_outgoing">
+        <mat-label>{{f?._152_outgoing?.title}}</mat-label>
+        <gv-ctrl-time-primitive [formControlName]="cName?._152_outgoing" (focus)="activate('_152_outgoing')">
+        </gv-ctrl-time-primitive>
+        <mat-error *ngIf="formGroup?.get(cName._152_outgoing).invalid">
+          {{getErrorMessage(formGroup?.get(cName._152_outgoing))}}</mat-error>
+      </mat-form-field>
+
+    </div>
+
+
+    <!-- End of End -->
+    <div class="pl-4 mt-3" *ngIf="(mode$ | async) === 'advanced'">
+
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._153_outgoing">
+        <mat-label>{{f?._153_outgoing?.title}}</mat-label>
+        <gv-ctrl-time-primitive [formControlName]="cName?._153_outgoing" (focus)="activate('_153_outgoing')">
+        </gv-ctrl-time-primitive>
+        <mat-error *ngIf="formGroup?.get(cName._153_outgoing).invalid">
+          {{getErrorMessage(formGroup?.get(cName._153_outgoing))}}</mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <!-- Ongoing throughout -->
+    <div class="mt-5" *ngIf="(mode$ | async) === 'advanced'">
+
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._71_outgoing">
+        <mat-label>{{f?._71_outgoing?.title}}</mat-label>
+        <gv-ctrl-time-primitive [formControlName]="cName?._71_outgoing" (focus)="activate('_71_outgoing')">
+        </gv-ctrl-time-primitive>
+        <mat-error *ngIf="formGroup?.get(cName._71_outgoing).invalid">
+          {{getErrorMessage(formGroup?.get(cName._71_outgoing))}}</mat-error>
+      </mat-form-field>
+
+    </div>
+
+
+    <!-- End of begin -->
+    <div class="pl-4 mt-3" *ngIf="(mode$ | async) !== 'one-date'">
+
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._150_outgoing">
+        <mat-label>{{f?._150_outgoing?.title}}</mat-label>
+        <gv-ctrl-time-primitive [formControlName]="cName?._150_outgoing" (focus)="activate('_150_outgoing')">
+        </gv-ctrl-time-primitive>
+        <mat-error *ngIf="formGroup?.get(cName._150_outgoing).invalid">
+          {{getErrorMessage(formGroup?.get(cName._150_outgoing))}}</mat-error>
+      </mat-form-field>
+    </div>
+
+
+    <!-- Begin of end -->
+    <div class="pl-4 mt-3" *ngIf="(mode$ | async) !== 'one-date'">
+
+      <mat-form-field appearance="outline" class="w-100" *ngIf="cName?._151_outgoing">
+        <mat-label>{{f?._151_outgoing?.title}}</mat-label>
+        <gv-ctrl-time-primitive [formControlName]="cName?._151_outgoing" (focus)="activate('_151_outgoing')">
+        </gv-ctrl-time-primitive>
+        <mat-error *ngIf="formGroup?.get(cName._151_outgoing).invalid">
+          {{getErrorMessage(formGroup?.get(cName._151_outgoing))}}</mat-error>
+      </mat-form-field>
+
+    </div>
+
+
+  </form>
+
+</mat-dialog-content>
+<mat-dialog-actions *ngIf="(helpMode$ | async) !== 'long'">
+  <button mat-flat-button color="primary" type="submit" [disabled]="formGroup.touched && formGroup.invalid"
+    (click)="onSubmit()">
+    Ok
+  </button>
+  <button mat-button (click)="cancel()">Cancel</button>
+</mat-dialog-actions>

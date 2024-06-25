@@ -1,7 +1,0 @@
-<div *ngIf="formGroupFactory.child.factoryType === 'array'" [formGroup]="formGroupFactory.control">
-  <div formArrayName="childControl">
-    <gv-table-form-array [formArrayFactory]="formGroupFactory.child">
-      <ng-content></ng-content>
-    </gv-table-form-array>
-  </div>
-</div>

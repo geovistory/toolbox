@@ -1,0 +1,16 @@
+<div class="mat-typography left" (click)="activateTab.emit()">
+
+  <mat-icon style="font-size:18px;height:18px;width:18px" *ngIf="(loading$ | async )!==true" class="icon"
+    [svgIcon]="svgIcon" [ngClass]="colorClass">
+  </mat-icon>
+
+  <div *ngIf="(loading$ | async )" class="icon">
+    <span class="fa fa-pulse fa-spinner mat-text-secondary"></span>
+  </div>
+  <div class="label" [matTooltip]="(tooltip$ | async)">
+    {{(title$ | async )}}
+  </div>
+</div>
+<div class="right btn btn-link-gray" (click)="closeTab.emit()">
+  <i class="fa fa-close"></i>
+</div>

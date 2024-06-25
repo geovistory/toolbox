@@ -5,11 +5,11 @@ const envPath = path.join(__dirname, "../.env");
 const envExamplePath = path.join(__dirname, "../.env.example");
 const envJsPath = path.join(
   __dirname,
-  "../projects/app-toolbox/src/assets/env.js"
+  "../apps/app-toolbox/src/assets/env.js"
 );
 const envJsTemplatePath = path.join(
   __dirname,
-  "../projects/app-toolbox/src/assets/env.template.js"
+  "../apps/app-toolbox/src/assets/env.template.js"
 );
 
 const copyEnvExampleIfNeeded = () => {

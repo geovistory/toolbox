@@ -1,0 +1,73 @@
+<p-table #table *ngIf="displayedColumns$ | async" [columns]="displayedColumns$ | async" [value]="items"
+  [scrollable]="true" [rows]="limit" [scrollHeight]="'flex'" [virtualScroll]="true" [virtualRowHeight]="48"
+  [lazy]="true" (onLazyLoad)="loadDataOnScroll($event);">
+
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th class="bg-grey-100" *ngFor="let col of colDefs">
+        <div class="d-flex">
+          <mat-icon *ngIf="col.defaultType" svgIcon="tag-outline" class="mat-text-secondary mat-icon-sm">
+          </mat-icon>
+          <mat-icon *ngIf="!col.defaultType" svgIcon="transit-connection"
+            class="mat-text-secondary mat-icon-sm fa-rotate-90"></mat-icon>
+          <span>{{col.label}}</span>
+        </div>
+      </th>
+    </tr>
+    <mat-progress-bar mode="indeterminate" *ngIf="a.loading"> </mat-progress-bar>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-index let-columns="columns">
+    <tr style="height:48px">
+
+      <td *ngFor="let col of colDefs" class="gv-fade-out-right ">
+
+        <ng-container *ngIf="rowData[col.id]?.entities; else values">
+          <button *ngIf="rowData[col.id]?.entities?.length > 0" mat-raised-button
+            (click)="openEntitiesDialog(rowData[col.id].entities)">{{rowData[col.id].entities?.length}}</button>
+        </ng-container>
+        <ng-template #values>
+          <ng-container *ngIf="rowData[col.id]?.values; else entity">
+            <button *ngIf="rowData[col.id]?.values?.length > 0" mat-raised-button
+              (click)="openValuesDialog(rowData[col.id].values)">{{rowData[col.id].values?.length}}</button>
+          </ng-container>
+        </ng-template>
+        <ng-template #entity>
+          <ng-container *ngIf="rowData[col.id]?.entity; else value">
+            <gv-entity-preview [preview]="rowData[col.id].entity" [dragEnabled]="false" [openTabOnClick]="true">
+            </gv-entity-preview>
+          </ng-container>
+        </ng-template>
+        <ng-template #value>
+          <ng-container *ngIf="rowData[col.id]?.value; else label">
+            {{rowData[col.id].value.label}}
+          </ng-container>
+        </ng-template>
+        <ng-template #label>
+          <ng-container *ngIf="rowData[col.id]?.label">
+            {{rowData[col.id].label}}
+          </ng-container>
+        </ng-template>
+      </td>
+    </tr>
+  </ng-template>
+  <!-- <ng-template pTemplate="loadingbody" let-columns="columns">
+    <tr style="height:48px">
+      <td *ngFor="let col of colDefs">
+        <div class="loading-text">oo</div>
+      </td>
+    </tr>
+  </ng-template> -->
+
+</p-table>
+
+<div class="d-flex align-items-center">
+  <span class="mat-caption ml-4">{{items?.length}} {{items?.length ===1 ?'row':'rows'}}</span>
+  <button class="ml-auto" mat-button [matMenuTriggerFor]="exportMenu">
+    <mat-icon svgIcon="download" color="primary"></mat-icon>
+    Download
+  </button>
+  <mat-menu #exportMenu="matMenu">
+    <button mat-menu-item (click)="download('json')">Download as JSON</button>
+    <button mat-menu-item (click)="download('csv')">Download as CSV</button>
+  </mat-menu>
+</div>

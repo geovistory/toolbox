@@ -1,0 +1,54 @@
+.loc-tools {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.loc-filter {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  font-size: inherit;
+  box-shadow: none;
+  border-radius: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.loc-filter-input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
+  border: 0;
+  color: gray;
+  background-color: unset;
+  width: 100%;
+}
+
+// .loc-container {
+
+// }
+
+.loc-padding-left {
+  height: 48px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: 56px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.loc-label {
+  height: 48px;
+  padding-top: 13px;
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
