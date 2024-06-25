@@ -1,0 +1,153 @@
+<gv-detail-top-bar>
+  <div class="ml-2">Classes used in your project</div>
+  <span class="ml-auto d-flex">
+
+    <mat-checkbox (change)="showBasicClasses$.next(!showBasicClasses$.value)" [checked]="showBasicClasses$ | async">
+      Show Basic Classes
+    </mat-checkbox>
+
+    <div class="ml-5 mr-2">
+      <input matInput (keyup)="textFilter($event)" placeholder="Filter" autocomplete="false">
+    </div>
+
+  </span>
+</gv-detail-top-bar>
+
+<gv-detail-content class="gv-flex-fh">
+
+
+
+  <table mat-table [dataSource]="filteredItems$" matSort [matSortDisableClear]="true" (matSortChange)="sortData($event)"
+    class="mat-elevation-z1 w-100">
+    <!-- Category Column -->
+    <ng-container matColumnDef="categoryLabel">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="categoryLabel"> Category </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        {{element.categoryLabel}}
+
+      </td>
+    </ng-container>
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="enabled">
+
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="enabled_in_entities"> In add menu
+      </th>
+
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+
+        <mat-checkbox
+          *ngIf="element?.belongsToCategory?.entities  && element.showInAddMenu && !element.restrictedToOtherProjects"
+          (click)="$event.stopPropagation()"
+          (change)="element.enabled_in_entities ? disableClass(element) : enableClass(element)"
+          [checked]="element.enabled_in_entities"
+          [hidden]="state.ui.activeProject.getChangingClassProjRel(element.pkClass) | async">
+        </mat-checkbox>
+        <mat-checkbox
+          *ngIf="!(element?.belongsToCategory?.entities) && element.showInAddMenu && !element.restrictedToOtherProjects"
+          [disabled]="true" [checked]="true">
+        </mat-checkbox>
+        <mat-spinner *ngIf="state.ui.activeProject.getChangingClassProjRel(element.pkClass) | async" [diameter]="20"
+          color="accent"></mat-spinner>
+      </td>
+    </ng-container>
+
+
+    <!-- Label Column -->
+    <ng-container matColumnDef="label">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="label"> Class </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <div style="display: flex;">
+          <gv-class-info class="mr-2" [pkClass]="element.pkClass" [classLabel]="element.label" [size]="18">
+          </gv-class-info>
+          <strong class="mr-2" [innerHtml]="element.label"></strong>
+          {{element.pkClass}}
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Temporal / Persistent Column -->
+    <ng-container matColumnDef="subclassOf">
+      <th mat-header-cell style="flex: 1 0 0%" *matHeaderCellDef mat-sort-header="subclassOf"> Persistent / Temporal
+      </th>
+      <td mat-cell style="flex: 1 0 0%" *matCellDef="let element">
+        <i *ngIf="element.subclassOf=='peIt'" class="gv-icon gv-icon-persistent-entity">&nbsp;</i>
+        <span *ngIf="element.subclassOf=='peIt'">Persistent</span>
+        <i *ngIf="element.subclassOf=='teEnt'" class="fa fa-star-o">&nbsp;</i>
+        <span *ngIf="element.subclassOf=='teEnt'">Temporal</span>
+      </td>
+    </ng-container>
+
+    <!-- Dfh Standard Label Column -->
+    <ng-container matColumnDef="identifier_in_namespace">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="identifier_in_namespace"> OntoMe
+        Definition
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <gv-onto-class-info [pkClass]="element.pkClass"></gv-onto-class-info>
+      </td>
+    </ng-container>
+
+    <!-- Manage Controlled Vocabulary Column -->
+    <ng-container matColumnDef="subclassOfType">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef mat-sort-header="subclassOfType"> Types
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <button mat-button color="primary" *ngIf="element.subclassOfType && !element.restrictedToOtherProjects"
+          (click)="openControlledVocab(element)"> Open
+          Controlled Vocabulary </button>
+      </td>
+    </ng-container>
+
+    <!-- Profiles Column -->
+    <ng-container matColumnDef="profiles">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> OntoMe Profiles
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <div class="d-flex align-items-center">
+          <mat-menu #appMenu="matMenu">
+            <a *ngFor="let profile of element.profiles" mat-menu-item
+              [attr.href]="ontomeURL + '/profile/' + profile.fkProfile" target="_blank">
+              {{profile.label}}
+              <mat-icon color="warn" *ngIf="profile.removedFromApi" svgIcon="alert"
+                matTooltip="This class has been removed from the profile on OntoMe."></mat-icon>
+            </a>
+          </mat-menu>
+
+          <button mat-button color="primary" [matMenuTriggerFor]="appMenu">
+            {{element.profiles.length}} Profiles
+          </button>
+
+          <mat-icon color="warn" *ngIf="element.removedFromAllProfiles" svgIcon="alert"
+            matTooltip="This class has been removed from all OntoMe profiles you have activated."></mat-icon>
+        </div>
+      </td>
+    </ng-container>
+
+    <!-- Edit -->
+    <ng-container matColumnDef="classConfig">
+      <th mat-header-cell style="flex: 0 1 0%" *matHeaderCellDef> Configuration
+      </th>
+      <td mat-cell style="flex: 0 1 0%" *matCellDef="let element">
+        <mat-menu #configMenu="matMenu">
+          <button mat-menu-item (click)="openClassConfig(element)">
+            <mat-icon svgIcon="cogs"></mat-icon>
+            Configure Class...
+          </button>
+          <gv-entity-label-config-open-btn [fkClass]="element.pkClass">
+            <button mat-menu-item>
+              <mat-icon svgIcon="cogs"></mat-icon>
+              <span>Configure {{element.label}} labels</span>
+            </button>
+          </gv-entity-label-config-open-btn>
+        </mat-menu>
+        <button mat-button color="primary" [matMenuTriggerFor]="configMenu">
+          Configure class
+        </button>
+
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let element; columns: displayedColumns;"></tr>
+  </table>
+
+</gv-detail-content>

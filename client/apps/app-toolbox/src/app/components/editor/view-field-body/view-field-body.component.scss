@@ -1,0 +1,13 @@
+:host {
+  width: 100%;
+}
+.loc-container {
+  background-color: white;
+}
+.loc-dropzone-accepts {
+  background-color: rgba(240, 240, 240, 0.589);
+}
+.loc-no-items {
+  display: flex;
+  align-items: center;
+}

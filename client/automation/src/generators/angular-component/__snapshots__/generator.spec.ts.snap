@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`angular-component generator should run successfully: component 1`] = `
+"import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'gv-example',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './example.component.html',
+  styleUrls: ['./example.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ExampleComponent {}
+"
+`;
+
+exports[`angular-component generator should run successfully: stories 1`] = `
+"import {
+  applicationConfig,
+  type Meta,
+  type StoryObj,
+} from '@storybook/angular';
+import { ExampleComponent } from './example.component';
+import { importProvidersFrom } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { StateModule } from '@kleiolab/lib-redux';
+import { INITIAL_STATE } from '@ngrx/store';
+
+import { within } from '@storybook/testing-library';
+import { expect } from '@storybook/jest';
+
+import { MockStateFactory } from './../../../.storybook/MockStateFactory';
+import { ActiveProjectService } from './../services/active-project.service';
+
+const meta: Meta<ExampleComponent> = {
+  component: ExampleComponent,
+  title: 'ExampleComponent',
+  decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(StateModule, MatDialogModule),
+        ActiveProjectService,
+      ],
+    }),
+  ],
+};
+export default meta;
+type Story = StoryObj<ExampleComponent>;
+
+// Setup the initial state of the story Basic
+const stateBasic = new MockStateFactory();
+
+export const Basic: Story = {
+  args: {},
+  decorators: [
+    applicationConfig({
+      providers: [{ provide: INITIAL_STATE, useValue: stateBasic.state }],
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.getByText(/example works!/gi)).toBeTruthy();
+  },
+};
+"
+`;
+
+exports[`angular-component generator should run successfully: stylesheet 1`] = `
+":host {
+  display: block;
+}
+"
+`;
+
+exports[`angular-component generator should run successfully: template 1`] = `
+"<p>Example works!</p>
+"
+`;

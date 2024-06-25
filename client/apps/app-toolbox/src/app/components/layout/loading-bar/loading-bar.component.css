@@ -1,0 +1,10 @@
+mat-progress-bar {
+  transition: visibility 0s linear 0.33s, opacity 0.33s linear;
+  opacity: 0;
+  transition-delay: 0s;
+}
+
+.is-visible {
+  opacity: 1;
+  transition-delay: 0s;
+}

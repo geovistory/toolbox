@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "AngularComponent",
+  "title": "",
+  "type": "object",
+  "properties": {
+    "componentPath": {
+      "type": "string",
+      "description": "Path to components folder relative to workspace root (e.g. './apps/app-toolbox/src/app/components/misc/new-button')",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "Path to components folder relative to workspace root (e.g. './apps/app-toolbox/src/app/components/misc/new-button')"
+    }
+  },
+  "required": [
+    "componentPath"
+  ]
+}

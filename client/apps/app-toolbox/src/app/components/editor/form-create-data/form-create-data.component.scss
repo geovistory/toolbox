@@ -1,0 +1,35 @@
+:host {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+}
+.form-title {
+  flex: 0 0 auto;
+}
+
+form {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 0 1rem;
+}
+.form-buttons {
+  flex: 0 0 auto;
+}
+
+.align-right {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.align-space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.row-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

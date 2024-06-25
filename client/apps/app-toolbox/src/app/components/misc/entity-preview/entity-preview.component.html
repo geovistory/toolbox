@@ -1,0 +1,56 @@
+<ng-template #inner>
+  <span *ngIf="!preview" class="fa fa-pulse fa-spinner" data-testid="spinner"> </span>
+
+  <div class="wrap mat-typography">
+    <div class="label">
+      {{preview?.entity_label | truncate:[truncateLabel]}}
+    </div>
+    <div *ngIf="!hideClass" class="type mat-text-secondary mat-caption">
+
+
+      <gv-class-info class="loc-icon" *ngIf="preview?.fk_class" [pkClass]="preview?.fk_class" [size]="12"
+        [classLabel]="preview?.class_label" [iconGray]="iconGray"></gv-class-info>
+
+
+      {{(preview?.type_label) ? preview?.type_label : preview?.class_label}}
+      <span *ngIf="preview?.time_span">&nbsp;•&nbsp;{{preview?.time_span | timeSpan}}</span>
+
+      <span *ngIf="showId">&nbsp;•&nbsp; ID: {{preview?.pk_entity}}</span>
+
+    </div>
+  </div>
+</ng-template>
+
+<div data-testid="menu-trigger" *ngIf="openTabOnClick || urls.length > 0" dnd-draggable [dragEnabled]="dragEnabled"
+  [dragData]="preview" class="d-flex" [matMenuTriggerFor]="appMenu">
+  <mat-menu #appMenu="matMenu">
+
+    <!-- Open the entity in new Geovistory tab: (add to project) + open it -->
+    <ng-container *ngIf="openTabOnClick">
+      <button [disabled]="preview?.project_id === 0" mat-menu-item (click)="openInNewTab()">
+        <mat-icon>tab</mat-icon>
+        Open {{preview?.entity_label | truncate:['10']}} in new Geovistory Tab
+      </button>
+      <button *ngIf="preview?.project_id === 0" mat-menu-item (click)="addAndOpenInNewTab()">
+        <mat-icon color="primary">add</mat-icon>
+        Add to project and open
+      </button>
+    </ng-container>
+
+    <!-- if URLs were detected in the string, display a link to open in new tab for each one of them -->
+    <a *ngFor="let url of urls" mat-menu-item href="{{url}}" target="_blank">
+      <mat-icon style="margin-bottom: 0;">open_in_new</mat-icon>
+      {{url}}
+    </a>
+
+  </mat-menu>
+
+  <ng-container [ngTemplateOutlet]="inner"></ng-container>
+  <ng-content></ng-content>
+</div>
+
+<div *ngIf="!openTabOnClick && urls.length === 0" dnd-draggable [dragEnabled]="dragEnabled" [dragData]="preview"
+  class="d-flex">
+  <ng-container [ngTemplateOutlet]="inner"></ng-container>
+  <ng-content></ng-content>
+</div>

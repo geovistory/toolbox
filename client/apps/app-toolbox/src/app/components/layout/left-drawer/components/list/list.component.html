@@ -1,0 +1,35 @@
+<!-- Search input -->
+<div class="mx-3 mt-3 mb-1">
+
+  <mat-form-field appearance="outline" class="w-100">
+    <input matInput placeholder="Search..." autocomplete="off" (keydown)="searchKeydown($event)"
+      [(ngModel)]="searchString">
+    <button matSuffix mat-icon-button color="primary" (click)="searchStringChange()"><mat-icon
+        [svgIcon]="'magnify'"></mat-icon></button>
+    <mat-hint>
+      {{collectionSize | number}} {{(collectionSize == 1 ? 'result' : 'results')}}</mat-hint>
+  </mat-form-field>
+
+  <ng-content select="[addBtn]"></ng-content>
+
+</div>
+
+
+<!-- <div *ngIf="(loading$ | async)" class="w-100 m-5 mat-text-secondary"><i class="fa fa-3x fa-pulse fa-spinner"></i></div> -->
+
+<!-- Results -->
+<div class="d-flex gv-fh mx-0 py-1 px-3 gv-scroll-y-auto">
+  <gv-entity-search-hit *ngFor="let hit of (items$ | async)" [hit]="hit" (onOpenEntityPreview)=onOpen.emit($event)>
+  </gv-entity-search-hit>
+</div>
+
+<div class="d-flex " *ngIf="error$|async">
+  Error when loading items.
+</div>
+
+<!-- Pagination -->
+<mat-divider> </mat-divider>
+<mat-paginator *ngIf="(collectionSize > limit) " class="bg-none dense" (page)="pageChange($event)"
+  [length]="collectionSize" [pageSize]="limit" [disabled]="collectionSize <= limit" [showFirstLastButtons]="true"
+  [hidePageSize]="true" [pageIndex]="page" aria-label="Select page">
+</mat-paginator>

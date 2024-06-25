@@ -1,0 +1,28 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@geovistory/automation": ["automation/src/index.ts"],
+      "@kleiolab/lib-config": ["libs/lib-config/src/index.ts"],
+      "@kleiolab/lib-redux": ["libs/lib-redux/src/index.ts"],
+      "@kleiolab/lib-redux/*": ["libs/lib-redux/src/*"],
+      "@kleiolab/lib-sdk-lb4": ["libs/lib-sdk-lb4/src/index.ts"],
+      "@kleiolab/lib-sockets": ["libs/lib-sockets/src/index.ts"],
+      "@kleiolab/lib-utils": ["libs/lib-utils/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp", "**/app/modules/**/*.ts"]
+}

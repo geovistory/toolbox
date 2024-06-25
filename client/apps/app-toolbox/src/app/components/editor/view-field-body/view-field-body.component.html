@@ -1,0 +1,60 @@
+<div class="loc-container" gvOpenCloseContainer [isOpen$]="showBody$">
+  <div gvOpenCloseChild>
+
+    <div [ngClass]="{'gv-fh': (addMode$|async)&&(items$|async)?.length}">
+      <span class="mat-bg-grey-50">
+        <mat-paginator *ngIf="!noPagination" [length]="itemsCount$ | async" [pageSize]="limit$ | async"
+          [pageIndex]="pageIndex$ | async" [pageSizeOptions]="pageSizeOptions" [showFirstLastButtons]=true
+          [hidden]="(itemsCount$ | async) <= limit" (page)="onPageChange($event)">
+        </mat-paginator>
+      </span>
+      <mat-divider [hidden]="(itemsCount$ | async) <= limit"></mat-divider>
+      <div [gvDndSortList]="{items:(items$ | async), field:field, id:sortListId}"
+        (optimisticUpdate)="itemsOptimisticUpdate$.next($event)">
+
+        <gv-view-field-item-container *ngIf="!((itemsCount$ |async) > 0) && !hideNoItemsInfo" [hasDropZones]="false">
+          <div class="loc-no-items mat-caption mat-text-secondary">No items</div>
+        </gv-view-field-item-container>
+        <div *ngFor="let item of (items$ | async); let i = index; trackBy:trackByFn"
+          [ngClass]="{'mb-3': (addMode$|async), 'mt-3': (addMode$|async)}" [dndDraggable]="{item, sortListId}"
+          (dndStart)="onDragStart(item)" (dndEnd)="onDragEnd()">
+
+
+          <mat-divider *ngIf="dividerPosition==='top'"></mat-divider>
+          <gv-view-field-item [item]=item [showOntoInfo$]=showOntoInfo$ [addMode$]=addMode$ [field]=field [scope]=scope
+            [checked]="selection.isSelected(item.statement.pk_entity)" [allowMultiSelect]=allowMultiSelect
+            (selectionChange)="toggleSelection($event)"></gv-view-field-item>
+          <mat-divider *ngIf="dividerPosition==='bottom'"></mat-divider>
+
+        </div>
+
+      </div>
+    </div>
+
+    <ng-container *ngIf="(items$|async)?.length">
+      <div *ngIf="addMode$|async" class="gv-row-space-between py-2">
+        <div class="gv-row-center">
+          <button [disabled]="(selectedCount$ | async) < 1 || (adding$|async)" type="submit" mat-flat-button
+            color="primary" class="mr-2" (click)="add()">
+            <ng-container *ngIf="!(adding$|async)">
+              Add selected ({{selectedCount$|async}})
+            </ng-container>
+            <div *ngIf="(adding$|async)" style="margin: 6px;">
+              <mat-spinner [diameter]="20"></mat-spinner>
+            </div>
+          </button>
+          <button [disabled]="targetIsUnique" type="submit" mat-flat-button color="primary" class="mr-2"
+            (click)="next.emit()">Create new</button>
+        </div>
+        <button type="button" mat-button (click)="close.emit(false)">Cancel</button>
+      </div>
+
+
+    </ng-container>
+
+
+    <div *ngIf="!(items$|async)" class="gv-flex-fh justify-content-center align-items-center">
+      <mat-spinner [diameter]="20"></mat-spinner>
+    </div>
+  </div>
+</div>

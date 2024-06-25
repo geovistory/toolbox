@@ -1,0 +1,16 @@
+.gv-ctrl-container {
+  height: 18px;
+  > .gv-mat-input-placeholder {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  }
+}
+.gv-text-editor {
+  min-height: 3.5rem;
+}
+::ng-deep .gv-text-editor .ql-editor {
+  min-height: 165px;
+}

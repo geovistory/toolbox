@@ -1,0 +1,28 @@
+<form *ngIf="formFactory?.formGroup" [formGroup]="formFactory.formGroup">
+  <div *ngIf="formFactory.formGroupFactory.child.factoryType === 'array'"
+    [formGroup]="formFactory.formGroupFactory.formGroup">
+    <div formArrayName="childControl" class="loc-container">
+
+      <mat-form-field class="ctrl-text" *ngIf="ctrls?.text" [appearance]="appearance">
+        <mat-label>{{placeholders.text}}</mat-label>
+
+        <gv-ctrl-appellation placeholder="Placeholder" [formControl]="ctrls.text" [type]="appeCtrlType">
+        </gv-ctrl-appellation>
+
+        <mat-error>
+          <ng-container *ngIf="ctrls.text.hasError('required')">
+            {{placeholders.text}} required
+          </ng-container>
+          <ng-container *ngIf="ctrls.lang.hasError('required')">
+            Language required
+          </ng-container>
+        </mat-error>
+
+      </mat-form-field>
+      <gv-ctrl-language class="mat-text-secondary" [matTooltip]="placeholders.lang" [placeholder]="placeholders.lang"
+        [formControl]="ctrls.lang">
+      </gv-ctrl-language>
+
+    </div>
+  </div>
+</form>

@@ -3,7 +3,7 @@
 # Stage 1: Compile and Build angular codebase
 
 # Use official node image as the base image
-FROM node:14.18.0-slim as build
+FROM node:18-slim as build
 
 # Set the working directory
 WORKDIR /app
@@ -12,10 +12,13 @@ WORKDIR /app
 COPY ./ /app/
 
 # Install all the dependencies
-RUN npm install --production=false
+RUN npm install
+
+# Set CI environment variable to true to disable angular build cache
+ENV CI=true
 
 # Generate the build of the application
-RUN npm run build:all
+RUN npx nx build app-toolbox --verbose=true
 
 # Stage 2: Serve app with nginx server
 
@@ -23,12 +26,12 @@ RUN npm run build:all
 FROM nginx:latest
 
 # Copy the build output to replace the default nginx contents.
-COPY --from=build /app/dist/app-toolbox /usr/share/nginx/html
+COPY --from=build /app/dist/apps/app-toolbox /usr/share/nginx/html
 
 # Copy the config for fallback route
-COPY ./ng.conf /etc/nginx/conf.d/
+COPY ./nginx.conf /etc/nginx/conf.d/
 
-# Remove de
+# Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
 
 # When the container starts, replace the env.js with values from environment variables

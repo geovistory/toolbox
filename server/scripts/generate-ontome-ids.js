@@ -34,7 +34,11 @@ async function start() {
   const filecontent = createFileContent(profs, ks, ps);
   createFile('./src/ontome-ids.ts', filecontent);
   createFile(
-    '../client/projects/app-toolbox/src/app/ontome-ids.ts',
+    '../client/libs/lib-redux/src/lib/_helpers/data/auto-gen/ontome-ids.ts',
+    filecontent,
+  );
+  createFile(
+    '../client/apps/app-toolbox/src/app/lib/constants/ontome-ids.ts',
     filecontent,
   );
 }

@@ -1,0 +1,39 @@
+@import '../../../misc/core-table/table';
+
+:host {
+  display: flex;
+  flex-direction: column
+}
+
+@include base;
+@include progress;
+
+cdk-virtual-scroll-viewport {
+  height: 100%;
+}
+
+// this compensates for flex display, i.e. not using <table>
+.mat-column-id {
+  max-width: 4rem;
+}
+
+.mat-column-actions {
+  max-width: 24px;
+}
+
+mat-progress-bar {
+  position: absolute;
+}
+
+.loading-text {
+  display: block;
+  background-color: #f1f1f1;
+  min-height: 19px;
+  animation: pulse 1s infinite ease-in-out;
+  text-indent: -99999px;
+  overflow: hidden;
+}
+
+p-table {
+  flex: 1 0 auto
+}

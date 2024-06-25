@@ -1,0 +1,93 @@
+<as-split unit="pixel" class="gv-split-style mat-typography" [direction]="'vertical'" [gutterSize]="1"
+  [useTransition]="false" (dragEnd)="setTimelineHeight($event.sizes[1])">
+
+  <as-split-area [size]="$any('*')" class="map">
+    <gv-map-czml-layers [data$]="mapData$" [julianSecondOfCursor$]="julianSecondOfCursor$"
+      (objectClicked)="onMapObjectClicked($event)">
+    </gv-map-czml-layers>
+
+    <div class="toolbar">
+
+      <button class="toolbar-item" mat-icon-button color="primary" [matMenuTriggerFor]="menu"
+        matTooltip="Display Settings for Points">
+        <mat-icon [svgIcon]="(pointDisplayOption$|async).svgIcon"></mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <div class="dropdown-header">Point size</div>
+        <button mat-menu-item *ngFor="let mode of pointDisplayOptions" (click)="pointDisplayMode$.next(mode.value)">
+          <mat-icon [svgIcon]="mode.svgIcon"></mat-icon>
+          <span>{{mode.label}}</span>
+        </button>
+      </mat-menu>
+    </div>
+
+
+    <div class="toolbar-bottom-right">
+      <button mat-icon-button *ngIf="timelineHeight>50" (click)="timelineHeight=0" matTooltip="Close timeline">
+        <mat-icon svgIcon="chevron-down"></mat-icon>
+      </button>
+      <button mat-icon-button *ngIf="timelineHeight<=50" (click)="timelineHeight=defaultTimelineHeight"
+        matTooltip="Open timeline">
+        <mat-icon svgIcon="chevron-up"></mat-icon>
+      </button>
+
+      <button class="toolbar-item" mat-icon-button
+        (click)="fullscreen=true; showFullscreenExitBtn = true; showFullscreenBtn=false;" *ngIf="showFullscreenBtn"
+        matTooltip="Enter fullscreen mode">
+        <mat-icon svgIcon="fullscreen"></mat-icon>
+      </button>
+
+      <button class="toolbar-item" mat-icon-button
+        (click)="fullscreen=false; showFullscreenBtn=true; showFullscreenExitBtn=false;" *ngIf="showFullscreenExitBtn"
+        matTooltip="Exit fullscreen mode">
+        <mat-icon svgIcon="fullscreen-exit"></mat-icon>
+      </button>
+    </div>
+
+    <mat-card appearance="outlined" class="info-box" *ngIf="showInfoBox">
+      <button class="close-btn" mat-icon-button (click)="showInfoBox=false; showInfoBtn=true">
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <mat-card-content class="mt-3" *ngIf="!infoBox.geoEntity">
+        <i>Click on a point to inspect</i>
+      </mat-card-content>
+      <mat-card-content>
+        <mat-card-subtitle *ngIf="infoBox.geoEntity">
+          Activated Place
+        </mat-card-subtitle>
+      </mat-card-content>
+      <mat-card-content *ngIf="infoBox.geoEntity">
+        <div>
+          <gv-entity-preview [preview]="infoBox.geoEntity" [dragEnabled]="false" [openTabOnClick]="true">
+          </gv-entity-preview>
+        </div>
+
+        <a href *ngIf="(entitiesOfSelectedGeoPlace$|async)" class="gv-passive-link" matTooltip="Show details"
+          (click)="openAllEntitiesDialog()">
+          {{(entitiesOfSelectedGeoPlace$|async).length}} items in total </a>
+
+      </mat-card-content>
+
+      <mat-card-content>
+        <mat-card-subtitle>
+          Date
+        </mat-card-subtitle>
+      </mat-card-content>
+      <mat-card-content>
+        <div>{{infoBox?.cursorInfo?.cursorDateLabel}}</div>
+        <a href *ngIf="infoBox?.cursorInfo?.activeLine" class="gv-passive-link" matTooltip="Show details"
+          (click)="onShowPointDetailsClick()"> {{infoBox?.cursorInfo?.linePoint?.y || 0}} items on this date </a>
+      </mat-card-content>
+    </mat-card>
+
+  </as-split-area>
+
+  <as-split-area [size]="timelineHeight" class="timeline">
+    <gv-timeline-chart *ngFor="let line$ of (chartLines$|async); let i = index" [data$]="line$" [showInfoBox]="false"
+      [showInfoBtn]="true" (cursorChange)="onCursorChange($event)" (showAllItemsClick)=openAllEntitiesDialog()
+      (showDetailsClick)=onShowLineDetailsClick() (chartLineDefChange)="onChartLineDefChange(i, $event)">
+    </gv-timeline-chart>
+  </as-split-area>
+
+</as-split>

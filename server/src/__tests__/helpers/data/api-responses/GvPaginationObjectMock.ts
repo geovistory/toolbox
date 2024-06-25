@@ -62,417 +62,428 @@ export function createStatementWithTarget(statement: OmitEntity<InfStatement>, a
   }
 }
 
-export namespace GvPaginationObjectMock {
-  export const appeTeEnHasAppeVt: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.appeTeEnRefersToName,
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.NAME_1_TO_APPE,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
-          )
-        ],
-      }
-    ]
-  }
+const appeTeEnHasAppeVt: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: GvFieldPageReqMock.appeTeEnRefersToName,
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.NAME_1_TO_APPE,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
+        )
+      ],
+    }
+  ]
+}
 
-  export const appeTeEnHasAppeVtEmpty: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.appeTeEnRefersToName,
-        count: 0,
-        paginatedStatements: [],
-      }
-    ]
-  }
-  export const appeTeEnUsedInLanguage: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.appeTeEnUsedInLanguage,
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.NAME_1_TO_LANG,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
+const appeTeEnHasAppeVtEmpty: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: GvFieldPageReqMock.appeTeEnRefersToName,
+      count: 0,
+      paginatedStatements: [],
+    }
+  ]
+}
+const appeTeEnUsedInLanguage: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: GvFieldPageReqMock.appeTeEnUsedInLanguage,
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.NAME_1_TO_LANG,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            language: InfLanguageMock.ENGLISH as InfLanguage
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_LANG,
+        )
+      ],
+    }
+  ],
+
+}
+const appeTeEnIsAppeOfPerson: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: GvFieldPageReqMock.appeTeEnIsAppeOfPerson,
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.NAME_1_TO_PERSON,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            entity: {
+              resource: InfResourceMock.PERSON_1 as InfResource,
+              entityPreview: WarEntityPreviewMock.PERSON_1 as WarEntityPreview
+            }
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
+        )
+      ],
+    }
+  ],
+}
+const madridsPresenceWasAtPlace: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: GvFieldPageReqMock.madridsPresenceWasAtPlace,
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.MADRIDS_PRESENCE_WAS_AT_PLACE_123,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            place: InfPlaceMock.PLACE_123 as InfPlace,
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_MADRIDS_PRESENCE_WAS_AT_PLACE_123,
+        )
+      ],
+    }
+  ],
+}
+const journeyHasDuration: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: GvFieldPageReqMock.journyeHasDuration,
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.ACCOUNT_OF_JOURNEY_HAS_DURATION,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            dimension: {
+              dimension: InfDimensionMock.ONE_MONTH as InfDimension,
+              unitPreview: WarEntityPreviewMock.TIME_UNIT_ONE_MONTH as WarEntityPreview
+            }
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_ACCOUNT_OF_JOURNEY_HAS_DURATION,
+        )],
+    }
+  ],
+}
+
+const manifSingletonHasShortTitleMurderer: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: GvFieldPageReqMock.manifSingletonHasShortTitleMurderer,
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            langString: {
+              langString: InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER as InfLangString,
               language: InfLanguageMock.ENGLISH as InfLanguage
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_LANG,
-          )
-        ],
-      }
-    ],
+            }
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER,
+        )],
+    }
+  ]
+}
 
-  }
-  export const appeTeEnIsAppeOfPerson: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.appeTeEnIsAppeOfPerson,
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.NAME_1_TO_PERSON,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              entity: {
-                resource: InfResourceMock.PERSON_1 as InfResource,
-                entityPreview: WarEntityPreviewMock.PERSON_1 as WarEntityPreview
-              }
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
-          )
-        ],
-      }
-    ],
-  }
-  export const madridsPresenceWasAtPlace: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.madridsPresenceWasAtPlace,
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.MADRIDS_PRESENCE_WAS_AT_PLACE_123,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              place: InfPlaceMock.PLACE_123 as InfPlace,
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_MADRIDS_PRESENCE_WAS_AT_PLACE_123,
-          )
-        ],
-      }
-    ],
-  }
-  export const journeyHasDuration: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.journyeHasDuration,
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.ACCOUNT_OF_JOURNEY_HAS_DURATION,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              dimension: {
-                dimension: InfDimensionMock.ONE_MONTH as InfDimension,
-                unitPreview: WarEntityPreviewMock.TIME_UNIT_ONE_MONTH as WarEntityPreview
-              }
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_ACCOUNT_OF_JOURNEY_HAS_DURATION,
-          )],
-      }
-    ],
-  }
-
-  export const manifSingletonHasShortTitleMurderer: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.manifSingletonHasShortTitleMurderer,
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              langString: {
-                langString: InfLangStringMock.EN_SHORT_TITLE_THE_MURDERER as InfLangString,
-                language: InfLanguageMock.ENGLISH as InfLanguage
-              }
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_MANIF_SINGLETON_HAS_SHORT_TITLE_MURDERER,
-          )],
-      }
-    ]
-  }
-
-  export const shipVoyageAtSomeTimeWithin: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.shipVoyageAtSomeTimeWithin,
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
+const shipVoyageAtSomeTimeWithin: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: GvFieldPageReqMock.shipVoyageAtSomeTimeWithin,
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            timePrimitive: {
+              infTimePrimitive: InfTimePrimitiveMock.TP_2 as InfTimePrimitive,
               timePrimitive: {
-                infTimePrimitive: InfTimePrimitiveMock.TP_2 as InfTimePrimitive,
-                timePrimitive: {
-                  duration: InfTimePrimitiveMock.TP_2.duration ?? DEFAULT_DURATION,
-                  julianDay: InfTimePrimitiveMock.TP_2.julian_day,
-                  calendar: InfTimePrimitiveMock.TP_2.calendar,
-                }
+                duration: InfTimePrimitiveMock.TP_2.duration ?? DEFAULT_DURATION,
+                julianDay: InfTimePrimitiveMock.TP_2.julian_day,
+                calendar: InfTimePrimitiveMock.TP_2.calendar,
               }
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2,
-          )
-        ],
-      }
-    ],
-  }
-  export const shipVoyageHasTimeSpan: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: createTimeSpanSubPage(
-          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
-          DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT
-        ),
-        count: 0,
-        paginatedStatements: [],
-      },
-      {
-        req: createTimeSpanSubPage(
-          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
-          DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN
-        ),
-        count: 0,
-        paginatedStatements: [],
-      },
-      {
-        req: createTimeSpanSubPage(
-          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
-          DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN
-        ),
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
-            PubAccountMock.GAETAN_VERIFIED.id,
+            }
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_AT_SOME_TIME_WITHIN_TP_2,
+        )
+      ],
+    }
+  ],
+}
+const shipVoyageHasTimeSpan: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: createTimeSpanSubPage(
+        InfResourceMock.SHIP_VOYAGE.pk_entity as number,
+        DfhApiPropertyMock.EN_71_ONGOING_THROUGHOUT
+      ),
+      count: 0,
+      paginatedStatements: [],
+    },
+    {
+      req: createTimeSpanSubPage(
+        InfResourceMock.SHIP_VOYAGE.pk_entity as number,
+        DfhApiPropertyMock.EN_72_AT_SOME_TIME_WITHIN
+      ),
+      count: 0,
+      paginatedStatements: [],
+    },
+    {
+      req: createTimeSpanSubPage(
+        InfResourceMock.SHIP_VOYAGE.pk_entity as number,
+        DfhApiPropertyMock.EN_152_BEGIN_OF_THE_BEGIN
+      ),
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
+          PubAccountMock.GAETAN_VERIFIED.id,
 
-            {
+          {
+            timePrimitive: {
+              infTimePrimitive: InfTimePrimitiveMock.TP_5 as InfTimePrimitive,
               timePrimitive: {
-                infTimePrimitive: InfTimePrimitiveMock.TP_5 as InfTimePrimitive,
-                timePrimitive: {
-                  duration: InfTimePrimitiveMock.TP_5.duration ?? DEFAULT_DURATION,
-                  julianDay: InfTimePrimitiveMock.TP_5.julian_day,
-                  calendar: InfTimePrimitiveMock.TP_5.calendar
-                }
+                duration: InfTimePrimitiveMock.TP_5.duration ?? DEFAULT_DURATION,
+                julianDay: InfTimePrimitiveMock.TP_5.julian_day,
+                calendar: InfTimePrimitiveMock.TP_5.calendar
               }
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
-          )
-        ],
-      },
-      {
-        req: createTimeSpanSubPage(
-          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
-          DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN
-        ),
-        count: 0,
-        paginatedStatements: [],
-      },
-      {
-        req: createTimeSpanSubPage(
-          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
-          DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END
-        ),
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
+            }
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_BEGIN_TP_5,
+        )
+      ],
+    },
+    {
+      req: createTimeSpanSubPage(
+        InfResourceMock.SHIP_VOYAGE.pk_entity as number,
+        DfhApiPropertyMock.EN_150_END_OF_THE_BEGIN
+      ),
+      count: 0,
+      paginatedStatements: [],
+    },
+    {
+      req: createTimeSpanSubPage(
+        InfResourceMock.SHIP_VOYAGE.pk_entity as number,
+        DfhApiPropertyMock.EN_151_BEGIN_OF_THE_END
+      ),
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            timePrimitive: {
+              infTimePrimitive: InfTimePrimitiveMock.TP_4 as InfTimePrimitive,
               timePrimitive: {
-                infTimePrimitive: InfTimePrimitiveMock.TP_4 as InfTimePrimitive,
-                timePrimitive: {
-                  duration: InfTimePrimitiveMock.TP_4.duration ?? DEFAULT_DURATION,
-                  julianDay: InfTimePrimitiveMock.TP_4.julian_day,
-                  calendar: InfTimePrimitiveMock.TP_4.calendar
-                }
+                duration: InfTimePrimitiveMock.TP_4.duration ?? DEFAULT_DURATION,
+                julianDay: InfTimePrimitiveMock.TP_4.julian_day,
+                calendar: InfTimePrimitiveMock.TP_4.calendar
               }
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
-          )
-        ],
+            }
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_SHIP_VOYAGE_BEGIN_OF_THE_END_TP_4,
+        )
+      ],
+    },
+    {
+      req: createTimeSpanSubPage(
+        InfResourceMock.SHIP_VOYAGE.pk_entity as number,
+        DfhApiPropertyMock.EN_153_END_OF_THE_END
+      ),
+      count: 0,
+      paginatedStatements: [],
+    },
+  ],
+
+}
+
+const personHasAppeTeEn: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: {
+        ...GvFieldPageReqMock.person1HasAppeTeEn,
+        page: {...GvFieldPageReqMock.person1HasAppeTeEn.page, isOutgoing: false},
       },
-      {
-        req: createTimeSpanSubPage(
-          InfResourceMock.SHIP_VOYAGE.pk_entity as number,
-          DfhApiPropertyMock.EN_153_END_OF_THE_END
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.NAME_1_TO_PERSON,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            entity: {
+              resource: InfResourceMock.NAMING_1 as InfResource,
+              entityPreview: WarEntityPreviewMock.NAMING_1 as WarEntityPreview
+            }
+          },
+          false,
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
+        )
+      ],
+    },
+    {
+      req: {
+        ...GvFieldPageReqMock.appeTeEnRefersToName,
+        page: {...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
+      },
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.NAME_1_TO_APPE,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
+        )
+      ],
+    },
+  ],
+}
+const personHasTwoAppeTeEn: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: {
+        ...GvFieldPageReqMock.person1HasAppeTeEn,
+        page: {...GvFieldPageReqMock.person1HasAppeTeEn.page, isOutgoing: false},
+      },
+      count: 2,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.NAME_1_TO_PERSON,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            entity: {
+              resource: InfResourceMock.NAMING_1 as InfResource,
+              entityPreview: WarEntityPreviewMock.NAMING_1 as WarEntityPreview
+            }
+          },
+          false,
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
         ),
-        count: 0,
-        paginatedStatements: [],
+        createStatementWithTarget(
+          InfStatementMock.NAME_2_TO_PERSON,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            entity: {
+              resource: InfResourceMock.NAMING_2 as InfResource,
+              entityPreview: WarEntityPreviewMock.NAMING_2 as WarEntityPreview
+            }
+          },
+          false,
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_PERSON,
+        )
+      ],
+    },
+    {
+      req: {
+        ...GvFieldPageReqMock.appeTeEnRefersToName,
+        page: {...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
       },
-    ],
-
-  }
-
-  export const personHasAppeTeEn: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: {
-          ...GvFieldPageReqMock.person1HasAppeTeEn,
-          page: {...GvFieldPageReqMock.person1HasAppeTeEn.page, isOutgoing: false},
-        },
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.NAME_1_TO_PERSON,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              entity: {
-                resource: InfResourceMock.NAMING_1 as InfResource,
-                entityPreview: WarEntityPreviewMock.NAMING_1 as WarEntityPreview
-              }
-            },
-            false,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
-          )
-        ],
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.NAME_1_TO_APPE,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
+        )
+      ],
+    },
+    {
+      req: {
+        ...GvFieldPageReqMock.appeTeEn2RefersToName,
+        page: {...GvFieldPageReqMock.appeTeEn2RefersToName.page, limit: 1},
       },
-      {
-        req: {
-          ...GvFieldPageReqMock.appeTeEnRefersToName,
-          page: {...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
-        },
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.NAME_1_TO_APPE,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
-          )
-        ],
-      },
-    ],
-  }
-  export const personHasTwoAppeTeEn: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: {
-          ...GvFieldPageReqMock.person1HasAppeTeEn,
-          page: {...GvFieldPageReqMock.person1HasAppeTeEn.page, isOutgoing: false},
-        },
-        count: 2,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.NAME_1_TO_PERSON,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              entity: {
-                resource: InfResourceMock.NAMING_1 as InfResource,
-                entityPreview: WarEntityPreviewMock.NAMING_1 as WarEntityPreview
-              }
-            },
-            false,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_PERSON,
-          ),
-          createStatementWithTarget(
-            InfStatementMock.NAME_2_TO_PERSON,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              entity: {
-                resource: InfResourceMock.NAMING_2 as InfResource,
-                entityPreview: WarEntityPreviewMock.NAMING_2 as WarEntityPreview
-              }
-            },
-            false,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_PERSON,
-          )
-        ],
-      },
-      {
-        req: {
-          ...GvFieldPageReqMock.appeTeEnRefersToName,
-          page: {...GvFieldPageReqMock.appeTeEnRefersToName.page, limit: 1},
-        },
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.NAME_1_TO_APPE,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              appellation: InfAppellationMock.JACK_THE_FOO as InfAppellation
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_1_TO_APPE,
-          )
-        ],
-      },
-      {
-        req: {
-          ...GvFieldPageReqMock.appeTeEn2RefersToName,
-          page: {...GvFieldPageReqMock.appeTeEn2RefersToName.page, limit: 1},
-        },
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.NAME_2_TO_APPE,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              appellation: InfAppellationMock.JACK as InfAppellation
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_APPE,
-          )
-        ],
-      },
-    ],
-  }
-  // export const statementOfStatementHasExactReference: GvPaginationObject = {
-  //   subfieldPages: [
-  //     {
-  //       req: GvFieldPageReqMock.statementOfStatementHasExactReference,
-  //       count: 1,
-  //       paginatedStatements: [
-  //         createStatementWithTarget(
-  //           InfStatementMock.MENTIONS_STMT_HAS_EXACT_REFERENCE,
-  //           PubAccountMock.GAETAN_VERIFIED.id,
-  //           {
-  //             langString: {
-  //               langString: InfLangStringMock.EN_PAGE_1 as InfLangString,
-  //               language: InfLanguageMock.ENGLISH as InfLanguage
-  //             }
-  //           },
-  //           true,
-  //           ProInfoProjRelMock.PROJ_1_STMT_MENTIONS_STMT_HAS_EXACT_REFERENCE,
-  //         )],
-  //     }
-  //   ]
-  // }
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.NAME_2_TO_APPE,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            appellation: InfAppellationMock.JACK as InfAppellation
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_NAME_2_TO_APPE,
+        )
+      ],
+    },
+  ],
+}
+// const statementOfStatementHasExactReference: GvPaginationObject = {
+//   subfieldPages: [
+//     {
+//       req: GvFieldPageReqMock.statementOfStatementHasExactReference,
+//       count: 1,
+//       paginatedStatements: [
+//         createStatementWithTarget(
+//           InfStatementMock.MENTIONS_STMT_HAS_EXACT_REFERENCE,
+//           PubAccountMock.GAETAN_VERIFIED.id,
+//           {
+//             langString: {
+//               langString: InfLangStringMock.EN_PAGE_1 as InfLangString,
+//               language: InfLanguageMock.ENGLISH as InfLanguage
+//             }
+//           },
+//           true,
+//           ProInfoProjRelMock.PROJ_1_STMT_MENTIONS_STMT_HAS_EXACT_REFERENCE,
+//         )],
+//     }
+//   ]
+// }
 
 
-  export const definitionHasValueVersion: GvPaginationObject = {
-    subfieldPages: [
-      {
-        req: GvFieldPageReqMock.definitionHasValueVersion,
-        count: 1,
-        paginatedStatements: [
-          createStatementWithTarget(
-            InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2,
-            PubAccountMock.GAETAN_VERIFIED.id,
-            {
-              appellation: InfAppellationMock.VALUE_VERSION_2 as InfAppellation
-            },
-            true,
-            ProInfoProjRelMock.PROJ_1_STMT_DEFINITION_1_HAS_VALUE_VERSION_2,
-          )],
-      }
-    ],
-  }
+const definitionHasValueVersion: GvPaginationObject = {
+  subfieldPages: [
+    {
+      req: GvFieldPageReqMock.definitionHasValueVersion,
+      count: 1,
+      paginatedStatements: [
+        createStatementWithTarget(
+          InfStatementMock.DEFINITION_1_HAS_VALUE_VERSION_2,
+          PubAccountMock.GAETAN_VERIFIED.id,
+          {
+            appellation: InfAppellationMock.VALUE_VERSION_2 as InfAppellation
+          },
+          true,
+          ProInfoProjRelMock.PROJ_1_STMT_DEFINITION_1_HAS_VALUE_VERSION_2,
+        )],
+    }
+  ],
 }
 
 
-
+export const GvPaginationObjectMock = {
+  appeTeEnHasAppeVt,
+  appeTeEnHasAppeVtEmpty,
+  appeTeEnUsedInLanguage,
+  appeTeEnIsAppeOfPerson,
+  madridsPresenceWasAtPlace,
+  journeyHasDuration,
+  manifSingletonHasShortTitleMurderer,
+  shipVoyageAtSomeTimeWithin,
+  shipVoyageHasTimeSpan,
+  personHasAppeTeEn,
+  personHasTwoAppeTeEn,
+  definitionHasValueVersion,
+}
 
 
 export function createTimeSpanSubPage(sourceEntity: number, property: NewDfhApiProperty): GvFieldPageReq {

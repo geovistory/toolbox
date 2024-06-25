@@ -1,0 +1,20 @@
+<mat-tab-group class="condensed" animationDuration="0ms" (selectedIndexChange)="entityTypeChange($event)">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="mr-1 gv-icon gv-icon-persistent-entity"></i> Persistent
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="mr-1 fa fa-star-o"></i> Temporal
+    </ng-template>
+  </mat-tab>
+
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <i class="mr-1 gv-icon gv-icon-entity"></i> All
+    </ng-template>
+
+  </mat-tab>
+</mat-tab-group>

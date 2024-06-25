@@ -1,0 +1,22 @@
+<mat-card appearance="outlined" class="mt-2 border-light" [ngClass]="{
+  'bg-info': (project.pk_entity == PK_PROJECT_OF_TEMPLATE_PROJECT),
+  'mat-bg-accent-300': (project.pk_entity == PK_PROJECT_OF_DEFAULT_CONFIG_PROJECT),
+  'bg-warning': (project.pk_entity) == PK_PROJECT_OF_SANDBOX_PROJECT
+}">
+  <mat-card-content>
+    <mat-card-title class="d-flex d-flex justify-content-between mb-3">
+      <div>{{projectLabel$|async}}</div>
+      <span class="mat-text-secondary mat-caption">
+        {{projectLanugageLabel$|async}}
+      </span>
+    </mat-card-title>
+  </mat-card-content>
+  <mat-card-content>
+    <p>{{projectDescription$|async}}</p>
+    <button class="mt-2" mat-flat-button [color]="'primary'" routerLink="{{project.pk_entity}}/edit">Open</button>
+    <a *ngIf="btn1Label$|async" mat-stroked-button [color]="'primary'" class="mt-2 ml-2" href="{{btn1Url$|async}}"
+      target="_blank">{{btn1Label$|async}}</a>
+    <a *ngIf="btn2Label$|async" mat-stroked-button [color]="'primary'" class="mt-2 ml-2" href="{{btn2Url$|async}}"
+      target="_blank">{{btn2Label$|async}}</a>
+  </mat-card-content>
+</mat-card>

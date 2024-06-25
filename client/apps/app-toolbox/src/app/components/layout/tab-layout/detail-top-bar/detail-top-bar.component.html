@@ -1,0 +1,28 @@
+<div class="gv-detail-top-bar border-bottom boder-gray-300 mat-bg-white" fxLayout="row"
+  fxLayoutAlign="space-between center" [ngStyle]="{height: height}">
+
+  <button fxFlex="24px" mat-stroked-button class="left-btn mr-3 mat-text-secondary" *ngIf="closeRightAreaBtn"
+    (click)="closeRight.emit()">
+    <mat-icon aria-label="Close right area">chevron_right</mat-icon>
+  </button>
+
+  <button fxFlex="24px" mat-stroked-button class="left-btn mr-3 mat-text-secondary" *ngIf="openLeftAreaBtn"
+    (click)="openLeft.emit()">
+    <mat-icon aria-label="Close right area">chevron_right</mat-icon>
+  </button>
+
+  <div fxFlex fxLayout="row" fxLayoutAlign="start center" style="overflow: hidden;">
+    <ng-content></ng-content>
+  </div>
+
+  <button fxFlex="24px" mat-stroked-button class="right-btn ml-3 mat-text-secondary" *ngIf="openRightAreaBtn"
+    (click)="openRight.emit()">
+    <mat-icon aria-label="Open left area">chevron_left</mat-icon>
+  </button>
+
+  <button fxFlex="24px" mat-stroked-button class="right-btn ml-3 mat-text-secondary" *ngIf="closeLeftAreaBtn"
+    (click)="closeLeft.emit()">
+    <mat-icon aria-label="Open left area">chevron_left</mat-icon>
+  </button>
+
+</div>

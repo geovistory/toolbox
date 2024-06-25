@@ -1,0 +1,48 @@
+<mat-toolbar class="mat-typography">
+  <mat-toolbar-row class="mat-bg-grey-200">
+    <div class="gv-nv-logo">
+      <a href="http://www.geovistory.org" target="_blank"
+        class="gv-logo gv-icon gv-icon-geovistory-logo text-primary"></a>
+    </div>
+    <div class="mat-body">
+      <ng-content></ng-content>
+    </div>
+    <span class="gv-nv-spacer"></span>
+
+    <ng-content select="[buttons]">
+
+    </ng-content>
+
+    <button class="gv-nv-item gv-nv-feedback-btn" mat-flat-button color="accent" data-testid="help-btn"
+      (click)="openFeedbackDialog()">Help</button>
+
+    <div *ngIf="!account" class="gv-nv-item">
+      <button mat-button routerLink="/login" [color]="router.isActive('/login',false) ? 'primary': null">Login</button>
+    </div>
+    <div *ngIf="!account" class="gv-nv-item">
+      <button mat-button routerLink="/registration"
+        [color]="router.isActive('/registration', false) ? 'primary': null">Register</button>
+    </div>
+    <div *ngIf="account" class="gv-nv-item">
+      <button mat-icon-button data-testid="menu-trigger" [matMenuTriggerFor]="menu">
+        <mat-icon svgIcon="account-circle" color="primary"></mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <div mat-menu-item [disableRipple]="true" class="gv-nv-dropdown-item">
+          <i id="userIconBig" class="fa fa-user-circle mat-text-secondary" aria-hidden="true"></i>
+          <div>{{account.username}}</div>
+          <div class="account-email mat-subtitle-2">{{account.email}}</div>
+        </div>
+        <mat-divider></mat-divider>
+        <div mat-menu-item class="mat-text-secondary">v{{toolboxVersion}}</div>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="logout()">
+          <i class="fa fa-sign-out" aria-hidden="true"></i> Logout
+        </button>
+      </mat-menu>
+    </div>
+
+  </mat-toolbar-row>
+
+</mat-toolbar>
+<mat-divider></mat-divider>
