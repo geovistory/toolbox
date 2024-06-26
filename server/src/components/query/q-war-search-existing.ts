@@ -59,7 +59,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
     from
       tw0 t0,
       pgwar.entity_preview t1
-    WHERE t1.project_id = 0
+    WHERE t1.fk_project = 0
     ${tsSearchString ? `
     AND (
       t1.ts_vector @@ t0.q
@@ -76,7 +76,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       from
         tw0 t0,
         pgwar.entity_preview t1
-      where t1.project_id = ${this.addParam(pkProject)}
+      where t1.fk_project = ${this.addParam(pkProject)}
       ${tsSearchString ? `
       AND (
         t1.ts_vector @@ t0.q
@@ -97,7 +97,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
           AND t2.fk_project=${this.addParam(pkProject)}
           AND t2.is_in_project=true
       where t2.pk_entity is null --not in project
-      and t1.project_id = 0 --in community
+      and t1.fk_project = 0 --in community
       ${tsSearchString ? `
       AND (
         t1.ts_vector @@ t0.q
@@ -114,7 +114,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
 
     this.sql = `
       WITH
-      -- filter the repo versions, add the project_id of given project, if is_in_project
+      -- filter the repo versions, add the fk_project of given project, if is_in_project
       -- this ensures we allways search in the full repo full-text (finds more)
       -- and it includes the information, whether the entity is in project or not
       tw0 AS (
@@ -130,11 +130,11 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
         select distinct on (pk_entity)
         *
         FROM te1
-        order by pk_entity, project_id desc
+        order by pk_entity, fk_project desc
       ),
       tw1 AS (
         SELECT
-          COALESCE(t2.fk_project, t1.project_id) project_id,
+          COALESCE(t2.fk_project, t1.fk_project) fk_project,
           t1.pk_entity,
           t1.fk_class,
           t1.entity_label,
@@ -154,7 +154,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
         ),
         tw2 AS (
           select
-            t1.project_id,
+            t1.fk_project,
             t1.pk_entity,
             t1.fk_class,
             t1.entity_label,
@@ -171,19 +171,19 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
             ROW_NUMBER () OVER (
               PARTITION BY t1.pk_entity
               ORDER BY
-                t1.project_id DESC
+                t1.fk_project DESC
             ) as rank
           FROM
             tw0 t0,
             tw1 t1
-          ORDER BY project_id, ts_rank(ts_vector, t0.q) DESC, entity_label asc
+          ORDER BY fk_project, ts_rank(ts_vector, t0.q) DESC, entity_label asc
           LIMIT ${this.addParam(limit)}
           OFFSET ${this.addParam(offset)}
         ),
         -- take only first ranked preview version of the same entity
         tw3 AS (
           SELECT
-            t1.project_id,
+            t1.fk_project,
             t1.pk_entity,
             t1.fk_class,
             t1.entity_label,
@@ -220,7 +220,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
             AND t3.is_in_project = true
           WHERE rank = 1
           GROUP BY
-            t1.project_id,
+            t1.fk_project,
             t1.pk_entity,
             t1.fk_class,
             t1.entity_label,
@@ -233,7 +233,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
             t1.class_label_headline,
             t1.entity_label_headline,
             t1.type_label_headline
-          ORDER BY project_id desc
+          ORDER BY fk_project desc
         ),
 
         ------------------------------------

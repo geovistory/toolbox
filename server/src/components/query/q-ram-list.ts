@@ -226,7 +226,7 @@ export class QRamList extends SqlBuilderLb4Models {
         AND t2.fk_project = ${this.addParam(fkProject)}
         ORDER BY
           t1.pk_entity,
-          CASE WHEN(t1.project_id = ${this.addParam(fkProject)}) THEN 0
+          CASE WHEN(t1.fk_project = ${this.addParam(fkProject)}) THEN 0
           ELSE 1
           END
       ),
@@ -247,7 +247,7 @@ export class QRamList extends SqlBuilderLb4Models {
         AND t2.fk_project = ${this.addParam(fkProject)}
         ORDER BY
           t1.pk_entity,
-          CASE WHEN(t1.project_id = ${this.addParam(fkProject)}) THEN 0
+          CASE WHEN(t1.fk_project = ${this.addParam(fkProject)}) THEN 0
           ELSE 1
           END
       ),

@@ -80,7 +80,7 @@ export class QAnalysisMap extends QAnalysisBase {
             t1.fk_object_info = t0.geo_entity_pk
             AND	t1.fk_project = ${fkProject}
           AND
-            t2.pk_entity = t1.fk_subject_info AND t2.project_id = ${fkProject}
+            t2.pk_entity = t1.fk_subject_info AND t2.fk_project = ${fkProject}
             AND t2.fk_class = 84 --Presence
           AND
             t3.fk_subject_info = t2.pk_entity AND t3.fk_project = ${fkProject}

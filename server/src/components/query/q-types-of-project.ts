@@ -31,7 +31,7 @@ export class QTypesOfProject extends SqlBuilderLb4Models {
         FROM
           pgwar.entity_preview
         WHERE
-          project_id =  ${this.addParam(fkProject)}
+          fk_project =  ${this.addParam(fkProject)}
           AND parent_classes @> '53'::jsonb
         UNION
         SELECT
@@ -39,7 +39,7 @@ export class QTypesOfProject extends SqlBuilderLb4Models {
         FROM
           pgwar.entity_preview
         WHERE
-          project_id =  ${this.addParam(fkProject)}
+          fk_project =  ${this.addParam(fkProject)}
           AND ancestor_classes @> '53'::jsonb
       ),
       -- join resource and info_proj_rel
