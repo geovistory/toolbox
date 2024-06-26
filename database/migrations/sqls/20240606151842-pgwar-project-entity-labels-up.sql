@@ -140,7 +140,7 @@ BEGIN
 	limit_count := (field->'nrOfStatementsInLabel')::int;
 
 
-    IF is_outgoing = true THEN
+    IF is_outgoing IS TRUE THEN
         SELECT pgwar.get_label_of_outgoing_field(entity_id, project_id, property_id, limit_count) INTO label;
     ELSE
         SELECT pgwar.get_label_of_incoming_field(entity_id, project_id, property_id, limit_count) INTO label;

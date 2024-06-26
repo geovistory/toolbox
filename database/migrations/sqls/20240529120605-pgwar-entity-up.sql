@@ -84,7 +84,7 @@ BEGIN
             projects.info_proj_rel
         WHERE
             fk_entity = NEW_RES.pk_entity
-            AND is_in_project = TRUE) THEN
+            AND is_in_project IS TRUE) THEN
         -- ... insert missing project entities or update existing, in case fk_class differs
         PERFORM
             pgwar.upsert_entity_preview_fk_class(fk_entity, fk_project, NEW_RES.fk_class)
@@ -92,13 +92,13 @@ BEGIN
             projects.info_proj_rel
         WHERE
             fk_entity = NEW_RES.pk_entity
-            AND is_in_project = TRUE;
+            AND is_in_project IS TRUE;
         -- ... insert missing community entity or update existing, in case fk_class differs
         PERFORM
             pgwar.upsert_entity_preview_fk_class(NEW_RES.pk_entity, 0, NEW_RES.fk_class);
     END IF;
         -- if hidden for toolbox community ...
-        IF(NEW_RES.community_visibility ->> 'toolbox')::bool = FALSE THEN
+        IF(NEW_RES.community_visibility ->> 'toolbox')::bool IS FALSE THEN
             -- ... delete potentially unallowed community entities
             DELETE FROM pgwar.entity_preview
             WHERE fk_project = 0

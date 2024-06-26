@@ -91,7 +91,7 @@ BEGIN
     IF statement.pk_entity IS NOT NULL THEN
        
         -- if upsert ...
-        IF is_upsert = TRUE THEN
+        IF is_upsert IS TRUE THEN
             -- ... upsert the project statements
             PERFORM
                 pgwar.upsert_project_statements((
@@ -124,12 +124,12 @@ BEGIN
         IF entity.pk_entity IS NOT NULL THEN
 
             -- if upsert ...
-            IF is_upsert = TRUE THEN
+            IF is_upsert IS TRUE THEN
                 -- ... upsert the project entity
                 PERFORM
                     pgwar.upsert_entity_preview_fk_class(NEW_OLD.fk_entity, NEW_OLD.fk_project, entity.fk_class);
                 -- if allowed ...
-                IF (entity.community_visibility ->> 'toolbox')::bool = TRUE THEN
+                IF (entity.community_visibility ->> 'toolbox')::bool IS TRUE THEN
                     -- ... upsert the community entity
                     PERFORM
                         pgwar.upsert_entity_preview_fk_class(NEW_OLD.fk_entity, 0, entity.fk_class);
@@ -147,7 +147,7 @@ BEGIN
                         projects.info_proj_rel
                     WHERE
                         fk_entity = NEW_OLD.fk_entity
-                        AND is_in_project = TRUE) THEN
+                        AND is_in_project IS TRUE) THEN
                     -- ... delete the community entity
                     DELETE FROM pgwar.entity_preview
                     WHERE pk_entity = NEW_OLD.fk_entity
@@ -173,7 +173,7 @@ DECLARE
 BEGIN
     info_proj_rel := COALESCE(NEW,OLD);
     
-    SELECT (NEW.is_in_project = TRUE AND TG_OP != 'DELETE') INTO is_upsert;
+    SELECT (NEW.is_in_project IS TRUE AND TG_OP != 'DELETE') INTO is_upsert;
     
     PERFORM pgwar.update_from_info_proj_rel(info_proj_rel, is_upsert);
 
@@ -201,7 +201,7 @@ BEGIN
             projects.info_proj_rel
         WHERE
             fk_entity = NEW.pk_entity
-          AND is_in_project = TRUE) THEN
+          AND is_in_project IS TRUE) THEN
         -- ... insert missing project statements or update existing, in case statement differs
         PERFORM
             pgwar.upsert_project_statements((
@@ -221,7 +221,7 @@ BEGIN
             projects.info_proj_rel
         WHERE
             fk_entity = NEW.pk_entity
-          AND is_in_project = TRUE;
+          AND is_in_project IS TRUE;
     END IF;
     RETURN NEW;
 END;
