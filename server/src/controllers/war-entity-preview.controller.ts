@@ -21,7 +21,6 @@ import {EntitySearchHit} from './EntitySearchHit';
 // Fields to include in streamed WarEntityPreviews
 // see about Lb4 filters: https://loopback.io/doc/en/lb4/Fields-filter.html
 const includeFieldsForStream: Fields<WarEntityPreviewWithFulltext> = {
-  key: true,
   pk_entity: true,
   fk_project: true,
   fk_class: true,
@@ -297,7 +296,8 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     this.log(
       this.socket.id +
       ' emitted entityPreview: ' +
-      entityPreview.key +
+      entityPreview.fk_project + '_' +
+      entityPreview.pk_entity +
       ' ' +
       entityPreview.entity_label +
       ' for project ' +
