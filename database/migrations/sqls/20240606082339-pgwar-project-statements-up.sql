@@ -7,8 +7,8 @@ CREATE TABLE IF NOT EXISTS pgwar.project_statements(
   fk_property integer NOT NULL,
   fk_object_info integer,
   fk_object_tables_cell bigint,
-  ord_num_of_domain integer,
-  ord_num_of_range integer,
+  ord_num_of_domain numeric,
+  ord_num_of_range numeric,
   object_label varchar(100),
   object_value jsonb,
   tmsp_last_modification timestamp with time zone,
@@ -70,39 +70,39 @@ END;
 $$
 LANGUAGE plpgsql;
 
--- Trigger function after_modify_info_proj_rel
+-- Function update_from_info_proj_rel
 ----------------------------------------------
-CREATE FUNCTION pgwar.after_modify_info_proj_rel_proj_stmt()
-    RETURNS TRIGGER
+CREATE FUNCTION pgwar.update_from_info_proj_rel(NEW_OLD projects.info_proj_rel, is_upsert bool)
+    RETURNS void
     LANGUAGE plpgsql
-AS $$
+    AS $$
 DECLARE
-    is_upsert boolean;
+    entity information.resource;
     statement pgwar.statement;
 BEGIN
+
     -- get the referenced pgwar.statement
     SELECT *
     INTO statement
     FROM pgwar.statement stmt
-    WHERE stmt.pk_entity = COALESCE(NEW.fk_entity, OLD.fk_entity);
+    WHERE stmt.pk_entity = NEW_OLD.fk_entity;
 
     -- if pgwar.statement is referenced by info_proj_rel.fk_entity
     IF statement.pk_entity IS NOT NULL THEN
-        -- determine if this is an upsert action
-        SELECT (NEW.is_in_project = TRUE AND TG_OP != 'DELETE') INTO is_upsert;
+       
         -- if upsert ...
-        IF is_upsert = TRUE THEN
+        IF is_upsert IS TRUE THEN
             -- ... upsert the project statements
             PERFORM
                 pgwar.upsert_project_statements((
-                        NEW.fk_entity,
-                        NEW.fk_project,
+                        NEW_OLD.fk_entity,
+                        NEW_OLD.fk_project,
                         statement.fk_subject_info,
                         statement.fk_property,
                         statement.fk_object_info,
                         statement.fk_object_tables_cell,
-                        NEW.ord_num_of_domain,
-                        NEW.ord_num_of_range,
+                        NEW_OLD.ord_num_of_domain::numeric,
+                        NEW_OLD.ord_num_of_range::numeric,
                         statement.object_label,
                         statement.object_value,
                         NULL)::pgwar.project_statements
@@ -110,18 +110,81 @@ BEGIN
         ELSE
             -- ... delete the project_statements
             DELETE FROM pgwar.project_statements
-            WHERE pk_entity = COALESCE(NEW.fk_entity, OLD.fk_entity)
-              AND fk_project = COALESCE(NEW.fk_project, OLD.fk_project);
+            WHERE pk_entity = NEW_OLD.fk_entity
+              AND fk_project = NEW_OLD.fk_project;
         END IF;
+    ELSE
+
+        -- get the referenced information.resource
+        SELECT * 
+        INTO entity
+        FROM information.resource
+        WHERE pk_entity = NEW_OLD.fk_entity;
+        -- if the referenced item is an entity
+        IF entity.pk_entity IS NOT NULL THEN
+
+            -- if upsert ...
+            IF is_upsert IS TRUE THEN
+                -- ... upsert the project entity
+                PERFORM
+                    pgwar.upsert_entity_preview_fk_class(NEW_OLD.fk_entity, NEW_OLD.fk_project, entity.fk_class);
+                -- if allowed ...
+                IF (entity.community_visibility ->> 'toolbox')::bool IS TRUE THEN
+                    -- ... upsert the community entity
+                    PERFORM
+                        pgwar.upsert_entity_preview_fk_class(NEW_OLD.fk_entity, 0, entity.fk_class);
+                END IF;
+            ELSE
+                -- ... delete the project entity
+                DELETE FROM pgwar.entity_preview
+                WHERE pk_entity = NEW_OLD.fk_entity
+                    AND fk_project = NEW_OLD.fk_project;
+                -- ... check if community entity has to be deleted
+                IF NOT EXISTS (
+                    SELECT
+                        pk_entity
+                    FROM
+                        projects.info_proj_rel
+                    WHERE
+                        fk_entity = NEW_OLD.fk_entity
+                        AND is_in_project IS TRUE) THEN
+                    -- ... delete the community entity
+                    DELETE FROM pgwar.entity_preview
+                    WHERE pk_entity = NEW_OLD.fk_entity
+                        AND fk_project = 0;
+                END IF;
+            END IF;
+        END IF;
+
     END IF;
+END;
+$$;
+
+-- Trigger function after_modify_info_proj_rel
+----------------------------------------------
+CREATE FUNCTION pgwar.after_modify_info_proj_rel()
+    RETURNS TRIGGER
+    LANGUAGE plpgsql
+AS $$
+DECLARE
+    info_proj_rel projects.info_proj_rel;
+    is_upsert boolean;
+    statement pgwar.statement;
+BEGIN
+    info_proj_rel := COALESCE(NEW,OLD);
+    
+    SELECT (NEW.is_in_project IS TRUE AND TG_OP != 'DELETE') INTO is_upsert;
+    
+    PERFORM pgwar.update_from_info_proj_rel(info_proj_rel, is_upsert);
+
     RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER after_modify_info_proj_rel_proj_stmt
+CREATE TRIGGER after_modify_info_proj_rel
     AFTER INSERT OR UPDATE OR DELETE ON projects.info_proj_rel
     FOR EACH ROW
-EXECUTE FUNCTION pgwar.after_modify_info_proj_rel_proj_stmt();
+    EXECUTE FUNCTION pgwar.after_modify_info_proj_rel();
 
 -- Trigger function after_upsert_pgw_statement
 ----------------------------------------------
@@ -138,7 +201,7 @@ BEGIN
             projects.info_proj_rel
         WHERE
             fk_entity = NEW.pk_entity
-          AND is_in_project = TRUE) THEN
+          AND is_in_project IS TRUE) THEN
         -- ... insert missing project statements or update existing, in case statement differs
         PERFORM
             pgwar.upsert_project_statements((
@@ -148,8 +211,8 @@ BEGIN
                 NEW.fk_property,
                 NEW.fk_object_info,
                 NEW.fk_object_tables_cell,
-                ord_num_of_domain,
-                ord_num_of_range,
+                ord_num_of_domain::numeric,
+                ord_num_of_range::numeric,
                 NEW.object_label,
                 NEW.object_value,
                 NULL)::pgwar.project_statements
@@ -158,7 +221,7 @@ BEGIN
             projects.info_proj_rel
         WHERE
             fk_entity = NEW.pk_entity
-          AND is_in_project = TRUE;
+          AND is_in_project IS TRUE;
     END IF;
     RETURN NEW;
 END;
