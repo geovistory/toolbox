@@ -1,4 +1,4 @@
-FROM ghcr.io/geovistory/toolbox-dev-db:m-1
+FROM ghcr.io/geovistory/toolbox-dev-db:m-2
 
 RUN rm -Rf /logs
 RUN mkdir /logs
