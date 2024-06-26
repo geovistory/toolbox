@@ -7,7 +7,7 @@ const arguments = process.argv.slice(2);
 
 const versionJsPath = path.join(
   __dirname,
-  "../projects/app-toolbox/src/assets/version.js"
+  "../apps/app-toolbox/src/assets/version.js"
 );
 
 let version;

@@ -1,0 +1,18 @@
+:host {
+  width: 100%;
+}
+
+.gv-fg-lang-string-container {
+  display: flex;
+  flex-direction: row;
+
+  mat-form-field ~ mat-form-field {
+    margin: 0 0 0 1rem;
+  }
+  .ctrl-language {
+    width: 100px;
+  }
+  .ctrl-text {
+    flex: 1 1 auto;
+  }
+}

@@ -1,0 +1,100 @@
+<!-- CLASSES -->
+<div *ngIf="isArrayClasses" class="qf-arr-classes">
+  <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with">
+    <gv-qf-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" class="left-col">
+    </gv-qf-form-array>
+    <gv-qf-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory"
+      class="gv-condition-block border-green left-col">
+    </gv-qf-form-control>
+  </div>
+  <div class="gv-qf-button-absolute-2 density-4">
+    <button *ngIf="formArrayFactory.children?.length < 2 && formArrayFactory.formArray?.valid" mat-icon-button
+      (click)="addClassesSubfilter()" matTooltip="Add Sub-Filter" class="gv-btn-success" aria-label="Add Subfilter">
+      <mat-icon svgIcon="subdirectory-arrow-right"></mat-icon>
+    </button>
+  </div>
+</div>
+
+<!-- CONDITION -->
+<div *ngIf="isArrayCondition" class="qf-arr-condition">
+
+  <div class="gv-condition-block border-green">
+    <div *ngFor="let child of formArrayFactory.children; let i=index" class="gv-full-with">
+      <gv-qf-form-control *ngIf="child.controlFactory" [formControlFactory]="child.controlFactory" class="left-col">
+      </gv-qf-form-control>
+    </div>
+  </div>
+
+  <div class="qf-prop-subgroups">
+    <div *ngFor="let child of formArrayFactory.children; let i=index">
+      <gv-qf-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory" class="left-col">
+      </gv-qf-form-array>
+    </div>
+  </div>
+  <div class="gv-qf-button-absolute-2 density-4">
+    <button *ngIf="conditionCanHaveChildren" mat-icon-button (click)="addPropertiesSubfilter()"
+      matTooltip="Add Sub-Filter" class="gv-btn-success">
+      <mat-icon svgIcon="subdirectory-arrow-right"></mat-icon>
+    </button>
+  </div>
+
+
+</div>
+
+
+<!-- SUBGROUP -->
+<div *ngIf="isArraySubgroup" class="qf-arr-subgroup">
+  <!-- <div class="mat-caption">isArraySubgroup</div> -->
+  <div class="zero" [ngClass]="{'border-bottom-green': parentIsArraySubgroup}"> </div>
+  <div class="first bg-green density-4" [ngClass]="{'top-cut': parentIsArraySubgroup}">
+    <div class="subgroup-operation-container">
+
+      <!-- Subgroup Operation -->
+      <gv-qf-form-control *ngIf="formArrayFactory.children.length > 2"
+        [formControlFactory]="formArrayFactory.children[0].controlFactory">
+      </gv-qf-form-control>
+
+    </div>
+
+    <!-- Add a sibling condition -->
+    <button [disabled]="formArrayFactory?.formArray?.invalid" class="add-sibling-button gv-btn-success" mat-icon-button
+      (click)="addSubgroupItem()" matTooltip="Add an 'and'/'or' Condition">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+  <div class="second">
+    <div class="sub-query-item" *ngFor="let child of formArrayFactory.children; let i=index">
+      <div class="subquery-left">
+        <!-- <div class="horizontal-line" *ngIf="!parentIsArraySubgroup"></div> -->
+        <div class="horizontal-line bg-green" *ngIf="child.arrayFactory" [ngClass]="{
+          'is-subgroup': childIsArraySubgroup(child.arrayFactory)
+        }"></div>
+        <!-- Split button to create Subgruop -->
+        <!-- <button class="add-subgroup-button density-4 gv-btn-success" mat-icon-button
+          (click)="addSubgroup(i)" matTooltip="Add a Sub-Condition"
+          *ngIf="dynamicFormControls?.length > 1 && !childIsArraySubgroup(child)">
+          <mat-icon class="rotate-90">call_split</mat-icon>
+        </button> -->
+      </div>
+      <gv-qf-form-array *ngIf="child.arrayFactory" [formArrayFactory]="child.arrayFactory"
+        [ngClass]="{'is-subgroup': childIsArraySubgroup(child.arrayFactory)}"></gv-qf-form-array>
+
+      <div *ngIf="child.arrayFactory && !childIsArraySubgroup(child.arrayFactory)"
+        class="gv-qf-button-absolute-1 density-4">
+        <button mat-icon-button (click)="removeSubfilter(i)" matTooltip="Remove" class="gv-btn-danger">
+          <mat-icon>remove</mat-icon>
+        </button>
+      </div>
+      <div *ngIf="child.arrayFactory &&
+      formArrayFactory.children.length > 2 &&
+      formArrayFactory?.formArray?.valid &&
+      !childIsArraySubgroup(child.arrayFactory)" class="gv-qf-button-absolute-3 density-4">
+        <button mat-icon-button (click)="splitSubfilter(i, child.arrayFactory)" matTooltip="Split"
+          class="gv-btn-success">
+          <mat-icon class="rotate-90">call_split</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

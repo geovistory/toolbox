@@ -1,0 +1,18 @@
+<mat-icon class="loc-pointer hide-text" style="color: inherit" [matMenuTriggerFor]="menu"
+  matBadge="{{content.length>0 ? 'c': ''}}" matBadgeSize="small" (click)="triggerResize()">notes
+</mat-icon>
+
+<mat-menu #menu="matMenu" class="loc-content">
+  <div class="gv-row-center">
+    <span class="mat-text-secondary mb-2">{{title}}</span>
+  </div>
+
+  <mat-form-field appearance="outline" class="hide-subscript">
+    <textarea (click)="$event.stopPropagation();" matInput cdkTextareaAutosize #autosize="cdkTextareaAutosize"
+      [(ngModel)]="content"></textarea>
+  </mat-form-field>
+
+  <div class="gv-row-end mt-2">
+    <button mat-flat-button color="primary" (click)="validate()">Save</button>
+  </div>
+</mat-menu>

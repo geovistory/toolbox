@@ -12,10 +12,6 @@ import {JWTBindings, JWTComponent, JWTComponentConfig} from './components/jwt';
 import {BasicAuthenticationStrategy} from './components/jwt/basic-authentication.strategy';
 import {DefaultFactory, InvokeFactory, LOGGER_LEVEL, LoggingBindings, LoggingComponent, LoggingComponentConfig} from './components/logger';
 import {SpecEnhancerComponent} from './components/spec-enhancer/spec-enhancer.component';
-import {SysStatusController} from './controllers';
-import {ImportTableController} from './controllers/import-table.controller';
-import {FieldChangeController} from './controllers/project-data/field-change.controller';
-import {WarEntityPreviewController} from './controllers/war-entity-preview.controller';
 import {Postgres1DataSource} from './datasources/postgres1.datasource';
 import {log} from './middleware/log.middleware';
 import {PostgresNotificationsManager} from './realtime/db-listeners/postgres-notifications-manager';
@@ -90,8 +86,8 @@ export class GeovistoryApplication extends BootMixin(
       type: ''
     };
     this.bind('datasources.config.postgres1').to(config)
+
     // Bind datasource
-    //TODO: is 2nd param needed?
     this.dataSource(Postgres1DataSource, 'datasources.postgres1');
 
     this.onInit(() => {
@@ -104,45 +100,38 @@ export class GeovistoryApplication extends BootMixin(
           process.exit(1);
         });
     })
-
-    this.onStart(async () => {
-
-      this.url = this.restServer.url;
-      // Websocket server
-      if (this.restServer.httpServer?.server)
-        await this.wsServer.start(this.restServer.httpServer.server);
-      else {
-        console.error('Cannot start webserver');
-        process.exit(1);
-      }
-
-      // Postgres Notification Manager
-      return this.pgNotifManager.start()
-    })
-
-    this.onStop(async () => {
-      // Websocket server
-      await this.wsServer.stop();
-
-      // Postgres Notification Manager
-      return this.pgNotifManager.stop()
-    })
   }
 
   start = async () => {
     await super.start();
 
+    const rest = await this.getServer(RestServer);
     if (!this.options?.disableConsoleLog) {
-      const rest = await this.getServer(RestServer);
       console.log(
         `REST server running at ${rest.url}`,
       );
+
     }
+    // Create ws server
+    const httpServer = rest.httpServer?.server;
+    if (!httpServer) console.error("Unable to start server")
+    else this.wsServer = new WebSocketServer(this, httpServer);
+
+    // Postgres Notification Manager
+    return this.pgNotifManager.start()
+
+  }
+
+  stop = async () => {
+    await super.stop();
+
+    // Postgres Notification Manager
+    return this.pgNotifManager.stop()
   }
 
   private setupComponents() {
     this.setupRestExplorerComponent();
-    this.setupWebsocketsComponent();
+    this.setupPostgresNotificationComponent();
     this.setupJWTComponent();
     this.setupAuthorizationComponent();
     this.setupSpecEnhancerComponent()
@@ -196,60 +185,7 @@ export class GeovistoryApplication extends BootMixin(
     this.component(AuthorizationPolicyComponent);
   }
 
-  private setupWebsocketsComponent() {
-    // Create ws server
-    this.wsServer = new WebSocketServer(this);
-    this.bind('servers.websocket.server1').to(this.wsServer);
-
-    this.wsServer.use((socket, next) => {
-      this.log('Global middleware - socket:', socket.id);
-      next();
-    });
-
-    // Add a ws route to WarEntityPreviewController
-    const ns = this.wsServer.route(WarEntityPreviewController, /^\/WarEntityPreview/);
-    ns.use((socket, next) => {
-      this.log(
-        'Middleware for namespace %s - socket: %s',
-        socket.nsp.name,
-        socket.id,
-      );
-      next();
-    });
-
-    // Add a ws route to ImportTableController
-    const ns2 = this.wsServer.route(ImportTableController, /^\/ImportTable/);
-    ns2.use((socket, next) => {
-      this.log(
-        'Middleware for namespace %s - socket: %s',
-        socket.nsp.name,
-        socket.id,
-      );
-      next();
-    })
-
-    // Add a ws route to SystemStatusController
-    this.wsServer.route(SysStatusController, /^\/SysStatus/)
-      .use((socket, next) => {
-        this.log(
-          'Middleware for namespace %s - socket: %s',
-          socket.nsp.name,
-          socket.id,
-        );
-        next();
-      });
-
-    // Add a ws route to FieldChangeController
-    this.wsServer.route(FieldChangeController, /^\/FieldChange/)
-      .use((socket, next) => {
-        this.log(
-          'Middleware for namespace %s - socket: %s',
-          socket.nsp.name,
-          socket.id,
-        );
-        next();
-      });
-
+  private setupPostgresNotificationComponent() {
 
     // Create the Postgres Notification Manager
     this.pgNotifManager = new PostgresNotificationsManager(this);
@@ -274,21 +210,16 @@ export class GeovistoryApplication extends BootMixin(
     */
   private registerStaticFiles() {
 
-    this.static('/', path.join(__dirname, '../../client/dist/app-toolbox'));
-    this.static('/home', path.join(__dirname, '../../client/dist/app-toolbox'));
-    this.static(/\/projects.*/, path.join(__dirname, '../../client/dist/app-toolbox'));
-    this.static(/\/admin.*/, path.join(__dirname, '../../client/dist/app-toolbox'));
-    this.static(/\/backoffice.*/, path.join(__dirname, '../../client/dist/app-toolbox'));
-    this.static(/\/email-verified.*/, path.join(__dirname, '../../client/dist/app-toolbox'));
-    this.static(/\/reset-password.*/, path.join(__dirname, '../../client/dist/app-toolbox'));
-    this.static(/\/login.*/, path.join(__dirname, '../../client/dist/app-toolbox'));
+    this.static('/', path.join(__dirname, '../../client/dist/apps/app-toolbox'));
+    this.static('/home', path.join(__dirname, '../../client/dist/apps/app-toolbox'));
+    this.static(/\/projects.*/, path.join(__dirname, '../../client/dist/apps/app-toolbox'));
+    this.static(/\/admin.*/, path.join(__dirname, '../../client/dist/apps/app-toolbox'));
+    this.static(/\/backoffice.*/, path.join(__dirname, '../../client/dist/apps/app-toolbox'));
+    this.static(/\/email-verified.*/, path.join(__dirname, '../../client/dist/apps/app-toolbox'));
+    this.static(/\/reset-password.*/, path.join(__dirname, '../../client/dist/apps/app-toolbox'));
+    this.static(/\/login.*/, path.join(__dirname, '../../client/dist/apps/app-toolbox'));
   }
 
-
-  private log(msg: string, ...params: string[]) {
-    if (process.env.NO_LOGS === 'true') return;
-    console.log(msg, ...params)
-  }
 }
 
 

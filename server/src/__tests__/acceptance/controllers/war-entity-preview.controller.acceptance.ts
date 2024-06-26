@@ -5,7 +5,7 @@
 // License text available at https://opensource.org/licenses/MIT
 
 import {expect} from '@loopback/testlab';
-import io from 'socket.io-client';
+import io, {Socket} from 'socket.io-client';
 import {GeovistoryApplication} from '../../../application';
 import {WarEntityPreviewWithFulltext} from "../../../models/war-entity-preview-with-full-text.model";
 import {createWarEntityPreview, updateWarEntityPreview} from '../../helpers/atomic/war-entity-preview.helper';
@@ -91,7 +91,7 @@ describe('WarEntityPreviewController', () => {
 
     describe('test the stream', () => {
       let url
-      let socketClient: SocketIOClient.Socket
+      let socketClient: Socket
       const pkProject = 591;
       const pkEntity1 = 100
       beforeEach(async () => {

@@ -75,8 +75,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     @repository(WarEntityPreviewRepository)
     public warEntityPreviewRepository: WarEntityPreviewRepository,
     @inject('datasources.postgres1') private dataSource: Postgres1DataSource,
-    @inject('streams')
-    private streams: Streams
+    @inject('streams') private streams: Streams
   ) {
     super()
   }
@@ -441,12 +440,12 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     const q = new SqlBuilderLb4Models(this.dataSource)
     q.sql = `
     WITH tw1 AS (
-      SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
+      SELECT pk_entity, project_id, fk_class, class_label, entity_label, time_span, entity_type
       FROM war.entity_preview
       WHERE pk_entity IN (${q.addParams(pkEntities)})
       AND project_id = ${q.addParam(pkProject)}
       UNION
-      SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
+      SELECT pk_entity, project_id, fk_class, class_label, entity_label, time_span, entity_type
       FROM war.entity_preview
       WHERE pk_entity IN (${q.addParams(pkEntities)})
       AND project_id = 0
@@ -454,7 +453,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     tw2 AS (
       SELECT DISTINCT ON (pk_entity) *
       FROM tw1
-      ORDER BY pk_entity, fk_project
+      ORDER BY pk_entity, project_id
     )
     SELECT *
     FROM tw2

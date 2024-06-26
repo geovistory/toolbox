@@ -1,0 +1,62 @@
+<gv-navbar>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item">Create a new Project</li>
+  </ol>
+</gv-navbar>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-6">
+      <h2>Create a new project</h2>
+
+      <mat-card appearance="outlined" class="mb-4">
+        <mat-card-header>
+          <div mat-card-avatar>
+            <mat-icon color="primary">info</mat-icon>
+          </div>
+          <mat-card-subtitle> New projects are limited to one user (you). If you need more team members
+            on the project, please contact us info@kleiolab.ch </mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+
+      <ng-template #rt let-r="result" let-t="term">
+        {{ r.notes}}
+        <small class="mat-text-secondary">{{ r.iso6391}}</small>
+      </ng-template>
+
+      <form name="form" (ngSubmit)="f.form.valid && request()" #f="ngForm" novalidate>
+
+
+
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput autofocus type="text" name="label" [(ngModel)]="model.label" #label="ngModel" required />
+          <mat-error *ngIf="f.submitted && !label.valid" class="help-block form-text text-danger">Name is
+            required</mat-error>
+          <mat-error *ngFor="let message of errorMessages?.label"
+            class="help-block form-text text-danger">{{message}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label>Project's default language</mat-label>
+          <gv-ctrl-language name="language" placeholder="Project's default language" [(ngModel)]="model.language"
+            [required]="true"></gv-ctrl-language>
+        </mat-form-field>
+
+        <mat-form-field class="w-100" appearance="outline">
+          <mat-label for="description">Description</mat-label>
+          <textarea matInput name="description" [(ngModel)]="model.text_property" #text_property="ngModel"></textarea>
+          <mat-error *ngFor="let message of errorMessages?.text_property"
+            class="help-block form-text text-danger">{{message}}
+          </mat-error>
+        </mat-form-field>
+
+        <div>
+          <button [disabled]="createBtnDisabled" mat-flat-button color="primary" type="submit">Create</button>
+          <a class="ml-2" routerLink="../" mat-button>Cancel</a>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>

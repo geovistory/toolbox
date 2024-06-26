@@ -1,0 +1,2006 @@
+/* You can add global styles to this file, and also import other style files */
+/* Track */
+
+@use 'sass:map';
+@use 'node_modules/@angular/material' as mat;
+@use 'node_modules/@angular/material/core/theming/palette' as mat-palettes;
+@include mat.core();
+
+$font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+  Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+  'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji' !default;
+
+/************************************************************************************
+** INCLUDE MATERIAL THEME
+************************************************************************************/
+
+// Define a custom typography config that overrides the font-family as well as the
+// `title` and `body-2` and `button` levels to have a wheight of 600 instead of 500
+// because Source Sans Pro does not have 500
+$gv-typography: mat.define-typography-config(
+  $font-family: $font-family,
+  $body-2: mat.define-typography-level(14px, 24px, 400),
+  $button: mat.define-typography-level(14px, 14px, 600),
+);
+
+// Custom color Palette for primary colors (flex-starting with $purple)
+$gv-mat-purple: (
+  50: #f2e7f5,
+  100: #dfc3e8,
+  200: #ca9cda,
+  300: #b576cb,
+  400: #a55abf,
+  500: #9643b3,
+  600: #893eac,
+  700: #7638a2,
+  800: #663399,
+  900: #482a87,
+  A100: #ea80fc,
+  A200: #e040fb,
+  A400: #d500f9,
+  A700: #aa00ff,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+    400: white,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: white,
+    A400: white,
+    A700: white,
+  ),
+);
+$gv-mat-teal: (
+  50: #dff6ed,
+  100: #b1e8d1,
+  200: #7ad8b4,
+  300: #20c996,
+  400: #00bd80,
+  500: #00b06a,
+  600: #00a15f,
+  700: #008f52,
+  800: #007d45,
+  900: #005d2f,
+  A100: #a7ffeb,
+  A200: #64ffda,
+  A400: #1de9b6,
+  A700: #00bfa5,
+  contrast: (
+    50: rgba(black, 0.87),
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: rgba(black, 0.87),
+    400: rgba(black, 0.87),
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: rgba(black, 0.87),
+    A200: rgba(black, 0.87),
+    A400: rgba(black, 0.87),
+    A700: rgba(black, 0.87),
+  ),
+);
+$white: #ffffff;
+$gv-grey-palette: (
+  50: #f7f8fb,
+  100: #eeeff6,
+  200: #e5e9f0,
+  300: #d4dade,
+  400: #b7c2c8,
+  500: #9aaab1,
+  600: #68747b,
+  700: #4e5d65,
+  800: #374348,
+  900: #21282b,
+  A100: #eeeff6,
+  A200: #e5e9f0,
+  A400: #b7c2c8,
+  A700: #4e5d65,
+  contrast: (
+    50: mat-palettes.$dark-primary-text,
+    100: mat-palettes.$dark-primary-text,
+    200: mat-palettes.$dark-primary-text,
+    300: mat-palettes.$dark-primary-text,
+    400: mat-palettes.$dark-primary-text,
+    500: mat-palettes.$light-primary-text,
+    600: mat-palettes.$light-primary-text,
+    700: mat-palettes.$light-primary-text,
+    800: mat-palettes.$light-primary-text,
+    900: mat-palettes.$light-primary-text,
+    A100: mat-palettes.$dark-primary-text,
+    A200: mat-palettes.$dark-primary-text,
+    A400: mat-palettes.$light-primary-text,
+    A700: mat-palettes.$light-primary-text,
+  ),
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$app-primary: mat.define-palette($gv-mat-purple);
+$app-accent: mat.define-palette($gv-mat-teal, A200, A100, A400);
+// The warn palette is optional (defaults to red).
+$app-warn: mat.define-palette(mat.$red-palette);
+// Create the theme object (a Sass map containing all of the palettes).
+$app-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $app-primary,
+      accent: $app-accent,
+      warn: $app-warn,
+    ),
+    typography: $gv-typography,
+  )
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($app-theme);
+@include mat.form-field-density(-2);
+
+// In addition to styles shared between components, the typography-hierarchy mixin
+// includes CSS classes for styling your application. These CSS classes correspond
+// to the typography levels in your typography config. This mixin also emits styles
+// for native header elements scoped within the .mat-typography CSS class.
+@include mat.typography-hierarchy($gv-typography);
+
+.density-4 {
+  @include mat.icon-button-density(-4);
+  @include mat.icon-density(-4);
+  @include mat.form-field-density(-4);
+}
+
+.form-field-density-5 {
+  @include mat.form-field-density(-5);
+}
+
+mat-form-field.hide-subscript,
+gv-class-dropdown.hide-subscript,
+gv-ctrl-entity-or-value-matcher.hide-subscript {
+  .mat-mdc-form-field-subscript-wrapper {
+    display: none;
+  }
+}
+
+/*************** Other ******************/
+
+$font-size-xs: 0.68rem;
+
+label {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  margin-bottom: 1rem;
+}
+
+/**
+* Components
+* Styles for one angular component or multiple angular components with
+* the same visual design (e.g. naming and additional info).
+*/
+$font-size-sm: 0.75rem;
+
+.gv-search-hit {
+  margin-bottom: 1.5rem;
+
+  .gv-search-hit-is-in-project {
+    font-size: $font-size-sm;
+    margin-left: 1rem;
+    color: theme-color('success');
+  }
+
+  .gv-search-hit-project-count {
+    font-size: $font-size-sm;
+    margin-left: 1rem;
+    color: theme-color('secondary');
+  }
+
+  .gv-search-hit-header {
+  }
+
+  .gv-search-hit-body {
+    font-size: $font-size-sm;
+
+    .gv-search-hit-property b {
+      color: theme-color('success');
+    }
+
+    .gv-search-hit-property:not(:first-child) {
+    }
+
+    .gv-search-hit-property:not(:first-child)::before {
+      content: '•';
+      margin-left: 0.4rem;
+      margin-right: 0.4rem;
+    }
+  }
+}
+
+/**
+* Generic stuff
+*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: map.get($gv-grey-palette, 100);
+  text-align: left;
+}
+
+.container {
+  min-width: 63rem;
+  margin-top: 2rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
+}
+
+.rotate-90 {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.rotate-180 {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.rotate-270 {
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+
+.gv-full {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+// text with no line break and overflow ellipsis
+.gv-one-liner {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.gv-white-space-nowrap {
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.gv-fade-out-right {
+  -webkit-mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
+  mask-image: linear-gradient(to right, #000000 90%, transparent 100%);
+}
+
+.gv-fade-out-right-75 {
+  -webkit-mask-image: linear-gradient(to right, #000000 75%, transparent 100%);
+  mask-image: linear-gradient(to right, #000000 75%, transparent 100%);
+}
+
+.gv-fade-out-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000000 90%, transparent 100%);
+}
+
+.gv-word-wrap-break-word {
+  word-wrap: break-word;
+  white-space: unset !important;
+}
+
+// https://stackblitz.com/edit/typescript-zozfey
+.gv-full-with {
+  display: flex;
+  flex-direction: row;
+}
+
+/**
+* Button link gray
+*/
+
+// Make a button look and behave like a link
+.btn-link-gray {
+  font-weight: 400;
+  color: map.get($gv-grey-palette, 500);
+  background-color: transparent;
+
+  &:hover {
+    color: map.get($gv-grey-palette, 800);
+    background-color: transparent;
+    border-color: transparent;
+  }
+
+  &:focus,
+  &.focus {
+    text-decoration: map.get($gv-grey-palette, 900);
+    border-color: transparent;
+    box-shadow: none;
+  }
+
+  &:disabled,
+  &.disabled {
+    color: map.get($gv-grey-palette, 300);
+    pointer-events: none;
+  }
+
+  // No need for an active state here
+}
+
+/**
+* Headings
+*/
+
+// Custom Variables
+$gv-color-highlighted: #ffce00;
+$gv-color-selected: #00ffff;
+
+.font-sm {
+  font-size: $font-size-sm;
+}
+
+.gv-highlight {
+  color: theme-color('success');
+  font-weight: 600;
+}
+
+.gv-bg-selected {
+  background-color: #b9f5ff;
+}
+
+.gv-scroll-y-auto {
+  overflow-y: auto;
+}
+
+.gv-overflow-hidden {
+  overflow: hidden;
+}
+
+.gv-pointer {
+  cursor: pointer;
+}
+
+.gv-cursor-drag {
+  cursor: move;
+}
+
+.gv-grow-1 {
+  flex-grow: 1;
+}
+
+.gv-flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+// full height
+.gv-fh {
+  flex-direction: column;
+  @extend .gv-grow-1;
+  flex-basis: 0%;
+}
+
+// full height and display flex
+.gv-flex-fh {
+  flex-direction: column;
+  -webkit-flex-direction: column;
+
+  display: flex;
+  -webkit-display: flex;
+
+  flex: 1 0 0%;
+  -webkit-flex: 1 1 0%;
+
+  height: 100%;
+  overflow: hidden;
+}
+
+.gv-f-1-0-auto {
+  flex: 1 0 auto;
+}
+
+.gv-scroll-y-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+// full viewport height
+.gv-h-100-vh {
+  height: 100vh;
+}
+
+#userDashboard {
+  #userImage {
+    font-size: 6rem;
+    color: map.get($gv-grey-palette, 200);
+  }
+}
+
+// data unit previews
+gv-entity-preview {
+  display: inline-block;
+}
+
+$gv-bg-drawer-list: #cde4f3;
+
+.gv-nav-btn {
+  $background: map.get($gv-grey-palette, 200);
+  $active-background: $gv-bg-drawer-list;
+  $hover-background: darken($background, 7.5%);
+  font-size: 16px;
+  height: 80px;
+  width: 100%;
+  outline: none;
+  color: color-yiq($background);
+  background-color: $background;
+  border: none;
+
+  &:hover {
+    color: color-yiq($hover-background);
+    background-color: darken($background, 7.5%);
+  }
+
+  &:focus,
+  &.focus {
+    outline: none;
+  }
+
+  // Disabled comes first so active can properly restyle
+  &.disabled,
+  &:disabled {
+    background-color: map.get($gv-grey-palette, 100);
+  }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active,
+  .show > &.dropdown-toggle {
+    color: color-yiq($active-background);
+    background-color: $active-background;
+
+    &:focus {
+    }
+  }
+}
+
+.feedback-button.mat-mdc-raised-button {
+  position: fixed;
+  right: 0;
+  top: 0;
+  left: 50%;
+  z-index: 1000;
+}
+
+.gv-logo {
+  font-size: 2rem;
+  margin: 0px 22px 0 8px;
+}
+
+.gv-logo:hover {
+  text-decoration: none;
+}
+
+/***************************
+* Granularities from big to small
+*   0. Canvas (editor body below header)
+*   1. Panel (left, right)
+*   2. Tile (properties, mentioned entities, …)
+*   3. Field (short title, birth, when …)
+****************************/
+
+.gv-tab-group-sm {
+  .mat-mdc-tab:not(.mdc-tab--stacked) {
+    height: 40px;
+  }
+  .mdc-tab__content mat-icon {
+    margin-right: 8px;
+  }
+}
+
+/***************************
+* Section Header
+****************************/
+
+.gv-section-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  flex: 0 0 48px;
+  padding: 0 8px 0 16px;
+}
+
+/***************************
+* Dropdown Treeview
+****************************/
+
+.gv-outer-form-control {
+  ngx-dropdown-treeview {
+    button.dropdown-toggle {
+      border: 0;
+    }
+  }
+}
+
+/***************************
+ * project edit component
+ ***************************/
+$tabs-height: 32px;
+
+gv-tab-handle {
+  color: map.get($gv-grey-palette, 500);
+  background: map.get($gv-grey-palette, 200);
+}
+
+gv-tab-handle.active {
+  background: $white;
+}
+
+gv-project-edit {
+  .gv-drawer-list {
+    background-color: $gv-bg-drawer-list;
+  }
+
+  .tab-list {
+    max-width: 100%; // border: solid 1px #ccc;
+    min-height: $tabs-height;
+    display: flex;
+    flex-direction: row;
+    background: white;
+    border-radius: 0px;
+    overflow: hidden;
+    background: map.get($gv-grey-palette, 200);
+  }
+
+  .focus {
+    gv-tab-handle {
+      color: inherit;
+    }
+  }
+
+  .panel-body {
+    @extend .gv-flex-fh;
+    position: relative;
+
+    .split-panel-drop-zone {
+      $active-color: rgba(122, 237, 255, 0.256);
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      .split {
+        position: absolute; // border: 1px solid blue;
+        width: 33.33%;
+        height: 100%;
+
+        &.left {
+          margin-left: 0;
+        }
+
+        &.center {
+          margin-left: 33.33%;
+        }
+
+        &.right {
+          margin-left: 66.66%;
+        }
+      }
+
+      .highlight {
+        position: absolute;
+        width: 50%;
+        height: 100%;
+
+        &.left {
+          margin-left: 0;
+        }
+
+        &.right {
+          margin-left: 50%;
+        }
+
+        &.active {
+          background-color: $active-color;
+          z-index: 99999;
+        }
+      }
+
+      &.active {
+        background-color: $active-color;
+        z-index: 99999;
+      }
+
+      &.enabled {
+        pointer-events: initial;
+      }
+    }
+  }
+}
+
+/***************************
+ * Timeline
+ ***************************/
+gv-timeline-table {
+  $bg-timeline: none;
+  $font-color: map.get($gv-grey-palette, 800);
+
+  .timeline-container {
+    background-color: $bg-timeline;
+    border-top: 1px solid map.get($gv-grey-palette, 600) !important;
+    border-bottom: 1px solid map.get($gv-grey-palette, 600) !important;
+  }
+
+  path.domain {
+    stroke: none; // no outer line around xAxis
+  }
+
+  .header {
+    .tick > line {
+      stroke: none;
+    }
+
+    .tick > text {
+      font-size: 13px;
+      // fill: $font-color;
+    }
+  }
+
+  .body.mat-mdc-cell {
+    font-size: $font-size-xs;
+
+    .tick {
+      color: map.get($gv-grey-palette, 400);
+    }
+
+    .row-bg {
+      fill: none;
+    }
+
+    .row-bg.selected {
+      fill: #ffffff;
+      opacity: 0.6;
+    }
+
+    .row-bg.highlighted {
+      fill: #ffffff;
+      opacity: 0.4;
+    }
+  }
+
+  .row-label-bg {
+    fill: $bg-timeline;
+  }
+
+  text.row-label {
+    fill: $font-color;
+  }
+
+  .gv-open-path {
+    stroke: map.get($gv-grey-palette, 900);
+    fill: none;
+  }
+
+  .gv-closed-path {
+    stroke: none;
+    fill-opacity: 0.8;
+  }
+
+  .separator-line {
+    stroke: theme-color('dark');
+  }
+
+  .cover-rect {
+    fill: $bg-timeline;
+  }
+
+  .no-data-text {
+    fill: theme-color('secondary');
+    font-size: $font-size-sm;
+  }
+
+  .cursor-handle {
+    fill: theme-color('primary');
+    stroke: $white; // fill-opacity: .8;
+  }
+
+  .cursor-line {
+    stroke: theme-color('primary');
+    stroke-width: 2;
+  }
+
+  .btn {
+    @extend .btn-link-gray;
+  }
+}
+
+/***************************
+ * Quill
+ ***************************/
+
+.ql-editor {
+  [highlight] {
+    background-color: $gv-color-highlighted;
+  }
+}
+
+gv-quill-view {
+  .ql-container.ql-snow {
+    height: auto;
+    border: none;
+    font-size: 1rem;
+    font-family: $font-family;
+  }
+
+  .ql-editor {
+    padding: 0;
+  }
+}
+
+gv-quill-edit {
+  .ql-container.ql-snow {
+    @extend .d-flex;
+    flex-direction: column;
+    @extend .gv-grow-1;
+
+    font-family: $font-family;
+  }
+
+  .ql-editor {
+    @extend .gv-grow-1;
+  }
+
+  .ql-snow.ql-toolbar button.mat-mdc-icon-button {
+    padding: 0;
+    width: 40px;
+    height: 40px;
+  }
+
+  .ql-snow.ql-toolbar button.mat-mdc-icon-button:focus {
+    color: unset;
+  }
+}
+
+gv-text-detail2 {
+  gv-quill-edit {
+    .ql-container.ql-snow {
+      font-size: 1rem;
+    }
+  }
+}
+
+gv-quill-edit.gv-hide-toolbar {
+  .ql-toolbar,
+  .ql-tooltip {
+    display: none;
+  }
+}
+
+.gv-quill-borderless {
+  .ql-toolbar.ql-snow {
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid map.get($gv-grey-palette, 100) !important;
+  }
+
+  .ql-container.ql-snow {
+    border: 0;
+  }
+}
+
+gv-quill-edit.gv-quill-mat-input-like {
+  .ql-toolbar,
+  .ql-tooltip {
+    display: none;
+  }
+
+  background-color: none;
+
+  .gv-editor {
+    height: auto;
+    border: 0;
+    background-color: none;
+
+    .ql-editor {
+      padding: 0;
+      overflow: hidden;
+      border: 0;
+      height: 21px;
+      font-size: 1rem;
+    }
+  }
+}
+
+gv-quill-edit.gv-quill-textarea-like.gv-outer-form-control {
+  height: auto;
+}
+
+gv-quill-edit.gv-quill-textarea-like {
+  .ql-toolbar,
+  .ql-tooltip {
+    display: none;
+  }
+
+  .gv-editor {
+    height: auto;
+    background: unset;
+  }
+
+  .ql-editor {
+    border: 0;
+    min-height: 3.5rem; // copy from .form-control except border and height
+    display: block;
+    width: 100%;
+    padding: 0;
+    font-size: 1rem;
+    line-height: 1.15;
+    background-clip: padding-box;
+    border-radius: 0.25rem;
+
+    &::-ms-expand {
+      background-color: transparent;
+      border: 0;
+    }
+
+    &::placeholder {
+      color: map.get(
+        $gv-grey-palette,
+        600
+      ); // Override Firefox's unusual default opacity; see https://github.com/twbs/bootstrap/pull/11526.
+      opacity: 1;
+    }
+
+    // Disabled and read-only inputs
+    //
+    // HTML5 says that controls under a fieldset > legend:first-child won't be
+    // disabled if the fieldset is disabled. Due to implementation difficulty, we
+    // don't honor that edge case; we style them as disabled anyway.
+    &:disabled,
+    &[readonly] {
+      background-color: map.get(
+        $gv-grey-palette,
+        200
+      ); // iOS fix for unreadable disabled content; see https://github.com/twbs/bootstrap/issues/11655.
+      opacity: 1;
+    }
+  }
+}
+
+gv-source-list {
+  @extend .d-flex;
+  @extend .gv-grow-1;
+  flex-direction: column;
+}
+
+gv-entity-list {
+  @extend .d-flex;
+  @extend .gv-grow-1;
+  flex-direction: column;
+}
+
+.gv-show-token-ids {
+  span[charid] {
+    background: lightpink;
+    margin: 0 1px;
+  }
+
+  span[charid]::after {
+    content: attr(charid);
+    vertical-align: super;
+    font-size: smaller;
+  }
+}
+
+/***************************
+ * Drop Zone
+ ***************************/
+
+.gv-drop-zone {
+  background-color: #dcdede4d;
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.25rem;
+  border: 3px dashed #dcdede95;
+  border-radius: 0.3rem;
+}
+
+.gv-select-text {
+  background-color: #dcdede4d;
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.25rem;
+  border: 3px solid #dcdede95;
+  border-radius: 0.3rem;
+}
+
+/***********************************
+* Drag & Drop
+************************************/
+$border: 1px solid #000;
+
+.dnd-drag-flex-start {
+  -moz-transform: scale(0.8);
+  -webkit-transform: scale(0.8);
+  transform: scale(0.8);
+  opacity: 0.7;
+  border: $border;
+}
+
+.dnd-drag-enter {
+  opacity: 0.7;
+  border: $border;
+}
+
+.dnd-drag-over {
+  border: $border;
+}
+
+.dnd-sortable-drag {
+  -moz-transform: scale(0.9);
+  -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+  opacity: 0.7;
+  border: 1px dashed #000;
+}
+
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.example-box:last-child {
+  border: none;
+}
+
+.list-group.cdk-drop-list-dragging .list-group-item:not(.cdk-drag-placeholder) {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/******************
+** Resizable Split Panel
+******************/
+as-split.gv-split-style {
+  .as-split-area {
+    // background-color: lightgrey;
+    & > p {
+      padding: 5px;
+    }
+  }
+
+  ::ng-deep .as-split-gutter {
+    background-color: map.get($gv-grey-palette, 300) !important;
+    position: relative;
+  }
+
+  .as-split-gutter {
+    background-color: map.get($gv-grey-palette, 300) !important;
+    position: relative;
+  }
+
+  ::ng-deep .as-split-gutter-icon {
+    background-image: none !important;
+    background-color: black;
+    transition: opacity 0.3s;
+    opacity: 0;
+    position: absolute;
+    z-index: 101;
+  }
+
+  .as-split-gutter-icon {
+    background-image: none !important;
+    background-color: black;
+    transition: opacity 0.3s;
+    opacity: 0;
+    position: absolute;
+    z-index: 101;
+  }
+
+  ::ng-deep .as-split-gutter.is-dragged .as-split-gutter-icon,
+  ::ng-deep .as-split-gutter-icon:hover {
+    opacity: 0.1;
+  }
+
+  .as-split-gutter.is-dragged .as-split-gutter-icon,
+  .as-split-gutter-icon:hover {
+    opacity: 0.1;
+  }
+
+  &.as-horizontal {
+    > ::ng-deep > .as-split-gutter > .as-split-gutter-icon {
+      width: 13px !important;
+      left: -6px;
+      right: 6px;
+    }
+
+    > .as-split-gutter > .as-split-gutter-icon {
+      width: 13px !important;
+      left: -6px;
+      right: 6px;
+    }
+  }
+
+  &.as-vertical {
+    > ::ng-deep > .as-split-gutter > .as-split-gutter-icon {
+      height: 13px !important;
+      top: -6px;
+      bottom: 6px;
+    }
+
+    > .as-split-gutter > .as-split-gutter-icon {
+      height: 13px !important;
+      top: -6px;
+      bottom: 6px;
+    }
+  }
+}
+
+as-split.gv-split-style.gv-hide-split-gutter {
+  .as-split-gutter {
+    display: none;
+  }
+}
+
+$gv-category-primary: (
+  digitals: #ee7f18,
+  sources: #17a2b8,
+  entities: #007bff,
+  analysis: #e83e8c,
+  stories: #28a745,
+  values: #68747b,
+);
+
+$gv-category-secondary: (
+  digitals: #f1af72,
+  sources: #85d2de,
+  entities: #7cb7f7,
+  analysis: #e080ac,
+  stories: #70e08a,
+  values: #9aaab1,
+);
+
+$gv-category-light: (
+  digitals: #f8d0af,
+  sources: #c3e5eb,
+  entities: #b2d7ff,
+  analysis: #e8b3cb,
+  stories: #9de0ac,
+  values: #d4dade,
+);
+
+$categories: digitals, sources, entities, analysis, stories, values;
+
+@each $category in $categories {
+  .gv-#{$category}-primary-bg {
+    background-color: map_get($gv-category-primary, $category);
+  }
+
+  .gv-#{$category}-primary-color {
+    color: map_get($gv-category-primary, $category);
+  }
+}
+
+@each $category in $categories {
+  .gv-#{$category}-secondary-bg {
+    background-color: map_get($gv-category-secondary, $category);
+  }
+
+  .gv-#{$category}-secondary-color {
+    color: map_get($gv-category-secondary, $category);
+  }
+}
+
+@each $category in $categories {
+  .gv-#{$category}-light-bg {
+    background-color: map_get($gv-category-light, $category);
+  }
+
+  .gv-#{$category}-light-color {
+    color: map_get($gv-category-light, $category);
+  }
+}
+
+/***********************************
+* Custom sidenav accordion theme
+***********************************/
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin gv-sidenav-accordion-theme($theme) {
+  // Extract the palettes you need from the theme definition.
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  // Define any styles affected by the theme.
+  mat-accordion.gv-sidenav-accordion {
+    border: none;
+
+    > mat-expansion-panel {
+      background-color: transparent;
+      box-shadow: none !important;
+
+      > mat-expansion-panel-header {
+        .mat-expansion-panel-header-title {
+          color: mat.get-color-from-palette($foreground, secondary-text);
+        }
+      }
+    }
+
+    > mat-expansion-panel:not(:first-of-type) {
+      $foreground: map-get($theme, foreground);
+
+      border-top-color: mat.get-color-from-palette($foreground, divider);
+      border-top-width: 1px;
+      border-top-style: solid;
+    }
+  }
+}
+
+@mixin gv-sidenav-accordion-typography($config) {
+  mat-accordion.gv-sidenav-accordion {
+    > mat-expansion-panel {
+      > mat-expansion-panel-header {
+        font-family: mat.font-family($config, body-2);
+        font-size: mat.font-size($config, body-2);
+        font-weight: mat.font-weight($config, body-2);
+        padding: 0 16px;
+      }
+
+      .mat-expansion-panel-content {
+        @include mat.typography-level($config, body-1);
+      }
+
+      .mat-expansion-panel-body {
+        padding: 0;
+      }
+
+      mat-action-list {
+        padding-top: 0;
+      }
+    }
+  }
+}
+
+// Include theme styles for your custom components.
+@include gv-sidenav-accordion-theme($app-theme);
+@include gv-sidenav-accordion-typography($gv-typography);
+
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+mat-tab-group.condensed .mdc-tab {
+  min-width: 0px;
+  padding-right: 4px;
+  padding-left: 4px;
+}
+
+.mat-mdc-table.gv-head-gray thead {
+  background: #f5f5f5;
+}
+
+.mat-mdc-paginator {
+  background: inherit;
+}
+
+$foreground: map-get($app-theme, foreground);
+
+$mat-color-primary: mat.get-color-from-palette($app-primary);
+$mat-color-accent: mat.get-color-from-palette($app-accent);
+$mat-color-warn: mat.get-color-from-palette($app-warn);
+$mat-color-disabled-text: mat.get-color-from-palette(
+  $foreground,
+  disabled-text
+);
+$mat-color-secondary-text: mat.get-color-from-palette(
+  $foreground,
+  secondary-text
+);
+
+.mat-text-primary {
+  color: $mat-color-primary;
+}
+
+.mat-text-accent {
+  color: $mat-color-accent;
+}
+
+.mat-text-warn {
+  color: $mat-color-warn;
+}
+
+.mat-text-disabled {
+  color: $mat-color-disabled-text;
+}
+
+.mat-text-secondary {
+  color: $mat-color-secondary-text;
+}
+
+.mat-bg-primary {
+  background-color: $mat-color-primary;
+}
+
+.mat-bg-primary-50 {
+  background-color: map-get($app-primary, 50);
+}
+
+.mat-bg-accent-50 {
+  background-color: map-get($app-accent, 50);
+}
+
+.mat-bg-accent {
+  background-color: $mat-color-accent;
+}
+
+.mat-bg-warn {
+  background-color: $mat-color-warn;
+}
+
+.mat-bg-white {
+  background-color: white;
+}
+
+.mat-bg-accent-A700 {
+  background-color: map-get($app-accent, A700);
+  color: rgba(black, 0.87);
+}
+
+$color-ids: 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 'A100', 'A200',
+  'A400', 'A700';
+
+.mat-bg-grey-100-on-hover:hover {
+  background-color: map_get($gv-grey-palette, 100);
+  $contrast-map: map_get($gv-grey-palette, 'contrast');
+  color: map_get($contrast-map, 100);
+}
+
+.mat-bg-accent-50-on-hover:hover {
+  background-color: map_get($app-accent, 50);
+  $contrast-map: map_get($app-accent, 'contrast');
+  color: map_get($contrast-map, 50);
+}
+
+@mixin mat-bg($palette, $prefix, $id) {
+  .mat-bg-#{$prefix}-#{$id} {
+    background-color: map_get($palette, $id);
+    $contrast-map: map_get($palette, 'contrast');
+    color: map_get($contrast-map, $id);
+  }
+}
+
+@each $id in $color-ids {
+  @include mat-bg($gv-grey-palette, 'grey', $id);
+}
+
+@each $id in $color-ids {
+  @include mat-bg($app-primary, 'primary', $id);
+}
+
+@each $id in $color-ids {
+  @include mat-bg($app-accent, 'accent', $id);
+}
+
+@mixin mat-text($palette, $prefix, $id) {
+  .mat-text-#{$prefix}-#{$id} {
+    color: map_get($palette, $id);
+  }
+}
+@each $id in $color-ids {
+  @include mat-text($gv-grey-palette, 'grey', $id);
+}
+
+/*
+* theme colors for svg strokes
+*/
+.mat-stroke-primary {
+  stroke: $mat-color-primary;
+}
+
+.mat-stroke-accent {
+  stroke: $mat-color-accent;
+}
+
+.mat-stroke-warn {
+  stroke: $mat-color-warn;
+}
+
+.mat-stroke-disabled {
+  stroke: mat.get-color-from-palette($foreground, disabled-text);
+}
+
+.mat-stroke-secondary {
+  stroke: mat.get-color-from-palette($foreground, secondary-text);
+}
+
+$mat-color-divider: mat.get-color-from-palette($foreground, divider);
+
+.mat-border-top {
+  border-top-color: $mat-color-divider !important;
+  border-top-width: 1px !important;
+  border-top-style: solid !important;
+}
+
+.mat-border-bottom {
+  border-bottom-color: $mat-color-divider !important;
+  border-bottom-width: 1px !important;
+  border-bottom-style: solid !important;
+}
+
+.mat-border-left {
+  border-left-color: $mat-color-divider !important;
+  border-left-width: 1px !important;
+  border-left-style: solid !important;
+}
+
+.mat-border-right {
+  border-right-color: $mat-color-divider !important;
+  border-right-width: 1px !important;
+  border-right-style: solid !important;
+}
+
+.mat-border-edit-mode {
+  border-top-color: $mat-color-primary !important;
+  border-top-width: 1px !important;
+  border-top-style: solid !important;
+}
+
+.mat-bg-edit-mode {
+  background-color: $mat-color-primary;
+}
+
+button:not(.mat-mdc-icon-button) {
+  mat-icon {
+    font-size: 20px !important;
+  }
+}
+button.mat-mdc-button.active {
+  color: $mat-color-primary;
+}
+
+mat-icon {
+  svg {
+    overflow: unset;
+    vertical-align: unset;
+  }
+}
+
+mat-icon.mat-icon-sm,
+.material-icons.md-18 {
+  font-size: 18px;
+
+  svg {
+    height: 18px;
+    width: 18px;
+  }
+}
+
+mat-icon.mat-icon-caption {
+  font-size: 12px;
+  height: 13px;
+  width: 13px;
+
+  svg {
+    height: 13px;
+    width: 13px;
+  }
+}
+
+.mat-btn-padding-x-8 {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  min-width: unset !important;
+}
+
+.mat-btn-padding-left-8 {
+  padding-left: 8px !important;
+  min-width: unset !important;
+}
+
+/**
+* fix for inproper alignement
+* see: https://www.npmjs.com/package/@mdi/angular-material
+*/
+button.mat-mdc-menu-item {
+  line-height: 24px !important;
+}
+
+a.mat-mdc-menu-item > mat-icon {
+  margin-bottom: 14px;
+}
+
+.dropdown-header {
+  display: block;
+  padding: 0.5rem 1.5rem;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  color: $mat-color-secondary-text;
+  white-space: nowrap;
+}
+
+.gv-btn-danger {
+  background: $white;
+  @extend .border;
+  @extend .border-danger;
+  @extend .rounded-circle;
+}
+
+.gv-btn-success {
+  background: $white;
+  @extend .border;
+  @extend .border-success;
+  @extend .rounded-circle;
+}
+
+@mixin mix-mat-button-toggle($app-theme) {
+  $primary: map-get($app-theme, primary);
+  $accent: map-get($app-theme, accent);
+  .mat-button-toggle-appearance-standard {
+    &.mat-button-toggle {
+      background-color: unset;
+      color: mat.get-color-from-palette($primary);
+      &.mat-button-toggle-checked {
+        background-color: mat.get-color-from-palette($primary);
+        color: mat.get-color-from-palette($primary, default-contrast);
+      }
+    }
+  }
+}
+
+// Include the mixin
+@include mix-mat-button-toggle($app-theme);
+
+/***************************
+ * Highlighting
+ ***************************/
+
+.gv-quill-text-highlight {
+  background-color: hsla(271, 68%, 80%, 0.5);
+}
+
+.gv-quill-text-highlight:hover {
+  background-color: hsla(271, 68%, 80%, 0.9);
+}
+
+.gv-quill-text-accent {
+  background-color: mat.get-color-from-palette($app-accent);
+}
+
+.mat-mdc-row.gv-bg-highlight {
+  background-color: rgba(223, 213, 232, 0.5);
+}
+
+/**
+* Styles for primeng table (virtual scroll table)
+  */
+@mixin primeng-table-theme($theme) {
+  $background: map-get($theme, background);
+  $foreground: map-get($theme, foreground);
+
+  .p-datatable {
+    background: mat.get-color-from-palette($background, 'card');
+
+    .p-datatable-table {
+      border-collapse: separate;
+    }
+
+    .p-datatable-thead {
+      tr {
+        height: 56px;
+
+        th {
+          color: mat.get-color-from-palette($foreground, secondary-text);
+          text-align: left;
+        }
+
+        th:first-of-type {
+          padding-left: 24px;
+        }
+
+        th:last-of-type {
+          padding-right: 24px;
+        }
+      }
+
+      tr.loading-bar {
+        height: 0;
+
+        th {
+          padding: 0;
+        }
+      }
+    }
+
+    .p-datatable-tbody > tr > td,
+    .p-datatable-tfoot > tr > td {
+      color: mat.get-color-from-palette($foreground, text);
+    }
+
+    .p-datatable-tbody > tr > td:first-of-type,
+    .p-datatable-tfoot > tr > td:first-of-type {
+      padding-left: 24px;
+    }
+
+    .p-datatable-tfoot > tr {
+      height: 36px;
+    }
+
+    .p-datatable-tfoot > tr > td {
+      color: mat.get-color-from-palette($foreground, secondary-text);
+      padding: 0;
+      border-top-width: 0.5px;
+      border-top-style: solid;
+      border-top-color: mat.get-color-from-palette($foreground, divider);
+    }
+
+    .p-datatable-tbody > tr > td:last-of-type,
+    .p-datatable-tfoot > tr > td:last-of-type {
+      padding-right: 24px;
+    }
+  }
+
+  td,
+  .p-datatable-scrollable-header-box {
+    padding: 0;
+    border-bottom-width: 0.5px;
+    border-bottom-style: solid;
+    border-bottom-color: mat.get-color-from-palette($foreground, divider);
+  }
+
+  .p-datatable-gridlines .p-datatable-tbody > tr > td,
+  .p-datatable-gridlines .p-datatable-thead > tr > th {
+    border-width: 0.5px;
+    border-style: solid;
+  }
+
+  .p-datatable-gridlines .p-datatable-tbody > tr > td {
+    border-color: mat.get-color-from-palette($foreground, divider);
+  }
+
+  .p-datatable-gridlines .p-datatable-thead > tr > th {
+    border-color: #d9dadc;
+  }
+
+  .p-datatable-dragpoint-bottom {
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+    border-bottom-color: $mat-color-primary;
+  }
+
+  .p-datatable-dragpoint-top {
+    border-top-width: 3px;
+    border-top-style: solid;
+    border-top-color: $mat-color-primary;
+  }
+
+  .ui-column-resizer-helper {
+    background-color: $mat-color-primary;
+  }
+
+  .ui-column-resizer-helper {
+    width: 1px;
+    position: absolute;
+    z-index: 10;
+    display: none;
+  }
+}
+
+@mixin primeng-table-typography($config) {
+  .p-datatable {
+    font-family: mat.font-family($config);
+  }
+
+  .p-datatable-scrollable-header {
+    font-size: mat.font-size($config, caption);
+    font-weight: mat.font-weight($config, body-2);
+  }
+
+  .p-datatable td {
+    font-size: mat.font-size($config, body-1);
+  }
+
+  .p-datatable-tfoot > tr {
+    @include mat.typography-level($config, caption);
+  }
+}
+
+@include primeng-table-theme($app-theme);
+@include primeng-table-typography($gv-typography);
+
+/*
+* Styles for primeng toast
+*/
+@mixin primeng-toast($theme) {
+  .p-toast {
+    opacity: 0.9;
+  }
+
+  .p-toast .p-toast-message {
+    margin: 0 0 1rem 0;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+      0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content {
+    padding: 1.25rem;
+    border-width: 0 0 0 0;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-message-text {
+    margin: 0 0 0 1rem;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-message-icon {
+    font-size: 2rem;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-summary {
+    font-weight: 700;
+  }
+
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-detail {
+    margin: 0.5rem 0 0 0;
+  }
+
+  .p-toast .p-toast-message .p-toast-icon-close {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: transparent;
+    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+  }
+
+  .p-toast .p-toast-message .p-toast-icon-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .p-toast .p-toast-message .p-toast-icon-close:focus {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: none;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-info {
+    background: #b3e5fc;
+    border: solid transparent;
+    border-width: 0 0 0 0;
+    color: #01579b;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-info .p-toast-message-icon,
+  .p-toast .p-toast-message.p-toast-message-info .p-toast-icon-close {
+    color: #01579b;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-success {
+    background: #c8e6c9;
+    border: solid transparent;
+    border-width: 0 0 0 0;
+    color: #1b5e20;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-success .p-toast-message-icon,
+  .p-toast .p-toast-message.p-toast-message-success .p-toast-icon-close {
+    color: #1b5e20;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-warn {
+    background: #ffecb3;
+    border: solid transparent;
+    border-width: 0 0 0 0;
+    color: #7f6003;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-warn .p-toast-message-icon,
+  .p-toast .p-toast-message.p-toast-message-warn .p-toast-icon-close {
+    color: #7f6003;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-error {
+    background: #ffcdd2;
+    border: solid transparent;
+    border-width: 0 0 0 0;
+    color: #b71c1c;
+  }
+
+  .p-toast .p-toast-message.p-toast-message-error .p-toast-message-icon,
+  .p-toast .p-toast-message.p-toast-message-error .p-toast-icon-close {
+    color: #b71c1c;
+  }
+}
+
+@include primeng-toast($app-theme);
+
+// override bootsrap symbol
+.form-control.ng-touched.ng-invalid,
+.form-control.ng-touched.ng-valid,
+.custom-select.ng-touched.ng-invalid,
+.custom-select.ng-touched.ng-valid {
+  background: none;
+  padding-right: inherit;
+}
+
+mat-paginator.dense .mat-mdc-paginator-range-label {
+  margin: 0;
+}
+
+.gv-p-datatable-border-cells {
+  .p-datatable {
+    .p-datatable-thead > tr > th,
+    .p-datatable-tbody > tr > td,
+    .p-datatable-tfoot > tr > td {
+      border: 1px solid rgb(229, 233, 240);
+    }
+  }
+}
+
+.gv-p-datatable-full-height {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .p-datatable {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    > * {
+      flex: 0 0 auto;
+    }
+
+    > .p-datatable-scrollable-wrapper {
+      flex: 1 1 0%;
+      overflow: hidden;
+
+      > .p-datatable-scrollable-view {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+
+        > .p-datatable-scrollable-header {
+          flex: 0 0 auto;
+        }
+
+        > .p-datatable-scrollable-body {
+          flex: 1 1 auto;
+        }
+
+        > .p-datatable-scrollable-footer {
+          flex: 0 0 auto;
+        }
+      }
+    }
+  }
+}
+
+.gv-split-area {
+  position: relative;
+}
+
+.gv-split-area-toggle-button {
+  cursor: pointer;
+
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
+
+  display: flex;
+  position: absolute;
+  height: 2.5rem;
+  background: none;
+  background-color: $white;
+  width: 24px;
+  padding: 0;
+
+  border-radius: 0;
+  border: none;
+
+  &.align-left {
+    left: 0;
+  }
+
+  &.align-right {
+    right: 0;
+  }
+
+  &:hover {
+    .gv-focus-overlay {
+      background-color: black;
+      opacity: 0.04;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+}
+
+.gv-add-list-table-and-paginator-container {
+  min-width: 320px;
+  margin: 2.5rem 0;
+}
+
+.gv-add-list-table-container {
+  position: relative;
+  min-width: 240px;
+  width: 100%;
+  overflow: auto;
+}
+
+.gv-table-spinner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+gv-importer {
+  .gv-drop-zone {
+    height: 100%;
+    width: 100%;
+    border: 2px dotted #9643b3;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .gv-drop-zone-content {
+    margin: auto;
+  }
+}
+
+// About columns
+.gv-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.gv-col-center {
+  @extend .gv-col;
+  justify-content: center;
+}
+
+.gv-col-start {
+  @extend .gv-col;
+  justify-content: start;
+}
+
+.gv-col-end {
+  @extend .gv-col;
+  justify-content: end;
+}
+
+.gv-col-space-between {
+  @extend .gv-col;
+  justify-content: space-between;
+}
+
+// About rows
+.gv-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.gv-row-center {
+  @extend .gv-row;
+  justify-content: center;
+}
+
+.gv-row-space-between {
+  @extend .gv-row;
+  justify-content: space-between;
+}
+
+.gv-row-space-around {
+  @extend .gv-row;
+  justify-content: space-around;
+}
+
+.gv-row-start {
+  @extend .gv-row;
+  justify-content: start;
+}
+
+.gv-row-end {
+  @extend .gv-row;
+  justify-content: end;
+}
+
+// About widths
+.gv-fw {
+  width: 100%;
+}
+
+.gv-width-auto {
+  width: auto;
+}
+
+.gv-center {
+  align-items: center;
+}
+
+// About heights
+.gv-fh {
+  height: 100%;
+}
+
+.gv-height-auto {
+  height: auto;
+}
+
+// about overflows
+.gv-ovf-auto {
+  overflow: auto;
+}
+
+// for mat-dialog reset padding
+.gv-no-padding mat-dialog-container {
+  padding: 0;
+}
+
+.gv-text-align-center {
+  text-align: center;
+}
+
+@import '~jsoneditor/dist/jsoneditor.min.css';
+
+@import './styles/utils.scss';
+@import './styles/spacing.scss';
+@import './styles/forms.scss';
+@import './styles/coloring.scss';
+@import './styles/grid.scss';
+@import './styles/breadcrumb.scss';
+@import './styles/typography.scss';
+@import './styles/badge.scss';
+@import './styles/alert.scss';

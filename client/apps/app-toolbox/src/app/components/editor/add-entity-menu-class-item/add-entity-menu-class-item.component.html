@@ -1,0 +1,23 @@
+<!-- <div class="loc-header-item mat-bg-gray-100-on-hover"> -->
+<div class="loc-header-item mat-bg-gray-100-on-hover">
+  <div class="loc-toggle">
+    <button *ngIf="item.children.length" mat-icon-button
+      (click)="$event.stopPropagation(); showBody$.next(!showBody$.value)">
+      <mat-icon *ngIf="!(showBody$|async)">chevron_right</mat-icon>
+      <mat-icon *ngIf="showBody$|async">expand_more</mat-icon>
+    </button>
+  </div>
+  <div class="loc-label gv-pointer" [matTooltip]="'Add a '+item.label" (click)="menu.component.onSelect(item.data)">
+    <gv-class-info [pkClass]="item.data.pkClass"></gv-class-info>
+    {{item.label}}
+  </div>
+  <div class="loc-help-btn" *ngIf="item.helpUrl">
+    <a mat-icon-button color="primary" [attr.href]="item.helpUrl" target="_blank" [matTooltip]="'Open documentation'">
+      <mat-icon>help</mat-icon>
+    </a>
+  </div>
+</div>
+<gv-open-close class="loc-container" [isOpen$]="showBody$">
+  <gv-add-entity-menu-type-item [item]="typeItem" *ngFor="let typeItem of item.children">
+  </gv-add-entity-menu-type-item>
+</gv-open-close>

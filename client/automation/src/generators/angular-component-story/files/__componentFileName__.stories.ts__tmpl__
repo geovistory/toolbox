@@ -1,0 +1,60 @@
+<%
+  const relativePathToStorybook = Array(depth - 2).fill('../').join('');
+  const relativePathToServices = Array(depth - 4).fill('../').join('');
+%>
+
+import {
+  applicationConfig,
+  type Meta,
+  type StoryObj,
+} from '@storybook/angular';
+import { <%=componentName%> } from './<%=componentFileName%>';
+import { importProvidersFrom } from '@angular/core';
+import { MatDialogModule } from '@angular/material/dialog';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { StateModule } from '@kleiolab/lib-redux';
+import { INITIAL_STATE } from '@ngrx/store';
+<% if ( interactionTests ) { %>
+import { within } from '@storybook/testing-library';
+import { expect } from '@storybook/jest';
+<% } %>
+import { MockStateFactory } from './<%= relativePathToStorybook %>.storybook/MockStateFactory';
+import { ActiveProjectService } from './<%= relativePathToServices %>services/active-project.service';
+
+
+const meta: Meta<<%= componentName %>> = {
+  component: <%= componentName %>,
+  title: '<%= componentName %>',
+  decorators: [
+    applicationConfig({
+      providers: [
+        provideAnimations(),
+        importProvidersFrom(
+          StateModule,
+          MatDialogModule
+        ),
+        ActiveProjectService,
+      ],
+    }),
+  ]
+};
+export default meta;
+type Story = StoryObj<<%=componentName%>>;
+
+// Setup the initial state of the story Basic
+const stateBasic = new MockStateFactory();
+
+export const Basic: Story = {
+  args: {<% for (let prop of props) { %>
+    <%= prop.name %>: <%- prop.defaultValue %>,<% } %>
+  },
+  decorators: [
+    applicationConfig({
+      providers: [{ provide: INITIAL_STATE, useValue: stateBasic.state }]
+    })
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.getByText(/<%=componentNameSimple%> works!/gi)).toBeTruthy();
+  },
+};

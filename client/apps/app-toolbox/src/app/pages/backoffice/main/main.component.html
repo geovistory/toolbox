@@ -1,0 +1,16 @@
+<div class="gv-h-100-vh gv-flex-fh">
+  <mat-toolbar class="mat-typography mat-bg-grey-200">
+    <button mat-button routerLink="/backoffice">Backoffice</button>
+    <button mat-button routerLink="/backoffice/system-types" routerLinkActive="active">System Types</button>
+    <button mat-button routerLink="/backoffice/accounts" routerLinkActive="active">Accounts</button>
+    <button mat-button routerLink="/backoffice/sys-config" routerLinkActive="active">System Config</button>
+    <button mat-button routerLink="/backoffice/community-visibility" routerLinkActive="active">Community
+      Visibility</button>
+    <span class="nav-spacer"></span>
+    <button mat-button routerLink="/">Geovistory Home</button>
+  </mat-toolbar>
+
+  <div class="gv-flex-fh" style="overflow: hidden">
+    <router-outlet></router-outlet>
+  </div>
+</div>

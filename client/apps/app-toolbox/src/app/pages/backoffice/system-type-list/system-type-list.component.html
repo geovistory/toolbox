@@ -1,0 +1,35 @@
+<h2>
+  SystemTypes
+</h2>
+<p>
+  All SystemTypes.
+</p>
+
+<div class="gv-scroll-y-container">
+
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">pk_entity</th>
+        <th scope="col">notes</th>
+        <th scope="col">definition</th>
+        <th scope="col">st_schema_name</th>
+        <th scope="col">st_table_name</th>
+        <th scope="col">st_column_name</th>
+        <th scope="col">st_group</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of (systemtypes$ | async)">
+        <td>{{item.pk_entity}}</td>
+        <td>{{item.notes}}</td>
+        <td>{{item.definition}}</td>
+        <td>{{item.st_schema_name}}</td>
+        <td>{{item.st_table_name}}</td>
+        <td>{{item.st_column_name}}</td>
+        <td>{{item.st_group}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>

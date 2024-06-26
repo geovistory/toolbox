@@ -1,0 +1,11 @@
+<mat-form-field *ngIf="formControlFactory.config?.data.ctrlClasses" class="w-100" appearance="outline">
+  <mat-label>{{formControlFactory.config?.placeholder}}</mat-label>
+  <gv-class-and-type-select [formControl]="formControlFactory.formControl"
+    [disabled]="formControlFactory.config?.disabled$ | async"
+    [pkClasses$]="formControlFactory.config?.data.ctrlClasses.pkClasses$"
+    [required]="formControlFactory.config?.required">
+  </gv-class-and-type-select>
+  <mat-error *ngIf="formControlFactory.formControl.hasError('classOrTypeRequired')">
+    Please select
+  </mat-error>
+</mat-form-field>

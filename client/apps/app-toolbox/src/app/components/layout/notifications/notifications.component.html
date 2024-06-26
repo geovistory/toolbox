@@ -1,0 +1,13 @@
+<p-toast position="bottom-right">
+
+  <ng-template let-message pTemplate="message">
+    <div class="p-flex p-flex-column mat-typography" style="flex: 1">
+      <div class="p-toast-summary">{{message.summary}}</div>
+      <div class="p-toast-detail">{{message.detail}}</div>
+      <button mat-icon-button class="close-btn" aria-label="close message" (click)="onClose(message.id)"
+        (keydown.enter)="onClose(message.id)" color="primary">
+        <mat-icon style="color: inherit">close</mat-icon>
+      </button>
+    </div>
+  </ng-template>
+</p-toast>

@@ -1,0 +1,16 @@
+.loc-pointer {
+  cursor: pointer;
+}
+
+.loc {
+  display: flex;
+  flex-direction: column;
+}
+
+::ng-deep .loc-content {
+  .mat-mdc-menu-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1rem 0.5rem 1rem;
+  }
+}

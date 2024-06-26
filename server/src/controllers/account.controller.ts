@@ -15,7 +15,7 @@ import {PubAccountRepository} from '../repositories/pub-account.repository';
 import {AccountService} from '../services/account.service';
 import {EmailService} from '../services/email.service';
 import {PasswordResetTokenService} from '../services/password-reset-token.service';
-import {envVars} from '../utils/env-vars';
+import {env} from '../utils/env-vars';
 
 
 // the requirements for new passwords can be higher
@@ -207,10 +207,10 @@ export class AccountController {
     await this.dataSource.execute(sql, params);
 
     // add to community project
-    if (envVars.communityProjectId && parseInt(envVars.communityProjectId, 10) > 0) {
+    if (env.COMMUNITY_PROJECT_ID && parseInt(env.COMMUNITY_PROJECT_ID, 10) > 0) {
       await this.accountProjectRelRepository.create({
         account_id: savedAccount.id,
-        fk_project: parseInt(envVars.communityProjectId, 10),
+        fk_project: parseInt(env.COMMUNITY_PROJECT_ID, 10),
         role: 'owner'
       })
     }
