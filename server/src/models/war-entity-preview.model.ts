@@ -57,7 +57,7 @@ export class WarEntityPreviewTimeSpan {
   settings: {
     strict: true,
     idInjection: false,
-    postgresql: {schema: 'war', table: 'entity_preview'}
+    postgresql: {schema: 'pgwar', table: 'entity_preview'}
   }
 })
 export class WarEntityPreview extends Entity {
@@ -77,7 +77,7 @@ export class WarEntityPreview extends Entity {
     type: 'number',
     required: true
   })
-  project_id?: number;
+  fk_project?: number;
 
   @property({
     type: 'number',

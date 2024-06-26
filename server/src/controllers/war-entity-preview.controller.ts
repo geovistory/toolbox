@@ -23,7 +23,7 @@ import {EntitySearchHit} from './EntitySearchHit';
 const includeFieldsForStream: Fields<WarEntityPreviewWithFulltext> = {
   key: true,
   pk_entity: true,
-  project_id: true,
+  fk_project: true,
   fk_class: true,
   class_label: true,
   entity_label: true,
@@ -218,14 +218,14 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   /**
    * Queries entity previews that are in the array of keys
    *
-   * @param keys array of keys in the form of {project_id}_{pk_entity}
+   * @param keys array of keys in the form of {fk_project}_{pk_entity}
    */
   private async findByKey(keys: string[]) {
-    // parse the keys into {project_id, pk_entity]
+    // parse the keys into {fk_project, pk_entity]
     const grouped = this.groupByProject(keys);
 
     const res: WarEntityPreviewWithFulltext[] = []
-    // query the entity previews for each project_id
+    // query the entity previews for each fk_project
     for (const key in grouped) {
       const projectId = parseInt(key);
       const pkEntities = grouped[key].map(item => item.pk_entity);
@@ -233,7 +233,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
         fields: includeFieldsForStream,
         where: {
           and: [
-            {project_id: projectId},
+            {fk_project: projectId},
             {pk_entity: {inq: pkEntities}}
           ]
         }
@@ -250,14 +250,14 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
    * that are modified at the same time as tsmpLastModification.
    *
    * @param tsmpLastModification
-   * @param keys array of keys in the form of {project_id}_{pk_entity}
+   * @param keys array of keys in the form of {fk_project}_{pk_entity}
    */
   private async findModifiedSinceTmsp(keys: string[], tsmpLastModification: string) {
-    // parse the keys into {project_id, pk_entity]
+    // parse the keys into {fk_project, pk_entity]
     const grouped = this.groupByProject(keys);
 
     const res: WarEntityPreviewWithFulltext[] = []
-    // query the entity previews for each project_id
+    // query the entity previews for each fk_project
     for (const key in grouped) {
       const projectId = parseInt(key);
       const pkEntities = grouped[key].map(item => item.pk_entity);
@@ -266,7 +266,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
         where: {
           and: [
             {tmsp_last_modification: {eq: tsmpLastModification}},
-            {project_id: projectId},
+            {fk_project: projectId},
             {pk_entity: {inq: pkEntities}}
           ]
         }
@@ -281,10 +281,10 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
   private groupByProject(keys: string[]) {
     const parsed: WarEntityPreviewId[] = keys.map(k => {
       const s = k.split('_');
-      return {project_id: parseInt(s[0]), pk_entity: parseInt(s[1])};
+      return {fk_project: parseInt(s[0]), pk_entity: parseInt(s[1])};
     });
-    // group the keys by project_id
-    const grouped = groupBy((item) => item.project_id.toString(), parsed);
+    // group the keys by fk_project
+    const grouped = groupBy((item) => item.fk_project.toString(), parsed);
     return grouped;
   }
 
@@ -342,7 +342,7 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
           ts_headline(entity_label, q) as entity_label_headline,
           ts_headline(type_label, q) as type_label_headline,
           count(pk_entity) OVER() AS total_count
-          from war.entity_preview t1,
+          from pgwar.entity_preview t1,
           to_tsquery(${tsSearchString === '' ? "''" : tsSearchString}) q
           WHERE 1=1
           ${tsSearchString
@@ -350,8 +350,8 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
         : ''
       }
           ${req.projectId
-        ? `AND project_id = ${q.addParam(req.projectId)}`
-        : `AND project_id = 0`
+        ? `AND fk_project = ${q.addParam(req.projectId)}`
+        : `AND fk_project = 0`
       }
           ${req.entityType ? `AND entity_type = ${q.addParam(req.entityType)}` : ''}
           ${req.pkClasses?.length
@@ -440,20 +440,20 @@ export class WarEntityPreviewController extends WebsocketControllerBase {
     const q = new SqlBuilderLb4Models(this.dataSource)
     q.sql = `
     WITH tw1 AS (
-      SELECT pk_entity, project_id, fk_class, class_label, entity_label, time_span, entity_type
-      FROM war.entity_preview
+      SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
+      FROM pgwar.entity_preview
       WHERE pk_entity IN (${q.addParams(pkEntities)})
-      AND project_id = ${q.addParam(pkProject)}
+      AND fk_project = ${q.addParam(pkProject)}
       UNION
-      SELECT pk_entity, project_id, fk_class, class_label, entity_label, time_span, entity_type
-      FROM war.entity_preview
+      SELECT pk_entity, fk_project, fk_class, class_label, entity_label, time_span, entity_type
+      FROM pgwar.entity_preview
       WHERE pk_entity IN (${q.addParams(pkEntities)})
-      AND project_id = 0
+      AND fk_project = 0
     ),
     tw2 AS (
       SELECT DISTINCT ON (pk_entity) *
       FROM tw1
-      ORDER BY pk_entity, project_id
+      ORDER BY pk_entity, fk_project
     )
     SELECT *
     FROM tw2
