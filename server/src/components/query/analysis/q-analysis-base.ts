@@ -80,7 +80,7 @@ export abstract class QAnalysisBase extends SqlBuilderLb4Models {
   limit = '';
   offset = '';
 
-  readonly STATAMENT_TABLE = 'war.statement' // 'war.vm_statement'
+  readonly STATAMENT_TABLE = 'pgwar.project_statements'
 
   constructor(
     dataSource: Postgres1DataSource,
@@ -259,7 +259,7 @@ export abstract class QAnalysisBase extends SqlBuilderLb4Models {
     const joinOn = 'pk_entity'
     const selects = leftTables.map(leftTable => `
       SELECT *
-      FROM war.entity_preview t
+      FROM pgwar.entity_preview t
       WHERE
       ${leftTable.table}.${leftTable.fk} = t.${joinOn}
       AND

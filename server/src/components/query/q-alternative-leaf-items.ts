@@ -144,7 +144,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
           ${this.createSelect('t1', WarEntityPreview.definition)}
         FROM
           tw2
-          CROSS JOIN war.entity_preview t1
+          CROSS JOIN pgwar.entity_preview t1
         WHERE
           tw2.fk_object_info = t1.pk_entity
           AND t1.project_id = 0
@@ -155,7 +155,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
           ${this.createSelect('t1', WarEntityPreview.definition)}
         FROM
           tw2
-          CROSS JOIN war.entity_preview t1
+          CROSS JOIN pgwar.entity_preview t1
         WHERE
           tw2.fk_subject_info = t1.pk_entity
           AND t1.project_id = 0
@@ -166,7 +166,7 @@ export class QAlternativeLeafItems extends SqlBuilderLb4Models {
           ${this.createSelect('t1', WarEntityPreview.definition)}
         FROM
           tw9
-          CROSS JOIN war.entity_preview t1
+          CROSS JOIN pgwar.entity_preview t1
         WHERE
           tw9.fk_measurement_unit = t1.pk_entity
           AND t1.project_id = 0

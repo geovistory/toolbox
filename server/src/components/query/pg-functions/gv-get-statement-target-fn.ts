@@ -128,7 +128,7 @@ export class SqlGvGetStatementTarget extends SqlBuilderLb4Models {
           SELECT
             t4, entity_label
           FROM
-            war.entity_preview t4
+            pgwar.entity_preview t4
           WHERE
             t4.pk_entity = t3.fk_measurement_unit
             AND project_id = 0
@@ -137,7 +137,7 @@ export class SqlGvGetStatementTarget extends SqlBuilderLb4Models {
           SELECT
             t4, entity_label
           FROM
-            war.entity_preview t4
+            pgwar.entity_preview t4
           WHERE
             t4.pk_entity = t3.fk_measurement_unit
             AND project_id = _project_id) e) entity_preview ON TRUE
@@ -164,7 +164,7 @@ export class SqlGvGetStatementTarget extends SqlBuilderLb4Models {
           SELECT
             t4, entity_label
           FROM
-            war.entity_preview t4
+            pgwar.entity_preview t4
           WHERE
             t4.pk_entity = _info_id
             AND project_id = 0
@@ -173,7 +173,7 @@ export class SqlGvGetStatementTarget extends SqlBuilderLb4Models {
           SELECT
             t4, entity_label
           FROM
-            war.entity_preview t4
+            pgwar.entity_preview t4
           WHERE
             t4.pk_entity = _info_id
             AND project_id = _project_id) e) entity_preview ON TRUE

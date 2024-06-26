@@ -58,7 +58,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
     select *
     from
       tw0 t0,
-      war.entity_preview t1
+      pgwar.entity_preview t1
     WHERE t1.project_id = 0
     ${tsSearchString ? `
     AND (
@@ -75,7 +75,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       select *
       from
         tw0 t0,
-        war.entity_preview t1
+        pgwar.entity_preview t1
       where t1.project_id = ${this.addParam(pkProject)}
       ${tsSearchString ? `
       AND (
@@ -91,7 +91,7 @@ export class QWarEntityPreviewSearchExisiting extends SqlBuilderLb4Models {
       select t1.*
       from
         tw0 t0,
-        war.entity_preview t1
+        pgwar.entity_preview t1
         LEFT JOIN projects.info_proj_rel t2
           ON t1.pk_entity=t2.fk_entity
           AND t2.fk_project=${this.addParam(pkProject)}

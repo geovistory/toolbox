@@ -29,7 +29,7 @@ export class QTypesOfProject extends SqlBuilderLb4Models {
         SELECT
           pk_entity
         FROM
-          war.entity_preview
+          pgwar.entity_preview
         WHERE
           project_id =  ${this.addParam(fkProject)}
           AND parent_classes @> '53'::jsonb
@@ -37,7 +37,7 @@ export class QTypesOfProject extends SqlBuilderLb4Models {
         SELECT
           pk_entity
         FROM
-          war.entity_preview
+          pgwar.entity_preview
         WHERE
           project_id =  ${this.addParam(fkProject)}
           AND ancestor_classes @> '53'::jsonb

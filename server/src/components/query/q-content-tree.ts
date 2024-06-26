@@ -56,7 +56,7 @@ export class QContentTree extends SqlBuilderLb4Models {
           ${this.createSelect('t1', WarEntityPreview.definition)},
           ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
-          war.entity_preview t1
+          pgwar.entity_preview t1
         JOIN tw0 t3
           ON t1.pk_entity = t3.fk_subject_info
         CROSS JOIN

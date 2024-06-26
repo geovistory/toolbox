@@ -216,7 +216,7 @@ export class QRamList extends SqlBuilderLb4Models {
           ${this.createBuildAndAddObject(this.objectWiths.war.entity_preview, {colName: 'o', twName: 'tw1'}, 't1', WarEntityPreviewWithFulltext.definition)} o,
           ${this.createBuildAndAddObject(this.objectWiths.pro.info_proj_rel, {colName: 'pr', twName: 'tw1'}, 't2', ProInfoProjRel.definition)} pr
         FROM
-          war.entity_preview t1
+          pgwar.entity_preview t1
         JOIN tw0 t3
           ON t1.pk_entity = t3.fk_subject_info
         CROSS JOIN
@@ -237,7 +237,7 @@ export class QRamList extends SqlBuilderLb4Models {
           ${this.createBuildAndAddObject(this.objectWiths.war.entity_preview, {colName: 'o', twName: 'tw2'}, 't1', WarEntityPreviewWithFulltext.definition)} o,
           ${this.createBuildAndAddObject(this.objectWiths.pro.info_proj_rel, {colName: 'pr', twName: 'tw2'}, 't2', ProInfoProjRel.definition)} pr
         FROM
-          war.entity_preview t1
+          pgwar.entity_preview t1
         JOIN tw0 t3
           ON t1.pk_entity = t3.fk_object_info
         CROSS JOIN

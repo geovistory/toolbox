@@ -29,7 +29,7 @@ export class QAnalysisTable extends QAnalysisBase {
     );
 
     // root table from
-    this.filterFroms.push(`war.entity_preview ${rootTableAlias}`);
+    this.filterFroms.push(`pgwar.entity_preview ${rootTableAlias}`);
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
