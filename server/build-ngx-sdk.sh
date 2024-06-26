@@ -1,7 +1,7 @@
 rm -r ../client/libs/lib-sdk-lb4/src/lib/sdk-lb4
 
 ############# download the openapi.json ################
-curl http://0.0.0.0:3000/explorer/openapi.json \
+curl http://localhost:3000/explorer/openapi.json \
   --output openapi.json
 
 ############## create the sdk ##################

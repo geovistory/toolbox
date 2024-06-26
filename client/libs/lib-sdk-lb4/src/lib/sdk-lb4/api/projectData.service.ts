@@ -36,7 +36,7 @@ import { Configuration }                                     from '../configurat
 })
 export class ProjectDataService {
 
-    protected basePath = 'http://0.0.0.0:3000';
+    protected basePath = 'http://localhost:3000';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
