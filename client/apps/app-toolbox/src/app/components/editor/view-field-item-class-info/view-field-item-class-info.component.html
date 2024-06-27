@@ -1,11 +1,11 @@
 <!-- MENU FOR CLASS INFO -->
 <mat-menu #classInfoMenu="matMenu">
-  <button mat-menu-item [disabled]="(preview$|async)?.project_id === 0"
+  <button mat-menu-item [disabled]="(preview$|async)?.fk_project === 0"
     (click)="item.component.openInNewTabFromEntity(resource)">
     <mat-icon>tab</mat-icon>
     Open {{classLabel}} in new Tab
   </button>
-  <button mat-menu-item *ngIf="(preview$|async)?.project_id === 0"
+  <button mat-menu-item *ngIf="(preview$|async)?.fk_project === 0"
     (click)="item.component.addAndOpenInNewTabFromEntity(resource)">
     <mat-icon>add</mat-icon>
     Add {{classLabel}} to project and open

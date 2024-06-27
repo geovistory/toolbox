@@ -13,7 +13,6 @@ export function fieldToWarFieldChangeId(
         fk_source_tables_cell: source.fkTablesCell,
         fk_project: pkProject,
         fk_property: property.fkProperty,
-        fk_property_of_property: property.fkPropertyOfProperty,
         is_outgoing: isOutgoing
     };
 }

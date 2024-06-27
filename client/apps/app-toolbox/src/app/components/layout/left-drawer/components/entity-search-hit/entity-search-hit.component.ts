@@ -50,7 +50,7 @@ export class EntitySearchHitComponent implements OnInit {
   ngOnInit() {
     this.projectsCount = this.hit.projects ? this.hit.projects.length : undefined;
 
-    if (this.hit.project_id > 0) {
+    if (this.hit.fk_project > 0) {
       this.isInProject = true;
     } else {
       this.repositorySearch = true;
@@ -59,7 +59,7 @@ export class EntitySearchHitComponent implements OnInit {
 
     this.entityPreview = {
       pk_entity: this.hit.pk_entity,
-      project_id: this.hit.project_id,
+      fk_project: this.hit.fk_project,
       fk_class: this.hit.fk_class,
       entity_label: this.hit.entity_label,
       entity_type: this.hit.entity_type,

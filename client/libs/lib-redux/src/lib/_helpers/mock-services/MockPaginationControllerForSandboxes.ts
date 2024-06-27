@@ -427,7 +427,7 @@ export class MockPaginationControllerForSandboxes {
         resource: resource,
         entityPreview: {
           ...resource,
-          project_id: ProProjectMock.PROJECT_1.pk_entity,
+          fk_project: ProProjectMock.PROJECT_1.pk_entity,
           entity_label: 'Label of entity ' + resource.pk_entity
         }
       }

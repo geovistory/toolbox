@@ -356,6 +356,6 @@ export class PaginationService {
 
 
   private fieldChangeToStringId(i: WarFieldChangeId): string {
-    return `${i.fk_project || 0}_${i.fk_source_info || 0}_${i.fk_source_tables_cell || 0}_${i.fk_property || 0}_${i.fk_property_of_property || 0}_${i.is_outgoing}`
+    return `${i.fk_project || 0}_${i.fk_source_info || 0}_${i.fk_source_tables_cell || 0}_${i.fk_property || 0}_${i.is_outgoing}`
   }
 }
