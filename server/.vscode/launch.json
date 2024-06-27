@@ -13,7 +13,7 @@
       ],
       "console": "integratedTerminal",
       "program": "${workspaceFolder}/scripts/start-webserver.js",
-      "preLaunchTask": "tsc: watch - tsconfig.json",
+      "preLaunchTask": "tsc: build - tsconfig.json",
       "restart": false,
       "outputCapture": "std",
       "outFiles": [

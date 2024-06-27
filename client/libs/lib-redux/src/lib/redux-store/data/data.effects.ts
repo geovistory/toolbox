@@ -121,7 +121,7 @@ export class DataEffects {
       tap(([entityPreviews, pkProject]) => {
         this.entityPreviewSocket.emit('extendStream', {
           pkProject,
-          pks: entityPreviews.map(p => p.project_id + '_' + p.pk_entity)
+          pks: entityPreviews.map(p => p.fk_project + '_' + p.pk_entity)
         })
       }),
 

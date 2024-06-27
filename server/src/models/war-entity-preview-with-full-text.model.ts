@@ -5,7 +5,7 @@ import {WarEntityPreview} from './war-entity-preview.model';
   settings: {
     forceId: false,
     id: ['pk_entity', 'fk_project'],
-    postgresql: {schema: 'war', table: 'entity_preview'},
+    postgresql: {schema: 'pgwar', table: 'entity_preview'},
     validateUpsert: true,
     idInjection: false
   }
