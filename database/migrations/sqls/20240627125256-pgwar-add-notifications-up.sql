@@ -12,9 +12,9 @@ BEGIN
     WHERE tmsp_last_modification is not null
     LIMIT 1;
 
-      if notification is not null then
-                    PERFORM pg_notify('entity_previews_updated'::text, notification);
-     end if;
+    IF notification IS NOT NULL THEN
+        PERFORM pg_notify('entity_previews_updated'::text, notification);
+    END IF;
 
 RETURN NEW;
 END;
