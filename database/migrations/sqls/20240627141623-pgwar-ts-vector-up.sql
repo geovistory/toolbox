@@ -17,4 +17,4 @@ CREATE TRIGGER on_upsert_entity_preview_set_ts_vector
     BEFORE INSERT OR UPDATE OF entity_label, type_label, class_label, full_text
     ON pgwar.entity_preview
     FOR EACH ROW
-    EXECUTE FUNCTION war.entity_preview_ts_vector();
+    EXECUTE FUNCTION pgwar.entity_preview_ts_vector();

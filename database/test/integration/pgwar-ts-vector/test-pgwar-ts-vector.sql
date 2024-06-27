@@ -4,11 +4,6 @@
 BEGIN;
 SELECT plan(1);
 
-
-SELECT war.create_sink_table_entity_preview('war.e');
-
-SELECT war.switch_entity_preview_table('war.e');
-
 INSERT INTO projects.project (pk_entity)
 VALUES (33);
 
