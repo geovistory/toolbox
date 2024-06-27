@@ -462,14 +462,14 @@ export class OntoMeController {
         )
         SELECT DISTINCT 'class' category, t1.pk_class id, t3.identifier_in_namespace, t2.label, t1.number_of_instances, t1.status
         FROM ctw9 t1
-        LEFT JOIN war.v_class_preview t2
+        LEFT JOIN pgwar.v_class_preview t2
         ON t1.pk_class = t2.fk_class
         AND t2.fk_project = $1
         JOIN ctw2 t3 ON  t1.pk_class = t3.pk_class
         UNION ALL
         SELECT DISTINCT 'property' category, t1.pk_property id, t3.identifier_in_namespace, t2.label, t1.number_of_instances, t1.status
         FROM ptw9 t1
-        LEFT JOIN war.v_property_preview t2
+        LEFT JOIN pgwar.v_property_preview t2
         ON t1.pk_property = t2.fk_property
         AND t2.fk_project = $1
         JOIN ptw2 t3 ON  t1.pk_property = t3.pk_property;

@@ -21,6 +21,7 @@ import { ClassConfig } from '../model/models';
 import { CommunityVisibilityOptionsWithRelations } from '../model/models';
 import { GvFieldTargetViewType } from '../model/models';
 import { PingResponse } from '../model/models';
+import { ProjectClassConfig } from '../model/models';
 import { ProjectPongRequest } from '../model/models';
 import { ProjectVisibilityOptions } from '../model/models';
 import { PubRoleMapping } from '../model/models';
@@ -40,7 +41,7 @@ import { Configuration }                                     from '../configurat
 })
 export class PingControllerService {
 
-    protected basePath = 'http://0.0.0.0:3000';
+    protected basePath = 'http://localhost:3000';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -438,6 +439,54 @@ export class PingControllerService {
         }
 
         return this.httpClient.post<GvFieldTargetViewType>(`${this.configuration.basePath}/GvTargetType`,
+            null,
+            {
+                responseType: <any>responseType,
+                withCredentials: this.configuration.withCredentials,
+                headers: headers,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public pingControllerXProjectClassConfig(observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<ProjectClassConfig>;
+    public pingControllerXProjectClassConfig(observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpResponse<ProjectClassConfig>>;
+    public pingControllerXProjectClassConfig(observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json'}): Observable<HttpEvent<ProjectClassConfig>>;
+    public pingControllerXProjectClassConfig(observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json'}): Observable<any> {
+
+        let headers = this.defaultHeaders;
+
+        let credential: string | undefined;
+        // authentication (jwt) required
+        credential = this.configuration.lookupCredential('jwt');
+        if (credential) {
+            headers = headers.set('Authorization', 'Bearer ' + credential);
+        }
+
+        let httpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (httpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+                'application/json'
+            ];
+            httpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (httpHeaderAcceptSelected !== undefined) {
+            headers = headers.set('Accept', httpHeaderAcceptSelected);
+        }
+
+
+        let responseType: 'text' | 'json' = 'json';
+        if(httpHeaderAcceptSelected && httpHeaderAcceptSelected.startsWith('text')) {
+            responseType = 'text';
+        }
+
+        return this.httpClient.post<ProjectClassConfig>(`${this.configuration.basePath}/ProjectClassConfig`,
             null,
             {
                 responseType: <any>responseType,

@@ -14,13 +14,9 @@ async function chooseDb() {
       name: 'gvDbUrl',
       message: 'What database should be used as DATABASE_URL?',
       choices: [
-        {title: 'GV_DB_REVIEW_COPY', value: process.env.GV_DB_REVIEW_COPY},
-        {title: 'GV_DB_PROD_COPY', value: process.env.GV_DB_PROD_COPY},
-        {title: 'GV_DB_FOR_SEEDING', value: process.env.GV_DB_FOR_SEEDING},
-        {
-          title: 'GV_DB_SCHEMA_TEMPLATE',
-          value: process.env.GV_DB_SCHEMA_TEMPLATE,
-        },
+        {title: 'GV_DB_DEV', value: process.env.GV_DB_DEV},
+        {title: 'GV_DB_TEST', value: process.env.GV_DB_TEST},
+        {title: 'GV_DB_REMOTE', value: process.env.GV_DB_REMOTE}
       ],
     }
   ]);

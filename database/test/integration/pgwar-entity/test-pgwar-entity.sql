@@ -6,9 +6,6 @@ BEGIN;
 SELECT plan(14);
 
 ------- Prepare required context data ------
--- Create and switch to a sink table for entity previews
-SELECT war.create_sink_table_entity_preview('war.e');
-SELECT war.switch_entity_preview_table('war.e');
 
 -- Insert a language entry to be used in projects
 INSERT INTO information.language(pk_language) VALUES ('eng');

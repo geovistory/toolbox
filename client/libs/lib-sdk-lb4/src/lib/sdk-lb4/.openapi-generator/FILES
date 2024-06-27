@@ -156,6 +156,7 @@ model/proTableConfig.ts
 model/proTextProperty.ts
 model/profileActivationReport.ts
 model/profileDeactivationReport.ts
+model/projectClassConfig.ts
 model/projectPongRequest.ts
 model/projectVisibilityOptions.ts
 model/pubAccount.ts
