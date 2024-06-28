@@ -177,7 +177,8 @@ CREATE OR REPLACE FUNCTION pgwar.update_entity_label_of_entity_preview(entity_id
 RETURNS void AS $$
 BEGIN
     UPDATE pgwar.entity_preview 
-    SET entity_label = new_label
+    SET entity_label = new_label,
+        entity_label_modified = CURRENT_TIMESTAMP
     WHERE pk_entity = entity_id
     AND fk_project = project_id
     AND entity_label IS DISTINCT FROM new_label;

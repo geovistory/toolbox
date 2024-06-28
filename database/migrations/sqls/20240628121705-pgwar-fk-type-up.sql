@@ -105,7 +105,8 @@ BEGIN
     -- and fk_type disctinct from the current fk_type are used for updating
     -- the pgwar.entity_preview table
     UPDATE pgwar.entity_preview ep
-    SET fk_type = stmt.fk_type
+    SET fk_type = stmt.fk_type,
+        fk_type_modified = CURRENT_TIMESTAMP
     FROM 
         entity_preview_with_hastypeprop ep_prop
     LEFT JOIN 

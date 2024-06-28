@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS pgwar.entity_preview(
     parent_classes jsonb,
     ancestor_classes jsonb,
     fk_class_modified timestamp with time zone,
+    fk_type_modified timestamp with time zone,
+    entity_label_modified timestamp with time zone,
     tmsp_last_modification timestamp with time zone,
     CONSTRAINT entity_preview_pkey PRIMARY KEY (pk_entity, fk_project)
 )
