@@ -4,7 +4,7 @@ CREATE TABLE pgwar.field_change
 (
     fk_project integer NOT NULL,
     fk_source_info integer NOT NULL,
-    fk_source_tables_cell bigint NOT NULL,
+    fk_source_tables_cell bigint,
     fk_property integer NOT NULL,
     is_outgoing boolean NOT NULL,
     tmsp_last_modification timestamp with time zone,
@@ -57,10 +57,8 @@ LANGUAGE plpgsql;
 
 -- Function upsert_field_change
 ----------------------------------------------
-CREATE FUNCTION pgwar.upsert_field_change()
-    RETURNS void
-    LANGUAGE plpgsql
-AS $$
+CREATE FUNCTION pgwar.update_field_change_on_project_statements_modification()
+    RETURNS TRIGGER AS $$
 DECLARE
     proj_stmt pgwar.project_statements;
 BEGIN
@@ -99,14 +97,15 @@ BEGIN
                 proj_stmt.tmsp_last_modification
             )::pgwar.field_change);
     END IF;
+    RETURN NULL;
 END;
-$$;
+$$ LANGUAGE plpgsql;
 
 
 CREATE CONSTRAINT TRIGGER after_modify_project_statements
     AFTER INSERT OR UPDATE OR DELETE ON pgwar.project_statements
     DEFERRABLE
-    FOR EACH ROW EXECUTE PROCEDURE pgwar.upsert_field_change();
+    FOR EACH ROW EXECUTE PROCEDURE pgwar.update_field_change_on_project_statements_modification();
 
 -- Function pgwar.field_change_notify_upsert
 ----------------------------------------------
@@ -126,7 +125,14 @@ END;
 $BODY$;
 
 CREATE TRIGGER after_insert_field_change
-    AFTER INSERT OR UPDATE
+    AFTER INSERT
+    ON pgwar.field_change
+    REFERENCING NEW TABLE AS new_table
+    FOR EACH STATEMENT
+EXECUTE FUNCTION pgwar.field_change_notify_upsert();
+
+CREATE TRIGGER after_update_field_change
+    AFTER UPDATE
     ON pgwar.field_change
     REFERENCING NEW TABLE AS new_table
     FOR EACH STATEMENT
