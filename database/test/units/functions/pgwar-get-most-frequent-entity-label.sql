@@ -1,11 +1,6 @@
 BEGIN;
 SELECT plan(2);
 
--- Create and switch to a sink table for entity previews
-SELECT war.create_sink_table_entity_preview('war.e');
-
-SELECT war.switch_entity_preview_table('war.e');
-
 /**
  * Drop triggers that would reset the entity label to NULL and break the unit test
  **/

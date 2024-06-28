@@ -56,7 +56,7 @@ export class QContentTree extends SqlBuilderLb4Models {
           ${this.createSelect('t1', WarEntityPreview.definition)},
           ${this.createBuildObject('t2', ProInfoProjRel.definition)} proj_rel
         FROM
-          war.entity_preview t1
+          pgwar.entity_preview t1
         JOIN tw0 t3
           ON t1.pk_entity = t3.fk_subject_info
         CROSS JOIN
@@ -66,7 +66,7 @@ export class QContentTree extends SqlBuilderLb4Models {
         AND t2.fk_project = ${this.addParam(fkProject)}
         ORDER BY
           t1.pk_entity,
-          CASE WHEN(t1.project_id = ${this.addParam(fkProject)}) THEN 0
+          CASE WHEN(t1.fk_project = ${this.addParam(fkProject)}) THEN 0
           ELSE 1
           END
       ),

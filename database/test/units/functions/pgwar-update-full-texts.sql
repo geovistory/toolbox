@@ -17,10 +17,6 @@ DROP TRIGGER IF EXISTS on_upsert_entity_preview_entity_label ON pgwar.entity_pre
 -- Drop trigger on_upsert_entity_label_config
 DROP TRIGGER IF EXISTS on_upsert_entity_label_config ON projects.entity_label_config;
 
-SELECT war.create_sink_table_entity_preview('war.e');
-
-SELECT war.switch_entity_preview_table('war.e');
-
 -- Insert a language entry to be used in projects
 INSERT INTO information.language(pk_language, iso6391)
 VALUES ('fra', 'fr'),
