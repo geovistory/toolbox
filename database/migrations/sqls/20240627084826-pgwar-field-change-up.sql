@@ -8,7 +8,7 @@ CREATE TABLE pgwar.field_change
     fk_property integer NOT NULL,
     is_outgoing boolean NOT NULL,
     tmsp_last_modification timestamp with time zone,
-    UNIQUE (fk_project, fk_source_info, fk_source_tables_cell, fk_property, is_outgoing)
+    UNIQUE NULLS NOT DISTINCT(fk_project, fk_source_info, fk_source_tables_cell, fk_property, is_outgoing)
 );
 
 -- Function to upsert on pgwar.field_change
@@ -70,7 +70,7 @@ BEGIN
             pgwar.upsert_field_change((
                 proj_stmt.fk_project,
                 proj_stmt.fk_subject_info,
-                0,
+                NULL,
                 proj_stmt.fk_property,
                 true,
                 proj_stmt.tmsp_last_modification
@@ -81,7 +81,7 @@ BEGIN
             pgwar.upsert_field_change((
                 proj_stmt.fk_project,
                 proj_stmt.fk_subject_info,
-                0,
+                NULL,
                 proj_stmt.fk_property,
                 true,
                 proj_stmt.tmsp_last_modification

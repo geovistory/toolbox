@@ -39,7 +39,7 @@ SELECT is(
 FROM pgwar.field_change;
 -- Test 2: Check if field_change contains the correct values
 SELECT results_eq(
-            'SELECT 1, 44, 0::bigint, 55, true;',
+            'SELECT 1, 44, NULL::bigint, 55, true;',
             'SELECT fk_project, fk_source_info, fk_source_tables_cell, fk_property, is_outgoing FROM pgwar.field_change;',
             'field_change contains the correct data'
         );
@@ -72,7 +72,7 @@ SELECT is(
 FROM pgwar.field_change;
 -- Test 4: Check if field_change contains the correct values and is_outgoing is TRUE
 SELECT results_eq(
-           'SELECT 1, 44, 0::bigint, 55, TRUE;',
+           'SELECT 1, 44, NULL::bigint, 55, TRUE;',
            'SELECT fk_project, fk_source_info, fk_source_tables_cell, fk_property, is_outgoing FROM pgwar.field_change WHERE is_outgoing;',
            'field_change contains the correct data'
         );
