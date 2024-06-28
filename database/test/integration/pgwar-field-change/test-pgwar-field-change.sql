@@ -4,9 +4,6 @@ BEGIN;
 
 SELECT plan(5);
 
-INSERT INTO projects.project (pk_entity)
-VALUES (1);
-
 INSERT INTO pgwar.project_statements (
     pk_entity,
     fk_project,
