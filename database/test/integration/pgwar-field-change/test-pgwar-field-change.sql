@@ -12,23 +12,6 @@ SELECT war.switch_entity_preview_table('war.e');
 INSERT INTO projects.project (pk_entity)
 VALUES (1);
 
-INSERT INTO projects.entity_label_config (fk_project, fk_class, config)
-VALUES (
-           1,
-           77,
-           '{
-             "labelParts": [
-               {
-                 "field": {"isOutgoing": false, "fkProperty": 22, "nrOfStatementsInLabel": 5}
-               },
-               {
-                 "field": {"isOutgoing": true, "fkProperty": 55, "nrOfStatementsInLabel": 5}
-               }
-             ]
-           }'::jsonb
-       );
-
-
 -- Add entity 1
 INSERT INTO information.resource (fk_class, community_visibility, notes)
 VALUES (77, '{"toolbox":true}', '_1') RETURNING pk_entity;
@@ -94,7 +77,7 @@ SELECT 2,
        1,
        pk_entity,
        55,
-       66,
+       88,
        1337,
        NULL
 FROM information.resource
@@ -118,7 +101,7 @@ SELECT results_eq(
 
 -- Test 5: Check if field_change contains the correct values and is_outgoing is FALSE
 SELECT results_eq(
-    'SELECT 1, 66, 1337::bigint, 55, FALSE FROM information.resource WHERE notes = ''_1'';',
+    'SELECT 1, 88, 1337::bigint, 55, FALSE FROM information.resource WHERE notes = ''_1'';',
     'SELECT fk_project, fk_source_info, fk_source_tables_cell, fk_property, is_outgoing FROM pgwar.field_change WHERE is_outgoing IS FALSE;',
     'field_change contains the correct data'
 );
