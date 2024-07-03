@@ -18,8 +18,6 @@ DROP TRIGGER IF EXISTS on_upsert_entity_label_config ON projects.entity_label_co
 SELECT plan(4);
 
 /****** test the project version *****/
-CREATE TABLE pgwar.entity_preview_1 PARTITION OF pgwar.entity_preview FOR
-VALUES IN (1);
 
 INSERT INTO pgwar.project_statements (
         pk_entity,

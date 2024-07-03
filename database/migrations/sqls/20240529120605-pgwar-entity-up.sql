@@ -23,33 +23,7 @@ CREATE TABLE IF NOT EXISTS pgwar.entity_preview(
     fk_class_modified timestamp with time zone,
     tmsp_last_modification timestamp with time zone,
     CONSTRAINT entity_preview_pkey PRIMARY KEY (pk_entity, fk_project)
-)
-PARTITION BY LIST (fk_project);
-
--- Create partition for community (fk_project = 0)
---------------------------------------------------
-CREATE TABLE pgwar.entity_preview_0 PARTITION OF pgwar.entity_preview
-FOR VALUES IN (0);
-
--- Function to create partition on pgwar.entity_preview
--------------------------------------------------------
-CREATE FUNCTION pgwar.add_entity_preview_partition()
-    RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $_$
-BEGIN
-    -- create the partition
-    EXECUTE format('CREATE TABLE pgwar.entity_preview_%1$s PARTITION OF pgwar.entity_preview FOR VALUES IN (%1$s);', NEW.pk_entity);
-    RETURN NEW;
-END;
-$_$;
-
--- Trigger on projects.project to create new partition on pgwar.entity_preview
-------------------------------------------------------------------------------
-CREATE TRIGGER add_pgwar_entity_preview_partition
-    BEFORE INSERT ON projects.project
-    FOR EACH ROW
-    EXECUTE FUNCTION pgwar.add_entity_preview_partition();
+);
 
 -- Function to upsert fk_project, pk_entity, fk_class on pgwar.entity_preview
 -----------------------------------------------------------------------------
