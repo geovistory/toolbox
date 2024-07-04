@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e # exit on error (e.g. when migrations fail)
 
 # Usage
 # To run unit tests: bash ./test.sh -u
