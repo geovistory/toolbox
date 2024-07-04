@@ -43,17 +43,21 @@ VALUES (1, 1, 77, 'Label 1'),
 
 -- Test 1: check entity 1 has 'Label 1bis' as most frequent label
 SELECT is(
-    pgwar.get_most_frequent_entity_label(1),
+    entity_label,
     'Label 1bis',
     'Assert returned entity_label is "Label 2"'
-);
+)
+FROM pgwar.v_community_entity_label
+WHERE pk_entity = 1;
 
 -- Test 2: check entity 2 has 'Label 1bis' as most frequent label
 SELECT is(
-   pgwar.get_most_frequent_entity_label(2),
+   entity_label,
    'Label 2',
    'Assert returned entity_label is "Label 2"'
-);
+)
+FROM pgwar.v_community_entity_label
+WHERE pk_entity = 2;
 
 SELECT * FROM finish();
 ROLLBACK;

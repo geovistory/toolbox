@@ -54,6 +54,8 @@ CREATE FUNCTION pgwar.update_from_resource(NEW_RES information.resource)
     LANGUAGE plpgsql
     AS $$
 BEGIN
+
+
     -- if it is in at least one project ...
     IF EXISTS(
         SELECT
@@ -92,15 +94,58 @@ CREATE FUNCTION pgwar.after_upsert_resource()
     LANGUAGE plpgsql
     AS $$
 BEGIN
-    PERFORM pgwar.update_from_resource(NEW);
+    -- insert project entities
+    INSERT INTO pgwar.entity_preview(pk_entity, fk_project, fk_class, fk_class_modified)
+    SELECT newtab.pk_entity, ipr.fk_project, newtab.fk_class, CURRENT_TIMESTAMP
+    FROM newtab,
+         projects.info_proj_rel ipr
+    WHERE ipr.fk_entity = newtab.pk_entity
+    AND ipr.is_in_project IS TRUE
+    ON CONFLICT(pk_entity, fk_project)
+        DO UPDATE SET
+            -- ... or update the fk_class
+            fk_class = EXCLUDED.fk_class,
+            fk_class_modified = CURRENT_TIMESTAMP
+        WHERE
+            -- ... where it is distinct from previous value
+            entity_preview.fk_class IS DISTINCT FROM EXCLUDED.fk_class;
+
+    -- insert community entities
+    INSERT INTO pgwar.entity_preview(pk_entity, fk_project, fk_class, fk_class_modified)
+    SELECT DISTINCT ON (newtab.pk_entity) 
+        newtab.pk_entity, 0, newtab.fk_class, CURRENT_TIMESTAMP
+    FROM newtab,
+         projects.info_proj_rel ipr
+    WHERE ipr.fk_entity = newtab.pk_entity
+    AND ipr.is_in_project IS TRUE
+    ON CONFLICT(pk_entity, fk_project)
+        DO UPDATE SET
+            -- ... or update the fk_class
+            fk_class = EXCLUDED.fk_class,
+            fk_class_modified = CURRENT_TIMESTAMP
+        WHERE
+            -- ... where it is distinct from previous value
+            entity_preview.fk_class IS DISTINCT FROM EXCLUDED.fk_class;
+
+    -- delete potentially unallowed community entities
+    DELETE FROM pgwar.entity_preview ep
+    USING newtab
+    WHERE (newtab.community_visibility ->> 'toolbox')::bool IS FALSE
+    AND newtab.pk_entity = ep.pk_entity
+    AND ep.fk_project = 0;
 
     RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER after_upsert_resource
-    AFTER INSERT OR UPDATE ON information.resource
-    FOR EACH ROW
+CREATE TRIGGER after_insert_resource
+    AFTER INSERT ON information.resource
+    REFERENCING NEW TABLE AS newtab
+    EXECUTE FUNCTION pgwar.after_upsert_resource();
+
+CREATE TRIGGER after_update_resource
+    AFTER UPDATE ON information.resource
+    REFERENCING NEW TABLE AS newtab
     EXECUTE FUNCTION pgwar.after_upsert_resource();
 
 -- Trigger function after_delete_resource

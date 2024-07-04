@@ -17,9 +17,9 @@ CREATE INDEX IF NOT EXISTS project_statements_fk_project_fk_subject_info_fk_proj
     ON pgwar.project_statements  (fk_project,fk_subject_info,fk_project);
 
 /**
-* View
+* Views
 **/
-CREATE VIEW pgwar.v_entity_label AS
+CREATE VIEW pgwar.v_project_entity_label AS
 WITH label_parts AS (
     SELECT pk_entity,
         fk_project, 
@@ -120,6 +120,36 @@ FROM union_in_and_out u
 WHERE row_number <= nr_of_stmts
 GROUP BY u.pk_entity, u.fk_project;
 
+CREATE VIEW pgwar.v_community_entity_label AS
+WITH entity_label_counts AS (
+    SELECT
+        ep.pk_entity,
+        ep.entity_label,
+        COUNT(*) AS label_count
+    FROM
+        pgwar.entity_preview ep
+    WHERE ep.fk_project != 0
+    GROUP BY
+        ep.pk_entity, ep.entity_label
+),
+ranked_entity_labels AS (
+    SELECT
+        pk_entity,
+        entity_label,
+        label_count,
+        ROW_NUMBER() OVER (PARTITION BY pk_entity ORDER BY label_count DESC, entity_label) AS rn
+    FROM
+        entity_label_counts
+)
+SELECT
+    pk_entity,
+    entity_label
+FROM
+    ranked_entity_labels
+WHERE
+    rn = 1;
+
+
 /***
 * Functions
 ***/
@@ -132,7 +162,7 @@ DECLARE
 BEGIN
     
     SELECT entity_label INTO label
-    FROM pgwar.v_entity_label u
+    FROM pgwar.v_project_entity_label u
     WHERE u.fk_project = project_id
     AND u.pk_entity = entity_id;
 
@@ -186,7 +216,7 @@ BEGIN
     UPDATE pgwar.entity_preview ep
     SET entity_label = el.entity_label
     FROM newtab stmt,
-         pgwar.v_entity_label el
+         pgwar.v_project_entity_label el
     WHERE stmt.fk_subject_info = ep.pk_entity
     AND stmt.fk_project = ep.fk_project
     AND stmt.fk_subject_info = el.pk_entity
@@ -197,7 +227,7 @@ BEGIN
     UPDATE pgwar.entity_preview ep
     SET entity_label = el.entity_label
     FROM  newtab stmt,
-         pgwar.v_entity_label el
+         pgwar.v_project_entity_label el
     WHERE stmt.object_label IS NULL
     AND stmt.fk_object_info = ep.pk_entity
     AND stmt.fk_project = ep.fk_project
@@ -223,7 +253,7 @@ BEGIN
         JOIN pgwar.entity_preview ep
             ON stmt.fk_subject_info = ep.pk_entity
             AND stmt.fk_project = ep.fk_project
-        LEFT JOIN pgwar.v_entity_label el
+        LEFT JOIN pgwar.v_project_entity_label el
             ON ep.pk_entity = el.pk_entity
             AND el.pk_entity = el.fk_project
         WHERE ep.entity_label IS DISTINCT FROM el.entity_label
@@ -236,7 +266,7 @@ BEGIN
         JOIN pgwar.entity_preview ep
             ON stmt.fk_object_info = ep.pk_entity
             AND stmt.fk_project = ep.fk_project
-        LEFT JOIN pgwar.v_entity_label el
+        LEFT JOIN pgwar.v_project_entity_label el
             ON ep.pk_entity = el.pk_entity
             AND el.pk_entity = el.fk_project
         WHERE stmt.object_label IS NULL 
@@ -259,9 +289,9 @@ RETURNS TRIGGER AS $$
 BEGIN
 
     UPDATE pgwar.entity_preview ep
-    SET entity_label = newtab.entity_label
+    SET entity_label = el.entity_label
     FROM newtab,
-         pgwar.v_entity_label el
+         pgwar.v_project_entity_label el
     WHERE newtab.fk_project != 0
     AND ep.pk_entity = newtab.pk_entity
     AND ep.fk_project = newtab.fk_project
@@ -275,7 +305,7 @@ BEGIN
     SET entity_label = el.entity_label
     FROM pgwar.project_statements stmt,
          newtab,
-         pgwar.v_entity_label el
+         pgwar.v_project_entity_label el
     WHERE newtab.entity_label IS NOT NULL 
     AND newtab.fk_project != 0
     AND stmt.fk_subject_info = newtab.pk_entity
@@ -290,7 +320,7 @@ BEGIN
     SET entity_label = el.entity_label
     FROM pgwar.project_statements stmt,
          newtab,
-         pgwar.v_entity_label el
+         pgwar.v_project_entity_label el
     WHERE newtab.entity_label IS NOT NULL 
     AND newtab.fk_project != 0
     AND stmt.fk_object_info = newtab.pk_entity
@@ -298,7 +328,18 @@ BEGIN
     AND stmt.fk_subject_info = el.pk_entity
     AND stmt.fk_project = el.fk_project
     AND ep.entity_label IS DISTINCT FROM el.entity_label;
-   
+
+    -- Update community entity labels
+    UPDATE pgwar.entity_preview ep
+    SET entity_label = el.entity_label
+    FROM newtab,
+         pgwar.v_community_entity_label el
+    WHERE newtab.fk_project != 0
+    AND newtab.pk_entity = el.pk_entity
+    AND newtab.pk_entity = ep.pk_entity
+    AND ep.fk_project = 0
+    AND ep.entity_label IS DISTINCT FROM el.entity_label;
+
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
@@ -326,7 +367,7 @@ BEGIN
 			JOIN
 				oldtab ON oldtab.pk_entity = newtab.pk_entity AND oldtab.fk_project = newtab.fk_project
 			LEFT JOIN
-				pgwar.v_entity_label el ON ep.pk_entity = el.pk_entity AND ep.fk_project = el.fk_project
+				pgwar.v_project_entity_label el ON ep.pk_entity = el.pk_entity AND ep.fk_project = el.fk_project
 			WHERE
 				ep.fk_project != 0
 				AND oldtab.fk_class IS DISTINCT FROM newtab.fk_class -- fk_class changed ! 
@@ -358,7 +399,7 @@ BEGIN
             SET entity_label = el.entity_label
             FROM pgwar.project_statements stmt,
                 to_update,
-                pgwar.v_entity_label el
+                pgwar.v_project_entity_label el
             WHERE stmt.fk_subject_info = to_update.pk_entity
             AND stmt.fk_project = to_update.fk_project
             AND stmt.object_label IS NULL
@@ -367,20 +408,30 @@ BEGIN
             AND stmt.fk_object_info = ep.pk_entity
             AND stmt.fk_project = ep.fk_project
             AND ep.entity_label IS DISTINCT FROM el.entity_label
+        ),
+        propagate_to_subjects AS (
+            -- Update the entity labels of the related subject entities
+            UPDATE pgwar.entity_preview ep
+            SET entity_label = el.entity_label
+            FROM pgwar.project_statements stmt,
+                to_update,
+                pgwar.v_project_entity_label el
+            WHERE stmt.fk_object_info = to_update.pk_entity
+            AND stmt.fk_project = to_update.fk_project
+            AND stmt.fk_subject_info = el.pk_entity
+            AND stmt.fk_project = el.fk_project
+            AND stmt.fk_subject_info = ep.pk_entity
+            AND stmt.fk_project = ep.fk_project
+            AND ep.entity_label IS DISTINCT FROM el.entity_label
         )
-        -- propagate_to_subjects
-        -- Update the entity labels of the related subject entities
+        -- Update community entity labels
         UPDATE pgwar.entity_preview ep
         SET entity_label = el.entity_label
-        FROM pgwar.project_statements stmt,
-            to_update,
-            pgwar.v_entity_label el
-        WHERE stmt.fk_object_info = to_update.pk_entity
-        AND stmt.fk_project = to_update.fk_project
-        AND stmt.fk_subject_info = el.pk_entity
-        AND stmt.fk_project = el.fk_project
-        AND stmt.fk_subject_info = ep.pk_entity
-        AND stmt.fk_project = ep.fk_project
+        FROM to_update,
+            pgwar.v_community_entity_label el
+        WHERE to_update.pk_entity = el.pk_entity
+        AND to_update.pk_entity = ep.pk_entity
+        AND ep.fk_project = 0
         AND ep.entity_label IS DISTINCT FROM el.entity_label;
 
 	END IF;
@@ -405,7 +456,7 @@ BEGIN
         SET entity_label = el.entity_label
         FROM pgwar.project_statements stmt,
             oldtab,
-            pgwar.v_entity_label el
+            pgwar.v_project_entity_label el
         WHERE stmt.fk_subject_info = oldtab.pk_entity
         AND stmt.fk_project = oldtab.fk_project
         AND stmt.object_label IS NULL
@@ -420,13 +471,24 @@ BEGIN
         SET entity_label = el.entity_label
         FROM pgwar.project_statements stmt,
             oldtab,
-            pgwar.v_entity_label el
+            pgwar.v_project_entity_label el
         WHERE stmt.fk_object_info = oldtab.pk_entity
         AND stmt.fk_project = oldtab.fk_project
         AND stmt.fk_subject_info = el.pk_entity
         AND stmt.fk_project = el.fk_project
         AND stmt.fk_subject_info = ep.pk_entity
         AND stmt.fk_project = ep.fk_project
+        AND ep.entity_label IS DISTINCT FROM el.entity_label;
+
+        -- Update community entity labels
+        UPDATE pgwar.entity_preview ep
+        SET entity_label = el.entity_label
+        FROM oldtab,
+            pgwar.v_community_entity_label el
+        WHERE oldtab.fk_project != 0
+        AND oldtab.pk_entity = el.pk_entity
+        AND oldtab.pk_entity = ep.pk_entity
+        AND ep.fk_project = 0
         AND ep.entity_label IS DISTINCT FROM el.entity_label;
 
 	END IF;
@@ -454,7 +516,7 @@ BEGIN
                     ep.fk_project,
                     el.entity_label
             FROM pgwar.entity_preview ep
-            JOIN pgwar.v_entity_label el
+            JOIN pgwar.v_project_entity_label el
                 ON ep.pk_entity = el.pk_entity
                 AND ep.fk_project = el.fk_project
             LEFT JOIN projects.entity_label_config c 
@@ -477,7 +539,7 @@ BEGIN
 
         UPDATE pgwar.entity_preview ep
         SET entity_label = el.entity_label
-        FROM pgwar.v_entity_label el
+        FROM pgwar.v_project_entity_label el
         WHERE ep.pk_entity = el.pk_entity
         AND ep.fk_project = el.fk_project
         AND ep.fk_class = class_id
