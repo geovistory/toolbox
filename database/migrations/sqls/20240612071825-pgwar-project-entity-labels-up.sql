@@ -212,28 +212,44 @@ CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_project_statement_upsert
 RETURNS TRIGGER AS $$
 BEGIN
 
-    -- Update the label for the subject entity
-    UPDATE pgwar.entity_preview ep
-    SET entity_label = el.entity_label
-    FROM newtab stmt,
-         pgwar.v_project_entity_label el
-    WHERE stmt.fk_subject_info = ep.pk_entity
-    AND stmt.fk_project = ep.fk_project
-    AND stmt.fk_subject_info = el.pk_entity
-    AND stmt.fk_project = el.fk_project
-    AND ep.entity_label IS DISTINCT FROM el.entity_label;
+    IF EXISTS(
+        SELECT ep.pk_entity, ep.fk_project
+		FROM pgwar.entity_preview ep,
+		newtab stmt
+		WHERE stmt.fk_subject_info = ep.pk_entity
+		AND stmt.fk_project = ep.fk_project
+    ) THEN
+        -- Update the label for the subject entity
+        UPDATE pgwar.entity_preview ep
+        SET entity_label = el.entity_label
+        FROM newtab stmt,
+            pgwar.v_project_entity_label el
+        WHERE stmt.fk_subject_info = ep.pk_entity
+        AND stmt.fk_project = ep.fk_project
+        AND stmt.fk_project = el.fk_project
+        AND stmt.fk_subject_info = el.pk_entity
+        AND ep.entity_label IS DISTINCT FROM el.entity_label;
+    END IF;
 
-    -- Update the entity labels of the related object entities
-    UPDATE pgwar.entity_preview ep
-    SET entity_label = el.entity_label
-    FROM  newtab stmt,
-         pgwar.v_project_entity_label el
-    WHERE stmt.object_label IS NULL
-    AND stmt.fk_object_info = ep.pk_entity
-    AND stmt.fk_project = ep.fk_project
-    AND stmt.fk_object_info = el.pk_entity
-    AND stmt.fk_project = el.fk_project
-    AND ep.entity_label IS DISTINCT FROM el.entity_label;
+    IF EXISTS(
+        SELECT ep.pk_entity, ep.fk_project
+        FROM pgwar.entity_preview ep,
+        newtab stmt
+        WHERE stmt.fk_object_info = ep.pk_entity
+        AND stmt.fk_project = ep.fk_project
+    ) THEN
+        -- Update the entity labels of the related object entities
+        UPDATE pgwar.entity_preview ep
+        SET entity_label = el.entity_label
+        FROM  newtab stmt,
+            pgwar.v_project_entity_label el
+        WHERE stmt.object_label IS NULL
+        AND stmt.fk_object_info = ep.pk_entity
+        AND stmt.fk_project = ep.fk_project
+        AND stmt.fk_object_info = el.pk_entity
+        AND stmt.fk_project = el.fk_project
+        AND ep.entity_label IS DISTINCT FROM el.entity_label;
+    END IF;
     
     RETURN NULL;
 END;
