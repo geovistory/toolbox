@@ -18,10 +18,7 @@ DROP TRIGGER on_upsert_entity_label_config ON projects.entity_label_config;
 ***/
 
 -- Drop functions for label retrieval and update
-DROP FUNCTION pgwar.get_entity_label_config;
 DROP FUNCTION pgwar.get_project_entity_label(entity_id int, project_id int);
-DROP FUNCTION pgwar.get_project_entity_label(entity_id int, project_id int, class_id int);
-DROP FUNCTION pgwar.get_project_entity_label(entity_id int, project_id int, label_config jsonb);
 DROP FUNCTION pgwar.update_entity_label_of_entity_preview;
 DROP FUNCTION pgwar.get_and_update_project_entity_label;
 
@@ -35,3 +32,11 @@ DROP FUNCTION pgwar.update_entity_label_on_project_statement_change;
 DROP FUNCTION pgwar.update_entity_label_on_fk_class_change;
 DROP FUNCTION pgwar.update_entity_label_on_entity_label_change;
 DROP FUNCTION pgwar.update_entity_label_on_entity_label_config_change;
+
+/***
+* Drop Indexes
+***/
+DROP INDEX pgwar.entity_label_config_fk_class_idx;
+DROP INDEX pgwar.entity_label_config_fk_project_idx;
+DROP INDEX pgwar.project_statements_fk_project_fk_object_info_fk_project_idx;
+DROP INDEX pgwar.project_statements_fk_project_fk_subject_info_fk_project_idx;

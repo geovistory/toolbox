@@ -5,6 +5,98 @@ CREATE EXTENSION dblink;
 * Functions for the creation of fulltext
 ***/
 
+
+-- get target labels of incoming field
+CREATE OR REPLACE FUNCTION pgwar.get_target_labels_of_incoming_field(
+    entity_id INT,
+    project_id INT,
+    property_id INT,
+    limit_count INT
+)
+RETURNS TABLE(label VARCHAR) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT coalesce(
+                pep.entity_label, -- take the project entity label,
+                cep.entity_label -- else the community entity label
+            )::VARCHAR AS label
+    FROM pgwar.v_statements_combined pstmt
+    -- join the project entity
+    LEFT JOIN pgwar.entity_preview pep 
+        ON pep.fk_project = project_id
+        AND pstmt.fk_subject_info = pep.pk_entity
+    -- join the community entity
+    LEFT JOIN pgwar.entity_preview cep
+        ON cep.fk_project = 0
+        AND pstmt.fk_subject_info = cep.pk_entity
+    WHERE
+        pstmt.fk_object_info = entity_id
+      	AND pstmt.fk_project = project_id 
+        AND pstmt.fk_property = property_id
+    ORDER BY pstmt.ord_num_of_domain ASC, pstmt.tmsp_last_modification DESC
+    LIMIT limit_count;
+END;
+$$ LANGUAGE plpgsql;
+
+-- get target labels of outgoing field
+CREATE OR REPLACE FUNCTION pgwar.get_target_labels_of_outgoing_field(
+    entity_id INT,
+    project_id INT,
+    property_id INT,
+    limit_count INT
+)
+RETURNS TABLE(label VARCHAR) AS $$
+BEGIN
+    RETURN QUERY
+    SELECT coalesce(
+                pstmt.object_label, -- take the literal label
+                pep.entity_label, -- else the project entity label,
+                cep.entity_label -- else the community entity label
+            )::VARCHAR AS label
+    FROM pgwar.v_statements_combined pstmt
+    -- join the project entity
+    LEFT JOIN pgwar.entity_preview pep 
+        ON pep.fk_project = project_id
+        AND pstmt.fk_object_info = pep.pk_entity
+    -- join the community entity
+    LEFT JOIN pgwar.entity_preview cep
+        ON cep.fk_project = 0
+        AND pstmt.fk_object_info = cep.pk_entity
+    WHERE
+        pstmt.fk_subject_info = entity_id
+      	AND pstmt.fk_project = project_id 
+        AND pstmt.fk_property = property_id
+    ORDER BY pstmt.ord_num_of_range ASC, pstmt.tmsp_last_modification DESC
+    LIMIT limit_count;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- get target label of field
+CREATE OR REPLACE FUNCTION pgwar.get_target_label_of_field(entity_id int, project_id int, field jsonb)
+RETURNS text AS $$
+DECLARE
+    is_outgoing bool;
+    property_id int;
+    limit_count int;
+    label text;
+BEGIN
+	is_outgoing := (field->'isOutgoing')::bool;
+    property_id := (field->'fkProperty')::int;
+	limit_count := (field->'nrOfStatementsInLabel')::int;
+
+
+    IF is_outgoing IS TRUE THEN
+        SELECT pgwar.get_label_of_outgoing_field(entity_id, project_id, property_id, limit_count) INTO label;
+    ELSE
+        SELECT pgwar.get_label_of_incoming_field(entity_id, project_id, property_id, limit_count) INTO label;
+    END IF;
+
+    RETURN label;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- get label of outgoing field
 CREATE OR REPLACE FUNCTION pgwar.get_label_of_outgoing_field(
     entity_id INT,
@@ -158,43 +250,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 
------- Table pgwar.project_statements_deleted ----------------------------------------------------------------
----------------------------------------------------------------------------------------------
--- this table is used by the fulltext cron job to find entities that need an fulltext update
--- because they are the subject or object of a deleted project statement
-CREATE TABLE IF NOT EXISTS pgwar.project_statements_deleted(
-  pk_entity integer NOT NULL,
-  fk_project integer NOT NULL,
-  fk_subject_info integer,
-  fk_property integer NOT NULL,
-  fk_object_info integer,
-  object_value jsonb,
-  tmsp_deletion timestamp with time zone,
-  PRIMARY KEY (pk_entity, fk_project)
-);
-
-CREATE OR REPLACE FUNCTION pgwar.handle_project_statements_delete() 
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Insert or update the deleted row in pgwar.project_statements_deleted
-    INSERT INTO pgwar.project_statements_deleted (pk_entity, fk_project, fk_subject_info, fk_property, fk_object_info, object_value, tmsp_deletion)
-    VALUES (OLD.pk_entity, OLD.fk_project, OLD.fk_subject_info, OLD.fk_property, OLD.fk_object_info, OLD.object_value, CURRENT_TIMESTAMP)
-    ON CONFLICT (pk_entity, fk_project)
-    DO UPDATE SET 
-        fk_subject_info = EXCLUDED.fk_subject_info,
-        fk_property = EXCLUDED.fk_property,
-        fk_object_info = EXCLUDED.fk_object_info,
-        object_value = EXCLUDED.object_value,
-        tmsp_deletion = EXCLUDED.tmsp_deletion;
-
-    RETURN OLD;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER after_delete_project_statements
-AFTER DELETE ON pgwar.project_statements
-FOR EACH ROW
-EXECUTE FUNCTION pgwar.handle_project_statements_delete();
 
 
 
