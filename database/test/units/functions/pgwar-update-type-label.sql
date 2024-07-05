@@ -32,7 +32,7 @@ VALUES (65, 33, 111, 'City');
 
 
 -- Insert an entity preview of class 123 that has a fk_type referencing 'City'
-INSERT INTO pgwar.entity_preview (pk_entity, fk_project, fk_class, fk_type, fk_type_modified)
+INSERT INTO pgwar.entity_preview (pk_entity, fk_project, fk_class, fk_type, tmsp_fk_type_modification)
 VALUES (66, 33, 123, 65, CURRENT_TIMESTAMP);
 
 -- run the update task

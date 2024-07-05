@@ -68,7 +68,7 @@ BEGIN
                     COALESCE(meta.class_modified, meta_en.class_modified) AS class_modified,
                     project_lang.project_modified,
                     project_lang.language_modified,
-                    ep.fk_class_modified 
+                    ep.tmsp_fk_class_modification
         FROM 		project_lang
         JOIN		pgwar.entity_preview ep ON project_lang.fk_project = ep.fk_project
         LEFT JOIN 	class_metadata meta ON ep.fk_class = meta.fk_class AND meta.lang_code = project_lang.lang_code
@@ -87,7 +87,7 @@ BEGIN
             meta.class_modified > _offset.offset_tmsp OR
             meta.project_modified > _offset.offset_tmsp OR
             meta.language_modified > _offset.offset_tmsp OR
-            meta.fk_class_modified > _offset.offset_tmsp
+            meta.tmsp_fk_class_modification > _offset.offset_tmsp
         );
     
 

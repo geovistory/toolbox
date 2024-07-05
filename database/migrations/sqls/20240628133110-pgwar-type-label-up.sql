@@ -35,8 +35,8 @@ BEGIN
                 origin.fk_project = target.fk_project AND -- Match on project ID
                 origin.type_label IS DISTINCT FROM target.entity_label -- Ensure the type label is different between origin and target
         WHERE 
-            origin.fk_type_modified > _current_offset -- Check if origin's fk_type changed since the last offset timestamp
-            OR target.entity_label_modified > _current_offset -- Check if the target's label changed since the last offset timestamp
+            origin.tmsp_fk_type_modification > _current_offset -- Check if origin's fk_type changed since the last offset timestamp
+            OR target.tmsp_entity_label_modification > _current_offset -- Check if the target's label changed since the last offset timestamp
     )
     -- Update the entity_preview table with the new type labels
     UPDATE pgwar.entity_preview ep

@@ -165,7 +165,7 @@ WHERE pk_entity = 66
     AND fk_project = 33;
 
 /**
- * Test if fk_class_modified timestamp is correctly compared with offset
+ * Test if tmsp_fk_class_modification timestamp is correctly compared with offset
  **/
 -- Switch class of entity
 SELECT pgwar.upsert_entity_preview_fk_class(66, 33, 456);
