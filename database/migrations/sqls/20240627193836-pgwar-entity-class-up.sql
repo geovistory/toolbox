@@ -1,3 +1,7 @@
+CREATE INDEX project_fk_language_idx ON projects.project(fk_language);
+
+CREATE INDEX entity_preview_fk_project_idx ON pgwar.entity_preview(fk_project);
+
 CREATE
 OR REPLACE FUNCTION  pgwar.update_entity_class() RETURNS void AS $$
 DECLARE
