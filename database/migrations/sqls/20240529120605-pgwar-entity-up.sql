@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS pgwar.entity_preview(
     last_second bigint,
     parent_classes jsonb,
     ancestor_classes jsonb,
-    fk_class_modified timestamp with time zone,
+    tmsp_fk_class_modification timestamp with time zone,
     tmsp_last_modification timestamp with time zone,
     CONSTRAINT entity_preview_pkey PRIMARY KEY (pk_entity, fk_project)
 )
@@ -57,13 +57,13 @@ CREATE OR REPLACE FUNCTION pgwar.upsert_entity_preview_fk_class(entity_id int, p
     RETURNS VOID
     AS $$
 BEGIN
-    INSERT INTO pgwar.entity_preview(pk_entity, fk_project, fk_class, fk_class_modified)
+    INSERT INTO pgwar.entity_preview(pk_entity, fk_project, fk_class, tmsp_fk_class_modification)
         VALUES(entity_id, project_id, class_id, CURRENT_TIMESTAMP)
     ON CONFLICT(pk_entity, fk_project)
         DO UPDATE SET
             -- ... or update the fk_class
             fk_class = EXCLUDED.fk_class,
-            fk_class_modified = CURRENT_TIMESTAMP
+            tmsp_fk_class_modification = CURRENT_TIMESTAMP
         WHERE
             -- ... where it is distinct from previous value
             entity_preview.fk_class IS DISTINCT FROM EXCLUDED.fk_class;
