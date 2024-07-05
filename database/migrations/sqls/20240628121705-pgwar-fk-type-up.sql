@@ -45,7 +45,7 @@ BEGIN
         SELECT 
             ep.pk_entity,
             ep.fk_project,
-            ep.fk_class_modified,
+            ep.tmsp_fk_class_modification,
             prop.dfh_pk_property,
             prop.tmsp_last_modification AS prop_modified
         FROM 
@@ -123,7 +123,7 @@ BEGIN
     AND
         ep.fk_project = ep_prop.fk_project
     AND (
-            ep_prop.fk_class_modified > _current_offset OR
+            ep_prop.tmsp_fk_class_modification > _current_offset OR
             ep_prop.prop_modified > _current_offset OR
             stmt.stmt_modified > _current_offset OR
             stmtdel.stmt_deleted > _current_offset
