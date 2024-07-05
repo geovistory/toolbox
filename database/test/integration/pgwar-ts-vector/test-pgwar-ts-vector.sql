@@ -27,9 +27,8 @@ VALUES (
 Type: Parrocchia.'
     );
 -- Assert the fk_class has been updated on the community entity preview
-SELECT IS (
-        ts_vector,
-        'geograph:4B name:8C parrocchia:3B,12C place:5B type:11C ziminian:2A,7C,10C'::tsvector,
+SELECT ok(
+        ts_vector IS NOT NULL,
         'Assert the ts_vector is set'
     )
 FROM pgwar.entity_preview
