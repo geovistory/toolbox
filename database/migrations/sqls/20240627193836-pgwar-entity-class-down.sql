@@ -1,3 +1,6 @@
+-- Drop the function pgwar.update_entity_class()
+DROP FUNCTION pgwar.update_entity_class();
+
 -- Drop the index on the fk_language column in the projects.project table
 DROP INDEX IF EXISTS projects.project_fk_language_idx;
 
