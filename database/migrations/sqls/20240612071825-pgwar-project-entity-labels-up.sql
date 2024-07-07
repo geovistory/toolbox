@@ -21,7 +21,7 @@ CREATE INDEX IF NOT EXISTS resource_pk_entity_fk_class_dx
 * Views
 **/
 CREATE MATERIALIZED VIEW pgwar.project_label_config AS
-SELECT 	subquery.fk_project, 
+SELECT subquery.fk_project, 
     subquery.fk_class, 
     (field->'fkProperty')::int fk_property,
     (field->'isOutgoing')::bool is_outgoing,
@@ -30,15 +30,27 @@ SELECT 	subquery.fk_project,
         PARTITION BY subquery.fk_class, subquery.fk_project
     ) AS ord_num
 FROM (
-    SELECT 
-        COALESCE(conf.fk_project, conf_def.fk_project) AS fk_project,
-        COALESCE(conf.fk_class, conf_def.fk_class) AS fk_class,
-        jsonb_array_elements(COALESCE(conf.config, conf_def.config)->'labelParts')->'field' field
-    FROM projects.entity_label_config conf
-    LEFT JOIN projects.entity_label_config conf_def
-        ON  conf_def.fk_project = 375669
-		AND conf.fk_class = conf_def.fk_class
+	SELECT 
+		COALESCE(default_elc.fk_project, elc.fk_project) AS fk_project,
+		COALESCE(elc.fk_class, default_elc.fk_class) AS fk_class,
+		jsonb_array_elements(COALESCE(elc.config, default_elc.config)->'labelParts')->'field' field
+	FROM (
+		SELECT p.pk_entity AS fk_project, fk_class, config
+		FROM projects.project p
+		JOIN projects.entity_label_config default_elc 
+			ON default_elc.fk_project = 375669
+	) default_elc
+	FULL OUTER JOIN projects.entity_label_config elc 
+			ON elc.fk_project = default_elc.fk_project
+			AND elc.fk_class = default_elc.fk_class
 ) subquery;
+
+
+CREATE INDEX project_label_config_fk_class_idx
+ON pgwar.project_label_config (fk_class);
+
+CREATE INDEX project_label_config_idx
+ON pgwar.project_label_config (fk_project, fk_property, is_outgoing, nr_of_stmts);
 
 
 CREATE VIEW pgwar.v_community_entity_label AS
