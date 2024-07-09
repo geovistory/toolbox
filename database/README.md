@@ -34,6 +34,14 @@ This should do the following:
 
 Then you can connect with the server to this port, as specified in `/server/.env`.
 
+### Start the cron jobs
+
+This schedules the cron jobs that periodically update pgwar tables. 
+
+```bash
+bash pgwar-start-cron-jobs.sh
+```
+
 
 ## Add a database migration
 
