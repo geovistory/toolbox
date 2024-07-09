@@ -8,11 +8,11 @@ fi
 # set the name of the docker compose project
 export COMPOSE_PROJECT_NAME=dev
 
-# Set the heavy Dockerfile (containing a filled database)
+# Set the dev Dockerfile (containing a filled database)
 if [ $DOCKER_PLATFORM = "ARM" ]; then
-    export DOCKER_FILE=heavy.arm.Dockerfile
+    export DOCKER_FILE=dev.arm.Dockerfile
 else
-    export DOCKER_FILE=heavy.Dockerfile
+    export DOCKER_FILE=dev.Dockerfile
 fi
 
 # Set the postgres port
