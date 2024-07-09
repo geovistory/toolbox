@@ -135,7 +135,7 @@ BEGIN
                 ': ',
                 pgwar.get_label_of_outgoing_field(entity_id, project_id, fk_property, 5)
             ) AS field_string
-        FROM pgwar.project_statements
+        FROM pgwar.v_statements_combined
         WHERE fk_subject_info = entity_id
         AND fk_project = project_id 
         UNION 
@@ -145,7 +145,7 @@ BEGIN
                 ': ',
                 pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5)
             ) AS field_string
-        FROM pgwar.project_statements
+        FROM pgwar.v_statements_combined
         WHERE fk_object_info = entity_id
         AND fk_project = project_id 
 
