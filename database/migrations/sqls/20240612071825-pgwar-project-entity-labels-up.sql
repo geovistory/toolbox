@@ -87,96 +87,79 @@ WHERE
 * Functions
 ***/
 
+-- get label of project entity
+CREATE OR REPLACE FUNCTION pgwar.get_entity_label_config(class_id int, project_id int)
+RETURNS jsonb AS $$
+DECLARE
+    label_config jsonb;
+BEGIN
+   
+    SELECT config INTO label_config
+    FROM projects.entity_label_config 
+    WHERE fk_class = class_id
+    AND fk_project = project_id;
+
+    IF label_config IS NULL THEN
+        SELECT config INTO label_config
+        FROM projects.entity_label_config 
+        WHERE fk_class = class_id
+        AND fk_project = 375669;
+    END IF;  
+    
+    RETURN label_config;
+END;
+$$ LANGUAGE plpgsql;
+
 -- get entity label or project entity
 CREATE OR REPLACE FUNCTION pgwar.get_project_entity_label(entity_id int, project_id int)
 RETURNS text AS $$
-DECLARE 
-	label text;
+DECLARE
+    class_id int;
+    label text;
 BEGIN
-    WITH ranked_statements AS (
-            -- outgoing
-            SELECT
-                pstmt.object_label,
-                ROW_NUMBER() OVER (
-                    PARTITION BY pstmt.fk_subject_info, pstmt.fk_project, pstmt.fk_property
-                    ORDER BY pstmt.ord_num_of_range ASC, pstmt.tmsp_last_modification DESC
-                ) AS row_number,
-                pstmt.fk_subject_info AS pk_entity,
-                pstmt.fk_project,
-                pstmt.fk_property,
-                pstmt.fk_object_info AS fk_target_entity,
-                true::bool as is_outgoing
-            FROM   
-                pgwar.project_statements pstmt
-            WHERE pstmt.fk_subject_info = entity_id
-            AND pstmt.fk_project = project_id
-            UNION ALL
-            -- incoming
-            SELECT
-                NULL::text AS object_label,
-                ROW_NUMBER() OVER (
-                    PARTITION BY pstmt.fk_object_info, pstmt.fk_project, pstmt.fk_property
-                    ORDER BY pstmt.ord_num_of_domain ASC, pstmt.tmsp_last_modification DESC
-                ) AS row_number,
-                pstmt.fk_object_info AS pk_entity,
-                pstmt.fk_project,
-                pstmt.fk_property,
-                pstmt.fk_subject_info AS fk_target_entity,
-                false::bool as is_outgoing
-            FROM   
-                pgwar.project_statements pstmt
-            WHERE pstmt.fk_object_info = entity_id
-            AND pstmt.fk_project = project_id
-        ),
-        label_statements AS(
-            SELECT
-                pstmt.object_label,
-                pstmt.row_number,
-                lp.nr_of_stmts,
-                pstmt.pk_entity,
-                pstmt.fk_project,
-                pstmt.fk_property,
-                lp.ord_num,
-                pstmt.fk_target_entity
-            FROM   
-                pgwar.project_label_config AS lp,
-                pgwar.entity_preview ent,
-                ranked_statements pstmt
-            WHERE
-                pstmt.pk_entity = ent.pk_entity
-            AND pstmt.fk_project = ent.fk_project
-            AND ent.fk_class = lp.fk_class
-            AND pstmt.fk_project = lp.fk_project 
-            AND pstmt.fk_property = lp.fk_property
-            AND pstmt.is_outgoing = lp.is_outgoing
-            AND pstmt.row_number <= lp.nr_of_stmts
-        ),
-        left_join_entity_labels AS (
-        SELECT 
-            coalesce(
-                ls.object_label, -- take the literal label
-                pep.entity_label, -- else the project entity label,
-                cep.entity_label -- else the community entity label
-            )::VARCHAR AS label,
-            ls.pk_entity,
-            ls.fk_project,
-            ls.row_number,
-            ls.nr_of_stmts,
-            ls.fk_property,
-            ls.ord_num
-        FROM label_statements ls
-        -- join the project entity
-        LEFT JOIN pgwar.entity_preview pep 
-            ON pep.fk_project = ls.fk_project
-            AND pep.pk_entity = ls.fk_target_entity
-        -- join the community entity
-        LEFT JOIN pgwar.entity_preview cep
-            ON cep.fk_project = 0
-            AND cep.pk_entity = ls.fk_target_entity 
-        )
-    SELECT STRING_AGG(u.label, ', ' ORDER BY u.ord_num ASC, u.row_number ASC) INTO label
-    FROM left_join_entity_labels u
-    GROUP BY u.pk_entity, u.fk_project;
+    -- get class_id
+    SELECT fk_class INTO class_id
+    FROM information.resource
+    WHERE pk_entity = entity_id;   
+    -- get label
+    SELECT pgwar.get_project_entity_label(entity_id, project_id, class_id) INTO label;
+
+    RETURN label;
+END;
+$$ LANGUAGE plpgsql;
+
+-- get entity label or project entity
+CREATE OR REPLACE FUNCTION pgwar.get_project_entity_label(entity_id int, project_id int, class_id int)
+RETURNS text AS $$
+DECLARE
+    label_config jsonb;
+    label text;
+BEGIN
+    -- get label config
+    SELECT pgwar.get_entity_label_config(class_id, project_id) INTO label_config;   
+    -- get label
+    SELECT pgwar.get_project_entity_label(entity_id, project_id, label_config) INTO label;
+
+    RETURN label;
+END;
+$$ LANGUAGE plpgsql;
+
+-- get entity label or project entity
+CREATE OR REPLACE FUNCTION pgwar.get_project_entity_label(entity_id int, project_id int, label_config jsonb)
+RETURNS text AS $$
+DECLARE
+    label text;
+BEGIN
+    -- join labels of fields
+	SELECT string_agg(
+        -- get label per field
+        pgwar.get_target_label_of_field(entity_id, project_id, part->'field'),
+        -- separator
+         ', '
+    ) INTO label
+	FROM 
+    -- expand fields
+    jsonb_array_elements(label_config->'labelParts') part;
 
     RETURN label;
 END;
