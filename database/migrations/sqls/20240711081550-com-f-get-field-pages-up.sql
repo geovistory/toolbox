@@ -420,87 +420,278 @@ $func$;
 
 -- add functions to get field pages
 
-
-CREATE OR REPLACE FUNCTION commons.field_page_incoming_in_project (_project_id int, _fk_property int, _source_info_id int, _source_data_id int, _source_tables_cell_id bigint, _source_tables_row_id bigint, _limit int, _offset int)
-    RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
-    LANGUAGE plpgsql
-    AS $func$
-DECLARE 
-    res jsonb;
-BEGIN
-	RETURN QUERY
-    --------------------------------------------------------------------------
-    -- FINAL SELECT
-    --------------------------------------------------------------------------
-    SELECT
-	 	now() valid_for,
-		stmt.obj paginated_statement,
-		stmt.target_class,
-		stmt.target_entity_id,
-		ROW_NUMBER() OVER (ORDER BY ord_num_of_domain ASC NULLS LAST, pk_entity DESC) ord_num,
-		COALESCE(full_count, 0)::int count
-		
-    FROM (
-		--------------------------------------------------------------------------
-		-- PAGINATED SELECT
-		--------------------------------------------------------------------------
-		SELECT
-			json_strip_nulls (json_build_object('projRel', gv_to_jsonb (t2), 'isOutgoing', false, 'ordNum', t2.ord_num_of_domain, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
-			count(*) OVER () AS full_count,
-			t2.ord_num_of_domain,
-			t1.pk_entity,
-	  	 	t3.target_class,
-			(t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
-		FROM
-			information.v_statement t1,
-			projects.v_info_proj_rel t2,
-			commons.get_statement_target (_project_id, t1.fk_subject_info, t1.fk_subject_data, t1.fk_subject_tables_cell, t1.fk_subject_tables_row) t3
-		WHERE
-			--------------------------------------------------------------------------
-			-- JOIN SOURCE ENTITY WITH STATEMENTS
-			--------------------------------------------------------------------------
-			t1.fk_object_info = _source_info_id
-			AND t1.fk_object_data = _source_data_id
-			AND t1.fk_object_tables_cell = _source_tables_cell_id
-			AND t1.fk_object_tables_row = _source_tables_row_id
-			AND t1.fk_property = _fk_property
-			--------------------------------------------------------------------------
-			-- JOIN STATEMENTS WITH PROJECT RELS
-			--------------------------------------------------------------------------
-			AND t1.pk_entity = t2.fk_entity
-			AND t2.is_in_project = TRUE
-			AND t2.fk_project = _project_id
-			--------------------------------------------------------------------------
-			-- order the statements according to order number of target
-			--------------------------------------------------------------------------
-		ORDER BY
-			t2.ord_num_of_domain ASC NULLS LAST, t1.pk_entity DESC
-			--------------------------------------------------------------------------
-			-- paginate according to the requested limit / offset
-			--------------------------------------------------------------------------
-		LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
-		OFFSET _offset
-	) AS stmt;
-    
-END
-$func$;
-
-CREATE OR REPLACE FUNCTION commons.field_page_outgoing_in_project (_project_id int, _fk_property int, _fk_subject_info int, _fk_subject_data int, _fk_subject_tables_cell bigint, _fk_subject_tables_row bigint, _limit int, _offset int)
-    RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
-    LANGUAGE plpgsql
-    AS $func$
+ CREATE OR REPLACE FUNCTION commons.field_page_incoming_in_project (_project_id int, _fk_property int, _source_info_id int, _source_data_id int, _source_tables_cell_id bigint, _source_tables_row_id bigint, _limit int, _offset int)
+      RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
+      LANGUAGE plpgsql
+      AS $func$
+    DECLARE 
+      res jsonb;
     BEGIN
       RETURN QUERY
       --------------------------------------------------------------------------
       -- FINAL SELECT
       --------------------------------------------------------------------------
       SELECT
-      	now() valid_for,
-		stmt.obj paginated_statement,
-		stmt.target_class,
-		stmt.target_entity_id,
-		ROW_NUMBER() OVER (ORDER BY ord_num_of_range ASC NULLS LAST, pk_entity DESC) ord_num,
-		COALESCE(full_count, 0)::int count
+        	now() valid_for,
+          stmt.obj paginated_statement,
+          stmt.target_class,
+          stmt.target_entity_id,
+          ROW_NUMBER() OVER (ORDER BY ord_num_of_domain ASC NULLS LAST, pk_entity DESC) ord_num,
+          COALESCE(full_count, 0)::int count
+      FROM (
+        --------------------------------------------------------------------------
+        -- PAGINATED SELECT
+        --------------------------------------------------------------------------
+        SELECT
+          json_strip_nulls (json_build_object('projRel', gv_to_jsonb (t2), 'isOutgoing', false, 'ordNum', t2.ord_num_of_domain, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
+          count(*) OVER () AS full_count,
+          t2.ord_num_of_domain,
+          t1.pk_entity,
+          t3.target_class,
+          (t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
+        FROM
+          information.v_statement t1,
+          projects.v_info_proj_rel t2,
+          commons.get_statement_target(_project_id, t1.fk_subject_info, t1.fk_subject_data, t1.fk_subject_tables_cell, t1.fk_subject_tables_row) t3
+        WHERE
+          --------------------------------------------------------------------------
+          -- JOIN SOURCE ENTITY WITH STATEMENTS
+          --------------------------------------------------------------------------
+          t1.fk_object_info = _source_info_id
+          AND t1.fk_object_data = _source_data_id
+          AND t1.fk_object_tables_cell = _source_tables_cell_id
+          AND t1.fk_object_tables_row = _source_tables_row_id
+          AND t1.fk_property = _fk_property
+          --------------------------------------------------------------------------
+          -- JOIN STATEMENTS WITH PROJECT RELS
+          --------------------------------------------------------------------------
+          AND t1.pk_entity = t2.fk_entity
+          AND t2.is_in_project = TRUE
+          AND t2.fk_project = _project_id
+          --------------------------------------------------------------------------
+          -- order the statements according to order number of target
+          --------------------------------------------------------------------------
+        ORDER BY
+          t2.ord_num_of_domain ASC NULLS LAST, t1.pk_entity DESC
+          --------------------------------------------------------------------------
+          -- paginate according to the requested limit / offset
+          --------------------------------------------------------------------------
+        LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
+        OFFSET _offset) AS stmt;
+    END
+    $func$;
+
+
+    CREATE OR REPLACE FUNCTION commons.field_page_incoming_in_repo (_fk_property int, _source_info_id int, _source_data_id int, _source_tables_cell_id bigint, _source_tables_row_id bigint, _limit int, _offset int)
+      RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
+      LANGUAGE plpgsql
+      AS $func$
+    DECLARE 
+      res jsonb;
+    BEGIN
+      RETURN QUERY
+      --------------------------------------------------------------------------
+      -- FINAL SELECT
+      --------------------------------------------------------------------------
+      SELECT
+        now() valid_for,
+        stmt.obj paginated_statements,
+        stmt.target_class,
+        stmt.target_entity_id,
+        ROW_NUMBER() OVER () ord_num,
+        COALESCE(full_count, 0)::int count
+      FROM (
+        --------------------------------------------------------------------------
+        -- PAGINATED SELECT
+        --------------------------------------------------------------------------
+        SELECT
+          json_strip_nulls (json_build_object('isOutgoing', false, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
+          count(*) OVER () AS full_count,
+          t3.target_class,
+          (t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
+        FROM
+          information.v_statement t1,
+          commons.get_statement_target(0, t1.fk_subject_info, t1.fk_subject_data, t1.fk_subject_tables_cell, t1.fk_subject_tables_row) t3
+        WHERE
+          --------------------------------------------------------------------------
+          -- JOIN SOURCE ENTITY WITH STATEMENTS
+          --------------------------------------------------------------------------
+          t1.fk_object_info = _source_info_id
+          AND t1.fk_object_data = _source_data_id
+          AND t1.fk_object_tables_cell = _source_tables_cell_id
+          AND t1.fk_object_tables_row = _source_tables_row_id
+          AND t1.fk_property = _fk_property
+          AND t1.is_in_project_count > 0
+
+        --------------------------------------------------------------------------
+        -- THE FOLLOWING ORDER BY CLAUSE IS DISABLED FOR PERFORMANCE REASONS
+        -- ORDER BY
+        --   t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- paginate according to the requested limit / offset
+        --------------------------------------------------------------------------
+        LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
+        OFFSET _offset) AS stmt;
+    END
+    $func$;
+
+     CREATE OR REPLACE FUNCTION commons.field_page_incoming_no_constraint (_fk_property int, _source_info_id int, _source_data_id int, _source_tables_cell_id bigint, _source_tables_row_id bigint, _limit int, _offset int)
+      RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
+      LANGUAGE plpgsql
+      AS $func$
+    DECLARE 
+      res jsonb;
+    BEGIN
+      RETURN QUERY
+      --------------------------------------------------------------------------
+      -- FINAL SELECT
+      --------------------------------------------------------------------------
+      SELECT
+        now() valid_for,
+        stmt.obj paginated_statements,
+        stmt.target_class,
+        stmt.target_entity_id,
+        ROW_NUMBER() OVER () ord_num,
+        COALESCE(full_count, 0)::int count
+      FROM (
+        --------------------------------------------------------------------------
+        -- PAGINATED SELECT
+        --------------------------------------------------------------------------
+        SELECT
+          json_strip_nulls (json_build_object('isOutgoing', false, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
+          count(*) OVER () AS full_count,
+          t3.target_class,
+          (t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
+        FROM
+          information.v_statement t1,
+          commons.get_statement_target(0, t1.fk_subject_info, t1.fk_subject_data, t1.fk_subject_tables_cell, t1.fk_subject_tables_row) t3
+        WHERE
+          --------------------------------------------------------------------------
+          -- JOIN SOURCE ENTITY WITH STATEMENTS
+          --------------------------------------------------------------------------
+          t1.fk_object_info = _source_info_id
+          AND t1.fk_object_data = _source_data_id
+          AND t1.fk_object_tables_cell = _source_tables_cell_id
+          AND t1.fk_object_tables_row = _source_tables_row_id
+          AND t1.fk_property = _fk_property
+
+        --------------------------------------------------------------------------
+        -- THE FOLLOWING ORDER BY CLAUSE IS DISABLED FOR PERFORMANCE REASONS
+        -- ORDER BY
+        --   t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- paginate according to the requested limit / offset
+        --------------------------------------------------------------------------
+        LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
+        OFFSET _offset) AS stmt;
+    END
+    $func$;
+
+
+ CREATE OR REPLACE FUNCTION commons.field_page_incoming_not_in_project (_project_id int, _fk_property int, _source_info_id int, _source_data_id int, _source_tables_cell_id bigint, _source_tables_row_id bigint, _limit int, _offset int)
+      RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
+      LANGUAGE plpgsql
+      AS $func$
+    DECLARE 
+      res jsonb;
+    BEGIN
+      RETURN QUERY
+      --------------------------------------------------------------------------
+      -- FINAL SELECT
+      --------------------------------------------------------------------------
+      SELECT
+        now() valid_for,
+        stmt.obj paginated_statements,
+        stmt.target_class,
+        stmt.target_entity_id,
+        ROW_NUMBER() OVER () ord_num,
+        COALESCE(full_count, 0)::int count
+      FROM (
+        --------------------------------------------------------------------------
+        -- PAGINATED SELECT
+        --------------------------------------------------------------------------
+        SELECT
+          json_strip_nulls (json_build_object('isOutgoing', false, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
+          count(*) OVER () AS full_count,
+          t3.target_class,
+          (t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
+        FROM
+          information.v_statement t1,
+          commons.get_statement_target(_project_id, t1.fk_subject_info, t1.fk_subject_data, t1.fk_subject_tables_cell, t1.fk_subject_tables_row) t3
+        WHERE
+          --------------------------------------------------------------------------
+          -- JOIN SOURCE ENTITY WITH STATEMENTS
+          --------------------------------------------------------------------------
+          t1.fk_object_info = _source_info_id
+          AND t1.fk_object_data = _source_data_id
+          AND t1.fk_object_tables_cell = _source_tables_cell_id
+          AND t1.fk_object_tables_row = _source_tables_row_id
+          AND t1.fk_property = _fk_property
+          AND t1.is_in_project_count > 0
+
+          --------------------------------------------------------------------------
+          -- EXCLUDE STATEMENTS REFERENCING HIDDEN ENTITY
+          --------------------------------------------------------------------------
+          AND (t3.target_obj->'entity'->'resource'->'community_visibility'->>'toolbox')::boolean IS DISTINCT FROM false
+
+          AND t1.pk_entity NOT IN (
+            --------------------------------------------------------------------------
+            -- EXCLUDE STATEMENTS OF PROJECT
+            --------------------------------------------------------------------------
+            SELECT t1.pk_entity
+            FROM
+              information.v_statement t1,
+              projects.v_info_proj_rel t2
+            WHERE
+            --------------------------------------------------------------------------
+            -- JOIN SOURCE ENTITY WITH STATEMENTS
+            --------------------------------------------------------------------------
+            t1.fk_object_info = _source_info_id
+            AND t1.fk_object_data = _source_data_id
+            AND t1.fk_object_tables_cell = _source_tables_cell_id
+            AND t1.fk_object_tables_row = _source_tables_row_id
+            AND t1.fk_property = _fk_property
+            --------------------------------------------------------------------------
+            -- JOIN STATEMENTS WITH PROJECT RELS
+            --------------------------------------------------------------------------
+            AND t1.pk_entity = t2.fk_entity
+            AND t2.is_in_project = TRUE
+            AND t2.fk_project = _project_id
+          )
+
+        --------------------------------------------------------------------------
+        -- THE FOLLOWING ORDER BY CLAUSE IS DISABLED FOR PERFORMANCE REASONS
+        -- ORDER BY
+        --   t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- paginate according to the requested limit / offset
+        --------------------------------------------------------------------------
+        LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
+        OFFSET _offset) AS stmt;
+    END
+    $func$;
+
+     CREATE OR REPLACE FUNCTION commons.field_page_outgoing_in_project (_project_id int, _fk_property int, _fk_subject_info int, _fk_subject_data int, _fk_subject_tables_cell bigint, _fk_subject_tables_row bigint, _limit int, _offset int)
+      RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
+      LANGUAGE plpgsql
+      AS $func$
+    DECLARE 
+      res jsonb;
+    BEGIN
+      RETURN QUERY
+      --------------------------------------------------------------------------
+      -- FINAL SELECT
+      --------------------------------------------------------------------------
+      SELECT
+        now() valid_for,
+        stmt.obj paginated_statement,
+        stmt.target_class,
+        stmt.target_entity_id,
+        ROW_NUMBER() OVER (ORDER BY ord_num_of_range ASC NULLS LAST, pk_entity DESC) ord_num,
+        COALESCE(full_count, 0)::int count
       FROM (
         --------------------------------------------------------------------------
         -- PAGINATED SELECT
@@ -511,11 +702,11 @@ CREATE OR REPLACE FUNCTION commons.field_page_outgoing_in_project (_project_id i
           t2.ord_num_of_range,
           t1.pk_entity,
           t3.target_class,
-		  (t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
+          (t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
         FROM
           information.v_statement t1,
           projects.v_info_proj_rel t2,
-          commons.get_statement_target (_project_id, t1.fk_object_info, t1.fk_object_data, t1.fk_object_tables_cell, t1.fk_object_tables_row) t3
+          commons.get_statement_target(_project_id, t1.fk_object_info, t1.fk_object_data, t1.fk_object_tables_cell, t1.fk_object_tables_row) t3
         WHERE
           --------------------------------------------------------------------------
           -- JOIN SOURCE ENTITY WITH STATEMENTS
@@ -539,6 +730,198 @@ CREATE OR REPLACE FUNCTION commons.field_page_outgoing_in_project (_project_id i
           --------------------------------------------------------------------------
           -- paginate according to the requested limit / offset
           --------------------------------------------------------------------------
+        LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
+        OFFSET _offset) AS stmt;
+    END
+    $func$;
+
+       CREATE OR REPLACE FUNCTION commons.field_page_outgoing_in_repo (_fk_property int, _fk_subject_info int, _fk_subject_data int, _fk_subject_tables_cell bigint, _fk_subject_tables_row bigint, _limit int, _offset int)
+      RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
+      LANGUAGE plpgsql
+      AS $func$
+    DECLARE 
+      res jsonb;
+    BEGIN
+      RETURN QUERY
+      --------------------------------------------------------------------------
+      -- FINAL SELECT
+      --------------------------------------------------------------------------
+      SELECT
+        now() valid_for,
+        stmt.obj paginated_statements,
+        stmt.target_class,
+        stmt.target_entity_id,
+        ROW_NUMBER() OVER () ord_num,
+        COALESCE(full_count, 0)::int count
+      FROM (
+        --------------------------------------------------------------------------
+        -- PAGINATED SELECT
+        --------------------------------------------------------------------------
+        SELECT
+          json_strip_nulls (json_build_object('isOutgoing', true, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
+          count(*) OVER () AS full_count,
+          t3.target_class,
+          (t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
+        FROM
+          information.v_statement t1,
+          commons.get_statement_target(0, t1.fk_object_info, t1.fk_object_data, t1.fk_object_tables_cell, t1.fk_object_tables_row) t3
+        WHERE
+          --------------------------------------------------------------------------
+          -- JOIN SOURCE ENTITY WITH STATEMENTS
+          --------------------------------------------------------------------------
+          t1.fk_subject_info = _fk_subject_info
+          AND t1.fk_subject_data = _fk_subject_data
+          AND t1.fk_subject_tables_cell = _fk_subject_tables_cell
+          AND t1.fk_subject_tables_row = _fk_subject_tables_row
+          AND t1.fk_property = _fk_property
+          AND t1.is_in_project_count > 0
+
+        --------------------------------------------------------------------------
+        -- THE FOLLOWING ORDER BY CLAUSE IS DISABLED FOR PERFORMANCE REASONS
+        -- ORDER BY
+        --   t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- paginate according to the requested limit / offset
+        --------------------------------------------------------------------------
+        LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
+        OFFSET _offset) AS stmt;
+    END
+    $func$;
+
+
+  CREATE OR REPLACE FUNCTION commons.field_page_outgoing_no_constraint (_fk_property int, _fk_subject_info int, _fk_subject_data int, _fk_subject_tables_cell bigint, _fk_subject_tables_row bigint, _limit int, _offset int)
+      RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
+      LANGUAGE plpgsql
+      AS $func$
+    DECLARE 
+      res jsonb;
+    BEGIN
+      RETURN QUERY
+      --------------------------------------------------------------------------
+      -- FINAL SELECT
+      --------------------------------------------------------------------------
+      SELECT
+        now() valid_for,
+        stmt.obj paginated_statements,
+        stmt.target_class,
+        stmt.target_entity_id,
+        ROW_NUMBER() OVER () ord_num,
+        COALESCE(full_count, 0)::int count
+      FROM (
+        --------------------------------------------------------------------------
+        -- PAGINATED SELECT
+        --------------------------------------------------------------------------
+        SELECT
+          json_strip_nulls (json_build_object('isOutgoing', true, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
+          count(*) OVER () AS full_count,
+          t3.target_class,
+          (t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
+        FROM
+          information.v_statement t1,
+          commons.get_statement_target(0, t1.fk_object_info, t1.fk_object_data, t1.fk_object_tables_cell, t1.fk_object_tables_row) t3
+        WHERE
+          --------------------------------------------------------------------------
+          -- JOIN SOURCE ENTITY WITH STATEMENTS
+          --------------------------------------------------------------------------
+          t1.fk_subject_info = _fk_subject_info
+          AND t1.fk_subject_data = _fk_subject_data
+          AND t1.fk_subject_tables_cell = _fk_subject_tables_cell
+          AND t1.fk_subject_tables_row = _fk_subject_tables_row
+          AND t1.fk_property = _fk_property
+
+        --------------------------------------------------------------------------
+        -- THE FOLLOWING ORDER BY CLAUSE IS DISABLED FOR PERFORMANCE REASONS
+        -- ORDER BY
+        --   t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- paginate according to the requested limit / offset
+        --------------------------------------------------------------------------
+        LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
+        OFFSET _offset) AS stmt;
+    END
+    $func$;
+
+  CREATE OR REPLACE FUNCTION commons.field_page_outgoing_not_in_project (_project_id int, _fk_property int, _fk_subject_info int, _fk_subject_data int, _fk_subject_tables_cell bigint, _fk_subject_tables_row bigint, _limit int, _offset int)
+      RETURNS TABLE (valid_for timestamp with time zone, paginated_statement json, target_class int, target_entity_id int,ord_num bigint, count int)
+      LANGUAGE plpgsql
+      AS $func$
+    DECLARE 
+      res jsonb;
+    BEGIN
+      RETURN QUERY
+      --------------------------------------------------------------------------
+      -- FINAL SELECT
+      --------------------------------------------------------------------------
+      SELECT
+        now() valid_for,
+        stmt.obj paginated_statements,
+        stmt.target_class,
+        stmt.target_entity_id,
+        ROW_NUMBER() OVER () ord_num,
+        COALESCE(full_count, 0)::int count
+      FROM (
+        --------------------------------------------------------------------------
+        -- PAGINATED SELECT
+        --------------------------------------------------------------------------
+        SELECT
+          json_strip_nulls (json_build_object('isOutgoing', true, 'target', t3.target_obj, 'targetClass', t3.target_class, 'targetLabel', t3.target_label, 'statement', gv_to_jsonb (t1))) obj,
+          count(*) OVER () AS full_count,
+          t3.target_class,
+          (t3.target_obj->'entity'->'resource'->'pk_entity')::int target_entity_id
+        FROM
+          information.v_statement t1,
+          commons.get_statement_target(_project_id, t1.fk_object_info, t1.fk_object_data, t1.fk_object_tables_cell, t1.fk_object_tables_row) t3
+        WHERE
+          --------------------------------------------------------------------------
+          -- JOIN SOURCE ENTITY WITH STATEMENTS
+          --------------------------------------------------------------------------
+          t1.fk_subject_info = _fk_subject_info
+          AND t1.fk_subject_data = _fk_subject_data
+          AND t1.fk_subject_tables_cell = _fk_subject_tables_cell
+          AND t1.fk_subject_tables_row = _fk_subject_tables_row
+          AND t1.fk_property = _fk_property
+          AND t1.is_in_project_count > 0
+
+          --------------------------------------------------------------------------
+          -- EXCLUDE STATEMENTS REFERENCING HIDDEN ENTITY
+          --------------------------------------------------------------------------
+          AND (t3.target_obj->'entity'->'resource'->'community_visibility'->>'toolbox')::boolean IS DISTINCT FROM false
+
+          AND t1.pk_entity NOT IN (
+            --------------------------------------------------------------------------
+            -- EXCLUDE STATEMENTS OF PROJECT
+            --------------------------------------------------------------------------
+            SELECT t1.pk_entity
+            FROM
+              information.v_statement t1,
+              projects.v_info_proj_rel t2
+            WHERE
+            --------------------------------------------------------------------------
+            -- JOIN SOURCE ENTITY WITH STATEMENTS
+            --------------------------------------------------------------------------
+            t1.fk_subject_info = _fk_subject_info
+            AND t1.fk_subject_data = _fk_subject_data
+            AND t1.fk_subject_tables_cell = _fk_subject_tables_cell
+            AND t1.fk_subject_tables_row = _fk_subject_tables_row
+            AND t1.fk_property = _fk_property
+            --------------------------------------------------------------------------
+            -- JOIN STATEMENTS WITH PROJECT RELS
+            --------------------------------------------------------------------------
+            AND t1.pk_entity = t2.fk_entity
+            AND t2.is_in_project = TRUE
+            AND t2.fk_project = _project_id
+          )
+
+        --------------------------------------------------------------------------
+        -- THE FOLLOWING ORDER BY CLAUSE IS DISABLED FOR PERFORMANCE REASONS
+        -- ORDER BY
+        --   t1.pk_entity DESC
+
+        --------------------------------------------------------------------------
+        -- paginate according to the requested limit / offset
+        --------------------------------------------------------------------------
         LIMIT CASE WHEN _limit=0 THEN 1 ELSE _limit END
         OFFSET _offset) AS stmt;
     END
@@ -645,7 +1028,17 @@ CREATE OR REPLACE FUNCTION commons.get_field_statements_and_child_requests(
 	_targets jsonb
 )
 RETURNS SETOF field_page_row AS $$
+DECLARE 
+    coal_source_info_id int;
+    coal_source_data_id int;
+    coal_source_tables_cell_id bigint;
+    coal_source_tables_row_id bigint;
 BEGIN
+    coal_source_info_id := COALESCE(_source_info_id, 0);
+    coal_source_data_id := COALESCE(_source_data_id, 0);
+    coal_source_tables_cell_id := COALESCE(_source_tables_cell_id, 0);
+    coal_source_tables_row_id := COALESCE(_source_tables_row_id, 0);
+
 	RETURN QUERY	
 	SELECT 	
 		-- this request
@@ -682,34 +1075,39 @@ BEGIN
 	FROM
 			(	
 				SELECT * 
-				FROM commons.field_page_incoming_in_project(
-					_pk_project,
-					_fk_property,
-					COALESCE(_source_info_id, 0),
-					COALESCE(_source_data_id, 0),
-					COALESCE(_source_tables_cell_id, 0),
-					COALESCE(_source_tables_row_id, 0),
-					__limit,
-					__offset
-				)
-				WHERE _scope_type = 'inProject'
-				AND _is_outgoing IS FALSE
-				
-				UNION ALL 
-				
+				FROM commons.field_page_incoming_in_project(_pk_project,_fk_property,coal_source_info_id,coal_source_data_id,coal_source_tables_cell_id,coal_source_tables_row_id,__limit,__offset)
+				WHERE _scope_type = 'inProject' AND _is_outgoing IS FALSE
+				UNION ALL 				
 				SELECT * 
-				FROM commons.field_page_outgoing_in_project(
-					_pk_project,
-					_fk_property,
-					COALESCE(_source_info_id, 0),
-					COALESCE(_source_data_id, 0),
-					COALESCE(_source_tables_cell_id, 0),
-					COALESCE(_source_tables_row_id, 0),
-					__limit,
-					__offset
-				)
-				WHERE _scope_type = 'inProject'
-				AND _is_outgoing IS TRUE
+				FROM commons.field_page_outgoing_in_project(_pk_project,_fk_property,coal_source_info_id,coal_source_data_id,coal_source_tables_cell_id,coal_source_tables_row_id,__limit,__offset)
+				WHERE _scope_type = 'inProject' AND _is_outgoing IS TRUE
+				UNION ALL 	
+
+                SELECT * 
+				FROM commons.field_page_incoming_not_in_project(_pk_project,_fk_property,coal_source_info_id,coal_source_data_id,coal_source_tables_cell_id,coal_source_tables_row_id,__limit,__offset)
+				WHERE _scope_type = 'notInProject' AND _is_outgoing IS FALSE
+				UNION ALL 				
+				SELECT * 
+				FROM commons.field_page_outgoing_not_in_project(_pk_project,_fk_property,coal_source_info_id,coal_source_data_id,coal_source_tables_cell_id,coal_source_tables_row_id,__limit,__offset)
+				WHERE _scope_type = 'notInProject' AND _is_outgoing IS TRUE
+				UNION ALL 				
+
+                SELECT * 
+				FROM commons.field_page_incoming_in_repo(_fk_property,coal_source_info_id,coal_source_data_id,coal_source_tables_cell_id,coal_source_tables_row_id,__limit,__offset)
+				WHERE _scope_type = 'inRepo' AND _is_outgoing IS FALSE
+				UNION ALL 				
+				SELECT * 
+				FROM commons.field_page_outgoing_in_repo(_fk_property,coal_source_info_id,coal_source_data_id,coal_source_tables_cell_id,coal_source_tables_row_id,__limit,__offset)
+				WHERE _scope_type = 'inRepo' AND _is_outgoing IS TRUE
+				UNION ALL 				
+
+                SELECT * 
+				FROM commons.field_page_incoming_no_constraint(_fk_property,coal_source_info_id,coal_source_data_id,coal_source_tables_cell_id,coal_source_tables_row_id,__limit,__offset)
+				WHERE _scope_type = 'noContraint' AND _is_outgoing IS FALSE
+				UNION ALL 				
+				SELECT * 
+				FROM commons.field_page_outgoing_no_constraint(_fk_property,coal_source_info_id,coal_source_data_id,coal_source_tables_cell_id,coal_source_tables_row_id,__limit,__offset)
+				WHERE _scope_type = 'noContraint' AND _is_outgoing IS TRUE   
 			)
 			AS stmt
 		LEFT JOIN LATERAL commons.create_field_page_req(
