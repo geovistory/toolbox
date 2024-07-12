@@ -544,169 +544,337 @@ CREATE OR REPLACE FUNCTION commons.field_page_outgoing_in_project (_project_id i
     END
     $func$;
 
-CREATE OR REPLACE FUNCTION commons.get_field_pages(_req jsonb)
-RETURNS jsonb AS $$
+CREATE TYPE field_page_row AS (
+    -- this request
+    pk_project int,
+    scope_type text,
+    is_outgoing bool,
+    fk_property int,
+    source_info_id int,
+    source_data_id int,
+    source_tables_cell_id bigint,
+    source_tables_row_id bigint,
+    is_circular bool,
+    _limit int,		
+    _offset int,
+    -- resulting statement
+    paginated_statement json,
+    ord_num bigint,
+    count int,
+    -- child request
+    child_pk_project int,
+    child_scope_type text,
+    child_is_outgoing bool,
+    child_fk_property int,
+    child_source_info_id int,
+    child_source_data_id int,
+    child_source_tables_cell_id bigint,
+    child_source_tables_row_id bigint,
+    child_is_circular bool,
+    child_limit int,		
+    child_offset int,
+    child_targets jsonb
+);
+
+---- functions
+
+CREATE OR REPLACE FUNCTION commons.create_field_page_req(
+	project_id int, 
+	source_id int, 
+	parent_scope_type text,
+	nestedReqs jsonb
+)
+RETURNS TABLE (
+	pk_project int,
+	scope_type text,
+	is_outgoing bool,
+	fk_property int,
+	source_info_id int,
+	source_data_id int,
+	source_tables_cell_id bigint,
+	source_tables_row_id bigint,
+    is_circular bool,
+	_limit int,		
+	_offset int,
+	targets jsonb
+) AS $$
 DECLARE
-    result jsonb;
-BEGIN
-  
-   WITH RECURSIVE t AS (
-        SELECT 
-            NULL::jsonb AS page,
-            NULL::json AS paginated_statement,
-            NULL::bigint AS ord_num,
-            NULL::bigint AS count,
-            _req AS page_requests
-        UNION ALL
-        (
-            WITH expand_page_requests AS (
-                SELECT jsonb_array_elements(page_requests) AS page_request
-                FROM t
-            ),
-            decompose_page_request AS (
-                SELECT 
-                    jsonb_object_keys(page_request->'page'->'scope') AS scope_type,
-                    (page_request->'page'->'isOutgoing')::bool is_outgoing,
-                    page_request->'page'->'scope' AS scope,
-                    (page_request->'page'->'property'->'fkProperty')::int AS fk_property,
-                    (page_request->'page'->'source'->'fkInfo')::int AS source_info_id,
-                    (page_request->'page'->'source'->'fkData')::int AS source_data_id,
-                    (page_request->'page'->'source'->'fkTablesCell')::bigint AS source_tables_cell_id,
-                    (page_request->'page'->'source'->'fkTablesRow')::bigint AS source_tables_row_id,
-                    (page_request->'page'->'limit')::int AS _limit,		
-                    (page_request->'page'->'offset')::int AS _offset,
-                    page_request->'targets' targets,
-                    page_request->'page' AS page,
-                    (page_request->'pkProject')::int AS pk_project
-                FROM expand_page_requests
-            ),
-            join_field_page AS (
-                SELECT
-                    r.page,
-                    r.targets,
-                    r.pk_project,
-                    r.scope,
-                    stmt.*			
-                FROM decompose_page_request r
-                JOIN LATERAL commons.field_page_incoming_in_project(
-                        (scope->'inProject')::int,
-                        r.fk_property,
-                        COALESCE(r.source_info_id, 0),
-                        COALESCE(r.source_data_id, 0),
-                        COALESCE(r.source_tables_cell_id, 0),
-                        COALESCE(r.source_tables_row_id, 0),
-                        r._limit,
-                        r._offset
-                    ) AS stmt ON true
-                WHERE r.scope_type = 'inProject'
-                AND r.is_outgoing IS FALSE
-                UNION ALL
-                SELECT
-                    r.page,
-                    r.targets,
-                    r.pk_project,
-                    r.scope,
-                    stmt.*			
-                FROM decompose_page_request r
-                JOIN LATERAL commons.field_page_outgoing_in_project(
-                        (scope->'inProject')::int,
-                        r.fk_property,
-                        COALESCE(r.source_info_id, 0),
-                        COALESCE(r.source_data_id, 0),
-                        COALESCE(r.source_tables_cell_id, 0),
-                        COALESCE(r.source_tables_row_id, 0),
-                        r._limit,
-                        r._offset
-                    ) AS stmt ON true
-                WHERE r.scope_type = 'inProject'
-                AND r.is_outgoing IS TRUE
-                -- later we union all other cases
-            )
-            SELECT 
-            req.page_request->'page' AS page,
-            res.paginated_statement,
-            res.ord_num,
-            res.count,
-            create_field_page_req(
-                res.pk_project,
-                res.target_entity_id,
-                res.scope,
-                res.targets->target_class::text->'nestedResource'
-            ) page_requests
-            FROM expand_page_requests req
-            LEFT JOIN join_field_page res
-                ON req.page_request->'page' = res.page
-        )
-    ),
-    resulting_pages AS (
-        SELECT 
-            now() "validFor",
-            COALESCE(json_agg(t.paginated_statement ORDER BY t.ord_num ASC), '[]'::json)  AS "paginatedStatements",
-            COALESCE(max(count), 0)::int "count",
-            t.page
-        FROM t
-        WHERE page IS NOT NULL
-        GROUP BY t.page
-    )
-    SELECT jsonb_build_object(
-        'subfieldPages', json_agg(jsonb_build_object(
-            'validFor', "validFor",
-            'page', page,
-            'paginatedStatements', "paginatedStatements",
-            'count', "count"
-        ))
-    ) INTO result
-    FROM resulting_pages;
-
-    -- Return a value
-    RETURN result;
-END;
-$$ LANGUAGE plpgsql;
-
-
-
-CREATE OR REPLACE FUNCTION create_field_page_req(project_id int, source_id int, parent_scope jsonb, nestedReqs jsonb)
-RETURNS jsonb AS $$
-DECLARE
-    reqs jsonb := '[]'::jsonb; -- Initialize the result as an empty JSONB array
-    scope jsonb;
+    scope_type text;
     subReq jsonb;
     page jsonb;
     targets jsonb;
     req jsonb;
 BEGIN
-    -- Generate the scope of the subpages
-    IF parent_scope->>'notInProject' IS NOT NULL THEN
-        scope := jsonb_build_object('inRepo', true);
+    -- Generate the scope type of the subpages
+    IF parent_scope_type = 'notInProject' THEN
+        scope_type := 'inRepo';
     ELSE
-        scope := parent_scope;
+        scope_type := parent_scope_type;
     END IF;
 
-
-    -- Iterate through each subReq in nestedReqs
-    FOR subReq IN SELECT value FROM jsonb_array_elements(nestedReqs) AS value LOOP
-        -- Construct the page object
-        page := subReq->'page' || jsonb_build_object('scope', scope, 'source', jsonb_build_object('fkInfo', source_id));
-        
-        -- Extract the targets
-        targets := subReq->'targets';
-
-        -- Construct the req object
-        req := jsonb_build_object(
-            'page', page,
-            'targets', targets,
-            'pkProject', project_id
-        );
-
-        -- Append the req object to the results array
-        reqs := reqs || jsonb_build_array(req);
-    END LOOP;
-	
-    -- Return the results array
-    RETURN reqs;
+	RETURN QUERY
+	SELECT 
+		project_id AS pk_project,
+		scope_type,
+		(page_request->'page'->'isOutgoing')::bool is_outgoing,
+		(page_request->'page'->'property'->'fkProperty')::int AS fk_property,
+		source_id AS source_info_id,
+		NULL::int AS source_data_id,
+		NULL::bigint AS source_tables_cell_id,
+		NULL::bigint AS source_tables_row_id,
+        (page_request->'page'->'isCircular')::bool AS is_circular,		
+		(page_request->'page'->'limit')::int AS _limit,		
+		(page_request->'page'->'offset')::int AS _offset,
+		page_request->'targets' targets
+	FROM jsonb_array_elements(nestedReqs) page_request;  
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION commons.get_field_statements_and_child_requests(
+	_pk_project int,
+	_scope_type text,
+	_is_outgoing bool,
+	_fk_property int,
+	_source_info_id int,
+	_source_data_id int,
+	_source_tables_cell_id bigint,
+	_source_tables_row_id bigint,
+    _is_circular boolean,
+	__limit int,		
+	__offset int,
+	_targets jsonb
+)
+RETURNS SETOF field_page_row AS $$
+BEGIN
+	RETURN QUERY	
+	SELECT 	
+		-- this request
+		_pk_project AS pk_project,
+		_scope_type AS scope_type,
+		_is_outgoing AS is_outgoing,
+		_fk_property AS fk_property,
+		_source_info_id AS source_info_id,
+		_source_data_id AS source_data_id,
+		_source_tables_cell_id AS source_tables_cell_id,
+		_source_tables_row_id AS source_tables_row_id,
+        _is_circular AS is_circular,
+		__limit AS _limit,
+		__offset AS _offset,
+		
+		-- resulting data
+		stmt.paginated_statement,
+		stmt.ord_num,
+		stmt.count,
+		
+		--- resulting child request
+		child.pk_project AS child_pk_project, 
+		child.scope_type AS child_scope_type,
+		child.is_outgoing AS child_is_outgoing, 
+		child.fk_property AS child_fk_property, 
+		child.source_info_id AS child_source_info_id, 
+		child.source_data_id AS child_source_data_id, 
+		child.source_tables_cell_id AS child_source_tables_cell_id, 
+		child.source_tables_row_id AS child_source_tables_row_id, 
+        child.is_circular AS child_is_circular,
+		child._limit AS child_limit, 		
+		child._offset AS child_offset, 
+		child.targets AS child_targets 
+	FROM
+			(	
+				SELECT * 
+				FROM commons.field_page_incoming_in_project(
+					_pk_project,
+					_fk_property,
+					COALESCE(_source_info_id, 0),
+					COALESCE(_source_data_id, 0),
+					COALESCE(_source_tables_cell_id, 0),
+					COALESCE(_source_tables_row_id, 0),
+					__limit,
+					__offset
+				)
+				WHERE _scope_type = 'inProject'
+				AND _is_outgoing IS FALSE
+				
+				UNION ALL 
+				
+				SELECT * 
+				FROM commons.field_page_outgoing_in_project(
+					_pk_project,
+					_fk_property,
+					COALESCE(_source_info_id, 0),
+					COALESCE(_source_data_id, 0),
+					COALESCE(_source_tables_cell_id, 0),
+					COALESCE(_source_tables_row_id, 0),
+					__limit,
+					__offset
+				)
+				WHERE _scope_type = 'inProject'
+				AND _is_outgoing IS TRUE
+			)
+			AS stmt
+		LEFT JOIN LATERAL commons.create_field_page_req(
+				_pk_project, -- from parent's child request
+				stmt.target_entity_id, -- from resulting data
+				_scope_type, -- from parent's child request
+				_targets->target_class::text->'nestedResource' -- from parent's child request
+			) AS child ON TRUE; -- child requests
+ END;
+$$ LANGUAGE plpgsql;
+
+
+
+CREATE OR REPLACE FUNCTION commons.get_field_statements_and_child_requests_recursive(
+	_pk_project int,
+	_scope_type text,
+	_is_outgoing bool,
+	_fk_property int,
+	_source_info_id int,
+	_source_data_id int,
+	_source_tables_cell_id bigint,
+	_source_tables_row_id bigint,
+    _is_circular bool,
+	__limit int,		
+	__offset int,
+	_targets jsonb,
+	_parent_rows field_page_row[]
+)
+RETURNS field_page_row[] AS $$
+DECLARE
+    rec field_page_row;
+    _rows field_page_row[];
+BEGIN
+    -- initialize rows
+	_rows := _parent_rows;
+
+	FOR rec IN 
+		SELECT *
+		FROM commons.get_field_statements_and_child_requests(
+			_pk_project, _scope_type, _is_outgoing, _fk_property, _source_info_id, _source_data_id, _source_tables_cell_id, _source_tables_row_id, _is_circular, __limit, __offset, _targets
+		) AS s
+	LOOP
+	
+		IF rec.child_pk_project IS NOT NULL THEN
+			_rows := _rows || commons.get_field_statements_and_child_requests_recursive(
+				rec.child_pk_project, rec.child_scope_type, rec.child_is_outgoing, rec.child_fk_property, rec.child_source_info_id, rec.child_source_data_id, rec.child_source_tables_cell_id, rec.child_source_tables_row_id, rec.child_is_circular, rec.child_limit, rec.child_offset, rec.child_targets,
+				ARRAY[rec]
+			);
+        ELSE 
+            -- append this row to final result
+		    _rows := _rows || rec;
+		END IF;
+
+		
+	END LOOP;
+	
+	RETURN _rows; 
+	
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION commons.get_field_page(
+	page_request jsonb
+)
+RETURNS jsonb AS $$
+DECLARE
+	_scope_type text;
+	_result jsonb;
+BEGIN
+	
+	-- get the scope type
+	SELECT key INTO _scope_type
+	FROM jsonb_object_keys(page_request->'page'->'scope') key
+	LIMIT 1;
+		
+	WITH field_pages_with_statements AS (
+		SELECT (unnest(x)).* 
+		FROM commons.get_field_statements_and_child_requests_recursive(
+		  	(page_request->'pkProject')::int,
+			_scope_type,
+			(page_request->'page'->'isOutgoing')::bool,
+			(page_request->'page'->'property'->'fkProperty')::int,
+			(page_request->'page'->'source'->'fkInfo')::int,
+			(page_request->'page'->'source'->'fkData')::int,
+			(page_request->'page'->'source'->'fkTablesCell')::bigint,
+			(page_request->'page'->'source'->'fkTablesRow')::bigint,
+			(page_request->'page'->'isCircular')::bool,
+			(page_request->'page'->'limit')::int,		
+			(page_request->'page'->'offset')::int,
+			page_request->'targets',
+			ARRAY[]::field_page_row[]
+		) x
+	), 
+	grouped_by_page AS (
+		SELECT jsonb_build_object(
+			'paginatedStatements', json_agg(paginated_statement),
+			'count', count,
+            'validFor', now(),
+			'page', jsonb_strip_nulls(jsonb_build_object(
+					'source', jsonb_strip_nulls(jsonb_build_object(
+						'fkInfo', source_info_id,
+						'fkData', source_data_id,
+						'fkTablesCell', source_tables_cell_id,
+						'fkTablesRow', source_tables_row_id
+					)),
+					'property', jsonb_build_object(
+						'fkProperty', fk_property
+					),
+					'isOutgoing', is_outgoing,
+					'isCircular', is_circular,
+                    'limit', _limit,
+					'offset', _offset,
+					'scope',  (CASE WHEN scope_type IN ('inRepo', 'noContraint')
+                                    THEN '{"' || scope_type || '": true }'
+                                    ELSE '{"' || scope_type || '": '|| pk_project ||'}'
+                                END)::jsonb
+			))
+		) AS field_page
+		FROM field_pages_with_statements
+		GROUP BY 
+		pk_project,
+		scope_type,
+		is_outgoing,
+		fk_property,
+		source_info_id,
+		source_data_id,
+		source_tables_cell_id,
+		source_tables_row_id,
+        is_circular,
+		_limit,		
+		_offset,
+		count
+	)
+	SELECT json_agg(field_page) INTO _result
+	FROM grouped_by_page;
+	
+	RETURN _result;
+	
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION commons.get_field_pages(
+	page_requests jsonb
+)
+RETURNS jsonb AS $$
+DECLARE
+	rec jsonb;
+	_field_pages jsonb := '[]'::jsonb;
+BEGIN
+
+	-- Loop over each element in the JSONB array
+    FOR rec IN SELECT * FROM jsonb_array_elements(page_requests)
+    LOOP
+        -- Process each element
+        _field_pages := _field_pages || commons.get_field_page(rec);
+
+    END LOOP;
+	
+	RETURN jsonb_build_object(
+		'subfieldPages', _field_pages
+	);
+	
+END;
+$$ LANGUAGE plpgsql;	
 
 
 
