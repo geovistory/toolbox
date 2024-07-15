@@ -1,7 +1,7 @@
 <gv-navbar>
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a routerLink="/"><i class="fa fa-home"></i> Home</a></li>
-    <li class="breadcrumb-item"><a routerLink="/projects">Your Projects</a></li>
+    <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i> Home</a></li>
+    <li class="breadcrumb-item"><a href="/projects">Your Projects</a></li>
     <li class="breadcrumb-item">{{(projectLabel$|async)}}</li>
   </ol>
 
@@ -15,8 +15,7 @@
 <mat-drawer-container class="gv-flex-fh">
 
   <!-- Main Categories (Sources, Entities …) -->
-  <mat-drawer class="gv-main-drawer" mode="side" [opened]=true [disableClose]="true"
-    style="width: 80px">
+  <mat-drawer class="gv-main-drawer" mode="side" [opened]=true [disableClose]="true" style="width: 80px">
 
     <div class="h-100 d-flex flex-column mat-bg-grey-200">
 
