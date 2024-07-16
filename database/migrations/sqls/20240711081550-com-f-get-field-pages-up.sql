@@ -1175,9 +1175,34 @@ CREATE OR REPLACE FUNCTION commons.get_field_page(
 )
 RETURNS jsonb AS $$
 DECLARE
+  -- request vars
+  _pkProject int;
 	_scope_type text;
-	_result jsonb;
+  _isOutgoing bool;
+  _propertyFkProperty int;
+  _sourceFkInfo int;
+  _sourceFkData int;
+  _sourceFkTablesCell bigint;
+  _sourceFkTablesRow bigint;
+  _isCircular bool;
+  _limit int;		
+  _offset int;
+	
+  -- response
+  _result jsonb;
 BEGIN
+
+  -- decompose page request
+  _pkProject := (page_request->'pkProject')::int;
+  _isOutgoing := (page_request->'page'->'isOutgoing')::bool;
+  _propertyFkProperty := (page_request->'page'->'property'->'fkProperty')::int;
+  _sourceFkInfo := (page_request->'page'->'source'->'fkInfo')::int;
+  _sourceFkData := (page_request->'page'->'source'->'fkData')::int;
+  _sourceFkTablesCell := (page_request->'page'->'source'->'fkTablesCell')::bigint;
+  _sourceFkTablesRow := (page_request->'page'->'source'->'fkTablesRow')::bigint;
+  _isCircular := (page_request->'page'->'isCircular')::bool;
+  _limit := (page_request->'page'->'limit')::int;		
+  _offset := (page_request->'page'->'offset')::int;
 	
 	-- get the scope type
 	SELECT key INTO _scope_type
@@ -1187,63 +1212,94 @@ BEGIN
 	WITH field_pages_with_statements AS (
 		SELECT (unnest(x)).* 
 		FROM commons.get_field_statements_and_child_requests_recursive(
-		  	(page_request->'pkProject')::int,
-			_scope_type,
-			(page_request->'page'->'isOutgoing')::bool,
-			(page_request->'page'->'property'->'fkProperty')::int,
-			(page_request->'page'->'source'->'fkInfo')::int,
-			(page_request->'page'->'source'->'fkData')::int,
-			(page_request->'page'->'source'->'fkTablesCell')::bigint,
-			(page_request->'page'->'source'->'fkTablesRow')::bigint,
-			(page_request->'page'->'isCircular')::bool,
-			(page_request->'page'->'limit')::int,		
-			(page_request->'page'->'offset')::int,
+      _pkProject,
+      _scope_type,
+      _isOutgoing,
+      _propertyFkProperty,
+      _sourceFkInfo,
+      _sourceFkData,
+      _sourceFkTablesCell,
+      _sourceFkTablesRow,
+      _isCircular,
+      _limit,
+      _offset,
 			page_request->'targets',
 			ARRAY[]::field_page_row[]
 		) x
 	), 
 	grouped_by_page AS (
 		SELECT jsonb_build_object(
-			'paginatedStatements', json_agg(paginated_statement),
-			'count', count,
+			'paginatedStatements', json_agg(fpws.paginated_statement),
+			'count', fpws.count,
             'validFor', now(),
 			'page', jsonb_strip_nulls(jsonb_build_object(
 					'source', jsonb_strip_nulls(jsonb_build_object(
-						'fkInfo', source_info_id,
-						'fkData', source_data_id,
-						'fkTablesCell', source_tables_cell_id,
-						'fkTablesRow', source_tables_row_id
+						'fkInfo', fpws.source_info_id,
+						'fkData', fpws.source_data_id,
+						'fkTablesCell', fpws.source_tables_cell_id,
+						'fkTablesRow', fpws.source_tables_row_id
 					)),
 					'property', jsonb_build_object(
-						'fkProperty', fk_property
+						'fkProperty', fpws.fk_property
 					),
-					'isOutgoing', is_outgoing,
-					'isCircular', is_circular,
-                    'limit', _limit,
-					'offset', _offset,
-					'scope',  (CASE WHEN scope_type IN ('inRepo', 'noContraint')
-                                    THEN '{"' || scope_type || '": true }'
-                                    ELSE '{"' || scope_type || '": '|| pk_project ||'}'
+					'isOutgoing', fpws.is_outgoing,
+					'isCircular', fpws.is_circular,
+          'limit', fpws._limit,
+					'offset', fpws._offset,
+					'scope',  (CASE WHEN fpws.scope_type IN ('inRepo', 'noContraint')
+                                    THEN '{"' || fpws.scope_type || '": true }'
+                                    ELSE '{"' || fpws.scope_type || '": '|| fpws.pk_project ||'}'
                                 END)::jsonb
 			))
 		) AS field_page
-		FROM field_pages_with_statements
+		FROM field_pages_with_statements fpws
 		GROUP BY 
-		pk_project,
-		scope_type,
-		is_outgoing,
-		fk_property,
-		source_info_id,
-		source_data_id,
-		source_tables_cell_id,
-		source_tables_row_id,
-        is_circular,
-		_limit,		
-		_offset,
-		count
+		fpws.pk_project,
+		fpws.scope_type,
+		fpws.is_outgoing,
+		fpws.fk_property,
+		fpws.source_info_id,
+		fpws.source_data_id,
+		fpws.source_tables_cell_id,
+		fpws.source_tables_row_id,
+    fpws.is_circular,
+		fpws._limit,		
+		fpws._offset,
+		fpws.count
 	)
 	SELECT json_agg(field_page) INTO _result
 	FROM grouped_by_page;
+
+  -- if _result is null then ...?
+
+  IF _result IS NULL THEN 
+
+    SELECT jsonb_build_object(
+			'paginatedStatements', '[]'::jsonb,
+			'count', 0,
+            'validFor', now(),
+			'page', jsonb_strip_nulls(jsonb_build_object(
+					'source', jsonb_strip_nulls(jsonb_build_object(
+						'fkInfo', _sourceFkInfo,
+						'fkData', _sourceFkData,
+						'fkTablesCell', _sourceFkTablesCell,
+						'fkTablesRow', _sourceFkTablesRow
+					)),
+					'property', jsonb_build_object(
+						'fkProperty', _propertyFkProperty
+					),
+					'isOutgoing', _isOutgoing,
+					'isCircular', _isCircular,
+          'limit', _limit,
+					'offset', _offset,
+					'scope',  (CASE WHEN _scope_type IN ('inRepo', 'noContraint')
+                                    THEN '{"' || _scope_type || '": true }'
+                                    ELSE '{"' || _scope_type || '": '|| _pkProject ||'}'
+                                END)::jsonb
+			))
+		) INTO _result;
+
+  END IF;
 	
 	RETURN _result;
 	
