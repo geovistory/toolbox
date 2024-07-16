@@ -47,9 +47,12 @@ export class SubfieldPageController {
   ): Promise<GvPaginationObject> {
 
 
-    const rows = await this.datasource.execute('SELECT * FROM commons.get_field_pages($1);', [reqs]);
+    const rows: {pages: GvPaginationObject}[] = await this.datasource.execute(
+      'SELECT pages FROM commons.get_field_pages($1) AS pages;',
+      [JSON.stringify(reqs)]
+    );
 
-    return rows[0]; // will not work
+    return rows[0].pages;
 
   }
 
