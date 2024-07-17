@@ -73,9 +73,6 @@ VALUES (
         }'::jsonb
     );
 
--- this is normally done by on_upsert_entity_label_config trigger
-REFRESH MATERIALIZED VIEW pgwar.project_label_config;
-
 -- Test 1: Check if function returns the correct entity label 
 SELECT is(
         pgwar.get_project_entity_label(123, 1),
