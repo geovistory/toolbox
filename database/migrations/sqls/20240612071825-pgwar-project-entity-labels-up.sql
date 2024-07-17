@@ -151,12 +151,12 @@ DECLARE
     label text;
 BEGIN
     -- join labels of fields
-	SELECT string_agg(
+	SELECT substring(string_agg(
         -- get label per field
         pgwar.get_target_label_of_field(entity_id, project_id, part->'field'),
         -- separator
          ', '
-    ) INTO label
+    ), 1, 100) INTO label
 	FROM 
     -- expand fields
     jsonb_array_elements(label_config->'labelParts') part;
@@ -362,6 +362,11 @@ RETURNS TRIGGER AS $$
 DECLARE
     is_not_empty BOOLEAN;
 BEGIN
+
+    IF pg_trigger_depth() > 100 THEN
+        RETURN NULL; 
+    END IF;
+
     -- Check if the table is not empty using EXISTS
     SELECT EXISTS(SELECT 1 FROM newtab) INTO is_not_empty;
     
