@@ -158,12 +158,12 @@ DECLARE
     label text;
 BEGIN
     -- join labels of fields
-	SELECT string_agg(
+	SELECT substring(string_agg(
         -- get label per field
         pgwar.get_target_label_of_field(entity_id, project_id, part->'field'),
         -- separator
          ', '
-    ) INTO label
+    ), 1, 100) INTO label
 	FROM 
     -- expand fields
     jsonb_array_elements(label_config->'labelParts') part;
@@ -176,6 +176,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION pgwar.update_entity_label_of_entity_preview(entity_id int, project_id int, new_label text)
 RETURNS void AS $$
 BEGIN
+
     UPDATE pgwar.entity_preview 
     SET entity_label = new_label,
         tmsp_entity_label_modification = CURRENT_TIMESTAMP
@@ -269,6 +270,12 @@ DECLARE
     project_id int;
     entity_id int;
 BEGIN
+
+    -- prevent infinite loops
+    IF pg_trigger_depth() > 100 THEN
+        RETURN NULL; 
+    END IF;
+
     IF TG_OP = 'INSERT' AND NEW.entity_label IS NULL THEN
         RETURN NULL; 
     END IF;
