@@ -66,15 +66,8 @@ psql $DB_URL <<EOF
     VACUUM ANALYZE;
 EOF
 
-# Start project entities
-print_timestamp "Starting project entities..."
-psql $DB_URL <<EOF
-    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start project entities', CLOCK_TIMESTAMP()); 
-    INSERT INTO pgwar.entity_preview(pk_entity, fk_project, fk_class, tmsp_fk_class_modification) 
-    SELECT newtab.pk_entity, ipr.fk_project, newtab.fk_class, CURRENT_TIMESTAMP 
-    FROM information.resource newtab, projects.info_proj_rel ipr 
-    WHERE ipr.fk_entity = newtab.pk_entity AND ipr.is_in_project IS TRUE;
-EOF
+# Start project entities 
+bash pgwar-init-project-entities.sh;
 
 # Start community statements
 print_timestamp "Starting community statements..."
