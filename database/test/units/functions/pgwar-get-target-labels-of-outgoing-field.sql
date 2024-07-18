@@ -52,7 +52,6 @@ SELECT results_eq(
         ARRAY [ 'Label 1',
         'Label 2',
         'Entity 33',
-        NULL,
         'Label 5' ],
         'get_target_labels_of_outgoing_field returns correct labels for entity_id 11, project_id 1, property_id 22, and limit_count 5'
     );
@@ -87,7 +86,6 @@ SELECT results_eq(
         ARRAY [ 'Label 1',
         'Label 2',
         'Entity 33',
-        NULL,
         'Label 5' ],
         'get_target_labels_of_outgoing_field returns correct labels for entity_id 11, project_id 0, property_id 22, and limit_count 5'
     );

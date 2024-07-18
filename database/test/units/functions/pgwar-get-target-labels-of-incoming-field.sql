@@ -1,8 +1,8 @@
 BEGIN;
 
 /**
-* Drop triggers that would reset the entity label to NULL and break the unit test
-**/
+ * Drop triggers that would reset the entity label to NULL and break the unit test
+ **/
 -- Drop trigger after_insert_project_statement
 DROP TRIGGER IF EXISTS after_insert_project_statement ON pgwar.project_statements;
 
@@ -27,7 +27,6 @@ DROP TRIGGER IF EXISTS on_upsert_entity_label_config ON projects.entity_label_co
 SELECT plan(4);
 
 /****** test the project version *****/
-
 INSERT INTO pgwar.project_statements (
         pk_entity,
         fk_project,
@@ -52,10 +51,7 @@ VALUES (31, 1, 88, 'Entity 31'),
 SELECT results_eq(
         'SELECT label::text FROM pgwar.get_target_labels_of_incoming_field(11, 1, 22, 5)',
         ARRAY [ 'Entity 31',
-        NULL,
-        'Entity 33',
-        NULL,
-        NULL ],
+        'Entity 33' ],
         'get_target_labels_of_incoming_field returns correct labels for entity_id 11, project_id 1, property_id 22, and limit_count 5'
     );
 
@@ -89,10 +85,7 @@ VALUES (31, 0, 88, 'Entity 31'),
 SELECT results_eq(
         'SELECT label::text FROM pgwar.get_target_labels_of_incoming_field(11, 0, 22, 5)',
         ARRAY [ 'Entity 31',
-        NULL,
-        'Entity 33',
-        NULL,
-        NULL ],
+        'Entity 33' ],
         'get_target_labels_of_incoming_field returns correct labels for entity_id 11, project_id 0, property_id 22, and limit_count 5'
     );
 

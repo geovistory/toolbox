@@ -14,31 +14,46 @@ CREATE OR REPLACE FUNCTION pgwar.get_target_labels_of_incoming_field(
     limit_count INT
 )
 RETURNS TABLE(label VARCHAR) AS $$
+DECLARE
+    labels VARCHAR[];
+    pstmt RECORD;
+    proj_entity_label VARCHAR;
+    comm_entity_label VARCHAR;
 BEGIN
+    labels := '{}';
+
+    FOR pstmt IN
+        SELECT *
+        FROM pgwar.v_statements_combined
+        WHERE
+            fk_object_info = entity_id
+            AND fk_project = project_id
+            AND fk_property = property_id
+        ORDER BY ord_num_of_domain ASC, tmsp_last_modification DESC
+        LIMIT limit_count
+    LOOP
+        SELECT entity_label INTO proj_entity_label
+        FROM pgwar.entity_preview
+        WHERE fk_project = project_id AND pk_entity = pstmt.fk_subject_info;
+
+        IF proj_entity_label IS NOT NULL THEN
+            labels := array_append(labels, proj_entity_label);
+        ELSE
+            SELECT entity_label INTO comm_entity_label
+            FROM pgwar.entity_preview
+            WHERE fk_project = 0 AND pk_entity = pstmt.fk_subject_info;
+
+            IF comm_entity_label IS NOT NULL THEN
+                labels := array_append(labels, comm_entity_label);
+            END IF;
+        END IF;
+    END LOOP;
+
     RETURN QUERY
-    SELECT coalesce(
-                pep.entity_label, -- take the project entity label,
-                cep.entity_label -- else the community entity label
-            )::VARCHAR AS label
-    FROM pgwar.v_statements_combined pstmt
-    -- join the project entity
-    LEFT JOIN pgwar.entity_preview pep 
-        ON pep.fk_project = project_id
-        AND pstmt.fk_subject_info = pep.pk_entity
-    -- join the community entity
-    LEFT JOIN pgwar.entity_preview cep
-        ON cep.fk_project = 0
-        AND pstmt.fk_subject_info = cep.pk_entity
-    WHERE
-        pstmt.fk_object_info = entity_id
-      	AND pstmt.fk_project = project_id 
-        AND pstmt.fk_property = property_id
-    ORDER BY pstmt.ord_num_of_domain ASC, pstmt.tmsp_last_modification DESC
-    LIMIT limit_count;
+    SELECT unnest(labels);
 END;
 $$ LANGUAGE plpgsql;
 
--- get target labels of outgoing field
 CREATE OR REPLACE FUNCTION pgwar.get_target_labels_of_outgoing_field(
     entity_id INT,
     project_id INT,
@@ -46,31 +61,52 @@ CREATE OR REPLACE FUNCTION pgwar.get_target_labels_of_outgoing_field(
     limit_count INT
 )
 RETURNS TABLE(label VARCHAR) AS $$
+DECLARE
+    labels VARCHAR[];
+    pstmt RECORD;
+    obj_label VARCHAR;
+    proj_entity_label VARCHAR;
+    comm_entity_label VARCHAR;
 BEGIN
+    labels := '{}';
+
+    FOR pstmt IN
+        SELECT *
+        FROM pgwar.v_statements_combined
+        WHERE
+            fk_subject_info = entity_id
+            AND fk_project = project_id
+            AND fk_property = property_id
+        ORDER BY ord_num_of_range ASC, tmsp_last_modification DESC
+        LIMIT limit_count
+    LOOP
+        obj_label := pstmt.object_label;
+
+        IF obj_label IS NOT NULL THEN
+            labels := array_append(labels, obj_label);
+        ELSE
+            SELECT entity_label INTO proj_entity_label
+            FROM pgwar.entity_preview
+            WHERE fk_project = project_id AND pk_entity = pstmt.fk_object_info;
+
+            IF proj_entity_label IS NOT NULL THEN
+                labels := array_append(labels, proj_entity_label);
+            ELSE
+                SELECT entity_label INTO comm_entity_label
+                FROM pgwar.entity_preview
+                WHERE fk_project = 0 AND pk_entity = pstmt.fk_object_info;
+
+                IF comm_entity_label IS NOT NULL THEN
+                    labels := array_append(labels, comm_entity_label);
+                END IF;
+            END IF;
+        END IF;
+    END LOOP;
+
     RETURN QUERY
-    SELECT coalesce(
-                pstmt.object_label, -- take the literal label
-                pep.entity_label, -- else the project entity label,
-                cep.entity_label -- else the community entity label
-            )::VARCHAR AS label
-    FROM pgwar.v_statements_combined pstmt
-    -- join the project entity
-    LEFT JOIN pgwar.entity_preview pep 
-        ON pep.fk_project = project_id
-        AND pstmt.fk_object_info = pep.pk_entity
-    -- join the community entity
-    LEFT JOIN pgwar.entity_preview cep
-        ON cep.fk_project = 0
-        AND pstmt.fk_object_info = cep.pk_entity
-    WHERE
-        pstmt.fk_subject_info = entity_id
-      	AND pstmt.fk_project = project_id 
-        AND pstmt.fk_property = property_id
-    ORDER BY pstmt.ord_num_of_range ASC, pstmt.tmsp_last_modification DESC
-    LIMIT limit_count;
+    SELECT unnest(labels);
 END;
 $$ LANGUAGE plpgsql;
-
 
 -- get target label of field
 CREATE OR REPLACE FUNCTION pgwar.get_target_label_of_field(entity_id int, project_id int, field jsonb)

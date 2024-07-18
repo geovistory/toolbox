@@ -9,7 +9,6 @@ print_timestamp() {
 # Define the database connection details
 DB_URL="postgres://postgres:pw@localhost:15432/filled_db"
 
-
 # Query to get pk_entity values
 QUERY="SELECT pk_entity FROM projects.project;"
 
@@ -36,6 +35,6 @@ psql $DB_URL  --tuples-only -c "$QUERY" | while IFS= read -r pk_entity; do
             WHERE ipr.fk_entity = entity.pk_entity 
             AND ipr.is_in_project IS TRUE
             AND ipr.fk_project = $pk_entity;
-        EOF
+EOF
     fi
 done
