@@ -270,32 +270,6 @@ BEGIN
                 pgwar.get_project_entity_label(newtab.pk_entity, newtab.fk_project) AS entity_label
         FROM newtab
         WHERE newtab.fk_project != 0
-        UNION ALL
-
-        -- Create entity labels of the related object entities
-        SELECT  stmt.fk_object_info AS pk_entity, 
-                newtab.fk_project, 
-                pgwar.get_project_entity_label(stmt.fk_object_info, newtab.fk_project) AS entity_label
-        FROM pgwar.project_statements stmt,
-            newtab
-        WHERE newtab.entity_label IS NOT NULL 
-        AND newtab.fk_project != 0
-        AND stmt.fk_subject_info = newtab.pk_entity
-        AND stmt.fk_project = newtab.fk_project
-        AND stmt.object_label IS NULL
-        UNION ALL
-
-        -- Create entity labels of the related subject entities
-        SELECT  stmt.fk_subject_info AS pk_entity, 
-                newtab.fk_project, 
-                pgwar.get_project_entity_label(stmt.fk_subject_info, newtab.fk_project) AS entity_label
-        FROM pgwar.project_statements stmt,
-            newtab
-        WHERE newtab.entity_label IS NOT NULL 
-        AND newtab.fk_project != 0
-        AND stmt.fk_object_info = newtab.pk_entity
-        AND stmt.fk_project = newtab.fk_project
-        AND stmt.object_label IS NULL
     )
     -- Update the project entity labels
     UPDATE pgwar.entity_preview ep
