@@ -340,3 +340,13 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
+
+/**
+* Indexes
+**/
+
+CREATE INDEX IF NOT EXISTS community_statements_fk_object_info_fk_property_idx
+    ON pgwar.community_statements(fk_object_info,fk_property);
+
+CREATE INDEX IF NOT EXISTS community_statements_fk_subject_info_fk_property_dx
+    ON pgwar.community_statements(fk_subject_info,fk_property);

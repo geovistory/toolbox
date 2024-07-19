@@ -9,6 +9,9 @@ print_timestamp() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
 }
 
+# Get the directory of the current script
+SCRIPT_DIR=$(dirname "$0")
+
 # Create initialization table if it doesn't exist
 print_timestamp "Creating initialization table if it doesn't exist..."
 psql $DB_URL <<EOF
@@ -63,17 +66,36 @@ EOF
 # Start VACUUM ANALYZE
 print_timestamp "Starting VACUUM ANALYZE..."
 psql $DB_URL <<EOF
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('VACUUM ANALYZE', CLOCK_TIMESTAMP()); 
     VACUUM ANALYZE;
 EOF
 
 # Start project entities 
-bash pgwar-init-project-entities.sh;
+psql $DB_URL <<EOF
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start project entities', CLOCK_TIMESTAMP()); 
+EOF
+bash $SCRIPT_DIR/pgwar-init-project-entities/create-tables.sh;
+bash $SCRIPT_DIR/pgwar-init-project-entities/loop-over-tables.sh;
+
+# Start VACUUM ANALYZE
+print_timestamp "Starting VACUUM ANALYZE..."
+psql $DB_URL <<EOF
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('VACUUM ANALYZE', CLOCK_TIMESTAMP()); 
+    VACUUM ANALYZE;
+EOF
 
 # Start community statements
 print_timestamp "Starting community statements..."
 psql $DB_URL <<EOF
-    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start c-statements', CLOCK_TIMESTAMP()); 
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start community statements', CLOCK_TIMESTAMP()); 
     SELECT pgwar.update_community_statements_from_upserts();
+EOF
+
+# Start VACUUM ANALYZE
+print_timestamp "Starting VACUUM ANALYZE..."
+psql $DB_URL <<EOF
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('VACUUM ANALYZE', CLOCK_TIMESTAMP()); 
+    VACUUM ANALYZE;
 EOF
 
 # Start full texts
@@ -88,11 +110,25 @@ print_timestamp "Starting entity class metadata..."
 psql $DB_URL <<EOF
     INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start entity class', CLOCK_TIMESTAMP()); 
     SELECT pgwar.update_entity_class(); 
-    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('end', CLOCK_TIMESTAMP());
+EOF
+
+# Start entity fk_type
+print_timestamp "Starting entity fk_type..."
+psql $DB_URL <<EOF
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start fk_type', CLOCK_TIMESTAMP()); 
+    SELECT pgwar.update_fk_type(); 
+EOF
+
+# Start entity type label
+print_timestamp "Starting entity type label..."
+psql $DB_URL <<EOF
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start type label', CLOCK_TIMESTAMP()); 
+    SELECT pgwar.update_type_label(); 
 EOF
 
 # Select from pgwar.initialization
-print_timestamp "Selecting from pgwar.initialization..."
+print_timestamp "FINISHED PGWAR INIT"
 psql $DB_URL <<EOF
+INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('end', CLOCK_TIMESTAMP());
 SELECT * FROM pgwar.initialization;
 EOF
