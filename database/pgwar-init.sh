@@ -2,7 +2,11 @@
 set -e
 
 # Define the database connection details
-DB_URL="postgres://postgres:pw@localhost:15432/filled_db"
+DB_URL="postgres://postgres:pw@localhost:55432/filled_db"
+
+#Set the number of concurrent tasks for the parallelization
+CONCURRENT_TASKS=24
+
 
 # Function to print the current timestamp and message
 print_timestamp() {
@@ -34,10 +38,10 @@ TRUNCATE pgwar.entity_preview;
 EOF
 
 # Truncate pgwar.project_statements
-print_timestamp "Truncating pgwar.project_statements..."
-psql $DB_URL <<EOF
-TRUNCATE pgwar.project_statements;
-EOF
+#print_timestamp "Truncating pgwar.project_statements..."
+#psql $DB_URL <<EOF
+#TRUNCATE pgwar.project_statements;
+#EOF
 
 # Truncate pgwar.initialization
 print_timestamp "Truncating pgwar.initialization..."
@@ -46,12 +50,12 @@ TRUNCATE pgwar.initialization;
 EOF
 
 # Start project statements
-print_timestamp "Starting project statements..."
-psql $DB_URL <<EOF
-    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start statements', CLOCK_TIMESTAMP()); 
-    SELECT pgwar.update_from_statement(item) 
-    FROM (SELECT i.* FROM information.statement i) AS item;
-EOF
+#print_timestamp "Starting project statements..."
+#psql $DB_URL <<EOF
+#    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start statements', CLOCK_TIMESTAMP());
+#    SELECT pgwar.update_from_statement(item)
+#    FROM (SELECT i.* FROM information.statement i) AS item;
+#EOF
 
 # Start community entities
 print_timestamp "Starting community entities..."
@@ -74,8 +78,8 @@ EOF
 psql $DB_URL <<EOF
     INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start project entities', CLOCK_TIMESTAMP()); 
 EOF
-bash $SCRIPT_DIR/pgwar-init-project-entities/create-tables.sh;
-bash $SCRIPT_DIR/pgwar-init-project-entities/loop-over-tables.sh;
+bash $SCRIPT_DIR/pgwar-init-project-entities/create-tables.sh $CONCURRENT_TASKS;
+bash $SCRIPT_DIR/pgwar-init-project-entities/loop-over-tables.sh $CONCURRENT_TASKS;
 
 # Start VACUUM ANALYZE
 print_timestamp "Starting VACUUM ANALYZE..."

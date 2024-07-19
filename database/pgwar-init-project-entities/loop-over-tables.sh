@@ -2,9 +2,9 @@
 set -e
 
 # Define the database connection details
-DB_URL="postgres://postgres:pw@localhost:15432/filled_db"
+DB_URL="postgres://postgres:pw@localhost:55432/filled_db"
 BATCH_SIZE=1000
-CONCURRENT_TASKS=10
+CONCURRENT_TASKS=$1
 
 # Function to print the current timestamp and message
 print_timestamp() {

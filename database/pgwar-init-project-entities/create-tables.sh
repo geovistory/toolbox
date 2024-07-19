@@ -1,13 +1,16 @@
 #!/bin/bash
 set -e
 
+NUMBER_OF_TABLES=$1
+
+
 # Function to print the current timestamp and message
 print_timestamp() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
 }
 
 # Define the database connection details
-DB_URL="postgres://postgres:pw@localhost:15432/filled_db"
+DB_URL="postgres://postgres:pw@localhost:55432/filled_db"
 
 # Base query
 BASE_QUERY="SELECT e.pk_entity, e.fk_class, ipr.fk_project FROM projects.info_proj_rel ipr, information.resource e WHERE e.pk_entity = ipr.fk_entity ORDER BY ipr.fk_project ASC"
@@ -17,16 +20,16 @@ print_timestamp "Counting total number of rows..."
 TOTAL_ROWS=$(psql $DB_URL --tuples-only --no-align -c "SELECT COUNT(*) FROM ($BASE_QUERY) AS subquery;")
 
 # Calculate rows per table
-ROWS_PER_TABLE=$((TOTAL_ROWS / 10))
-if (( TOTAL_ROWS % 10 != 0 )); then
+ROWS_PER_TABLE=$((TOTAL_ROWS / NUMBER_OF_TABLES))
+if (( TOTAL_ROWS % NUMBER_OF_TABLES != 0 )); then
   ROWS_PER_TABLE=$((ROWS_PER_TABLE + 1))
 fi
 
 print_timestamp "Total rows: $TOTAL_ROWS"
 print_timestamp "Rows per table: $ROWS_PER_TABLE"
 
-# Loop to create 10 tables
-for i in $(seq 1 10); do
+# Loop to create NUMBER_OF_TABLES tables
+for i in $(seq 1 $NUMBER_OF_TABLES); do
   OFFSET=$(( (i - 1) * ROWS_PER_TABLE ))
   TABLE_NAME="pgwar.temp_init_project_entities_$i"
 
