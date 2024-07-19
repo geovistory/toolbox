@@ -304,6 +304,7 @@ CREATE OR REPLACE FUNCTION pgwar.update_entity_labels_after_update()
 RETURNS TRIGGER AS $$
 DECLARE
     is_not_empty BOOLEAN;
+    to_update_community INTEGER[];
 BEGIN
 
     IF pg_trigger_depth() > 100 THEN
@@ -338,62 +339,93 @@ BEGIN
         AND ep.fk_project = fk_class_modified.fk_project
         AND ep.entity_label IS DISTINCT FROM fk_class_modified.entity_label;
 
-         -- Update entity labels after modifying entity preview entity_label
-    	WITH label_changed AS (
-			SELECT 
-				newtab.pk_entity,
-				newtab.fk_project
-			FROM
-				newtab,
-				oldtab 
-            WHERE  
-				newtab.fk_project != 0 AND
-                oldtab.pk_entity = newtab.pk_entity AND
-                oldtab.fk_project = newtab.fk_project AND
-				oldtab.entity_label IS DISTINCT FROM newtab.entity_label -- entity_label changed ! 
-		),
-        new_labels AS (
-            -- Create entity labels of the related object entities
-            SELECT  stmt.fk_object_info AS pk_entity, 
-                    label_changed.fk_project, 
-                    pgwar.get_project_entity_label(stmt.fk_object_info, label_changed.fk_project) AS entity_label
-            FROM pgwar.project_statements stmt,
-                label_changed
-            WHERE stmt.fk_subject_info = label_changed.pk_entity
-            AND stmt.fk_project = label_changed.fk_project
-            AND stmt.object_label IS NULL
-            UNION ALL
+        WITH label_changed AS (
+                    SELECT 
+                        newtab.pk_entity,
+                        newtab.fk_project
+                    FROM
+                        newtab
+                        JOIN oldtab 
+                            ON  oldtab.pk_entity = newtab.pk_entity AND
+                                oldtab.fk_project = newtab.fk_project AND
+                                oldtab.entity_label IS DISTINCT FROM newtab.entity_label -- entity_label changed ! 
+                    WHERE  
+                        newtab.fk_project != 0
+                ),
+                new_labels AS (
+                    -- Create entity labels of the related object entities
+                    SELECT  stmt.fk_object_info AS pk_entity, 
+                            label_changed.fk_project, 
+                            pgwar.get_project_entity_label(stmt.fk_object_info, label_changed.fk_project) AS entity_label
+                    FROM pgwar.project_statements stmt,
+                        label_changed
+                    WHERE stmt.fk_subject_info = label_changed.pk_entity
+                    AND stmt.fk_project = label_changed.fk_project
+                    AND stmt.object_label IS NULL
+                )
+                    -- Update the project entity labels
+                    UPDATE pgwar.entity_preview ep
+                    SET entity_label = new_labels.entity_label
+                    FROM new_labels
+                    WHERE ep.pk_entity = new_labels.pk_entity
+                    AND ep.fk_project = new_labels.fk_project
+                    AND ep.entity_label IS DISTINCT FROM new_labels.entity_label
+            ;
 
-            -- Create entity labels of the related subject entities
-            SELECT  stmt.fk_subject_info AS pk_entity, 
-                    label_changed.fk_project, 
-                    pgwar.get_project_entity_label(stmt.fk_subject_info, label_changed.fk_project) AS entity_label
-            FROM pgwar.project_statements stmt,
-                label_changed
-            WHERE stmt.fk_object_info = label_changed.pk_entity
-            AND stmt.fk_project = label_changed.fk_project
-            AND stmt.object_label IS NULL
-        ),
-        update_project_labels AS (
-            -- Update the project entity labels
-            UPDATE pgwar.entity_preview ep
-            SET entity_label = new_labels.entity_label
-            FROM new_labels
-            WHERE ep.pk_entity = new_labels.pk_entity
-            AND ep.fk_project = new_labels.fk_project
-            AND ep.entity_label IS DISTINCT FROM new_labels.entity_label
-        ),
-        uniq_entities AS (
-            SELECT DISTINCT pk_entity
-            FROM label_changed
-        )
-        -- Update community entity labels
+
+        WITH label_changed AS (
+                    SELECT 
+                        newtab.pk_entity,
+                        newtab.fk_project
+                    FROM
+                        newtab
+                        JOIN oldtab 
+                            ON  oldtab.pk_entity = newtab.pk_entity AND
+                                oldtab.fk_project = newtab.fk_project AND
+                                oldtab.entity_label IS DISTINCT FROM newtab.entity_label -- entity_label changed ! 
+                    WHERE  
+                        newtab.fk_project != 0
+                ),
+                new_labels AS (
+                    -- Create entity labels of the related subject entities
+                    SELECT  stmt.fk_subject_info AS pk_entity, 
+                            label_changed.fk_project, 
+                            pgwar.get_project_entity_label(stmt.fk_subject_info, label_changed.fk_project) AS entity_label
+                    FROM pgwar.project_statements stmt,
+                        label_changed
+                    WHERE stmt.fk_object_info = label_changed.pk_entity
+                    AND stmt.fk_project = label_changed.fk_project
+                    AND stmt.object_label IS NULL
+                )   -- Update the project entity labels
+                    UPDATE pgwar.entity_preview ep
+                    SET entity_label = new_labels.entity_label
+                    FROM new_labels
+                    WHERE ep.pk_entity = new_labels.pk_entity
+                    AND ep.fk_project = new_labels.fk_project
+                    AND ep.entity_label IS DISTINCT FROM new_labels.entity_label
+                ;
+
+        -- get ids that need update of community label
+        SELECT array_agg(pk_entity) INTO to_update_community
+        FROM (
+            SELECT newtab.pk_entity
+            FROM
+                newtab
+                JOIN oldtab 
+                    ON  oldtab.pk_entity = newtab.pk_entity AND
+                        oldtab.fk_project = newtab.fk_project AND
+                        oldtab.entity_label IS DISTINCT FROM newtab.entity_label -- entity_label changed ! 
+            WHERE  
+                newtab.fk_project != 0
+            GROUP BY newtab.pk_entity
+        ) as changed;
+
         UPDATE pgwar.entity_preview ep
         SET entity_label = el.entity_label
-        FROM uniq_entities,
+        FROM unnest(to_update_community) as changed_pk_entity(pk_entity),
             pgwar.v_community_entity_label el
-        WHERE uniq_entities.pk_entity = el.pk_entity
-        AND uniq_entities.pk_entity = ep.pk_entity
+        WHERE changed_pk_entity.pk_entity = el.pk_entity
+        AND changed_pk_entity.pk_entity = ep.pk_entity
         AND ep.fk_project = 0
         AND ep.entity_label IS DISTINCT FROM el.entity_label;
 

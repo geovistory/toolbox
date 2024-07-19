@@ -542,17 +542,28 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION pgwar.update_entity_preview_full_text()
 RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE pgwar.entity_preview
-    SET full_text = NEW.full_text
-    WHERE pk_entity = NEW.pk_entity
-    AND fk_project = NEW.fk_project;
 
-    RETURN NEW;
+    UPDATE pgwar.entity_preview ep
+    SET full_text = newtab.full_text
+    FROM newtab
+    WHERE ep.pk_entity = newtab.pk_entity
+    AND ep.fk_project = newtab.fk_project
+    AND ep.full_text IS DISTINCT FROM newtab.full_text;
+
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
--- Create the trigger after_upsert_entity_full_text
-CREATE TRIGGER after_upsert_entity_full_text
-AFTER INSERT OR UPDATE ON pgwar.entity_full_text
-FOR EACH ROW
+
+
+-- Create the trigger after_insert_entity_full_text
+CREATE TRIGGER after_insert_entity_full_text
+AFTER INSERT ON pgwar.entity_full_text
+REFERENCING NEW TABLE AS newtab
+EXECUTE FUNCTION pgwar.update_entity_preview_full_text();
+
+-- Create the trigger after_insert_entity_full_text
+CREATE TRIGGER after_update_entity_full_text
+AFTER UPDATE ON pgwar.entity_full_text
+REFERENCING NEW TABLE AS newtab
 EXECUTE FUNCTION pgwar.update_entity_preview_full_text();
