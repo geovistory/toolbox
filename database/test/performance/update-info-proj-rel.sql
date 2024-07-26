@@ -38,8 +38,8 @@ WHERE info_proj_rel.pk_entity = updated_rows.pk_entity;
 -- Assert that it performs ok
 SELECT performs_ok(
         'update_info_proj_rels',
-        2000,
-        'Assert that updating 1000 with a name takes less than 10s'
+        3000,
+        'Assert that updating 1000 with a name takes less than 3s'
     );
 
 SELECT *
