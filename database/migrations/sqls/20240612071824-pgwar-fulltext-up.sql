@@ -298,6 +298,12 @@ CREATE TABLE IF NOT EXISTS pgwar.entity_full_text(
   tmsp_last_modification timestamp with time zone,
   PRIMARY KEY (pk_entity, fk_project)
 );
+
+CREATE INDEX IF NOT EXISTS entity_full_text_tmsp_last_modification_idx
+    ON pgwar.entity_full_text USING btree
+    (tmsp_last_modification ASC NULLS LAST)
+    TABLESPACE pg_default;
+
 -- add trigger for last_modification_tmsp
 CREATE OR REPLACE TRIGGER last_modification_tmsp
     BEFORE INSERT OR UPDATE 

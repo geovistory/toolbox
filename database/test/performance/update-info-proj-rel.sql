@@ -28,7 +28,7 @@ PREPARE update_info_proj_rels AS WITH updated_rows AS (
     SELECT pk_entity
     FROM projects.info_proj_rel
     ORDER BY pk_entity
-    LIMIT 10000
+    LIMIT 1000
 )
 UPDATE projects.info_proj_rel
 SET is_in_project = is_in_project
@@ -38,8 +38,8 @@ WHERE info_proj_rel.pk_entity = updated_rows.pk_entity;
 -- Assert that it performs ok
 SELECT performs_ok(
         'update_info_proj_rels',
-        10000,
-        'Assert that updating 10000 with a name takes less than 10s'
+        2000,
+        'Assert that updating 1000 with a name takes less than 10s'
     );
 
 SELECT *

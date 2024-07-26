@@ -1,3 +1,6 @@
+-- Drop Index
+DROP INDEX IF EXISTS pgwar.entity_full_text_tmsp_last_modification_idx;
+
 -- Drop triggers
 DROP TRIGGER after_upsert_entity_full_text ON pgwar.entity_full_text;
 

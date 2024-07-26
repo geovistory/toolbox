@@ -2,8 +2,8 @@
 set -e
 
 # Define the database connection details
-DB_URL="postgres://postgres:pw@localhost:55432/filled_db"
-BATCH_SIZE=1000
+DB_URL=$2
+BATCH_SIZE=100
 CONCURRENT_TASKS=$1
 
 # Function to print the current timestamp and message
@@ -75,7 +75,7 @@ process_table() {
   print_timestamp "Completed processing table $table_name."
 }
 
-# Start 10 parallel tasks
+# Start parallel tasks
 for i in $(seq 1 $CONCURRENT_TASKS); do
   TABLE_NAME="pgwar.temp_init_project_entities_$i"
   process_table $TABLE_NAME &

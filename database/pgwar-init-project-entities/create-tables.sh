@@ -4,13 +4,14 @@ set -e
 NUMBER_OF_TABLES=$1
 
 
+
 # Function to print the current timestamp and message
 print_timestamp() {
   echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
 }
 
 # Define the database connection details
-DB_URL="postgres://postgres:pw@localhost:55432/filled_db"
+DB_URL=$2
 
 # Base query
 BASE_QUERY="SELECT e.pk_entity, e.fk_class, ipr.fk_project FROM projects.info_proj_rel ipr, information.resource e WHERE e.pk_entity = ipr.fk_entity ORDER BY ipr.fk_project ASC"
