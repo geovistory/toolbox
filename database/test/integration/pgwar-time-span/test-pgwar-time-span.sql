@@ -1,0 +1,61 @@
+-- BEGIN;
+--
+-- SELECT plan(1);
+--
+-- -- initialize entity previews
+-- INSERT INTO pgwar.entity_preview (pk_entity, fk_project, fk_class)
+-- VALUES (32, 999, 0),
+-- VALUES (32, 999, 0),
+-- 	(34, 999, 0);
+--
+-- -- add full text for two of the entities
+-- INSERT INTO pgwar.entity_full_text (pk_entity, fk_project, full_text)
+-- VALUES (32, 999, 'full-text-a'),
+-- 	(33, 543, 'full-text-b');
+--
+-- SELECT is(
+-- 		full_text,
+-- 		'full-text-a',
+-- 		'Assert that full-text-a is inserted into entity_preview table after insert'
+-- 	)
+-- FROM pgwar.entity_preview
+-- WHERE pk_entity = 32
+-- 	AND fk_project = 999;
+--
+-- SELECT is(
+-- 		full_text,
+-- 		'full-text-b',
+-- 		'Assert that full-text-b is inserted into entity_preview table after insert'
+-- 	)
+-- FROM pgwar.entity_preview
+-- WHERE pk_entity = 33
+-- 	AND fk_project = 543;
+--
+-- UPDATE pgwar.entity_full_text
+-- SET full_text = 'foo'
+-- WHERE pk_entity = 33
+-- 	AND fk_project = 543;
+--
+-- SELECT is(
+-- 		full_text,
+-- 		'foo',
+-- 		'Assert that foo is inserted into entity_preview table after update'
+-- 	)
+-- FROM pgwar.entity_preview
+-- WHERE pk_entity = 33
+-- 	AND fk_project = 543;
+--
+-- SELECT is(
+-- 		full_text,
+-- 		'full-text-a',
+-- 		'Assert that entity preview 32-999 is not affected by update'
+-- 	)
+-- FROM pgwar.entity_preview
+-- WHERE pk_entity = 32
+-- 	AND fk_project = 999;
+--
+-- -- Finish the tests and clean up.
+-- SELECT *
+-- FROM finish();
+--
+-- ROLLBACK;
