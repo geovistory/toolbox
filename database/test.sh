@@ -48,7 +48,7 @@ if [ "$run_performance_tests" = true ]; then
     fi
 else
     # the empty one for unit and integration tests
-    if [ $DOCKER_PLATFORM = "ARM" ]; then
+    if [[ $DOCKER_PLATFORM = "ARM" ]]; then
         # the one for arm
         export DOCKER_FILE=light.arm.Dockerfile
     else
