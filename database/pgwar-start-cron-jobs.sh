@@ -44,6 +44,22 @@ SELECT cron.schedule_in_database(
   '$TOOLBOX_DB'
 );
 
+-- entity fk_type 
+SELECT cron.schedule_in_database(
+  'update-entity-fk-type',
+  '1 seconds',
+  'SELECT pgwar.update_fk_type()',
+  '$TOOLBOX_DB'
+);
+
+-- entity class 
+SELECT cron.schedule_in_database(
+  'update-entity-type-label',
+  '1 seconds',
+  'SELECT pgwar.update_type_label()',
+  '$TOOLBOX_DB'
+);
+
 -- Delete old cron.job_run_details records of the current user every day at noon
 SELECT cron.schedule(
   'delete-job-run-details',

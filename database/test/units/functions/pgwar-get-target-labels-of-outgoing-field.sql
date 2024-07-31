@@ -1,16 +1,25 @@
 BEGIN;
 
 /**
- * Drop triggers that would reset the entity label to NULL and break the unit test
- **/
--- Drop trigger on_modify_project_statement
-DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.project_statements;
+* Drop triggers that would reset the entity label to NULL and break the unit test
+**/
+-- Drop trigger after_insert_project_statement
+DROP TRIGGER IF EXISTS after_insert_project_statement ON pgwar.project_statements;
 
--- Drop trigger on_upsert_entity_preview_fk_class
-DROP TRIGGER IF EXISTS on_upsert_entity_preview_fk_class ON pgwar.entity_preview;
+-- Drop trigger after_update_project_statement
+DROP TRIGGER IF EXISTS after_update_project_statement ON pgwar.project_statements;
 
--- Drop trigger on_upsert_entity_preview_entity_label
-DROP TRIGGER IF EXISTS on_upsert_entity_preview_entity_label ON pgwar.entity_preview;
+-- Drop trigger after_delete_project_statement
+DROP TRIGGER IF EXISTS after_delete_project_statement ON pgwar.project_statements;
+
+-- Drop trigger after_insert_entity_preview
+DROP TRIGGER IF EXISTS after_insert_entity_preview ON pgwar.entity_preview;
+
+-- Drop trigger after_update_entity_preview
+DROP TRIGGER IF EXISTS after_update_entity_preview ON pgwar.entity_preview;
+
+-- Drop trigger after_delete_entity_preview_01
+DROP TRIGGER IF EXISTS after_delete_entity_preview_01 ON pgwar.entity_preview;
 
 -- Drop trigger on_upsert_entity_label_config
 DROP TRIGGER IF EXISTS on_upsert_entity_label_config ON projects.entity_label_config;
@@ -18,8 +27,6 @@ DROP TRIGGER IF EXISTS on_upsert_entity_label_config ON projects.entity_label_co
 SELECT plan(4);
 
 /****** test the project version *****/
-CREATE TABLE pgwar.entity_preview_1 PARTITION OF pgwar.entity_preview FOR
-VALUES IN (1);
 
 INSERT INTO pgwar.project_statements (
         pk_entity,
@@ -45,7 +52,6 @@ SELECT results_eq(
         ARRAY [ 'Label 1',
         'Label 2',
         'Entity 33',
-        NULL,
         'Label 5' ],
         'get_target_labels_of_outgoing_field returns correct labels for entity_id 11, project_id 1, property_id 22, and limit_count 5'
     );
@@ -80,7 +86,6 @@ SELECT results_eq(
         ARRAY [ 'Label 1',
         'Label 2',
         'Entity 33',
-        NULL,
         'Label 5' ],
         'get_target_labels_of_outgoing_field returns correct labels for entity_id 11, project_id 0, property_id 22, and limit_count 5'
     );

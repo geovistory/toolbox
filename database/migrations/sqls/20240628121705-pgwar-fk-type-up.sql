@@ -1,10 +1,10 @@
 CREATE
-OR REPLACE FUNCTION  pgwar.update_fk_entity() RETURNS void AS $$
+OR REPLACE FUNCTION pgwar.update_fk_type() RETURNS void AS $$
 DECLARE
     _job_name text;
     _current_offset timestamp;
 BEGIN
-    _job_name := 'update-fk-entity';
+    _job_name := 'update-fk-type';
     -- Function logic goes here
 
      -- initialize offset, if needed

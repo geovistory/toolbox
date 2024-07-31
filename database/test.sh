@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e # exit on error (e.g. when migrations fail)
 
 # Usage
 # To run unit tests: bash ./test.sh -u
@@ -38,7 +39,7 @@ export POSTGRES_PORT=$POSTGRES_PORT_TEST
 # Set the Dockerfile
 if [ "$run_performance_tests" = true ]; then
     # the filled one for performance tests
-    if [ $DOCKER_PLATFORM = "ARM" ]; then
+    if [ "$DOCKER_PLATFORM" = "ARM" ]; then
         # the one for arm
         export DOCKER_FILE=heavy.arm.Dockerfile
     else
