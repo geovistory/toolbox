@@ -1,6 +1,6 @@
 BEGIN;
 
-SELECT plan(1);
+SELECT plan(2);
 
 -- Drop trigger after_insert_project_statement
 DROP TRIGGER IF EXISTS after_insert_project_statement ON pgwar.project_statements;
@@ -185,6 +185,36 @@ SELECT is(
 	)
 FROM pgwar.entity_preview
 WHERE pk_entity = 32
+	AND fk_project = 999;
+
+SELECT is(
+		time_span,
+        '{
+           "p82": {
+             "calendar": "gregorian",
+             "duration": "1 month",
+             "julianDay": 2411369
+           }
+         }'::jsonb,
+		'time span json is correctly constructed'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 33
+	AND fk_project = 999;
+
+SELECT is(
+		time_span,
+        '{
+           "p82": {
+             "calendar": "gregorian",
+             "duration": "1 year",
+             "julianDay": 2411369
+           }
+         }'::jsonb,
+		'time span json is correctly constructed'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 34
 	AND fk_project = 999;
 
 
