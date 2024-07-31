@@ -1,6 +1,6 @@
 BEGIN;
 
-SELECT plan(2);
+SELECT plan(9);
 
 -- Drop trigger after_insert_project_statement
 DROP TRIGGER IF EXISTS after_insert_project_statement ON pgwar.project_statements;
@@ -207,11 +207,65 @@ SELECT is(
         '{
            "p82": {
              "calendar": "gregorian",
-             "duration": "1 year",
+             "duration": "1 day",
              "julianDay": 2411369
            }
          }'::jsonb,
 		'time span json is correctly constructed'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 34
+	AND fk_project = 999;
+
+SELECT is(
+		first_second,
+        208342281600,
+		'first_second is correct in entity_preview'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 32
+	AND fk_project = 999;
+
+SELECT is(
+		first_second,
+        208342281600,
+        'first_second is correct in entity_preview'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 33
+	AND fk_project = 999;
+
+SELECT is(
+		first_second,
+        208342281600,
+        'first_second is correct in entity_preview'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 34
+	AND fk_project = 999;
+
+SELECT is(
+		last_second,
+        208373817600,
+		'last_second is correct in entity_preview'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 32
+	AND fk_project = 999;
+
+SELECT is(
+		last_second,
+        208344873600,
+        'last_second is correct in entity_preview'
+	)
+FROM pgwar.entity_preview
+WHERE pk_entity = 33
+	AND fk_project = 999;
+
+SELECT is(
+		last_second,
+        208342368000,
+        'last_second is correct in entity_preview'
 	)
 FROM pgwar.entity_preview
 WHERE pk_entity = 34
