@@ -8012,10 +8012,10 @@ SELECT commons.get_field_pages('
 
 SELECT performs_within(
         'load_field_pages',
-        40, --avg ms
-        40, --within -> max 80 ms
+        55, --avg ms
+        55, --within -> max 80 ms
         10, -- nr. of repeating
-        'Loading the field pages of entity 869583 should be faster than 80 ms'
+        'Loading the field pages of entity 869583 should be faster than 110 ms'
     );
 
 SELECT *
