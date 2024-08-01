@@ -2,7 +2,7 @@
 -- Start transaction and plan the tests.
 BEGIN;
 
-SELECT plan(1);
+SELECT plan(4);
 
 /**
  * Add Mock Data
@@ -217,8 +217,436 @@ SELECT is(
             ]
         }'
         )::jsonb,
-        'Assert the nested resource is loaded recursively'
+        'Assert the nested resource is loaded recursively in project scope'
     );
+
+
+
+SELECT is(
+        commons.get_field_pages(
+            '
+                [
+                    {
+                    "pkProject": 99,
+                        "page": {
+                        "source": { "fkInfo": 1 },
+                        "property": {
+                            "fkProperty": 1436
+                        },
+                        "isOutgoing": false,
+                        "limit": 1,
+                        "offset": 0,
+                        "scope": { "notInProject": 99 }
+                        },
+                        "targets": {
+                        "633": {
+                            "nestedResource": [
+                                {
+                                    "targets": {},
+                                    "page": {
+                                        "property": {
+                                            "fkProperty": 1436
+                                        },
+                                        "isOutgoing": true,
+                                        "limit": 1,
+                                        "offset": 0,
+                                        "isCircular": true
+                                    }
+                                }
+                            ]
+                            }
+                        }
+                    }
+                ]'
+                ),
+                ('{
+            "subfieldPages": [
+                {
+                    "page": {
+                        "limit": 1,
+                        "scope": {
+                            "inRepo": true
+                        },
+                        "offset": 0,
+                        "source": {
+                            "fkInfo": 3
+                        },
+                        "property": {
+                            "fkProperty": 1436
+                        },
+                        "isCircular": true,
+                        "isOutgoing": true
+                    },
+                    "count": 2,
+                    "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
+                    "paginatedStatements": [
+                        {
+                            "target": {
+                                "entity": {
+                                    "resource": {
+                                        "fk_class": 21,
+                                        "pk_entity": 1
+                                    }
+                                }
+                            },
+                            "statement": {
+                                "pk_entity": 101,
+                                "fk_property": 1436,
+                                "fk_object_data": 0,
+                                "fk_object_info": 1,
+                                "fk_subject_data": 0,
+                                "fk_subject_info": 3,
+                                "is_in_project_count": 1,
+                                "fk_object_tables_row": 0,
+                                "fk_object_tables_cell": 0,
+                                "fk_subject_tables_row": 0,
+                                "fk_subject_tables_cell": 0,
+                                "fk_property_of_property": 0,
+                                "is_standard_in_project_count": 0
+                            },
+                            "isOutgoing": true,
+                            "targetClass": 21
+                        }
+                    ]
+                },
+                {
+                    "page": {
+                        "limit": 1,
+                        "scope": {
+                            "notInProject": 99
+                        },
+                        "offset": 0,
+                        "source": {
+                            "fkInfo": 1
+                        },
+                        "property": {
+                            "fkProperty": 1436
+                        },
+                        "isOutgoing": false
+                    },
+                    "count": 1,
+                    "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
+                    "paginatedStatements": [
+                        {
+                            "target": {
+                                "entity": {
+                                    "resource": {
+                                        "fk_class": 633,
+                                        "pk_entity": 3
+                                    }
+                                }
+                            },
+                            "statement": {
+                                "pk_entity": 101,
+                                "fk_property": 1436,
+                                "fk_object_data": 0,
+                                "fk_object_info": 1,
+                                "fk_subject_data": 0,
+                                "fk_subject_info": 3,
+                                "is_in_project_count": 1,
+                                "fk_object_tables_row": 0,
+                                "fk_object_tables_cell": 0,
+                                "fk_subject_tables_row": 0,
+                                "fk_subject_tables_cell": 0,
+                                "fk_property_of_property": 0,
+                                "is_standard_in_project_count": 0
+                            },
+                            "isOutgoing": false,
+                            "targetClass": 633
+                        }
+                    ]
+                }
+            ]
+        }'
+        )::jsonb,
+        'Assert the nested resource is loaded recursively not in project scope'
+    );
+
+
+
+SELECT is(
+        commons.get_field_pages(
+            '
+        [
+            {
+               "pkProject": 345,
+                "page": {
+                "source": { "fkInfo": 1 },
+                "property": {
+                    "fkProperty": 1436
+                },
+                "isOutgoing": false,
+                "limit": 1,
+                "offset": 0,
+                "scope": { "inRepo": true }
+                },
+                "targets": {
+                "633": {
+                    "nestedResource": [
+                        {
+                            "targets": {},
+                            "page": {
+                                "property": {
+                                    "fkProperty": 1436
+                                },
+                                "isOutgoing": true,
+                                "limit": 1,
+                                "offset": 0,
+                                "isCircular": true
+                            }
+                        }
+                    ]
+                    }
+                }
+            }
+        ]'
+        ),
+        ('{
+            "subfieldPages": [
+                {
+                    "page": {
+                        "limit": 1,
+                        "scope": {
+                            "inRepo": true
+                        },
+                        "offset": 0,
+                        "source": {
+                            "fkInfo": 3
+                        },
+                        "property": {
+                            "fkProperty": 1436
+                        },
+                        "isCircular": true,
+                        "isOutgoing": true
+                    },
+                    "count": 2,
+                    "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
+                    "paginatedStatements": [
+                        {
+                            "target": {
+                                "entity": {
+                                    "resource": {
+                                        "fk_class": 21,
+                                        "pk_entity": 1
+                                    }
+                                }
+                            },
+                            "statement": {
+                                "pk_entity": 101,
+                                "fk_property": 1436,
+                                "fk_object_data": 0,
+                                "fk_object_info": 1,
+                                "fk_subject_data": 0,
+                                "fk_subject_info": 3,
+                                "is_in_project_count": 1,
+                                "fk_object_tables_row": 0,
+                                "fk_object_tables_cell": 0,
+                                "fk_subject_tables_row": 0,
+                                "fk_subject_tables_cell": 0,
+                                "fk_property_of_property": 0,
+                                "is_standard_in_project_count": 0
+                            },
+                            "isOutgoing": true,
+                            "targetClass": 21
+                        }
+                    ]
+                },
+                {
+                    "page": {
+                        "limit": 1,
+                        "scope": {
+                            "inRepo": true
+                        },
+                        "offset": 0,
+                        "source": {
+                            "fkInfo": 1
+                        },
+                        "property": {
+                            "fkProperty": 1436
+                        },
+                        "isOutgoing": false
+                    },
+                    "count": 1,
+                    "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
+                    "paginatedStatements": [
+                        {
+                            "target": {
+                                "entity": {
+                                    "resource": {
+                                        "fk_class": 633,
+                                        "pk_entity": 3
+                                    }
+                                }
+                            },
+                            "statement": {
+                                "pk_entity": 101,
+                                "fk_property": 1436,
+                                "fk_object_data": 0,
+                                "fk_object_info": 1,
+                                "fk_subject_data": 0,
+                                "fk_subject_info": 3,
+                                "is_in_project_count": 1,
+                                "fk_object_tables_row": 0,
+                                "fk_object_tables_cell": 0,
+                                "fk_subject_tables_row": 0,
+                                "fk_subject_tables_cell": 0,
+                                "fk_property_of_property": 0,
+                                "is_standard_in_project_count": 0
+                            },
+                            "isOutgoing": false,
+                            "targetClass": 633
+                        }
+                    ]
+                }
+            ]
+        }'
+        )::jsonb,
+        'Assert the nested resource is loaded recursively for inRepo scope'
+    );
+
+
+-- remark: there is a typo in noContraint
+SELECT is(
+        commons.get_field_pages(
+            '
+        [
+            {
+               "pkProject": 345,
+                "page": {
+                "source": { "fkInfo": 1 },
+                "property": {
+                    "fkProperty": 1436
+                },
+                "isOutgoing": false,
+                "limit": 1,
+                "offset": 0,
+                "scope": { "noContraint": true }
+                },
+                "targets": {
+                "633": {
+                    "nestedResource": [
+                        {
+                            "targets": {},
+                            "page": {
+                                "property": {
+                                    "fkProperty": 1436
+                                },
+                                "isOutgoing": true,
+                                "limit": 1,
+                                "offset": 0,
+                                "isCircular": true
+                            }
+                        }
+                    ]
+                    }
+                }
+            }
+        ]'
+        ),
+        ('{
+            "subfieldPages": [
+                {
+                    "page": {
+                        "limit": 1,
+                        "scope": {
+                            "noContraint": true
+                        },
+                        "offset": 0,
+                        "source": {
+                            "fkInfo": 3
+                        },
+                        "property": {
+                            "fkProperty": 1436
+                        },
+                        "isCircular": true,
+                        "isOutgoing": true
+                    },
+                    "count": 2,
+                    "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
+                    "paginatedStatements": [
+                        {
+                            "target": {
+                                "entity": {
+                                    "resource": {
+                                        "fk_class": 21,
+                                        "pk_entity": 1
+                                    }
+                                }
+                            },
+                            "statement": {
+                                "pk_entity": 101,
+                                "fk_property": 1436,
+                                "fk_object_data": 0,
+                                "fk_object_info": 1,
+                                "fk_subject_data": 0,
+                                "fk_subject_info": 3,
+                                "is_in_project_count": 1,
+                                "fk_object_tables_row": 0,
+                                "fk_object_tables_cell": 0,
+                                "fk_subject_tables_row": 0,
+                                "fk_subject_tables_cell": 0,
+                                "fk_property_of_property": 0,
+                                "is_standard_in_project_count": 0
+                            },
+                            "isOutgoing": true,
+                            "targetClass": 21
+                        }
+                    ]
+                },
+                {
+                    "page": {
+                        "limit": 1,
+                        "scope": {
+                            "noContraint": true
+                        },
+                        "offset": 0,
+                        "source": {
+                            "fkInfo": 1
+                        },
+                        "property": {
+                            "fkProperty": 1436
+                        },
+                        "isOutgoing": false
+                    },
+                    "count": 1,
+                    "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
+                    "paginatedStatements": [
+                        {
+                            "target": {
+                                "entity": {
+                                    "resource": {
+                                        "fk_class": 633,
+                                        "pk_entity": 3
+                                    }
+                                }
+                            },
+                            "statement": {
+                                "pk_entity": 101,
+                                "fk_property": 1436,
+                                "fk_object_data": 0,
+                                "fk_object_info": 1,
+                                "fk_subject_data": 0,
+                                "fk_subject_info": 3,
+                                "is_in_project_count": 1,
+                                "fk_object_tables_row": 0,
+                                "fk_object_tables_cell": 0,
+                                "fk_subject_tables_row": 0,
+                                "fk_subject_tables_cell": 0,
+                                "fk_property_of_property": 0,
+                                "is_standard_in_project_count": 0
+                            },
+                            "isOutgoing": false,
+                            "targetClass": 633
+                        }
+                    ]
+                }
+            ]
+        }'
+        )::jsonb,
+        'Assert the nested resource is loaded recursively for no constraint scope'
+    );
+
+
 
 -- Finish the tests and clean up.
 SELECT *

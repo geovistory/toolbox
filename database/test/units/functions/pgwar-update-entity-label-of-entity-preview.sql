@@ -2,9 +2,6 @@ BEGIN;
 
 SELECT plan(1);
 
-CREATE TABLE pgwar.entity_preview_1 PARTITION OF pgwar.entity_preview FOR
-VALUES IN (1);
-
 INSERT INTO pgwar.entity_preview (pk_entity, fk_project, fk_class, entity_label)
 VALUES (31, 1, 88, 'Entity 31');
 

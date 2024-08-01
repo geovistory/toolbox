@@ -7,7 +7,7 @@
   -------------------------------------------------------------------->
   <as-split-area [size]="t.splitSizeLeft" class="d-flex flex-column">
 
-    <gv-detail-top-bar [openRightAreaBtn]="t.layoutMode=='left-only'" [closeLeftAreaBtn]="t.layoutMode=='both'"
+    <gv-detail-top-bar [openRightAreaBtn]="t.layoutMode==='left-only'" [closeLeftAreaBtn]="t.layoutMode==='both'"
       (closeLeft)="t.setLayoutMode('right-only')" (openRight)="t.setLayoutMode('both'); run();">
 
       <!-- Details -->
@@ -20,14 +20,14 @@
 
       <ng-content select="[settingsTopBar]"> </ng-content>
 
-      <button mat-button class="ml-auto border-right-0" color="primary" *ngIf="!pkAnalysis"
-        [disabled]="a.saving" (click)="create()">
+      <button mat-button class="ml-auto border-right-0" color="primary" *ngIf="!pkAnalysis" [disabled]="a.saving"
+        (click)="create()">
         <mat-icon svgIcon="content-save-outline" color="primary"></mat-icon>
         Save...
       </button>
 
       <!-- Save button -->
-      <button mat-button class="ml-auto border-right-0" *ngIf="pkAnalysis" [matMenuTriggerFor]="appMenu">
+      <button mat-button class="ml-auto border-right-0" *ngIf="pkAnalysis" (click)="save()">
         <mat-icon svgIcon="content-save-outline"></mat-icon>
         Save
       </button>
@@ -62,9 +62,9 @@
   <!-------------------------------------------------------------------
     Analysis Results
   -------------------------------------------------------------------->
-  <as-split-area [size]="t.splitSizeRight" *ngIf="!(t.layoutMode=='left-only')" class="d-flex flex-column">
+  <as-split-area [size]="t.splitSizeRight" *ngIf="!(t.layoutMode==='left-only')" class="d-flex flex-column">
 
-    <gv-detail-top-bar [openLeftAreaBtn]="t.layoutMode=='right-only'" [closeRightAreaBtn]="t.layoutMode=='both'"
+    <gv-detail-top-bar [openLeftAreaBtn]="t.layoutMode==='right-only'" [closeRightAreaBtn]="t.layoutMode==='both'"
       (closeRight)="t.setLayoutMode('left-only')" (openLeft)="t.setLayoutMode('both');">
       <span class="ml-2 mat-caption mat-text-secondary">
         Analysis Results

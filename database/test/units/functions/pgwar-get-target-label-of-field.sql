@@ -2,22 +2,28 @@ BEGIN;
 /**
 * Drop triggers that would reset the entity label to NULL and break the unit test
 **/
--- Drop trigger on_modify_project_statement
-DROP TRIGGER IF EXISTS on_modify_project_statement ON pgwar.project_statements;
+-- Drop trigger after_insert_project_statement
+DROP TRIGGER IF EXISTS after_insert_project_statement ON pgwar.project_statements;
 
--- Drop trigger on_upsert_entity_preview_fk_class
-DROP TRIGGER IF EXISTS on_upsert_entity_preview_fk_class ON pgwar.entity_preview;
+-- Drop trigger after_update_project_statement
+DROP TRIGGER IF EXISTS after_update_project_statement ON pgwar.project_statements;
 
--- Drop trigger on_upsert_entity_preview_entity_label
-DROP TRIGGER IF EXISTS on_upsert_entity_preview_entity_label ON pgwar.entity_preview;
+-- Drop trigger after_delete_project_statement
+DROP TRIGGER IF EXISTS after_delete_project_statement ON pgwar.project_statements;
+
+-- Drop trigger after_insert_entity_preview
+DROP TRIGGER IF EXISTS after_insert_entity_preview ON pgwar.entity_preview;
+
+-- Drop trigger after_update_entity_preview
+DROP TRIGGER IF EXISTS after_update_entity_preview ON pgwar.entity_preview;
+
+-- Drop trigger after_delete_entity_preview_01
+DROP TRIGGER IF EXISTS after_delete_entity_preview_01 ON pgwar.entity_preview;
 
 -- Drop trigger on_upsert_entity_label_config
 DROP TRIGGER IF EXISTS on_upsert_entity_label_config ON projects.entity_label_config;
 
 SELECT plan(2);
-
-CREATE TABLE pgwar.entity_preview_1 PARTITION OF pgwar.entity_preview FOR
-VALUES IN (1);
 
 INSERT INTO pgwar.project_statements
     (

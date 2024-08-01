@@ -41,7 +41,7 @@ VALUES (1, 33, 66, 654, 987654321);
 
 
 -- run the update task
-SELECT pgwar.update_fk_entity();
+SELECT pgwar.update_fk_type();
 
 /**
  * Test if all four columns are set
