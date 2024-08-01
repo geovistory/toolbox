@@ -60,6 +60,14 @@ SELECT cron.schedule_in_database(
   '$TOOLBOX_DB'
 );
 
+-- time span
+SELECT cron.schedule_in_database(
+  'update-time-span',
+  '1 seconds',
+  'SELECT pgwar.update_time_span()',
+  '$TOOLBOX_DB'
+);
+
 -- Delete old cron.job_run_details records of the current user every day at noon
 SELECT cron.schedule(
   'delete-job-run-details',
