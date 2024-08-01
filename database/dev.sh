@@ -8,9 +8,9 @@ fi
 # set the name of the docker compose project
 export COMPOSE_PROJECT_NAME=dev
 
-# Set the dev Dockerfile (containing a filled database)
-if [ $DOCKER_PLATFORM = "ARM" ]; then
-    export DOCKER_FILE=dev.arm.Dockerfile
+# Set the heavy Dockerfile (containing a filled database)
+if [ "$DOCKER_PLATFORM" = "ARM" ]; then
+    export DOCKER_FILE=heavy.arm.Dockerfile
 else
     export DOCKER_FILE=dev.Dockerfile
 fi

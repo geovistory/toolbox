@@ -1,6 +1,5 @@
 # See https://docs.redpanda.com/current/get-started/quick-start/
 
-version: '3.8'
 volumes:
   postgis-logs:
     driver: local

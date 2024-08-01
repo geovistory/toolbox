@@ -2,13 +2,6 @@ BEGIN;
 
 SELECT plan(4);
 
--- add partitions
-CREATE TABLE pgwar.entity_preview_999 PARTITION OF pgwar.entity_preview FOR
-VALUES IN (999);
-
-CREATE TABLE pgwar.entity_preview_543 PARTITION OF pgwar.entity_preview FOR
-VALUES IN (543);
-
 -- initialize entity previews
 INSERT INTO pgwar.entity_preview (pk_entity, fk_project, fk_class)
 VALUES (32, 999, 0),

@@ -1,22 +1,15 @@
--- Function pgwar.field_change_notify_upsert
-----------------------------------------------
-DROP FUNCTION IF EXISTS  pgwar.field_change_notify_upser;
-DROP TRIGGER IF EXISTS  after_insert_field_change ON pgwar.field_change;
-DROP TRIGGER IF EXISTS  after_update_field_change ON pgwar.field_change;
+-- Drop Triggers
+-------------------------------------------------------------
+DROP TRIGGER after_update_field_change ON pgwar.field_change;
+DROP TRIGGER after_insert_field_change ON pgwar.field_change;
+DROP TRIGGER after_modify_project_statements ON pgwar.project_statements;
 
--- Trigger after_modify_project_statements
-----------------------------------------------
-DROP TRIGGER IF EXISTS  after_modify_project_statements ON pgwar.project_statements;
+-- Drop Functions
+-------------------------------------------------------------
+DROP FUNCTION pgwar.field_change_notify_upsert;
+DROP FUNCTION pgwar.update_field_change_on_project_statements_modification;
+DROP FUNCTION pgwar.upsert_field_change;
 
--- Function upsert_field_change
-----------------------------------------------
-DROP FUNCTION IF EXISTS  pgwar.upsert_field_change;
-DROP FUNCTION IF EXISTS  pgwar.update_field_change_on_project_statements_modification;
-
------- Table pgwar.field_change -----------------------------------------------------
----------------------------------------------------------------------------------------------
-DROP TABLE IF EXISTS  pgwar.field_change;
-
-
-
-
+-- Drop Table
+-------------------------------------------------------------
+DROP TABLE pgwar.field_change;

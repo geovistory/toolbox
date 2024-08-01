@@ -5,6 +5,134 @@ CREATE EXTENSION dblink;
 * Functions for the creation of fulltext
 ***/
 
+
+-- get target labels of incoming field
+CREATE OR REPLACE FUNCTION pgwar.get_target_labels_of_incoming_field(
+    entity_id INT,
+    project_id INT,
+    property_id INT,
+    limit_count INT
+)
+RETURNS TABLE(label VARCHAR) AS $$
+DECLARE
+    labels VARCHAR[];
+    pstmt RECORD;
+    proj_entity_label VARCHAR;
+    comm_entity_label VARCHAR;
+BEGIN
+    labels := '{}';
+
+    FOR pstmt IN
+        SELECT *
+        FROM pgwar.v_statements_combined
+        WHERE
+            fk_object_info = entity_id
+            AND fk_project = project_id
+            AND fk_property = property_id
+        ORDER BY ord_num_of_domain ASC, tmsp_last_modification DESC
+        LIMIT limit_count
+    LOOP
+        SELECT entity_label INTO proj_entity_label
+        FROM pgwar.entity_preview
+        WHERE fk_project = project_id AND pk_entity = pstmt.fk_subject_info;
+
+        IF proj_entity_label IS NOT NULL THEN
+            labels := array_append(labels, proj_entity_label);
+        ELSE
+            SELECT entity_label INTO comm_entity_label
+            FROM pgwar.entity_preview
+            WHERE fk_project = 0 AND pk_entity = pstmt.fk_subject_info;
+
+            IF comm_entity_label IS NOT NULL THEN
+                labels := array_append(labels, comm_entity_label);
+            END IF;
+        END IF;
+    END LOOP;
+
+    RETURN QUERY
+    SELECT unnest(labels);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION pgwar.get_target_labels_of_outgoing_field(
+    entity_id INT,
+    project_id INT,
+    property_id INT,
+    limit_count INT
+)
+RETURNS TABLE(label VARCHAR) AS $$
+DECLARE
+    labels VARCHAR[];
+    pstmt RECORD;
+    obj_label VARCHAR;
+    proj_entity_label VARCHAR;
+    comm_entity_label VARCHAR;
+BEGIN
+    labels := '{}';
+
+    FOR pstmt IN
+        SELECT *
+        FROM pgwar.v_statements_combined
+        WHERE
+            fk_subject_info = entity_id
+            AND fk_project = project_id
+            AND fk_property = property_id
+        ORDER BY ord_num_of_range ASC, tmsp_last_modification DESC
+        LIMIT limit_count
+    LOOP
+        obj_label := pstmt.object_label;
+
+        IF obj_label IS NOT NULL THEN
+            labels := array_append(labels, obj_label);
+        ELSE
+            SELECT entity_label INTO proj_entity_label
+            FROM pgwar.entity_preview
+            WHERE fk_project = project_id AND pk_entity = pstmt.fk_object_info;
+
+            IF proj_entity_label IS NOT NULL THEN
+                labels := array_append(labels, proj_entity_label);
+            ELSE
+                SELECT entity_label INTO comm_entity_label
+                FROM pgwar.entity_preview
+                WHERE fk_project = 0 AND pk_entity = pstmt.fk_object_info;
+
+                IF comm_entity_label IS NOT NULL THEN
+                    labels := array_append(labels, comm_entity_label);
+                END IF;
+            END IF;
+        END IF;
+    END LOOP;
+
+    RETURN QUERY
+    SELECT unnest(labels);
+END;
+$$ LANGUAGE plpgsql;
+
+-- get target label of field
+CREATE OR REPLACE FUNCTION pgwar.get_target_label_of_field(entity_id int, project_id int, field jsonb)
+RETURNS text AS $$
+DECLARE
+    is_outgoing bool;
+    property_id int;
+    limit_count int;
+    label text;
+BEGIN
+	is_outgoing := (field->'isOutgoing')::bool;
+    property_id := (field->'fkProperty')::int;
+	limit_count := (field->'nrOfStatementsInLabel')::int;
+
+
+    IF is_outgoing IS TRUE THEN
+        SELECT pgwar.get_label_of_outgoing_field(entity_id, project_id, property_id, limit_count) INTO label;
+    ELSE
+        SELECT pgwar.get_label_of_incoming_field(entity_id, project_id, property_id, limit_count) INTO label;
+    END IF;
+
+    RETURN label;
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- get label of outgoing field
 CREATE OR REPLACE FUNCTION pgwar.get_label_of_outgoing_field(
     entity_id INT,
@@ -158,43 +286,6 @@ END;
 $$ LANGUAGE plpgsql;
 
 
------- Table pgwar.project_statements_deleted ----------------------------------------------------------------
----------------------------------------------------------------------------------------------
--- this table is used by the fulltext cron job to find entities that need an fulltext update
--- because they are the subject or object of a deleted project statement
-CREATE TABLE IF NOT EXISTS pgwar.project_statements_deleted(
-  pk_entity integer NOT NULL,
-  fk_project integer NOT NULL,
-  fk_subject_info integer,
-  fk_property integer NOT NULL,
-  fk_object_info integer,
-  object_value jsonb,
-  tmsp_deletion timestamp with time zone,
-  PRIMARY KEY (pk_entity, fk_project)
-);
-
-CREATE OR REPLACE FUNCTION pgwar.handle_project_statements_delete() 
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Insert or update the deleted row in pgwar.project_statements_deleted
-    INSERT INTO pgwar.project_statements_deleted (pk_entity, fk_project, fk_subject_info, fk_property, fk_object_info, object_value, tmsp_deletion)
-    VALUES (OLD.pk_entity, OLD.fk_project, OLD.fk_subject_info, OLD.fk_property, OLD.fk_object_info, OLD.object_value, CURRENT_TIMESTAMP)
-    ON CONFLICT (pk_entity, fk_project)
-    DO UPDATE SET 
-        fk_subject_info = EXCLUDED.fk_subject_info,
-        fk_property = EXCLUDED.fk_property,
-        fk_object_info = EXCLUDED.fk_object_info,
-        object_value = EXCLUDED.object_value,
-        tmsp_deletion = EXCLUDED.tmsp_deletion;
-
-    RETURN OLD;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER after_delete_project_statements
-AFTER DELETE ON pgwar.project_statements
-FOR EACH ROW
-EXECUTE FUNCTION pgwar.handle_project_statements_delete();
 
 
 
@@ -207,6 +298,12 @@ CREATE TABLE IF NOT EXISTS pgwar.entity_full_text(
   tmsp_last_modification timestamp with time zone,
   PRIMARY KEY (pk_entity, fk_project)
 );
+
+CREATE INDEX IF NOT EXISTS entity_full_text_tmsp_last_modification_idx
+    ON pgwar.entity_full_text USING btree
+    (tmsp_last_modification ASC NULLS LAST)
+    TABLESPACE pg_default;
+
 -- add trigger for last_modification_tmsp
 CREATE OR REPLACE TRIGGER last_modification_tmsp
     BEFORE INSERT OR UPDATE 
@@ -451,17 +548,28 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION pgwar.update_entity_preview_full_text()
 RETURNS TRIGGER AS $$
 BEGIN
-    UPDATE pgwar.entity_preview
-    SET full_text = NEW.full_text
-    WHERE pk_entity = NEW.pk_entity
-    AND fk_project = NEW.fk_project;
 
-    RETURN NEW;
+    UPDATE pgwar.entity_preview ep
+    SET full_text = newtab.full_text
+    FROM newtab
+    WHERE ep.pk_entity = newtab.pk_entity
+    AND ep.fk_project = newtab.fk_project
+    AND ep.full_text IS DISTINCT FROM newtab.full_text;
+
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
 
--- Create the trigger after_upsert_entity_full_text
-CREATE TRIGGER after_upsert_entity_full_text
-AFTER INSERT OR UPDATE ON pgwar.entity_full_text
-FOR EACH ROW
+
+
+-- Create the trigger after_insert_entity_full_text
+CREATE TRIGGER after_insert_entity_full_text
+AFTER INSERT ON pgwar.entity_full_text
+REFERENCING NEW TABLE AS newtab
+EXECUTE FUNCTION pgwar.update_entity_preview_full_text();
+
+-- Create the trigger after_insert_entity_full_text
+CREATE TRIGGER after_update_entity_full_text
+AFTER UPDATE ON pgwar.entity_full_text
+REFERENCING NEW TABLE AS newtab
 EXECUTE FUNCTION pgwar.update_entity_preview_full_text();

@@ -1,1 +1,1 @@
-/* Replace with your SQL commands */
+-- NO WAY BACK

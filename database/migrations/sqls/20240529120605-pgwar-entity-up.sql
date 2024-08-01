@@ -25,33 +25,7 @@ CREATE TABLE IF NOT EXISTS pgwar.entity_preview(
     tmsp_entity_label_modification timestamp with time zone,
     tmsp_last_modification timestamp with time zone,
     CONSTRAINT entity_preview_pkey PRIMARY KEY (pk_entity, fk_project)
-)
-PARTITION BY LIST (fk_project);
-
--- Create partition for community (fk_project = 0)
---------------------------------------------------
-CREATE TABLE pgwar.entity_preview_0 PARTITION OF pgwar.entity_preview
-FOR VALUES IN (0);
-
--- Function to create partition on pgwar.entity_preview
--------------------------------------------------------
-CREATE FUNCTION pgwar.add_entity_preview_partition()
-    RETURNS TRIGGER
-    LANGUAGE plpgsql
-    AS $_$
-BEGIN
-    -- create the partition
-    EXECUTE format('CREATE TABLE pgwar.entity_preview_%1$s PARTITION OF pgwar.entity_preview FOR VALUES IN (%1$s);', NEW.pk_entity);
-    RETURN NEW;
-END;
-$_$;
-
--- Trigger on projects.project to create new partition on pgwar.entity_preview
-------------------------------------------------------------------------------
-CREATE TRIGGER add_pgwar_entity_preview_partition
-    BEFORE INSERT ON projects.project
-    FOR EACH ROW
-    EXECUTE FUNCTION pgwar.add_entity_preview_partition();
+);
 
 -- Function to upsert fk_project, pk_entity, fk_class on pgwar.entity_preview
 -----------------------------------------------------------------------------
@@ -82,6 +56,8 @@ CREATE FUNCTION pgwar.update_from_resource(NEW_RES information.resource)
     LANGUAGE plpgsql
     AS $$
 BEGIN
+
+
     -- if it is in at least one project ...
     IF EXISTS(
         SELECT
@@ -120,15 +96,58 @@ CREATE FUNCTION pgwar.after_upsert_resource()
     LANGUAGE plpgsql
     AS $$
 BEGIN
-    PERFORM pgwar.update_from_resource(NEW);
+    -- insert project entities
+    INSERT INTO pgwar.entity_preview(pk_entity, fk_project, fk_class, tmsp_fk_class_modification)
+    SELECT newtab.pk_entity, ipr.fk_project, newtab.fk_class, CURRENT_TIMESTAMP
+    FROM newtab,
+         projects.info_proj_rel ipr
+    WHERE ipr.fk_entity = newtab.pk_entity
+    AND ipr.is_in_project IS TRUE
+    ON CONFLICT(pk_entity, fk_project)
+        DO UPDATE SET
+            -- ... or update the fk_class
+            fk_class = EXCLUDED.fk_class,
+            tmsp_fk_class_modification = CURRENT_TIMESTAMP
+        WHERE
+            -- ... where it is distinct from previous value
+            entity_preview.fk_class IS DISTINCT FROM EXCLUDED.fk_class;
+
+    -- insert community entities
+    INSERT INTO pgwar.entity_preview(pk_entity, fk_project, fk_class, tmsp_fk_class_modification)
+    SELECT DISTINCT ON (newtab.pk_entity) 
+        newtab.pk_entity, 0, newtab.fk_class, CURRENT_TIMESTAMP
+    FROM newtab,
+         projects.info_proj_rel ipr
+    WHERE ipr.fk_entity = newtab.pk_entity
+    AND ipr.is_in_project IS TRUE
+    ON CONFLICT(pk_entity, fk_project)
+        DO UPDATE SET
+            -- ... or update the fk_class
+            fk_class = EXCLUDED.fk_class,
+            tmsp_fk_class_modification = CURRENT_TIMESTAMP
+        WHERE
+            -- ... where it is distinct from previous value
+            entity_preview.fk_class IS DISTINCT FROM EXCLUDED.fk_class;
+
+    -- delete potentially unallowed community entities
+    DELETE FROM pgwar.entity_preview ep
+    USING newtab
+    WHERE (newtab.community_visibility ->> 'toolbox')::bool IS FALSE
+    AND newtab.pk_entity = ep.pk_entity
+    AND ep.fk_project = 0;
 
     RETURN NEW;
 END;
 $$;
 
-CREATE TRIGGER after_upsert_resource
-    AFTER INSERT OR UPDATE ON information.resource
-    FOR EACH ROW
+CREATE TRIGGER after_insert_resource
+    AFTER INSERT ON information.resource
+    REFERENCING NEW TABLE AS newtab
+    EXECUTE FUNCTION pgwar.after_upsert_resource();
+
+CREATE TRIGGER after_update_resource
+    AFTER UPDATE ON information.resource
+    REFERENCING NEW TABLE AS newtab
     EXECUTE FUNCTION pgwar.after_upsert_resource();
 
 -- Trigger function after_delete_resource
