@@ -12,7 +12,7 @@ export COMPOSE_PROJECT_NAME=dev
 if [ "$DOCKER_PLATFORM" = "ARM" ]; then
     export DOCKER_FILE=heavy.arm.Dockerfile
 else
-    export DOCKER_FILE=heavy.Dockerfile
+    export DOCKER_FILE=dev.Dockerfile
 fi
 
 # Set the postgres port

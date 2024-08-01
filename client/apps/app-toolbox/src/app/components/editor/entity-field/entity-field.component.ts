@@ -1,22 +1,23 @@
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, Input, OnInit, Optional } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService, StateFacade } from '@kleiolab/lib-redux';
-import { GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity } from '@kleiolab/lib-sdk-lb4';
-import { values } from 'ramda';
-import { Observable, Subject, firstValueFrom } from 'rxjs';
-import { first, map, takeUntil } from 'rxjs/operators';
-import { P_1879_HAS_VALUE_ID } from '../../../lib/constants/ontome-ids';
-import { ActiveProjectService } from '../../../services/active-project.service';
-import { EditModeService } from '../../../services/edit-mode.service';
-import { PaginationService } from '../../../services/pagination.service';
-import { READ_ONLY } from '../../../tokens/READ_ONLY';
-import { ClassInfoComponent } from '../../misc/class-info/class-info.component';
-import { EntityPreviewComponent } from '../../misc/entity-preview/entity-preview.component';
-import { OntoPropertyInfoComponent } from '../../misc/onto-property-info/onto-property-info.component';
-import { FieldLabelComponent } from '../field-label/field-label.component';
-import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dialog/view-field-dialog.component';
+import {AsyncPipe, NgClass, NgFor, NgIf} from '@angular/common';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, HostBinding, Inject, Input, OnInit, Optional} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {ActiveProjectPipesService, Field, FieldPage, GvFieldTargets, InformationPipesService, StateFacade} from '@kleiolab/lib-redux';
+import {GvFieldPage, GvFieldPageReq, GvFieldPageScope, GvFieldSourceEntity} from '@kleiolab/lib-sdk-lb4';
+import {values} from 'ramda';
+import {Observable, Subject, firstValueFrom} from 'rxjs';
+import {first, map, takeUntil} from 'rxjs/operators';
+import {PassiveLinkDirective} from '../../../directives/passive-link/passive-link.directive';
+import {P_1879_HAS_VALUE_ID} from '../../../lib/constants/ontome-ids';
+import {ActiveProjectService} from '../../../services/active-project.service';
+import {EditModeService} from '../../../services/edit-mode.service';
+import {PaginationService} from '../../../services/pagination.service';
+import {READ_ONLY} from '../../../tokens/READ_ONLY';
+import {ClassInfoComponent} from '../../misc/class-info/class-info.component';
+import {EntityPreviewComponent} from '../../misc/entity-preview/entity-preview.component';
+import {OntoPropertyInfoComponent} from '../../misc/onto-property-info/onto-property-info.component';
+import {FieldLabelComponent} from '../field-label/field-label.component';
+import {ViewFieldDialogComponent, ViewFieldDialogData} from '../view-field-dialog/view-field-dialog.component';
 
 @Component({
   selector: 'gv-entity-field',
@@ -24,7 +25,7 @@ import { ViewFieldDialogComponent, ViewFieldDialogData } from '../view-field-dia
   styleUrls: ['./entity-field.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [NgIf, NgClass, ClassInfoComponent, OntoPropertyInfoComponent, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewComponent, AsyncPipe]
+  imports: [NgIf, NgClass, ClassInfoComponent, OntoPropertyInfoComponent, FieldLabelComponent, MatTooltipModule, NgFor, EntityPreviewComponent, AsyncPipe, PassiveLinkDirective]
 })
 export class EntityFieldComponent implements OnInit {
   destroy$ = new Subject<boolean>();
@@ -95,7 +96,7 @@ export class EntityFieldComponent implements OnInit {
   getFieldTargets(field: Field): GvFieldTargets {
     const res: GvFieldTargets = {}
     values(field.targets).forEach(t => {
-      res[t.targetClass] = t.viewType.nestedResource ? { entityPreview: 'true' } : t.viewType
+      res[t.targetClass] = t.viewType.nestedResource ? {entityPreview: 'true'} : t.viewType
     })
     return res
   }
@@ -123,9 +124,9 @@ export class EntityFieldComponent implements OnInit {
       page: {
         isOutgoing: false,
         limit: 1, offset: 0,
-        property: { fkProperty: P_1879_HAS_VALUE_ID },
-        scope: { inProject: pkProject },
-        source: { fkData: pkDigital }
+        property: {fkProperty: P_1879_HAS_VALUE_ID},
+        scope: {inProject: pkProject},
+        source: {fkData: pkDigital}
       },
       pkProject,
       targets: {}
