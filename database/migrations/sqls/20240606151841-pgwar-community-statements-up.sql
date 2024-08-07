@@ -244,23 +244,20 @@ BEGIN
         VALUES (_job_name, '2000-01-01 00:00:00.000000+00');
     END IF;
 
-    -- get current offset
-    WITH _offset AS (
-        SELECT offset_tmsp
-        FROM pgwar.offsets
-        WHERE job_name = _job_name
-    ),
     -- identify updated project statements
-    deleted_p_stmts AS (
+    WITH deleted_p_stmts AS (
         SELECT 
             pk_entity, 
 		    max(tmsp_deletion) new_offset_tmsp
         FROM (
             SELECT pk_entity, tmsp_deletion
             FROM 
-                pgwar.project_statements_deleted, 
-                _offset
-            WHERE tmsp_deletion > _offset.offset_tmsp
+                pgwar.project_statements_deleted
+            WHERE tmsp_deletion > (
+                SELECT offset_tmsp
+                FROM pgwar.offsets
+                WHERE job_name = 'update-community-statements-from-deletes'
+            )
             ORDER BY tmsp_deletion ASC
         ) AS modified
         GROUP BY pk_entity
