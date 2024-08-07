@@ -138,23 +138,21 @@ BEGIN
         VALUES (_job_name, '2000-01-01 00:00:00.000000+00');
     END IF;
 
-    -- get current offset
-    WITH _offset AS (
-        SELECT offset_tmsp
-        FROM pgwar.offsets
-        WHERE job_name = _job_name
-    ),
     -- identify updated project statements
+    WITH
     upserted_p_stmts AS (
-        SELECT pk_entity, 
-                max(tmsp_last_modification) new_offset_tmsp
+        SELECT pk_entity,
+               max(tmsp_last_modification) new_offset_tmsp
         FROM (
-            SELECT pk_entity, tmsp_last_modification 
-            FROM 
-                pgwar.project_statements, 
-                _offset
-            WHERE tmsp_last_modification > _offset.offset_tmsp
-            ORDER BY tmsp_last_modification ASC
+             SELECT pk_entity, tmsp_last_modification
+             FROM
+                 pgwar.project_statements
+             WHERE tmsp_last_modification > (
+                 SELECT offset_tmsp
+                 FROM pgwar.offsets
+                 WHERE job_name = 'update-community-statements-from-upserts'
+             )
+             ORDER BY tmsp_last_modification ASC
         ) AS modified
         GROUP BY pk_entity
     ),
