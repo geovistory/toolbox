@@ -125,6 +125,7 @@ export * from './proTableConfig';
 export * from './proTextProperty';
 export * from './profileActivationReport';
 export * from './profileDeactivationReport';
+export * from './projectClassConfig';
 export * from './projectPongRequest';
 export * from './projectVisibilityOptions';
 export * from './pubAccount';

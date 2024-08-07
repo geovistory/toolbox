@@ -147,7 +147,7 @@ export class SearchExistingEntityComponent implements OnInit, OnDestroy {
       map(([resp, selected]) => {
         const res: EntitySearchHit[] = resp.data;
         const hits: EntityAddExistingHit[] = res.map(r => {
-          const isInProject = r.project_id !== 0;
+          const isInProject = r.fk_project !== 0;
           const confirmBtnDisabled = (this.disableIfHasStatement && r.related_statements.length >= this.disableIfHasStatement.maxQuantity);
           const confirmBtnTooltip = confirmBtnDisabled ?
             `This ${r.class_label} can't be selected because it is already related to ${r.related_statements.length} ${this.disableIfHasStatement.sourceClassLabel} via '${this.disableIfHasStatement.propertyLabel}'.`

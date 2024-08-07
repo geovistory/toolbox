@@ -1,2 +1,0 @@
-DROP FUNCTION commons.time_primitive__get_to_day;
-DROP FUNCTION commons.time_primitive__pretty_json;

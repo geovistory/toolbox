@@ -8,7 +8,6 @@ export function fieldPageToWarFieldChangeId(fieldPage: GvFieldPage): WarFieldCha
         fk_source_tables_cell: fieldPage.source.fkTablesCell,
         fk_project: fieldPage.scope.inProject,
         fk_property: fieldPage.property.fkProperty,
-        fk_property_of_property: fieldPage.property.fkPropertyOfProperty,
         is_outgoing: fieldPage.isOutgoing
     };
 }

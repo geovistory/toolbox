@@ -1,1 +1,0 @@
---ALTER TABLE IF EXISTS war.entity_preview RENAME TO backup_entity_preview;

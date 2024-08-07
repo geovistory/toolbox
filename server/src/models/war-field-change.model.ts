@@ -6,7 +6,7 @@ import {registerType} from '../components/spec-enhancer/model.spec.enhancer';
   settings: {
     forceId: false,
     id: ['fk_project', 'fk_source_info', 'fk_property', 'fk_property_of_property', 'is_outgoing'],
-    postgresql: {schema: 'war', table: 'field_change'},
+    postgresql: {schema: 'pgwar', table: 'field_change'},
     validateUpsert: true,
     idInjection: false
   }
@@ -40,13 +40,6 @@ export class WarFieldChange extends Entity {
     id: true
   })
   fk_property: number;
-
-  @property({
-    type: 'number',
-    required: true,
-    id: true
-  })
-  fk_property_of_property: number;
 
   @property({
     type: 'boolean',

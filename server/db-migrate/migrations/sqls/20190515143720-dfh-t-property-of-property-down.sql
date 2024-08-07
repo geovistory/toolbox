@@ -1,2 +1,0 @@
-DROP TABLE data_for_history.property_of_property_vt;
-DROP TABLE data_for_history.property_of_property;

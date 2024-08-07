@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { inject } from '@loopback/core';
-import { repository } from '@loopback/repository';
-import { Subscription } from 'rxjs';
-import { Socket } from 'socket.io';
-import { ws } from '../../decorators/websocket.decorator';
-import { WarFieldChangeAddToStream, WarFieldChangeId } from '../../models/war-field-change-id.model';
-import { WarFieldChange } from '../../models/war-field-change.model';
-import { Streams } from '../../realtime/streams/streams';
-import { WebsocketControllerBase } from '../../realtime/websockets/websocker-controller-base';
-import { WarFieldChangeRepository } from '../../repositories/war-field-change.repository';
+import {inject} from '@loopback/core';
+import {repository} from '@loopback/repository';
+import {Subscription} from 'rxjs';
+import {Socket} from 'socket.io';
+import {ws} from '../../decorators/websocket.decorator';
+import {WarFieldChangeAddToStream, WarFieldChangeId} from '../../models/war-field-change-id.model';
+import {WarFieldChange} from '../../models/war-field-change.model';
+import {Streams} from '../../realtime/streams/streams';
+import {WebsocketControllerBase} from '../../realtime/websockets/websocker-controller-base';
+import {WarFieldChangeRepository} from '../../repositories/war-field-change.repository';
 
 export const IO_FIELD_CHANGE = 'FieldChange'
 
@@ -25,7 +25,7 @@ export class FieldChangeController extends WebsocketControllerBase {
   logs = false
 
   // for caching notifications, to avoid emitting the same modification timestamp more than once
-  emittedNotifications: { [key: string]: true } = {}
+  emittedNotifications: {[key: string]: true} = {}
 
 
   constructor(
@@ -96,7 +96,6 @@ export class FieldChangeController extends WebsocketControllerBase {
       const ors: {
         fk_project: number;
         fk_property: number;
-        fk_property_of_property: number;
         fk_source_info: number;
         fk_source_tables_cell: number;
         is_outgoing: boolean;
@@ -106,16 +105,15 @@ export class FieldChangeController extends WebsocketControllerBase {
         .forEach(field => {
           if (field.fk_project === undefined) return false;
           if (field.is_outgoing === undefined) return false;
-          if (field.fk_property === undefined && field.fk_property_of_property === undefined) return false;
-          if (field.fk_property !== undefined && field.fk_property_of_property !== undefined) return false;
+          if (field.fk_property === undefined) return false;
           if (field.fk_source_info === undefined && field.fk_source_tables_cell === undefined) return false;
           if (field.fk_source_info !== undefined && field.fk_source_tables_cell !== undefined) return false;
 
-          const { fk_project, fk_property, fk_property_of_property, fk_source_info, fk_source_tables_cell, is_outgoing } = field;
-          const string = fk_project + '_' + fk_property + '_' + fk_property_of_property + '_' + fk_source_info + '_' + fk_source_tables_cell + '_' + is_outgoing;
+          const {fk_project, fk_property, fk_source_info, fk_source_tables_cell, is_outgoing} = field;
+          const string = fk_project + '_' + fk_property + '_' + fk_source_info + '_' + fk_source_tables_cell + '_' + is_outgoing;
           if (!uniq.has(string)) {
             uniq.set(string, true)
-            ors.push({ fk_project, fk_property, fk_property_of_property, fk_source_info, fk_source_tables_cell, is_outgoing })
+            ors.push({fk_project, fk_property, fk_source_info, fk_source_tables_cell, is_outgoing})
           }
         })
 
@@ -126,7 +124,7 @@ export class FieldChangeController extends WebsocketControllerBase {
       }
 
       // find the field changes
-      const fieldChanges = await this.warFieldChangeRepository.find({ where: { or: ors } })
+      const fieldChanges = await this.warFieldChangeRepository.find({where: {or: ors}})
 
       // emit them
       fieldChanges.forEach(i => this.emitFieldChange(i))
@@ -201,8 +199,6 @@ export class FieldChangeController extends WebsocketControllerBase {
 
 
 export function fieldChangeToStringId(i: WarFieldChangeId): string {
-
-
-  return `${i.fk_project || 0}_${i.fk_source_info || 0}_${i.fk_property || 0}_${i.fk_property_of_property || 0}_${i.is_outgoing}`
+  return `${i.fk_project || 0}_${i.fk_source_info || 0}_${i.fk_property || 0}_${i.is_outgoing}`
 }
 

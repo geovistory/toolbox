@@ -141,7 +141,7 @@ export class ViewFieldBodyComponent implements OnInit, OnDestroy {
      * For UX-Performance: trigger field load with limit 0 to get the total count of statements
      * in that field (without the need to query nested fields)
      */
-    this.loadFieldCount(until$);
+    // this.loadFieldCount(until$);
 
     const page$ = pagination$.pipe(
       delay(0),

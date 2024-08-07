@@ -336,7 +336,7 @@ export class AddStatementDialogComponent implements OnInit, OnDestroy {
     this.ap.streamEntityPreview(d.pkEntity)
 
     this.selectedInProject$ = this.state.data.war.entityPreview.getEntityPreview.byProjectIdPkEntity$(this.pkProject, d.pkEntity).pipe(
-      map(item => item?.project_id !== 0),
+      map(item => item?.fk_project !== 0),
       startWith(false)
     )
 

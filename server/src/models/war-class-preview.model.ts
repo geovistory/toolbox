@@ -11,7 +11,7 @@ import {Entity, model, property} from '@loopback/repository';
 @model({
   settings: {
     forceId: false,
-    postgresql: {schema: 'war', table: 'class_preview'},
+    postgresql: {schema: 'pgwar', table: 'class_preview'},
     validateUpsert: true,
     idInjection: false
   }
