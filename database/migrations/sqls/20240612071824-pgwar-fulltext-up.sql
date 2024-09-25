@@ -407,59 +407,97 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 /***
 * Find outdated full texts in subjects of statements with modified dfh-prop
 ***/
 CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_stmt_by_dfh_prop(max_limit int)
-RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+    RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+DECLARE
+    rec RECORD;
 BEGIN
-    RETURN QUERY
-    -- find subjects of statements with modified dfh-prop
-    SELECT DISTINCT s.pk_entity, s.fk_project
-    FROM (
-        SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
-        FROM 
-                pgwar.v_statements_combined pstmt,
-                data_for_history.api_property dfh_prop,
-                pgwar.entity_full_text ftxt 
-        WHERE
-            pstmt.fk_subject_info = ftxt.pk_entity
-        AND pstmt.fk_project = ftxt.fk_project
-        AND dfh_prop.dfh_pk_property = pstmt.fk_property
-        AND ftxt.tmsp_last_modification < dfh_prop.tmsp_last_dfh_update
+    -- Step 1: Retrieve filtered ftxt records
+    CREATE TEMP TABLE tmp_filtered_ftxt AS
+    SELECT ftxt.pk_entity, ftxt.fk_project
+    FROM pgwar.entity_full_text ftxt
+    JOIN data_for_history.api_property dfh_prop
+        ON ftxt.tmsp_last_modification < dfh_prop.tmsp_last_dfh_update;
+
+    -- Step 2: Use the result from the temporary table to find outdated full texts
+    FOR rec IN
+        SELECT DISTINCT
+            pstmt.fk_subject_info AS pk_entity,
+            pstmt.fk_project,
+            dfh_prop.tmsp_last_modification  -- Include this in the SELECT list for ordering
+        FROM
+            pgwar.v_statements_combined pstmt
+                JOIN tmp_filtered_ftxt ftxt
+                     ON pstmt.fk_subject_info = ftxt.pk_entity
+                         AND pstmt.fk_project = ftxt.fk_project
+                JOIN data_for_history.api_property dfh_prop
+                     ON dfh_prop.dfh_pk_property = pstmt.fk_property
         ORDER BY dfh_prop.tmsp_last_modification DESC
         LIMIT max_limit
-    ) AS s;
+        LOOP
+            -- Assign values to the OUT parameters
+            pk_entity := rec.pk_entity;
+            fk_project := rec.fk_project;
+
+            -- Return the record
+            RETURN NEXT;
+        END LOOP;
+
+    -- Clean up the temporary table
+    DROP TABLE tmp_filtered_ftxt;
+
 END;
 $$ LANGUAGE plpgsql;
 
-/***
-* Find outdated full texts in objects of statements with modified dfh-prop
-***/
+-- /***
+-- * Find outdated full texts in objects of statements with modified dfh-prop
+-- ***/
 CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_stmt_by_dfh_prop(max_limit int)
-RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+    RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+DECLARE
+    rec RECORD;
 BEGIN
-    RETURN QUERY
-    -- find objects of statements with modified dfh-prop
-    SELECT DISTINCT s.pk_entity, s.fk_project
-    FROM (
-        SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
-        FROM 
-                pgwar.v_statements_combined pstmt,
-                data_for_history.api_property dfh_prop,
-                pgwar.entity_full_text ftxt 
-        WHERE
-            pstmt.fk_object_info = ftxt.pk_entity
-        AND pstmt.object_value IS NULL
-        AND pstmt.fk_project = ftxt.fk_project
-        AND dfh_prop.dfh_pk_property = pstmt.fk_property
-        AND ftxt.tmsp_last_modification < dfh_prop.tmsp_last_dfh_update
+    -- Step 1: Retrieve filtered ftxt records
+    CREATE TEMP TABLE tmp_filtered_ftxt AS
+    SELECT ftxt.pk_entity, ftxt.fk_project
+    FROM pgwar.entity_full_text ftxt
+             JOIN data_for_history.api_property dfh_prop
+                  ON ftxt.tmsp_last_modification < dfh_prop.tmsp_last_dfh_update;
+
+    -- Step 2: Use the result from the temporary table to find outdated full texts
+    FOR rec IN
+        SELECT DISTINCT
+            pstmt.fk_object_info AS pk_entity,
+            pstmt.fk_project,
+            dfh_prop.tmsp_last_modification  -- Include this in the SELECT list for ordering
+        FROM
+            pgwar.v_statements_combined pstmt
+                JOIN tmp_filtered_ftxt ftxt
+                     ON pstmt.fk_object_info = ftxt.pk_entity
+                         AND pstmt.fk_project = ftxt.fk_project
+                JOIN data_for_history.api_property dfh_prop
+                     ON dfh_prop.dfh_pk_property = pstmt.fk_property
+        WHERE pstmt.object_value IS NULL
         ORDER BY dfh_prop.tmsp_last_modification DESC
         LIMIT max_limit
-    ) AS s;
+        LOOP
+            -- Assign values to the OUT parameters
+            pk_entity := rec.pk_entity;
+            fk_project := rec.fk_project;
+
+            -- Return the record
+            RETURN NEXT;
+        END LOOP;
+
+    -- Clean up the temporary table
+    DROP TABLE tmp_filtered_ftxt;
+
 END;
 $$ LANGUAGE plpgsql;
+
 
 /***
 * Function to get outdated full texts

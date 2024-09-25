@@ -33,3 +33,13 @@ CREATE INDEX IF NOT EXISTS entity_preview_fk_class_idx
 CREATE INDEX IF NOT EXISTS entity_preview_entity_label_idx
     ON pgwar.entity_preview USING btree
     (entity_label ASC NULLS LAST);
+
+CREATE INDEX IF NOT EXISTS api_property_tmsp_last_dfh_update_idx
+    ON data_for_history.api_property USING btree
+        (tmsp_last_dfh_update DESC NULLS LAST)
+    TABLESPACE pg_default;
+
+CREATE INDEX IF NOT EXISTS community_statements_tmsp_last_modification_idx
+    ON pgwar.community_statements USING btree
+        (tmsp_last_modification DESC NULLS LAST)
+    TABLESPACE pg_default;
