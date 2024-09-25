@@ -1,0 +1,54 @@
+# See https://docs.redpanda.com/current/get-started/quick-start/
+
+volumes:
+  postgis-logs:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./logs/postgres
+      o: bind
+  # postgis-data: null
+  test:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./test
+      o: bind
+  migrations:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./migrations
+      o: bind
+
+services:
+  # Postgres Database Server with
+  # access postgres from host machine: postgres://postgres:local_pw@{DOCKER_IP}:${DOCKER_PG_HOST_PORT}
+  postgres:
+    build:
+      context: ./postgres
+      dockerfile: ${DOCKER_FILE}
+    shm_size: 1g
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pw
+      POSTGRES_SCHEMA_ONLY_DB: schema_only_db
+      POSTGRES_FILLED_DB: filled_db
+      POSTGRES_CRON_DB: postgres
+    command: 'postgres -c wal_level=logical -c logging_collector=on -c log_destination=stderr -c log_directory=/logs'
+    ports:
+      - ${POSTGRES_PORT}:5432
+    restart: always
+    volumes:
+      # We do not use a volume for the postgres data
+      # since we do not want to persist it across container restarts
+      # - 'postgis-data:/var/lib/postgresql/data'
+      - 'postgis-logs:/logs'
+      - 'test:/test'
+      - 'migrations:/migrations'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready', '-q']
+      interval: 0.5s
+      timeout: 0.5s
+      retries: 20
+      start_period: 80s

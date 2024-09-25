@@ -1,8 +1,12 @@
 {
   "git.autofetch": true,
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.codeActionsOnSave": {
     "source.organizeImports": "explicit",
     "source.fixAll": "explicit"
   },
+  "sqltools.format": {
+    "linesBetweenQueries": 2,
+    "language": "pl/sql"
+  }
 }

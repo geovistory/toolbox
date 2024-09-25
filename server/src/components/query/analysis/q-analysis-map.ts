@@ -24,7 +24,7 @@ export class QAnalysisMap extends QAnalysisBase {
     );
 
     // root table from
-    this.filterFroms.push(`war.entity_preview ${rootTableAlias}`);
+    this.filterFroms.push(`pgwar.entity_preview ${rootTableAlias}`);
     this.froms.push(`tw1 ${rootTableAlias}`);
 
     // create froms and wheres according to filter definition
@@ -73,14 +73,14 @@ export class QAnalysisMap extends QAnalysisBase {
           FROM
             tw2 t0,
             ${this.STATAMENT_TABLE} t1,
-            war.entity_preview t2,
+            pgwar.entity_preview t2,
             ${this.STATAMENT_TABLE} t3,
             information.v_place t4
           WHERE
             t1.fk_object_info = t0.geo_entity_pk
             AND	t1.fk_project = ${fkProject}
           AND
-            t2.pk_entity = t1.fk_subject_info AND t2.project_id = ${fkProject}
+            t2.pk_entity = t1.fk_subject_info AND t2.fk_project = ${fkProject}
             AND t2.fk_class = 84 --Presence
           AND
             t3.fk_subject_info = t2.pk_entity AND t3.fk_project = ${fkProject}

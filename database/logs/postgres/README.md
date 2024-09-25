@@ -1,0 +1,1 @@
+This folder has to exist as a container for postgres logs, as they are produced by the docker compose setup.

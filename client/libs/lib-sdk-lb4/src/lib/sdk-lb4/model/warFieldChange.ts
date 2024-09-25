@@ -16,7 +16,6 @@ export interface WarFieldChange {
     fk_source_info: number;
     fk_source_tables_cell: number;
     fk_property: number;
-    fk_property_of_property: number;
     is_outgoing: boolean;
     tmsp_last_modification: string;
 }

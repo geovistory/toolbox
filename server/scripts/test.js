@@ -3,7 +3,7 @@ const prompts = require('prompts');
 const path = require('path');
 const fs = require('fs');
 const helpers = require('./__helpers');
-const chooseGvAndWhDB = require('./__chooseGvAndWhDb');
+const chooseGvAndWhDB = require('./__chooseGvDb');
 
 process.env.LOGS = 'OFF';
 process.env.NO_LOGS = 'true';

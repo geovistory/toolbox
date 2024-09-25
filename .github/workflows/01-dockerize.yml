@@ -2,12 +2,35 @@ name: Dockerize
 
 on:
   pull_request:
-    branches:
-      - main
 
 jobs:
+  # run tests before dockerizing
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: geovbot
+          password: ${{ secrets.GEOVBOT_READ_WRITE_PACKAGES }}
+
+      # run database integration and unit tests
+      - name: run database tests
+        run: |
+          cd database
+          chmod -R 777 logs
+          export POSTGRES_PORT=5432
+          bash test.sh -i -u -p
+
   set-version:
     runs-on: ubuntu-latest
+    needs: [test]
     if: github.event_name == 'pull_request'
     outputs:
       version_tag: ${{steps.npm_version.outputs.tag}}
@@ -31,8 +54,8 @@ jobs:
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_GITHUB_CHANNEL_WEBHOOK }}
-          title: "Dockerize Toolbox Server and Client"
-          description: "PR: ${{ steps.pull_request.outputs.number }}"
+          title: 'Dockerize Toolbox Server and Client'
+          description: 'PR: ${{ steps.pull_request.outputs.number }}'
           color: 0xffed2b
           username: GitHub Actions
 
@@ -46,8 +69,8 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.13.2"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '16.13.2'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Tag this commit with pr
         id: npm_version
@@ -61,11 +84,11 @@ jobs:
         run: echo your tag is '${{steps.npm_version.outputs.tag}}'
 
       - name: Update Lock file
-        run: "npm i --package-lock-only"
+        run: 'npm i --package-lock-only'
 
       - uses: EndBug/add-and-commit@v5
         with:
-          message: "chore(): update prerelease version"
+          message: 'chore(): update prerelease version'
           tag: v${{steps.npm_version.outputs.tag}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -97,9 +120,9 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           # Location of Dockerfile, if not Dockerfile in root directory
-          file: server/webserver.dockerfile
+          file: webserver.dockerfile
           # Directory to run `docker build` from, if not project root
-          context: server
+          context: .
           push: true
           tags: ghcr.io/geovistory/toolbox-server:${{needs.set-version.outputs.version_tag}}
 
@@ -108,8 +131,8 @@ jobs:
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_GITHUB_CHANNEL_WEBHOOK }}
-          title: "Dockerize Toolbox Server > Done"
-          description: "Image Tag: ${{needs.set-version.outputs.version_tag}}"
+          title: 'Dockerize Toolbox Server > Done'
+          description: 'Image Tag: ${{needs.set-version.outputs.version_tag}}'
           color: 0x0000ff
           username: GitHub Actions
 
@@ -125,12 +148,12 @@ jobs:
 
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.13.2"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '16.13.2'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Setup version info
         id: setup_version
-        run: "npm --prefix client run setup:version"
+        run: 'npm --prefix client run setup:version'
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -160,7 +183,7 @@ jobs:
         if: always()
         with:
           webhook: ${{ secrets.DISCORD_GITHUB_CHANNEL_WEBHOOK }}
-          title: "Dockerize Toolbox Client > Done"
-          description: "Image Tag: ${{needs.set-version.outputs.version_tag}}"
+          title: 'Dockerize Toolbox Client > Done'
+          description: 'Image Tag: ${{needs.set-version.outputs.version_tag}}'
           color: 0x0000ff
           username: GitHub Actions
