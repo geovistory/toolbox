@@ -140,7 +140,7 @@ SELECT is(
                 }
             ]
         }')::jsonb,
-        'Assert the nested resource is loaded recursively'
+        'Assert the 1st level of nesting is loaded'
     );
 
 -- Finish the tests and clean up.
