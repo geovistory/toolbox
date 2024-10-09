@@ -1229,7 +1229,7 @@ BEGIN
 	), 
 	grouped_by_page AS (
 		SELECT jsonb_build_object(
-			'paginatedStatements', json_agg(fpws.paginated_statement),
+			'paginatedStatements', json_agg(DISTINCT fpws.paginated_statement::jsonb),
 			'count', fpws.count,
             'validFor', now(),
 			'page', jsonb_strip_nulls(jsonb_build_object(
