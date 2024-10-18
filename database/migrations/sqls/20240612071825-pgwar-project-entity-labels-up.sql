@@ -505,76 +505,154 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
--- Update entity labels on change on entity label config
-CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_entity_label_config_change()
-RETURNS TRIGGER AS $$
+-- Update entity labels manually based on entity label config changes
+CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_config_change()
+    RETURNS VOID AS $$
 DECLARE
+    _job_name text; -- Variable to store the job name
+    _current_offset timestamp; -- Variable to store the current offset timestam
     project_id int;
     class_id int;
 BEGIN
+    _job_name := 'update-entity-label-on-config-change'; -- Initialize the job name
 
-    project_id := COALESCE(NEW.fk_project, OLD.fk_project);
-    class_id := COALESCE(NEW.fk_class, OLD.fk_class);
-
-    IF project_id = 375669 THEN 
-
-        -- perform update of entity labels that depend on the default config of project 375669
-        WITH new_labels AS (
-            SELECT  ep.pk_entity, 
-                    ep.fk_project,
-                    pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project) AS entity_label
-            FROM pgwar.entity_preview ep
-            LEFT JOIN projects.entity_label_config c 
-                ON c.fk_class = ep.fk_class 
-                AND c.fk_project = ep.fk_project
-            WHERE ep.fk_class = class_id
-            AND ep.fk_project != 0 -- all projects except 0
-            AND c.config IS NULL -- take only rows that have no own project config
-        )
-        UPDATE pgwar.entity_preview ep
-        SET entity_label = new_labels.entity_label
-        FROM new_labels
-        WHERE new_labels.pk_entity = ep.pk_entity
-        AND new_labels.fk_project = ep.fk_project
-        AND ep.entity_label IS DISTINCT FROM new_labels.entity_label;
-      
-    ELSE
-        -- Update the project entity labels
-        WITH new_labels AS (
-            SELECT  ep.pk_entity, 
-                    ep.fk_project,
-                    pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project) AS entity_label
-            FROM pgwar.entity_preview ep
-            WHERE ep.fk_project != 0 -- all projects except 0
-        )
-        UPDATE pgwar.entity_preview ep
-        SET entity_label = new_labels.entity_label
-        FROM new_labels
-        WHERE ep.pk_entity = new_labels.pk_entity
-        AND ep.fk_project = new_labels.fk_project
-        AND ep.entity_label IS DISTINCT FROM new_labels.entity_label;
-
+    -- Check if the offset for the job is already initialized
+    IF NOT EXISTS(
+        SELECT offset_tmsp
+        FROM pgwar.offsets
+        WHERE job_name = _job_name
+    ) THEN
+        -- If not, initialize it with a default value
+        INSERT INTO pgwar.offsets (job_name, offset_tmsp)
+        VALUES (_job_name, '2024-10-17 00:00:00.000000+00');
     END IF;
 
-    RETURN NULL;
+    -- Retrieve the current offset timestamp for the job
+    SELECT offset_tmsp INTO _current_offset
+    FROM pgwar.offsets
+    WHERE job_name = _job_name;
+
+    -- Get project_id and class_id from the entity_label_config table
+    FOR project_id, class_id IN
+        SELECT fk_project, fk_class
+        FROM projects.entity_label_config
+        WHERE tmsp_last_modification > _current_offset
+        LOOP
+            IF project_id = 375669 THEN
+                -- Perform update of entity labels that depend on the default config of project 375669
+                WITH new_labels AS (
+                    SELECT  ep.pk_entity,
+                            ep.fk_project,
+                            pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project) AS entity_label
+                    FROM pgwar.entity_preview ep
+                             LEFT JOIN projects.entity_label_config c
+                                       ON c.fk_class = ep.fk_class
+                                           AND c.fk_project = ep.fk_project
+                    WHERE ep.fk_class = class_id
+                      AND ep.fk_project != 0 -- all projects except 0
+                      AND c.config IS NULL -- take only rows that have no own project config
+                )
+                UPDATE pgwar.entity_preview ep
+                SET entity_label = new_labels.entity_label
+                FROM new_labels
+                WHERE new_labels.pk_entity = ep.pk_entity
+                  AND new_labels.fk_project = ep.fk_project
+                  AND ep.entity_label IS DISTINCT FROM new_labels.entity_label;
+            ELSE
+                -- Update the project entity labels
+                WITH new_labels AS (
+                    SELECT  ep.pk_entity,
+                            ep.fk_project,
+                            pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project) AS entity_label
+                    FROM pgwar.entity_preview ep
+                    WHERE ep.fk_project != 0 AND ep.fk_project = project_id -- all projects except 0
+                )
+                UPDATE pgwar.entity_preview ep
+                SET entity_label = new_labels.entity_label
+                FROM new_labels
+                WHERE ep.pk_entity = new_labels.pk_entity
+                  AND ep.fk_project = new_labels.fk_project
+                  AND ep.entity_label IS DISTINCT FROM new_labels.entity_label;
+            END IF;
+        END LOOP;
+
+    -- Update the offset table with the current timestamp to mark the job completion time
+    UPDATE pgwar.offsets
+    SET offset_tmsp = CURRENT_TIMESTAMP
+    WHERE job_name = _job_name;
+
 END;
 $$ LANGUAGE plpgsql;
+
+-- -- Update entity labels on change on entity label config
+-- CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_entity_label_config_change()
+-- RETURNS TRIGGER AS $$
+-- DECLARE
+--     project_id int;
+--     class_id int;
+-- BEGIN
+--
+--     project_id := COALESCE(NEW.fk_project, OLD.fk_project);
+--     class_id := COALESCE(NEW.fk_class, OLD.fk_class);
+--
+--     IF project_id = 375669 THEN
+--
+--         -- perform update of entity labels that depend on the default config of project 375669
+--         WITH new_labels AS (
+--             SELECT  ep.pk_entity,
+--                     ep.fk_project,
+--                     pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project) AS entity_label
+--             FROM pgwar.entity_preview ep
+--             LEFT JOIN projects.entity_label_config c
+--                 ON c.fk_class = ep.fk_class
+--                 AND c.fk_project = ep.fk_project
+--             WHERE ep.fk_class = class_id
+--             AND ep.fk_project != 0 -- all projects except 0
+--             AND c.config IS NULL -- take only rows that have no own project config
+--         )
+--         UPDATE pgwar.entity_preview ep
+--         SET entity_label = new_labels.entity_label
+--         FROM new_labels
+--         WHERE new_labels.pk_entity = ep.pk_entity
+--         AND new_labels.fk_project = ep.fk_project
+--         AND ep.entity_label IS DISTINCT FROM new_labels.entity_label;
+--
+--     ELSE
+--         -- Update the project entity labels
+--         WITH new_labels AS (
+--             SELECT  ep.pk_entity,
+--                     ep.fk_project,
+--                     pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project) AS entity_label
+--             FROM pgwar.entity_preview ep
+--             WHERE ep.fk_project != 0 -- all projects except 0
+--         )
+--         UPDATE pgwar.entity_preview ep
+--         SET entity_label = new_labels.entity_label
+--         FROM new_labels
+--         WHERE ep.pk_entity = new_labels.pk_entity
+--         AND ep.fk_project = new_labels.fk_project
+--         AND ep.entity_label IS DISTINCT FROM new_labels.entity_label;
+--
+--     END IF;
+--
+--     RETURN NULL;
+-- END;
+-- $$ LANGUAGE plpgsql;
 
 
 /***
 * Triggers
 ***/
 
-CREATE TRIGGER after_insert_entity_preview
-AFTER INSERT ON pgwar.entity_preview
-REFERENCING NEW TABLE AS newtab
-EXECUTE FUNCTION pgwar.update_entity_labels_after_insert();
+-- CREATE TRIGGER after_insert_entity_preview
+-- AFTER INSERT ON pgwar.entity_preview
+-- REFERENCING NEW TABLE AS newtab
+-- EXECUTE FUNCTION pgwar.update_entity_labels_after_insert();
 
-CREATE TRIGGER after_update_entity_preview
-AFTER UPDATE ON pgwar.entity_preview
-REFERENCING NEW TABLE AS newtab OLD TABLE AS oldtab
-EXECUTE FUNCTION pgwar.update_entity_labels_after_update();
+-- CREATE TRIGGER after_update_entity_preview
+-- AFTER UPDATE ON pgwar.entity_preview
+-- REFERENCING NEW TABLE AS newtab OLD TABLE AS oldtab
+-- EXECUTE FUNCTION pgwar.update_entity_labels_after_update();
 
 CREATE TRIGGER after_delete_entity_preview_01
 AFTER DELETE ON pgwar.entity_preview
