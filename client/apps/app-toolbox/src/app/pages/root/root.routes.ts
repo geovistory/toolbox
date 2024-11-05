@@ -1,56 +1,73 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '../../services/auth-guard.service';
 import { SystemAdminGuard } from '../../services/system-admin-guard.service';
+import { MaintenanceComponent } from '../maintenance/maintenance.component';
 import { HomeComponent } from './home/home.component';
+import { maintenanceConfig } from '../../maintenance.config';
+
+const isMaintenanceMode = maintenanceConfig.isMaintenanceMode;
 
 export const APP_ROUTES: Routes = [
-
   {
     path: 'home',
-    component: HomeComponent
+    component: isMaintenanceMode ? MaintenanceComponent : HomeComponent
+  },
+  {
+    path: 'maintenance',
+    component: MaintenanceComponent
   },
   {
     path: 'registration',
-    loadComponent: () => import('./account/registration/registration.component').then(x => x.RegistrationComponent)
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
+    loadComponent: isMaintenanceMode ? undefined : () => import('./account/registration/registration.component').then(x => x.RegistrationComponent)
   },
   {
     path: 'email-verified',
-    loadComponent: () => import('./account/email-verified/email-verified.component').then(x => x.EmailVerifiedComponent)
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
+    loadComponent: isMaintenanceMode ? undefined : () => import('./account/email-verified/email-verified.component').then(x => x.EmailVerifiedComponent)
   },
   {
     path: 'access-denied',
-    loadComponent: () => import('./account/access-denied/access-denied.component').then(x => x.AccessDeniedComponent)
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
+    loadComponent: isMaintenanceMode ? undefined : () => import('./account/access-denied/access-denied.component').then(x => x.AccessDeniedComponent)
   },
   {
     path: 'login',
-    loadComponent: () => import('./account/login/login.component').then(x => x.LoginComponent)
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
+    loadComponent: isMaintenanceMode ? undefined : () => import('./account/login/login.component').then(x => x.LoginComponent)
   },
   {
     path: 'logout-confirmation',
-    loadComponent: () => import('./account/logout-confirmation/logout-confirmation.component').then(x => x.LogoutConfirmationComponent)
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
+    loadComponent: isMaintenanceMode ? undefined : () => import('./account/logout-confirmation/logout-confirmation.component').then(x => x.LogoutConfirmationComponent)
   },
   {
     path: 'request-password-reset',
-    loadComponent: () => import('./account/request-password-reset/request-password-reset.component').then(x => x.RequestPasswordResetComponent)
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
+    loadComponent: isMaintenanceMode ? undefined : () => import('./account/request-password-reset/request-password-reset.component').then(x => x.RequestPasswordResetComponent)
   },
   {
     path: 'reset-password',
-    loadComponent: () => import('./account/reset-password/reset-password.component').then(x => x.ResetPasswordComponent)
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
+    loadComponent: isMaintenanceMode ? undefined : () => import('./account/reset-password/reset-password.component').then(x => x.ResetPasswordComponent)
   },
   {
     path: 'projects',
-    loadComponent: () => import('./project-list/project-list.component').then(m => m.ProjectListComponent),
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
+    loadComponent: isMaintenanceMode ? undefined : () => import('./project-list/project-list.component').then(m => m.ProjectListComponent),
     // line above instead of loadChildren: getProjectModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116
     canActivate: [AuthGuard]
   },
   {
     path: 'projects/create',
-    loadComponent: () => import('./project-create/project-create.component').then(m => m.ProjectCreateComponent),
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
+    loadComponent: isMaintenanceMode ? undefined : () => import('./project-create/project-create.component').then(m => m.ProjectCreateComponent),
     // line above instead of loadChildren: getProjectModule according to: https://github.com/angular/angular-cli/issues/4192#issuecomment-274775116
     canActivate: [AuthGuard]
   },
   {
     path: 'projects',
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
     loadChildren: () => import('../project/project.routes').then(m => m.PROJECT_ROUTES),
     canActivate: [AuthGuard]
   },
@@ -65,6 +82,7 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: 'backoffice',
+    component: isMaintenanceMode ? MaintenanceComponent : undefined,
     loadChildren: () => import('../backoffice/backoffice.routes').then(m => m.BACKOFFICE_ROUTES),
     canActivate: [AuthGuard, SystemAdminGuard]
     // canActivate: [AuthGuard]
