@@ -1,10 +1,11 @@
 ---
 name: Custom issue template
-about: Describe this issue template's purpose here.
+about: New issues must first be validated by the development team. Please create a discussion https://github.com/orgs/geovistory/discussions to suggest a new idea.
 title: ''
-labels: ''
+labels: 'question'
 assignees: ''
 
 ---
 
+## Describe your idea/suggestion/question, etc.
 
