@@ -584,6 +584,74 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+-- Update entity_preview label
+CREATE OR REPLACE FUNCTION pgwar.update_entity_preview_entity_label()
+    RETURNS VOID AS $$
+DECLARE
+    _job_name text;
+    _current_offset timestamp;
+BEGIN
+    _job_name := 'update-entity-label';
+    -- initialize offset, if needed
+    IF NOT EXISTS(
+        SELECT offset_tmsp
+        FROM pgwar.offsets
+        WHERE job_name = _job_name
+    ) THEN
+        INSERT INTO pgwar.offsets (job_name, offset_tmsp)
+        VALUES (_job_name, '2000-01-01 00:00:00.000000+00');
+    END IF;
+
+    -- Get the current offset timestamp
+    SELECT offset_tmsp INTO _current_offset
+    FROM pgwar.offsets
+    WHERE job_name = _job_name;
+
+    -- Retrieve and update entity labels for rows inserted/updated after the last offset
+    WITH new_labels AS (
+        -- Select entities that were inserted or updated after the last offset
+        SELECT  ep.pk_entity,
+                ep.fk_project,
+                pgwar.get_project_entity_label(ep.pk_entity, ep.fk_project) AS entity_label
+        FROM pgwar.entity_preview ep
+        WHERE ep.fk_project != 0
+          AND ep.tmsp_entity_label_modification > _current_offset
+    )
+    -- Update the project entity labels
+    UPDATE pgwar.entity_preview ep
+    SET entity_label = new_labels.entity_label,
+        tmsp_entity_label_modification = CURRENT_TIMESTAMP
+    FROM new_labels
+    WHERE ep.pk_entity = new_labels.pk_entity
+      AND ep.fk_project = new_labels.fk_project
+      AND ep.entity_label IS DISTINCT FROM new_labels.entity_label;
+
+    -- Update community entity labels
+    WITH uniq_entities AS (
+        SELECT DISTINCT ep.pk_entity
+        FROM pgwar.entity_preview ep
+        WHERE ep.fk_project != 0
+          AND ep.tmsp_entity_label_modification > _current_offset
+    )
+    UPDATE pgwar.entity_preview ep
+    SET entity_label = el.entity_label,
+        tmsp_entity_label_modification = CURRENT_TIMESTAMP
+    FROM uniq_entities,
+         pgwar.v_community_entity_label el
+    WHERE uniq_entities.pk_entity = el.pk_entity
+      AND uniq_entities.pk_entity = ep.pk_entity
+      AND ep.fk_project = 0
+      AND ep.entity_label IS DISTINCT FROM el.entity_label;
+
+    -- Update the offset table with the current timestamp to mark the job completion time
+    UPDATE pgwar.offsets
+    SET offset_tmsp = CURRENT_TIMESTAMP
+    WHERE job_name = _job_name;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
 -- -- Update entity labels on change on entity label config
 -- CREATE OR REPLACE FUNCTION pgwar.update_entity_label_on_entity_label_config_change()
 -- RETURNS TRIGGER AS $$
@@ -674,7 +742,7 @@ AFTER DELETE ON pgwar.project_statements
 REFERENCING OLD TABLE AS oldtab
 EXECUTE FUNCTION pgwar.update_entity_label_on_project_statement_delete();
 
-CREATE TRIGGER on_upsert_entity_label_config
-AFTER DELETE OR INSERT OR UPDATE ON projects.entity_label_config
-FOR EACH ROW
-EXECUTE FUNCTION pgwar.update_entity_label_on_entity_label_config_change();
+-- CREATE TRIGGER on_upsert_entity_label_config
+-- AFTER DELETE OR INSERT OR UPDATE ON projects.entity_label_config
+-- FOR EACH ROW
+-- EXECUTE FUNCTION pgwar.update_entity_label_on_entity_label_config_change();

@@ -248,44 +248,91 @@ $$ LANGUAGE plpgsql;
 
 -- create the fulltext of an entity
 CREATE OR REPLACE FUNCTION pgwar.get_project_full_text(project_id int, entity_id int)
-RETURNS text AS $$
+    RETURNS text AS $$
 DECLARE
-    full_text text;
+    full_text text := '';
     lang_code text;
+    fk_property int;
+    field_string text;
 BEGIN
     -- get language code of the project language
-    lang_code := pgwar.get_project_lang_code(project_id);  
+    lang_code := pgwar.get_project_lang_code(project_id);
 
-    WITH fields AS (
-        SELECT DISTINCT ON (fk_property) 
-            concat(
-                pgwar.get_property_label(fk_property, lang_code), 
-                ': ',
-                pgwar.get_label_of_outgoing_field(entity_id, project_id, fk_property, 5)
-            ) AS field_string
-        FROM pgwar.v_statements_combined
-        WHERE fk_subject_info = entity_id
-        AND fk_project = project_id 
-        UNION 
-        SELECT DISTINCT ON (fk_property) 
-            concat(
-                pgwar.get_property_inverse_label(fk_property, lang_code), 
-                ': ',
-                pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5)
-            ) AS field_string
-        FROM pgwar.v_statements_combined
-        WHERE fk_object_info = entity_id
-        AND fk_project = project_id 
+    -- Get distinct fk_property values into a temporary table or array
+    FOR fk_property IN
+        SELECT DISTINCT stmt.fk_property
+        FROM pgwar.v_statements_combined AS stmt
+        WHERE (fk_subject_info = entity_id OR fk_object_info = entity_id)
+          AND fk_project = project_id
+        LOOP
+            -- Get field_string for outgoing fields
+            SELECT concat(
+                           pgwar.get_property_label(fk_property, lang_code),
+                           ': ',
+                           pgwar.get_label_of_outgoing_field(entity_id, project_id, fk_property, 5)
+                   ) INTO field_string;
 
-    )
-    SELECT string_agg(fields.field_string, '\n ') INTO full_text  
-    FROM fields;
-    
+            -- Concatenate outgoing field string if not null
+            IF field_string IS NOT NULL THEN
+                full_text := full_text || field_string || '\n ';
+            END IF;
+
+            -- Get field_string for incoming fields
+            SELECT concat(
+                           pgwar.get_property_inverse_label(fk_property, lang_code),
+                           ': ',
+                           pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5)
+                   ) INTO field_string;
+
+            -- Concatenate incoming field string if not null
+            IF field_string IS NOT NULL THEN
+                full_text := full_text || field_string || '\n ';
+            END IF;
+        END LOOP;
+
     RETURN full_text;
 END;
 $$ LANGUAGE plpgsql;
 
 
+-- create the fulltext of an entity
+-- CREATE OR REPLACE FUNCTION pgwar.get_project_full_text_old(project_id int, entity_id int)
+--     RETURNS text AS $$
+-- DECLARE
+--     full_text text;
+--     lang_code text;
+-- BEGIN
+--     -- get language code of the project language
+--     lang_code := pgwar.get_project_lang_code(project_id);
+--
+--     WITH fields AS (
+--         SELECT DISTINCT ON (fk_property)
+--             concat(
+--                     pgwar.get_property_label(fk_property, lang_code),
+--                     ': ',
+--                     pgwar.get_label_of_outgoing_field(entity_id, project_id, fk_property, 5)
+--             ) AS field_string
+--         FROM pgwar.v_statements_combined
+--         WHERE fk_subject_info = entity_id
+--           AND fk_project = project_id
+--         UNION
+--         SELECT DISTINCT ON (fk_property)
+--             concat(
+--                     pgwar.get_property_inverse_label(fk_property, lang_code),
+--                     ': ',
+--                     pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5)
+--             ) AS field_string
+--         FROM pgwar.v_statements_combined
+--         WHERE fk_object_info = entity_id
+--           AND fk_project = project_id
+--
+--     )
+--     SELECT string_agg(fields.field_string, '\n ') INTO full_text
+--     FROM fields;
+--
+--     RETURN full_text;
+-- END;
+-- $$ LANGUAGE plpgsql;
 
 
 

@@ -1,9 +1,9 @@
-DB_URL="postgres://postgres:pw@localhost:15432/filled_db"
+DB_URL="postgres://postgres:postgres@localhost:5432/toolbox_staging"
 
 while :; do
     # Get the first failed batch
     MESSAGE=$(psql $DB_URL --tuples-only --no-align -c "
-      SELECT pgwar.update_full_texts(1000);
+      SELECT pgwar.update_full_texts(10000);
     ")
 
     

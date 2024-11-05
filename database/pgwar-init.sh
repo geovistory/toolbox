@@ -2,7 +2,7 @@
 set -e
 
 # Define the database connection details
-DB_URL="postgres://postgres:pw@localhost:55432/filled_db"
+DB_URL="postgres://postgres:postgres@localhost:5432/toolbox_staging"
 
 #Set the number of concurrent tasks for the parallelization
 CONCURRENT_TASKS=24
@@ -74,7 +74,7 @@ psql $DB_URL <<EOF
     VACUUM ANALYZE;
 EOF
 
-# Start project entities 
+# Start project entities
 psql $DB_URL <<EOF
     INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start project entities', CLOCK_TIMESTAMP());
 EOF
@@ -112,22 +112,29 @@ EOF
 # Start entity class metadata
 print_timestamp "Starting entity class metadata..."
 psql $DB_URL <<EOF
-    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start entity class', CLOCK_TIMESTAMP()); 
-    SELECT pgwar.update_entity_class(); 
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start entity class', CLOCK_TIMESTAMP());
+    SELECT pgwar.update_entity_class();
 EOF
 
 # Start entity fk_type
 print_timestamp "Starting entity fk_type..."
 psql $DB_URL <<EOF
-    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start fk_type', CLOCK_TIMESTAMP()); 
-    SELECT pgwar.update_fk_type(); 
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start fk_type', CLOCK_TIMESTAMP());
+    SELECT pgwar.update_fk_type();
 EOF
 
 # Start entity type label
 print_timestamp "Starting entity type label..."
 psql $DB_URL <<EOF
-    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start type label', CLOCK_TIMESTAMP()); 
-    SELECT pgwar.update_type_label(); 
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start type label', CLOCK_TIMESTAMP());
+    SELECT pgwar.update_type_label();
+EOF
+
+# Start entity label
+print_timestamp "Starting entity_preview label..."
+psql $DB_URL <<EOF
+    INSERT INTO pgwar.initialization (msg, tmsp) VALUES ('start entity_preview label', CLOCK_TIMESTAMP());
+    SELECT pgwar.update_entity_preview_entity_label();
 EOF
 
 # Select from pgwar.initialization
