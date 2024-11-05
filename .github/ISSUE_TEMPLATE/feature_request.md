@@ -1,8 +1,9 @@
 ---
 name: Feature request
-about: New issues must first be validated by the development team. Please create a discussion https://github.com/orgs/geovistory/discussions to suggest a new feature.
+about: New issues must first be validated by the development team. Please create a
+  discussion https://github.com/orgs/geovistory/discussions to suggest a new feature.
 title: ''
-labels: 'enhancement'
+labels: enhancement
 assignees: ''
 
 ---
