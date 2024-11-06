@@ -44,6 +44,7 @@ export class SourcesTabsComponent implements OnDestroy {
     listService.pkAllowedClasses$ = combineLatest([sourceClasses$, this.selectedType$])
       .pipe(map(([sourceClasses, option]) => {
         if (option === 'content') return contentClasses;
+        if (option === 'container') return sourceClasses.filter(c => !contentClasses.includes(c));
         return sourceClasses;
       }))
   }
