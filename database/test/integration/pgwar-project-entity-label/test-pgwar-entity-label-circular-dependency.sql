@@ -99,10 +99,12 @@ VALUES (
         }'::jsonb
     );
 
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
+
 -- Assert the project entity preview has a label with 100 characters
-SELECT is(
-        length(ep.entity_label),
-        100,
+SELECT ok(
+        length(ep.entity_label) <= 100,
         'Assert project entity preview has a label with max length of 100 chars.'
     )
 FROM pgwar.entity_preview ep

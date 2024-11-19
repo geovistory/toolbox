@@ -254,6 +254,7 @@ DECLARE
     lang_code text;
     fk_property int;
     field_string text;
+    label text;
 BEGIN
     -- get language code of the project language
     lang_code := pgwar.get_project_lang_code(project_id);
@@ -266,25 +267,28 @@ BEGIN
           AND fk_project = project_id
         LOOP
             -- Get field_string for outgoing fields
-            SELECT concat(
-                           pgwar.get_property_label(fk_property, lang_code),
-                           ': ',
-                           pgwar.get_label_of_outgoing_field(entity_id, project_id, fk_property, 5)
-                   ) INTO field_string;
-
-            -- Concatenate outgoing field string if not null
-            IF field_string IS NOT NULL THEN
-                full_text := full_text || field_string || '\n ';
-            END IF;
-
-            -- Get field_string for incoming fields
-            SELECT concat(
+            SELECT pgwar.get_label_of_outgoing_field(entity_id, project_id, fk_property, 5) INTO label;
+            IF label IS NOT NULL THEN
+                SELECT
+                    concat(
+                        pgwar.get_property_label(fk_property, lang_code),
+                        ': ',
+                        label
+                    ) INTO field_string;
+            ELSE
+                SELECT pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5) INTO label;
+                IF label IS NOT NULL THEN
+                    SELECT
+                        concat(
                            pgwar.get_property_inverse_label(fk_property, lang_code),
                            ': ',
                            pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5)
-                   ) INTO field_string;
+                       ) INTO field_string;
+                END IF;
 
-            -- Concatenate incoming field string if not null
+            END IF;
+
+            -- Concatenate field string if not null
             IF field_string IS NOT NULL THEN
                 full_text := full_text || field_string || '\n ';
             END IF;

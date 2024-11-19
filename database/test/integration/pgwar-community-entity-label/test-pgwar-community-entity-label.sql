@@ -313,6 +313,9 @@ SELECT 1,
 FROM information.resource
 WHERE notes = '_1';
 
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
+
 -- Test 1: assert that entity 1 has "Label 1bis" as community entity label
 SELECT is(
     ep.entity_label,
@@ -326,9 +329,12 @@ WHERE ep.pk_entity = r.pk_entity
   AND ep.fk_project = 0;
 
 -- Update 4 entity labels
-UPDATE pgwar.entity_preview
-SET entity_label = 'Label 1ter'
+UPDATE pgwar.project_statements
+SET object_label = 'Label 1ter'
 WHERE fk_project > 3;
+
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
 
 -- Test 2: assert that entity 1 has "Label 1ter" as community entity label
 SELECT is(

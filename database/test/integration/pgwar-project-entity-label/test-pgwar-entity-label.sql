@@ -29,6 +29,9 @@ SELECT pk_entity,
 FROM information.resource
 WHERE notes = '_2';
 
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
+
 -- Assert the project entity preview is created with class 77
 SELECT IS (
         ep.fk_class,
@@ -76,6 +79,9 @@ SELECT 1,
 FROM information.resource
 WHERE notes = '_1';
 
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
+
 -- Assert the project entity preview has Label 1
 SELECT IS (
         ep.entity_label,
@@ -109,6 +115,9 @@ FROM information.resource one,
 WHERE one.notes = '_1'
     AND two.notes = '_2';
 
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
+
 -- Assert the project entity preview has Label 1
 SELECT IS (
         ep.entity_label,
@@ -140,6 +149,9 @@ SELECT 3,
 FROM information.resource
 WHERE notes = '_2';
 
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
+
 -- Assert the project entity preview has Label 2, Label 1
 SELECT IS (
         ep.entity_label,
@@ -167,6 +179,12 @@ SET config = '{
 WHERE fk_project = 1
 AND fk_class = 77;
 
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
+
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
+
 -- Assert the project entity preview is updated after config change
 SELECT IS (
         ep.entity_label,
@@ -184,11 +202,16 @@ DELETE FROM pgwar.project_statements
 WHERE pk_entity = 3
 AND fk_project = 1;
 
+SELECT pgwar.update_entity_preview_entity_label_after_stmt_delete();
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
+
+
 -- Assert the project entity preview has Label 1
 SELECT IS (
         ep.entity_label,
         'Label 1',
-        'Assert project entity preview has Label 1'
+        'Assert project entity preview has Label 1 - Test 6'
     )
 FROM pgwar.entity_preview ep,
     information.resource r
@@ -201,6 +224,8 @@ UPDATE information.resource
 SET fk_class = 99
 WHERE notes = '_1';
 
+SELECT pgwar.update_entity_label_on_config_change();
+SELECT pgwar.update_entity_preview_entity_label();
 
 SELECT IS (
         ep.fk_class,

@@ -113,7 +113,7 @@ SELECT plan(1);
 
 SELECT is(
         pgwar.get_project_full_text(pk_entity, 11),
-        'bar: Label 61, Label 62, Entity 64, Label 65\n est en possession de: Entity 31, Entity 33',
+        'est en possession de: Entity 31, Entity 33\n bar: Label 61, Label 62, Entity 64, Label 65\n',
         'Get the fulltext of entity 11'
     )
 FROM projects.project
