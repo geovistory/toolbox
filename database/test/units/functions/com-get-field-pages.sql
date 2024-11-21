@@ -402,99 +402,99 @@ SELECT is(
         ]'
         ),
         ('{
-            "subfieldPages": [
+            "subfieldPages":[
                 {
-                    "page": {
-                        "limit": 1,
-                        "scope": {
-                            "inRepo": true
+                    "page":{
+                        "limit":1,
+                        "scope":{
+                            "inRepo":true
                         },
-                        "offset": 0,
-                        "source": {
-                            "fkInfo": 3
+                        "offset":0,
+                        "source":{
+                            "fkInfo":1
                         },
-                        "property": {
-                            "fkProperty": 1436
+                        "property":{
+                            "fkProperty":1436
                         },
-                        "isCircular": true,
-                        "isOutgoing": true
+                        "isOutgoing":false
                     },
-                    "count": 2,
+                    "count":1,
                     "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
-                    "paginatedStatements": [
+                    "paginatedStatements":[
                         {
-                            "target": {
-                                "entity": {
-                                    "resource": {
-                                        "fk_class": 21,
-                                        "pk_entity": 1
+                            "target":{
+                                "entity":{
+                                    "resource":{
+                                        "fk_class":633,
+                                        "pk_entity":3
                                     }
                                 }
                             },
-                            "statement": {
-                                "pk_entity": 101,
-                                "fk_property": 1436,
-                                "fk_object_data": 0,
-                                "fk_object_info": 1,
-                                "fk_subject_data": 0,
-                                "fk_subject_info": 3,
-                                "is_in_project_count": 1,
-                                "fk_object_tables_row": 0,
-                                "fk_object_tables_cell": 0,
-                                "fk_subject_tables_row": 0,
-                                "fk_subject_tables_cell": 0,
-                                "fk_property_of_property": 0,
-                                "is_standard_in_project_count": 0
+                            "statement":{
+                                "pk_entity":101,
+                                "fk_property":1436,
+                                "fk_object_data":0,
+                                "fk_object_info":1,
+                                "fk_subject_data":0,
+                                "fk_subject_info":3,
+                                "is_in_project_count":1,
+                                "fk_object_tables_row":0,
+                                "fk_object_tables_cell":0,
+                                "fk_subject_tables_row":0,
+                                "fk_subject_tables_cell":0,
+                                "fk_property_of_property":0,
+                                "is_standard_in_project_count":0
                             },
-                            "isOutgoing": true,
-                            "targetClass": 21
+                            "isOutgoing":false,
+                            "targetClass":633
                         }
                     ]
                 },
                 {
-                    "page": {
-                        "limit": 1,
-                        "scope": {
-                            "inRepo": true
+                    "page":{
+                        "limit":1,
+                        "scope":{
+                            "inRepo":true
                         },
-                        "offset": 0,
-                        "source": {
-                            "fkInfo": 1
+                        "offset":0,
+                        "source":{
+                            "fkInfo":3
                         },
-                        "property": {
-                            "fkProperty": 1436
+                        "property":{
+                            "fkProperty":1436
                         },
-                        "isOutgoing": false
+                        "isCircular":true,
+                        "isOutgoing":true
                     },
-                    "count": 1,
+                    "count":2,
                     "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
-                    "paginatedStatements": [
+                    "paginatedStatements":[
                         {
-                            "target": {
-                                "entity": {
-                                    "resource": {
-                                        "fk_class": 633,
-                                        "pk_entity": 3
+                            "target":{
+                                "entity":{
+                                    "resource":{
+                                        "fk_class":21,
+                                        "pk_entity":1
                                     }
                                 }
                             },
-                            "statement": {
-                                "pk_entity": 101,
-                                "fk_property": 1436,
-                                "fk_object_data": 0,
-                                "fk_object_info": 1,
-                                "fk_subject_data": 0,
-                                "fk_subject_info": 3,
-                                "is_in_project_count": 1,
-                                "fk_object_tables_row": 0,
-                                "fk_object_tables_cell": 0,
-                                "fk_subject_tables_row": 0,
-                                "fk_subject_tables_cell": 0,
-                                "fk_property_of_property": 0,
-                                "is_standard_in_project_count": 0
+                            "statement":{
+                                "pk_entity":101,
+                                "fk_property":1436,
+                                "fk_object_data":0,
+                                "fk_object_info":1,
+                                "fk_subject_data":0,
+                                "fk_subject_info":3,
+                                "is_in_project_count":1,
+                                "fk_object_tables_row":0,
+                                "fk_object_tables_cell":0,
+                                "fk_subject_tables_row":0,
+                                "fk_subject_tables_cell":0,
+                                "fk_property_of_property":0,
+                                "is_standard_in_project_count":0
                             },
-                            "isOutgoing": false,
-                            "targetClass": 633
+                            "isOutgoing":true,
+                            "targetClass":21
                         }
                     ]
                 }
@@ -544,99 +544,99 @@ SELECT is(
         ]'
         ),
         ('{
-            "subfieldPages": [
+            "subfieldPages":[
                 {
-                    "page": {
-                        "limit": 1,
-                        "scope": {
-                            "noContraint": true
+                    "page":{
+                        "limit":1,
+                        "scope":{
+                            "noContraint":true
                         },
-                        "offset": 0,
-                        "source": {
-                            "fkInfo": 3
+                        "offset":0,
+                        "source":{
+                            "fkInfo":1
                         },
-                        "property": {
-                            "fkProperty": 1436
+                        "property":{
+                            "fkProperty":1436
                         },
-                        "isCircular": true,
-                        "isOutgoing": true
+                        "isOutgoing":false
                     },
-                    "count": 2,
-                    "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
-                    "paginatedStatements": [
+                    "count":1,
+                    "validFor":"' || (json_build_object('x', now())->>'x')::text || '",
+                    "paginatedStatements":[
                         {
-                            "target": {
-                                "entity": {
-                                    "resource": {
-                                        "fk_class": 21,
-                                        "pk_entity": 1
+                            "target":{
+                                "entity":{
+                                    "resource":{
+                                        "fk_class":633,
+                                        "pk_entity":3
                                     }
                                 }
                             },
-                            "statement": {
-                                "pk_entity": 101,
-                                "fk_property": 1436,
-                                "fk_object_data": 0,
-                                "fk_object_info": 1,
-                                "fk_subject_data": 0,
-                                "fk_subject_info": 3,
-                                "is_in_project_count": 1,
-                                "fk_object_tables_row": 0,
-                                "fk_object_tables_cell": 0,
-                                "fk_subject_tables_row": 0,
-                                "fk_subject_tables_cell": 0,
-                                "fk_property_of_property": 0,
-                                "is_standard_in_project_count": 0
+                            "statement":{
+                                "pk_entity":101,
+                                "fk_property":1436,
+                                "fk_object_data":0,
+                                "fk_object_info":1,
+                                "fk_subject_data":0,
+                                "fk_subject_info":3,
+                                "is_in_project_count":1,
+                                "fk_object_tables_row":0,
+                                "fk_object_tables_cell":0,
+                                "fk_subject_tables_row":0,
+                                "fk_subject_tables_cell":0,
+                                "fk_property_of_property":0,
+                                "is_standard_in_project_count":0
                             },
-                            "isOutgoing": true,
-                            "targetClass": 21
+                            "isOutgoing":false,
+                            "targetClass":633
                         }
                     ]
                 },
                 {
-                    "page": {
-                        "limit": 1,
-                        "scope": {
-                            "noContraint": true
+                    "page":{
+                        "limit":1,
+                        "scope":{
+                            "noContraint":true
                         },
-                        "offset": 0,
-                        "source": {
-                            "fkInfo": 1
+                        "offset":0,
+                        "source":{
+                            "fkInfo":3
                         },
-                        "property": {
-                            "fkProperty": 1436
+                        "property":{
+                            "fkProperty":1436
                         },
-                        "isOutgoing": false
+                        "isCircular":true,
+                        "isOutgoing":true
                     },
-                    "count": 1,
-                    "validFor": "' || (json_build_object('x', now())->>'x')::text || '",
-                    "paginatedStatements": [
+                    "count":2,
+                    "validFor":"' || (json_build_object('x', now())->>'x')::text || '",
+                    "paginatedStatements":[
                         {
-                            "target": {
-                                "entity": {
-                                    "resource": {
-                                        "fk_class": 633,
-                                        "pk_entity": 3
+                            "target":{
+                                "entity":{
+                                    "resource":{
+                                        "fk_class":21,
+                                        "pk_entity":1
                                     }
                                 }
                             },
-                            "statement": {
-                                "pk_entity": 101,
-                                "fk_property": 1436,
-                                "fk_object_data": 0,
-                                "fk_object_info": 1,
-                                "fk_subject_data": 0,
-                                "fk_subject_info": 3,
-                                "is_in_project_count": 1,
-                                "fk_object_tables_row": 0,
-                                "fk_object_tables_cell": 0,
-                                "fk_subject_tables_row": 0,
-                                "fk_subject_tables_cell": 0,
-                                "fk_property_of_property": 0,
-                                "is_standard_in_project_count": 0
+                            "statement":{
+                                "pk_entity":101,
+                                "fk_property":1436,
+                                "fk_object_data":0,
+                                "fk_object_info":1,
+                                "fk_subject_data":0,
+                                "fk_subject_info":3,
+                                "is_in_project_count":1,
+                                "fk_object_tables_row":0,
+                                "fk_object_tables_cell":0,
+                                "fk_subject_tables_row":0,
+                                "fk_subject_tables_cell":0,
+                                "fk_property_of_property":0,
+                                "is_standard_in_project_count":0
                             },
-                            "isOutgoing": false,
-                            "targetClass": 633
+                            "isOutgoing":true,
+                            "targetClass":21
                         }
                     ]
                 }
