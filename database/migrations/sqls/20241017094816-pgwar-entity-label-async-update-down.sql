@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS pgwar.update_entity_label_of_entity_preview(integer, integer, text);

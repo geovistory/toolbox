@@ -1,0 +1,664 @@
+-- create dblink extension for accessing database with pg_cron
+CREATE EXTENSION dblink;
+
+/***
+* Functions for the creation of fulltext
+***/
+
+
+-- get target labels of incoming field
+CREATE OR REPLACE FUNCTION pgwar.get_target_labels_of_incoming_field(
+    entity_id INT,
+    project_id INT,
+    property_id INT,
+    limit_count INT
+)
+RETURNS TABLE(label VARCHAR) AS $$
+DECLARE
+    labels VARCHAR[];
+    pstmt RECORD;
+    proj_entity_label VARCHAR;
+    comm_entity_label VARCHAR;
+BEGIN
+    labels := '{}';
+
+    FOR pstmt IN
+        SELECT *
+        FROM pgwar.v_statements_combined
+        WHERE
+            fk_object_info = entity_id
+            AND fk_project = project_id
+            AND fk_property = property_id
+        ORDER BY ord_num_of_domain ASC, tmsp_last_modification DESC
+        LIMIT limit_count
+    LOOP
+        SELECT entity_label INTO proj_entity_label
+        FROM pgwar.entity_preview
+        WHERE fk_project = project_id AND pk_entity = pstmt.fk_subject_info;
+
+        IF proj_entity_label IS NOT NULL THEN
+            labels := array_append(labels, proj_entity_label);
+        ELSE
+            SELECT entity_label INTO comm_entity_label
+            FROM pgwar.entity_preview
+            WHERE fk_project = 0 AND pk_entity = pstmt.fk_subject_info;
+
+            IF comm_entity_label IS NOT NULL THEN
+                labels := array_append(labels, comm_entity_label);
+            END IF;
+        END IF;
+    END LOOP;
+
+    RETURN QUERY
+    SELECT unnest(labels);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION pgwar.get_target_labels_of_outgoing_field(
+    entity_id INT,
+    project_id INT,
+    property_id INT,
+    limit_count INT
+)
+RETURNS TABLE(label VARCHAR) AS $$
+DECLARE
+    labels VARCHAR[];
+    pstmt RECORD;
+    obj_label VARCHAR;
+    proj_entity_label VARCHAR;
+    comm_entity_label VARCHAR;
+BEGIN
+    labels := '{}';
+
+    FOR pstmt IN
+        SELECT *
+        FROM pgwar.v_statements_combined
+        WHERE
+            fk_subject_info = entity_id
+            AND fk_project = project_id
+            AND fk_property = property_id
+        ORDER BY ord_num_of_range ASC, tmsp_last_modification DESC
+        LIMIT limit_count
+    LOOP
+        obj_label := pstmt.object_label;
+
+        IF obj_label IS NOT NULL THEN
+            labels := array_append(labels, obj_label);
+        ELSE
+            SELECT entity_label INTO proj_entity_label
+            FROM pgwar.entity_preview
+            WHERE fk_project = project_id AND pk_entity = pstmt.fk_object_info;
+
+            IF proj_entity_label IS NOT NULL THEN
+                labels := array_append(labels, proj_entity_label);
+            ELSE
+                SELECT entity_label INTO comm_entity_label
+                FROM pgwar.entity_preview
+                WHERE fk_project = 0 AND pk_entity = pstmt.fk_object_info;
+
+                IF comm_entity_label IS NOT NULL THEN
+                    labels := array_append(labels, comm_entity_label);
+                END IF;
+            END IF;
+        END IF;
+    END LOOP;
+
+    RETURN QUERY
+    SELECT unnest(labels);
+END;
+$$ LANGUAGE plpgsql;
+
+-- get target label of field
+CREATE OR REPLACE FUNCTION pgwar.get_target_label_of_field(entity_id int, project_id int, field jsonb)
+RETURNS text AS $$
+DECLARE
+    is_outgoing bool;
+    property_id int;
+    limit_count int;
+    label text;
+BEGIN
+	is_outgoing := (field->'isOutgoing')::bool;
+    property_id := (field->'fkProperty')::int;
+	limit_count := (field->'nrOfStatementsInLabel')::int;
+
+
+    IF is_outgoing IS TRUE THEN
+        SELECT pgwar.get_label_of_outgoing_field(entity_id, project_id, property_id, limit_count) INTO label;
+    ELSE
+        SELECT pgwar.get_label_of_incoming_field(entity_id, project_id, property_id, limit_count) INTO label;
+    END IF;
+
+    RETURN label;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- get label of outgoing field
+CREATE OR REPLACE FUNCTION pgwar.get_label_of_outgoing_field(
+    entity_id INT,
+    project_id INT,
+    property_id INT,
+    limit_count INT
+)
+RETURNS text AS $$
+DECLARE
+    label text;
+BEGIN
+    SELECT string_agg(labels.label, ', ') INTO label 
+    FROM pgwar.get_target_labels_of_outgoing_field(entity_id, project_id, property_id, limit_count) AS labels;
+    RETURN label;
+END;
+$$ LANGUAGE plpgsql;
+
+-- get label of incoming field
+CREATE OR REPLACE FUNCTION pgwar.get_label_of_incoming_field(
+    entity_id INT,
+    project_id INT,
+    property_id INT,
+    limit_count INT
+)
+RETURNS text AS $$
+DECLARE
+    label text;
+BEGIN
+    SELECT string_agg(labels.label, ', ') INTO label 
+    FROM pgwar.get_target_labels_of_incoming_field(entity_id, project_id, property_id, limit_count) AS labels;
+    RETURN label;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- get the label of a property in the language (or in the english fallback) 
+CREATE OR REPLACE FUNCTION pgwar.get_property_label(property_id int, lang_code text)
+RETURNS text AS $$
+DECLARE
+    label text;
+BEGIN
+    -- get newest label in requested language
+    SELECT dfh_property_label INTO label
+    FROM data_for_history.api_property
+    WHERE dfh_pk_property = property_id
+    AND dfh_property_label_language = lang_code
+    ORDER BY tmsp_last_dfh_update DESC
+    LIMIT 1;
+
+    IF label IS NOT NULL THEN RETURN label; END IF;
+
+    -- get newest label in english
+    SELECT dfh_property_label INTO label
+    FROM data_for_history.api_property
+    WHERE dfh_pk_property = property_id
+    AND dfh_property_label_language = 'en'
+    ORDER BY tmsp_last_dfh_update DESC
+    LIMIT 1;
+
+    RETURN label;
+    
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- get the inverse label of a property in the language (or in the english fallback) 
+CREATE OR REPLACE FUNCTION pgwar.get_property_inverse_label(property_id int, lang_code text)
+RETURNS text AS $$
+DECLARE
+    label text;
+BEGIN
+    -- get newest inverse label in requested language
+    SELECT dfh_property_inverse_label INTO label
+    FROM data_for_history.api_property
+    WHERE dfh_pk_property = property_id
+    AND dfh_property_label_language = lang_code
+    ORDER BY tmsp_last_dfh_update DESC
+    LIMIT 1;
+
+    IF label IS NOT NULL THEN RETURN label; END IF;
+
+    -- get newest inverse label in english
+    SELECT dfh_property_inverse_label INTO label
+    FROM data_for_history.api_property
+    WHERE dfh_pk_property = property_id
+    AND dfh_property_label_language = 'en'
+    ORDER BY tmsp_last_dfh_update DESC
+    LIMIT 1;
+
+    RETURN label;
+    
+END;
+$$ LANGUAGE plpgsql;
+
+-- get project language code (useful for joining OntoME language codes)
+CREATE OR REPLACE FUNCTION pgwar.get_project_lang_code(project_id int)
+RETURNS text AS $$
+DECLARE
+    lang_code text;
+BEGIN
+    -- get language code of the project language
+    SELECT trim(iso6391) INTO lang_code
+    FROM information.language lang,
+         projects.project pro
+    WHERE pro.pk_entity = project_id
+    AND pro.fk_language = lang.pk_entity
+    LIMIT 1;
+
+    RETURN lang_code;
+    
+END;
+$$ LANGUAGE plpgsql;
+
+-- create the fulltext of an entity
+CREATE OR REPLACE FUNCTION pgwar.get_project_full_text(project_id int, entity_id int)
+    RETURNS text AS $$
+DECLARE
+    full_text text := '';
+    lang_code text;
+    fk_property int;
+    field_string text;
+    label text;
+BEGIN
+    -- get language code of the project language
+    lang_code := pgwar.get_project_lang_code(project_id);
+
+    -- Get distinct fk_property values into a temporary table or array
+    FOR fk_property IN
+        SELECT DISTINCT stmt.fk_property
+        FROM pgwar.v_statements_combined AS stmt
+        WHERE (fk_subject_info = entity_id OR fk_object_info = entity_id)
+          AND fk_project = project_id
+        LOOP
+            -- Get field_string for outgoing fields
+            SELECT pgwar.get_label_of_outgoing_field(entity_id, project_id, fk_property, 5) INTO label;
+            IF label IS NOT NULL THEN
+                SELECT
+                    concat(
+                        pgwar.get_property_label(fk_property, lang_code),
+                        ': ',
+                        label
+                    ) INTO field_string;
+            ELSE
+                SELECT pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5) INTO label;
+                IF label IS NOT NULL THEN
+                    SELECT
+                        concat(
+                           pgwar.get_property_inverse_label(fk_property, lang_code),
+                           ': ',
+                           pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5)
+                       ) INTO field_string;
+                END IF;
+
+            END IF;
+
+            -- Concatenate field string if not null
+            IF field_string IS NOT NULL THEN
+                full_text := full_text || field_string || '\n ';
+            END IF;
+        END LOOP;
+
+    RETURN full_text;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- create the fulltext of an entity
+-- CREATE OR REPLACE FUNCTION pgwar.get_project_full_text_old(project_id int, entity_id int)
+--     RETURNS text AS $$
+-- DECLARE
+--     full_text text;
+--     lang_code text;
+-- BEGIN
+--     -- get language code of the project language
+--     lang_code := pgwar.get_project_lang_code(project_id);
+--
+--     WITH fields AS (
+--         SELECT DISTINCT ON (fk_property)
+--             concat(
+--                     pgwar.get_property_label(fk_property, lang_code),
+--                     ': ',
+--                     pgwar.get_label_of_outgoing_field(entity_id, project_id, fk_property, 5)
+--             ) AS field_string
+--         FROM pgwar.v_statements_combined
+--         WHERE fk_subject_info = entity_id
+--           AND fk_project = project_id
+--         UNION
+--         SELECT DISTINCT ON (fk_property)
+--             concat(
+--                     pgwar.get_property_inverse_label(fk_property, lang_code),
+--                     ': ',
+--                     pgwar.get_label_of_incoming_field(entity_id, project_id, fk_property, 5)
+--             ) AS field_string
+--         FROM pgwar.v_statements_combined
+--         WHERE fk_object_info = entity_id
+--           AND fk_project = project_id
+--
+--     )
+--     SELECT string_agg(fields.field_string, '\n ') INTO full_text
+--     FROM fields;
+--
+--     RETURN full_text;
+-- END;
+-- $$ LANGUAGE plpgsql;
+
+
+
+------ Table pgwar.entity_full_text ----------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS pgwar.entity_full_text(
+  pk_entity integer NOT NULL,
+  fk_project integer NOT NULL,
+  full_text text,
+  tmsp_last_modification timestamp with time zone,
+  PRIMARY KEY (pk_entity, fk_project)
+);
+
+CREATE INDEX IF NOT EXISTS entity_full_text_tmsp_last_modification_idx
+    ON pgwar.entity_full_text USING btree
+    (tmsp_last_modification ASC NULLS LAST)
+    TABLESPACE pg_default;
+
+-- add trigger for last_modification_tmsp
+CREATE OR REPLACE TRIGGER last_modification_tmsp
+    BEFORE INSERT OR UPDATE 
+    ON pgwar.entity_full_text
+    FOR EACH ROW
+    EXECUTE FUNCTION commons.tmsp_last_modification();
+
+
+/***
+* Find outdated full texts in subjects of statements
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_stmt(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find subjects of modified statements
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
+        FROM pgwar.v_statements_combined pstmt
+        LEFT JOIN pgwar.entity_full_text ftxt 
+            ON pstmt.fk_subject_info = ftxt.pk_entity
+            AND pstmt.fk_project = ftxt.fk_project
+        WHERE ftxt.tmsp_last_modification IS NULL
+        OR ftxt.tmsp_last_modification < pstmt.tmsp_last_modification
+        ORDER BY pstmt.tmsp_last_modification DESC
+        LIMIT max_limit
+    ) AS s;
+END;
+$$ LANGUAGE plpgsql;
+/***
+* Find outdated full texts in objects of statements
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_stmt(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find objects of modified statements
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
+        FROM pgwar.v_statements_combined pstmt
+        LEFT JOIN pgwar.entity_full_text ftxt 
+            ON pstmt.fk_object_info = ftxt.pk_entity
+            AND pstmt.fk_project = ftxt.fk_project
+        WHERE pstmt.object_value IS NULL
+        AND (ftxt.tmsp_last_modification IS NULL
+        OR ftxt.tmsp_last_modification < pstmt.tmsp_last_modification)
+        ORDER BY pstmt.tmsp_last_modification DESC
+        LIMIT max_limit
+    ) AS s;
+END;
+$$ LANGUAGE plpgsql;
+
+
+/***
+* Find outdated full texts in subjects of statements deleted
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_stmt_del(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find subjects of deleted statements
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_subject_info as pk_entity, pstmt.fk_project
+        FROM pgwar.v_statements_deleted_combined pstmt
+        LEFT JOIN pgwar.entity_full_text ftxt 
+            ON pstmt.fk_subject_info = ftxt.pk_entity
+            AND pstmt.fk_project = ftxt.fk_project
+        WHERE ftxt.tmsp_last_modification IS NULL
+        OR ftxt.tmsp_last_modification < pstmt.tmsp_deletion
+        ORDER BY pstmt.tmsp_deletion DESC
+        LIMIT max_limit
+    ) AS s;
+END;
+$$ LANGUAGE plpgsql;
+
+
+/***
+* Find outdated full texts in objects of statements deleted
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_stmt_del(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+BEGIN
+    RETURN QUERY
+    -- find objects of deleted statements
+    SELECT DISTINCT s.pk_entity, s.fk_project
+    FROM (
+        SELECT pstmt.fk_object_info as pk_entity, pstmt.fk_project
+        FROM pgwar.v_statements_deleted_combined pstmt
+        LEFT JOIN pgwar.entity_full_text ftxt 
+            ON pstmt.fk_object_info = ftxt.pk_entity
+            AND pstmt.fk_project = ftxt.fk_project
+        WHERE  pstmt.object_value IS NULL
+        AND (ftxt.tmsp_last_modification IS NULL
+            OR ftxt.tmsp_last_modification < pstmt.tmsp_deletion)
+        ORDER BY pstmt.tmsp_deletion DESC
+        LIMIT max_limit
+    ) AS s;
+END;
+$$ LANGUAGE plpgsql;
+
+/***
+* Find outdated full texts in subjects of statements with modified dfh-prop
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_subjects_of_stmt_by_dfh_prop(max_limit int)
+    RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+DECLARE
+    rec RECORD;
+BEGIN
+    -- Step 1: Retrieve filtered ftxt records
+    CREATE TEMP TABLE tmp_filtered_ftxt AS
+    SELECT ftxt.pk_entity, ftxt.fk_project
+    FROM pgwar.entity_full_text ftxt
+    JOIN data_for_history.api_property dfh_prop
+        ON ftxt.tmsp_last_modification < dfh_prop.tmsp_last_dfh_update;
+
+    -- Step 2: Use the result from the temporary table to find outdated full texts
+    FOR rec IN
+        SELECT DISTINCT
+            pstmt.fk_subject_info AS pk_entity,
+            pstmt.fk_project,
+            dfh_prop.tmsp_last_modification  -- Include this in the SELECT list for ordering
+        FROM
+            pgwar.v_statements_combined pstmt
+                JOIN tmp_filtered_ftxt ftxt
+                     ON pstmt.fk_subject_info = ftxt.pk_entity
+                         AND pstmt.fk_project = ftxt.fk_project
+                JOIN data_for_history.api_property dfh_prop
+                     ON dfh_prop.dfh_pk_property = pstmt.fk_property
+        ORDER BY dfh_prop.tmsp_last_modification DESC
+        LIMIT max_limit
+        LOOP
+            -- Assign values to the OUT parameters
+            pk_entity := rec.pk_entity;
+            fk_project := rec.fk_project;
+
+            -- Return the record
+            RETURN NEXT;
+        END LOOP;
+
+    -- Clean up the temporary table
+    DROP TABLE tmp_filtered_ftxt;
+
+END;
+$$ LANGUAGE plpgsql;
+
+-- /***
+-- * Find outdated full texts in objects of statements with modified dfh-prop
+-- ***/
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts_in_objects_of_stmt_by_dfh_prop(max_limit int)
+    RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+DECLARE
+    rec RECORD;
+BEGIN
+    -- Step 1: Retrieve filtered ftxt records
+    CREATE TEMP TABLE tmp_filtered_ftxt AS
+    SELECT ftxt.pk_entity, ftxt.fk_project
+    FROM pgwar.entity_full_text ftxt
+             JOIN data_for_history.api_property dfh_prop
+                  ON ftxt.tmsp_last_modification < dfh_prop.tmsp_last_dfh_update;
+
+    -- Step 2: Use the result from the temporary table to find outdated full texts
+    FOR rec IN
+        SELECT DISTINCT
+            pstmt.fk_object_info AS pk_entity,
+            pstmt.fk_project,
+            dfh_prop.tmsp_last_modification  -- Include this in the SELECT list for ordering
+        FROM
+            pgwar.v_statements_combined pstmt
+                JOIN tmp_filtered_ftxt ftxt
+                     ON pstmt.fk_object_info = ftxt.pk_entity
+                         AND pstmt.fk_project = ftxt.fk_project
+                JOIN data_for_history.api_property dfh_prop
+                     ON dfh_prop.dfh_pk_property = pstmt.fk_property
+        WHERE pstmt.object_value IS NULL
+        ORDER BY dfh_prop.tmsp_last_modification DESC
+        LIMIT max_limit
+        LOOP
+            -- Assign values to the OUT parameters
+            pk_entity := rec.pk_entity;
+            fk_project := rec.fk_project;
+
+            -- Return the record
+            RETURN NEXT;
+        END LOOP;
+
+    -- Clean up the temporary table
+    DROP TABLE tmp_filtered_ftxt;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+/***
+* Function to get outdated full texts
+***/
+CREATE OR REPLACE FUNCTION pgwar.get_outdated_full_texts(max_limit int)
+RETURNS TABLE(pk_entity integer, fk_project integer) AS $$
+DECLARE
+    current_set RECORD;
+    result_set RECORD;
+    pair_count int;
+    updated_count int;
+BEGIN
+    pair_count := 0;
+
+    -- Drop the temporary table if it already exists within transaction
+    DROP TABLE IF EXISTS temp_unique_pairs;
+    
+    -- Initialize the temporary table to store unique pairs
+    CREATE TEMP TABLE temp_unique_pairs (
+        pk_entity integer,
+        fk_project integer,
+        CONSTRAINT unique_pairs_pk_project UNIQUE (pk_entity, fk_project)
+    ) ON COMMIT DROP;
+
+    -- Execute functions sequentially and add unique pairs
+    FOR current_set IN SELECT unnest(array[
+        'pgwar.get_outdated_full_texts_in_subjects_of_stmt',
+        'pgwar.get_outdated_full_texts_in_objects_of_stmt',
+        'pgwar.get_outdated_full_texts_in_subjects_of_stmt_del',
+        'pgwar.get_outdated_full_texts_in_objects_of_stmt_del',
+        'pgwar.get_outdated_full_texts_in_subjects_of_stmt_by_dfh_prop',
+        'pgwar.get_outdated_full_texts_in_objects_of_stmt_by_dfh_prop'
+    ]) AS function_name
+    LOOP
+        EXECUTE 'INSERT INTO temp_unique_pairs (pk_entity, fk_project) ' ||
+                'SELECT pk_entity, fk_project ' ||
+                'FROM ' || current_set.function_name || '(' || max_limit || ') ' ||
+                'ON CONFLICT DO NOTHING';
+
+        -- Update the pair count
+        SELECT COUNT(*) INTO pair_count FROM temp_unique_pairs;
+				
+        -- Check if the limit has been reached
+        IF pair_count >= max_limit THEN
+            EXIT;
+        END IF;
+    END LOOP;
+
+    RETURN QUERY
+	SELECT t.pk_entity, t.fk_project
+    FROM temp_unique_pairs t
+	LIMIT max_limit;
+    
+END;
+$$ LANGUAGE plpgsql;
+
+/***
+* Update the full texts
+***/
+
+CREATE OR REPLACE FUNCTION pgwar.update_full_texts(max_limit int)
+RETURNS text AS $$
+DECLARE
+    updated_count int;
+BEGIN
+
+    -- Insert or update pgwar.entity_full_text from the outdated full texts
+   	INSERT INTO pgwar.entity_full_text (pk_entity, fk_project, full_text)
+	SELECT pk_entity, fk_project, pgwar.get_project_full_text(fk_project, pk_entity)
+	FROM pgwar.get_outdated_full_texts(max_limit)
+	ON CONFLICT (pk_entity, fk_project)
+	DO UPDATE
+    SET full_text = EXCLUDED.full_text
+	WHERE entity_full_text.full_text IS DISTINCT FROM EXCLUDED.full_text;
+	
+    -- Get the number of rows updated
+    GET DIAGNOSTICS updated_count = ROW_COUNT;
+
+    -- Return the result message
+    RETURN 'Number of rows updated: ' || updated_count;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- Create the trigger function to update entity preview full text
+CREATE OR REPLACE FUNCTION pgwar.update_entity_preview_full_text()
+RETURNS TRIGGER AS $$
+BEGIN
+
+    UPDATE pgwar.entity_preview ep
+    SET full_text = newtab.full_text
+    FROM newtab
+    WHERE ep.pk_entity = newtab.pk_entity
+    AND ep.fk_project = newtab.fk_project
+    AND ep.full_text IS DISTINCT FROM newtab.full_text;
+
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- Create the trigger after_insert_entity_full_text
+CREATE TRIGGER after_insert_entity_full_text
+AFTER INSERT ON pgwar.entity_full_text
+REFERENCING NEW TABLE AS newtab
+EXECUTE FUNCTION pgwar.update_entity_preview_full_text();
+
+-- Create the trigger after_insert_entity_full_text
+CREATE TRIGGER after_update_entity_full_text
+AFTER UPDATE ON pgwar.entity_full_text
+REFERENCING NEW TABLE AS newtab
+EXECUTE FUNCTION pgwar.update_entity_preview_full_text();

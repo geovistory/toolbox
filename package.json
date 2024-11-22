@@ -1,7 +1,7 @@
 {
     "name": "geovistory-root",
     "description": "root package.json of the monorepo",
-    "version": "0.8.2",
+    "version": "0.8.3-pr-385.0",
     "scripts": {},
     "private": true
 }

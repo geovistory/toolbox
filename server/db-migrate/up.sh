@@ -17,5 +17,5 @@ export DB_MIGRATE_URL=$DB_MIGRATE_URL
 
 $DIR/../node_modules/.bin/db-migrate \
     --config $DIR/config.json \
-    --migrations-dir $DIR/migrations \
+    --migrations-dir $DIR/../../database/migrations \
     up "$@"

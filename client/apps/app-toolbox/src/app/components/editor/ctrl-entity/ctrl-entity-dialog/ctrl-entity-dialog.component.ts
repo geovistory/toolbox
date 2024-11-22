@@ -157,7 +157,7 @@ export class CtrlEntityDialogComponent implements OnDestroy, OnInit {
 
     this.selectedInProject$ = this.state.data.war.entityPreview.getEntityPreview.byProjectIdPkEntity$(this.pkProject, d.pkEntity).pipe(
       filter(item => !!item),
-      map(item => item.project_id !== 0),
+      map(item => item.fk_project !== 0),
       startWith(false)
     )
 

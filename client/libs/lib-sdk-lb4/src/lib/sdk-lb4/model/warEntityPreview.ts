@@ -13,9 +13,8 @@ import { WarEntityPreviewTimeSpan } from './warEntityPreviewTimeSpan';
 
 
 export interface WarEntityPreview { 
-    key?: string;
     pk_entity?: number;
-    project_id: number;
+    fk_project: number;
     fk_class: number;
     class_label?: string;
     entity_label?: string;

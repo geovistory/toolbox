@@ -30,12 +30,6 @@ export class WarFieldChangeId {
   fk_property: number;
 
   @property({
-    type: 'number',
-    required: true
-  })
-  fk_property_of_property: number;
-
-  @property({
     type: 'boolean',
     required: true
   })

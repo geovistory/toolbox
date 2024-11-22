@@ -17,7 +17,7 @@ export async function getWarEntityPreview(pkEntity: number, fkProject = 0) {
   return createWarEntityPreviewRepo().find({
     where: {
       and: [
-        {project_id: {eq: fkProject}},
+        {fk_project: {eq: fkProject}},
         {pk_entity: {eq: pkEntity}},
       ]
     }
